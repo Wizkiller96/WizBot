@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Db;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NadekoBot.Modules.Music.Services;
 
@@ -22,9 +22,17 @@ public sealed class MusicService : IMusicService
     private readonly ConcurrentDictionary<ulong, (ITextChannel Default, ITextChannel? Override)> _outputChannels;
     private readonly ConcurrentDictionary<ulong, MusicPlayerSettings> _settings;
 
-    public MusicService(AyuVoiceStateService voiceStateService, ITrackResolveProvider trackResolveProvider,
-        DbService db, IYoutubeResolver ytResolver, ILocalTrackResolver localResolver, ISoundcloudResolver scResolver,
-        DiscordSocketClient client, IBotStrings strings, IGoogleApiService googleApiService, YtLoader ytLoader,
+    public MusicService(
+        AyuVoiceStateService voiceStateService,
+        ITrackResolveProvider trackResolveProvider,
+        DbService db,
+        IYoutubeResolver ytResolver,
+        ILocalTrackResolver localResolver,
+        ISoundcloudResolver scResolver,
+        DiscordSocketClient client,
+        IBotStrings strings,
+        IGoogleApiService googleApiService,
+        YtLoader ytLoader,
         IEmbedBuilderService eb)
     {
         _voiceStateService = voiceStateService;
@@ -42,10 +50,10 @@ public sealed class MusicService : IMusicService
         _players = new();
         _outputChannels = new ConcurrentDictionary<ulong, (ITextChannel, ITextChannel?)>();
         _settings = new();
-            
+
         _client.LeftGuild += ClientOnLeftGuild;
     }
-        
+
     private void DisposeMusicPlayer(IMusicPlayer musicPlayer)
     {
         musicPlayer.Kill();
@@ -55,10 +63,7 @@ public sealed class MusicService : IMusicService
     private void RemoveMusicPlayer(ulong guildId)
     {
         _outputChannels.TryRemove(guildId, out _);
-        if (_players.TryRemove(guildId, out var mp))
-        {
-            DisposeMusicPlayer(mp);
-        }
+        if (_players.TryRemove(guildId, out var mp)) DisposeMusicPlayer(mp);
     }
 
     private Task ClientOnLeftGuild(SocketGuild guild)
@@ -73,7 +78,7 @@ public sealed class MusicService : IMusicService
         await _voiceStateService.LeaveVoiceChannel(guildId);
     }
 
-    public Task JoinVoiceChannelAsync(ulong guildId, ulong voiceChannelId) 
+    public Task JoinVoiceChannelAsync(ulong guildId, ulong voiceChannelId)
         => _voiceStateService.JoinVoiceChannel(guildId, voiceChannelId);
 
     public async Task<IMusicPlayer?> GetOrCreateMusicPlayerAsync(ITextChannel contextChannel)
@@ -81,7 +86,7 @@ public sealed class MusicService : IMusicService
         var newPLayer = await CreateMusicPlayerInternalAsync(contextChannel.GuildId, contextChannel);
         if (newPLayer is null)
             return null;
-            
+
         return _players.GetOrAdd(contextChannel.GuildId, newPLayer);
     }
 
@@ -109,7 +114,7 @@ public sealed class MusicService : IMusicService
         {
             if (mp.IsKilled)
                 break;
-                
+
             mp.EnqueueTrack(track, queuer);
         }
     }
@@ -121,7 +126,7 @@ public sealed class MusicService : IMusicService
         {
             if (mp.IsKilled)
                 break;
-                
+
             mp.EnqueueTrack(track, queuer);
             ++i;
         }
@@ -134,10 +139,7 @@ public sealed class MusicService : IMusicService
         var queue = new MusicQueue();
         var resolver = _trackResolveProvider;
 
-        if (!_voiceStateService.TryGetProxy(guildId, out var proxy))
-        {
-            return null;
-        }
+        if (!_voiceStateService.TryGetProxy(guildId, out var proxy)) return null;
 
         var settings = await GetSettingsInternalAsync(guildId);
 
@@ -147,30 +149,19 @@ public sealed class MusicService : IMusicService
             overrideChannel = _client.GetGuild(guildId)?.GetTextChannel(channelId);
 
             if (overrideChannel is null)
-            {
                 Log.Warning("Saved music output channel doesn't exist, falling back to current channel");
-            }
         }
-            
+
         _outputChannels[guildId] = (defaultChannel, overrideChannel);
 
-        var mp = new MusicPlayer(
-            queue,
-            resolver,
-            proxy,
-            settings.QualityPreset
-        );
-            
+        var mp = new MusicPlayer(queue, resolver, proxy, settings.QualityPreset);
+
         mp.SetRepeat(settings.PlayerRepeat);
 
         if (settings.Volume is >= 0 and <= 100)
-        {
             mp.SetVolume(settings.Volume);
-        }
         else
-        {
             Log.Error("Saved Volume is outside of valid range >= 0 && <=100 ({Volume})", settings.Volume);
-        }
 
         mp.OnCompleted += OnTrackCompleted(guildId);
         mp.OnStarted += OnTrackStarted(guildId);
@@ -197,10 +188,10 @@ public sealed class MusicService : IMusicService
         {
             _ = lastFinishedMessage?.DeleteAsync();
             var embed = _eb.Create()
-                .WithOkColor()
-                .WithAuthor(GetText(guildId, strs.finished_song), Music.MusicIconUrl)
-                .WithDescription(trackInfo.PrettyName())
-                .WithFooter(trackInfo.PrettyTotalTime());
+                           .WithOkColor()
+                           .WithAuthor(GetText(guildId, strs.finished_song), Music.MusicIconUrl)
+                           .WithDescription(trackInfo.PrettyName())
+                           .WithFooter(trackInfo.PrettyTotalTime());
 
             lastFinishedMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -212,10 +203,11 @@ public sealed class MusicService : IMusicService
         return async (mp, trackInfo, index) =>
         {
             _ = lastPlayingMessage?.DeleteAsync();
-            var embed = _eb.Create().WithOkColor()
-                .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MusicIconUrl)
-                .WithDescription(trackInfo.PrettyName())
-                .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
+            var embed = _eb.Create()
+                           .WithOkColor()
+                           .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MusicIconUrl)
+                           .WithDescription(trackInfo.PrettyName())
+                           .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
             lastPlayingMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -225,12 +217,8 @@ public sealed class MusicService : IMusicService
         => mp =>
         {
             if (_settings.TryGetValue(guildId, out var settings))
-            {
                 if (settings.AutoDisconnect)
-                {
                     return LeaveVoiceChannelAsync(guildId);
-                }
-            }
 
             return Task.CompletedTask;
         };
@@ -238,19 +226,12 @@ public sealed class MusicService : IMusicService
     // this has to be done because dragging bot to another vc isn't supported yet
     public async Task<bool> PlayAsync(ulong guildId, ulong voiceChannelId)
     {
-        if (!TryGetMusicPlayer(guildId, out var mp))
-        {
-            return false;
-        }
+        if (!TryGetMusicPlayer(guildId, out var mp)) return false;
 
         if (mp.IsStopped)
-        {
-            if (!_voiceStateService.TryGetProxy(guildId, out var proxy) 
+            if (!_voiceStateService.TryGetProxy(guildId, out var proxy)
                 || proxy.State == VoiceProxy.VoiceProxyState.Stopped)
-            {
                 await JoinVoiceChannelAsync(guildId, voiceChannelId);
-            }
-        }
 
         mp.Next();
         return true;
@@ -261,22 +242,19 @@ public sealed class MusicService : IMusicService
         var result = await _ytLoader.LoadResultsAsync(query);
         return result.Select(x => (x.Title, x.Url)).ToList();
     }
-        
+
     private async Task<IList<(string Title, string Url)>> SearchGoogleApiVideosAsync(string query)
     {
         var result = await _googleApiService.GetVideoInfosByKeywordAsync(query, 5);
         return result.Select(x => (x.Name, x.Url)).ToList();
     }
-        
+
     public async Task<IList<(string Title, string Url)>> SearchVideosAsync(string query)
     {
         try
         {
             IList<(string, string)> videos = await SearchYtLoaderVideosAsync(query);
-            if (videos.Count > 0)
-            {
-                return videos;
-            }
+            if (videos.Count > 0) return videos;
         }
         catch (Exception ex)
         {
@@ -289,13 +267,14 @@ public sealed class MusicService : IMusicService
         }
         catch (Exception ex)
         {
-            Log.Warning("Failed getting video results with Google Api. " +
-                        "Probably google api key missing: {ErrorMessage}", ex.Message);
+            Log.Warning("Failed getting video results with Google Api. "
+                        + "Probably google api key missing: {ErrorMessage}",
+                ex.Message);
         }
-            
+
         return Array.Empty<(string, string)>();
     }
-        
+
     private string GetText(ulong guildId, LocStr str)
         => _strings.GetText(str, guildId);
 
@@ -304,11 +283,10 @@ public sealed class MusicService : IMusicService
         // random song that's playing
         yield return ("%music.playing%", () =>
         {
-            var randomPlayingTrack = _players
-                .Select(x => x.Value.GetCurrentTrack(out _))
-                .Where(x => x is not null)
-                .Shuffle()
-                .FirstOrDefault();
+            var randomPlayingTrack = _players.Select(x => x.Value.GetCurrentTrack(out _))
+                                             .Where(x => x is not null)
+                                             .Shuffle()
+                                             .FirstOrDefault();
 
             if (randomPlayingTrack is null)
                 return "-";
@@ -319,17 +297,14 @@ public sealed class MusicService : IMusicService
         // number of servers currently listening to music
         yield return ("%music.servers%", () =>
         {
-            var count = _players
-                .Select(x => x.Value.GetCurrentTrack(out _))
-                .Count(x => x is not null);
+            var count = _players.Select(x => x.Value.GetCurrentTrack(out _)).Count(x => x is not null);
 
             return count.ToString();
         });
-            
+
         yield return ("%music.queued%", () =>
         {
-            var count = _players
-                .Sum(x => x.Value.GetQueuedTracks().Count);
+            var count = _players.Sum(x => x.Value.GetQueuedTracks().Count);
 
             return count.ToString();
         });
@@ -348,7 +323,7 @@ public sealed class MusicService : IMusicService
 
         return toReturn;
     }
-        
+
     private async Task ModifySettingsInternalAsync<TState>(
         ulong guildId,
         Action<MusicPlayerSettings, TState> action,
@@ -360,7 +335,7 @@ public sealed class MusicService : IMusicService
         await uow.SaveChangesAsync();
         _settings[guildId] = ms;
     }
-        
+
     public async Task<bool> SetMusicChannelAsync(ulong guildId, ulong? channelId)
     {
         if (channelId is null)
@@ -368,29 +343,31 @@ public sealed class MusicService : IMusicService
             await UnsetMusicChannelAsync(guildId);
             return true;
         }
-            
+
         var channel = _client.GetGuild(guildId)?.GetTextChannel(channelId.Value);
         if (channel is null)
             return false;
 
-        await ModifySettingsInternalAsync(guildId, (settings, chId) =>
-        {
-            settings.MusicChannelId = chId;
-        }, channelId);
+        await ModifySettingsInternalAsync(guildId,
+            (settings, chId) =>
+            {
+                settings.MusicChannelId = chId;
+            },
+            channelId);
 
-        _outputChannels.AddOrUpdate(guildId,
-            (channel, channel),
-            (key, old) => (old.Default, channel));
-            
+        _outputChannels.AddOrUpdate(guildId, (channel, channel), (key, old) => (old.Default, channel));
+
         return true;
     }
 
     public async Task UnsetMusicChannelAsync(ulong guildId)
     {
-        await ModifySettingsInternalAsync(guildId, (settings, _) =>
-        {
-            settings.MusicChannelId = null;
-        }, (ulong?)null);
+        await ModifySettingsInternalAsync(guildId,
+            (settings, _) =>
+            {
+                settings.MusicChannelId = null;
+            },
+            (ulong?)null);
 
         if (_outputChannels.TryGetValue(guildId, out var old))
             _outputChannels[guildId] = (old.Default, null);
@@ -398,10 +375,12 @@ public sealed class MusicService : IMusicService
 
     public async Task SetRepeatAsync(ulong guildId, PlayerRepeatType repeatType)
     {
-        await ModifySettingsInternalAsync(guildId, (settings, type) =>
-        {
-            settings.PlayerRepeat = type;
-        }, repeatType);
+        await ModifySettingsInternalAsync(guildId,
+            (settings, type) =>
+            {
+                settings.PlayerRepeat = type;
+            },
+            repeatType);
 
         if (TryGetMusicPlayer(guildId, out var mp))
             mp.SetRepeat(repeatType);
@@ -411,12 +390,14 @@ public sealed class MusicService : IMusicService
     {
         if (value is < 0 or > 100)
             throw new ArgumentOutOfRangeException(nameof(value));
-            
-        await ModifySettingsInternalAsync(guildId, (settings, newValue) =>
-        {
-            settings.Volume = newValue;
-        }, value);
-            
+
+        await ModifySettingsInternalAsync(guildId,
+            (settings, newValue) =>
+            {
+                settings.Volume = newValue;
+            },
+            value);
+
         if (TryGetMusicPlayer(guildId, out var mp))
             mp.SetVolume(value);
     }
@@ -424,10 +405,12 @@ public sealed class MusicService : IMusicService
     public async Task<bool> ToggleAutoDisconnectAsync(ulong guildId)
     {
         var newState = false;
-        await ModifySettingsInternalAsync(guildId, (settings, _) =>
-        {
-            newState = settings.AutoDisconnect = !settings.AutoDisconnect;
-        }, default(object));
+        await ModifySettingsInternalAsync(guildId,
+            (settings, _) =>
+            {
+                newState = settings.AutoDisconnect = !settings.AutoDisconnect;
+            },
+            default(object));
 
         return newState;
     }
@@ -440,10 +423,12 @@ public sealed class MusicService : IMusicService
     }
 
     public Task SetMusicQualityAsync(ulong guildId, QualityPreset preset)
-        => ModifySettingsInternalAsync(guildId, (settings, _) =>
-        {
-            settings.QualityPreset = preset;
-        }, preset);
+        => ModifySettingsInternalAsync(guildId,
+            (settings, _) =>
+            {
+                settings.QualityPreset = preset;
+            },
+            preset);
 
     #endregion
 }

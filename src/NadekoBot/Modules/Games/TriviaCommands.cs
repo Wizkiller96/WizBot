@@ -14,7 +14,10 @@ public partial class Games
         private readonly GamesConfigService _gamesConfig;
         private readonly DiscordSocketClient _client;
 
-        public TriviaCommands(DiscordSocketClient client, IDataCache cache, ICurrencyService cs,
+        public TriviaCommands(
+            DiscordSocketClient client,
+            IDataCache cache,
+            ICurrencyService cs,
             GamesConfigService gamesConfig)
         {
             _cache = cache;
@@ -23,7 +26,8 @@ public partial class Games
             _client = client;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         [NadekoOptionsAttribute(typeof(TriviaOptions))]
@@ -37,13 +41,18 @@ public partial class Games
             var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);
 
             var config = _gamesConfig.Data;
-            if (config.Trivia.MinimumWinReq > 0 && config.Trivia.MinimumWinReq > opts.WinRequirement)
-            {
-                return;
-            }
+            if (config.Trivia.MinimumWinReq > 0 && config.Trivia.MinimumWinReq > opts.WinRequirement) return;
 
-            var trivia = new TriviaGame(Strings, _client, config, _cache, _cs, channel.Guild, channel, opts,
-                Prefix + "tq", _eb);
+            var trivia = new TriviaGame(Strings,
+                _client,
+                config,
+                _cache,
+                _cs,
+                channel.Guild,
+                channel,
+                opts,
+                Prefix + "tq",
+                _eb);
             if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
             {
                 try
@@ -55,13 +64,15 @@ public partial class Games
                     _service.RunningTrivias.TryRemove(channel.Guild.Id, out trivia);
                     await trivia.EnsureStopped();
                 }
+
                 return;
             }
 
             await SendErrorAsync(GetText(strs.trivia_already_running) + "\n" + trivia.CurrentQuestion);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Tl()
         {
@@ -74,7 +85,8 @@ public partial class Games
             await ReplyErrorLocalizedAsync(strs.trivia_none);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Tq()
         {

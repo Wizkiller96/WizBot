@@ -7,6 +7,13 @@ public class ChatterBotSession : IChatterBotSession
 {
     private static NadekoRandom Rng { get; } = new();
 
+    private string ApiEndpoint
+        => "http://api.program-o.com/v2/chatbot/"
+           + $"?bot_id={_botId}&"
+           + "say={0}&"
+           + $"convo_id=nadekobot_{_chatterBotId}&"
+           + "format=json";
+
     private readonly string _chatterBotId;
     private readonly IHttpClientFactory _httpFactory;
     private readonly int _botId = 6;
@@ -16,12 +23,6 @@ public class ChatterBotSession : IChatterBotSession
         _chatterBotId = Rng.Next(0, 1000000).ToString().ToBase64();
         _httpFactory = httpFactory;
     }
-
-    private string ApiEndpoint => "http://api.program-o.com/v2/chatbot/" +
-                                  $"?bot_id={_botId}&" +
-                                  "say={0}&" +
-                                  $"convo_id=nadekobot_{_chatterBotId}&" +
-                                  "format=json";
 
     public async Task<string> Think(string message)
     {

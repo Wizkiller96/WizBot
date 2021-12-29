@@ -25,22 +25,14 @@ public class WaifuInfo : DbEntity
         var waifuUsername = Waifu.Username.TrimTo(20);
         var claimerUsername = Claimer?.Username.TrimTo(20);
 
-        if (ClaimerId != null)
-        {
-            claimer = $"{ claimerUsername }#{Claimer.Discriminator}";
-        }
+        if (ClaimerId != null) claimer = $"{claimerUsername}#{Claimer.Discriminator}";
         if (AffinityId is null)
-        {
             status = $"... but {waifuUsername}'s heart is empty";
-        }
         else if (AffinityId == ClaimerId)
-        {
             status = $"... and {waifuUsername} likes {claimerUsername} too <3";
-        }
         else
-        {
-            status = $"... but {waifuUsername}'s heart belongs to {Affinity.Username.TrimTo(20)}#{Affinity.Discriminator}";
-        }
+            status =
+                $"... but {waifuUsername}'s heart belongs to {Affinity.Username.TrimTo(20)}#{Affinity.Discriminator}";
         return $"**{waifuUsername}#{Waifu.Discriminator}** - claimed by **{claimer}**\n\t{status}";
     }
 }
@@ -66,22 +58,13 @@ public class WaifuLbResult
         var waifuUsername = Username.TrimTo(20);
         var claimerUsername = Claimer?.TrimTo(20);
 
-        if (Claimer != null)
-        {
-            claimer = $"{ claimerUsername }#{ClaimerDiscrim}";
-        }
+        if (Claimer != null) claimer = $"{claimerUsername}#{ClaimerDiscrim}";
         if (Affinity is null)
-        {
             status = $"... but {waifuUsername}'s heart is empty";
-        }
         else if (Affinity + AffinityDiscrim == Claimer + ClaimerDiscrim)
-        {
             status = $"... and {waifuUsername} likes {claimerUsername} too <3";
-        }
         else
-        {
             status = $"... but {waifuUsername}'s heart belongs to {Affinity.TrimTo(20)}#{AffinityDiscrim}";
-        }
         return $"**{waifuUsername}#{Discrim}** - claimed by **{claimer}**\n\t{status}";
     }
 }

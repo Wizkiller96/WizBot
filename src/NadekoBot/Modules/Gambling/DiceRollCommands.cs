@@ -11,7 +11,9 @@ public partial class Gambling
     [Group]
     public class DiceRollCommands : NadekoSubmodule
     {
-        private static readonly Regex dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$", RegexOptions.Compiled);
+        private static readonly Regex dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$",
+            RegexOptions.Compiled);
+
         private static readonly Regex fudgeRegex = new(@"^(?<n1>\d+)d(?:F|f)$", RegexOptions.Compiled);
 
         private static readonly char[] _fateRolls = { '-', ' ', '+' };
@@ -20,7 +22,8 @@ public partial class Gambling
         public DiceRollCommands(IDataCache data)
             => _images = data.LocalImages;
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Roll()
         {
             var rng = new NadekoRandom();
@@ -38,23 +41,27 @@ public partial class Gambling
                 Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public async Task Roll(int num)
             => await InternalRoll(num, true);
 
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public async Task Rolluo(int num = 1)
             => await InternalRoll(num, false);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public async Task Roll(string arg)
             => await InternallDndRoll(arg, true);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public async Task Rolluo(string arg)
             => await InternallDndRoll(arg, false);
@@ -81,65 +88,66 @@ public partial class Gambling
                         toInsert = 0;
                     else if (randomNumber != 1)
                         for (var j = 0; j < dice.Count; j++)
-                        {
                             if (values[j] < randomNumber)
                             {
                                 toInsert = j;
                                 break;
                             }
-                        }
                 }
                 else
                 {
                     toInsert = dice.Count;
                 }
+
                 dice.Insert(toInsert, GetDice(randomNumber));
                 values.Insert(toInsert, randomNumber);
             }
 
             using var bitmap = dice.Merge(out var format);
             await using var ms = bitmap.ToStream(format);
-            foreach (var d in dice)
-            {
-                d.Dispose();
-            }
+            foreach (var d in dice) d.Dispose();
 
-            await ctx.Channel.SendFileAsync(ms, $"dice.{format.FileExtensions.First()}",
-                Format.Bold(ctx.User.ToString()) + " " +
-                GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))) +
-                " " + GetText(strs.total_average(
-                    Format.Bold(values.Sum().ToString()),
+            await ctx.Channel.SendFileAsync(ms,
+                $"dice.{format.FileExtensions.First()}",
+                Format.Bold(ctx.User.ToString())
+                + " "
+                + GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString())))
+                + " "
+                + GetText(strs.total_average(Format.Bold(values.Sum().ToString()),
                     Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))));
         }
 
         private async Task InternallDndRoll(string arg, bool ordered)
         {
             Match match;
-            if ((match = fudgeRegex.Match(arg)).Length != 0 &&
-                int.TryParse(match.Groups["n1"].ToString(), out var n1) &&
-                n1 is > 0 and < 500)
+            if ((match = fudgeRegex.Match(arg)).Length != 0
+                && int.TryParse(match.Groups["n1"].ToString(), out var n1)
+                && n1 is > 0 and < 500)
             {
                 var rng = new NadekoRandom();
 
                 var rolls = new List<char>();
 
-                for (var i = 0; i < n1; i++)
-                {
-                    rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
-                }
+                for (var i = 0; i < n1; i++) rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
                 var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
-                    .AddField(Format.Bold("Result"), string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
-                    
+                               .WithOkColor()
+                               .WithDescription(ctx.User.Mention
+                                                + " "
+                                                + GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
+                               .AddField(Format.Bold("Result"),
+                                   string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
+
                 await ctx.Channel.EmbedAsync(embed);
             }
             else if ((match = dndRegex.Match(arg)).Length != 0)
             {
                 var rng = new NadekoRandom();
-                if (int.TryParse(match.Groups["n1"].ToString(), out n1) &&
-                    int.TryParse(match.Groups["n2"].ToString(), out var n2) &&
-                    n1 <= 50 && n2 <= 100000 && n1 > 0 && n2 > 0)
+                if (int.TryParse(match.Groups["n1"].ToString(), out n1)
+                    && int.TryParse(match.Groups["n2"].ToString(), out var n2)
+                    && n1 <= 50
+                    && n2 <= 100000
+                    && n1 > 0
+                    && n2 > 0)
                 {
                     if (!int.TryParse(match.Groups["add"].Value, out var add))
                         add = 0;
@@ -147,39 +155,39 @@ public partial class Gambling
                         sub = 0;
 
                     var arr = new int[n1];
-                    for (var i = 0; i < n1; i++)
-                    {
-                        arr[i] = rng.Next(1, n2 + 1);
-                    }
+                    for (var i = 0; i < n1; i++) arr[i] = rng.Next(1, n2 + 1);
 
                     var sum = arr.Sum();
-                    var embed = _eb.Create().WithOkColor()
-                        .WithDescription(ctx.User.Mention + " " + GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
-                        .AddField(Format.Bold("Rolls"), string.Join(" ",
-                            (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x =>
-                                Format.Code(x.ToString()))))
-                        .AddField(Format.Bold("Sum"),
-                            sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
+                    var embed = _eb.Create()
+                                   .WithOkColor()
+                                   .WithDescription(ctx.User.Mention
+                                                    + " "
+                                                    + GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
+                                   .AddField(Format.Bold("Rolls"),
+                                       string.Join(" ",
+                                           (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x
+                                               => Format.Code(x.ToString()))))
+                                   .AddField(Format.Bold("Sum"),
+                                       sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
                     await ctx.Channel.EmbedAsync(embed);
                 }
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task NRoll([Leftover] string range)
         {
             int rolled;
             if (range.Contains("-"))
             {
-                var arr = range.Split('-')
-                    .Take(2)
-                    .Select(int.Parse)
-                    .ToArray();
+                var arr = range.Split('-').Take(2).Select(int.Parse).ToArray();
                 if (arr[0] > arr[1])
                 {
                     await ReplyErrorLocalizedAsync(strs.second_larger_than_first);
                     return;
                 }
+
                 rolled = new NadekoRandom().Next(arr[0], arr[1] + 1);
             }
             else
@@ -202,6 +210,7 @@ public partial class Gambling
                 using var imgZero = Image.Load(images[0]);
                 return new[] { imgOne, imgZero }.Merge();
             }
+
             return Image.Load(_images.Dice[num]);
         }
     }

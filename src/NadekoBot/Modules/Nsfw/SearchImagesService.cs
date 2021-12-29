@@ -1,14 +1,18 @@
 #nullable disable
-using Newtonsoft.Json.Linq;
 using LinqToDB;
+using NadekoBot.Modules.Nsfw.Common;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
-using Booru = NadekoBot.Modules.Nsfw.Common.Booru;
-using SearchImageCacher = NadekoBot.Modules.Nsfw.Common.SearchImageCacher;
+using Newtonsoft.Json.Linq;
 
 namespace NadekoBot.Modules.Nsfw;
 
-public record TagRequest(ulong GuildId, bool ForceExplicit, Booru SearchType, params string[] Tags);
+public record TagRequest(
+    ulong GuildId,
+    bool ForceExplicit,
+    Booru SearchType,
+    params string[] Tags);
+
 public record UrlReply
 {
     public string Error { get; init; }
@@ -20,18 +24,21 @@ public record UrlReply
 
 public class SearchImagesService : ISearchImagesService, INService
 {
-    private readonly Random _rng;
-    private readonly HttpClient _http;
-    private readonly SearchImageCacher _cache;
-    private readonly IHttpClientFactory _httpFactory;
-    private readonly DbService _db;
     private ConcurrentDictionary<ulong, HashSet<string>> BlacklistedTags { get; }
 
     public ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new();
     public ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; } = new();
     public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new();
+    private readonly Random _rng;
+    private readonly HttpClient _http;
+    private readonly SearchImageCacher _cache;
+    private readonly IHttpClientFactory _httpFactory;
+    private readonly DbService _db;
 
-    public SearchImagesService(DbService db,
+    private readonly object taglock = new();
+
+    public SearchImagesService(
+        DbService db,
         IHttpClientFactory http,
         SearchImageCacher cacher,
         IHttpClientFactory httpFactory)
@@ -44,19 +51,21 @@ public class SearchImagesService : ISearchImagesService, INService
         _httpFactory = httpFactory;
 
         using var uow = db.GetDbContext();
-        BlacklistedTags = new(
-            uow.NsfwBlacklistedTags
-                .AsEnumerable()
-                .GroupBy(x => x.GuildId)
-                .ToDictionary(
-                    x => x.Key,
-                    x => new HashSet<string>(x.Select(x => x.Tag))));
+        BlacklistedTags = new(uow.NsfwBlacklistedTags.AsEnumerable()
+                                 .GroupBy(x => x.GuildId)
+                                 .ToDictionary(x => x.Key, x => new HashSet<string>(x.Select(x => x.Tag))));
     }
 
-    private Task<UrlReply> GetNsfwImageAsync(ulong? guildId, bool forceExplicit, string[] tags, Booru dapi, CancellationToken cancel = default)
+    private Task<UrlReply> GetNsfwImageAsync(
+        ulong? guildId,
+        bool forceExplicit,
+        string[] tags,
+        Booru dapi,
+        CancellationToken cancel = default)
         => GetNsfwImageAsync(guildId ?? 0, tags ?? Array.Empty<string>(), forceExplicit, dapi, cancel);
 
-    private bool IsValidTag(string tag) => tag.All(x => x != '+' && x != '?' && x != '/'); // tags mustn't contain + or ? or /
+    private bool IsValidTag(string tag)
+        => tag.All(x => x != '+' && x != '?' && x != '/'); // tags mustn't contain + or ? or /
 
     private async Task<UrlReply> GetNsfwImageAsync(
         ulong guildId,
@@ -66,64 +75,41 @@ public class SearchImagesService : ISearchImagesService, INService
         CancellationToken cancel)
     {
         if (!tags.All(x => IsValidTag(x)))
-        {
-            return new()
-            {
-                Error = "One or more tags are invalid.",
-                Url = ""
-            };
-        }
+            return new() { Error = "One or more tags are invalid.", Url = "" };
 
         Log.Information("Getting {V} image for Guild: {GuildId}...", dapi.ToString(), guildId);
         try
         {
             BlacklistedTags.TryGetValue(guildId, out var blTags);
 
-            if (dapi == Booru.E621) {
+            if (dapi == Booru.E621)
                 for (var i = 0; i < tags.Length; ++i)
                     if (tags[i] == "yuri")
                         tags[i] = "female/female";
-            }
 
             if (dapi == Booru.Derpibooru)
-            {
                 for (var i = 0; i < tags.Length; ++i)
                     if (tags[i] == "yuri")
                         tags[i] = "lesbian";
-            }
 
             var result = await _cache.GetImageNew(tags, forceExplicit, dapi, blTags ?? new HashSet<string>(), cancel);
 
             if (result is null)
-            {
-                return new()
-                {
-                    Error = "Image not found.",
-                    Url = ""
-                };
-            }
+                return new() { Error = "Image not found.", Url = "" };
 
             var reply = new UrlReply
             {
-                Error = "",
-                Url = result.FileUrl,
-                Rating = result.Rating,
-                Provider = result.SearchType.ToString()
+                Error = "", Url = result.FileUrl, Rating = result.Rating, Provider = result.SearchType.ToString()
             };
 
             reply.Tags.AddRange(result.Tags);
 
             return reply;
-
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed getting {Dapi} image: {Message}", dapi, ex.Message);
-            return new()
-            {
-                Error = ex.Message,
-                Url = ""
-            };
+            return new() { Error = ex.Message, Url = "" };
         }
     }
 
@@ -150,18 +136,13 @@ public class SearchImagesService : ISearchImagesService, INService
 
     public Task<UrlReply> SafeBooru(ulong? guildId, bool forceExplicit, string[] tags)
         => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Safebooru);
-        
+
     public Task<UrlReply> Sankaku(ulong? guildId, bool forceExplicit, string[] tags)
         => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Sankaku);
 
     public async Task<UrlReply> Hentai(ulong? guildId, bool forceExplicit, string[] tags)
     {
-        var providers = new[] {
-            Booru.Danbooru,
-            Booru.Konachan,
-            Booru.Gelbooru,
-            Booru.Yandere
-        };
+        var providers = new[] { Booru.Danbooru, Booru.Konachan, Booru.Gelbooru, Booru.Yandere };
 
         using var cancelSource = new CancellationTokenSource();
 
@@ -174,7 +155,7 @@ public class SearchImagesService : ISearchImagesService, INService
 
             // get its result
             var result = task.GetAwaiter().GetResult();
-            if(result.Error == "")
+            if (result.Error == "")
             {
                 // if we have a non-error result, cancel other searches and return the result
                 cancelSource.Cancel();
@@ -184,14 +165,10 @@ public class SearchImagesService : ISearchImagesService, INService
             // if the result is an error, remove that task from the waiting list,
             // and wait for another task to complete
             tasks.Remove(task);
-        }
-        while (tasks.Count > 0); // keep looping as long as there is any task remaining to be attempted
+        } while (tasks.Count > 0); // keep looping as long as there is any task remaining to be attempted
 
         // if we ran out of tasks, that means all tasks failed - return an error
-        return new()
-        {
-            Error = "No hentai image found."
-        };
+        return new() { Error = "No hentai image found." };
     }
 
     public async Task<UrlReply> Boobs()
@@ -200,24 +177,15 @@ public class SearchImagesService : ISearchImagesService, INService
         {
             JToken obj;
             obj = JArray.Parse(await _http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}"))[0];
-            return new()
-            {
-                Error = "",
-                Url = $"http://media.oboobs.ru/{obj["preview"]}",
-            };
+            return new() { Error = "", Url = $"http://media.oboobs.ru/{obj["preview"]}" };
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error retreiving boob image: {Message}", ex.Message);
-            return new()
-            {
-                Error = ex.Message,
-                Url = "",
-            };
+            return new() { Error = ex.Message, Url = "" };
         }
     }
 
-    private readonly object taglock = new();
     public ValueTask<bool> ToggleBlacklistTag(ulong guildId, string tag)
     {
         lock (taglock)
@@ -235,28 +203,20 @@ public class SearchImagesService : ISearchImagesService, INService
             }
             else
             {
-                uow.NsfwBlacklistedTags.Add(new()
-                {
-                    Tag = tag,
-                    GuildId = guildId
-                });
+                uow.NsfwBlacklistedTags.Add(new() { Tag = tag, GuildId = guildId });
 
                 uow.SaveChanges();
             }
 
             return new(isAdded);
         }
-            
     }
 
     public ValueTask<string[]> GetBlacklistedTags(ulong guildId)
     {
         lock (taglock)
         {
-            if (BlacklistedTags.TryGetValue(guildId, out var tags))
-            {
-                return new(tags.ToArray());
-            }
+            if (BlacklistedTags.TryGetValue(guildId, out var tags)) return new(tags.ToArray());
 
             return new(Array.Empty<string>());
         }
@@ -268,24 +228,17 @@ public class SearchImagesService : ISearchImagesService, INService
         {
             JToken obj;
             obj = JArray.Parse(await _http.GetStringAsync($"http://api.obutts.ru/butts/{_rng.Next(0, 6100)}"))[0];
-            return new()
-            {
-                Error = "",
-                Url = $"http://media.obutts.ru/{obj["preview"]}",
-            };
+            return new() { Error = "", Url = $"http://media.obutts.ru/{obj["preview"]}" };
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error retreiving butt image: {Message}", ex.Message);
-            return new()
-            {
-                Error = ex.Message,
-                Url = "",
-            };
+            return new() { Error = ex.Message, Url = "" };
         }
     }
-        
+
     #region Nhentai
+
     private string GetNhentaiExtensionInternal(string s)
         => s switch
         {
@@ -294,15 +247,14 @@ public class SearchImagesService : ISearchImagesService, INService
             "g" => "gif",
             _ => "jpg"
         };
-        
+
     private Gallery ModelToGallery(NhentaiApiModel.Gallery model)
     {
         var thumbnail = $"https://t.nhentai.net/galleries/{model.MediaId}/thumb."
                         + GetNhentaiExtensionInternal(model.Images.Thumbnail.T);
 
         var url = $"https://nhentai.net/g/{model.Id}";
-        return new(
-            model.Id.ToString(),
+        return new(model.Id.ToString(),
             url,
             model.Title.English,
             model.Title.Pretty,
@@ -310,11 +262,7 @@ public class SearchImagesService : ISearchImagesService, INService
             model.NumPages,
             model.NumFavorites,
             model.UploadDate.ToUnixTimestamp().UtcDateTime,
-            model.Tags.Map(x => new Tag()
-            {
-                Name = x.Name,
-                Url = "https://nhentai.com/" + x.Url
-            }));
+            model.Tags.Map(x => new Tag { Name = x.Name, Url = "https://nhentai.com/" + x.Url }));
     }
 
     private async Task<NhentaiApiModel.Gallery> GetNhentaiByIdInternalAsync(uint id)
@@ -331,7 +279,7 @@ public class SearchImagesService : ISearchImagesService, INService
             return null;
         }
     }
-        
+
     private async Task<NhentaiApiModel.Gallery[]> SearchNhentaiInternalAsync(string search)
     {
         using var http = _httpFactory.CreateClient();
@@ -346,7 +294,7 @@ public class SearchImagesService : ISearchImagesService, INService
             return null;
         }
     }
-        
+
     public async Task<Gallery> GetNhentaiByIdAsync(uint id)
     {
         var model = await GetNhentaiByIdInternalAsync(id);
@@ -354,25 +302,19 @@ public class SearchImagesService : ISearchImagesService, INService
         return ModelToGallery(model);
     }
 
-    private static readonly string[] _bannedTags =
-    {
-        "loli",
-        "lolicon",
-        "shota",
-        "shotacon",
-        "cub"
-    };
-        
+    private static readonly string[] _bannedTags = { "loli", "lolicon", "shota", "shotacon", "cub" };
+
     public async Task<Gallery> GetNhentaiBySearchAsync(string search)
     {
         var models = await SearchNhentaiInternalAsync(search);
 
         models = models.Where(x => !x.Tags.Any(t => _bannedTags.Contains(t.Name))).ToArray();
-            
+
         if (models.Length == 0)
             return null;
-            
+
         return ModelToGallery(models[_rng.Next(0, models.Length)]);
     }
+
     #endregion
 }

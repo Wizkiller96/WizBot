@@ -5,8 +5,8 @@ namespace NadekoBot.Common.TypeReaders;
 
 public sealed class CommandTypeReader : NadekoTypeReader<CommandInfo>
 {
-    private readonly CommandHandler _handler;
     private readonly CommandService _cmds;
+    private readonly CommandHandler _handler;
 
     public CommandTypeReader(CommandHandler handler, CommandService cmds)
     {
@@ -34,8 +34,8 @@ public sealed class CommandTypeReader : NadekoTypeReader<CommandInfo>
 public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
 {
     private readonly CommandService _cmds;
-    private readonly CustomReactionsService _crs;
     private readonly CommandHandler _commandHandler;
+    private readonly CustomReactionsService _crs;
 
     public CommandOrCrTypeReader(CommandService cmds, CustomReactionsService crs, CommandHandler commandHandler)
     {
@@ -49,18 +49,12 @@ public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
         input = input.ToUpperInvariant();
 
         if (_crs.ReactionExists(context.Guild?.Id, input))
-        {
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
-        }
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(context, input);
         if (cmd.IsSuccess)
-        {
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name,
-                    CommandOrCrInfo.Type.Normal
-                )
-            );
-        }
+                CommandOrCrInfo.Type.Normal));
 
         return TypeReaderResult.FromError(CommandError.ParseFailed, "No such command or cr found.");
     }
@@ -71,7 +65,7 @@ public class CommandOrCrInfo
     public enum Type
     {
         Normal,
-        Custom,
+        Custom
     }
 
     public string Name { get; set; }
@@ -82,7 +76,7 @@ public class CommandOrCrInfo
 
     public CommandOrCrInfo(string input, Type type)
     {
-        this.Name = input;
-        this.CmdType = type;
+        Name = input;
+        CmdType = type;
     }
 }

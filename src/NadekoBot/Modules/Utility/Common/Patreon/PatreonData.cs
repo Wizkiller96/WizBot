@@ -61,10 +61,10 @@ public sealed class PatreonResponse
 {
     [JsonPropertyName("data")]
     public List<PatreonMember> Data { get; set; }
-        
+
     [JsonPropertyName("included")]
     public List<PatreonUser> Included { get; set; }
-        
+
     [JsonPropertyName("links")]
     public PatreonLinks Links { get; set; }
 }
@@ -73,12 +73,13 @@ public sealed class PatreonLinks
 {
     [JsonPropertyName("next")]
     public string Next { get; set; }
-} 
+}
 
 public sealed class PatreonUser
 {
     [JsonPropertyName("attributes")]
     public PatreonUserAttributes Attributes { get; set; }
+
     [JsonPropertyName("id")]
     public string Id { get; set; }
     // public string Type { get; set; }
@@ -89,6 +90,7 @@ public sealed class PatreonUserAttributes
     [JsonPropertyName("social_connections")]
     public PatreonSocials SocialConnections { get; set; }
 }
+
 public sealed class PatreonSocials
 {
     [JsonPropertyName("discord")]
@@ -100,7 +102,7 @@ public sealed class DiscordSocial
     [JsonPropertyName("user_id")]
     public string UserId { get; set; }
 }
-    
+
 public sealed class PatreonMember
 {
     [JsonPropertyName("attributes")]

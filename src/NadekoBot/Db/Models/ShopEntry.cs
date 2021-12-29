@@ -4,7 +4,8 @@ namespace NadekoBot.Services.Database.Models;
 public enum ShopEntryType
 {
     Role,
-    List,
+
+    List
     //Infinite_List,
 }
 
@@ -31,13 +32,10 @@ public class ShopEntryItem : DbEntity
 
     public override bool Equals(object obj)
     {
-        if (obj is null || GetType() != obj.GetType())
-        {
-            return false;
-        }
+        if (obj is null || GetType() != obj.GetType()) return false;
         return ((ShopEntryItem)obj).Text == Text;
     }
 
-    public override int GetHashCode() =>
-        Text.GetHashCode(StringComparison.InvariantCulture);
+    public override int GetHashCode()
+        => Text.GetHashCode(StringComparison.InvariantCulture);
 }

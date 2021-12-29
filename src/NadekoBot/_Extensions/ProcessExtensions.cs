@@ -19,20 +19,13 @@ public static class ProcessExtensions
     {
         if (_isWindows)
         {
-            RunProcessAndWaitForExit("taskkill",
-                $"/T /F /PID {process.Id}",
-                timeout,
-                out _
-            );
+            RunProcessAndWaitForExit("taskkill", $"/T /F /PID {process.Id}", timeout, out _);
         }
         else
         {
             var children = new HashSet<int>();
             GetAllChildIdsUnix(process.Id, children, timeout);
-            foreach (var childId in children)
-            {
-                KillProcessUnix(childId, timeout);
-            }
+            foreach (var childId in children) KillProcessUnix(childId, timeout);
 
             KillProcessUnix(process.Id, timeout);
         }
@@ -40,23 +33,15 @@ public static class ProcessExtensions
 
     private static void GetAllChildIdsUnix(int parentId, ISet<int> children, TimeSpan timeout)
     {
-        var exitCode = RunProcessAndWaitForExit("pgrep",
-            $"-P {parentId}",
-            timeout,
-            out var stdout
-        );
+        var exitCode = RunProcessAndWaitForExit("pgrep", $"-P {parentId}", timeout, out var stdout);
 
-        if (exitCode == 0 &&
-            !string.IsNullOrEmpty(stdout))
+        if (exitCode == 0 && !string.IsNullOrEmpty(stdout))
         {
             using var reader = new StringReader(stdout);
             while (true)
             {
                 var text = reader.ReadLine();
-                if (text is null)
-                {
-                    return;
-                }
+                if (text is null) return;
 
                 if (int.TryParse(text, out var id))
                 {
@@ -69,11 +54,7 @@ public static class ProcessExtensions
     }
 
     private static void KillProcessUnix(int processId, TimeSpan timeout)
-        => RunProcessAndWaitForExit("kill",
-            $"-TERM {processId}",
-            timeout,
-            out _
-        );
+        => RunProcessAndWaitForExit("kill", $"-TERM {processId}", timeout, out _);
 
     private static int RunProcessAndWaitForExit(
         string fileName,
@@ -94,13 +75,9 @@ public static class ProcessExtensions
             return -1;
 
         if (process.WaitForExit((int)timeout.TotalMilliseconds))
-        {
             stdout = process.StandardOutput.ReadToEnd();
-        }
         else
-        {
             process.Kill();
-        }
 
         return process.ExitCode;
     }

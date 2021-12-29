@@ -3,19 +3,17 @@ namespace NadekoBot.Modules.Gambling.Common.WheelOfFortune;
 
 public class WheelOfFortuneGame
 {
-    public class Result
-    {
-        public int Index { get; set; }
-        public long Amount { get; set; }
-    }
-
     private readonly NadekoRandom _rng;
     private readonly ICurrencyService _cs;
     private readonly long _bet;
     private readonly GamblingConfig _config;
     private readonly ulong _userId;
 
-    public WheelOfFortuneGame(ulong userId, long bet, GamblingConfig config, ICurrencyService cs)
+    public WheelOfFortuneGame(
+        ulong userId,
+        long bet,
+        GamblingConfig config,
+        ICurrencyService cs)
     {
         _rng = new();
         _cs = cs;
@@ -31,12 +29,14 @@ public class WheelOfFortuneGame
         var amount = (long)(_bet * _config.WheelOfFortune.Multipliers[result]);
 
         if (amount > 0)
-            await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, gamble: true);
+            await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, true);
 
-        return new()
-        {
-            Index = result,
-            Amount = amount,
-        };
+        return new() { Index = result, Amount = amount };
+    }
+
+    public class Result
+    {
+        public int Index { get; set; }
+        public long Amount { get; set; }
     }
 }

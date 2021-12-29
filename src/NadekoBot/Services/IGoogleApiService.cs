@@ -27,7 +27,7 @@ public struct ImageResult
 
     public ImageResult(Result.ImageData image, string link)
     {
-        this.Image = image;
-        this.Link = link;
+        Image = image;
+        Link = link;
     }
 }

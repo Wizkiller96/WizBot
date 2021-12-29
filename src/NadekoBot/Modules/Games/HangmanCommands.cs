@@ -7,12 +7,11 @@ public partial class Games
     [Group]
     public class HangmanCommands : NadekoSubmodule<IHangmanService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Hangmanlist()
-            => await SendConfirmAsync(
-                GetText(strs.hangman_types(Prefix)),
-                _service.GetHangmanTypes().Join('\n'));
+            => await SendConfirmAsync(GetText(strs.hangman_types(Prefix)), _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
             => $@". ┌─────┐
@@ -27,28 +26,26 @@ public partial class Games
         {
             if (state.Phase == HangmanGame.Phase.Running)
                 return eb.Create()
-                    .WithOkColor()
-                    .AddField("Hangman", Draw(state))
-                    .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.Join(' '));
-                
+                         .WithOkColor()
+                         .AddField("Hangman", Draw(state))
+                         .AddField("Guess", Format.Code(state.Word))
+                         .WithFooter(state.missedLetters.Join(' '));
+
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
                 return eb.Create()
-                    .WithErrorColor()
-                    .AddField("Hangman", Draw(state))
-                    .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.Join(' '));
-            else
-            {
-                return eb.Create()
-                    .WithOkColor()
-                    .AddField("Hangman", Draw(state))
-                    .AddField("Guess", Format.Code(state.Word))
-                    .WithFooter(state.missedLetters.Join(' '));
-            }
+                         .WithErrorColor()
+                         .AddField("Hangman", Draw(state))
+                         .AddField("Guess", Format.Code(state.Word))
+                         .WithFooter(state.missedLetters.Join(' '));
+            return eb.Create()
+                     .WithOkColor()
+                     .AddField("Hangman", Draw(state))
+                     .AddField("Guess", Format.Code(state.Word))
+                     .WithFooter(state.missedLetters.Join(' '));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Hangman([Leftover] string? type = null)
         {
@@ -63,14 +60,12 @@ public partial class Games
             await ctx.Channel.EmbedAsync(eb);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task HangmanStop()
         {
-            if (await _service.StopHangman(ctx.Channel.Id))
-            {
-                await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
-            }
+            if (await _service.StopHangman(ctx.Channel.Id)) await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
         }
     }
 }

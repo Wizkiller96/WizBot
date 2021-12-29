@@ -4,9 +4,9 @@ namespace NadekoBot.Common;
 
 public sealed class RedisPubSub : IPubSub
 {
+    private readonly IBotCredentials _creds;
     private readonly ConnectionMultiplexer _multi;
     private readonly ISeria _serializer;
-    private readonly IBotCredentials _creds;
 
     public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer, IBotCredentials creds)
     {
@@ -19,7 +19,7 @@ public sealed class RedisPubSub : IPubSub
     {
         var serialized = _serializer.Serialize(data);
         return _multi.GetSubscriber()
-            .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
+                     .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
     }
 
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData?, ValueTask> action)

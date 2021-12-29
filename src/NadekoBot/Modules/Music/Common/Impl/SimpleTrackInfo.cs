@@ -8,10 +8,14 @@ public sealed class SimpleTrackInfo : ITrackInfo
     public TimeSpan Duration { get; }
     public MusicPlatform Platform { get; }
     public string? StreamUrl { get; }
-    public ValueTask<string?> GetStreamUrl() => new(StreamUrl);
 
-    public SimpleTrackInfo(string title, string url, string thumbnail, TimeSpan duration,
-        MusicPlatform platform, string streamUrl)
+    public SimpleTrackInfo(
+        string title,
+        string url,
+        string thumbnail,
+        TimeSpan duration,
+        MusicPlatform platform,
+        string streamUrl)
     {
         Title = title;
         Url = url;
@@ -20,4 +24,7 @@ public sealed class SimpleTrackInfo : ITrackInfo
         Platform = platform;
         StreamUrl = streamUrl;
     }
+
+    public ValueTask<string?> GetStreamUrl()
+        => new(StreamUrl);
 }

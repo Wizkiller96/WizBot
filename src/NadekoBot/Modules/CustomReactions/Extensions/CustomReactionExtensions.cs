@@ -9,12 +9,13 @@ public static class CustomReactionExtensions
     private static string ResolveTriggerString(this string str, DiscordSocketClient client)
         => str.Replace("%bot.mention%", client.CurrentUser.Mention, StringComparison.Ordinal);
 
-    public static async Task<IUserMessage> Send(this CustomReaction cr, IUserMessage ctx,
-        DiscordSocketClient client, bool sanitize)
+    public static async Task<IUserMessage> Send(
+        this CustomReaction cr,
+        IUserMessage ctx,
+        DiscordSocketClient client,
+        bool sanitize)
     {
-        var channel = cr.DmResponse
-            ? await ctx.Author.CreateDMChannelAsync()
-            : ctx.Channel;
+        var channel = cr.DmResponse ? await ctx.Author.CreateDMChannelAsync() : ctx.Channel;
 
         var trigger = cr.Trigger.ResolveTriggerString(client);
         var substringIndex = trigger.Length;
@@ -32,11 +33,12 @@ public static class CustomReactionExtensions
         var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
 
         var rep = new ReplacementBuilder()
-            .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-            .WithOverride("%target%", () => canMentionEveryone
-                ? ctx.Content[substringIndex..].Trim()
-                : ctx.Content[substringIndex..].Trim().SanitizeMentions(true))
-            .Build();
+                  .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
+                  .WithOverride("%target%",
+                      () => canMentionEveryone
+                          ? ctx.Content[substringIndex..].Trim()
+                          : ctx.Content[substringIndex..].Trim().SanitizeMentions(true))
+                  .Build();
 
         var text = SmartText.CreateFrom(cr.Response);
         text = rep.Replace(text);
@@ -62,7 +64,9 @@ public static class CustomReactionExtensions
                 return WordPosition.End;
         }
         else if (str.isValidWordDivider(wordIndex - 1) && str.isValidWordDivider(wordIndex + word.Length))
+        {
             return WordPosition.Middle;
+        }
 
         return WordPosition.None;
     }
@@ -82,5 +86,5 @@ public enum WordPosition
     None,
     Start,
     Middle,
-    End,
+    End
 }

@@ -1,12 +1,14 @@
-#nullable disable
-using System.Text.RegularExpressions;
+﻿#nullable disable
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
+using NCalc;
+using System.Text.RegularExpressions;
 
 namespace NadekoBot.Common.TypeReaders;
 
 public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
 {
+    private static readonly Regex _percentRegex = new(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
     private readonly DbService _db;
     private readonly GamblingConfigService _gambling;
 
@@ -33,7 +35,7 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
             return TypeReaderResult.FromSuccess(new ShmartNumber(num, i));
         try
         {
-            var expr = new NCalc.Expression(i, NCalc.EvaluateOptions.IgnoreCase);
+            var expr = new Expression(i, EvaluateOptions.IgnoreCase);
             expr.EvaluateParameter += (str, ev) => EvaluateParam(str, ev, context);
             var lon = (long)decimal.Parse(expr.Evaluate().ToString());
             return TypeReaderResult.FromSuccess(new ShmartNumber(lon, input));
@@ -44,7 +46,7 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         }
     }
 
-    private void EvaluateParam(string name, NCalc.ParameterArgs args, ICommandContext ctx)
+    private void EvaluateParam(string name, ParameterArgs args, ICommandContext ctx)
     {
         switch (name.ToUpperInvariant())
         {
@@ -66,8 +68,6 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
                 break;
         }
     }
-
-    private static readonly Regex _percentRegex = new(@"^((?<num>100|\d{1,2})%)$", RegexOptions.Compiled);
 
     private long Cur(ICommandContext ctx)
     {

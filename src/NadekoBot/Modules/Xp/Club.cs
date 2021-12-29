@@ -13,20 +13,21 @@ public partial class Xp
         public Club(XpService xps)
             => _xps = xps;
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubTransfer([Leftover] IUser newOwner)
         {
             var club = _service.TransferClub(ctx.User, newOwner);
 
             if (club != null)
-                await ReplyConfirmLocalizedAsync(strs.club_transfered(
-                    Format.Bold(club.Name),
+                await ReplyConfirmLocalizedAsync(strs.club_transfered(Format.Bold(club.Name),
                     Format.Bold(newOwner.ToString())));
             else
                 await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubAdmin([Leftover] IUser toAdmin)
         {
             bool admin;
@@ -46,7 +47,8 @@ public partial class Xp
                 await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubCreate([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
@@ -64,7 +66,8 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString())));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubIcon([Leftover] string url = null)
         {
             if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
@@ -77,7 +80,8 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.club_icon_set);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public async Task ClubInformation(IUser user = null)
         {
@@ -92,7 +96,8 @@ public partial class Xp
             await ClubInformation(club.ToString());
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public async Task ClubInformation([Leftover] string clubName = null)
         {
@@ -109,50 +114,53 @@ public partial class Xp
             }
 
             var lvl = new LevelStats(club.Xp);
-            var users = club.Users
-                .OrderByDescending(x =>
-                {
-                    var l = new LevelStats(x.TotalXp).Level;
-                    if (club.OwnerId == x.Id)
-                        return int.MaxValue;
-                    else if (x.IsClubAdmin)
-                        return (int.MaxValue / 2) + l;
-                    else
-                        return l;
-                });
-
-            await ctx.SendPaginatedConfirmAsync(0, page =>
+            var users = club.Users.OrderByDescending(x =>
             {
-                var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithTitle($"{club.ToString()}")
-                    .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
-                    .AddField(GetText(strs.desc), string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description,
-                        false)
-                    .AddField(GetText(strs.owner), club.Owner.ToString(), true)
-                    .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
-                    .AddField(GetText(strs.members), string.Join("\n", users
-                        .Skip(page * 10)
-                        .Take(10)
-                        .Select(x =>
-                        {
-                            var l = new LevelStats(x.TotalXp);
-                            var lvlStr = Format.Bold($" ⟪{l.Level}⟫");
-                            if (club.OwnerId == x.Id)
-                                return x.ToString() + "🌟" + lvlStr;
-                            else if (x.IsClubAdmin)
-                                return x.ToString() + "⭐" + lvlStr;
-                            return x.ToString() + lvlStr;
-                        })), false);
+                var l = new LevelStats(x.TotalXp).Level;
+                if (club.OwnerId == x.Id)
+                    return int.MaxValue;
+                if (x.IsClubAdmin)
+                    return (int.MaxValue / 2) + l;
+                return l;
+            });
 
-                if (Uri.IsWellFormedUriString(club.ImageUrl, UriKind.Absolute))
-                    return embed.WithThumbnailUrl(club.ImageUrl);
+            await ctx.SendPaginatedConfirmAsync(0,
+                page =>
+                {
+                    var embed = _eb.Create()
+                                   .WithOkColor()
+                                   .WithTitle($"{club}")
+                                   .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
+                                   .AddField(GetText(strs.desc),
+                                       string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description)
+                                   .AddField(GetText(strs.owner), club.Owner.ToString(), true)
+                                   .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
+                                   .AddField(GetText(strs.members),
+                                       string.Join("\n",
+                                           users.Skip(page * 10)
+                                                .Take(10)
+                                                .Select(x =>
+                                                {
+                                                    var l = new LevelStats(x.TotalXp);
+                                                    var lvlStr = Format.Bold($" ⟪{l.Level}⟫");
+                                                    if (club.OwnerId == x.Id)
+                                                        return x + "🌟" + lvlStr;
+                                                    if (x.IsClubAdmin)
+                                                        return x + "⭐" + lvlStr;
+                                                    return x + lvlStr;
+                                                })));
 
-                return embed;
-            }, club.Users.Count, 10);
+                    if (Uri.IsWellFormedUriString(club.ImageUrl, UriKind.Absolute))
+                        return embed.WithThumbnailUrl(club.ImageUrl);
+
+                    return embed;
+                },
+                club.Users.Count,
+                10);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public Task ClubBans(int page = 1)
         {
             if (--page < 0)
@@ -162,28 +170,25 @@ public partial class Xp
             if (club is null)
                 return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
 
-            var bans = club
-                .Bans
-                .Select(x => x.User)
-                .ToArray();
+            var bans = club.Bans.Select(x => x.User).ToArray();
 
             return ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
-                    var toShow = string.Join("\n", bans
-                        .Skip(page * 10)
-                        .Take(10)
-                        .Select(x => x.ToString()));
+                    var toShow = string.Join("\n", bans.Skip(page * 10).Take(10).Select(x => x.ToString()));
 
                     return _eb.Create()
-                        .WithTitle(GetText(strs.club_bans_for(club.ToString())))
-                        .WithDescription(toShow)
-                        .WithOkColor();
-                }, bans.Length, 10);
+                              .WithTitle(GetText(strs.club_bans_for(club.ToString())))
+                              .WithDescription(toShow)
+                              .WithOkColor();
+                },
+                bans.Length,
+                10);
         }
 
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public Task ClubApps(int page = 1)
         {
             if (--page < 0)
@@ -193,27 +198,24 @@ public partial class Xp
             if (club is null)
                 return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
 
-            var apps = club
-                .Applicants
-                .Select(x => x.User)
-                .ToArray();
+            var apps = club.Applicants.Select(x => x.User).ToArray();
 
             return ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
-                    var toShow = string.Join("\n", apps
-                        .Skip(page * 10)
-                        .Take(10)
-                        .Select(x => x.ToString()));
+                    var toShow = string.Join("\n", apps.Skip(page * 10).Take(10).Select(x => x.ToString()));
 
                     return _eb.Create()
-                        .WithTitle(GetText(strs.club_apps_for(club.ToString())))
-                        .WithDescription(toShow)
-                        .WithOkColor();
-                }, apps.Length, 10);
+                              .WithTitle(GetText(strs.club_apps_for(club.ToString())))
+                              .WithDescription(toShow)
+                              .WithOkColor();
+                },
+                apps.Length,
+                10);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubApply([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName))
@@ -226,33 +228,30 @@ public partial class Xp
             }
 
             if (_service.ApplyToClub(ctx.User, club))
-            {
                 await ReplyConfirmLocalizedAsync(strs.club_applied(Format.Bold(club.ToString())));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.club_apply_error);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task ClubAccept(IUser user)
             => ClubAccept(user.ToString());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public async Task ClubAccept([Leftover] string userName)
         {
             if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
-            {
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
-            }
             else
                 await ReplyErrorLocalizedAsync(strs.club_accept_error);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Clubleave()
         {
             if (_service.LeaveClub(ctx.User))
@@ -261,94 +260,89 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_not_in_club);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task ClubKick([Leftover] IUser user)
             => ClubKick(user.ToString());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public Task ClubKick([Leftover] string userName)
         {
             if (_service.Kick(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_kick(Format.Bold(userName),
                     Format.Bold(club.ToString())));
-            else
-                return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
+            return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task ClubBan([Leftover] IUser user)
             => ClubBan(user.ToString());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public Task ClubBan([Leftover] string userName)
         {
             if (_service.Ban(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_banned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
-            else
-                return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
+            return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task ClubUnBan([Leftover] IUser user)
             => ClubUnBan(user.ToString());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(0)]
         public Task ClubUnBan([Leftover] string userName)
         {
             if (_service.UnBan(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_unbanned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
-            else
-                return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
+            return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubLevelReq(int level)
         {
             if (_service.ChangeClubLevelReq(ctx.User.Id, level))
-            {
                 await ReplyConfirmLocalizedAsync(strs.club_level_req_changed(Format.Bold(level.ToString())));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.club_level_req_change_error);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubDescription([Leftover] string desc = null)
         {
             if (_service.ChangeClubDescription(ctx.User.Id, desc))
-            {
                 await ReplyConfirmLocalizedAsync(strs.club_desc_updated(Format.Bold(desc ?? "-")));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.club_desc_update_failed);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ClubDisband()
         {
             if (_service.Disband(ctx.User.Id, out var club))
-            {
                 await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.ToString())));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.club_disband_error);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public Task ClubLeaderboard(int page = 1)
         {
             if (--page < 0)
@@ -356,15 +350,10 @@ public partial class Xp
 
             var clubs = _service.GetClubLeaderboardPage(page);
 
-            var embed = _eb.Create()
-                .WithTitle(GetText(strs.club_leaderboard(page + 1)))
-                .WithOkColor();
+            var embed = _eb.Create().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
 
             var i = page * 9;
-            foreach (var club in clubs)
-            {
-                embed.AddField($"#{++i} " + club.ToString(), club.Xp.ToString() + " xp", false);
-            }
+            foreach (var club in clubs) embed.AddField($"#{++i} " + club, club.Xp + " xp");
 
             return ctx.Channel.EmbedAsync(embed);
         }

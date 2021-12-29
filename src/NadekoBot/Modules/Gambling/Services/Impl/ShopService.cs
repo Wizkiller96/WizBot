@@ -1,9 +1,9 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.Collections;
+using NadekoBot.Db;
 using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
@@ -14,13 +14,9 @@ public class ShopService : IShopService, INService
     public ShopService(DbService db)
         => _db = db;
 
-    private IndexedCollection<ShopEntry> GetEntriesInternal(NadekoContext uow, ulong guildId) =>
-        uow.GuildConfigsForId(
-                guildId,
-                set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items)
-            )
-            .ShopEntries
-            .ToIndexed();
+    private IndexedCollection<ShopEntry> GetEntriesInternal(NadekoContext uow, ulong guildId)
+        => uow.GuildConfigsForId(guildId, set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
+              .ShopEntries.ToIndexed();
 
     public async Task<bool> ChangeEntryPriceAsync(ulong guildId, int index, int newPrice)
     {

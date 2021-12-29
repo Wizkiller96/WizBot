@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Gambling.Services;
 public interface IShopService
 {
     /// <summary>
-    /// Changes the price of a shop item
+    ///     Changes the price of a shop item
     /// </summary>
     /// <param name="guildId">Id of the guild in which the shop is</param>
     /// <param name="index">Index of the item</param>
@@ -13,7 +13,7 @@ public interface IShopService
     Task<bool> ChangeEntryPriceAsync(ulong guildId, int index, int newPrice);
 
     /// <summary>
-    /// Changes the name of a shop item
+    ///     Changes the name of a shop item
     /// </summary>
     /// <param name="guildId">Id of the guild in which the shop is</param>
     /// <param name="index">Index of the item</param>
@@ -22,7 +22,7 @@ public interface IShopService
     Task<bool> ChangeEntryNameAsync(ulong guildId, int index, string newName);
 
     /// <summary>
-    /// Swaps indexes of 2 items in the shop
+    ///     Swaps indexes of 2 items in the shop
     /// </summary>
     /// <param name="guildId">Id of the guild in which the shop is</param>
     /// <param name="index1">First entry's index</param>
@@ -31,7 +31,7 @@ public interface IShopService
     Task<bool> SwapEntriesAsync(ulong guildId, int index1, int index2);
 
     /// <summary>
-    /// Swaps indexes of 2 items in the shop
+    ///     Swaps indexes of 2 items in the shop
     /// </summary>
     /// <param name="guildId">Id of the guild in which the shop is</param>
     /// <param name="fromIndex">Current index of the entry to move</param>

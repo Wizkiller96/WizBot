@@ -339,7 +339,7 @@ resharper_keep_existing_linebreaks = false
 resharper_max_formal_parameters_on_line = 3
 resharper_wrap_chained_binary_expressions = chop_if_long
 resharper_wrap_chained_binary_patterns = chop_if_long
-resharper_wrap_chained_method_calls = wrap_if_long
+resharper_wrap_chained_method_calls = chop_if_long
 
 resharper_csharp_wrap_before_first_type_parameter_constraint = true
 resharper_csharp_place_type_constraints_on_same_line = false

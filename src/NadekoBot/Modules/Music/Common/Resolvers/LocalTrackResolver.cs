@@ -8,25 +8,22 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
 {
     private static readonly HashSet<string> _musicExtensions = new[]
     {
-        ".MP4", ".MP3", ".FLAC", ".OGG", ".WAV", ".WMA", ".WMV",
-        ".AAC", ".MKV", ".WEBM", ".M4A", ".AA", ".AAX",
+        ".MP4", ".MP3", ".FLAC", ".OGG", ".WAV", ".WMA", ".WMV", ".AAC", ".MKV", ".WEBM", ".M4A", ".AA", ".AAX",
         ".ALAC", ".AIFF", ".MOV", ".FLV", ".OGG", ".M4V"
     }.ToHashSet();
-        
+
     public async Task<ITrackInfo?> ResolveByQueryAsync(string query)
     {
         if (!File.Exists(query))
             return null;
 
         var trackDuration = await Ffprobe.GetTrackDurationAsync(query);
-        return new SimpleTrackInfo(
-            Path.GetFileNameWithoutExtension(query),
+        return new SimpleTrackInfo(Path.GetFileNameWithoutExtension(query),
             $"https://google.com?q={Uri.EscapeDataString(Path.GetFileNameWithoutExtension(query))}",
             "https://cdn.discordapp.com/attachments/155726317222887425/261850914783100928/1482522077_music.png",
             trackDuration,
             MusicPlatform.Local,
-            $"\"{Path.GetFullPath(query)}\""
-        );
+            $"\"{Path.GetFullPath(query)}\"");
     }
 
     public async IAsyncEnumerable<ITrackInfo> ResolveDirectoryAsync(string dirPath)
@@ -43,17 +40,17 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
         }
 
         var files = dir.EnumerateFiles()
-            .Where(x =>
-            {
-                if (!x.Attributes.HasFlag(FileAttributes.Hidden | FileAttributes.System)
-                    && _musicExtensions.Contains(x.Extension.ToUpperInvariant())) return true;
-                return false;
-            });
+                       .Where(x =>
+                       {
+                           if (!x.Attributes.HasFlag(FileAttributes.Hidden | FileAttributes.System)
+                               && _musicExtensions.Contains(x.Extension.ToUpperInvariant())) return true;
+                           return false;
+                       });
 
         var firstFile = files.FirstOrDefault()?.FullName;
         if (firstFile is null)
             yield break;
-            
+
         var firstData = await ResolveByQueryAsync(firstFile);
         if (firstData is not null)
             yield return firstData;
@@ -61,9 +58,8 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
         var fileChunks = files.Skip(1).Chunk(10);
         foreach (var chunk in fileChunks)
         {
-            var part = await chunk.Select(x => ResolveByQueryAsync(x.FullName))
-                .WhenAll();
-                
+            var part = await chunk.Select(x => ResolveByQueryAsync(x.FullName)).WhenAll();
+
             // nullable reference types being annoying
             foreach (var p in part)
             {
@@ -84,7 +80,7 @@ public static class Ffprobe
 
         try
         {
-            using var p = Process.Start(new ProcessStartInfo()
+            using var p = Process.Start(new ProcessStartInfo
             {
                 FileName = "ffprobe",
                 Arguments =
@@ -94,7 +90,7 @@ public static class Ffprobe
                 RedirectStandardError = true,
                 StandardOutputEncoding = Encoding.UTF8,
                 StandardErrorEncoding = Encoding.UTF8,
-                CreateNoWindow = true,
+                CreateNoWindow = true
             });
 
             if (p is null)
@@ -118,7 +114,7 @@ public static class Ffprobe
         {
             Log.Error(ex, "Unknown exception running ffprobe; {ErrorMessage}", ex.Message);
         }
-            
+
         return TimeSpan.Zero;
     }
 }

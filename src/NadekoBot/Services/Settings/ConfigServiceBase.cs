@@ -1,37 +1,45 @@
+using NadekoBot.Common.Configs;
+using NadekoBot.Common.Yml;
 using System.Linq.Expressions;
 using System.Reflection;
-using NadekoBot.Common.Yml;
-using NadekoBot.Common.Configs;
 
 namespace NadekoBot.Services;
 
 /// <summary>
-/// Base service for all settings services
+///     Base service for all settings services
 /// </summary>
 /// <typeparam name="TSettings">Type of the settings</typeparam>
-public abstract class ConfigServiceBase<TSettings> : IConfigService 
+public abstract class ConfigServiceBase<TSettings> : IConfigService
     where TSettings : ICloneable<TSettings>, new()
 {
+    // todo future config arrays are not copied - they're not protected from mutations
+    public TSettings Data
+        => data.Clone();
+
+    public abstract string Name { get; }
     protected readonly string _filePath;
     protected readonly IConfigSeria _serializer;
     protected readonly IPubSub _pubSub;
     private readonly TypedKey<TSettings> _changeKey;
 
     protected TSettings data;
-        
-    // todo future config arrays are not copied - they're not protected from mutations
-    public TSettings Data => data.Clone();
-        
-    public abstract string Name { get; }
+
+    private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new();
+    private readonly Dictionary<string, Func<object>> _propSelectors = new();
+    private readonly Dictionary<string, Func<object, string>> _propPrinters = new();
+    private readonly Dictionary<string, string> _propComments = new();
 
     /// <summary>
-    /// Initialized an instance of <see cref="ConfigServiceBase{TSettings}"/>
+    ///     Initialized an instance of <see cref="ConfigServiceBase{TSettings}" />
     /// </summary>
     /// <param name="filePath">Path to the file where the settings are serialized/deserialized to and from</param>
     /// <param name="serializer">Serializer which will be used</param>
     /// <param name="pubSub">Pubsub implementation for signaling when settings are updated</param>
     /// <param name="changeKey">Key used to signal changed event</param>
-    protected ConfigServiceBase(string filePath, IConfigSeria serializer, IPubSub pubSub,
+    protected ConfigServiceBase(
+        string filePath,
+        IConfigSeria serializer,
+        IPubSub pubSub,
         TypedKey<TSettings> changeKey)
     {
         _filePath = filePath;
@@ -55,7 +63,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     }
 
     /// <summary>
-    /// Loads data from disk. If file doesn't exist, it will be created with default values
+    ///     Loads data from disk. If file doesn't exist, it will be created with default values
     /// </summary>
     protected void Load()
     {
@@ -70,7 +78,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     }
 
     /// <summary>
-    /// Loads new data and publishes the new state
+    ///     Loads new data and publishes the new state
     /// </summary>
     public void Reload()
     {
@@ -79,26 +87,20 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     }
 
     /// <summary>
-    /// Doesn't do anything by default. This method will be executed after
-    /// <see cref="data"/> is reloaded from <see cref="_filePath"/> or new data is recieved
-    /// from the publish event
+    ///     Doesn't do anything by default. This method will be executed after
+    ///     <see cref="data" /> is reloaded from <see cref="_filePath" /> or new data is recieved
+    ///     from the publish event
     /// </summary>
     protected virtual void OnStateUpdate()
     {
-            
     }
-        
+
     private void Save()
     {
         var strData = _serializer.Serialize(data);
         File.WriteAllText(_filePath, strData);
     }
-        
-    private readonly Dictionary<string, Func<TSettings, string, bool>> _propSetters = new();
-    private readonly Dictionary<string, Func<object>> _propSelectors = new();
-    private readonly Dictionary<string, Func<object, string>> _propPrinters = new();
-    private readonly Dictionary<string, string> _propComments = new();
-        
+
     protected void AddParsedProp<TProp>(
         string key,
         Expression<Func<TSettings, TProp>> selector,
@@ -108,19 +110,21 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     {
         checker ??= _ => true;
         key = key.ToLowerInvariant();
-        _propPrinters[key] = obj => printer((TProp)obj); 
+        _propPrinters[key] = obj => printer((TProp)obj);
         _propSelectors[key] = () => selector.Compile()(data);
         _propSetters[key] = Magic(selector, parser, checker);
         _propComments[key] = ((MemberExpression)selector.Body).Member.GetCustomAttribute<CommentAttribute>()?.Comment;
     }
 
-    private Func<TSettings, string, bool> Magic<TProp>(Expression<Func<TSettings, TProp>> selector,
-        SettingParser<TProp> parser, Func<TProp, bool> checker)
+    private Func<TSettings, string, bool> Magic<TProp>(
+        Expression<Func<TSettings, TProp>> selector,
+        SettingParser<TProp> parser,
+        Func<TProp, bool> checker)
         => (target, input) =>
         {
             if (!parser(input, out var value))
                 return false;
-                
+
             if (!checker(value))
                 return false;
 
@@ -129,22 +133,22 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
             var prop = (PropertyInfo)expr.Member;
 
             var expressions = new List<MemberExpression>();
-                
+
             while (true)
             {
                 expr = expr.Expression as MemberExpression;
                 if (expr is null)
                     break;
-                    
+
                 expressions.Add(expr);
             }
-                
+
             foreach (var memberExpression in expressions.AsEnumerable().Reverse())
             {
-                var localProp = (PropertyInfo) memberExpression.Member;
+                var localProp = (PropertyInfo)memberExpression.Member;
                 targetObject = localProp.GetValue(targetObject);
             }
-                
+
             prop!.SetValue(targetObject, value, null);
             return true;
         };
@@ -155,8 +159,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     public string GetSetting(string prop)
     {
         prop = prop.ToLowerInvariant();
-        if (!_propSelectors.TryGetValue(prop, out var selector) ||
-            !_propPrinters.TryGetValue(prop, out var printer))
+        if (!_propSelectors.TryGetValue(prop, out var selector) || !_propPrinters.TryGetValue(prop, out var printer))
             return default;
 
         return printer(selector());
@@ -171,8 +174,7 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
     }
 
     private bool SetProperty(TSettings target, string key, string value)
-        => _propSetters.TryGetValue(key.ToLowerInvariant(), out var magic)
-           && magic(target, value);
+        => _propSetters.TryGetValue(key.ToLowerInvariant(), out var magic) && magic(target, value);
 
     public bool SetSetting(string prop, string newValue)
     {
@@ -181,8 +183,8 @@ public abstract class ConfigServiceBase<TSettings> : IConfigService
         {
             success = SetProperty(bs, prop, newValue);
         });
-            
-        if(success)
+
+        if (success)
             PublishChange();
 
         return success;

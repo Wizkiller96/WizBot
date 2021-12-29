@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Security.Cryptography;
 
 namespace NadekoBot.Common;
@@ -8,7 +8,6 @@ public class NadekoRandom : Random
     private readonly RandomNumberGenerator _rng;
 
     public NadekoRandom()
-        : base()
         => _rng = RandomNumberGenerator.Create();
 
     public override int Next()

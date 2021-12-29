@@ -1,21 +1,22 @@
 #nullable disable
-using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database;
 using NadekoBot.Db.Models;
+using NadekoBot.Services.Database;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db;
 
 public static class GuildConfigExtensions
 {
-    public class GeneratingChannel
-    {
-        public ulong GuildId { get; set; }
-        public ulong ChannelId { get; set; }
-    }
+    private static List<WarningPunishment> DefaultWarnPunishments
+        => new()
+        {
+            new() { Count = 3, Punishment = PunishmentAction.Kick },
+            new() { Count = 5, Punishment = PunishmentAction.Ban }
+        };
 
     /// <summary>
-    /// Gets full stream role settings for the guild with the specified id.
+    ///     Gets full stream role settings for the guild with the specified id.
     /// </summary>
     /// <param name="ctx">Db Context</param>
     /// <param name="guildId">Id of the guild to get stream role settings for.</param>
@@ -24,9 +25,8 @@ public static class GuildConfigExtensions
     {
         var conf = ctx.GuildConfigsForId(guildId,
             set => set.Include(y => y.StreamRole)
-                .Include(y => y.StreamRole.Whitelist)
-                .Include(y => y.StreamRole.Blacklist)
-        );
+                      .Include(y => y.StreamRole.Whitelist)
+                      .Include(y => y.StreamRole.Blacklist));
 
         if (conf.StreamRole is null)
             conf.StreamRole = new();
@@ -34,35 +34,25 @@ public static class GuildConfigExtensions
         return conf.StreamRole;
     }
 
-    private static List<WarningPunishment> DefaultWarnPunishments
-        => new()
-        {
-            new() { Count = 3, Punishment = PunishmentAction.Kick },
-            new() { Count = 5, Punishment = PunishmentAction.Ban }
-        };
-
     private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
         => configs.AsQueryable()
-            .AsSplitQuery()
-            .Include(gc => gc.CommandCooldowns)
-            .Include(gc => gc.FollowedStreams)
-            .Include(gc => gc.StreamRole)
-            .Include(gc => gc.XpSettings)
-            .ThenInclude(x => x.ExclusionList)
-            .Include(gc => gc.DelMsgOnCmdChannels)
-            .Include(gc => gc.ReactionRoleMessages)
-            .ThenInclude(x => x.ReactionRoles);
+                  .AsSplitQuery()
+                  .Include(gc => gc.CommandCooldowns)
+                  .Include(gc => gc.FollowedStreams)
+                  .Include(gc => gc.StreamRole)
+                  .Include(gc => gc.XpSettings)
+                  .ThenInclude(x => x.ExclusionList)
+                  .Include(gc => gc.DelMsgOnCmdChannels)
+                  .Include(gc => gc.ReactionRoleMessages)
+                  .ThenInclude(x => x.ReactionRoles);
 
     public static IEnumerable<GuildConfig> GetAllGuildConfigs(
         this DbSet<GuildConfig> configs,
         List<ulong> availableGuilds)
-        => configs.IncludeEverything()
-            .AsNoTracking()
-            .Where(x => availableGuilds.Contains(x.GuildId))
-            .ToList();
+        => configs.IncludeEverything().AsNoTracking().Where(x => availableGuilds.Contains(x.GuildId)).ToList();
 
     /// <summary>
-    /// Gets and creates if it doesn't exist a config for a guild.
+    ///     Gets and creates if it doesn't exist a config for a guild.
     /// </summary>
     /// <param name="ctx">Context</param>
     /// <param name="guildId">Id of the guide</param>
@@ -77,8 +67,7 @@ public static class GuildConfigExtensions
 
         if (includes is null)
         {
-            config = ctx.GuildConfigs.IncludeEverything()
-                .FirstOrDefault(c => c.GuildId == guildId);
+            config = ctx.GuildConfigs.IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
         }
         else
         {
@@ -89,13 +78,12 @@ public static class GuildConfigExtensions
         if (config is null)
         {
             ctx.GuildConfigs.Add(config = new()
-                {
-                    GuildId = guildId,
-                    Permissions = Permissionv2.GetDefaultPermlist,
-                    WarningsInitialized = true,
-                    WarnPunishments = DefaultWarnPunishments,
-                }
-            );
+            {
+                GuildId = guildId,
+                Permissions = Permissionv2.GetDefaultPermlist,
+                WarningsInitialized = true,
+                WarnPunishments = DefaultWarnPunishments
+            });
             ctx.SaveChanges();
         }
 
@@ -111,9 +99,9 @@ public static class GuildConfigExtensions
     public static LogSetting LogSettingsFor(this NadekoContext ctx, ulong guildId)
     {
         var logSetting = ctx.LogSettings.AsQueryable()
-            .Include(x => x.LogIgnores)
-            .Where(x => x.GuildId == guildId)
-            .FirstOrDefault();
+                            .Include(x => x.LogIgnores)
+                            .Where(x => x.GuildId == guildId)
+                            .FirstOrDefault();
 
         if (logSetting is null)
         {
@@ -126,9 +114,7 @@ public static class GuildConfigExtensions
 
     public static IEnumerable<GuildConfig> Permissionsv2ForAll(this DbSet<GuildConfig> configs, List<ulong> include)
     {
-        var query = configs.AsQueryable()
-            .Where(x => include.Contains(x.GuildId))
-            .Include(gc => gc.Permissions);
+        var query = configs.AsQueryable().Where(x => include.Contains(x.GuildId)).Include(gc => gc.Permissions);
 
         return query.ToList();
     }
@@ -136,17 +122,16 @@ public static class GuildConfigExtensions
     public static GuildConfig GcWithPermissionsv2For(this NadekoContext ctx, ulong guildId)
     {
         var config = ctx.GuildConfigs.AsQueryable()
-            .Where(gc => gc.GuildId == guildId)
-            .Include(gc => gc.Permissions)
-            .FirstOrDefault();
+                        .Where(gc => gc.GuildId == guildId)
+                        .Include(gc => gc.Permissions)
+                        .FirstOrDefault();
 
         if (config is null) // if there is no guildconfig, create new one
         {
             ctx.GuildConfigs.Add(config = new() { GuildId = guildId, Permissions = Permissionv2.GetDefaultPermlist });
             ctx.SaveChanges();
         }
-        else if (config.Permissions is null ||
-                 !config.Permissions.Any()) // if no perms, add default ones
+        else if (config.Permissions is null || !config.Permissions.Any()) // if no perms, add default ones
         {
             config.Permissions = Permissionv2.GetDefaultPermlist;
             ctx.SaveChanges();
@@ -156,17 +141,14 @@ public static class GuildConfigExtensions
     }
 
     public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs)
-        => configs.AsQueryable()
-            .Include(x => x.FollowedStreams)
-            .SelectMany(gc => gc.FollowedStreams)
-            .ToArray();
+        => configs.AsQueryable().Include(x => x.FollowedStreams).SelectMany(gc => gc.FollowedStreams).ToArray();
 
     public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs, List<ulong> included)
         => configs.AsQueryable()
-            .Where(gc => included.Contains(gc.GuildId))
-            .Include(gc => gc.FollowedStreams)
-            .SelectMany(gc => gc.FollowedStreams)
-            .ToList();
+                  .Where(gc => included.Contains(gc.GuildId))
+                  .Include(gc => gc.FollowedStreams)
+                  .SelectMany(gc => gc.FollowedStreams)
+                  .ToList();
 
     public static void SetCleverbotEnabled(this DbSet<GuildConfig> configs, ulong id, bool cleverbotEnabled)
     {
@@ -182,24 +164,29 @@ public static class GuildConfigExtensions
     {
         var gc = ctx.GuildConfigsForId(guildId,
             set => set.Include(x => x.XpSettings)
-                .ThenInclude(x => x.RoleRewards)
-                .Include(x => x.XpSettings)
-                .ThenInclude(x => x.CurrencyRewards)
-                .Include(x => x.XpSettings)
-                .ThenInclude(x => x.ExclusionList)
-        );
+                      .ThenInclude(x => x.RoleRewards)
+                      .Include(x => x.XpSettings)
+                      .ThenInclude(x => x.CurrencyRewards)
+                      .Include(x => x.XpSettings)
+                      .ThenInclude(x => x.ExclusionList));
 
         if (gc.XpSettings is null)
-            gc.XpSettings = new XpSettings();
+            gc.XpSettings = new();
 
         return gc.XpSettings;
     }
 
     public static IEnumerable<GeneratingChannel> GetGeneratingChannels(this DbSet<GuildConfig> configs)
         => configs.AsQueryable()
-            .Include(x => x.GenerateCurrencyChannelIds)
-            .Where(x => x.GenerateCurrencyChannelIds.Any())
-            .SelectMany(x => x.GenerateCurrencyChannelIds)
-            .Select(x => new GeneratingChannel() { ChannelId = x.ChannelId, GuildId = x.GuildConfig.GuildId })
-            .ToArray();
+                  .Include(x => x.GenerateCurrencyChannelIds)
+                  .Where(x => x.GenerateCurrencyChannelIds.Any())
+                  .SelectMany(x => x.GenerateCurrencyChannelIds)
+                  .Select(x => new GeneratingChannel { ChannelId = x.ChannelId, GuildId = x.GuildConfig.GuildId })
+                  .ToArray();
+
+    public class GeneratingChannel
+    {
+        public ulong GuildId { get; set; }
+        public ulong ChannelId { get; set; }
+    }
 }

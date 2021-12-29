@@ -1,6 +1,6 @@
-#nullable disable
-using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
 using LinqToDB;
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 
@@ -13,33 +13,30 @@ public static class UserXpExtensions
         var usr = ctx.UserXpStats.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
 
         if (usr is null)
-        {
             ctx.Add(usr = new()
-                {
-                    Xp = 0, UserId = userId, NotifyOnLevelUp = XpNotificationLocation.None, GuildId = guildId,
-                }
-            );
-        }
+            {
+                Xp = 0, UserId = userId, NotifyOnLevelUp = XpNotificationLocation.None, GuildId = guildId
+            });
 
         return usr;
     }
 
     public static List<UserXpStats> GetUsersFor(this DbSet<UserXpStats> xps, ulong guildId, int page)
         => xps.AsQueryable()
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .OrderByDescending(x => x.Xp + x.AwardedXp)
-            .Skip(page * 9)
-            .Take(9)
-            .ToList();
+              .AsNoTracking()
+              .Where(x => x.GuildId == guildId)
+              .OrderByDescending(x => x.Xp + x.AwardedXp)
+              .Skip(page * 9)
+              .Take(9)
+              .ToList();
 
     public static List<UserXpStats> GetTopUserXps(this DbSet<UserXpStats> xps, ulong guildId, int count)
         => xps.AsQueryable()
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .OrderByDescending(x => x.Xp + x.AwardedXp)
-            .Take(count)
-            .ToList();
+              .AsNoTracking()
+              .Where(x => x.GuildId == guildId)
+              .OrderByDescending(x => x.Xp + x.AwardedXp)
+              .Take(count)
+              .ToList();
 
     public static int GetUserGuildRanking(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
         //            @"SELECT COUNT(*) + 1
@@ -49,16 +46,15 @@ public static class UserXpExtensions
         //	WHERE UserId = @p2 AND GuildId = @p1
         //	LIMIT 1));";
         => xps.AsQueryable()
-               .AsNoTracking()
-               .Where(x => x.GuildId == guildId &&
-                           x.Xp + x.AwardedXp >
-                           xps.AsQueryable()
+              .AsNoTracking()
+              .Where(x => x.GuildId == guildId
+                          && x.Xp + x.AwardedXp
+                          > xps.AsQueryable()
                                .Where(y => y.UserId == userId && y.GuildId == guildId)
                                .Select(y => y.Xp + y.AwardedXp)
-                               .FirstOrDefault()
-               )
-               .Count() +
-           1;
+                               .FirstOrDefault())
+              .Count()
+           + 1;
 
     public static void ResetGuildUserXp(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
         => xps.Delete(x => x.UserId == userId && x.GuildId == guildId);

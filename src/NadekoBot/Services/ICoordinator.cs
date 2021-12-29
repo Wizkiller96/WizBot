@@ -10,10 +10,10 @@ public interface ICoordinator
     int GetGuildCount();
     Task Reload();
 }
-    
+
 public class ShardStatus
 {
-    public Discord.ConnectionState ConnectionState { get; set; }
+    public ConnectionState ConnectionState { get; set; }
     public DateTime LastUpdate { get; set; }
     public int ShardId { get; set; }
     public int GuildCount { get; set; }

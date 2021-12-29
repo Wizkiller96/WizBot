@@ -5,13 +5,13 @@ public class FilterChannelId : DbEntity
 {
     public ulong ChannelId { get; set; }
 
-    public bool Equals(FilterChannelId other) 
+    public bool Equals(FilterChannelId other)
         => ChannelId == other.ChannelId;
 
     public override bool Equals(object obj)
-        => obj is FilterChannelId fci && Equals(fci); 
+        => obj is FilterChannelId fci && Equals(fci);
 
-    public override int GetHashCode() 
+    public override int GetHashCode()
         => ChannelId.GetHashCode();
 }
 
@@ -19,12 +19,12 @@ public class FilterInvitesChannelId : DbEntity
 {
     public ulong ChannelId { get; set; }
 
-    public bool Equals(FilterInvitesChannelId other) 
+    public bool Equals(FilterInvitesChannelId other)
         => ChannelId == other.ChannelId;
 
     public override bool Equals(object obj)
-        => obj is FilterInvitesChannelId fci && Equals(fci); 
+        => obj is FilterInvitesChannelId fci && Equals(fci);
 
-    public override int GetHashCode() 
+    public override int GetHashCode()
         => ChannelId.GetHashCode();
 }

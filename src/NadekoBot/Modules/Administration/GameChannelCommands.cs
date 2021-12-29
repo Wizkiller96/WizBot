@@ -8,7 +8,8 @@ public partial class Administration
     [Group]
     public class GameChannelCommands : NadekoSubmodule<GameVoiceChannelService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.MoveMembers)]
@@ -21,6 +22,7 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.not_in_voice);
                 return;
             }
+
             var id = _service.ToggleGameVoiceChannel(ctx.Guild.Id, vch.Id);
 
             if (id is null)

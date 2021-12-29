@@ -11,9 +11,28 @@ public partial class Gambling
     [Group]
     public class Connect4Commands : GamblingSubmodule<GamblingService>
     {
+        private static readonly string[] numbers =
+        {
+            ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:"
+        };
+
+        private int RepostCounter
+        {
+            get => _repostCounter;
+            set
+            {
+                if (value is < 0 or > 7)
+                    _repostCounter = 0;
+                else _repostCounter = value;
+            }
+        }
+
         private readonly DiscordSocketClient _client;
         private readonly ICurrencyService _cs;
-        private static readonly string[] numbers = new string[] { ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:" };
+
+        private IUserMessage msg;
+
+        private int _repostCounter;
 
         public Connect4Commands(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService gamb)
             : base(gamb)
@@ -22,7 +41,8 @@ public partial class Gambling
             _cs = cs;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(Connect4Game.Options))]
         public async Task Connect4(params string[] args)
@@ -45,7 +65,6 @@ public partial class Gambling
             }
 
             if (options.Bet > 0)
-            {
                 if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true))
                 {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -53,7 +72,6 @@ public partial class Gambling
                     game.Dispose();
                     return;
                 }
-            }
 
             game.OnGameStateUpdated += Game_OnGameStateUpdated;
             game.OnGameFailedToStart += Game_OnGameFailedToStart;
@@ -62,13 +80,9 @@ public partial class Gambling
 
             game.Initialize();
             if (options.Bet == 0)
-            {
                 await ReplyConfirmLocalizedAsync(strs.connect4_created);
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.connect4_created_bet(options.Bet + CurrencySign));
-            }
 
             Task _client_MessageReceived(SocketMessage arg)
             {
@@ -78,22 +92,20 @@ public partial class Gambling
                 var _ = Task.Run(async () =>
                 {
                     var success = false;
-                    if (int.TryParse(arg.Content, out var col))
-                    {
-                        success = await game.Input(arg.Author.Id, col);
-                    }
+                    if (int.TryParse(arg.Content, out var col)) success = await game.Input(arg.Author.Id, col);
 
                     if (success)
-                        try { await arg.DeleteAsync(); } catch { }
+                    {
+                        try { await arg.DeleteAsync(); }
+                        catch { }
+                    }
                     else
                     {
-                        if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended)
-                        {
-                            return;
-                        }
+                        if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended) return;
                         RepostCounter++;
                         if (RepostCounter == 0)
-                            try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); } catch { }
+                            try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); }
+                            catch { }
                     }
                 });
                 return Task.CompletedTask;
@@ -106,6 +118,7 @@ public partial class Gambling
                     _client.MessageReceived -= _client_MessageReceived;
                     toDispose.Dispose();
                 }
+
                 return ErrorLocalizedAsync(strs.connect4_failed_to_start);
             }
 
@@ -119,44 +132,28 @@ public partial class Gambling
 
                 string title;
                 if (result == Connect4Game.Result.CurrentPlayerWon)
-                {
-                    title = GetText(strs.connect4_won(Format.Bold(arg.CurrentPlayer.Username), Format.Bold(arg.OtherPlayer.Username)));
-                }
+                    title = GetText(strs.connect4_won(Format.Bold(arg.CurrentPlayer.Username),
+                        Format.Bold(arg.OtherPlayer.Username)));
                 else if (result == Connect4Game.Result.OtherPlayerWon)
-                {
-                    title = GetText(strs.connect4_won(Format.Bold(arg.OtherPlayer.Username), Format.Bold(arg.CurrentPlayer.Username)));
-                }
+                    title = GetText(strs.connect4_won(Format.Bold(arg.OtherPlayer.Username),
+                        Format.Bold(arg.CurrentPlayer.Username)));
                 else
                     title = GetText(strs.connect4_draw);
 
                 return msg.ModifyAsync(x => x.Embed = _eb.Create()
-                    .WithTitle(title)
-                    .WithDescription(GetGameStateText(game))
-                    .WithOkColor()
-                    .Build());
-            }
-        }
-
-        private IUserMessage msg;
-
-        private int _repostCounter = 0;
-        private int RepostCounter
-        {
-            get => _repostCounter;
-            set
-            {
-                if (value is < 0 or > 7)
-                    _repostCounter = 0;
-                else _repostCounter = value;
+                                                         .WithTitle(title)
+                                                         .WithDescription(GetGameStateText(game))
+                                                         .WithOkColor()
+                                                         .Build());
             }
         }
 
         private async Task Game_OnGameStateUpdated(Connect4Game game)
         {
             var embed = _eb.Create()
-                .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
-                .WithDescription(GetGameStateText(game))
-                .WithOkColor();
+                           .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
+                           .WithDescription(GetGameStateText(game))
+                           .WithOkColor();
 
 
             if (msg is null)
@@ -185,13 +182,11 @@ public partial class Gambling
                     else
                         sb.Append("🔵"); //blue circle
                 }
+
                 sb.AppendLine();
             }
 
-            for (var i = 0; i < Connect4Game.NumberOfColumns; i++)
-            {
-                sb.Append(numbers[i]);
-            }
+            for (var i = 0; i < Connect4Game.NumberOfColumns; i++) sb.Append(numbers[i]);
             return sb.ToString();
         }
     }

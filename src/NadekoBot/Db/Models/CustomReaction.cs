@@ -13,12 +13,11 @@ public class CustomReaction : DbEntity
     public bool AllowTarget { get; set; }
     public string Reactions { get; set; }
 
-    public string[] GetReactions() =>
-        string.IsNullOrWhiteSpace(Reactions)
-            ? Array.Empty<string>()
-            : Reactions.Split("@@@");
-        
-    public bool IsGlobal() => GuildId is null or 0;
+    public string[] GetReactions()
+        => string.IsNullOrWhiteSpace(Reactions) ? Array.Empty<string>() : Reactions.Split("@@@");
+
+    public bool IsGlobal()
+        => GuildId is null or 0;
 }
 
 public class ReactionResponse : DbEntity

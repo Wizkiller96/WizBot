@@ -5,6 +5,11 @@ namespace NadekoBot.Modules.CustomReactions;
 
 public class CustomReactions : NadekoModule<CustomReactionsService>
 {
+    public enum All
+    {
+        All
+    }
+
     private readonly IBotCredentials _creds;
     private readonly IHttpClientFactory _clientFactory;
 
@@ -14,10 +19,12 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         _clientFactory = clientFactory;
     }
 
-    private bool AdminInGuildOrOwnerInDm() => (ctx.Guild is null && _creds.IsOwner(ctx.User))
-                                              || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
+    private bool AdminInGuildOrOwnerInDm()
+        => (ctx.Guild is null && _creds.IsOwner(ctx.User))
+           || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task AddCustReact(string key, [Leftover] string message)
     {
         var channel = ctx.Channel as ITextChannel;
@@ -32,22 +39,25 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
 
         var cr = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
-        await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-            .WithTitle(GetText(strs.new_cust_react))
-            .WithDescription($"#{cr.Id}")
-            .AddField(GetText(strs.trigger), key)
-            .AddField(GetText(strs.response), message.Length > 1024 ? GetText(strs.redacted_too_long) : message)
-        );
+        await ctx.Channel.EmbedAsync(_eb.Create()
+                                        .WithOkColor()
+                                        .WithTitle(GetText(strs.new_cust_react))
+                                        .WithDescription($"#{cr.Id}")
+                                        .AddField(GetText(strs.trigger), key)
+                                        .AddField(GetText(strs.response),
+                                            message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task EditCustReact(kwum id, [Leftover] string message)
     {
         var channel = ctx.Channel as ITextChannel;
         if (string.IsNullOrWhiteSpace(message) || id < 0)
             return;
 
-        if ((channel is null && !_creds.IsOwner(ctx.User)) || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
+        if ((channel is null && !_creds.IsOwner(ctx.User))
+            || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
         {
             await ReplyErrorLocalizedAsync(strs.insuff_perms);
             return;
@@ -55,21 +65,19 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
 
         var cr = await _service.EditAsync(ctx.Guild?.Id, id, message);
         if (cr != null)
-        {
-            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                .WithTitle(GetText(strs.edited_cust_react))
-                .WithDescription($"#{id}")
-                .AddField(GetText(strs.trigger), cr.Trigger)
-                .AddField(GetText(strs.response), message.Length > 1024 ? GetText(strs.redacted_too_long) : message)
-            );
-        }
+            await ctx.Channel.EmbedAsync(_eb.Create()
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.edited_cust_react))
+                                            .WithDescription($"#{id}")
+                                            .AddField(GetText(strs.trigger), cr.Trigger)
+                                            .AddField(GetText(strs.response),
+                                                message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
         else
-        {
             await ReplyErrorLocalizedAsync(strs.edit_fail);
-        }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [Priority(1)]
     public async Task ListCustReact(int page = 1)
     {
@@ -84,33 +92,29 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             return;
         }
 
-        await ctx.SendPaginatedConfirmAsync(page, pageFunc: curPage =>
-        {
-            var desc = customReactions.OrderBy(cr => cr.Trigger)
-                .Skip(curPage * 20)
-                .Take(20)
-                .Select(cr => $"{(cr.ContainsAnywhere ? "🗯" : "◾")}" +
-                              $"{(cr.DmResponse ? "✉" : "◾")}" +
-                              $"{(cr.AutoDeleteTrigger ? "❌" : "◾")}" +
-                              $"`{(kwum) cr.Id}` {cr.Trigger}"
-                              + (string.IsNullOrWhiteSpace(cr.Reactions)
-                                  ? string.Empty
-                                  : " // " + string.Join(" ", cr.GetReactions())))
-                .Join('\n');
+        await ctx.SendPaginatedConfirmAsync(page,
+            curPage =>
+            {
+                var desc = customReactions.OrderBy(cr => cr.Trigger)
+                                          .Skip(curPage * 20)
+                                          .Take(20)
+                                          .Select(cr => $"{(cr.ContainsAnywhere ? "🗯" : "◾")}"
+                                                        + $"{(cr.DmResponse ? "✉" : "◾")}"
+                                                        + $"{(cr.AutoDeleteTrigger ? "❌" : "◾")}"
+                                                        + $"`{(kwum)cr.Id}` {cr.Trigger}"
+                                                        + (string.IsNullOrWhiteSpace(cr.Reactions)
+                                                            ? string.Empty
+                                                            : " // " + string.Join(" ", cr.GetReactions())))
+                                          .Join('\n');
 
-            return _eb.Create().WithOkColor()
-                .WithTitle(GetText(strs.custom_reactions))
-                .WithDescription(desc);
-
-        }, customReactions.Length, 20);
+                return _eb.Create().WithOkColor().WithTitle(GetText(strs.custom_reactions)).WithDescription(desc);
+            },
+            customReactions.Length,
+            20);
     }
 
-    public enum All
-    {
-        All
-    }
-
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task ShowCustReact(kwum id)
     {
         var found = _service.GetCustomReaction(ctx.Guild?.Id, id);
@@ -120,17 +124,17 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.no_found_id);
             return;
         }
-        else
-        {
-            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                .WithDescription($"#{id}")
-                .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
-                .AddField(GetText(strs.response), found.Response.TrimTo(1000).Replace("](", "]\\("))
-            );
-        }
+
+        await ctx.Channel.EmbedAsync(_eb.Create()
+                                        .WithOkColor()
+                                        .WithDescription($"#{id}")
+                                        .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
+                                        .AddField(GetText(strs.response),
+                                            found.Response.TrimTo(1000).Replace("](", "]\\(")));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task DelCustReact(kwum id)
     {
         if (!AdminInGuildOrOwnerInDm())
@@ -142,20 +146,18 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         var cr = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
         if (cr != null)
-        {
-            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                .WithTitle(GetText(strs.deleted))
-                .WithDescription($"#{id}")
-                .AddField(GetText(strs.trigger), cr.Trigger.TrimTo(1024))
-                .AddField(GetText(strs.response), cr.Response.TrimTo(1024)));
-        }
+            await ctx.Channel.EmbedAsync(_eb.Create()
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.deleted))
+                                            .WithDescription($"#{id}")
+                                            .AddField(GetText(strs.trigger), cr.Trigger.TrimTo(1024))
+                                            .AddField(GetText(strs.response), cr.Response.TrimTo(1024)));
         else
-        {
             await ReplyErrorLocalizedAsync(strs.no_found_id);
-        }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task CrReact(kwum id, params string[] emojiStrs)
     {
         if (!AdminInGuildOrOwnerInDm())
@@ -181,7 +183,6 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         var succ = new List<string>();
         foreach (var emojiStr in emojiStrs)
         {
-
             var emote = emojiStr.ToIEmote();
 
             // i should try adding these emojis right away to the message, to make sure the bot can react with these emojis. If it fails, skip that emoji
@@ -197,7 +198,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             catch { }
         }
 
-        if(succ.Count == 0)
+        if (succ.Count == 0)
         {
             await ReplyErrorLocalizedAsync(strs.invalid_emojis);
             return;
@@ -206,27 +207,32 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         await _service.SetCrReactions(ctx.Guild?.Id, id, succ);
 
 
-        await ReplyConfirmLocalizedAsync(strs.crr_set(Format.Bold(id.ToString()), string.Join(", ", succ.Select(x => x.ToString()))));
-
+        await ReplyConfirmLocalizedAsync(strs.crr_set(Format.Bold(id.ToString()),
+            string.Join(", ", succ.Select(x => x.ToString()))));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public Task CrCa(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.ContainsAnywhere);
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public Task CrDm(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.DmResponse);
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public Task CrAd(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.AutoDelete);
-        
-    [NadekoCommand, Aliases]
+
+    [NadekoCommand]
+    [Aliases]
     public Task CrAt(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.AllowTarget);
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [OwnerOnly]
     public async Task CrsReload()
     {
@@ -243,6 +249,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.insuff_perms);
             return;
         }
+
         var (success, newVal) = await _service.ToggleCrOptionAsync(id, option);
         if (!success)
         {
@@ -251,30 +258,30 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         }
 
         if (newVal)
-        {
-            await ReplyConfirmLocalizedAsync(strs.option_enabled(Format.Code(option.ToString()), Format.Code(id.ToString())));
-        }
+            await ReplyConfirmLocalizedAsync(strs.option_enabled(Format.Code(option.ToString()),
+                Format.Code(id.ToString())));
         else
-        {
-            await ReplyConfirmLocalizedAsync(strs.option_disabled(Format.Code(option.ToString()), Format.Code(id.ToString())));
-        }
+            await ReplyConfirmLocalizedAsync(strs.option_disabled(Format.Code(option.ToString()),
+                Format.Code(id.ToString())));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     public async Task CrClear()
     {
         if (await PromptUserConfirmAsync(_eb.Create()
-                .WithTitle("Custom reaction clear")
-                .WithDescription("This will delete all custom reactions on this server.")))
+                                            .WithTitle("Custom reaction clear")
+                                            .WithDescription("This will delete all custom reactions on this server.")))
         {
             var count = _service.DeleteAllCustomReactions(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.cleared(count));
         }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task CrsExport()
     {
         if (!AdminInGuildOrOwnerInDm())
@@ -282,19 +289,20 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.insuff_perms);
             return;
         }
-            
+
         _ = ctx.Channel.TriggerTypingAsync();
 
         var serialized = _service.ExportCrs(ctx.Guild?.Id);
         await using var stream = await serialized.ToStream();
-        await ctx.Channel.SendFileAsync(stream, "crs-export.yml", text: null);
+        await ctx.Channel.SendFileAsync(stream, "crs-export.yml");
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
 #if GLOBAL_NADEKO
         [OwnerOnly]
 #endif
-    public async Task CrsImport([Leftover]string input = null)
+    public async Task CrsImport([Leftover] string input = null)
     {
         if (!AdminInGuildOrOwnerInDm())
         {
@@ -331,7 +339,7 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
             return;
         }
-            
+
         await ctx.OkAsync();
     }
 }

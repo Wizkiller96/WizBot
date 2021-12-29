@@ -26,21 +26,19 @@ public class Permissionv2 : DbEntity, IIndexed
     public bool State { get; set; }
 
     [NotMapped]
-    public static Permissionv2 AllowAllPerm => new()
-    {
-        PrimaryTarget = PrimaryPermissionType.Server,
-        PrimaryTargetId = 0,
-        SecondaryTarget = SecondaryPermissionType.AllModules,
-        SecondaryTargetName = "*",
-        State = true,
-        Index = 0,
-    };
-
-    public static List<Permissionv2> GetDefaultPermlist =>
-        new()
+    public static Permissionv2 AllowAllPerm
+        => new()
         {
-            AllowAllPerm
+            PrimaryTarget = PrimaryPermissionType.Server,
+            PrimaryTargetId = 0,
+            SecondaryTarget = SecondaryPermissionType.AllModules,
+            SecondaryTargetName = "*",
+            State = true,
+            Index = 0
         };
+
+    public static List<Permissionv2> GetDefaultPermlist
+        => new() { AllowAllPerm };
 }
 
 public enum PrimaryPermissionType

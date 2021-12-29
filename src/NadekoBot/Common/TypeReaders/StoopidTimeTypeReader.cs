@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.TypeReaders.Models;
 
 namespace NadekoBot.Common.TypeReaders;

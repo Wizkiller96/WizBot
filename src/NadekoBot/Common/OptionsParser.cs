@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using CommandLine;
 
 namespace NadekoBot.Common;
@@ -13,10 +13,9 @@ public static class OptionsParser
         where T : INadekoCommandOptions
     {
         using var p = new Parser(x =>
-            {
-                x.HelpWriter = null;
-            }
-        );
+        {
+            x.HelpWriter = null;
+        });
         var res = p.ParseArguments<T>(args);
         options = res.MapResult(x => x, x => options);
         options.NormalizeOptions();

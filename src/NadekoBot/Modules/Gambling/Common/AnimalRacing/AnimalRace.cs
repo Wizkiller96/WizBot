@@ -10,34 +10,36 @@ public sealed class AnimalRace : IDisposable
     {
         WaitingForPlayers,
         Running,
-        Ended,
+        Ended
     }
-
-    public Phase CurrentPhase { get; private set; } = Phase.WaitingForPlayers;
 
     public event Func<AnimalRace, Task> OnStarted = delegate { return Task.CompletedTask; };
     public event Func<AnimalRace, Task> OnStartingFailed = delegate { return Task.CompletedTask; };
     public event Func<AnimalRace, Task> OnStateUpdate = delegate { return Task.CompletedTask; };
     public event Func<AnimalRace, Task> OnEnded = delegate { return Task.CompletedTask; };
 
-    public IReadOnlyCollection<AnimalRacingUser> Users => _users.ToList();
+    public Phase CurrentPhase { get; private set; } = Phase.WaitingForPlayers;
+
+    public IReadOnlyCollection<AnimalRacingUser> Users
+        => _users.ToList();
+
     public List<AnimalRacingUser> FinishedUsers { get; } = new();
+    public int MaxUsers { get; }
 
     private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly HashSet<AnimalRacingUser> _users = new();
     private readonly ICurrencyService _currency;
     private readonly RaceOptions _options;
     private readonly Queue<RaceAnimal> _animalsQueue;
-    public int MaxUsers { get; }
 
     public AnimalRace(RaceOptions options, ICurrencyService currency, IEnumerable<RaceAnimal> availableAnimals)
     {
-        this._currency = currency;
-        this._options = options;
-        this._animalsQueue = new(availableAnimals);
-        this.MaxUsers = _animalsQueue.Count;
+        _currency = currency;
+        _options = options;
+        _animalsQueue = new(availableAnimals);
+        MaxUsers = _animalsQueue.Count;
 
-        if (this._animalsQueue.Count == 0)
+        if (_animalsQueue.Count == 0)
             CurrentPhase = Phase.Ended;
     }
 
@@ -99,10 +101,8 @@ public sealed class AnimalRace : IDisposable
         if (_users.Count <= 1)
         {
             foreach (var user in _users)
-            {
                 if (user.Bet > 0)
                     await _currency.AddAsync(user.UserId, "Race refund", user.Bet);
-            }
 
             var _sf = OnStartingFailed?.Invoke(this);
             CurrentPhase = Phase.Ended;
@@ -122,8 +122,7 @@ public sealed class AnimalRace : IDisposable
                         user.Progress = 60;
                 }
 
-                var finished = _users.Where(x => x.Progress >= 60 && !FinishedUsers.Contains(x))
-                    .Shuffle();
+                var finished = _users.Where(x => x.Progress >= 60 && !FinishedUsers.Contains(x)).Shuffle();
 
                 FinishedUsers.AddRange(finished);
 
@@ -132,7 +131,9 @@ public sealed class AnimalRace : IDisposable
             }
 
             if (FinishedUsers[0].Bet > 0)
-                await _currency.AddAsync(FinishedUsers[0].UserId, "Won a Race", FinishedUsers[0].Bet * (_users.Count - 1));
+                await _currency.AddAsync(FinishedUsers[0].UserId,
+                    "Won a Race",
+                    FinishedUsers[0].Bet * (_users.Count - 1));
 
             var _ended = OnEnded?.Invoke(this);
         });

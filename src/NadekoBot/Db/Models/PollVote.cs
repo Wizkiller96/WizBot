@@ -10,7 +10,5 @@ public class PollVote : DbEntity
         => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-        => obj is PollVote p
-            ? p.UserId == UserId
-            : false;
+        => obj is PollVote p ? p.UserId == UserId : false;
 }

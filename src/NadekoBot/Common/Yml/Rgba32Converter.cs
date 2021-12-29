@@ -1,6 +1,6 @@
-#nullable disable
-using System.Globalization;
+﻿#nullable disable
 using SixLabors.ImageSharp.PixelFormats;
+using System.Globalization;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;

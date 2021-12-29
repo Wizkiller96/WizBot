@@ -1,16 +1,16 @@
-#nullable disable
+﻿#nullable disable
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Common.TypeReaders.Models;
 
 public class StoopidTime
 {
-    public string Input { get; set; }
-    public TimeSpan Time { get; set; }
-
     private static readonly Regex _regex = new(
         @"^(?:(?<months>\d)mo)?(?:(?<weeks>\d{1,2})w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,4})h)?(?:(?<minutes>\d{1,5})m)?(?:(?<seconds>\d{1,6})s)?$",
         RegexOptions.Compiled | RegexOptions.Multiline);
+
+    public string Input { get; set; }
+    public TimeSpan Time { get; set; }
 
     private StoopidTime() { }
 
@@ -18,10 +18,7 @@ public class StoopidTime
     {
         var m = _regex.Match(input);
 
-        if (m.Length == 0)
-        {
-            throw new ArgumentException("Invalid string input format.");
-        }
+        if (m.Length == 0) throw new ArgumentException("Invalid string input format.");
 
         var output = string.Empty;
         var namesAndValues = new Dictionary<string, int>();
@@ -35,29 +32,18 @@ public class StoopidTime
                 continue;
             }
 
-            if (value < 1)
-            {
-                throw new ArgumentException($"Invalid {groupName} value.");
-            }
-                
+            if (value < 1) throw new ArgumentException($"Invalid {groupName} value.");
+
             namesAndValues[groupName] = value;
             output += m.Groups[groupName].Value + " " + groupName + " ";
         }
-        var ts = new TimeSpan((30 * namesAndValues["months"]) +
-                              (7 * namesAndValues["weeks"]) +
-                              namesAndValues["days"],
+
+        var ts = new TimeSpan((30 * namesAndValues["months"]) + (7 * namesAndValues["weeks"]) + namesAndValues["days"],
             namesAndValues["hours"],
             namesAndValues["minutes"],
             namesAndValues["seconds"]);
-        if (ts > TimeSpan.FromDays(90))
-        {
-            throw new ArgumentException("Time is too long.");
-        }
+        if (ts > TimeSpan.FromDays(90)) throw new ArgumentException("Time is too long.");
 
-        return new()
-        {
-            Input = input,
-            Time = ts,
-        };
+        return new() { Input = input, Time = ts };
     }
 }

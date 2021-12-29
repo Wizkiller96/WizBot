@@ -7,8 +7,11 @@ public sealed class TrackResolveProvider : ITrackResolveProvider
     private readonly ISoundcloudResolver _soundcloudResolver;
     private readonly IRadioResolver _radioResolver;
 
-    public TrackResolveProvider(IYoutubeResolver ytResolver, ILocalTrackResolver localResolver,
-        ISoundcloudResolver soundcloudResolver, IRadioResolver radioResolver)
+    public TrackResolveProvider(
+        IYoutubeResolver ytResolver,
+        ILocalTrackResolver localResolver,
+        ISoundcloudResolver soundcloudResolver,
+        IRadioResolver radioResolver)
     {
         _ytResolver = ytResolver;
         _localResolver = localResolver;
@@ -45,13 +48,9 @@ public sealed class TrackResolveProvider : ITrackResolveProvider
                 return Task.FromResult<ITrackInfo?>(null);
         }
     }
-        
-    public static bool IsRadioLink(string query) =>
-        (query.StartsWith("http", StringComparison.InvariantCulture) ||
-         query.StartsWith("ww", StringComparison.InvariantCulture))
-        &&
-        (query.Contains(".pls") ||
-         query.Contains(".m3u") ||
-         query.Contains(".asx") ||
-         query.Contains(".xspf"));
+
+    public static bool IsRadioLink(string query)
+        => (query.StartsWith("http", StringComparison.InvariantCulture)
+            || query.StartsWith("ww", StringComparison.InvariantCulture))
+           && (query.Contains(".pls") || query.Contains(".m3u") || query.Contains(".asx") || query.Contains(".xspf"));
 }

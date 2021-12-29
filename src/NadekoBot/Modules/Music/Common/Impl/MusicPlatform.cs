@@ -6,5 +6,5 @@ public enum MusicPlatform
     Radio,
     Youtube,
     Local,
-    SoundCloud,
+    SoundCloud
 }

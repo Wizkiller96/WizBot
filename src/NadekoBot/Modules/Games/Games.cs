@@ -20,7 +20,8 @@ public partial class Games : NadekoModule<GamesService>
         _httpFactory = factory;
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task Choose([Leftover] string list = null)
     {
         if (string.IsNullOrWhiteSpace(list))
@@ -32,20 +33,23 @@ public partial class Games : NadekoModule<GamesService>
         await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]);
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task EightBall([Leftover] string question = null)
     {
         if (string.IsNullOrWhiteSpace(question))
             return;
 
         var res = _service.GetEightballResponse(ctx.User.Id, question);
-        await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-            .WithDescription(ctx.User.ToString())
-            .AddField("❓ " + GetText(strs.question), question, false)
-            .AddField("🎱 " + GetText(strs._8ball), res, false));
+        await ctx.Channel.EmbedAsync(_eb.Create()
+                                        .WithOkColor()
+                                        .WithDescription(ctx.User.ToString())
+                                        .AddField("❓ " + GetText(strs.question), question)
+                                        .AddField("🎱 " + GetText(strs._8ball), res));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireContext(ContextType.Guild)]
     public async Task RateGirl([Leftover] IGuildUser usr)
     {
@@ -64,16 +68,17 @@ public partial class Games : NadekoModule<GamesService>
             originalStream.Position = 0;
             originalStream.CopyTo(imgStream);
         }
+
         imgStream.Position = 0;
-        await ctx.Channel.SendFileAsync(stream: imgStream,
-            filename: $"girl_{usr}.png",
-            text: Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
+        await ctx.Channel.SendFileAsync(imgStream,
+            $"girl_{usr}.png",
+            Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
             embed: _eb.Create()
-                .WithOkColor()
-                .AddField("Hot", gr.Hot.ToString("F2"), true)
-                .AddField("Crazy", gr.Crazy.ToString("F2"), true)
-                .AddField("Advice", gr.Advice, false)
-                .Build());
+                      .WithOkColor()
+                      .AddField("Hot", gr.Hot.ToString("F2"), true)
+                      .AddField("Crazy", gr.Crazy.ToString("F2"), true)
+                      .AddField("Advice", gr.Advice)
+                      .Build());
     }
 
     private double NextDouble(double x, double y)
@@ -136,13 +141,13 @@ public partial class Games : NadekoModule<GamesService>
         return new(_images, _httpFactory, crazy, hot, roll, advice);
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     public async Task Linux(string guhnoo, string loonix)
         => await SendConfirmAsync(
             $@"I'd just like to interject for moment. What you're refering to as {loonix}, is in fact, {guhnoo}/{loonix}, or as I've recently taken to calling it, {guhnoo} plus {loonix}. {loonix} is not an operating system unto itself, but rather another free component of a fully functioning {guhnoo} system made useful by the {guhnoo} corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.
 
 Many computer users run a modified version of the {guhnoo} system every day, without realizing it. Through a peculiar turn of events, the version of {guhnoo} which is widely used today is often called {loonix}, and many of its users are not aware that it is basically the {guhnoo} system, developed by the {guhnoo} Project.
 
-There really is a {loonix}, and these people are using it, but it is just a part of the system they use. {loonix} is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. {loonix} is normally used in combination with the {guhnoo} operating system: the whole system is basically {guhnoo} with {loonix} added, or {guhnoo}/{loonix}. All the so-called {loonix} distributions are really distributions of {guhnoo}/{loonix}."
-        );
+There really is a {loonix}, and these people are using it, but it is just a part of the system they use. {loonix} is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. {loonix} is normally used in combination with the {guhnoo} operating system: the whole system is basically {guhnoo} with {loonix} added, or {guhnoo}/{loonix}. All the so-called {loonix} distributions are really distributions of {guhnoo}/{loonix}.");
 }

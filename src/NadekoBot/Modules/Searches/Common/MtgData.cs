@@ -13,6 +13,8 @@ public class MtgData
 
 public class MtgResponse
 {
+    public List<Data> Cards { get; set; }
+
     public class Data
     {
         public string Name { get; set; }
@@ -21,6 +23,4 @@ public class MtgResponse
         public List<string> Types { get; set; }
         public string ImageUrl { get; set; }
     }
-
-    public List<Data> Cards { get; set; }
 }

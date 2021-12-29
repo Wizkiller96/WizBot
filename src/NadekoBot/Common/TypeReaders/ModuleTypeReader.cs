@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Common.TypeReaders;
 
 public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
@@ -12,8 +12,8 @@ public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     {
         input = input.ToUpperInvariant();
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
-            .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
-            ?.Key;
+                          .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
+                          ?.Key;
         if (module is null)
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
@@ -32,13 +32,12 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
     {
         input = input.ToUpperInvariant();
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
-            .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
-            ?.Key;
-        if (module is null &&
-            input != "ACTUALCUSTOMREACTIONS")
+                          .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
+                          ?.Key;
+        if (module is null && input != "ACTUALCUSTOMREACTIONS")
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
-        return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input, }));
+        return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input }));
     }
 }
 

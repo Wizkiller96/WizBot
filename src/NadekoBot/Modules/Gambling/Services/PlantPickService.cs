@@ -1,19 +1,21 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using NadekoBot.Db;
-using Image = SixLabors.ImageSharp.Image;
 using Color = SixLabors.ImageSharp.Color;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
 public class PlantPickService : INService
 {
+    //channelId/last generation
+    public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new();
     private readonly DbService _db;
     private readonly IBotStrings _strings;
     private readonly IImageCache _images;
@@ -25,13 +27,18 @@ public class PlantPickService : INService
     private readonly GamblingConfigService _gss;
 
     public readonly ConcurrentHashSet<ulong> _generationChannels = new();
-    //channelId/last generation
-    public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new();
     private readonly SemaphoreSlim pickLock = new(1, 1);
 
-    public PlantPickService(DbService db, CommandHandler cmd, IBotStrings strings,
-        IDataCache cache, FontProvider fonts, ICurrencyService cs,
-        CommandHandler cmdHandler, DiscordSocketClient client, GamblingConfigService gss)
+    public PlantPickService(
+        DbService db,
+        CommandHandler cmd,
+        IBotStrings strings,
+        IDataCache cache,
+        FontProvider fonts,
+        ICurrencyService cs,
+        CommandHandler cmdHandler,
+        DiscordSocketClient client,
+        GamblingConfigService gss)
     {
         _db = db;
         _strings = strings;
@@ -47,13 +54,12 @@ public class PlantPickService : INService
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
         var configs = uow.Set<GuildConfig>()
-            .AsQueryable()
-            .Include(x => x.GenerateCurrencyChannelIds)
-            .Where(x => guildIds.Contains(x.GuildId))
-            .ToList();
-                
-        _generationChannels = new(configs
-            .SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
+                         .AsQueryable()
+                         .Include(x => x.GenerateCurrencyChannelIds)
+                         .Where(x => guildIds.Contains(x.GuildId))
+                         .ToList();
+
+        _generationChannels = new(configs.SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
     }
 
     private string GetText(ulong gid, LocStr str)
@@ -65,7 +71,7 @@ public class PlantPickService : INService
         using var uow = _db.GetDbContext();
         var guildConfig = uow.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
-        var toAdd = new GCChannelId() { ChannelId = cid };
+        var toAdd = new GCChannelId { ChannelId = cid };
         if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
         {
             guildConfig.GenerateCurrencyChannelIds.Add(toAdd);
@@ -75,13 +81,11 @@ public class PlantPickService : INService
         else
         {
             var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
-            if (toDelete != null)
-            {
-                uow.Remove(toDelete);
-            }
+            if (toDelete != null) uow.Remove(toDelete);
             _generationChannels.TryRemove(cid);
             enabled = false;
         }
+
         uow.SaveChanges();
         return enabled;
     }
@@ -94,7 +98,7 @@ public class PlantPickService : INService
     }
 
     /// <summary>
-    /// Get a random currency image stream, with an optional password sticked onto it.
+    ///     Get a random currency image stream, with an optional password sticked onto it.
     /// </summary>
     /// <param name="pass">Optional password to add to top left corner.</param>
     /// <returns>Stream of the currency image</returns>
@@ -111,6 +115,7 @@ public class PlantPickService : INService
             {
                 extension = format.FileExtensions.FirstOrDefault() ?? "png";
             }
+
             // return the image
             return curImg.ToStream();
         }
@@ -124,7 +129,7 @@ public class PlantPickService : INService
     }
 
     /// <summary>
-    /// Add a password to the image.
+    ///     Add a password to the image.
     /// </summary>
     /// <param name="curImg">Image to add password to.</param>
     /// <param name="pass">Password to add to top left corner.</param>
@@ -149,10 +154,7 @@ public class PlantPickService : INService
                 new PointF(0, size.Height + 10));
 
             // draw the password over the background
-            x.DrawText(pass,
-                font,
-                SixLabors.ImageSharp.Color.White,
-                new(0, 0));
+            x.DrawText(pass, font, Color.White, new(0, 0));
         });
         // return image as a stream for easy sending
         return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
@@ -177,7 +179,8 @@ public class PlantPickService : INService
                 var lastGeneration = LastGenerations.GetOrAdd(channel.Id, DateTime.MinValue);
                 var rng = new NadekoRandom();
 
-                if (DateTime.UtcNow - TimeSpan.FromSeconds(config.Generation.GenCooldown) < lastGeneration) //recently generated in this channel, don't generate again
+                if (DateTime.UtcNow - TimeSpan.FromSeconds(config.Generation.GenCooldown)
+                    < lastGeneration) //recently generated in this channel, don't generate again
                     return;
 
                 var num = rng.Next(1, 101) + (config.Generation.Chance * 100);
@@ -194,9 +197,11 @@ public class PlantPickService : INService
                         var prefix = _cmdHandler.GetPrefix(channel.Guild.Id);
                         var toSend = dropAmount == 1
                             ? GetText(channel.GuildId, strs.curgen_sn(config.Currency.Sign))
-                              + " " + GetText(channel.GuildId, strs.pick_sn(prefix))
+                              + " "
+                              + GetText(channel.GuildId, strs.pick_sn(prefix))
                             : GetText(channel.GuildId, strs.curgen_pl(dropAmount, config.Currency.Sign))
-                              + " " + GetText(channel.GuildId, strs.pick_pl(prefix));
+                              + " "
+                              + GetText(channel.GuildId, strs.pick_pl(prefix));
 
                         var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
@@ -223,7 +228,7 @@ public class PlantPickService : INService
     }
 
     /// <summary>
-    /// Generate a hexadecimal string from 1000 to ffff.
+    ///     Generate a hexadecimal string from 1000 to ffff.
     /// </summary>
     /// <returns>A hexadecimal string from 1000 to ffff</returns>
     private string GenerateCurrencyPassword()
@@ -234,7 +239,11 @@ public class PlantPickService : INService
         return num.ToString("x4");
     }
 
-    public async Task<long> PickAsync(ulong gid, ITextChannel ch, ulong uid, string pass)
+    public async Task<long> PickAsync(
+        ulong gid,
+        ITextChannel ch,
+        ulong uid,
+        string pass)
     {
         await pickLock.WaitAsync();
         try
@@ -246,12 +255,11 @@ public class PlantPickService : INService
                 // this method will sum all plants with that password,
                 // remove them, and get messageids of the removed plants
 
-                pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
+                pass = pass?.Trim().TrimTo(10, true).ToUpperInvariant();
                 // gets all plants in this channel with the same password
-                var entries = uow.PlantedCurrency
-                    .AsQueryable()
-                    .Where(x => x.ChannelId == ch.Id && pass == x.Password)
-                    .ToList();
+                var entries = uow.PlantedCurrency.AsQueryable()
+                                 .Where(x => x.ChannelId == ch.Id && pass == x.Password)
+                                 .ToList();
                 // sum how much currency that is, and get all of the message ids (so that i can delete them)
                 amount = entries.Sum(x => x.Amount);
                 ids = entries.Select(x => x.MessageId).ToArray();
@@ -260,10 +268,8 @@ public class PlantPickService : INService
 
 
                 if (amount > 0)
-                {
                     // give the picked currency to the user
-                    await _cs.AddAsync(uid, "Picked currency", amount, gamble: false);
-                }
+                    await _cs.AddAsync(uid, "Picked currency", amount);
                 uow.SaveChanges();
             }
 
@@ -283,16 +289,18 @@ public class PlantPickService : INService
         }
     }
 
-    public async Task<ulong?> SendPlantMessageAsync(ulong gid, IMessageChannel ch, string user, long amount, string pass)
+    public async Task<ulong?> SendPlantMessageAsync(
+        ulong gid,
+        IMessageChannel ch,
+        string user,
+        long amount,
+        string pass)
     {
         try
         {
             // get the text
             var prefix = _cmdHandler.GetPrefix(gid);
-            var msgToSend = GetText(gid,
-                strs.planted(
-                    Format.Bold(user),
-                    amount + _gss.Data.Currency.Sign));
+            var msgToSend = GetText(gid, strs.planted(Format.Bold(user), amount + _gss.Data.Currency.Sign));
 
             if (amount > 1)
                 msgToSend += " " + GetText(gid, strs.pick_pl(prefix));
@@ -313,34 +321,48 @@ public class PlantPickService : INService
         }
     }
 
-    public async Task<bool> PlantAsync(ulong gid, IMessageChannel ch, ulong uid, string user, long amount, string pass)
+    public async Task<bool> PlantAsync(
+        ulong gid,
+        IMessageChannel ch,
+        ulong uid,
+        string user,
+        long amount,
+        string pass)
     {
         // normalize it - no more than 10 chars, uppercase
-        pass = pass?.Trim().TrimTo(10, hideDots: true).ToUpperInvariant();
+        pass = pass?.Trim().TrimTo(10, true).ToUpperInvariant();
         // has to be either null or alphanumeric
         if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
             return false;
 
         // remove currency from the user who's planting
-        if (await _cs.RemoveAsync(uid, "Planted currency", amount, gamble: false))
+        if (await _cs.RemoveAsync(uid, "Planted currency", amount))
         {
             // try to send the message with the currency image
             var msgId = await SendPlantMessageAsync(gid, ch, user, amount, pass);
             if (msgId is null)
             {
                 // if it fails it will return null, if it returns null, refund
-                await _cs.AddAsync(uid, "Planted currency refund", amount, gamble: false);
+                await _cs.AddAsync(uid, "Planted currency refund", amount);
                 return false;
             }
+
             // if it doesn't fail, put the plant in the database for other people to pick
             await AddPlantToDatabase(gid, ch.Id, uid, msgId.Value, amount, pass);
             return true;
         }
+
         // if user doesn't have enough currency, fail
         return false;
     }
 
-    private async Task AddPlantToDatabase(ulong gid, ulong cid, ulong uid, ulong mid, long amount, string pass)
+    private async Task AddPlantToDatabase(
+        ulong gid,
+        ulong cid,
+        ulong uid,
+        ulong mid,
+        long amount,
+        string pass)
     {
         await using var uow = _db.GetDbContext();
         uow.PlantedCurrency.Add(new()
@@ -350,7 +372,7 @@ public class PlantPickService : INService
             ChannelId = cid,
             Password = pass,
             UserId = uid,
-            MessageId = mid,
+            MessageId = mid
         });
         await uow.SaveChangesAsync();
     }

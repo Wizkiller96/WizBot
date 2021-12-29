@@ -13,8 +13,8 @@ public partial class Administration
         {
             var runnerUserRoles = runnerUser.GetRoles();
             var targetUserRoles = targetUser.GetRoles();
-            if (runnerUser.Id != ctx.Guild.OwnerId &&
-                runnerUserRoles.Max(x => x.Position) <= targetUserRoles.Max(x => x.Position))
+            if (runnerUser.Id != ctx.Guild.OwnerId
+                && runnerUserRoles.Max(x => x.Position) <= targetUserRoles.Max(x => x.Position))
             {
                 await ReplyErrorLocalizedAsync(strs.mute_perms);
                 return false;
@@ -23,7 +23,8 @@ public partial class Administration
             return true;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task MuteRole([Leftover] IRole role = null)
@@ -34,20 +35,21 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.mute_role(Format.Code(muteRole.Name)));
                 return;
             }
-                
-            if (ctx.User.Id != ctx.Guild.OwnerId &&
-                role.Position >= ((SocketGuildUser) ctx.User).Roles.Max(x => x.Position))
+
+            if (ctx.User.Id != ctx.Guild.OwnerId
+                && role.Position >= ((SocketGuildUser)ctx.User).Roles.Max(x => x.Position))
             {
                 await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
                 return;
             }
-                
+
             await _service.SetMuteRoleAsync(ctx.Guild.Id, role.Name);
 
             await ReplyConfirmLocalizedAsync(strs.mute_role_set);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(0)]
@@ -68,7 +70,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(1)]
@@ -82,7 +85,8 @@ public partial class Administration
                     return;
 
                 await _service.TimedMute(user, ctx.User, time.Time, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_muted_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                await ReplyConfirmLocalizedAsync(strs.user_muted_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes));
             }
             catch (Exception ex)
             {
@@ -91,7 +95,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         public async Task Unmute(IGuildUser user, [Leftover] string reason = "")
@@ -107,7 +112,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
@@ -118,7 +124,7 @@ public partial class Administration
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.MuteUser(user, ctx.User, MuteType.Chat, reason: reason);
+                await _service.MuteUser(user, ctx.User, MuteType.Chat, reason);
                 await ReplyConfirmLocalizedAsync(strs.user_chat_mute(Format.Bold(user.ToString())));
             }
             catch (Exception ex)
@@ -128,7 +134,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
@@ -141,8 +148,9 @@ public partial class Administration
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Chat, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_chat_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Chat, reason);
+                await ReplyConfirmLocalizedAsync(strs.user_chat_mute_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes));
             }
             catch (Exception ex)
             {
@@ -151,14 +159,15 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task ChatUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
-                await _service.UnmuteUser(user.Guild.Id, user.Id, ctx.User, MuteType.Chat, reason: reason);
+                await _service.UnmuteUser(user.Guild.Id, user.Id, ctx.User, MuteType.Chat, reason);
                 await ReplyConfirmLocalizedAsync(strs.user_chat_unmute(Format.Bold(user.ToString())));
             }
             catch
@@ -167,7 +176,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(0)]
@@ -178,7 +188,7 @@ public partial class Administration
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.MuteUser(user, ctx.User, MuteType.Voice, reason: reason);
+                await _service.MuteUser(user, ctx.User, MuteType.Voice, reason);
                 await ReplyConfirmLocalizedAsync(strs.user_voice_mute(Format.Bold(user.ToString())));
             }
             catch
@@ -187,11 +197,12 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async Task VoiceMute(StoopidTime time,IGuildUser user, [Leftover] string reason = "")
+        public async Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -200,8 +211,9 @@ public partial class Administration
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Voice, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_voice_mute_time(Format.Bold(user.ToString()), (int)time.Time.TotalMinutes));
+                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Voice, reason);
+                await ReplyConfirmLocalizedAsync(strs.user_voice_mute_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes));
             }
             catch
             {
@@ -209,14 +221,15 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         public async Task VoiceUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
-                await _service.UnmuteUser(user.GuildId, user.Id, ctx.User, MuteType.Voice, reason: reason);
+                await _service.UnmuteUser(user.GuildId, user.Id, ctx.User, MuteType.Voice, reason);
                 await ReplyConfirmLocalizedAsync(strs.user_voice_unmute(Format.Bold(user.ToString())));
             }
             catch

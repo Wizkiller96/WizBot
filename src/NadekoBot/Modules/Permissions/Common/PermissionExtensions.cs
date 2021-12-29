@@ -5,8 +5,12 @@ namespace NadekoBot.Modules.Permissions.Common;
 
 public static class PermissionExtensions
 {
-    public static bool CheckPermissions(this IEnumerable<Permissionv2> permsEnumerable, IUserMessage message,
-        string commandName, string moduleName, out int permIndex)
+    public static bool CheckPermissions(
+        this IEnumerable<Permissionv2> permsEnumerable,
+        IUserMessage message,
+        string commandName,
+        string moduleName,
+        out int permIndex)
     {
         var perms = permsEnumerable as List<Permissionv2> ?? permsEnumerable.ToList();
 
@@ -16,13 +20,11 @@ public static class PermissionExtensions
 
             var result = perm.CheckPermission(message, commandName, moduleName);
 
-            if (result is null)
-            {
-                continue;
-            }
+            if (result is null) continue;
             permIndex = i;
             return result.Value;
         }
+
         permIndex = -1; //defaut behaviour
         return true;
     }
@@ -30,13 +32,17 @@ public static class PermissionExtensions
     //null = not applicable
     //true = applicable, allowed
     //false = applicable, not allowed
-    public static bool? CheckPermission(this Permissionv2 perm, IUserMessage message, string commandName, string moduleName)
+    public static bool? CheckPermission(
+        this Permissionv2 perm,
+        IUserMessage message,
+        string commandName,
+        string moduleName)
     {
-        if (!((perm.SecondaryTarget == SecondaryPermissionType.Command &&
-               perm.SecondaryTargetName.ToLowerInvariant() == commandName.ToLowerInvariant()) ||
-              (perm.SecondaryTarget == SecondaryPermissionType.Module &&
-               perm.SecondaryTargetName.ToLowerInvariant() == moduleName.ToLowerInvariant()) ||
-              perm.SecondaryTarget == SecondaryPermissionType.AllModules))
+        if (!((perm.SecondaryTarget == SecondaryPermissionType.Command
+               && perm.SecondaryTargetName.ToLowerInvariant() == commandName.ToLowerInvariant())
+              || (perm.SecondaryTarget == SecondaryPermissionType.Module
+                  && perm.SecondaryTargetName.ToLowerInvariant() == moduleName.ToLowerInvariant())
+              || perm.SecondaryTarget == SecondaryPermissionType.AllModules))
             return null;
 
         var guildUser = message.Author as IGuildUser;
@@ -51,7 +57,7 @@ public static class PermissionExtensions
                 if (perm.PrimaryTargetId == message.Channel.Id)
                     return perm.State;
                 break;
-            case PrimaryPermissionType.Role:        
+            case PrimaryPermissionType.Role:
                 if (guildUser is null)
                     break;
                 if (guildUser.RoleIds.Contains(perm.PrimaryTargetId))
@@ -62,6 +68,7 @@ public static class PermissionExtensions
                     break;
                 return perm.State;
         }
+
         return null;
     }
 
@@ -97,8 +104,9 @@ public static class PermissionExtensions
                 break;
         }
 
-        var secName = perm.SecondaryTarget == SecondaryPermissionType.Command && !perm.IsCustomCommand ?
-            prefix + perm.SecondaryTargetName : perm.SecondaryTargetName;
+        var secName = perm.SecondaryTarget == SecondaryPermissionType.Command && !perm.IsCustomCommand
+            ? prefix + perm.SecondaryTargetName
+            : perm.SecondaryTargetName;
         com += " " + (perm.SecondaryTargetName != "*" ? secName + " " : "") + (perm.State ? "enable" : "disable") + " ";
 
         switch (perm.PrimaryTarget)

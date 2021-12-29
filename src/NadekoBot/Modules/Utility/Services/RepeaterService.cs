@@ -1,7 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using LinqToDB;
+﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
@@ -20,30 +19,29 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
     private readonly object _queueLocker = new();
 
-    public RepeaterService(DiscordSocketClient client, DbService db, IBotCredentials creds, IEmbedBuilderService eb)
+    public RepeaterService(
+        DiscordSocketClient client,
+        DbService db,
+        IBotCredentials creds,
+        IEmbedBuilderService eb)
     {
         _db = db;
         _creds = creds;
         _eb = eb;
         _client = client;
-            
+
         var uow = _db.GetDbContext();
-        var shardRepeaters = uow                
-            .Set<Repeater>()
-            .FromSqlInterpolated($@"select * from repeaters 
+        var shardRepeaters = uow.Set<Repeater>()
+                                .FromSqlInterpolated($@"select * from repeaters 
 where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
-            .AsNoTracking()
-            .ToList();
+                                .AsNoTracking()
+                                .ToList();
 
-        _noRedundant = new(shardRepeaters
-            .Where(x => x.NoRedundant)
-            .Select(x => x.Id));
+        _noRedundant = new(shardRepeaters.Where(x => x.NoRedundant).Select(x => x.Id));
 
-        _repeaterQueue = new(shardRepeaters
-            .Select(rep => new RunningRepeater(rep))
-            .OrderBy(x => x.NextTime));
+        _repeaterQueue = new(shardRepeaters.Select(rep => new RunningRepeater(rep)).OrderBy(x => x.NextTime));
     }
-        
+
     public Task OnReadyAsync()
     {
         _ = Task.Run(RunRepeatersLoop);
@@ -53,19 +51,16 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     private async Task RunRepeatersLoop()
     {
         while (true)
-        {
             try
             {
                 // calculate timeout for the first item
                 var timeout = GetNextTimeout();
-                    
+
                 // wait it out, and recalculate afterwards
                 // because repeaters might've been modified meanwhile
                 if (timeout > TimeSpan.Zero)
                 {
-                    await Task.Delay(timeout > TimeSpan.FromMinutes(1)
-                        ? TimeSpan.FromMinutes(1)
-                        : timeout);
+                    await Task.Delay(timeout > TimeSpan.FromMinutes(1) ? TimeSpan.FromMinutes(1) : timeout);
                     continue;
                 }
 
@@ -78,7 +73,6 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                     var current = _repeaterQueue.First;
                     while (true)
                     {
-
                         if (current is null || current.Value.NextTime > now)
                             break;
 
@@ -88,23 +82,16 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 }
 
                 // execute
-                foreach (var chunk in toExecute.Chunk(5))
-                {
-                    await chunk.Select(Trigger).WhenAll();
-                }
+                foreach (var chunk in toExecute.Chunk(5)) await chunk.Select(Trigger).WhenAll();
 
                 // reinsert
-                foreach (var rep in toExecute)
-                {
-                    await HandlePostExecute(rep);
-                }
+                foreach (var rep in toExecute) await HandlePostExecute(rep);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Critical error in repeater queue: {ErrorMessage}", ex.Message);
                 await Task.Delay(5000);
             }
-        }
     }
 
     private async Task HandlePostExecute(RunningRepeater rep)
@@ -132,12 +119,11 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     public async Task<bool> TriggerExternal(ulong guildId, int index)
     {
         await using var uow = _db.GetDbContext();
-            
-        var toTrigger = await uow.Repeaters
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+
+        var toTrigger = await uow.Repeaters.AsNoTracking()
+                                 .Where(x => x.GuildId == guildId)
+                                 .Skip(index)
+                                 .FirstOrDefaultAsyncEF();
 
         if (toTrigger is null)
             return false;
@@ -148,7 +134,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             node = _repeaterQueue.FindNode(x => x.Repeater.Id == toTrigger.Id);
             if (node is null)
                 return false;
-                
+
             _repeaterQueue.Remove(node);
         }
 
@@ -156,7 +142,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         await HandlePostExecute(node.Value);
         return true;
     }
-        
+
     private void AddToQueue(RunningRepeater rep)
     {
         lock (_queueLocker)
@@ -191,21 +177,23 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             return first.Value.NextTime - DateTime.UtcNow;
         }
     }
-        
+
     private async Task Trigger(RunningRepeater rr)
     {
         var repeater = rr.Repeater;
-            
+
         void ChannelMissingError()
         {
-            rr.ErrorCount = Int32.MaxValue;
-            Log.Warning("[Repeater] Channel [{Channelid}] for not found or insufficient permissions. " +
-                        "Repeater will be removed. ", repeater.ChannelId);
+            rr.ErrorCount = int.MaxValue;
+            Log.Warning("[Repeater] Channel [{Channelid}] for not found or insufficient permissions. "
+                        + "Repeater will be removed. ",
+                repeater.ChannelId);
         }
 
         var channel = _client.GetChannel(repeater.ChannelId) as ITextChannel;
         if (channel is null)
-            try { channel = await _client.Rest.GetChannelAsync(repeater.ChannelId) as ITextChannel; } catch { }
+            try { channel = await _client.Rest.GetChannelAsync(repeater.ChannelId) as ITextChannel; }
+            catch { }
 
         if (channel is null)
         {
@@ -219,9 +207,8 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             ChannelMissingError();
             return;
         }
-            
+
         if (_noRedundant.Contains(repeater.Id))
-        {
             try
             {
                 var lastMsgInChannel = await channel.GetMessagesAsync(2).Flatten().FirstAsync();
@@ -231,41 +218,36 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             catch (Exception ex)
             {
                 Log.Warning(ex,
-                    "[Repeater] Error while getting last channel message in {GuildId}/{ChannelId} " +
-                    "Bot probably doesn't have the permission to read message history",
+                    "[Repeater] Error while getting last channel message in {GuildId}/{ChannelId} "
+                    + "Bot probably doesn't have the permission to read message history",
                     guild.Id,
                     channel.Id);
             }
-        }
 
         if (repeater.LastMessageId is { } lastMessageId)
-        {
             try
             {
                 var oldMsg = await channel.GetMessageAsync(lastMessageId);
-                if (oldMsg != null)
-                {
-                    await oldMsg.DeleteAsync();
-                }
+                if (oldMsg != null) await oldMsg.DeleteAsync();
             }
             catch (Exception ex)
             {
-                Log.Warning(ex, "[Repeater] Error while deleting previous message in {GuildId}/{ChannelId}", guild.Id, channel.Id);
+                Log.Warning(ex,
+                    "[Repeater] Error while deleting previous message in {GuildId}/{ChannelId}",
+                    guild.Id,
+                    channel.Id);
             }
-        }
-            
-        var rep = new ReplacementBuilder()
-            .WithDefault(guild.CurrentUser, channel, guild, _client)
-            .Build();
+
+        var rep = new ReplacementBuilder().WithDefault(guild.CurrentUser, channel, guild, _client).Build();
 
         try
         {
             var text = SmartText.CreateFrom(repeater.Message);
             text = rep.Replace(text);
-                
+
             var newMsg = await channel.SendAsync(text);
             _ = newMsg.AddReactionAsync(new Emoji("🔄"));
-                
+
             if (_noRedundant.Contains(repeater.Id))
             {
                 await SetRepeaterLastMessageInternal(repeater.Id, newMsg.Id);
@@ -278,17 +260,15 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         {
             Log.Error(ex, "[Repeater] Error sending repeat message ({ErrorCount})", rr.ErrorCount++);
         }
-    } 
+    }
 
     private async Task RemoveRepeaterInternal(Repeater r)
     {
         _noRedundant.TryRemove(r.Id);
 
         await using var uow = _db.GetDbContext();
-        await uow
-            .Repeaters
-            .DeleteAsync(x => x.Id == r.Id);
-            
+        await uow.Repeaters.DeleteAsync(x => x.Id == r.Id);
+
         await uow.SaveChangesAsync();
     }
 
@@ -299,7 +279,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             var node = _repeaterQueue.FindNode(x => x.Repeater.Id == id);
             if (node is null)
                 return null;
-                
+
             _repeaterQueue.Remove(node);
             return node.Value;
         }
@@ -308,13 +288,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     private async Task SetRepeaterLastMessageInternal(int repeaterId, ulong lastMsgId)
     {
         await using var uow = _db.GetDbContext();
-        await uow.Repeaters
-            .AsQueryable()
-            .Where(x => x.Id == repeaterId)
-            .UpdateAsync(rep => new()
-            {
-                LastMessageId = lastMsgId
-            });
+        await uow.Repeaters.AsQueryable()
+                 .Where(x => x.Id == repeaterId)
+                 .UpdateAsync(rep => new() { LastMessageId = lastMsgId });
     }
 
     public async Task<RunningRepeater?> AddRepeaterAsync(
@@ -323,10 +299,9 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
         TimeSpan interval,
         string message,
         bool isNoRedundant,
-        TimeSpan? startTimeOfDay
-    )
+        TimeSpan? startTimeOfDay)
     {
-        var rep = new Repeater()
+        var rep = new Repeater
         {
             ChannelId = channelId,
             GuildId = guildId,
@@ -360,15 +335,14 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             throw new ArgumentOutOfRangeException(nameof(index));
 
         await using var uow = _db.GetDbContext();
-        var toRemove = await uow.Repeaters
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+        var toRemove = await uow.Repeaters.AsNoTracking()
+                                .Where(x => x.GuildId == guildId)
+                                .Skip(index)
+                                .FirstOrDefaultAsyncEF();
 
         if (toRemove is null)
             return null;
-            
+
         // first try removing from queue because it can fail
         // while triggering. Instruct user to try again
         var removed = RemoveFromQueue(toRemove.Id);
@@ -392,25 +366,19 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     public async Task<bool?> ToggleRedundantAsync(ulong guildId, int index)
     {
         await using var uow = _db.GetDbContext();
-        var toToggle = await uow
-            .Repeaters
-            .AsQueryable()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+        var toToggle = await uow.Repeaters.AsQueryable()
+                                .Where(x => x.GuildId == guildId)
+                                .Skip(index)
+                                .FirstOrDefaultAsyncEF();
 
         if (toToggle is null)
             return null;
-            
+
         var newValue = toToggle.NoRedundant = !toToggle.NoRedundant;
         if (newValue)
-        {
             _noRedundant.Add(toToggle.Id);
-        }
         else
-        {
             _noRedundant.TryRemove(toToggle.Id);
-        }
 
         await uow.SaveChangesAsync();
         return newValue;

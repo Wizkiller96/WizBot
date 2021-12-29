@@ -9,16 +9,14 @@ public class AcrophobiaUser
 
     public AcrophobiaUser(ulong userId, string userName, string input)
     {
-        this.UserName = userName;
-        this.UserId = userId;
-        this.Input = input;
+        UserName = userName;
+        UserId = userId;
+        Input = input;
     }
 
     public override int GetHashCode()
         => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-        => obj is AcrophobiaUser x
-            ? x.UserId == this.UserId
-            : false;
+        => obj is AcrophobiaUser x ? x.UserId == UserId : false;
 }

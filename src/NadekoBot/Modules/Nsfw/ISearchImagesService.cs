@@ -5,6 +5,9 @@ namespace NadekoBot.Modules.Nsfw;
 
 public interface ISearchImagesService
 {
+    ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; }
+    ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; }
+    ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; }
     Task<UrlReply> Gelbooru(ulong? guildId, bool forceExplicit, string[] tags);
     Task<UrlReply> Danbooru(ulong? guildId, bool forceExplicit, string[] tags);
     Task<UrlReply> Konachan(ulong? guildId, bool forceExplicit, string[] tags);
@@ -21,7 +24,4 @@ public interface ISearchImagesService
     Task<UrlReply> Butts();
     Task<Gallery> GetNhentaiByIdAsync(uint id);
     Task<Gallery> GetNhentaiBySearchAsync(string search);
-    ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; }
-    ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; }
-    ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; }
 }

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using NCalc;
 using System.Reflection;
 
 namespace NadekoBot.Modules.Utility;
@@ -8,10 +9,11 @@ public partial class Utility
     [Group]
     public class CalcCommands : NadekoSubmodule
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Calculate([Leftover] string expression)
         {
-            var expr = new NCalc.Expression(expression, NCalc.EvaluateOptions.IgnoreCase | NCalc.EvaluateOptions.NoCache);
+            var expr = new Expression(expression, EvaluateOptions.IgnoreCase | EvaluateOptions.NoCache);
             expr.EvaluateParameter += Expr_EvaluateParameter;
             var result = expr.Evaluate();
             if (!expr.HasErrors())
@@ -20,7 +22,7 @@ public partial class Utility
                 await SendErrorAsync("⚙ " + GetText(strs.error), expr.Error);
         }
 
-        private static void Expr_EvaluateParameter(string name, NCalc.ParameterArgs args)
+        private static void Expr_EvaluateParameter(string name, ParameterArgs args)
         {
             switch (name.ToLowerInvariant())
             {
@@ -30,25 +32,18 @@ public partial class Utility
                 case "e":
                     args.Result = Math.E;
                     break;
-                default:
-                    break;
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task CalcOps()
         {
             var selection = typeof(Math).GetTypeInfo()
-                .GetMethods()
-                .DistinctBy(x => x.Name)
-                .Select(x => x.Name)
-                .Except(new[]
-                {
-                    "ToString",
-                    "Equals",
-                    "GetHashCode",
-                    "GetType"
-                });
+                                        .GetMethods()
+                                        .DistinctBy(x => x.Name)
+                                        .Select(x => x.Name)
+                                        .Except(new[] { "ToString", "Equals", "GetHashCode", "GetType" });
             await SendConfirmAsync(GetText(strs.calcops(Prefix)), string.Join(", ", selection));
         }
     }

@@ -7,6 +7,7 @@ public class TimeZoneResult
 {
     [JsonProperty("abbreviation")]
     public string TimezoneName { get; set; }
+
     [JsonProperty("timestamp")]
     public int Timestamp { get; set; }
 }

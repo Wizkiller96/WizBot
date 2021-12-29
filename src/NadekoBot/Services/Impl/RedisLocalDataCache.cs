@@ -8,9 +8,6 @@ namespace NadekoBot.Services;
 
 public class RedisLocalDataCache : ILocalDataCache
 {
-    private readonly ConnectionMultiplexer _con;
-    private readonly IBotCredentials _creds;
-
     private const string POKEMON_ABILITIES_FILE = "data/pokemon/pokemon_abilities.json";
     private const string POKEMON_LIST_FILE = "data/pokemon/pokemon_list.json";
     private const string POKEMON_MAP_PATH = "data/pokemon/name-id_map.json";
@@ -40,6 +37,9 @@ public class RedisLocalDataCache : ILocalDataCache
         private init => Set("pokemon_map", value);
     }
 
+    private readonly ConnectionMultiplexer _con;
+    private readonly IBotCredentials _creds;
+
     public RedisLocalDataCache(ConnectionMultiplexer con, IBotCredentials creds, DiscordSocketClient client)
     {
         _con = con;
@@ -49,32 +49,25 @@ public class RedisLocalDataCache : ILocalDataCache
         if (shardId == 0)
         {
             if (!File.Exists(POKEMON_LIST_FILE))
-            {
                 Log.Warning($"{POKEMON_LIST_FILE} is missing. Pokemon abilities not loaded");
-            }
             else
-            {
                 Pokemons =
-                    JsonConvert.DeserializeObject<Dictionary<string, SearchPokemon>>(File.ReadAllText(POKEMON_LIST_FILE));
-            }
+                    JsonConvert.DeserializeObject<Dictionary<string, SearchPokemon>>(
+                        File.ReadAllText(POKEMON_LIST_FILE));
 
             if (!File.Exists(POKEMON_ABILITIES_FILE))
-            {
                 Log.Warning($"{POKEMON_ABILITIES_FILE} is missing. Pokemon abilities not loaded.");
-            }
             else
-            {
                 PokemonAbilities =
                     JsonConvert.DeserializeObject<Dictionary<string, SearchPokemonAbility>>(
-                        File.ReadAllText(POKEMON_ABILITIES_FILE)
-                    );
-            }
+                        File.ReadAllText(POKEMON_ABILITIES_FILE));
 
             try
             {
                 TriviaQuestions = JsonConvert.DeserializeObject<TriviaQuestion[]>(File.ReadAllText(QUESTIONS_FILE));
                 PokemonMap = JsonConvert.DeserializeObject<PokemonNameId[]>(File.ReadAllText(POKEMON_MAP_PATH))
-                    ?.ToDictionary(x => x.Id, x => x.Name) ?? new();
+                                        ?.ToDictionary(x => x.Id, x => x.Name)
+                             ?? new();
             }
             catch (Exception ex)
             {

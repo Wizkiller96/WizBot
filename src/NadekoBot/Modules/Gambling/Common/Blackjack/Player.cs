@@ -13,10 +13,7 @@ public abstract class Player
         // reduce the value by 10 until it drops below 22
         // (emulating the fact that ace is either a 1 or a 11)
         var i = Cards.Count(x => x.Number == 1);
-        while (val > 21 && i-- > 0)
-        {
-            val -= 10;
-        }
+        while (val > 21 && i-- > 0) val -= 10;
         return val;
     }
 
@@ -26,7 +23,6 @@ public abstract class Player
 
 public class Dealer : Player
 {
-
 }
 
 public class User : Player
@@ -41,17 +37,19 @@ public class User : Player
         Lost
     }
 
+    public UserState State { get; set; } = UserState.Waiting;
+    public long Bet { get; set; }
+    public IUser DiscordUser { get; }
+
+    public bool Done
+        => State != UserState.Waiting;
+
     public User(IUser user, long bet)
     {
         if (bet <= 0)
             throw new ArgumentOutOfRangeException(nameof(bet));
 
-        this.Bet = bet;
-        this.DiscordUser = user;
+        Bet = bet;
+        DiscordUser = user;
     }
-
-    public UserState State { get; set; } = UserState.Waiting;
-    public long Bet { get; set; }
-    public IUser DiscordUser { get; }
-    public bool Done => State != UserState.Waiting;
 }

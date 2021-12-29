@@ -9,12 +9,12 @@ public class PruneService : INService
     private readonly ILogCommandService _logService;
 
     public PruneService(ILogCommandService logService)
-        => this._logService = logService;
+        => _logService = logService;
 
     public async Task PruneWhere(ITextChannel channel, int amount, Func<IMessage, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(channel, nameof(channel));
-        
+
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
 
@@ -46,17 +46,16 @@ public class PruneService : INService
                     await Task.WhenAll(Task.Delay(1000), channel.DeleteMessagesAsync(bulkDeletable));
 
                 foreach (var group in singleDeletable.Chunk(5))
-                    await Task.WhenAll(
-                        Task.Delay(1000),
-                        group.Select(x => x.DeleteAsync())
-                             .WhenAll()
-                    );
+                    await Task.WhenAll(Task.Delay(1000), group.Select(x => x.DeleteAsync()).WhenAll());
 
                 //this isn't good, because this still work as if i want to remove only specific user's messages from the last
                 //100 messages, Maybe this needs to be reduced by msgs.Length instead of 100
                 amount -= 50;
-                if(amount > 0)
-                    msgs = (await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync()).Where(predicate).Take(amount).ToArray();
+                if (amount > 0)
+                    msgs = (await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync())
+                           .Where(predicate)
+                           .Take(amount)
+                           .ToArray();
             }
         }
         catch

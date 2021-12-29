@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 // License MIT
 // Source: https://github.com/i3arnon/ConcurrentHashSet
 
@@ -7,12 +7,12 @@ using System.Diagnostics;
 namespace System.Collections.Generic;
 
 /// <summary>
-/// Represents a thread-safe hash-based unique collection.
+///     Represents a thread-safe hash-based unique collection.
 /// </summary>
 /// <typeparam name="T">The type of the items in the collection.</typeparam>
 /// <remarks>
-/// All public members of <see cref="ConcurrentHashSet{T}"/> are thread-safe and may be used
-/// concurrently from multiple threads.
+///     All public members of <see cref="ConcurrentHashSet{T}" /> are thread-safe and may be used
+///     concurrently from multiple threads.
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T>
@@ -20,53 +20,16 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     private const int DefaultCapacity = 31;
     private const int MaxLockNumber = 1024;
 
-    private readonly IEqualityComparer<T> _comparer;
-    private readonly bool _growLockArray;
-
-    private int _budget;
-    private volatile Tables _tables;
-
     private static int DefaultConcurrencyLevel
         => PlatformHelper.ProcessorCount;
 
     /// <summary>
-    /// Gets the number of items contained in the <see
-    /// cref="ConcurrentHashSet{T}"/>.
+    ///     Gets a value that indicates whether the <see cref="ConcurrentHashSet{T}" /> is empty.
     /// </summary>
-    /// <value>The number of items contained in the <see
-    /// cref="ConcurrentHashSet{T}"/>.</value>
-    /// <remarks>Count has snapshot semantics and represents the number of items in the <see
-    /// cref="ConcurrentHashSet{T}"/>
-    /// at the moment when Count was accessed.</remarks>
-    public int Count
-    {
-        get
-        {
-            var count = 0;
-            var acquiredLocks = 0;
-            try
-            {
-                AcquireAllLocks(ref acquiredLocks);
-
-                for (var i = 0; i < _tables.CountPerLock.Length; i++)
-                {
-                    count += _tables.CountPerLock[i];
-                }
-            }
-            finally
-            {
-                ReleaseLocks(0, acquiredLocks);
-            }
-
-            return count;
-        }
-    }
-
-    /// <summary>
-    /// Gets a value that indicates whether the <see cref="ConcurrentHashSet{T}"/> is empty.
-    /// </summary>
-    /// <value>true if the <see cref="ConcurrentHashSet{T}"/> is empty; otherwise,
-    /// false.</value>
+    /// <value>
+    ///     true if the <see cref="ConcurrentHashSet{T}" /> is empty; otherwise,
+    ///     false.
+    /// </value>
     public bool IsEmpty
     {
         get
@@ -77,12 +40,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 AcquireAllLocks(ref acquiredLocks);
 
                 for (var i = 0; i < _tables.CountPerLock.Length; i++)
-                {
                     if (_tables.CountPerLock[i] != 0)
-                    {
                         return false;
-                    }
-                }
             }
             finally
             {
@@ -93,91 +52,158 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         }
     }
 
+    bool ICollection<T>.IsReadOnly
+        => false;
+
     /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="ConcurrentHashSet{T}"/>
-    /// class that is empty, has the default concurrency level, has the default initial capacity, and
-    /// uses the default comparer for the item type.
+    ///     Gets the number of items contained in the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     .
+    /// </summary>
+    /// <value>
+    ///     The number of items contained in the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     .
+    /// </value>
+    /// <remarks>
+    ///     Count has snapshot semantics and represents the number of items in the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     at the moment when Count was accessed.
+    /// </remarks>
+    public int Count
+    {
+        get
+        {
+            var count = 0;
+            var acquiredLocks = 0;
+            try
+            {
+                AcquireAllLocks(ref acquiredLocks);
+
+                for (var i = 0; i < _tables.CountPerLock.Length; i++) count += _tables.CountPerLock[i];
+            }
+            finally
+            {
+                ReleaseLocks(0, acquiredLocks);
+            }
+
+            return count;
+        }
+    }
+
+    private readonly IEqualityComparer<T> _comparer;
+    private readonly bool _growLockArray;
+
+    private int _budget;
+    private volatile Tables _tables;
+
+    /// <summary>
+    ///     Initializes a new instance of the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     class that is empty, has the default concurrency level, has the default initial capacity, and
+    ///     uses the default comparer for the item type.
     /// </summary>
     public ConcurrentHashSet()
-        : this(DefaultConcurrencyLevel,
-            DefaultCapacity,
-            true,
-            EqualityComparer<T>.Default)
+        : this(DefaultConcurrencyLevel, DefaultCapacity, true, EqualityComparer<T>.Default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="ConcurrentHashSet{T}"/>
-    /// class that is empty, has the specified concurrency level and capacity, and uses the default
-    /// comparer for the item type.
+    ///     Initializes a new instance of the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     class that is empty, has the specified concurrency level and capacity, and uses the default
+    ///     comparer for the item type.
     /// </summary>
-    /// <param name="concurrencyLevel">The estimated number of threads that will update the
-    /// <see cref="ConcurrentHashSet{T}"/> concurrently.</param>
-    /// <param name="capacity">The initial number of elements that the <see
-    /// cref="ConcurrentHashSet{T}"/>
-    /// can contain.</param>
-    /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="concurrencyLevel"/> is
-    /// less than 1.</exception>
-    /// <exception cref="T:System.ArgumentOutOfRangeException"> <paramref name="capacity"/> is less than
-    /// 0.</exception>
+    /// <param name="concurrencyLevel">
+    ///     The estimated number of threads that will update the
+    ///     <see cref="ConcurrentHashSet{T}" /> concurrently.
+    /// </param>
+    /// <param name="capacity">
+    ///     The initial number of elements that the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     can contain.
+    /// </param>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    ///     <paramref name="concurrencyLevel" /> is
+    ///     less than 1.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    ///     <paramref name="capacity" /> is less than
+    ///     0.
+    /// </exception>
     public ConcurrentHashSet(int concurrencyLevel, int capacity)
-        : this(concurrencyLevel,
-            capacity,
-            false,
-            EqualityComparer<T>.Default)
+        : this(concurrencyLevel, capacity, false, EqualityComparer<T>.Default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}"/>
-    /// class that contains elements copied from the specified <see
-    /// cref="T:System.Collections.IEnumerable{T}"/>, has the default concurrency
-    /// level, has the default initial capacity, and uses the default comparer for the item type.
+    ///     Initializes a new instance of the <see cref="ConcurrentHashSet{T}" />
+    ///     class that contains elements copied from the specified
+    ///     <see
+    ///         cref="T:System.Collections.IEnumerable{T}" />
+    ///     , has the default concurrency
+    ///     level, has the default initial capacity, and uses the default comparer for the item type.
     /// </summary>
-    /// <param name="collection">The <see
-    /// cref="T:System.Collections.IEnumerable{T}"/> whose elements are copied to
-    /// the new
-    /// <see cref="ConcurrentHashSet{T}"/>.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is a null reference.</exception>
+    /// <param name="collection">
+    ///     The
+    ///     <see
+    ///         cref="T:System.Collections.IEnumerable{T}" />
+    ///     whose elements are copied to
+    ///     the new
+    ///     <see cref="ConcurrentHashSet{T}" />.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="collection" /> is a null reference.</exception>
     public ConcurrentHashSet(IEnumerable<T> collection)
         : this(collection, EqualityComparer<T>.Default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}"/>
-    /// class that is empty, has the specified concurrency level and capacity, and uses the specified
-    /// <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>.
+    ///     Initializes a new instance of the <see cref="ConcurrentHashSet{T}" />
+    ///     class that is empty, has the specified concurrency level and capacity, and uses the specified
+    ///     <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />.
     /// </summary>
-    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>
-    /// implementation to use when comparing items.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference.</exception>
+    /// <param name="comparer">
+    ///     The <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />
+    ///     implementation to use when comparing items.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer" /> is a null reference.</exception>
     public ConcurrentHashSet(IEqualityComparer<T> comparer)
-        : this(DefaultConcurrencyLevel,
-            DefaultCapacity,
-            true,
-            comparer)
+        : this(DefaultConcurrencyLevel, DefaultCapacity, true, comparer)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}"/>
-    /// class that contains elements copied from the specified <see
-    /// cref="T:System.Collections.IEnumerable"/>, has the default concurrency level, has the default
-    /// initial capacity, and uses the specified
-    /// <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>.
+    ///     Initializes a new instance of the <see cref="ConcurrentHashSet{T}" />
+    ///     class that contains elements copied from the specified
+    ///     <see
+    ///         cref="T:System.Collections.IEnumerable" />
+    ///     , has the default concurrency level, has the default
+    ///     initial capacity, and uses the specified
+    ///     <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />.
     /// </summary>
-    /// <param name="collection">The <see
-    /// cref="T:System.Collections.IEnumerable{T}"/> whose elements are copied to
-    /// the new
-    /// <see cref="ConcurrentHashSet{T}"/>.</param>
-    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>
-    /// implementation to use when comparing items.</param>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is a null reference
-    /// (Nothing in Visual Basic). -or-
-    /// <paramref name="comparer"/> is a null reference (Nothing in Visual Basic).
+    /// <param name="collection">
+    ///     The
+    ///     <see
+    ///         cref="T:System.Collections.IEnumerable{T}" />
+    ///     whose elements are copied to
+    ///     the new
+    ///     <see cref="ConcurrentHashSet{T}" />.
+    /// </param>
+    /// <param name="comparer">
+    ///     The <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />
+    ///     implementation to use when comparing items.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///     <paramref name="collection" /> is a null reference
+    ///     (Nothing in Visual Basic). -or-
+    ///     <paramref name="comparer" /> is a null reference (Nothing in Visual Basic).
     /// </exception>
     public ConcurrentHashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer)
         : this(comparer)
@@ -189,30 +215,33 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}"/> 
-    /// class that contains elements copied from the specified <see cref="T:System.Collections.IEnumerable"/>, 
-    /// has the specified concurrency level, has the specified initial capacity, and uses the specified 
-    /// <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>.
+    ///     Initializes a new instance of the <see cref="ConcurrentHashSet{T}" />
+    ///     class that contains elements copied from the specified <see cref="T:System.Collections.IEnumerable" />,
+    ///     has the specified concurrency level, has the specified initial capacity, and uses the specified
+    ///     <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />.
     /// </summary>
-    /// <param name="concurrencyLevel">The estimated number of threads that will update the 
-    /// <see cref="ConcurrentHashSet{T}"/> concurrently.</param>
-    /// <param name="collection">The <see cref="T:System.Collections.IEnumerable{T}"/> whose elements are copied to the new 
-    /// <see cref="ConcurrentHashSet{T}"/>.</param>
-    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/> implementation to use 
-    /// when comparing items.</param>
+    /// <param name="concurrencyLevel">
+    ///     The estimated number of threads that will update the
+    ///     <see cref="ConcurrentHashSet{T}" /> concurrently.
+    /// </param>
+    /// <param name="collection">
+    ///     The <see cref="T:System.Collections.IEnumerable{T}" /> whose elements are copied to the new
+    ///     <see cref="ConcurrentHashSet{T}" />.
+    /// </param>
+    /// <param name="comparer">
+    ///     The <see cref="T:System.Collections.Generic.IEqualityComparer{T}" /> implementation to use
+    ///     when comparing items.
+    /// </param>
     /// <exception cref="T:System.ArgumentNullException">
-    /// <paramref name="collection"/> is a null reference.
-    /// -or-
-    /// <paramref name="comparer"/> is a null reference.
+    ///     <paramref name="collection" /> is a null reference.
+    ///     -or-
+    ///     <paramref name="comparer" /> is a null reference.
     /// </exception>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// <paramref name="concurrencyLevel"/> is less than 1.
+    ///     <paramref name="concurrencyLevel" /> is less than 1.
     /// </exception>
     public ConcurrentHashSet(int concurrencyLevel, IEnumerable<T> collection, IEqualityComparer<T> comparer)
-        : this(concurrencyLevel,
-            DefaultCapacity,
-            false,
-            comparer)
+        : this(concurrencyLevel, DefaultCapacity, false, comparer)
     {
         if (collection is null) throw new ArgumentNullException(nameof(collection));
         if (comparer is null) throw new ArgumentNullException(nameof(comparer));
@@ -221,47 +250,49 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentHashSet{T}"/>
-    /// class that is empty, has the specified concurrency level, has the specified initial capacity, and
-    /// uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>.
+    ///     Initializes a new instance of the <see cref="ConcurrentHashSet{T}" />
+    ///     class that is empty, has the specified concurrency level, has the specified initial capacity, and
+    ///     uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />.
     /// </summary>
-    /// <param name="concurrencyLevel">The estimated number of threads that will update the
-    /// <see cref="ConcurrentHashSet{T}"/> concurrently.</param>
-    /// <param name="capacity">The initial number of elements that the <see
-    /// cref="ConcurrentHashSet{T}"/>
-    /// can contain.</param>
-    /// <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer{T}"/>
-    /// implementation to use when comparing items.</param>
+    /// <param name="concurrencyLevel">
+    ///     The estimated number of threads that will update the
+    ///     <see cref="ConcurrentHashSet{T}" /> concurrently.
+    /// </param>
+    /// <param name="capacity">
+    ///     The initial number of elements that the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     can contain.
+    /// </param>
+    /// <param name="comparer">
+    ///     The <see cref="T:System.Collections.Generic.IEqualityComparer{T}" />
+    ///     implementation to use when comparing items.
+    /// </param>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
-    /// <paramref name="concurrencyLevel"/> is less than 1. -or-
-    /// <paramref name="capacity"/> is less than 0.
+    ///     <paramref name="concurrencyLevel" /> is less than 1. -or-
+    ///     <paramref name="capacity" /> is less than 0.
     /// </exception>
-    /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer"/> is a null reference.</exception>
+    /// <exception cref="T:System.ArgumentNullException"><paramref name="comparer" /> is a null reference.</exception>
     public ConcurrentHashSet(int concurrencyLevel, int capacity, IEqualityComparer<T> comparer)
-        : this(concurrencyLevel,
-            capacity,
-            false,
-            comparer)
+        : this(concurrencyLevel, capacity, false, comparer)
     {
     }
 
-    private ConcurrentHashSet(int concurrencyLevel, int capacity, bool growLockArray, IEqualityComparer<T> comparer)
+    private ConcurrentHashSet(
+        int concurrencyLevel,
+        int capacity,
+        bool growLockArray,
+        IEqualityComparer<T> comparer)
     {
         if (concurrencyLevel < 1) throw new ArgumentOutOfRangeException(nameof(concurrencyLevel));
         if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
 
         // The capacity should be at least as large as the concurrency level. Otherwise, we would have locks that don't guard
         // any buckets.
-        if (capacity < concurrencyLevel)
-        {
-            capacity = concurrencyLevel;
-        }
+        if (capacity < concurrencyLevel) capacity = concurrencyLevel;
 
         var locks = new object[concurrencyLevel];
-        for (var i = 0; i < locks.Length; i++)
-        {
-            locks[i] = new();
-        }
+        for (var i = 0; i < locks.Length; i++) locks[i] = new();
 
         var countPerLock = new int[locks.Length];
         var buckets = new Node[capacity];
@@ -273,18 +304,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     }
 
     /// <summary>
-    /// Adds the specified item to the <see cref="ConcurrentHashSet{T}"/>.
-    /// </summary>
-    /// <param name="item">The item to add.</param>
-    /// <returns>true if the items was added to the <see cref="ConcurrentHashSet{T}"/>
-    /// successfully; false if it already exists.</returns>
-    /// <exception cref="T:System.OverflowException">The <see cref="ConcurrentHashSet{T}"/>
-    /// contains too many items.</exception>
-    public bool Add(T item)
-        => AddInternal(item, _comparer.GetHashCode(item), true);
-
-    /// <summary>
-    /// Removes all items from the <see cref="ConcurrentHashSet{T}"/>.
+    ///     Removes all items from the <see cref="ConcurrentHashSet{T}" />.
     /// </summary>
     public void Clear()
     {
@@ -304,11 +324,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     }
 
     /// <summary>
-    /// Determines whether the <see cref="ConcurrentHashSet{T}"/> contains the specified
-    /// item.
+    ///     Determines whether the <see cref="ConcurrentHashSet{T}" /> contains the specified
+    ///     item.
     /// </summary>
-    /// <param name="item">The item to locate in the <see cref="ConcurrentHashSet{T}"/>.</param>
-    /// <returns>true if the <see cref="ConcurrentHashSet{T}"/> contains the item; otherwise, false.</returns>
+    /// <param name="item">The item to locate in the <see cref="ConcurrentHashSet{T}" />.</param>
+    /// <returns>true if the <see cref="ConcurrentHashSet{T}" /> contains the item; otherwise, false.</returns>
     public bool Contains(T item)
     {
         var hashcode = _comparer.GetHashCode(item);
@@ -324,11 +344,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
         while (current != null)
         {
-            if (hashcode == current.Hashcode &&
-                _comparer.Equals(current.Item, item))
-            {
+            if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
                 return true;
-            }
 
             current = current.Next;
         }
@@ -336,73 +353,53 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         return false;
     }
 
-    /// <summary>
-    /// Attempts to remove the item from the <see cref="ConcurrentHashSet{T}"/>.
-    /// </summary>
-    /// <param name="item">The item to remove.</param>
-    /// <returns>true if an item was removed successfully; otherwise, false.</returns>
-    public bool TryRemove(T item)
+    void ICollection<T>.Add(T item)
+        => Add(item);
+
+    void ICollection<T>.CopyTo(T[] array, int arrayIndex)
     {
-        var hashcode = _comparer.GetHashCode(item);
-        while (true)
+        if (array is null) throw new ArgumentNullException(nameof(array));
+        if (arrayIndex < 0) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+
+        var locksAcquired = 0;
+        try
         {
-            var tables = _tables;
+            AcquireAllLocks(ref locksAcquired);
 
-            GetBucketAndLockNo(hashcode,
-                out var bucketNo,
-                out var lockNo,
-                tables.Buckets.Length,
-                tables.Locks.Length);
+            var count = 0;
 
-            lock (tables.Locks[lockNo])
-            {
-                // If the table just got resized, we may not be holding the right lock, and must retry.
-                // This should be a rare occurrence.
-                if (tables != _tables)
-                {
-                    continue;
-                }
+            for (var i = 0; i < _tables.Locks.Length && count >= 0; i++) count += _tables.CountPerLock[i];
 
-                Node previous = null;
-                for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
-                {
-                    Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
+            if (array.Length - count < arrayIndex || count < 0) //"count" itself or "count + arrayIndex" can overflow
+                throw new ArgumentException(
+                    "The index is equal to or greater than the length of the array, or the number of elements in the set is greater than the available space from index to the end of the destination array.");
 
-                    if (hashcode == current.Hashcode &&
-                        _comparer.Equals(current.Item, item))
-                    {
-                        if (previous is null)
-                        {
-                            Volatile.Write(ref tables.Buckets[bucketNo], current.Next);
-                        }
-                        else
-                        {
-                            previous.Next = current.Next;
-                        }
-
-                        tables.CountPerLock[lockNo]--;
-                        return true;
-                    }
-
-                    previous = current;
-                }
-            }
-
-            return false;
+            CopyToItems(array, arrayIndex);
+        }
+        finally
+        {
+            ReleaseLocks(0, locksAcquired);
         }
     }
+
+    bool ICollection<T>.Remove(T item)
+        => TryRemove(item);
 
     IEnumerator IEnumerable.GetEnumerator()
         => GetEnumerator();
 
-    /// <summary>Returns an enumerator that iterates through the <see
-    /// cref="ConcurrentHashSet{T}"/>.</summary>
-    /// <returns>An enumerator for the <see cref="ConcurrentHashSet{T}"/>.</returns>
+    /// <summary>
+    ///     Returns an enumerator that iterates through the
+    ///     <see
+    ///         cref="ConcurrentHashSet{T}" />
+    ///     .
+    /// </summary>
+    /// <returns>An enumerator for the <see cref="ConcurrentHashSet{T}" />.</returns>
     /// <remarks>
-    /// The enumerator returned from the collection is safe to use concurrently with
-    /// reads and writes to the collection, however it does not represent a moment-in-time snapshot
-    /// of the collection.  The contents exposed through the enumerator may contain modifications
-    /// made to the collection after <see cref="GetEnumerator"/> was called.
+    ///     The enumerator returned from the collection is safe to use concurrently with
+    ///     reads and writes to the collection, however it does not represent a moment-in-time snapshot
+    ///     of the collection.  The contents exposed through the enumerator may contain modifications
+    ///     made to the collection after <see cref="GetEnumerator" /> was called.
     /// </remarks>
     public IEnumerator<T> GetEnumerator()
     {
@@ -421,58 +418,70 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         }
     }
 
-    void ICollection<T>.Add(T item)
-        => Add(item);
+    /// <summary>
+    ///     Adds the specified item to the <see cref="ConcurrentHashSet{T}" />.
+    /// </summary>
+    /// <param name="item">The item to add.</param>
+    /// <returns>
+    ///     true if the items was added to the <see cref="ConcurrentHashSet{T}" />
+    ///     successfully; false if it already exists.
+    /// </returns>
+    /// <exception cref="T:System.OverflowException">
+    ///     The <see cref="ConcurrentHashSet{T}" />
+    ///     contains too many items.
+    /// </exception>
+    public bool Add(T item)
+        => AddInternal(item, _comparer.GetHashCode(item), true);
 
-    bool ICollection<T>.IsReadOnly
-        => false;
-
-    void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+    /// <summary>
+    ///     Attempts to remove the item from the <see cref="ConcurrentHashSet{T}" />.
+    /// </summary>
+    /// <param name="item">The item to remove.</param>
+    /// <returns>true if an item was removed successfully; otherwise, false.</returns>
+    public bool TryRemove(T item)
     {
-        if (array is null) throw new ArgumentNullException(nameof(array));
-        if (arrayIndex < 0) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-
-        var locksAcquired = 0;
-        try
+        var hashcode = _comparer.GetHashCode(item);
+        while (true)
         {
-            AcquireAllLocks(ref locksAcquired);
+            var tables = _tables;
 
-            var count = 0;
+            GetBucketAndLockNo(hashcode, out var bucketNo, out var lockNo, tables.Buckets.Length, tables.Locks.Length);
 
-            for (var i = 0; i < _tables.Locks.Length && count >= 0; i++)
+            lock (tables.Locks[lockNo])
             {
-                count += _tables.CountPerLock[i];
+                // If the table just got resized, we may not be holding the right lock, and must retry.
+                // This should be a rare occurrence.
+                if (tables != _tables) continue;
+
+                Node previous = null;
+                for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
+                {
+                    Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
+
+                    if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
+                    {
+                        if (previous is null)
+                            Volatile.Write(ref tables.Buckets[bucketNo], current.Next);
+                        else
+                            previous.Next = current.Next;
+
+                        tables.CountPerLock[lockNo]--;
+                        return true;
+                    }
+
+                    previous = current;
+                }
             }
 
-            if (array.Length - count < arrayIndex ||
-                count < 0) //"count" itself or "count + arrayIndex" can overflow
-            {
-                throw new ArgumentException(
-                    "The index is equal to or greater than the length of the array, or the number of elements in the set is greater than the available space from index to the end of the destination array.");
-            }
-
-            CopyToItems(array, arrayIndex);
-        }
-        finally
-        {
-            ReleaseLocks(0, locksAcquired);
+            return false;
         }
     }
 
-    bool ICollection<T>.Remove(T item)
-        => TryRemove(item);
-
     private void InitializeFromCollection(IEnumerable<T> collection)
     {
-        foreach (var item in collection)
-        {
-            AddInternal(item, _comparer.GetHashCode(item), false);
-        }
+        foreach (var item in collection) AddInternal(item, _comparer.GetHashCode(item), false);
 
-        if (_budget == 0)
-        {
-            _budget = _tables.Buckets.Length / _tables.Locks.Length;
-        }
+        if (_budget == 0) _budget = _tables.Buckets.Length / _tables.Locks.Length;
     }
 
     private bool AddInternal(T item, int hashcode, bool acquireLock)
@@ -480,11 +489,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         while (true)
         {
             var tables = _tables;
-            GetBucketAndLockNo(hashcode,
-                out var bucketNo,
-                out var lockNo,
-                tables.Buckets.Length,
-                tables.Locks.Length);
+            GetBucketAndLockNo(hashcode, out var bucketNo, out var lockNo, tables.Buckets.Length, tables.Locks.Length);
 
             var resizeDesired = false;
             var lockTaken = false;
@@ -495,21 +500,15 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
                 // If the table just got resized, we may not be holding the right lock, and must retry.
                 // This should be a rare occurrence.
-                if (tables != _tables)
-                {
-                    continue;
-                }
+                if (tables != _tables) continue;
 
                 // Try to find this item in the bucket
                 Node previous = null;
                 for (var current = tables.Buckets[bucketNo]; current != null; current = current.Next)
                 {
                     Debug.Assert((previous is null && current == tables.Buckets[bucketNo]) || previous.Next == current);
-                    if (hashcode == current.Hashcode &&
-                        _comparer.Equals(current.Item, item))
-                    {
+                    if (hashcode == current.Hashcode && _comparer.Equals(current.Item, item))
                         return false;
-                    }
 
                     previous = current;
                 }
@@ -526,10 +525,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
                 // It is also possible that GrowTable will increase the budget but won't resize the bucket table.
                 // That happens if the bucket table is found to be poorly utilized due to a bad hash function.
                 //
-                if (tables.CountPerLock[lockNo] > _budget)
-                {
-                    resizeDesired = true;
-                }
+                if (tables.CountPerLock[lockNo] > _budget) resizeDesired = true;
             }
             finally
             {
@@ -545,10 +541,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             // - As a result, it is possible that GrowTable will be called unnecessarily. But, GrowTable will obtain lock 0
             //   and then verify that the table we passed to it as the argument is still the current table.
             //
-            if (resizeDesired)
-            {
-                GrowTable(tables);
-            }
+            if (resizeDesired) GrowTable(tables);
 
             return true;
         }
@@ -561,7 +554,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         return bucketNo;
     }
 
-    private static void GetBucketAndLockNo(int hashcode, out int bucketNo, out int lockNo, int bucketCount,
+    private static void GetBucketAndLockNo(
+        int hashcode,
+        out int bucketNo,
+        out int lockNo,
+        int bucketCount,
         int lockCount)
     {
         bucketNo = (hashcode & 0x7fffffff) % bucketCount;
@@ -582,19 +579,14 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
             // Make sure nobody resized the table while we were waiting for lock 0:
             if (tables != _tables)
-            {
                 // We assume that since the table reference is different, it was already resized (or the budget
                 // was adjusted). If we ever decide to do table shrinking, or replace the table for other reasons,
                 // we will have to revisit this logic.
                 return;
-            }
 
             // Compute the (approx.) total size. Use an Int64 accumulation variable to avoid an overflow.
             long approxCount = 0;
-            for (var i = 0; i < tables.CountPerLock.Length; i++)
-            {
-                approxCount += tables.CountPerLock[i];
-            }
+            for (var i = 0; i < tables.CountPerLock.Length; i++) approxCount += tables.CountPerLock[i];
 
             //
             // If the bucket array is too empty, double the budget instead of resizing the table
@@ -602,10 +594,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             if (approxCount < tables.Buckets.Length / 4)
             {
                 _budget = 2 * _budget;
-                if (_budget < 0)
-                {
-                    _budget = int.MaxValue;
-                }
+                if (_budget < 0) _budget = int.MaxValue;
 
                 return;
             }
@@ -623,17 +612,11 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
                     // Now, we only need to check odd integers, and find the first that is not divisible
                     // by 3, 5 or 7.
-                    while (newLength % 3 == 0 || newLength % 5 == 0 || newLength % 7 == 0)
-                    {
-                        newLength += 2;
-                    }
+                    while (newLength % 3 == 0 || newLength % 5 == 0 || newLength % 7 == 0) newLength += 2;
 
                     Debug.Assert(newLength % 2 != 0);
 
-                    if (newLength > maxArrayLength)
-                    {
-                        maximizeTableSize = true;
-                    }
+                    if (newLength > maxArrayLength) maximizeTableSize = true;
                 }
             }
             catch (OverflowException)
@@ -662,15 +645,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             if (_growLockArray && tables.Locks.Length < MaxLockNumber)
             {
                 newLocks = new object[tables.Locks.Length * 2];
-                Array.Copy(tables.Locks,
-                    0,
-                    newLocks,
-                    0,
-                    tables.Locks.Length);
-                for (var i = tables.Locks.Length; i < newLocks.Length; i++)
-                {
-                    newLocks[i] = new();
-                }
+                Array.Copy(tables.Locks, 0, newLocks, 0, tables.Locks.Length);
+                for (var i = tables.Locks.Length; i < newLocks.Length; i++) newLocks[i] = new();
             }
 
             var newBuckets = new Node[newLength];
@@ -718,10 +694,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
         var elems = this.Where(predicate);
         var removed = 0;
         foreach (var elem in elems)
-        {
-            if (this.TryRemove(elem))
+            if (TryRemove(elem))
                 removed++;
-        }
 
         return removed;
     }
@@ -751,10 +725,7 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
             }
             finally
             {
-                if (lockTaken)
-                {
-                    locksAcquired++;
-                }
+                if (lockTaken) locksAcquired++;
             }
         }
     }
@@ -763,22 +734,17 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
     {
         Debug.Assert(fromInclusive <= toExclusive);
 
-        for (var i = fromInclusive; i < toExclusive; i++)
-        {
-            Monitor.Exit(_tables.Locks[i]);
-        }
+        for (var i = fromInclusive; i < toExclusive; i++) Monitor.Exit(_tables.Locks[i]);
     }
 
     private void CopyToItems(T[] array, int index)
     {
         var buckets = _tables.Buckets;
         for (var i = 0; i < buckets.Length; i++)
+        for (var current = buckets[i]; current != null; current = current.Next)
         {
-            for (var current = buckets[i]; current != null; current = current.Next)
-            {
-                array[index] = current.Item;
-                index++; //this should never flow, CopyToItems is only called when there's no overflow risk
-            }
+            array[index] = current.Item;
+            index++; //this should never flow, CopyToItems is only called when there's no overflow risk
         }
     }
 
@@ -799,8 +765,8 @@ public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T
 
     private sealed class Node
     {
-        public readonly T Item;
         public readonly int Hashcode;
+        public readonly T Item;
 
         public volatile Node Next;
 

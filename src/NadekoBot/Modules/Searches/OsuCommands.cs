@@ -18,16 +18,15 @@ public partial class Searches
             _httpFactory = factory;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Osu(string user, [Leftover] string mode = null)
         {
             if (string.IsNullOrWhiteSpace(user))
                 return;
 
             using var http = _httpFactory.CreateClient();
-            var modeNumber = string.IsNullOrWhiteSpace(mode)
-                ? 0
-                : ResolveGameMode(mode);
+            var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
 
             try
             {
@@ -52,17 +51,18 @@ public partial class Searches
                 var userId = obj.UserId;
 
                 await ctx.Channel.EmbedAsync(_eb.Create()
-                    .WithOkColor()
-                    .WithTitle($"osu! {smode} profile for {user}")
-                    .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
-                    .WithDescription($"https://osu.ppy.sh/u/{userId}")
-                    .AddField("Official Rank", $"#{obj.PpRank}", true)
-                    .AddField("Country Rank", $"#{obj.PpCountryRank} :flag_{obj.Country.ToLower()}:", true)
-                    .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
-                    .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
-                    .AddField("Playcount", obj.Playcount, true)
-                    .AddField("Level", Math.Round(obj.Level), true)
-                );
+                                                .WithOkColor()
+                                                .WithTitle($"osu! {smode} profile for {user}")
+                                                .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
+                                                .WithDescription($"https://osu.ppy.sh/u/{userId}")
+                                                .AddField("Official Rank", $"#{obj.PpRank}", true)
+                                                .AddField("Country Rank",
+                                                    $"#{obj.PpCountryRank} :flag_{obj.Country.ToLower()}:",
+                                                    true)
+                                                .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
+                                                .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
+                                                .AddField("Playcount", obj.Playcount, true)
+                                                .AddField("Level", Math.Round(obj.Level), true));
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -75,17 +75,15 @@ public partial class Searches
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Gatari(string user, [Leftover] string mode = null)
         {
             using var http = _httpFactory.CreateClient();
-            var modeNumber = string.IsNullOrWhiteSpace(mode)
-                ? 0
-                : ResolveGameMode(mode);
+            var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
 
             var modeStr = ResolveGameMode(modeNumber);
-            var resString = await http
-                .GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}");
+            var resString = await http.GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}");
 
             var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
             if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
@@ -100,23 +98,27 @@ public partial class Searches
             var userStats = statsResponse.Stats;
 
             var embed = _eb.Create()
-                .WithOkColor()
-                .WithTitle($"osu!Gatari {modeStr} profile for {user}")
-                .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
-                .WithDescription($"https://osu.gatari.pw/u/{userStats.Id}")
-                .AddField("Official Rank", $"#{userStats.Rank}", true)
-                .AddField("Country Rank", $"#{userStats.CountryRank} :flag_{userData.Country.ToLower()}:", true)
-                .AddField("Total PP", userStats.Pp, true)
-                .AddField("Accuracy", $"{Math.Round(userStats.AvgAccuracy, 2)}%", true)
-                .AddField("Playcount", userStats.Playcount, true)
-                .AddField("Level", userStats.Level, true);
+                           .WithOkColor()
+                           .WithTitle($"osu!Gatari {modeStr} profile for {user}")
+                           .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
+                           .WithDescription($"https://osu.gatari.pw/u/{userStats.Id}")
+                           .AddField("Official Rank", $"#{userStats.Rank}", true)
+                           .AddField("Country Rank",
+                               $"#{userStats.CountryRank} :flag_{userData.Country.ToLower()}:",
+                               true)
+                           .AddField("Total PP", userStats.Pp, true)
+                           .AddField("Accuracy", $"{Math.Round(userStats.AvgAccuracy, 2)}%", true)
+                           .AddField("Playcount", userStats.Playcount, true)
+                           .AddField("Level", userStats.Level, true);
 
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Osu5(string user, [Leftover] string mode = null)
-        {;
+        {
+            ;
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
             {
                 await SendErrorAsync("An osu! API key is required.");
@@ -131,26 +133,23 @@ public partial class Searches
 
             using var http = _httpFactory.CreateClient();
             var m = 0;
-            if (!string.IsNullOrWhiteSpace(mode))
-            {
-                m = ResolveGameMode(mode);
-            }
+            if (!string.IsNullOrWhiteSpace(mode)) m = ResolveGameMode(mode);
 
-            var reqString = $"https://osu.ppy.sh/api/get_user_best" +
-                            $"?k={_creds.OsuApiKey}" +
-                            $"&u={Uri.EscapeDataString(user)}" +
-                            $"&type=string" +
-                            $"&limit=5" +
-                            $"&m={m}";
+            var reqString = "https://osu.ppy.sh/api/get_user_best"
+                            + $"?k={_creds.OsuApiKey}"
+                            + $"&u={Uri.EscapeDataString(user)}"
+                            + "&type=string"
+                            + "&limit=5"
+                            + $"&m={m}";
 
             var resString = await http.GetStringAsync(reqString);
             var obj = JsonConvert.DeserializeObject<List<OsuUserBests>>(resString);
 
             var mapTasks = obj.Select(async item =>
             {
-                var mapReqString = $"https://osu.ppy.sh/api/get_beatmaps" +
-                                   $"?k={_creds.OsuApiKey}" +
-                                   $"&b={item.BeatmapId}";
+                var mapReqString = "https://osu.ppy.sh/api/get_beatmaps"
+                                   + $"?k={_creds.OsuApiKey}"
+                                   + $"&b={item.BeatmapId}";
 
                 var mapResString = await http.GetStringAsync(mapReqString);
                 var map = JsonConvert.DeserializeObject<List<OsuMapData>>(mapResString).FirstOrDefault();
@@ -164,23 +163,15 @@ public partial class Searches
                 var desc = $@"[/b/{item.BeatmapId}](https://osu.ppy.sh/b/{item.BeatmapId})
 {pp + "pp",-7} | {acc + "%",-7}
 ";
-                if (mods != "+")
-                {
-                    desc += Format.Bold(mods);
-                }
+                if (mods != "+") desc += Format.Bold(mods);
 
                 return (title, desc);
             });
-                    
-            var eb = _eb.Create()
-                .WithOkColor()
-                .WithTitle($"Top 5 plays for {user}");
-                    
+
+            var eb = _eb.Create().WithOkColor().WithTitle($"Top 5 plays for {user}");
+
             var mapData = await mapTasks.WhenAll();
-            foreach (var (title, desc) in mapData.Where(x => x != default))
-            {
-                eb.AddField(title, desc, false);
-            }
+            foreach (var (title, desc) in mapData.Where(x => x != default)) eb.AddField(title, desc);
 
             await ctx.Channel.EmbedAsync(eb);
         }
@@ -192,11 +183,8 @@ public partial class Searches
             double totalHits;
             if (mode == 0)
             {
-                hitPoints = (play.Count50 * 50) +
-                            (play.Count100 * 100) +
-                            (play.Count300 * 300);
-                totalHits = play.Count50 + play.Count100 +
-                            play.Count300 + play.Countmiss;
+                hitPoints = (play.Count50 * 50) + (play.Count100 * 100) + (play.Count300 * 300);
+                totalHits = play.Count50 + play.Count100 + play.Count300 + play.Countmiss;
                 totalHits *= 300;
             }
             else if (mode == 1)
@@ -208,18 +196,22 @@ public partial class Searches
             else if (mode == 2)
             {
                 hitPoints = play.Count50 + play.Count100 + play.Count300;
-                totalHits = play.Countmiss + play.Count50 + play.Count100 + play.Count300 +
-                            play.Countkatu;
+                totalHits = play.Countmiss + play.Count50 + play.Count100 + play.Count300 + play.Countkatu;
             }
             else
             {
-                hitPoints = (play.Count50 * 50) +
-                            (play.Count100 * 100) +
-                            (play.Countkatu * 200) +
-                            ((play.Count300 + play.Countgeki) * 300);
+                hitPoints = (play.Count50 * 50)
+                            + (play.Count100 * 100)
+                            + (play.Countkatu * 200)
+                            + ((play.Count300 + play.Countgeki) * 300);
 
-                totalHits = (play.Countmiss + play.Count50 + play.Count100 + 
-                             play.Countkatu + play.Count300 + play.Countgeki) * 300;
+                totalHits = (play.Countmiss
+                             + play.Count50
+                             + play.Count100
+                             + play.Countkatu
+                             + play.Count300
+                             + play.Countgeki)
+                            * 300;
             }
 
 
@@ -266,7 +258,7 @@ public partial class Searches
         //https://github.com/ppy/osu-api/wiki#mods
         private static string ResolveMods(int mods)
         {
-            var modString = $"+";
+            var modString = "+";
 
             if (IsBitSet(mods, 0))
                 modString += "NF";
@@ -300,7 +292,7 @@ public partial class Searches
             return modString;
         }
 
-        private static bool IsBitSet(int mods, int pos) =>
-            (mods & (1 << pos)) != 0;
+        private static bool IsBitSet(int mods, int pos)
+            => (mods & (1 << pos)) != 0;
     }
 }

@@ -9,7 +9,5 @@ public class MutedUserId : DbEntity
         => UserId.GetHashCode();
 
     public override bool Equals(object obj)
-        => obj is MutedUserId mui
-            ? mui.UserId == UserId
-            : false;
+        => obj is MutedUserId mui ? mui.UserId == UserId : false;
 }

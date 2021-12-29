@@ -26,11 +26,11 @@ public class YtdlOperation
                 RedirectStandardOutput = true,
                 StandardOutputEncoding = Encoding.UTF8,
                 StandardErrorEncoding = Encoding.UTF8,
-                CreateNoWindow = true,
-            },
+                CreateNoWindow = true
+            }
         };
     }
-        
+
     public async Task<string> GetDataAsync(params string[] args)
     {
         try
@@ -49,13 +49,12 @@ public class YtdlOperation
         }
         catch (Win32Exception)
         {
-            Log.Error("youtube-dl is likely not installed. " +
-                      "Please install it before running the command again");
+            Log.Error("youtube-dl is likely not installed. " + "Please install it before running the command again");
             return default;
         }
         catch (Exception ex)
         {
-            Log.Error(ex , "Exception running youtube-dl: {ErrorMessage}", ex.Message);
+            Log.Error(ex, "Exception running youtube-dl: {ErrorMessage}", ex.Message);
             return default;
         }
     }
@@ -66,9 +65,9 @@ public class YtdlOperation
 
         Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
         process.Start();
-            
+
         string line;
-        while((line = await process.StandardOutput.ReadLineAsync()) != null)
+        while ((line = await process.StandardOutput.ReadLineAsync()) != null)
             yield return line;
     }
 }

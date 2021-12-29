@@ -1,8 +1,9 @@
 #nullable disable
 using NadekoBot.Common.Yml;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -11,6 +12,25 @@ public partial class Utility
     [Group]
     public class QuoteCommands : NadekoSubmodule
     {
+        private const string _prependExport =
+            @"# Keys are keywords, Each key has a LIST of quotes in the following format:
+# - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
+#   an: Author name 
+#   aid: Author id 
+#   txt: Quote text
+";
+
+        private static readonly ISerializer _exportSerializer = new SerializerBuilder()
+                                                                .WithEventEmitter(args
+                                                                    => new MultilineScalarFlowStyleEmitter(args))
+                                                                .WithNamingConvention(
+                                                                    CamelCaseNamingConvention.Instance)
+                                                                .WithIndentedSequences()
+                                                                .ConfigureDefaultValuesHandling(DefaultValuesHandling
+                                                                    .OmitDefaults)
+                                                                .DisableAliases()
+                                                                .Build();
+
         private readonly DbService _db;
         private readonly IHttpClientFactory _http;
 
@@ -20,13 +40,15 @@ public partial class Utility
             _http = http;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public Task ListQuotes(OrderType order = OrderType.Keyword)
             => ListQuotes(1, order);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
@@ -43,12 +65,15 @@ public partial class Utility
 
             if (quotes.Any())
                 await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
-                        string.Join("\n", quotes.Select(q => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
+                    string.Join("\n",
+                        quotes.Select(q
+                            => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
             else
                 await ReplyErrorLocalizedAsync(strs.quotes_page_none);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuotePrint([Leftover] string keyword)
         {
@@ -71,9 +96,7 @@ public partial class Utility
             if (quote is null)
                 return;
 
-            var rep = new ReplacementBuilder()
-                .WithDefault(Context)
-                .Build();
+            var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             var text = SmartText.CreateFrom(quote.Text);
             text = rep.Replace(text);
@@ -81,7 +104,8 @@ public partial class Utility
             await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteShow(int id)
         {
@@ -104,14 +128,16 @@ public partial class Utility
 
         private async Task ShowQuoteData(Quote data)
             => await ctx.Channel.EmbedAsync(_eb.Create(ctx)
-                .WithOkColor()
-                .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
-                .AddField(GetText(strs.trigger), data.Keyword)
-                .AddField(GetText(strs.response), Format.Sanitize(data.Text).Replace("](", "]\\("))
-                .WithFooter(GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
-            );
+                                               .WithOkColor()
+                                               .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
+                                               .AddField(GetText(strs.trigger), data.Keyword)
+                                               .AddField(GetText(strs.response),
+                                                   Format.Sanitize(data.Text).Replace("](", "]\\("))
+                                               .WithFooter(
+                                                   GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})"))));
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteSearch(string keyword, [Leftover] string text)
         {
@@ -129,11 +155,14 @@ public partial class Utility
             if (keywordquote is null)
                 return;
 
-            await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 " + keyword.ToLowerInvariant() + ":  " +
-                                               keywordquote.Text.SanitizeAllMentions());
+            await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 "
+                                               + keyword.ToLowerInvariant()
+                                               + ":  "
+                                               + keywordquote.Text.SanitizeAllMentions());
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteId(int id)
         {
@@ -142,9 +171,7 @@ public partial class Utility
 
             Quote quote;
 
-            var rep = new ReplacementBuilder()
-                .WithDefault(Context)
-                .Build();
+            var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             await using (var uow = _db.GetDbContext())
             {
@@ -157,23 +184,26 @@ public partial class Utility
                 return;
             }
 
-            var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeAllMentions()}` 🗯️ " + quote.Keyword.ToLowerInvariant().SanitizeAllMentions() + ":\n";
+            var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeAllMentions()}` 🗯️ "
+                           + quote.Keyword.ToLowerInvariant().SanitizeAllMentions()
+                           + ":\n";
 
-                
+
             var text = SmartText.CreateFrom(quote.Text);
             text = rep.Replace(text);
             await ctx.Channel.SendAsync(infoText + text, true);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteAdd(string keyword, [Leftover] string text)
         {
             if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
                 return;
-            
+
             keyword = keyword.ToUpperInvariant();
-            
+
             Quote q;
             await using (var uow = _db.GetDbContext())
             {
@@ -183,14 +213,16 @@ public partial class Utility
                     AuthorName = ctx.Message.Author.Username,
                     GuildId = ctx.Guild.Id,
                     Keyword = keyword,
-                    Text = text,
+                    Text = text
                 });
                 await uow.SaveChangesAsync();
             }
+
             await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString())));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteDelete(int id)
         {
@@ -214,13 +246,15 @@ public partial class Utility
                     response = GetText(strs.quote_deleted(id));
                 }
             }
+
             if (success)
                 await SendConfirmAsync(response);
             else
                 await SendErrorAsync(response);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task DelAllQuotes([Leftover] string keyword)
@@ -240,39 +274,8 @@ public partial class Utility
             await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions())));
         }
 
-        public class ExportedQuote
-        {
-            public static ExportedQuote FromModel(Quote quote)
-                => new()
-                {
-                    Id = ((kwum)quote.Id).ToString(),
-                    An = quote.AuthorName,
-                    Aid = quote.AuthorId,
-                    Txt = quote.Text
-                };
-
-            public string Id { get; set; }
-            public string An { get; set; }
-            public ulong Aid { get; set; }
-            public string Txt { get; set; }
-        }
-            
-        private const string _prependExport =
-            @"# Keys are keywords, Each key has a LIST of quotes in the following format:
-# - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
-#   an: Author name 
-#   aid: Author id 
-#   txt: Quote text
-";
-        private static readonly ISerializer _exportSerializer = new SerializerBuilder()
-            .WithEventEmitter(args => new MultilineScalarFlowStyleEmitter(args))
-            .WithNamingConvention(YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention.Instance)
-            .WithIndentedSequences()
-            .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
-            .DisableAliases()
-            .Build();
-            
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task QuotesExport()
@@ -280,31 +283,27 @@ public partial class Utility
             IEnumerable<Quote> quotes;
             await using (var uow = _db.GetDbContext())
             {
-                quotes = uow.Quotes
-                    .GetForGuild(ctx.Guild.Id)
-                    .ToList();
+                quotes = uow.Quotes.GetForGuild(ctx.Guild.Id).ToList();
             }
 
-            var crsDict = quotes
-                .GroupBy(x => x.Keyword)
-                .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
-            
-            var text = _prependExport + _exportSerializer
-                .Serialize(crsDict)
-                .UnescapeUnicodeCodePoints();
+            var crsDict = quotes.GroupBy(x => x.Keyword)
+                                .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
+
+            var text = _prependExport + _exportSerializer.Serialize(crsDict).UnescapeUnicodeCodePoints();
 
             await using var stream = await text.ToStream();
-            await ctx.Channel.SendFileAsync(stream, "quote-export.yml", text: null);
+            await ctx.Channel.SendFileAsync(stream, "quote-export.yml");
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Ratelimit(300)]
 #if GLOBAL_NADEKO
             [OwnerOnly]
 #endif
-        public async Task QuotesImport([Leftover]string input = null)
+        public async Task QuotesImport([Leftover] string input = null)
         {
             input = input?.Trim();
 
@@ -335,10 +334,10 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
                 return;
             }
-            
+
             await ctx.OkAsync();
         }
-            
+
         public async Task<bool> ImportCrsAsync(ulong guildId, string input)
         {
             Dictionary<string, List<ExportedQuote>> data;
@@ -357,21 +356,33 @@ public partial class Utility
             foreach (var entry in data)
             {
                 var keyword = entry.Key;
-                await uow.Quotes
-                    .AddRangeAsync(entry.Value
-                        .Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
-                        .Select(quote => new Quote()
-                        {
-                            GuildId = guildId,
-                            Keyword = keyword,
-                            Text = quote.Txt,
-                            AuthorId = quote.Aid,
-                            AuthorName = quote.An,
-                        }));
+                await uow.Quotes.AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
+                                                    .Select(quote => new Quote
+                                                    {
+                                                        GuildId = guildId,
+                                                        Keyword = keyword,
+                                                        Text = quote.Txt,
+                                                        AuthorId = quote.Aid,
+                                                        AuthorName = quote.An
+                                                    }));
             }
 
             await uow.SaveChangesAsync();
             return true;
+        }
+
+        public class ExportedQuote
+        {
+            public string Id { get; set; }
+            public string An { get; set; }
+            public ulong Aid { get; set; }
+            public string Txt { get; set; }
+
+            public static ExportedQuote FromModel(Quote quote)
+                => new()
+                {
+                    Id = ((kwum)quote.Id).ToString(), An = quote.AuthorName, Aid = quote.AuthorId, Txt = quote.Text
+                };
         }
     }
 }

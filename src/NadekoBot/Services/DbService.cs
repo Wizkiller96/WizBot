@@ -1,8 +1,8 @@
 #nullable disable
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
-using LinqToDB.EntityFrameworkCore;
 
 namespace NadekoBot.Services;
 
@@ -14,7 +14,7 @@ public class DbService
     public DbService(IBotCredentials creds)
     {
         LinqToDBForEFTools.Initialize();
-            
+
         var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
         builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
 
@@ -37,6 +37,7 @@ public class DbService
             mContext.SaveChanges();
             mContext.Dispose();
         }
+
         context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
         context.SaveChanges();
     }
@@ -53,5 +54,6 @@ public class DbService
         return context;
     }
 
-    public NadekoContext GetDbContext() => GetDbContextInternal();
+    public NadekoContext GetDbContext()
+        => GetDbContextInternal();
 }

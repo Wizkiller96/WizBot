@@ -1,8 +1,8 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -20,7 +20,8 @@ public partial class Utility
             _client = client;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task AliasesClear()
@@ -29,7 +30,8 @@ public partial class Utility
             await ReplyConfirmLocalizedAsync(strs.aliases_cleared(count));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
         public async Task Alias(string trigger, [Leftover] string mapping = null)
@@ -43,8 +45,7 @@ public partial class Utility
 
             if (string.IsNullOrWhiteSpace(mapping))
             {
-                if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) ||
-                    !maps.TryRemove(trigger, out _))
+                if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.TryRemove(trigger, out _))
                 {
                     await ReplyErrorLocalizedAsync(strs.alias_remove_fail(Format.Code(trigger)));
                     return;
@@ -53,11 +54,7 @@ public partial class Utility
                 await using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                    var toAdd = new CommandAlias()
-                    {
-                        Mapping = mapping,
-                        Trigger = trigger
-                    };
+                    var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
                     var tr = config.CommandAliases.FirstOrDefault(x => x.Trigger == trigger);
                     if (tr != null)
                         uow.Set<CommandAlias>().Remove(tr);
@@ -67,46 +64,45 @@ public partial class Utility
                 await ReplyConfirmLocalizedAsync(strs.alias_removed(Format.Code(trigger)));
                 return;
             }
-            _service.AliasMaps.AddOrUpdate(ctx.Guild.Id, _ =>
-            {
-                using (var uow = _db.GetDbContext())
+
+            _service.AliasMaps.AddOrUpdate(ctx.Guild.Id,
+                _ =>
                 {
-                    var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                    config.CommandAliases.Add(new()
+                    using (var uow = _db.GetDbContext())
                     {
-                        Mapping = mapping,
-                        Trigger = trigger
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        config.CommandAliases.Add(new() { Mapping = mapping, Trigger = trigger });
+                        uow.SaveChanges();
+                    }
+
+                    return new(new Dictionary<string, string>
+                    {
+                        { trigger.Trim().ToLowerInvariant(), mapping.ToLowerInvariant() }
                     });
-                    uow.SaveChanges();
-                }
-                return new(new Dictionary<string, string>() {
-                    {trigger.Trim().ToLowerInvariant(), mapping.ToLowerInvariant() },
-                });
-            }, (_, map) =>
-            {
-                using (var uow = _db.GetDbContext())
+                },
+                (_, map) =>
                 {
-                    var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                    var toAdd = new CommandAlias()
+                    using (var uow = _db.GetDbContext())
                     {
-                        Mapping = mapping,
-                        Trigger = trigger
-                    };
-                    var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger);
-                    if (toRemove.Any())
-                        uow.RemoveRange(toRemove.ToArray());
-                    config.CommandAliases.Add(toAdd);
-                    uow.SaveChanges();
-                }
-                map.AddOrUpdate(trigger, mapping, (key, old) => mapping);
-                return map;
-            });
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
+                        var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger);
+                        if (toRemove.Any())
+                            uow.RemoveRange(toRemove.ToArray());
+                        config.CommandAliases.Add(toAdd);
+                        uow.SaveChanges();
+                    }
+
+                    map.AddOrUpdate(trigger, mapping, (key, old) => mapping);
+                    return map;
+                });
 
             await ReplyConfirmLocalizedAsync(strs.alias_added(Format.Code(trigger), Format.Code(mapping)));
         }
 
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task AliasList(int page = 1)
         {
@@ -124,14 +120,17 @@ public partial class Utility
 
             var arr = maps.ToArray();
 
-            await ctx.SendPaginatedConfirmAsync(page, curPage =>
-            {
-                return _eb.Create().WithOkColor()
-                    .WithTitle(GetText(strs.alias_list))
-                    .WithDescription(string.Join("\n",
-                        arr.Skip(curPage * 10).Take(10).Select(x => $"`{x.Key}` => `{x.Value}`")));
-
-            }, arr.Length, 10);
+            await ctx.SendPaginatedConfirmAsync(page,
+                curPage =>
+                {
+                    return _eb.Create()
+                              .WithOkColor()
+                              .WithTitle(GetText(strs.alias_list))
+                              .WithDescription(string.Join("\n",
+                                  arr.Skip(curPage * 10).Take(10).Select(x => $"`{x.Key}` => `{x.Value}`")));
+                },
+                arr.Length,
+                10);
         }
     }
 }

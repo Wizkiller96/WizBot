@@ -3,6 +3,10 @@ namespace NadekoBot.Modules.Searches.Common;
 
 public class E621Object
 {
+    public FileData File { get; set; }
+    public TagData Tags { get; set; }
+    public ScoreData Score { get; set; }
+
     public class FileData
     {
         public string Url { get; set; }
@@ -17,8 +21,4 @@ public class E621Object
     {
         public string Total { get; set; }
     }
-
-    public FileData File { get; set; }
-    public TagData Tags { get; set; }
-    public ScoreData Score { get; set; }
 }

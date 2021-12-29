@@ -1,9 +1,10 @@
 ﻿#nullable disable
-using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
+using System.Net;
+using System.Threading.Channels;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -18,9 +19,7 @@ public sealed class AutoAssignRoleService : INService
     private readonly Channel<SocketGuildUser> _assignQueue = Channel.CreateBounded<SocketGuildUser>(
         new BoundedChannelOptions(100)
         {
-            FullMode = BoundedChannelFullMode.DropOldest,
-            SingleReader = true,
-            SingleWriter = false,
+            FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, SingleWriter = false
         });
 
     public AutoAssignRoleService(DiscordSocketClient client, Bot bot, DbService db)
@@ -28,10 +27,10 @@ public sealed class AutoAssignRoleService : INService
         _client = client;
         _db = db;
 
-        _autoAssignableRoles = bot.AllGuildConfigs
-            .Where(x => !string.IsNullOrWhiteSpace(x.AutoAssignRoleIds))
-            .ToDictionary<GuildConfig, ulong, IReadOnlyList<ulong>>(k => k.GuildId, v => v.GetAutoAssignableRoles())
-            .ToConcurrent();
+        _autoAssignableRoles = bot.AllGuildConfigs.Where(x => !string.IsNullOrWhiteSpace(x.AutoAssignRoleIds))
+                                  .ToDictionary<GuildConfig, ulong, IReadOnlyList<ulong>>(k => k.GuildId,
+                                      v => v.GetAutoAssignableRoles())
+                                  .ToConcurrent();
 
         _ = Task.Run(async () =>
         {
@@ -40,14 +39,13 @@ public sealed class AutoAssignRoleService : INService
                 var user = await _assignQueue.Reader.ReadAsync();
                 if (!_autoAssignableRoles.TryGetValue(user.Guild.Id, out var savedRoleIds))
                     continue;
-                    
+
                 try
                 {
-                    var roleIds = savedRoleIds
-                        .Select(roleId => user.Guild.GetRole(roleId))
-                        .Where(x => x is not null)
-                        .ToList();
-                        
+                    var roleIds = savedRoleIds.Select(roleId => user.Guild.GetRole(roleId))
+                                              .Where(x => x is not null)
+                                              .ToList();
+
                     if (roleIds.Any())
                     {
                         await user.AddRolesAsync(roleIds);
@@ -59,16 +57,17 @@ public sealed class AutoAssignRoleService : INService
                             "Disabled 'Auto assign role' feature on {GuildName} [{GuildId}] server the roles dont exist",
                             user.Guild.Name,
                             user.Guild.Id);
-                            
+
                         await DisableAarAsync(user.Guild.Id);
                     }
                 }
-                catch (Discord.Net.HttpException ex) when (ex.HttpCode == System.Net.HttpStatusCode.Forbidden)
+                catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
                 {
-                    Log.Warning("Disabled 'Auto assign role' feature on {GuildName} [{GuildId}] server because I don't have role management permissions",
+                    Log.Warning(
+                        "Disabled 'Auto assign role' feature on {GuildName} [{GuildId}] server because I don't have role management permissions",
                         user.Guild.Name,
                         user.Guild.Id);
-                        
+
                     await DisableAarAsync(user.Guild.Id);
                 }
                 catch (Exception ex)
@@ -84,16 +83,13 @@ public sealed class AutoAssignRoleService : INService
 
     private async Task OnClientRoleDeleted(SocketRole role)
     {
-        if (_autoAssignableRoles.TryGetValue(role.Guild.Id, out var roles)
-            && roles.Contains(role.Id))
-        {
+        if (_autoAssignableRoles.TryGetValue(role.Guild.Id, out var roles) && roles.Contains(role.Id))
             await ToggleAarAsync(role.Guild.Id, role.Id);
-        }
     }
 
     private async Task OnClientOnUserJoined(SocketGuildUser user)
     {
-        if (_autoAssignableRoles.TryGetValue(user.Guild.Id, out _)) 
+        if (_autoAssignableRoles.TryGetValue(user.Guild.Id, out _))
             await _assignQueue.Writer.WriteAsync(user);
     }
 
@@ -102,42 +98,40 @@ public sealed class AutoAssignRoleService : INService
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set);
         var roles = gc.GetAutoAssignableRoles();
-        if(!roles.Remove(roleId) && roles.Count < 3)
+        if (!roles.Remove(roleId) && roles.Count < 3)
             roles.Add(roleId);
-                
+
         gc.SetAutoAssignableRoles(roles);
         await uow.SaveChangesAsync();
-            
+
         if (roles.Count > 0)
             _autoAssignableRoles[guildId] = roles;
         else
             _autoAssignableRoles.TryRemove(guildId, out _);
-            
+
         return roles;
     }
 
     public async Task DisableAarAsync(ulong guildId)
     {
         await using var uow = _db.GetDbContext();
-            
-        await uow
-            .GuildConfigs
-            .AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .UpdateAsync(_ => new(){ AutoAssignRoleIds = null});
-            
+
+        await uow.GuildConfigs.AsNoTracking()
+                 .Where(x => x.GuildId == guildId)
+                 .UpdateAsync(_ => new() { AutoAssignRoleIds = null });
+
         _autoAssignableRoles.TryRemove(guildId, out _);
-            
+
         await uow.SaveChangesAsync();
     }
 
     public async Task SetAarRolesAsync(ulong guildId, IEnumerable<ulong> newRoles)
     {
         await using var uow = _db.GetDbContext();
-            
+
         var gc = uow.GuildConfigsForId(guildId, set => set);
         gc.SetAutoAssignableRoles(newRoles);
-            
+
         await uow.SaveChangesAsync();
     }
 

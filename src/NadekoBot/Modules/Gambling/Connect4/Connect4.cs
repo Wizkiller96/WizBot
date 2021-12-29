@@ -6,52 +6,53 @@ namespace NadekoBot.Modules.Gambling.Common.Connect4;
 
 public sealed class Connect4Game : IDisposable
 {
+    public enum Field //temporary most likely
+    {
+        Empty,
+        P1,
+        P2
+    }
+
     public enum Phase
     {
         Joining, // waiting for second player to join
         P1Move,
         P2Move,
-        Ended,
-    }
-
-    public enum Field //temporary most likely
-    {
-        Empty,
-        P1,
-        P2,
+        Ended
     }
 
     public enum Result
     {
         Draw,
         CurrentPlayerWon,
-        OtherPlayerWon,
+        OtherPlayerWon
     }
 
     public const int NumberOfColumns = 7;
     public const int NumberOfRows = 6;
 
-    public Phase CurrentPhase { get; private set; } = Phase.Joining;
-
-    //state is bottom to top, left to right
-    private readonly Field[] _gameState = new Field[NumberOfRows * NumberOfColumns];
-    private readonly (ulong UserId, string Username)?[] _players = new(ulong, string)?[2];
-
-    public ImmutableArray<Field> GameState => _gameState.ToImmutableArray();
-    public ImmutableArray<(ulong UserId, string Username)?> Players => _players.ToImmutableArray();
-
-    public (ulong UserId, string Username) CurrentPlayer => CurrentPhase == Phase.P1Move
-        ? _players[0].Value
-        : _players[1].Value;
-
-    public (ulong UserId, string Username) OtherPlayer => CurrentPhase == Phase.P2Move
-        ? _players[0].Value
-        : _players[1].Value;
-
     //public event Func<Connect4Game, Task> OnGameStarted;
     public event Func<Connect4Game, Task> OnGameStateUpdated;
     public event Func<Connect4Game, Task> OnGameFailedToStart;
     public event Func<Connect4Game, Result, Task> OnGameEnded;
+
+    public Phase CurrentPhase { get; private set; } = Phase.Joining;
+
+    public ImmutableArray<Field> GameState
+        => _gameState.ToImmutableArray();
+
+    public ImmutableArray<(ulong UserId, string Username)?> Players
+        => _players.ToImmutableArray();
+
+    public (ulong UserId, string Username) CurrentPlayer
+        => CurrentPhase == Phase.P1Move ? _players[0].Value : _players[1].Value;
+
+    public (ulong UserId, string Username) OtherPlayer
+        => CurrentPhase == Phase.P2Move ? _players[0].Value : _players[1].Value;
+
+    //state is bottom to top, left to right
+    private readonly Field[] _gameState = new Field[NumberOfRows * NumberOfColumns];
+    private readonly (ulong UserId, string Username)?[] _players = new (ulong, string)?[2];
 
     private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly Options _options;
@@ -69,17 +70,18 @@ public sealed class Connect4Game : IDisposable
      * [ ][ ][ ][ ][ ][ ]
      */
 
-    public Connect4Game(ulong userId, string userName, Options options, ICurrencyService cs)
+    public Connect4Game(
+        ulong userId,
+        string userName,
+        Options options,
+        ICurrencyService cs)
     {
         _players[0] = (userId, userName);
         _options = options;
         _cs = cs;
 
         _rng = new();
-        for (var i = 0; i < NumberOfColumns * NumberOfRows; i++)
-        {
-            _gameState[i] = Field.Empty;
-        }
+        for (var i = 0; i < NumberOfColumns * NumberOfRows; i++) _gameState[i] = Field.Empty;
     }
 
     public void Initialize()
@@ -97,7 +99,6 @@ public sealed class Connect4Game : IDisposable
                     var __ = OnGameFailedToStart?.Invoke(this);
                     CurrentPhase = Phase.Ended;
                     await _cs.AddAsync(_players[0].Value.UserId, "Connect4-refund", _options.Bet, true);
-                    return;
                 }
             }
             finally { _locker.Release(); }
@@ -127,18 +128,23 @@ public sealed class Connect4Game : IDisposable
                 _players[0] = (userId, userName);
             }
             else //else join as a second player
+            {
                 _players[1] = (userId, userName);
+            }
 
             CurrentPhase = Phase.P1Move; //start the game
             _playerTimeoutTimer = new(async state =>
-            {
-                await _locker.WaitAsync();
-                try
                 {
-                    EndGame(Result.OtherPlayerWon, OtherPlayer.UserId);
-                }
-                finally { _locker.Release(); }
-            }, null, TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
+                    await _locker.WaitAsync();
+                    try
+                    {
+                        EndGame(Result.OtherPlayerWon, OtherPlayer.UserId);
+                    }
+                    finally { _locker.Release(); }
+                },
+                null,
+                TimeSpan.FromSeconds(_options.TurnTimer),
+                TimeSpan.FromSeconds(_options.TurnTimer));
             var __ = OnGameStateUpdated?.Invoke(this);
 
             return true;
@@ -167,13 +173,11 @@ public sealed class Connect4Game : IDisposable
 
             var start = NumberOfRows * inputCol;
             for (var i = start; i < start + NumberOfRows; i++)
-            {
                 if (_gameState[i] == Field.Empty)
                 {
                     _gameState[i] = GetPlayerPiece(userId);
                     break;
                 }
-            }
 
             //check winnning condition
             // ok, i'll go from [0-2] in rows (and through all columns) and check upward if 4 are connected
@@ -190,7 +194,6 @@ public sealed class Connect4Game : IDisposable
 
                     var first = _gameState[i + (j * NumberOfRows)];
                     if (first != Field.Empty)
-                    {
                         for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[i + k + (j * NumberOfRows)];
@@ -201,9 +204,11 @@ public sealed class Connect4Game : IDisposable
                                 else
                                     continue;
                             }
-                            else break;
+                            else
+                            {
+                                break;
+                            }
                         }
-                    }
                 }
             }
 
@@ -220,7 +225,6 @@ public sealed class Connect4Game : IDisposable
 
                     var first = _gameState[j + (i * NumberOfRows)];
                     if (first != Field.Empty)
-                    {
                         for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[j + ((i + k) * NumberOfRows)];
@@ -231,7 +235,6 @@ public sealed class Connect4Game : IDisposable
                                     continue;
                             else break;
                         }
-                    }
                 }
             }
 
@@ -308,10 +311,7 @@ public sealed class Connect4Game : IDisposable
             }
 
             //check draw? if it's even possible
-            if (_gameState.All(x => x != Field.Empty))
-            {
-                EndGame(Result.Draw, null);
-            }
+            if (_gameState.All(x => x != Field.Empty)) EndGame(Result.Draw, null);
 
             if (CurrentPhase != Phase.Ended)
             {
@@ -322,6 +322,7 @@ public sealed class Connect4Game : IDisposable
 
                 ResetTimer();
             }
+
             var _ = OnGameStateUpdated?.Invoke(this);
             return true;
         }
@@ -329,7 +330,8 @@ public sealed class Connect4Game : IDisposable
     }
 
     private void ResetTimer()
-        => _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer), TimeSpan.FromSeconds(_options.TurnTimer));
+        => _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer),
+            TimeSpan.FromSeconds(_options.TurnTimer));
 
     private void EndGame(Result result, ulong? winId)
     {
@@ -340,27 +342,25 @@ public sealed class Connect4Game : IDisposable
 
         if (result == Result.Draw)
         {
-            _cs.AddAsync(CurrentPlayer.UserId, "Connect4-draw", this._options.Bet, true);
-            _cs.AddAsync(OtherPlayer.UserId, "Connect4-draw", this._options.Bet, true);
+            _cs.AddAsync(CurrentPlayer.UserId, "Connect4-draw", _options.Bet, true);
+            _cs.AddAsync(OtherPlayer.UserId, "Connect4-draw", _options.Bet, true);
             return;
         }
+
         if (winId != null)
-            _cs.AddAsync(winId.Value, "Connnect4-win", (long)(this._options.Bet * 1.98), true);
+            _cs.AddAsync(winId.Value, "Connnect4-win", (long)(_options.Bet * 1.98), true);
     }
 
-    private Field GetPlayerPiece(ulong userId) => _players[0].Value.UserId == userId
-        ? Field.P1
-        : Field.P2;
+    private Field GetPlayerPiece(ulong userId)
+        => _players[0].Value.UserId == userId ? Field.P1 : Field.P2;
 
     //column is full if there are no empty fields
     private bool IsColumnFull(int column)
     {
         var start = NumberOfRows * column;
         for (var i = start; i < start + NumberOfRows; i++)
-        {
             if (_gameState[i] == Field.Empty)
                 return false;
-        }
         return true;
     }
 
@@ -375,6 +375,16 @@ public sealed class Connect4Game : IDisposable
 
     public class Options : INadekoCommandOptions
     {
+        [Option('t',
+            "turn-timer",
+            Required = false,
+            Default = 15,
+            HelpText = "Turn time in seconds. It has to be between 5 and 60. Default 15.")]
+        public int TurnTimer { get; set; } = 15;
+
+        [Option('b', "bet", Required = false, Default = 0, HelpText = "Amount you bet. Default 0.")]
+        public int Bet { get; set; }
+
         public void NormalizeOptions()
         {
             if (TurnTimer is < 5 or > 60)
@@ -383,10 +393,5 @@ public sealed class Connect4Game : IDisposable
             if (Bet < 0)
                 Bet = 0;
         }
-
-        [Option('t', "turn-timer", Required = false, Default = 15, HelpText = "Turn time in seconds. It has to be between 5 and 60. Default 15.")]
-        public int TurnTimer { get; set; } = 15;
-        [Option('b', "bet", Required = false, Default = 0, HelpText = "Amount you bet. Default 0.")]
-        public int Bet { get; set; } = 0;
     }
 }

@@ -13,6 +13,7 @@ public class SingleProcessCoordinator : ICoordinator
         _creds = creds;
         _client = client;
     }
+
     public bool RestartBot()
     {
         if (string.IsNullOrWhiteSpace(_creds.RestartCommand?.Cmd)
@@ -21,7 +22,7 @@ public class SingleProcessCoordinator : ICoordinator
             Log.Error("You must set RestartCommand.Cmd and RestartCommand.Args in creds.yml");
             return false;
         }
-            
+
         Process.Start(_creds.RestartCommand.Cmd, _creds.RestartCommand.Args);
         _ = Task.Run(async () =>
         {
@@ -40,7 +41,7 @@ public class SingleProcessCoordinator : ICoordinator
     public IList<ShardStatus> GetAllShardStatuses()
         => new[]
         {
-            new ShardStatus()
+            new ShardStatus
             {
                 ConnectionState = _client.ConnectionState,
                 GuildCount = _client.Guilds.Count,

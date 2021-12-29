@@ -1,12 +1,12 @@
-#nullable disable
+﻿#nullable disable
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Common;
 
 public class Replacer
 {
-    private readonly IEnumerable<(string Key, Func<string> Text)> _replacements;
     private readonly IEnumerable<(Regex Regex, Func<Match, string> Replacement)> _regex;
+    private readonly IEnumerable<(string Key, Func<string> Text)> _replacements;
 
     public Replacer(IEnumerable<(string, Func<string>)> replacements, IEnumerable<(Regex, Func<Match, string>)> regex)
     {
@@ -20,15 +20,10 @@ public class Replacer
             return input;
 
         foreach (var (key, text) in _replacements)
-        {
             if (input.Contains(key))
                 input = input.Replace(key, text(), StringComparison.InvariantCulture);
-        }
 
-        foreach (var item in _regex)
-        {
-            input = item.Regex.Replace(input, m => item.Replacement(m));
-        }
+        foreach (var item in _regex) input = item.Regex.Replace(input, m => item.Replacement(m));
 
         return input;
     }
@@ -56,12 +51,10 @@ public class Replacer
             Url = Replace(embedData.Url)
         };
         if (embedData.Author != null)
-        {
             newEmbedData.Author = new()
             {
                 Name = Replace(embedData.Author.Name), IconUrl = Replace(embedData.Author.IconUrl)
             };
-        }
 
         if (embedData.Fields != null)
         {
@@ -79,12 +72,10 @@ public class Replacer
         }
 
         if (embedData.Footer != null)
-        {
             newEmbedData.Footer = new()
             {
                 Text = Replace(embedData.Footer.Text), IconUrl = Replace(embedData.Footer.IconUrl)
             };
-        }
 
         newEmbedData.Color = embedData.Color;
 

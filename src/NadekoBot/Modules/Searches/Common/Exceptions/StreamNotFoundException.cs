@@ -7,11 +7,13 @@ public class StreamNotFoundException : Exception
     {
     }
 
-    public StreamNotFoundException(string message) : base(message)
+    public StreamNotFoundException(string message)
+        : base(message)
     {
     }
 
-    public StreamNotFoundException(string message, Exception innerException) : base(message, innerException)
+    public StreamNotFoundException(string message, Exception innerException)
+        : base(message, innerException)
     {
     }
 }

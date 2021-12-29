@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Common.TypeReaders;
@@ -15,9 +15,7 @@ public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
         var gdt = Parse(context.Guild.Id, input);
         if (gdt is null)
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed,
-                    "Input string is in an incorrect format."
-                )
-            );
+                "Input string is in an incorrect format."));
 
         return Task.FromResult(TypeReaderResult.FromSuccess(gdt));
     }

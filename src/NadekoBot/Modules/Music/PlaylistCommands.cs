@@ -1,7 +1,7 @@
 ﻿#nullable disable
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Music.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Music;
 
@@ -10,6 +10,7 @@ public sealed partial class Music
     [Group]
     public sealed class PlaylistCommands : NadekoModule<IMusicService>
     {
+        private static readonly SemaphoreSlim _playlistLock = new(1, 1);
         private readonly DbService _db;
         private readonly IBotCredentials _creds;
 
@@ -18,7 +19,7 @@ public sealed partial class Music
             _db = db;
             _creds = creds;
         }
-            
+
         private async Task EnsureBotInVoiceChannelAsync(ulong voiceChannelId, IGuildUser botUser = null)
         {
             botUser ??= await ctx.Guild.GetCurrentUserAsync();
@@ -34,7 +35,8 @@ public sealed partial class Music
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Playlists([Leftover] int num = 1)
         {
@@ -48,17 +50,17 @@ public sealed partial class Music
                 playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
             }
 
-            var embed = _eb
-                .Create(ctx)
-                .WithAuthor(GetText(strs.playlists_page(num)), MusicIconUrl)
-                .WithDescription(string.Join("\n", playlists.Select(r =>
-                    GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
-                .WithOkColor();
-                
+            var embed = _eb.Create(ctx)
+                           .WithAuthor(GetText(strs.playlists_page(num)), MusicIconUrl)
+                           .WithDescription(string.Join("\n",
+                               playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
+                           .WithOkColor();
+
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task DeletePlaylist([Leftover] int id)
         {
@@ -69,14 +71,12 @@ public sealed partial class Music
                 var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
                 if (pl != null)
-                {
                     if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                     {
                         uow.MusicPlaylists.Remove(pl);
                         await uow.SaveChangesAsync();
                         success = true;
                     }
-                }
             }
             catch (Exception ex)
             {
@@ -89,7 +89,8 @@ public sealed partial class Music
                 await ReplyConfirmLocalizedAsync(strs.playlist_deleted);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task PlaylistShow(int id, int page = 1)
         {
@@ -102,21 +103,22 @@ public sealed partial class Music
                 mpl = uow.MusicPlaylists.GetWithSongs(id);
             }
 
-            await ctx.SendPaginatedConfirmAsync(page, cur =>
-            {
-                var i = 0;
-                var str = string.Join("\n", mpl.Songs
-                    .Skip(cur * 20)
-                    .Take(20)
-                    .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                return _eb.Create()
-                    .WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
-                    .WithOkColor()
-                    .WithDescription(str);
-            }, mpl.Songs.Count, 20);
+            await ctx.SendPaginatedConfirmAsync(page,
+                cur =>
+                {
+                    var i = 0;
+                    var str = string.Join("\n",
+                        mpl.Songs.Skip(cur * 20)
+                           .Take(20)
+                           .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
+                    return _eb.Create().WithTitle($"\"{mpl.Name}\" by {mpl.Author}").WithOkColor().WithDescription(str);
+                },
+                mpl.Songs.Count,
+                20);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Save([Leftover] string name)
         {
@@ -127,49 +129,45 @@ public sealed partial class Music
             }
 
             var songs = mp.GetQueuedTracks()
-                .Select(s => new PlaylistSong()
-                {
-                    Provider = s.Platform.ToString(),
-                    ProviderType = (MusicType)s.Platform,
-                    Title = s.Title,
-                    Query = s.Platform == MusicPlatform.Local ? s.GetStreamUrl().Result!.Trim('"') : s.Url,
-                }).ToList();
+                          .Select(s => new PlaylistSong
+                          {
+                              Provider = s.Platform.ToString(),
+                              ProviderType = (MusicType)s.Platform,
+                              Title = s.Title,
+                              Query = s.Platform == MusicPlatform.Local ? s.GetStreamUrl().Result!.Trim('"') : s.Url
+                          })
+                          .ToList();
 
             MusicPlaylist playlist;
             await using (var uow = _db.GetDbContext())
             {
                 playlist = new()
                 {
-                    Name = name,
-                    Author = ctx.User.Username,
-                    AuthorId = ctx.User.Id,
-                    Songs = songs.ToList(),
+                    Name = name, Author = ctx.User.Username, AuthorId = ctx.User.Id, Songs = songs.ToList()
                 };
                 uow.MusicPlaylists.Add(playlist);
                 await uow.SaveChangesAsync();
             }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
-                .WithOkColor()
-                .WithTitle(GetText(strs.playlist_saved))
-                .AddField(GetText(strs.name), name)
-                .AddField(GetText(strs.id), playlist.Id.ToString()));
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.playlist_saved))
+                                            .AddField(GetText(strs.name), name)
+                                            .AddField(GetText(strs.id), playlist.Id.ToString()));
         }
 
-
-        private static readonly SemaphoreSlim _playlistLock = new(1, 1);
-            
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Load([Leftover] int id)
         {
             // expensive action, 1 at a time
             await _playlistLock.WaitAsync();
             try
-            {                    
-                var user = (IGuildUser) ctx.User;
+            {
+                var user = (IGuildUser)ctx.User;
                 var voiceChannelId = user.VoiceChannel?.Id;
-        
+
                 if (voiceChannelId is null)
                 {
                     await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
@@ -177,23 +175,23 @@ public sealed partial class Music
                 }
 
                 _ = ctx.Channel.TriggerTypingAsync();
-        
+
                 var botUser = await ctx.Guild.GetCurrentUserAsync();
                 await EnsureBotInVoiceChannelAsync(voiceChannelId!.Value, botUser);
-        
+
                 if (botUser.VoiceChannel?.Id != voiceChannelId)
                 {
                     await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
                     return;
                 }
-            
-                var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel) ctx.Channel);
+
+                var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
                 if (mp is null)
                 {
                     await ReplyErrorLocalizedAsync(strs.no_player);
                     return;
                 }
-                    
+
                 MusicPlaylist mpl;
                 await using (var uow = _db.GetDbContext())
                 {
@@ -209,22 +207,17 @@ public sealed partial class Music
                 IUserMessage msg = null;
                 try
                 {
-                    msg = await ctx.Channel
-                        .SendMessageAsync(GetText(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString()))));
+                    msg = await ctx.Channel.SendMessageAsync(
+                        GetText(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString()))));
                 }
                 catch (Exception)
                 {
                 }
 
-                await mp.EnqueueManyAsync(
-                    mpl.Songs.Select(x => (x.Query, (MusicPlatform) x.ProviderType)),
-                    ctx.User.ToString()
-                );
+                await mp.EnqueueManyAsync(mpl.Songs.Select(x => (x.Query, (MusicPlatform)x.ProviderType)),
+                    ctx.User.ToString());
 
-                if (msg != null)
-                {
-                    await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
-                }
+                if (msg != null) await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
             }
             finally
             {

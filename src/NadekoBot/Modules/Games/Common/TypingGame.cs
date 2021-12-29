@@ -1,24 +1,12 @@
 ﻿#nullable disable
-using System.Diagnostics;
-using NadekoBot.Modules.Games.Services;
 using CommandLine;
+using NadekoBot.Modules.Games.Services;
+using System.Diagnostics;
 
 namespace NadekoBot.Modules.Games.Common;
 
 public class TypingGame
 {
-    public class Options : INadekoCommandOptions
-    {
-        [Option('s', "start-time", Default = 5, Required = false, HelpText = "How long does it take for the race to start. Default 5.")]
-        public int StartTime { get; set; } = 5;
-
-        public void NormalizeOptions()
-        {
-            if (StartTime is < 3 or > 30)
-                StartTime = 5;
-        }
-    }
-
     public const float WORD_VALUE = 4.5f;
     public ITextChannel Channel { get; }
     public string CurrentSentence { get; private set; }
@@ -31,8 +19,13 @@ public class TypingGame
     private readonly Options _options;
     private readonly IEmbedBuilderService _eb;
 
-    public TypingGame(GamesService games, DiscordSocketClient client, ITextChannel channel, 
-        string prefix, Options options, IEmbedBuilderService eb)
+    public TypingGame(
+        GamesService games,
+        DiscordSocketClient client,
+        ITextChannel channel,
+        string prefix,
+        Options options,
+        IEmbedBuilderService eb)
     {
         _games = games;
         _client = client;
@@ -40,7 +33,7 @@ public class TypingGame
         _options = options;
         _eb = eb;
 
-        this.Channel = channel;
+        Channel = channel;
         IsActive = false;
         sw = new();
         finishedUserIds = new();
@@ -80,19 +73,19 @@ public class TypingGame
 
             var time = _options.StartTime;
 
-            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...", options: new()
-            {
-                RetryMode = RetryMode.AlwaysRetry
-            });
+            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...",
+                options: new() { RetryMode = RetryMode.AlwaysRetry });
 
             do
             {
                 await Task.Delay(2000);
                 time -= 2;
-                try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**.."); } catch { }
+                try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**.."); }
+                catch { }
             } while (time > 2);
 
-            await msg.ModifyAsync(m => {
+            await msg.ModifyAsync(m =>
+            {
                 m.Content = CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture);
             });
             sw.Start();
@@ -105,7 +98,6 @@ public class TypingGame
                 if (!IsActive)
                     return;
             }
-
         }
         catch { }
         finally
@@ -118,9 +110,7 @@ public class TypingGame
     {
         if (_games.TypingArticles.Any())
             return _games.TypingArticles[new NadekoRandom().Next(0, _games.TypingArticles.Count)].Text;
-        else
-            return $"No typing articles found. Use {_prefix}typeadd command to add a new article for typing.";
-
+        return $"No typing articles found. Use {_prefix}typeadd command to add a new article for typing.";
     }
 
     private void HandleAnswers()
@@ -137,7 +127,7 @@ public class TypingGame
                 if (imsg is not SocketUserMessage msg)
                     return;
 
-                if (this.Channel is null || this.Channel.Id != msg.Channel.Id) return;
+                if (Channel is null || Channel.Id != msg.Channel.Id) return;
 
                 var guess = msg.Content;
 
@@ -148,18 +138,17 @@ public class TypingGame
                     var elapsed = sw.Elapsed;
                     var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                     finishedUserIds.Add(msg.Author.Id);
-                    await this.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                        .WithTitle($"{msg.Author} finished the race!")
-                        .AddField("Place", $"#{finishedUserIds.Count}", true)
-                        .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
-                        .AddField("Errors", distance.ToString(), true));
-                        
+                    await Channel.EmbedAsync(_eb.Create()
+                                                .WithOkColor()
+                                                .WithTitle($"{msg.Author} finished the race!")
+                                                .AddField("Place", $"#{finishedUserIds.Count}", true)
+                                                .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
+                                                .AddField("Errors", distance.ToString(), true));
+
                     if (finishedUserIds.Count % 4 == 0)
-                    {
-                        await this.Channel.SendConfirmAsync(_eb,
-                                $":exclamation: A lot of people finished, here is the text for those still typing:" +
-                                $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**");
-                    }
+                        await Channel.SendConfirmAsync(_eb,
+                            ":exclamation: A lot of people finished, here is the text for those still typing:"
+                            + $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**");
                 }
             }
             catch (Exception ex)
@@ -170,6 +159,22 @@ public class TypingGame
         return Task.CompletedTask;
     }
 
-    private static bool Judge(int errors, int textLength) => errors <= textLength / 25;
+    private static bool Judge(int errors, int textLength)
+        => errors <= textLength / 25;
 
+    public class Options : INadekoCommandOptions
+    {
+        [Option('s',
+            "start-time",
+            Default = 5,
+            Required = false,
+            HelpText = "How long does it take for the race to start. Default 5.")]
+        public int StartTime { get; set; } = 5;
+
+        public void NormalizeOptions()
+        {
+            if (StartTime is < 3 or > 30)
+                StartTime = 5;
+        }
+    }
 }

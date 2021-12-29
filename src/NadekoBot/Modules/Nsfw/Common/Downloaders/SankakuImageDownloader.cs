@@ -13,16 +13,20 @@ public sealed class SankakuImageDownloader : ImageDownloader<SankakuImageObject>
         _baseUrl = "https://capi-v2.sankakucomplex.com";
         _http.AddFakeHeaders();
     }
-        
-    public override async Task<List<SankakuImageObject>> DownloadImagesAsync(string[] tags, int page, bool isExplicit = false, CancellationToken cancel = default)
+
+    public override async Task<List<SankakuImageObject>> DownloadImagesAsync(
+        string[] tags,
+        int page,
+        bool isExplicit = false,
+        CancellationToken cancel = default)
     {
         // explicit probably not supported
-        var tagString = ImageDownloaderHelper.GetTagString(tags, false);
+        var tagString = ImageDownloaderHelper.GetTagString(tags);
 
         var uri = $"{_baseUrl}/posts?tags={tagString}&limit=50";
         var data = await _http.GetStringAsync(uri);
         return JsonSerializer.Deserialize<SankakuImageObject[]>(data, _serializerOptions)
-            .Where(x => !string.IsNullOrWhiteSpace(x.FileUrl) && x.FileType.StartsWith("image"))
-            .ToList();
+                             .Where(x => !string.IsNullOrWhiteSpace(x.FileUrl) && x.FileType.StartsWith("image"))
+                             .ToList();
     }
 }

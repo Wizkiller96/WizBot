@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot;
@@ -29,11 +29,8 @@ public abstract record SmartText
 
     public static SmartText CreateFrom(string input)
     {
-        if (string.IsNullOrWhiteSpace(input) ||
-            !input.TrimStart().StartsWith("{"))
-        {
+        if (string.IsNullOrWhiteSpace(input) || !input.TrimStart().StartsWith("{"))
             return new SmartPlainText(input);
-        }
 
         try
         {
@@ -41,13 +38,10 @@ public abstract record SmartText
 
             if (smartEmbedText is null)
                 throw new();
-            
+
             smartEmbedText.NormalizeFields();
 
-            if (!smartEmbedText.IsValid)
-            {
-                return new SmartPlainText(input);
-            }
+            if (!smartEmbedText.IsValid) return new SmartPlainText(input);
 
             return smartEmbedText;
         }

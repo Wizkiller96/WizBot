@@ -10,7 +10,12 @@ public sealed class RemoteTrackInfo : ITrackInfo
 
     private readonly Func<Task<string?>> _streamFactory;
 
-    public RemoteTrackInfo(string title, string url, string thumbnail, TimeSpan duration, MusicPlatform platform,
+    public RemoteTrackInfo(
+        string title,
+        string url,
+        string thumbnail,
+        TimeSpan duration,
+        MusicPlatform platform,
         Func<Task<string?>> streamFactory)
     {
         _streamFactory = streamFactory;
@@ -21,5 +26,6 @@ public sealed class RemoteTrackInfo : ITrackInfo
         Platform = platform;
     }
 
-    public async ValueTask<string?> GetStreamUrl() => await _streamFactory();
+    public async ValueTask<string?> GetStreamUrl()
+        => await _streamFactory();
 }

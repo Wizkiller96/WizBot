@@ -5,6 +5,10 @@ namespace NadekoBot.Modules.Gambling.Common.Events;
 
 public class ReactionEvent : ICurrencyEvent
 {
+    public event Func<ulong, Task> OnEnded;
+    private long PotSize { get; set; }
+    public bool Stopped { get; private set; }
+    public bool PotEmptied { get; private set; }
     private readonly DiscordSocketClient _client;
     private readonly IGuild _guild;
     private IUserMessage _msg;
@@ -12,25 +16,28 @@ public class ReactionEvent : ICurrencyEvent
     private readonly ICurrencyService _cs;
     private readonly long _amount;
 
-    private long PotSize { get; set; }
-    public bool Stopped { get; private set; }
-    public bool PotEmptied { get; private set; } = false;
-
     private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
     private readonly bool _isPotLimited;
     private readonly ITextChannel _channel;
     private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
     private readonly ConcurrentQueue<ulong> _toAward = new();
     private readonly Timer _t;
-    private readonly Timer _timeout = null;
+    private readonly Timer _timeout;
     private readonly bool _noRecentlyJoinedServer;
     private readonly EventOptions _opts;
     private readonly GamblingConfig _config;
 
-    public event Func<ulong, Task> OnEnded;
+    private readonly object stopLock = new();
 
-    public ReactionEvent(DiscordSocketClient client, ICurrencyService cs,
-        SocketGuild g, ITextChannel ch, EventOptions opt, GamblingConfig config,
+    private readonly object potLock = new();
+
+    public ReactionEvent(
+        DiscordSocketClient client,
+        ICurrencyService cs,
+        SocketGuild g,
+        ITextChannel ch,
+        EventOptions opt,
+        GamblingConfig config,
         Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embedFunc)
     {
         _client = client;
@@ -47,9 +54,7 @@ public class ReactionEvent : ICurrencyEvent
 
         _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
-        {
             _timeout = new(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
-        }
     }
 
     private void EventTimeout(object state)
@@ -61,28 +66,21 @@ public class ReactionEvent : ICurrencyEvent
     {
         var potEmpty = PotEmptied;
         var toAward = new List<ulong>();
-        while (_toAward.TryDequeue(out var x))
-        {
-            toAward.Add(x);
-        }
+        while (_toAward.TryDequeue(out var x)) toAward.Add(x);
 
         if (!toAward.Any())
             return;
 
         try
         {
-            await _cs.AddBulkAsync(toAward,
-                toAward.Select(x => "Reaction Event"),
-                toAward.Select(x => _amount),
-                gamble: true);
+            await _cs.AddBulkAsync(toAward, toAward.Select(x => "Reaction Event"), toAward.Select(x => _amount), true);
 
             if (_isPotLimited)
-            {
                 await _msg.ModifyAsync(m =>
-                {
-                    m.Embed = GetEmbed(PotSize).Build();
-                }, new() { RetryMode = RetryMode.AlwaysRetry });
-            }
+                    {
+                        m.Embed = GetEmbed(PotSize).Build();
+                    },
+                    new() { RetryMode = RetryMode.AlwaysRetry });
 
             Log.Information("Awarded {0} users {1} currency.{2}",
                 toAward.Count,
@@ -103,13 +101,9 @@ public class ReactionEvent : ICurrencyEvent
     public async Task StartEvent()
     {
         if (Emote.TryParse(_config.Currency.Sign, out var emote))
-        {
             _emote = emote;
-        }
         else
-        {
             _emote = new Emoji(_config.Currency.Sign);
-        }
         _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
         await _msg.AddReactionAsync(_emote);
         _client.MessageDeleted += OnMessageDeleted;
@@ -122,13 +116,9 @@ public class ReactionEvent : ICurrencyEvent
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (msg.Id == _msg.Id)
-        {
-            await StopEvent();
-        }
+        if (msg.Id == _msg.Id) await StopEvent();
     }
 
-    private readonly object stopLock = new();
     public async Task StopEvent()
     {
         await Task.Yield();
@@ -141,27 +131,37 @@ public class ReactionEvent : ICurrencyEvent
             _client.ReactionAdded -= HandleReaction;
             _t.Change(Timeout.Infinite, Timeout.Infinite);
             _timeout?.Change(Timeout.Infinite, Timeout.Infinite);
-            try { var _ = _msg.DeleteAsync(); } catch { }
+            try
+            {
+                var _ = _msg.DeleteAsync();
+            }
+            catch { }
+
             var os = OnEnded(_guild.Id);
         }
     }
 
-    private Task HandleReaction(Cacheable<IUserMessage, ulong> msg,
-        Cacheable<IMessageChannel, ulong> cacheable, SocketReaction r)
+    private Task HandleReaction(
+        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> cacheable,
+        SocketReaction r)
     {
         var _ = Task.Run(() =>
         {
             if (_emote.Name != r.Emote.Name)
                 return;
-            if ((r.User.IsSpecified ? r.User.Value : null) is not IGuildUser gu // no unknown users, as they could be bots, or alts
+            if ((r.User.IsSpecified
+                    ? r.User.Value
+                    : null) is not IGuildUser gu // no unknown users, as they could be bots, or alts
                 || msg.Id != _msg.Id // same message
                 || gu.IsBot // no bots
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5 // no recently created accounts
-                || (_noRecentlyJoinedServer && // if specified, no users who joined the server in the last 24h
-                    (gu.JoinedAt is null || (DateTime.UtcNow - gu.JoinedAt.Value).TotalDays < 1)))  // and no users for who we don't know when they joined
-            {
+                || (_noRecentlyJoinedServer
+                    && // if specified, no users who joined the server in the last 24h
+                    (gu.JoinedAt is null
+                     || (DateTime.UtcNow - gu.JoinedAt.Value).TotalDays
+                     < 1))) // and no users for who we don't know when they joined
                 return;
-            }
             // there has to be money left in the pot
             // and the user wasn't rewarded
             if (_awardedUsers.Add(r.UserId) && TryTakeFromPot())
@@ -174,11 +174,9 @@ public class ReactionEvent : ICurrencyEvent
         return Task.CompletedTask;
     }
 
-    private readonly object potLock = new();
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
-        {
             lock (potLock)
             {
                 if (PotSize < _amount)
@@ -187,7 +185,7 @@ public class ReactionEvent : ICurrencyEvent
                 PotSize -= _amount;
                 return true;
             }
-        }
+
         return true;
     }
 }

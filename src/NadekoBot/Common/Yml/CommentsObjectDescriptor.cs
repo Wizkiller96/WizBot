@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
@@ -6,15 +6,7 @@ namespace NadekoBot.Common.Yml;
 
 public sealed class CommentsObjectDescriptor : IObjectDescriptor
 {
-    private readonly IObjectDescriptor innerDescriptor;
-
-    public CommentsObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
-    {
-        this.innerDescriptor = innerDescriptor;
-        this.Comment = comment;
-    }
-
-    public string Comment { get; private set; }
+    public string Comment { get; }
 
     public object Value
         => innerDescriptor.Value;
@@ -27,4 +19,12 @@ public sealed class CommentsObjectDescriptor : IObjectDescriptor
 
     public ScalarStyle ScalarStyle
         => innerDescriptor.ScalarStyle;
+
+    private readonly IObjectDescriptor innerDescriptor;
+
+    public CommentsObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
+    {
+        this.innerDescriptor = innerDescriptor;
+        Comment = comment;
+    }
 }

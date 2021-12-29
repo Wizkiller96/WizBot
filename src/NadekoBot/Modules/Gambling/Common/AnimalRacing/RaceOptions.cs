@@ -10,7 +10,7 @@ public class RaceOptions : INadekoCommandOptions
 
     public void NormalizeOptions()
     {
-        if (this.StartTime is < 10 or > 120)
-            this.StartTime = 20;
+        if (StartTime is < 10 or > 120)
+            StartTime = 20;
     }
 }

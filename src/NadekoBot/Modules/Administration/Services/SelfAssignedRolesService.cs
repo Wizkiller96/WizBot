@@ -1,31 +1,31 @@
 ﻿#nullable disable
-using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Xp;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
 public class SelfAssignedRolesService : INService
 {
-    private readonly DbService _db;
-
-    public enum RemoveResult
-    {
-        Removed, // successfully removed
-        Err_Not_Assignable, // not assignable (error)
-        Err_Not_Have, // you don't have a role you want to remove (error)
-        Err_Not_Perms, // bot doesn't have perms (error)
-    }
-
     public enum AssignResult
     {
         Assigned, // successfully removed
         Err_Not_Assignable, // not assignable (error)
         Err_Already_Have, // you already have that role (error)
         Err_Not_Perms, // bot doesn't have perms (error)
-        Err_Lvl_Req, // you are not required level (error)
+        Err_Lvl_Req // you are not required level (error)
     }
+
+    public enum RemoveResult
+    {
+        Removed, // successfully removed
+        Err_Not_Assignable, // not assignable (error)
+        Err_Not_Have, // you don't have a role you want to remove (error)
+        Err_Not_Perms // bot doesn't have perms (error)
+    }
+
+    private readonly DbService _db;
 
     public SelfAssignedRolesService(DbService db)
         => _db = db;
@@ -34,17 +34,9 @@ public class SelfAssignedRolesService : INService
     {
         using var uow = _db.GetDbContext();
         var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
-        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
-        {
-            return false;
-        }
+        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id)) return false;
 
-        uow.SelfAssignableRoles.Add(new()
-        {
-            Group = @group,
-            RoleId = role.Id,
-            GuildId = role.Guild.Id
-        });
+        uow.SelfAssignableRoles.Add(new() { Group = group, RoleId = role.Id, GuildId = role.Guild.Id });
         uow.SaveChanges();
         return true;
     }
@@ -72,31 +64,20 @@ public class SelfAssignedRolesService : INService
 
         var theRoleYouWant = roles.FirstOrDefault(r => r.RoleId == role.Id);
         if (theRoleYouWant is null)
-        {
             return (AssignResult.Err_Not_Assignable, autoDelete, null);
-        }
-        else if (theRoleYouWant.LevelRequirement > userLevelData.Level)
-        {
+        if (theRoleYouWant.LevelRequirement > userLevelData.Level)
             return (AssignResult.Err_Lvl_Req, autoDelete, theRoleYouWant.LevelRequirement);
-        }
-        else if (guildUser.RoleIds.Contains(role.Id))
-        {
-            return (AssignResult.Err_Already_Have, autoDelete, null);
-        }
+        if (guildUser.RoleIds.Contains(role.Id)) return (AssignResult.Err_Already_Have, autoDelete, null);
 
-        var roleIds = roles
-            .Where(x => x.Group == theRoleYouWant.Group)
-            .Select(x => x.RoleId).ToArray();
+        var roleIds = roles.Where(x => x.Group == theRoleYouWant.Group).Select(x => x.RoleId).ToArray();
         if (exclusive)
         {
-            var sameRoles = guildUser.RoleIds
-                .Where(r => roleIds.Contains(r));
+            var sameRoles = guildUser.RoleIds.Where(r => roleIds.Contains(r));
 
             foreach (var roleId in sameRoles)
             {
                 var sameRole = guildUser.Guild.GetRole(roleId);
                 if (sameRole != null)
-                {
                     try
                     {
                         await guildUser.RemoveRoleAsync(sameRole);
@@ -106,9 +87,9 @@ public class SelfAssignedRolesService : INService
                     {
                         // ignored
                     }
-                }
             }
         }
+
         try
         {
             await guildUser.AddRoleAsync(role);
@@ -126,7 +107,7 @@ public class SelfAssignedRolesService : INService
         var set = false;
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
-        var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == @group);
+        var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == group);
 
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -135,11 +116,7 @@ public class SelfAssignedRolesService : INService
         }
         else if (toUpdate is null)
         {
-            gc.SelfAssignableRoleGroupNames.Add(new()
-            {
-                Name = name,
-                Number = @group,
-            });
+            gc.SelfAssignableRoleGroupNames.Add(new() { Name = name, Number = group });
             set = true;
         }
         else
@@ -158,13 +135,8 @@ public class SelfAssignedRolesService : INService
         var (autoDelete, _, roles) = GetAdAndRoles(guildUser.Guild.Id);
 
         if (roles.FirstOrDefault(r => r.RoleId == role.Id) is null)
-        {
             return (RemoveResult.Err_Not_Assignable, autoDelete);
-        }
-        if (!guildUser.RoleIds.Contains(role.Id))
-        {
-            return (RemoveResult.Err_Not_Have, autoDelete);
-        }
+        if (!guildUser.RoleIds.Contains(role.Id)) return (RemoveResult.Err_Not_Have, autoDelete);
         try
         {
             await guildUser.RemoveRoleAsync(role);
@@ -226,7 +198,8 @@ public class SelfAssignedRolesService : INService
         return areExclusive;
     }
 
-    public (bool Exclusive, IEnumerable<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string> GroupNames) GetRoles(IGuild guild)
+    public (bool Exclusive, IEnumerable<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string> GroupNames
+        ) GetRoles(IGuild guild)
     {
         var exclusive = false;
 
@@ -238,8 +211,7 @@ public class SelfAssignedRolesService : INService
             exclusive = gc.ExclusiveSelfAssignedRoles;
             groupNames = gc.SelfAssignableRoleGroupNames.ToDictionary(x => x.Number, x => x.Name);
             var roleModels = uow.SelfAssignableRoles.GetFromGuild(guild.Id);
-            roles = roleModels
-                .Select(x => (Model: x, Role: guild.GetRole(x.RoleId)));
+            roles = roleModels.Select(x => (Model: x, Role: guild.GetRole(x.RoleId)));
             uow.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role is null).Select(x => x.Model).ToArray());
             uow.SaveChanges();
         }

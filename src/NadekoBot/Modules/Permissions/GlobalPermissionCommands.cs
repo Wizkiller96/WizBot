@@ -18,7 +18,8 @@ public partial class Permissions
             _db = db;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task GlobalPermList()
         {
@@ -33,48 +34,46 @@ public partial class Permissions
             var embed = _eb.Create().WithOkColor();
 
             if (blockedModule.Any())
-                embed.AddField(GetText(strs.blocked_modules)
-                    , string.Join("\n", _service.BlockedModules)
-                    , false);
+                embed.AddField(GetText(strs.blocked_modules), string.Join("\n", _service.BlockedModules));
 
             if (blockedCommands.Any())
-                embed.AddField(GetText(strs.blocked_commands)
-                    , string.Join("\n", _service.BlockedCommands)
-                    , false);
+                embed.AddField(GetText(strs.blocked_commands), string.Join("\n", _service.BlockedCommands));
 
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task GlobalModule(ModuleOrCrInfo module)
         {
             var moduleName = module.Name.ToLowerInvariant();
 
             var added = _service.ToggleModule(moduleName);
-                
+
             if (added)
             {
                 await ReplyConfirmLocalizedAsync(strs.gmod_add(Format.Bold(module.Name)));
                 return;
             }
-                
+
             await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name)));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task GlobalCommand(CommandOrCrInfo cmd)
         {
             var commandName = cmd.Name.ToLowerInvariant();
             var added = _service.ToggleCommand(commandName);
-                
+
             if (added)
             {
                 await ReplyConfirmLocalizedAsync(strs.gcmd_add(Format.Bold(cmd.Name)));
                 return;
             }
-                
+
             await ReplyConfirmLocalizedAsync(strs.gcmd_remove(Format.Bold(cmd.Name)));
         }
     }

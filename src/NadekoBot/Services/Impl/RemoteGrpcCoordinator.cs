@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Grpc.Core;
+using Grpc.Net.Client;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
 
@@ -12,37 +13,26 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
 
     public RemoteGrpcCoordinator(IBotCredentials creds, DiscordSocketClient client)
     {
-        var coordUrl = string.IsNullOrWhiteSpace(creds.CoordinatorUrl)
-            ? "http://localhost:3442"
-            : creds.CoordinatorUrl;
-            
-        var channel = Grpc.Net.Client.GrpcChannel.ForAddress(coordUrl);
+        var coordUrl = string.IsNullOrWhiteSpace(creds.CoordinatorUrl) ? "http://localhost:3442" : creds.CoordinatorUrl;
+
+        var channel = GrpcChannel.ForAddress(coordUrl);
         _coordClient = new(channel);
         _client = client;
     }
-        
+
     public bool RestartBot()
     {
-        _coordClient.RestartAllShards(new()
-        {
-                
-        });
+        _coordClient.RestartAllShards(new());
 
         return true;
     }
 
     public void Die(bool graceful)
-        => _coordClient.Die(new()
-        {
-            Graceful = graceful
-        });
+        => _coordClient.Die(new() { Graceful = graceful });
 
     public bool RestartShard(int shardId)
     {
-        _coordClient.RestartShard(new()
-        {
-            ShardId = shardId,
-        });
+        _coordClient.RestartShard(new() { ShardId = shardId });
 
         return true;
     }
@@ -51,15 +41,14 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
     {
         var res = _coordClient.GetAllStatuses(new());
 
-        return res.Statuses
-            .ToArray()
-            .Map(s => new ShardStatus()
-            {
-                ConnectionState = FromCoordConnState(s.State),
-                GuildCount = s.GuildCount,
-                ShardId = s.ShardId,
-                LastUpdate = s.LastUpdate.ToDateTime(),
-            });
+        return res.Statuses.ToArray()
+                  .Map(s => new ShardStatus
+                  {
+                      ConnectionState = FromCoordConnState(s.State),
+                      GuildCount = s.GuildCount,
+                      ShardId = s.ShardId,
+                      LastUpdate = s.LastUpdate.ToDateTime()
+                  });
     }
 
     public int GetGuildCount()
@@ -82,18 +71,21 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                 try
                 {
                     var reply = await _coordClient.HeartbeatAsync(new()
-                    {
-                        State = ToCoordConnState(_client.ConnectionState),
-                        GuildCount = _client.ConnectionState == ConnectionState.Connected ? _client.Guilds.Count : 0,
-                        ShardId = _client.ShardId,
-                    }, deadline: DateTime.UtcNow + TimeSpan.FromSeconds(10));
+                        {
+                            State = ToCoordConnState(_client.ConnectionState),
+                            GuildCount =
+                                _client.ConnectionState == ConnectionState.Connected ? _client.Guilds.Count : 0,
+                            ShardId = _client.ShardId
+                        },
+                        deadline: DateTime.UtcNow + TimeSpan.FromSeconds(10));
                     gracefulImminent = reply.GracefulImminent;
                 }
                 catch (RpcException ex)
                 {
                     if (!gracefulImminent)
                     {
-                        Log.Warning(ex, "Hearbeat failed and graceful shutdown was not expected: {Message}",
+                        Log.Warning(ex,
+                            "Hearbeat failed and graceful shutdown was not expected: {Message}",
                             ex.Message);
                         break;
                     }

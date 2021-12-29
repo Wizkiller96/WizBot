@@ -10,7 +10,10 @@ public sealed class CachableTrackData : ICachableTrackData
     public string Url { get; set; } = string.Empty;
     public string Thumbnail { get; set; } = string.Empty;
     public double TotalDurationMs { get; set; }
+
     [JsonIgnore]
-    public TimeSpan Duration => TimeSpan.FromMilliseconds(TotalDurationMs);
+    public TimeSpan Duration
+        => TimeSpan.FromMilliseconds(TotalDurationMs);
+
     public MusicPlatform Platform { get; set; }
 }

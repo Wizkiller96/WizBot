@@ -21,13 +21,11 @@ public class DiscordUser : DbEntity
     public long CurrencyAmount { get; set; }
 
     public override bool Equals(object obj)
-        => obj is DiscordUser du
-            ? du.UserId == UserId
-            : false;
+        => obj is DiscordUser du ? du.UserId == UserId : false;
 
     public override int GetHashCode()
         => UserId.GetHashCode();
 
-    public override string ToString() => 
-        Username + "#" + Discriminator;
+    public override string ToString()
+        => Username + "#" + Discriminator;
 }

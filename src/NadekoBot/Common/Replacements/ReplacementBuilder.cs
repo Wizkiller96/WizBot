@@ -7,11 +7,11 @@ namespace NadekoBot.Common;
 public class ReplacementBuilder
 {
     private static readonly Regex _rngRegex = new("%rng(?:(?<from>(?:-)?\\d+)-(?<to>(?:-)?\\d+))?%",
-        RegexOptions.Compiled
-    );
+        RegexOptions.Compiled);
+
+    private readonly ConcurrentDictionary<Regex, Func<Match, string>> _regex = new();
 
     private readonly ConcurrentDictionary<string, Func<string>> _reps = new();
-    private readonly ConcurrentDictionary<Regex, Func<Match, string>> _regex = new();
 
     public ReplacementBuilder()
         => WithRngRegex();
@@ -21,14 +21,10 @@ public class ReplacementBuilder
         IMessageChannel ch,
         SocketGuild g,
         DiscordSocketClient client)
-        => this.WithUser(usr).WithChannel(ch).WithServer(client, g).WithClient(client);
+        => WithUser(usr).WithChannel(ch).WithServer(client, g).WithClient(client);
 
     public ReplacementBuilder WithDefault(ICommandContext ctx)
-        => WithDefault(ctx.User,
-            ctx.Channel,
-            ctx.Guild as SocketGuild,
-            (DiscordSocketClient)ctx.Client
-        );
+        => WithDefault(ctx.User, ctx.Channel, ctx.Guild as SocketGuild, (DiscordSocketClient)ctx.Client);
 
     public ReplacementBuilder WithMention(DiscordSocketClient client)
     {
@@ -45,8 +41,7 @@ public class ReplacementBuilder
         _reps.TryAdd("%bot.name%", () => client.CurrentUser.Username);
         _reps.TryAdd("%bot.fullname%", () => client.CurrentUser.ToString());
         _reps.TryAdd("%bot.time%",
-            () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials())
-        );
+            () => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()));
         _reps.TryAdd("%bot.discrim%", () => client.CurrentUser.Discriminator);
         _reps.TryAdd("%bot.id%", () => client.CurrentUser.Id.ToString());
         _reps.TryAdd("%bot.avatar%", () => client.CurrentUser.RealAvatarUrl()?.ToString());
@@ -68,15 +63,12 @@ public class ReplacementBuilder
             {
                 var to = TimeZoneInfo.Local;
                 if (g != null)
-                {
                     if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
                         to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
-                }
 
-                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ") +
-                       to.StandardName.GetInitials();
-            }
-        );
+                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ")
+                       + to.StandardName.GetInitials();
+            });
         return this;
     }
 
@@ -107,17 +99,14 @@ public class ReplacementBuilder
         _reps.TryAdd("%user.avatar%", () => string.Join(" ", users.Select(user => user.RealAvatarUrl()?.ToString())));
         _reps.TryAdd("%user.id%", () => string.Join(" ", users.Select(user => user.Id.ToString())));
         _reps.TryAdd("%user.created_time%",
-            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("HH:mm")))
-        );
+            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("HH:mm"))));
         _reps.TryAdd("%user.created_date%",
-            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("dd.MM.yyyy")))
-        );
+            () => string.Join(" ", users.Select(user => user.CreatedAt.ToString("dd.MM.yyyy"))));
         _reps.TryAdd("%user.joined_time%",
-            () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-"))
-        );
+            () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("HH:mm") ?? "-")));
         _reps.TryAdd("%user.joined_date%",
-            () => string.Join(" ", users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-"))
-        );
+            () => string.Join(" ",
+                users.Select(user => (user as IGuildUser)?.JoinedAt?.ToString("dd.MM.yyyy") ?? "-")));
         return this;
     }
 
@@ -140,16 +129,14 @@ public class ReplacementBuilder
                 if (!int.TryParse(match.Groups["to"].ToString(), out var to))
                     to = 0;
 
-                if (from == 0 &&
-                    to == 0)
+                if (from == 0 && to == 0)
                     return rng.Next(0, 11).ToString();
 
                 if (from >= to)
                     return string.Empty;
 
                 return rng.Next(from, to + 1).ToString();
-            }
-        );
+            });
         return this;
     }
 
@@ -165,12 +152,8 @@ public class ReplacementBuilder
     public ReplacementBuilder WithProviders(IEnumerable<IPlaceholderProvider> phProviders)
     {
         foreach (var provider in phProviders)
-        {
-            foreach (var ovr in provider.GetPlaceholders())
-            {
-                _reps.TryAdd(ovr.Name, ovr.Func);
-            }
-        }
+        foreach (var ovr in provider.GetPlaceholders())
+            _reps.TryAdd(ovr.Name, ovr.Func);
 
         return this;
     }

@@ -7,10 +7,8 @@ public class GCChannelId : DbEntity
     public ulong ChannelId { get; set; }
 
     public override bool Equals(object obj)
-        => obj is GCChannelId gc
-            ? gc.ChannelId == ChannelId
-            : false;
+        => obj is GCChannelId gc ? gc.ChannelId == ChannelId : false;
 
-    public override int GetHashCode() =>
-        this.ChannelId.GetHashCode();
+    public override int GetHashCode()
+        => ChannelId.GetHashCode();
 }

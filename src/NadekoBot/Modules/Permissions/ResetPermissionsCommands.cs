@@ -17,7 +17,8 @@ public partial class Permissions
             _perms = perms;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task ResetPerms()
@@ -26,7 +27,8 @@ public partial class Permissions
             await ReplyConfirmLocalizedAsync(strs.perms_reset);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task ResetGlobalPerms()
         {

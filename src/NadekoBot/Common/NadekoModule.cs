@@ -1,13 +1,13 @@
 ﻿#nullable disable
 using System.Globalization;
+
 // ReSharper disable InconsistentNaming
 
 namespace NadekoBot.Modules;
 
-[UsedImplicitly(ImplicitUseTargetFlags.Default |
-                ImplicitUseTargetFlags.WithInheritors |
-                ImplicitUseTargetFlags.WithMembers
-)]
+[UsedImplicitly(ImplicitUseTargetFlags.Default
+                | ImplicitUseTargetFlags.WithInheritors
+                | ImplicitUseTargetFlags.WithMembers)]
 public abstract class NadekoModule : ModuleBase
 {
     protected CultureInfo Culture { get; set; }
@@ -36,12 +36,7 @@ public abstract class NadekoModule : ModuleBase
         string error,
         string url = null,
         string footer = null)
-        => ctx.Channel.SendErrorAsync(_eb,
-            title,
-            error,
-            url,
-            footer
-        );
+        => ctx.Channel.SendErrorAsync(_eb, title, error, url, footer);
 
     public Task<IUserMessage> SendConfirmAsync(string text)
         => ctx.Channel.SendConfirmAsync(_eb, text);
@@ -51,12 +46,7 @@ public abstract class NadekoModule : ModuleBase
         string text,
         string url = null,
         string footer = null)
-        => ctx.Channel.SendConfirmAsync(_eb,
-            title,
-            text,
-            url,
-            footer
-        );
+        => ctx.Channel.SendConfirmAsync(_eb, title, text, url, footer);
 
     public Task<IUserMessage> SendPendingAsync(string text)
         => ctx.Channel.SendPendingAsync(_eb, text);
@@ -81,8 +71,7 @@ public abstract class NadekoModule : ModuleBase
 
     public async Task<bool> PromptUserConfirmAsync(IEmbedBuilder embed)
     {
-        embed.WithPendingColor()
-            .WithFooter("yes/no");
+        embed.WithPendingColor().WithFooter("yes/no");
 
         var msg = await ctx.Channel.EmbedAsync(embed);
         try
@@ -90,11 +79,8 @@ public abstract class NadekoModule : ModuleBase
             var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
             input = input?.ToUpperInvariant();
 
-            if (input != "YES" &&
-                input != "Y")
-            {
+            if (input != "YES" && input != "Y")
                 return false;
-            }
 
             return true;
         }
@@ -113,11 +99,8 @@ public abstract class NadekoModule : ModuleBase
         {
             dsc.MessageReceived += MessageReceived;
 
-            if (await Task.WhenAny(userInputTask.Task, Task.Delay(10000)) !=
-                userInputTask.Task)
-            {
+            if (await Task.WhenAny(userInputTask.Task, Task.Delay(10000)) != userInputTask.Task)
                 return null;
-            }
 
             return await userInputTask.Task;
         }
@@ -129,23 +112,17 @@ public abstract class NadekoModule : ModuleBase
         Task MessageReceived(SocketMessage arg)
         {
             var _ = Task.Run(() =>
-                {
-                    if (arg is not SocketUserMessage userMsg ||
-                        userMsg.Channel is not ITextChannel ||
-                        userMsg.Author.Id != userId ||
-                        userMsg.Channel.Id != channelId)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    if (userInputTask.TrySetResult(arg.Content))
-                    {
-                        userMsg.DeleteAfter(1);
-                    }
-
+            {
+                if (arg is not SocketUserMessage userMsg
+                    || userMsg.Channel is not ITextChannel
+                    || userMsg.Author.Id != userId
+                    || userMsg.Channel.Id != channelId)
                     return Task.CompletedTask;
-                }
-            );
+
+                if (userInputTask.TrySetResult(arg.Content)) userMsg.DeleteAfter(1);
+
+                return Task.CompletedTask;
+            });
             return Task.CompletedTask;
         }
     }

@@ -10,11 +10,11 @@ public class CurrencyRaffleService : INService
         NotEnoughCurrency,
         AlreadyJoinedOrInvalidAmount
     }
+
+    public Dictionary<ulong, CurrencyRaffleGame> Games { get; } = new();
     private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
-
-    public Dictionary<ulong, CurrencyRaffleGame> Games { get; } = new();
 
     public CurrencyRaffleService(DbService db, ICurrencyService cs)
     {
@@ -22,7 +22,12 @@ public class CurrencyRaffleService : INService
         _cs = cs;
     }
 
-    public async Task<(CurrencyRaffleGame, JoinErrorType?)> JoinOrCreateGame(ulong channelId, IUser user, long amount, bool mixed, Func<IUser, long, Task> onEnded)
+    public async Task<(CurrencyRaffleGame, JoinErrorType?)> JoinOrCreateGame(
+        ulong channelId,
+        IUser user,
+        long amount,
+        bool mixed,
+        Func<IUser, long, Task> onEnded)
     {
         await _locker.WaitAsync();
         try
@@ -31,9 +36,7 @@ public class CurrencyRaffleService : INService
             if (!Games.TryGetValue(channelId, out var crg))
             {
                 newGame = true;
-                crg = new(mixed
-                    ? CurrencyRaffleGame.Type.Mixed
-                    : CurrencyRaffleGame.Type.Normal);
+                crg = new(mixed ? CurrencyRaffleGame.Type.Mixed : CurrencyRaffleGame.Type.Normal);
                 Games.Add(channelId, crg);
             }
 
@@ -51,6 +54,7 @@ public class CurrencyRaffleService : INService
                 await _cs.AddAsync(user.Id, "Curency Raffle Refund", amount);
                 return (null, JoinErrorType.AlreadyJoinedOrInvalidAmount);
             }
+
             if (newGame)
             {
                 var _t = Task.Run(async () =>
@@ -62,8 +66,7 @@ public class CurrencyRaffleService : INService
                         var winner = crg.GetWinner();
                         var won = crg.Users.Sum(x => x.Amount);
 
-                        await _cs.AddAsync(winner.DiscordUser.Id, "Currency Raffle Win",
-                            won);
+                        await _cs.AddAsync(winner.DiscordUser.Id, "Currency Raffle Win", won);
                         Games.Remove(channelId, out _);
                         var oe = onEnded(winner.DiscordUser, won);
                     }
@@ -71,6 +74,7 @@ public class CurrencyRaffleService : INService
                     finally { _locker.Release(); }
                 });
             }
+
             return (crg, null);
         }
         finally

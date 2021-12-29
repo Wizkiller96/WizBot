@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -13,19 +13,20 @@ public class AdministrationService : INService
     private readonly DbService _db;
     private readonly ILogCommandService _logService;
 
-    public AdministrationService(Bot bot, CommandHandler cmdHandler, DbService db, ILogCommandService logService)
+    public AdministrationService(
+        Bot bot,
+        CommandHandler cmdHandler,
+        DbService db,
+        ILogCommandService logService)
     {
         _db = db;
         _logService = logService;
 
-        DeleteMessagesOnCommand = new(bot.AllGuildConfigs
-            .Where(g => g.DeleteMessageOnCommand)
-            .Select(g => g.GuildId));
+        DeleteMessagesOnCommand = new(bot.AllGuildConfigs.Where(g => g.DeleteMessageOnCommand).Select(g => g.GuildId));
 
-        DeleteMessagesOnCommandChannels = new(bot.AllGuildConfigs
-            .SelectMany(x => x.DelMsgOnCmdChannels)
-            .ToDictionary(x => x.ChannelId, x => x.State)
-            .ToConcurrent());
+        DeleteMessagesOnCommandChannels = new(bot.AllGuildConfigs.SelectMany(x => x.DelMsgOnCmdChannels)
+                                                 .ToDictionary(x => x.ChannelId, x => x.State)
+                                                 .ToConcurrent());
 
         cmdHandler.CommandExecuted += DelMsgOnCmd_Handler;
     }
@@ -33,8 +34,7 @@ public class AdministrationService : INService
     public (bool DelMsgOnCmd, IEnumerable<DelMsgOnCmdChannel> channels) GetDelMsgOnCmdData(ulong guildId)
     {
         using var uow = _db.GetDbContext();
-        var conf = uow.GuildConfigsForId(guildId,
-            set => set.Include(x => x.DelMsgOnCmdChannels));
+        var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.DelMsgOnCmdChannels));
 
         return (conf.DeleteMessageOnCommand, conf.DelMsgOnCmdChannels);
     }
@@ -52,14 +52,16 @@ public class AdministrationService : INService
                 if (state && cmd.Name != "prune" && cmd.Name != "pick")
                 {
                     _logService.AddDeleteIgnore(msg.Id);
-                    try { await msg.DeleteAsync(); } catch { }
+                    try { await msg.DeleteAsync(); }
+                    catch { }
                 }
                 //if state is false, that means do not do it
             }
             else if (DeleteMessagesOnCommand.Contains(channel.Guild.Id) && cmd.Name != "prune" && cmd.Name != "pick")
             {
                 _logService.AddDeleteIgnore(msg.Id);
-                try { await msg.DeleteAsync(); } catch { }
+                try { await msg.DeleteAsync(); }
+                catch { }
             }
         });
         return Task.CompletedTask;
@@ -80,8 +82,7 @@ public class AdministrationService : INService
     {
         await using (var uow = _db.GetDbContext())
         {
-            var conf = uow.GuildConfigsForId(guildId,
-                set => set.Include(x => x.DelMsgOnCmdChannels));
+            var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.DelMsgOnCmdChannels));
 
             var old = conf.DelMsgOnCmdChannels.FirstOrDefault(x => x.ChannelId == chId);
             if (newState == Administration.State.Inherit)
@@ -125,7 +126,6 @@ public class AdministrationService : INService
         if (!users.Any())
             return;
         foreach (var u in users)
-        {
             try
             {
                 await u.ModifyAsync(usr => usr.Deaf = value);
@@ -134,19 +134,20 @@ public class AdministrationService : INService
             {
                 // ignored
             }
-        }
     }
 
-    public async Task EditMessage(ICommandContext context, ITextChannel chanl, ulong messageId, string input)
+    public async Task EditMessage(
+        ICommandContext context,
+        ITextChannel chanl,
+        ulong messageId,
+        string input)
     {
         var msg = await chanl.GetMessageAsync(messageId);
 
         if (msg is not IUserMessage umsg || msg.Author.Id != context.Client.CurrentUser.Id)
             return;
 
-        var rep = new ReplacementBuilder()
-            .WithDefault(context)
-            .Build();
+        var rep = new ReplacementBuilder().WithDefault(context).Build();
 
         var text = SmartText.CreateFrom(input);
         text = rep.Replace(text);

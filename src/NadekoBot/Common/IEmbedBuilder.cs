@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot;
 
 public interface IEmbedBuilder
@@ -19,5 +19,5 @@ public enum EmbedColor
 {
     Ok,
     Pending,
-    Error,
+    Error
 }

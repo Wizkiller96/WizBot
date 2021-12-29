@@ -1,28 +1,29 @@
+using Ayu.Discord.Voice;
+using NadekoBot.Services.Database.Models;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Ayu.Discord.Voice;
-using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Music;
 
 public sealed class MusicPlayer : IMusicPlayer
 {
-    private delegate void AdjustVolumeDelegate(Span<byte> data, float volume);
-
-    private readonly AdjustVolumeDelegate AdjustVolume;
-    private readonly VoiceClient _vc;
-
+    public event Func<IMusicPlayer, IQueuedTrackInfo, Task>? OnCompleted;
+    public event Func<IMusicPlayer, IQueuedTrackInfo, int, Task>? OnStarted;
+    public event Func<IMusicPlayer, Task>? OnQueueStopped;
     public bool IsKilled { get; private set; }
     public bool IsStopped { get; private set; }
     public bool IsPaused { get; private set; }
     public PlayerRepeatType Repeat { get; private set; }
-        
-    public int CurrentIndex => _queue.Index;
-        
-    public float Volume => _volume;
-    private float _volume = 1.0f;
+
+    public int CurrentIndex
+        => _queue.Index;
+
+    public float Volume { get; private set; } = 1.0f;
+
+    private readonly AdjustVolumeDelegate AdjustVolume;
+    private readonly VoiceClient _vc;
 
     private readonly IMusicQueue _queue;
     private readonly ITrackResolveProvider _trackResolveProvider;
@@ -50,7 +51,7 @@ public sealed class MusicPlayer : IMusicPlayer
             AdjustVolume = AdjustVolumeInt16;
         else
             AdjustVolume = AdjustVolumeFloat32;
-            
+
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
         _thread = new(async () =>
@@ -63,34 +64,18 @@ public sealed class MusicPlayer : IMusicPlayer
     private static VoiceClient GetVoiceClient(QualityPreset qualityPreset)
         => qualityPreset switch
         {
-            QualityPreset.Highest => new(
-                SampleRate._48k,
-                Bitrate._192k,
-                Channels.Two,
-                FrameDelay.Delay20,
-                BitDepthEnum.Float32
-            ),
-            QualityPreset.High => new(
-                SampleRate._48k,
-                Bitrate._128k,
-                Channels.Two,
-                FrameDelay.Delay40,
-                BitDepthEnum.Float32
-            ),
-            QualityPreset.Medium => new(
-                SampleRate._48k,
+            QualityPreset.Highest => new(),
+            QualityPreset.High => new(SampleRate._48k, Bitrate._128k, Channels.Two, FrameDelay.Delay40),
+            QualityPreset.Medium => new(SampleRate._48k,
                 Bitrate._96k,
                 Channels.Two,
                 FrameDelay.Delay40,
-                BitDepthEnum.UInt16
-            ),
-            QualityPreset.Low => new(
-                SampleRate._48k,
+                BitDepthEnum.UInt16),
+            QualityPreset.Low => new(SampleRate._48k,
                 Bitrate._64k,
                 Channels.Two,
                 FrameDelay.Delay40,
-                BitDepthEnum.UInt16
-            ),
+                BitDepthEnum.UInt16),
             _ => throw new ArgumentOutOfRangeException(nameof(qualityPreset), qualityPreset, null)
         };
 
@@ -103,7 +88,7 @@ public sealed class MusicPlayer : IMusicPlayer
             // wait until a song is available in the queue
             // or until the queue is resumed
             var track = _queue.GetCurrent(out var index);
-                
+
             if (track is null || IsStopped)
             {
                 await Task.Delay(500);
@@ -134,9 +119,8 @@ public sealed class MusicPlayer : IMusicPlayer
                 using var source = FfmpegTrackDataSource.CreateAsync(
                     _vc.BitDepth,
                     streamUrl,
-                    track.Platform == MusicPlatform.Local
-                );
-                    
+                    track.Platform == MusicPlatform.Local);
+
                 // start moving data from the source into the buffer
                 // this method will return once the sufficient prebuffering is done
                 await _songBuffer.BufferAsync(source, token);
@@ -191,10 +175,8 @@ public sealed class MusicPlayer : IMusicPlayer
                 sw.Start();
                 Thread.Sleep(2);
 
-                var delay = sw.ElapsedTicks * ticksPerMs > 3f
-                    ? _vc.Delay - 16
-                    : _vc.Delay - 3;
-                    
+                var delay = sw.ElapsedTicks * ticksPerMs > 3f ? _vc.Delay - 16 : _vc.Delay - 3;
+
                 var errorCount = 0;
                 while (!IsStopped && !IsKilled)
                 {
@@ -205,23 +187,23 @@ public sealed class MusicPlayer : IMusicPlayer
                         _skipped = false;
                         break;
                     }
-                        
+
                     if (IsPaused)
                     {
                         await Task.Delay(200);
                         continue;
                     }
-                        
+
                     sw.Restart();
                     var ticks = sw.ElapsedTicks;
                     try
                     {
                         var result = CopyChunkToOutput(_songBuffer, _vc);
-                        
+
                         // if song is finished
                         if (result is null)
                             break;
-                        
+
                         if (result is true)
                         {
                             if (errorCount > 0)
@@ -229,12 +211,12 @@ public sealed class MusicPlayer : IMusicPlayer
                                 _ = _proxy.StartSpeakingAsync();
                                 errorCount = 0;
                             }
-                                    
+
                             // todo future windows multimedia api
-                                    
+
                             // wait for slightly less than the latency
                             Thread.Sleep(delay);
-                                    
+
                             // and then spin out the rest
                             while ((sw.ElapsedTicks - ticks) * ticksPerMs <= _vc.Delay - 0.1f)
                                 Thread.SpinWait(100);
@@ -243,16 +225,16 @@ public sealed class MusicPlayer : IMusicPlayer
                         {
                             // result is false is either when the gateway is being swapped 
                             // or if the bot is reconnecting, or just disconnected for whatever reason
-                        
+
                             // tolerate up to 15x200ms of failures (3 seconds)
                             if (++errorCount <= 15)
                             {
                                 await Task.Delay(200);
                                 continue;
                             }
-                        
+
                             Log.Warning("Can't send data to voice channel");
-                        
+
                             IsStopped = true;
                             // if errors are happening for more than 3 seconds
                             // Stop the player
@@ -268,8 +250,8 @@ public sealed class MusicPlayer : IMusicPlayer
             catch (Win32Exception)
             {
                 IsStopped = true;
-                Log.Error("Please install ffmpeg and make sure it's added to your " +
-                          "PATH environment variable before trying again");
+                Log.Error("Please install ffmpeg and make sure it's added to your "
+                          + "PATH environment variable before trying again");
             }
             catch (OperationCanceledException)
             {
@@ -284,12 +266,13 @@ public sealed class MusicPlayer : IMusicPlayer
                 cancellationTokenSource.Cancel();
                 // turn off green in vc
                 _ = OnCompleted?.Invoke(this, track);
-                    
+
                 HandleQueuePostTrack();
                 _skipped = false;
-                    
-                _ = _proxy.StopSpeakingAsync();;
-                    
+
+                _ = _proxy.StopSpeakingAsync();
+                ;
+
                 await Task.Delay(100);
             }
         }
@@ -300,12 +283,9 @@ public sealed class MusicPlayer : IMusicPlayer
         var data = sb.Read(vc.InputLength, out var length);
 
         // if nothing is read from the buffer, song is finished
-        if (data.Length == 0)
-        {
-            return null;
-        }
+        if (data.Length == 0) return null;
 
-        AdjustVolume(data, _volume);
+        AdjustVolume(data, Volume);
         return _proxy.SendPcmFrame(vc, data, length);
     }
 
@@ -322,7 +302,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
         if (repeat == PlayerRepeatType.Track || isStopped)
             return;
-            
+
         // if queue is being repeated, advance no matter what
         if (repeat == PlayerRepeatType.None)
         {
@@ -334,37 +314,36 @@ public sealed class MusicPlayer : IMusicPlayer
                 OnQueueStopped?.Invoke(this);
                 return;
             }
-                
+
             _queue.Advance();
             return;
         }
-            
+
         _queue.Advance();
     }
 
-        
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AdjustVolumeInt16(Span<byte> audioSamples, float volume)
     {
         if (Math.Abs(volume - 1f) < 0.0001f) return;
-        
+
         var samples = MemoryMarshal.Cast<byte, short>(audioSamples);
-        
+
         for (var i = 0; i < samples.Length; i++)
         {
             ref var sample = ref samples[i];
-            sample = (short) (sample * volume);
+            sample = (short)(sample * volume);
         }
     }
-        
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AdjustVolumeFloat32(Span<byte> audioSamples, float volume)
     {
         if (Math.Abs(volume - 1f) < 0.0001f) return;
-        
+
         var samples = MemoryMarshal.Cast<byte, float>(audioSamples);
-        
+
         for (var i = 0; i < samples.Length; i++)
         {
             ref var sample = ref samples[i];
@@ -373,7 +352,7 @@ public sealed class MusicPlayer : IMusicPlayer
     }
 
     public async Task<(IQueuedTrackInfo? QueuedTrack, int Index)> TryEnqueueTrackAsync(
-        string query, 
+        string query,
         string queuer,
         bool asNext,
         MusicPlatform? forcePlatform = null)
@@ -389,7 +368,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
         return (_queue.Enqueue(song, queuer, out index), index);
     }
-        
+
     public async Task EnqueueManyAsync(IEnumerable<(string Query, MusicPlatform Platform)> queries, string queuer)
     {
         var errorCount = 0;
@@ -397,30 +376,31 @@ public sealed class MusicPlayer : IMusicPlayer
         {
             if (IsKilled)
                 break;
-                
+
             await chunk.Select(async data =>
-            {
-                var (query, platform) = data;
-                try
-                {
-                    await TryEnqueueTrackAsync(query, queuer, false, forcePlatform: platform);
-                    errorCount = 0;
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
-                    ++errorCount;
-                }
-            }).WhenAll();
+                       {
+                           var (query, platform) = data;
+                           try
+                           {
+                               await TryEnqueueTrackAsync(query, queuer, false, platform);
+                               errorCount = 0;
+                           }
+                           catch (Exception ex)
+                           {
+                               Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
+                               ++errorCount;
+                           }
+                       })
+                       .WhenAll();
 
             await Task.Delay(1000);
-                
+
             // > 10 errors in a row = kill
             if (errorCount > 10)
                 break;
         }
     }
-        
+
     public void EnqueueTrack(ITrackInfo track, string queuer)
         => _queue.Enqueue(track, queuer, out _);
 
@@ -475,7 +455,7 @@ public sealed class MusicPlayer : IMusicPlayer
         if (normalizedVolume is < 0f or > 1f)
             throw new ArgumentOutOfRangeException(nameof(newVolume), "Volume must be in range 0-100");
 
-        _volume = normalizedVolume;
+        Volume = normalizedVolume;
     }
 
     public void Kill()
@@ -496,9 +476,12 @@ public sealed class MusicPlayer : IMusicPlayer
 
         return true;
     }
-        
-    public bool TogglePause() => IsPaused = !IsPaused;
-    public IQueuedTrackInfo? MoveTrack(int from, int to) => _queue.MoveTrack(from, to);
+
+    public bool TogglePause()
+        => IsPaused = !IsPaused;
+
+    public IQueuedTrackInfo? MoveTrack(int from, int to)
+        => _queue.MoveTrack(from, to);
 
     public void Dispose()
     {
@@ -511,7 +494,5 @@ public sealed class MusicPlayer : IMusicPlayer
         _vc.Dispose();
     }
 
-    public event Func<IMusicPlayer, IQueuedTrackInfo, Task>? OnCompleted;
-    public event Func<IMusicPlayer, IQueuedTrackInfo, int, Task>? OnStarted;
-    public event Func<IMusicPlayer, Task>? OnQueueStopped;
+    private delegate void AdjustVolumeDelegate(Span<byte> data, float volume);
 }

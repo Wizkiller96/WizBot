@@ -1,25 +1,25 @@
 #nullable disable
-using System.Net;
-using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.ModuleBehaviors;
+using System.Net;
+using System.Threading.Channels;
 
 namespace NadekoBot.Modules.Administration.Services;
 
 public sealed class ImageOnlyChannelService : IEarlyBehavior
 {
+    public int Priority { get; } = 0;
     private readonly IMemoryCache _ticketCache;
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _enabledOn;
 
-    private readonly Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(new BoundedChannelOptions(100)
-    {
-        FullMode = BoundedChannelFullMode.DropOldest,
-        SingleReader = true,
-        SingleWriter = false,
-    });
+    private readonly Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(
+        new BoundedChannelOptions(100)
+        {
+            FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, SingleWriter = false
+        });
 
 
     public ImageOnlyChannelService(IMemoryCache ticketCache, DiscordSocketClient client, DbService db)
@@ -29,14 +29,13 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         _db = db;
 
         var uow = _db.GetDbContext();
-        _enabledOn = uow.ImageOnlyChannels
-            .ToList()
-            .GroupBy(x => x.GuildId)
-            .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(x => x.ChannelId)))
-            .ToConcurrent();
-            
+        _enabledOn = uow.ImageOnlyChannels.ToList()
+                        .GroupBy(x => x.GuildId)
+                        .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(x => x.ChannelId)))
+                        .ToConcurrent();
+
         _ = Task.Run(DeleteQueueRunner);
-            
+
         _client.ChannelDestroyed += ClientOnChannelDestroyed;
     }
 
@@ -73,25 +72,19 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
     {
         var newState = false;
         using var uow = _db.GetDbContext();
-        if (forceDisable 
-            || (_enabledOn.TryGetValue(guildId, out var channels) 
-                && channels.TryRemove(channelId)))
+        if (forceDisable || (_enabledOn.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
         {
             uow.ImageOnlyChannels.Delete(x => x.ChannelId == channelId);
         }
         else
         {
-            uow.ImageOnlyChannels.Add(new()
-            {
-                GuildId = guildId,
-                ChannelId = channelId
-            });
+            uow.ImageOnlyChannels.Add(new() { GuildId = guildId, ChannelId = channelId });
 
             channels = _enabledOn.GetOrAdd(guildId, new ConcurrentHashSet<ulong>());
             channels.Add(channelId);
             newState = true;
         }
-            
+
         uow.SaveChanges();
         return newState;
     }
@@ -100,20 +93,19 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
     {
         if (msg.Channel is not ITextChannel tch)
             return false;
-            
+
         if (msg.Attachments.Any(x => x is { Height: > 0, Width: > 0 }))
             return false;
 
-        if (!_enabledOn.TryGetValue(tch.GuildId, out var chs)
-            || !chs.Contains(msg.Channel.Id))
+        if (!_enabledOn.TryGetValue(tch.GuildId, out var chs) || !chs.Contains(msg.Channel.Id))
             return false;
 
         var user = await tch.Guild.GetUserAsync(msg.Author.Id)
                    ?? await _client.Rest.GetGuildUserAsync(tch.GuildId, msg.Author.Id);
-            
+
         if (user is null)
             return false;
-            
+
         // ignore owner and admin
         if (user.Id == tch.Guild.OwnerId || user.GuildPermissions.Administrator)
         {
@@ -129,7 +121,8 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         // can't modify channel perms if not admin apparently
         if (!botUser.GuildPermissions.ManageGuild)
         {
-            ToggleImageOnlyChannel( tch.GuildId, tch.Id, true);;
+            ToggleImageOnlyChannel(tch.GuildId, tch.Id, true);
+            ;
             return false;
         }
 
@@ -142,16 +135,14 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
                 msg.Author.Id,
                 msg.Channel.Id);
         }
-            
+
         try
         {
             await _deleteQueue.Writer.WriteAsync(msg);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error deleting message {MessageId} in image-only channel {ChannelId}.",
-                msg.Id,
-                tch.Id);
+            Log.Error(ex, "Error deleting message {MessageId} in image-only channel {ChannelId}.", msg.Id, tch.Id);
         }
 
         return true;
@@ -159,18 +150,17 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
 
     private bool AddUserTicket(ulong guildId, ulong userId)
     {
-        var old = _ticketCache.GetOrCreate($"{guildId}_{userId}", entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
-            return 0;
-        });
+        var old = _ticketCache.GetOrCreate($"{guildId}_{userId}",
+            entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
+                return 0;
+            });
 
         _ticketCache.Set($"{guildId}_{userId}", ++old);
-            
+
         // if this is the third time that the user posts a
         // non image in an image-only channel on this server 
         return old > 2;
     }
-
-    public int Priority { get; } = 0;
 }

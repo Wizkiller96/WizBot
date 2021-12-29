@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using NadekoBot.Common.Yml;
+﻿using NadekoBot.Common.Yml;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NadekoBot.Modules.Games.Hangman;
 
@@ -24,7 +24,6 @@ public sealed class DefaultHangmanSource : IHangmanSource
 
         var qs = new Dictionary<string, HangmanTerm[]>();
         foreach (var file in Directory.EnumerateFiles("data/hangman/", "*.yml"))
-        {
             try
             {
                 var data = Yaml.Deserializer.Deserialize<HangmanTerm[]>(File.ReadAllText(file));
@@ -34,14 +33,13 @@ public sealed class DefaultHangmanSource : IHangmanSource
             {
                 Log.Error(ex, "Loading {HangmanFile} failed.", file);
             }
-        }
 
         _terms = qs;
-            
+
         Log.Information("Loaded {HangmanCategoryCount} hangman categories.", qs.Count);
     }
 
-    public IReadOnlyCollection<string> GetCategories() 
+    public IReadOnlyCollection<string> GetCategories()
         => _terms.Keys.ToList();
 
     public bool GetTerm(string? category, [NotNullWhen(true)] out HangmanTerm? term)

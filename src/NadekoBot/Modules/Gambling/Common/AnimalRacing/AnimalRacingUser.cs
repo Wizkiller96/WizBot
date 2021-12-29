@@ -13,16 +13,14 @@ public class AnimalRacingUser
 
     public AnimalRacingUser(string username, ulong userId, long bet)
     {
-        this.Bet = bet;
-        this.Username = username;
-        this.UserId = userId;
+        Bet = bet;
+        Username = username;
+        UserId = userId;
     }
 
     public override bool Equals(object obj)
-        => obj is AnimalRacingUser x
-            ? x.UserId == this.UserId
-            : false;
+        => obj is AnimalRacingUser x ? x.UserId == UserId : false;
 
     public override int GetHashCode()
-        => this.UserId.GetHashCode();
+        => UserId.GetHashCode();
 }

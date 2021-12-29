@@ -1,10 +1,24 @@
-#nullable disable
+﻿#nullable disable
 using Newtonsoft.Json;
 
 namespace NadekoBot.Common.Pokemon;
 
 public class SearchPokemon
 {
+    [JsonProperty("num")]
+    public int Id { get; set; }
+
+    public string Species { get; set; }
+    public string[] Types { get; set; }
+    public GenderRatioClass GenderRatio { get; set; }
+    public BaseStatsClass BaseStats { get; set; }
+    public Dictionary<string, string> Abilities { get; set; }
+    public float HeightM { get; set; }
+    public float WeightKg { get; set; }
+    public string Color { get; set; }
+    public string[] Evos { get; set; }
+    public string[] EggGroups { get; set; }
+
     public class GenderRatioClass
     {
         public float M { get; set; }
@@ -24,18 +38,4 @@ public class SearchPokemon
             => $@"💚**HP:**  {Hp,-4} ⚔**ATK:** {Atk,-4} 🛡**DEF:** {Def,-4}
 ✨**SPA:** {Spa,-4} 🎇**SPD:** {Spd,-4} 💨**SPE:** {Spe,-4}";
     }
-
-    [JsonProperty("num")]
-    public int Id { get; set; }
-
-    public string Species { get; set; }
-    public string[] Types { get; set; }
-    public GenderRatioClass GenderRatio { get; set; }
-    public BaseStatsClass BaseStats { get; set; }
-    public Dictionary<string, string> Abilities { get; set; }
-    public float HeightM { get; set; }
-    public float WeightKg { get; set; }
-    public string Color { get; set; }
-    public string[] Evos { get; set; }
-    public string[] EggGroups { get; set; }
 }

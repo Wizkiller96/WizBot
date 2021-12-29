@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -9,6 +9,14 @@ public partial class Administration
     [Group]
     public class SelfCommands : NadekoSubmodule<SelfService>
     {
+        public enum SettableUserStatus
+        {
+            Online,
+            Invisible,
+            Idle,
+            Dnd
+        }
+
         private readonly DiscordSocketClient _client;
         private readonly IBotStrings _strings;
         private readonly ICoordinator _coord;
@@ -20,7 +28,8 @@ public partial class Administration
             _coord = coord;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -30,7 +39,7 @@ public partial class Administration
                 return;
 
             var guser = (IGuildUser)ctx.User;
-            var cmd = new AutoCommand()
+            var cmd = new AutoCommand
             {
                 CommandText = cmdText,
                 ChannelId = ctx.Channel.Id,
@@ -39,18 +48,22 @@ public partial class Administration
                 GuildName = ctx.Guild?.Name,
                 VoiceChannelId = guser.VoiceChannel?.Id,
                 VoiceChannelName = guser.VoiceChannel?.Name,
-                Interval = 0,
+                Interval = 0
             };
             _service.AddNewAutoCommand(cmd);
 
-            await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                .WithTitle(GetText(strs.scadd))
-                .AddField(GetText(strs.server), cmd.GuildId is null ? $"-" : $"{cmd.GuildName}/{cmd.GuildId}", true)
-                .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                .AddField(GetText(strs.command_text), cmdText, false));
+            await ctx.Channel.EmbedAsync(_eb.Create()
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.scadd))
+                                            .AddField(GetText(strs.server),
+                                                cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
+                                                true)
+                                            .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                                            .AddField(GetText(strs.command_text), cmdText));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -63,7 +76,7 @@ public partial class Administration
                 return;
 
             var guser = (IGuildUser)ctx.User;
-            var cmd = new AutoCommand()
+            var cmd = new AutoCommand
             {
                 CommandText = cmdText,
                 ChannelId = ctx.Channel.Id,
@@ -72,14 +85,15 @@ public partial class Administration
                 GuildName = ctx.Guild?.Name,
                 VoiceChannelId = guser.VoiceChannel?.Id,
                 VoiceChannelName = guser.VoiceChannel?.Name,
-                Interval = interval,
+                Interval = interval
             };
             _service.AddNewAutoCommand(cmd);
 
             await ReplyConfirmLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task StartupCommandsList(int page = 1)
@@ -87,11 +101,8 @@ public partial class Administration
             if (page-- < 1)
                 return;
 
-            var scmds = _service.GetStartupCommands()
-                .Skip(page * 5)
-                .Take(5)
-                .ToList();
-                
+            var scmds = _service.GetStartupCommands().Skip(page * 5).Take(5).ToList();
+
             if (scmds.Count == 0)
             {
                 await ReplyErrorLocalizedAsync(strs.startcmdlist_none);
@@ -99,19 +110,19 @@ public partial class Administration
             else
             {
                 var i = 0;
-                await SendConfirmAsync(
-                        text: string.Join("\n", scmds
-                            .Select(x => $@"```css
+                await SendConfirmAsync(text: string.Join("\n",
+                        scmds.Select(x => $@"```css
 #{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
-                        title: string.Empty,
-                        footer: GetText(strs.page(page + 1)));
+                    title: string.Empty,
+                    footer: GetText(strs.page(page + 1)));
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task AutoCommandsList(int page = 1)
@@ -119,10 +130,7 @@ public partial class Administration
             if (page-- < 1)
                 return;
 
-            var scmds = _service.GetAutoCommands()
-                .Skip(page * 5)
-                .Take(5)
-                .ToList();
+            var scmds = _service.GetAutoCommands().Skip(page * 5).Take(5).ToList();
             if (!scmds.Any())
             {
                 await ReplyErrorLocalizedAsync(strs.autocmdlist_none);
@@ -130,23 +138,23 @@ public partial class Administration
             else
             {
                 var i = 0;
-                await SendConfirmAsync(
-                        text: string.Join("\n", scmds
-                            .Select(x => $@"```css
+                await SendConfirmAsync(text: string.Join("\n",
+                        scmds.Select(x => $@"```css
 #{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
-                        title: string.Empty,
-                        footer: GetText(strs.page(page + 1)));
+                    title: string.Empty,
+                    footer: GetText(strs.page(page + 1)));
             }
         }
 
         private string GetIntervalText(int interval)
             => $"[{GetText(strs.interval)}]: {interval}";
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task Wait(int miliseconds)
         {
@@ -162,8 +170,9 @@ public partial class Administration
 
             await Task.Delay(miliseconds);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -174,11 +183,12 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.acrm_fail);
                 return;
             }
-                
+
             await ctx.OkAsync();
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task StartupCommandRemove([Leftover] int index)
@@ -189,7 +199,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.scrm);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -200,7 +211,8 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.startcmds_cleared);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task ForwardMessages()
         {
@@ -212,7 +224,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.fwdm_stop);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task ForwardToAll()
         {
@@ -222,10 +235,10 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.fwall_start);
             else
                 await ReplyPendingLocalizedAsync(strs.fwall_stop);
-
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ShardStats(int page = 1)
         {
             if (--page < 0)
@@ -233,35 +246,36 @@ public partial class Administration
 
             var statuses = _coord.GetAllShardStatuses();
 
-            var status = string.Join(" : ", statuses
-                .Select(x => (ConnectionStateToEmoji(x), x))
-                .GroupBy(x => x.Item1)
-                .Select(x => $"`{x.Count()} {x.Key}`")
-                .ToArray());
+            var status = string.Join(" : ",
+                statuses.Select(x => (ConnectionStateToEmoji(x), x))
+                        .GroupBy(x => x.Item1)
+                        .Select(x => $"`{x.Count()} {x.Key}`")
+                        .ToArray());
 
-            var allShardStrings = statuses
-                .Select(st =>
+            var allShardStrings = statuses.Select(st =>
+                                          {
+                                              var stateStr = ConnectionStateToEmoji(st);
+                                              var timeDiff = DateTime.UtcNow - st.LastUpdate;
+                                              var maxGuildCountLength =
+                                                  statuses.Max(x => x.GuildCount).ToString().Length;
+                                              return $"`{stateStr} "
+                                                     + $"| #{st.ShardId.ToString().PadBoth(3)} "
+                                                     + $"| {timeDiff:mm\\:ss} "
+                                                     + $"| {st.GuildCount.ToString().PadBoth(maxGuildCountLength)} `";
+                                          })
+                                          .ToArray();
+            await ctx.SendPaginatedConfirmAsync(page,
+                curPage =>
                 {
-                    var stateStr = ConnectionStateToEmoji(st);
-                    var timeDiff = DateTime.UtcNow - st.LastUpdate;
-                    var maxGuildCountLength = statuses.Max(x => x.GuildCount).ToString().Length;
-                    return $"`{stateStr} " +
-                           $"| #{st.ShardId.ToString().PadBoth(3)} " +
-                           $"| {timeDiff:mm\\:ss} " +
-                           $"| {st.GuildCount.ToString().PadBoth(maxGuildCountLength)} `";
-                })
-                .ToArray();
-            await ctx.SendPaginatedConfirmAsync(page, curPage =>
-            {
-                var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
+                    var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
 
-                if (string.IsNullOrWhiteSpace(str))
-                    str = GetText(strs.no_shards_on_page);
+                    if (string.IsNullOrWhiteSpace(str))
+                        str = GetText(strs.no_shards_on_page);
 
-                return _eb.Create()
-                    .WithOkColor()
-                    .WithDescription($"{status}\n\n{str}");
-            }, allShardStrings.Length, 25);
+                    return _eb.Create().WithOkColor().WithDescription($"{status}\n\n{str}");
+                },
+                allShardStrings.Length,
+                25);
         }
 
         private static string ConnectionStateToEmoji(ShardStatus status)
@@ -276,28 +290,27 @@ public partial class Administration
             };
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task RestartShard(int shardId)
         {
             var success = _coord.RestartShard(shardId);
             if (success)
-            {
                 await ReplyConfirmLocalizedAsync(strs.shard_reconnecting(Format.Bold("#" + shardId)));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.no_shard_id);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task Leave([Leftover] string guildStr)
             => _service.LeaveGuild(guildStr);
 
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task Die(bool graceful = false)
         {
@@ -309,11 +322,13 @@ public partial class Administration
             {
                 // ignored
             }
+
             await Task.Delay(2000);
             _coord.Die(graceful);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task Restart()
         {
@@ -324,10 +339,12 @@ public partial class Administration
                 return;
             }
 
-            try { await ReplyConfirmLocalizedAsync(strs.restarting); } catch { }
+            try { await ReplyConfirmLocalizedAsync(strs.restarting); }
+            catch { }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SetName([Leftover] string newName)
         {
@@ -346,7 +363,8 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName)));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [UserPerm(GuildPerm.ManageNicknames)]
         [BotPerm(GuildPerm.ChangeNickname)]
         [Priority(0)]
@@ -360,26 +378,28 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [BotPerm(GuildPerm.ManageNicknames)]
         [UserPerm(GuildPerm.ManageNicknames)]
         [Priority(1)]
         public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
         {
-            var sg = (SocketGuild) ctx.Guild;
-            if (sg.OwnerId == gu.Id ||
-                gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
+            var sg = (SocketGuild)ctx.Guild;
+            if (sg.OwnerId == gu.Id
+                || gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
             {
                 await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
                 return;
             }
-                
+
             await gu.ModifyAsync(u => u.Nickname = newNick);
 
             await ReplyConfirmLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SetStatus([Leftover] SettableUserStatus status)
         {
@@ -388,32 +408,30 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString())));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SetAvatar([Leftover] string img = null)
         {
             var success = await _service.SetAvatar(img);
 
-            if (success)
-            {
-                await ReplyConfirmLocalizedAsync(strs.set_avatar);
-            }
+            if (success) await ReplyConfirmLocalizedAsync(strs.set_avatar);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SetGame(ActivityType type, [Leftover] string game = null)
         {
-            var rep = new ReplacementBuilder()
-                .WithDefault(Context)
-                .Build();
+            var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             await _service.SetGameAsync(game is null ? game : rep.Replace(game), type);
 
             await ReplyConfirmLocalizedAsync(strs.set_game);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SetStream(string url, [Leftover] string name = null)
         {
@@ -424,23 +442,22 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.set_stream);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task Send(string where, [Leftover] SmartText text = null)
         {
             var ids = where.Split('|');
             if (ids.Length != 2)
                 return;
-                
+
             var sid = ulong.Parse(ids[0]);
             var server = _client.Guilds.FirstOrDefault(s => s.Id == sid);
 
             if (server is null)
                 return;
 
-            var rep = new ReplacementBuilder()
-                .WithDefault(Context)
-                .Build();
+            var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             if (ids[1].ToUpperInvariant().StartsWith("C:", StringComparison.InvariantCulture))
             {
@@ -450,7 +467,7 @@ public partial class Administration
                     return;
 
                 text = rep.Replace(text);
-                await ch.SendAsync(text, sanitizeAll: false);
+                await ch.SendAsync(text);
             }
             else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
             {
@@ -468,27 +485,30 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.invalid_format);
                 return;
             }
-                
+
             await ReplyConfirmLocalizedAsync(strs.message_sent);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task ImagesReload()
         {
             await _service.ReloadImagesAsync();
             await ReplyConfirmLocalizedAsync(strs.images_loading);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task StringsReload()
         {
             _strings.Reload();
             await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task CoordReload()
         {
@@ -511,14 +531,6 @@ public partial class Administration
             }
 
             return UserStatus.Online;
-        }
-
-        public enum SettableUserStatus
-        {
-            Online,
-            Invisible,
-            Idle,
-            Dnd
         }
     }
 }

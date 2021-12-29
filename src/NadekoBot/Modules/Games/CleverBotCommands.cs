@@ -15,7 +15,8 @@ public partial class Games
             => _db = db;
 
         [NoPublicBot]
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task Cleverbot()
@@ -29,6 +30,7 @@ public partial class Games
                     uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
                     await uow.SaveChangesAsync();
                 }
+
                 await ReplyConfirmLocalizedAsync(strs.cleverbot_disabled);
                 return;
             }
@@ -44,6 +46,4 @@ public partial class Games
             await ReplyConfirmLocalizedAsync(strs.cleverbot_enabled);
         }
     }
-
-       
 }

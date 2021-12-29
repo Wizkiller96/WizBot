@@ -3,13 +3,16 @@ namespace NadekoBot.Modules.Games.Common.Trivia;
 
 public class TriviaQuestionPool
 {
+    private TriviaQuestion[] Pool
+        => _cache.LocalData.TriviaQuestions;
+
+    private IReadOnlyDictionary<int, string> Map
+        => _cache.LocalData.PokemonMap;
+
     private readonly IDataCache _cache;
     private readonly int maxPokemonId;
 
     private readonly NadekoRandom _rng = new();
-
-    private TriviaQuestion[] Pool => _cache.LocalData.TriviaQuestions;
-    private IReadOnlyDictionary<int, string> Map => _cache.LocalData.PokemonMap;
 
     public TriviaQuestionPool(IDataCache cache)
     {
@@ -31,6 +34,7 @@ public class TriviaQuestionPool
                 $@"https://nadeko.bot/images/pokemon/shadows/{num}.png",
                 $@"https://nadeko.bot/images/pokemon/real/{num}.png");
         }
+
         TriviaQuestion randomQuestion;
         while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)])) ;
 

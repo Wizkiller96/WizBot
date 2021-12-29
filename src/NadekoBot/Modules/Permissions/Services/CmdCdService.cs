@@ -10,33 +10,26 @@ public class CmdCdService : ILateBlocker, INService
     public ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns { get; } = new();
 
     public int Priority { get; } = 0;
-            
+
     public CmdCdService(Bot bot)
-        => CommandCooldowns = new(
-            bot.AllGuildConfigs.ToDictionary(k => k.GuildId, 
-                v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
+        => CommandCooldowns = new(bot.AllGuildConfigs.ToDictionary(k => k.GuildId,
+            v => new ConcurrentHashSet<CommandCooldown>(v.CommandCooldowns)));
 
     public Task<bool> TryBlock(IGuild guild, IUser user, string commandName)
     {
         if (guild is null)
             return Task.FromResult(false);
-            
+
         var cmdcds = CommandCooldowns.GetOrAdd(guild.Id, new ConcurrentHashSet<CommandCooldown>());
         CommandCooldown cdRule;
         if ((cdRule = cmdcds.FirstOrDefault(cc => cc.CommandName == commandName)) != null)
         {
             var activeCdsForGuild = ActiveCooldowns.GetOrAdd(guild.Id, new ConcurrentHashSet<ActiveCooldown>());
             if (activeCdsForGuild.FirstOrDefault(ac => ac.UserId == user.Id && ac.Command == commandName) != null)
-            {
                 return Task.FromResult(true);
-            }
-                
-            activeCdsForGuild.Add(new()
-            {
-                UserId = user.Id,
-                Command = commandName,
-            });
-                
+
+            activeCdsForGuild.Add(new() { UserId = user.Id, Command = commandName });
+
             var _ = Task.Run(async () =>
             {
                 try
@@ -53,7 +46,7 @@ public class CmdCdService : ILateBlocker, INService
 
         return Task.FromResult(false);
     }
-        
+
     public Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
     {
         var guild = ctx.Guild;

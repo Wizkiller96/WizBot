@@ -1,23 +1,24 @@
 ﻿#nullable disable
-using NadekoBot.Services.Database.Models;
-using NadekoBot.Modules.Utility.Common.Patreon;
-using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Modules.Utility.Common.Patreon;
+using NadekoBot.Services.Database.Models;
 using StackExchange.Redis;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Utility.Services;
 
 public class PatreonRewardsService : INService
 {
+    public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
+
+    public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
     private readonly SemaphoreSlim getPledgesLocker = new(1, 1);
 
     private readonly Timer _updater;
     private readonly SemaphoreSlim claimLockJustInCase = new(1, 1);
-        
-    public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
     private readonly DbService _db;
     private readonly ICurrencyService _currency;
     private readonly GamblingConfigService _gamblingConfigService;
@@ -26,8 +27,6 @@ public class PatreonRewardsService : INService
     private readonly IHttpClientFactory _httpFactory;
     private readonly IEmbedBuilderService _eb;
     private readonly DiscordSocketClient _client;
-
-    public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
 
     public PatreonRewardsService(
         DbService db,
@@ -49,8 +48,7 @@ public class PatreonRewardsService : INService
         _client = client;
 
         if (client.ShardId == 0)
-            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()),
-                null, TimeSpan.Zero, Interval);
+            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()), null, TimeSpan.Zero, Interval);
     }
 
     private DateTime LastAccessTokenUpdate(IBotCredentials creds)
@@ -65,36 +63,17 @@ public class PatreonRewardsService : INService
         return lastTime;
     }
 
-
-    private sealed class PatreonRefreshData
-    {
-        [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
-            
-        [JsonPropertyName("refresh_token")]
-        public string RefreshToken { get; set; }
-            
-        [JsonPropertyName("expires_in")]
-        public long ExpiresIn { get; set; }
-            
-        [JsonPropertyName("scope")]
-        public string Scope { get; set; }
-            
-        [JsonPropertyName("token_type")]
-        public string TokenType { get; set; }
-    }
-        
     private async Task<bool> UpdateAccessToken(IBotCredentials creds)
     {
         Log.Information("Updating patreon access token...");
         try
         {
             using var http = _httpFactory.CreateClient();
-            var res = await http.PostAsync($"https://www.patreon.com/api/oauth2/token" +
-                                           $"?grant_type=refresh_token" +
-                                           $"&refresh_token={creds.Patreon.RefreshToken}" +
-                                           $"&client_id={creds.Patreon.ClientId}" +
-                                           $"&client_secret={creds.Patreon.ClientSecret}",
+            var res = await http.PostAsync("https://www.patreon.com/api/oauth2/token"
+                                           + "?grant_type=refresh_token"
+                                           + $"&refresh_token={creds.Patreon.RefreshToken}"
+                                           + $"&client_id={creds.Patreon.ClientId}"
+                                           + $"&client_secret={creds.Patreon.ClientSecret}",
                 new StringContent(string.Empty));
 
             res.EnsureSuccessStatusCode();
@@ -103,7 +82,7 @@ public class PatreonRewardsService : INService
 
             if (data is null)
                 throw new("Invalid patreon response.");
-                
+
             _credsProvider.ModifyCredsFile(oldData =>
             {
                 oldData.Patreon.AccessToken = data.AccessToken;
@@ -126,9 +105,7 @@ public class PatreonRewardsService : INService
         var _1 = creds.Patreon.ClientId;
         var _2 = creds.Patreon.ClientSecret;
         var _4 = creds.Patreon.RefreshToken;
-        return !(string.IsNullOrWhiteSpace(_1)
-                 || string.IsNullOrWhiteSpace(_2)
-                 || string.IsNullOrWhiteSpace(_4));
+        return !(string.IsNullOrWhiteSpace(_1) || string.IsNullOrWhiteSpace(_2) || string.IsNullOrWhiteSpace(_4));
     }
 
     public async Task RefreshPledges(IBotCredentials creds)
@@ -154,7 +131,6 @@ public class PatreonRewardsService : INService
         await getPledgesLocker.WaitAsync();
         try
         {
-                
             var members = new List<PatreonMember>();
             var users = new List<PatreonUser>();
             using (var http = _httpFactory.CreateClient())
@@ -163,10 +139,10 @@ public class PatreonRewardsService : INService
                 http.DefaultRequestHeaders.TryAddWithoutValidation("Authorization",
                     $"Bearer {creds.Patreon.AccessToken}");
 
-                var page = $"https://www.patreon.com/api/oauth2/v2/campaigns/{creds.Patreon.CampaignId}/members" +
-                           "?fields%5Bmember%5D=full_name,currently_entitled_amount_cents" +
-                           "&fields%5Buser%5D=social_connections" +
-                           "&include=user";
+                var page = $"https://www.patreon.com/api/oauth2/v2/campaigns/{creds.Patreon.CampaignId}/members"
+                           + "?fields%5Bmember%5D=full_name,currently_entitled_amount_cents"
+                           + "&fields%5Buser%5D=social_connections"
+                           + "&include=user";
                 PatreonResponse data = null;
                 do
                 {
@@ -175,35 +151,33 @@ public class PatreonRewardsService : INService
 
                     if (data is null)
                         break;
-                        
+
                     members.AddRange(data.Data);
                     users.AddRange(data.Included);
                 } while (!string.IsNullOrWhiteSpace(page = data?.Links?.Next));
             }
 
             var userData = members.Join(users,
-                    m => m.Relationships.User.Data.Id,
-                    u => u.Id,
-                    (m, u) => new
-                    {
-                        PatreonUserId = m.Relationships.User.Data.Id,
-                        UserId = ulong.TryParse(u.Attributes?.SocialConnections?.Discord?.UserId ?? string.Empty,
-                            out var userId)
-                            ? userId
-                            : 0,
-                        EntitledTo = m.Attributes.CurrentlyEntitledAmountCents,
-                    })
-                .Where(x => x is
-                {
-                    UserId: not 0,
-                    EntitledTo: > 0
-                })
-                .ToList();
+                                      m => m.Relationships.User.Data.Id,
+                                      u => u.Id,
+                                      (m, u) => new
+                                      {
+                                          PatreonUserId = m.Relationships.User.Data.Id,
+                                          UserId = ulong.TryParse(
+                                              u.Attributes?.SocialConnections?.Discord?.UserId ?? string.Empty,
+                                              out var userId)
+                                              ? userId
+                                              : 0,
+                                          EntitledTo = m.Attributes.CurrentlyEntitledAmountCents
+                                      })
+                                  .Where(x => x is
+                                  {
+                                      UserId: not 0,
+                                      EntitledTo: > 0
+                                  })
+                                  .ToList();
 
-            foreach (var pledge in userData)
-            {
-                await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
-            }
+            foreach (var pledge in userData) await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
         }
         catch (Exception ex)
         {
@@ -213,7 +187,6 @@ public class PatreonRewardsService : INService
         {
             getPledgesLocker.Release();
         }
-
     }
 
     public async Task<int> ClaimReward(ulong userId, string patreonUserId, int cents)
@@ -233,18 +206,16 @@ public class PatreonRewardsService : INService
             {
                 users.Add(new()
                 {
-                    PatreonUserId = patreonUserId,
-                    LastReward = now,
-                    AmountRewardedThisMonth = eligibleFor,
+                    PatreonUserId = patreonUserId, LastReward = now, AmountRewardedThisMonth = eligibleFor
                 });
 
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, gamble: true);
-                        
+                await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, true);
+
                 Log.Information($"Sending new currency reward to {userId}");
-                await SendMessageToUser(userId, $"Thank you for your pledge! " +
-                                                $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
+                await SendMessageToUser(userId,
+                    "Thank you for your pledge! " + $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
                 return eligibleFor;
             }
 
@@ -255,11 +226,12 @@ public class PatreonRewardsService : INService
 
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, gamble: true);
+                await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, true);
 
                 Log.Information($"Sending recurring currency reward to {userId}");
-                await SendMessageToUser(userId, $"Thank you for your continued support! " +
-                                                $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
+                await SendMessageToUser(userId,
+                    "Thank you for your continued support! "
+                    + $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
 
                 return eligibleFor;
             }
@@ -272,11 +244,12 @@ public class PatreonRewardsService : INService
                 usr.AmountRewardedThisMonth = toAward;
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
-                        
+                await _currency.AddAsync(userId, "Patreon reward - update", toAward, true);
+
                 Log.Information($"Sending updated currency reward to {userId}");
-                await SendMessageToUser(userId, $"Thank you for increasing your pledge! " +
-                                                $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
+                await SendMessageToUser(userId,
+                    "Thank you for increasing your pledge! "
+                    + $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
                 return toAward;
             }
 
@@ -295,12 +268,31 @@ public class PatreonRewardsService : INService
             var user = (IUser)_client.GetUser(userId) ?? await _client.Rest.GetUserAsync(userId);
             if (user is null)
                 return;
-                
+
             await user.SendConfirmAsync(_eb, message);
         }
         catch
         {
             // ignored
         }
+    }
+
+
+    private sealed class PatreonRefreshData
+    {
+        [JsonPropertyName("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonPropertyName("refresh_token")]
+        public string RefreshToken { get; set; }
+
+        [JsonPropertyName("expires_in")]
+        public long ExpiresIn { get; set; }
+
+        [JsonPropertyName("scope")]
+        public string Scope { get; set; }
+
+        [JsonPropertyName("token_type")]
+        public string TokenType { get; set; }
     }
 }

@@ -1,6 +1,6 @@
-#nullable disable
-using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
 using LinqToDB;
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db;

@@ -8,23 +8,26 @@ public partial class Searches
     [Group]
     public class JokeCommands : NadekoSubmodule<SearchesService>
     {
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Yomama()
             => await SendConfirmAsync(await _service.GetYomamaJoke());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Randjoke()
         {
             var (setup, punchline) = await _service.GetRandomJoke();
             await SendConfirmAsync(setup, punchline);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task ChuckNorris()
             => await SendConfirmAsync(await _service.GetChuckNorrisJoke());
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task WowJoke()
         {
             if (!_service.WowJokes.Any())
@@ -32,11 +35,13 @@ public partial class Searches
                 await ReplyErrorLocalizedAsync(strs.jokes_not_loaded);
                 return;
             }
+
             var joke = _service.WowJokes[new NadekoRandom().Next(0, _service.WowJokes.Count)];
             await SendConfirmAsync(joke.Question, joke.Answer);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task MagicItem()
         {
             if (!_service.WowJokes.Any())
@@ -44,6 +49,7 @@ public partial class Searches
                 await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded);
                 return;
             }
+
             var item = _service.MagicItems[new NadekoRandom().Next(0, _service.MagicItems.Count)];
 
             await SendConfirmAsync("✨" + item.Name, item.Description);

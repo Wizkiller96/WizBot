@@ -22,8 +22,6 @@ public class ExportedExpr
             At = cr.AllowTarget,
             Ca = cr.ContainsAnywhere,
             Dm = cr.DmResponse,
-            React = string.IsNullOrWhiteSpace(cr.Reactions)
-                ? null
-                : cr.GetReactions(),
+            React = string.IsNullOrWhiteSpace(cr.Reactions) ? null : cr.GetReactions()
         };
 }

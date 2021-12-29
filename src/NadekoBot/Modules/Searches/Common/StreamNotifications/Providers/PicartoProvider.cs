@@ -1,17 +1,18 @@
-﻿using System.Text.RegularExpressions;
-using NadekoBot.Db.Models;
+﻿using NadekoBot.Db.Models;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 public class PicartoProvider : Provider
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
     private static Regex Regex { get; } = new(@"picarto.tv/(?<name>.+[^/])/?",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public override FollowedStream.FType Platform => FollowedStream.FType.Picarto;
+    public override FollowedStream.FType Platform
+        => FollowedStream.FType.Picarto;
+
+    private readonly IHttpClientFactory _httpClientFactory;
 
     public PicartoProvider(IHttpClientFactory httpClientFactory)
         => _httpClientFactory = httpClientFactory;
@@ -40,12 +41,12 @@ public class PicartoProvider : Provider
 
     public override async Task<StreamData?> GetStreamDataAsync(string id)
     {
-        var data = await GetStreamDataAsync(new List<string> {id});
+        var data = await GetStreamDataAsync(new List<string> { id });
 
         return data.FirstOrDefault();
     }
 
-    public async override Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
+    public override async Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
     {
         if (logins.Count == 0)
             return new();
@@ -53,17 +54,17 @@ public class PicartoProvider : Provider
         using var http = _httpClientFactory.CreateClient();
         var toReturn = new List<StreamData>();
         foreach (var login in logins)
-        {
             try
             {
                 http.DefaultRequestHeaders.Accept.Add(new("application/json"));
                 // get id based on the username
                 var res = await http.GetAsync($"https://api.picarto.tv/v1/channel/name/{login}");
-                        
+
                 if (!res.IsSuccessStatusCode)
                     continue;
-                        
-                var userData = JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync())!;
+
+                var userData =
+                    JsonConvert.DeserializeObject<PicartoChannelResponse>(await res.Content.ReadAsStringAsync())!;
 
                 toReturn.Add(ToStreamData(userData));
                 _failingStreams.TryRemove(login, out _);
@@ -73,11 +74,9 @@ public class PicartoProvider : Provider
                 Log.Warning("Something went wrong retreiving {StreamPlatform} stream data for {Login}: {ErrorMessage}",
                     Platform,
                     login,
-                    ex.Message
-                );
+                    ex.Message);
                 _failingStreams.TryAdd(login, DateTime.UtcNow);
             }
-        }
 
         return toReturn;
     }

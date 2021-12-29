@@ -1,25 +1,26 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
+using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
 public class PermissionService : ILateBlocker, INService
 {
     public int Priority { get; } = 0;
-        
+
+    //guildid, root permission
+    public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } = new();
+
     private readonly DbService _db;
     private readonly CommandHandler _cmd;
     private readonly IBotStrings _strings;
     private readonly IEmbedBuilderService _eb;
 
-    //guildid, root permission
-    public ConcurrentDictionary<ulong, PermissionCache> Cache { get; } = new();
-
-    public PermissionService(DiscordSocketClient client,
+    public PermissionService(
+        DiscordSocketClient client,
         DbService db,
         CommandHandler cmd,
         IBotStrings strings,
@@ -31,16 +32,12 @@ public class PermissionService : ILateBlocker, INService
         _eb = eb;
 
         using var uow = _db.GetDbContext();
-        foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id)
-                     .ToList()))
-        {
-            Cache.TryAdd(x.GuildId, new()
-            {
-                Verbose = x.VerbosePermissions,
-                PermRole = x.PermissionRole,
-                Permissions = new(x.Permissions)
-            });
-        }
+        foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+            Cache.TryAdd(x.GuildId,
+                new()
+                {
+                    Verbose = x.VerbosePermissions, PermRole = x.PermissionRole, Permissions = new(x.Permissions)
+                });
     }
 
     public PermissionCache GetCacheFor(ulong guildId)
@@ -49,14 +46,15 @@ public class PermissionService : ILateBlocker, INService
         {
             using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigsForId(guildId,
-                    set => set.Include(x => x.Permissions));
+                var config = uow.GuildConfigsForId(guildId, set => set.Include(x => x.Permissions));
                 UpdateCache(config);
             }
+
             Cache.TryGetValue(guildId, out pc);
             if (pc is null)
                 throw new("Cache is null.");
         }
+
         return pc;
     }
 
@@ -71,23 +69,26 @@ public class PermissionService : ILateBlocker, INService
             perm.Index = ++max;
             config.Permissions.Add(perm);
         }
+
         await uow.SaveChangesAsync();
         UpdateCache(config);
     }
 
     public void UpdateCache(GuildConfig config)
-        => Cache.AddOrUpdate(config.GuildId, new PermissionCache()
-        {
-            Permissions = new(config.Permissions),
-            PermRole = config.PermissionRole,
-            Verbose = config.VerbosePermissions
-        }, (id, old) =>
-        {
-            old.Permissions = new(config.Permissions);
-            old.PermRole = config.PermissionRole;
-            old.Verbose = config.VerbosePermissions;
-            return old;
-        });
+        => Cache.AddOrUpdate(config.GuildId,
+            new PermissionCache
+            {
+                Permissions = new(config.Permissions),
+                PermRole = config.PermissionRole,
+                Verbose = config.VerbosePermissions
+            },
+            (id, old) =>
+            {
+                old.Permissions = new(config.Permissions);
+                old.PermRole = config.PermissionRole;
+                old.Verbose = config.VerbosePermissions;
+                return old;
+            });
 
     public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
     {
@@ -96,68 +97,66 @@ public class PermissionService : ILateBlocker, INService
         var user = ctx.User;
         var channel = ctx.Channel;
         var commandName = command.Name.ToLowerInvariant();
-            
-        await Task.Yield();
-        if (guild is null)
-        {
-            return false;
-        }
-        else
-        {
-            var resetCommand = commandName == "resetperms";
 
-            var pc = GetCacheFor(guild.Id);
-            if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out var index))
-            {
-                if (pc.Verbose)
+        await Task.Yield();
+        if (guild is null) return false;
+
+        var resetCommand = commandName == "resetperms";
+
+        var pc = GetCacheFor(guild.Id);
+        if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out var index))
+        {
+            if (pc.Verbose)
+                try
                 {
-                    try
-                    {
-                        await channel.SendErrorAsync(_eb,
-                            _strings.GetText(strs.perm_prevent(index + 1,
+                    await channel.SendErrorAsync(_eb,
+                        _strings.GetText(strs.perm_prevent(index + 1,
                                 Format.Bold(pc.Permissions[index]
-                                    .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))), guild.Id));
-                    }
-                    catch
-                    {
-                    }
+                                              .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))),
+                            guild.Id));
                 }
+                catch
+                {
+                }
+
+            return true;
+        }
+
+
+        if (moduleName == nameof(Permissions))
+        {
+            if (user is not IGuildUser guildUser)
+                return true;
+
+            if (guildUser.GuildPermissions.Administrator)
+                return false;
+
+            var permRole = pc.PermRole;
+            if (!ulong.TryParse(permRole, out var rid))
+                rid = 0;
+            string returnMsg;
+            IRole role;
+            if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) is null)
+            {
+                returnMsg = "You need Admin permissions in order to use permission commands.";
+                if (pc.Verbose)
+                    try { await channel.SendErrorAsync(_eb, returnMsg); }
+                    catch { }
 
                 return true;
             }
 
-
-            if (moduleName == nameof(Permissions))
+            if (!guildUser.RoleIds.Contains(rid))
             {
-                if (user is not IGuildUser guildUser)
-                    return true;
+                returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
+                if (pc.Verbose)
+                    try { await channel.SendErrorAsync(_eb, returnMsg); }
+                    catch { }
 
-                if (guildUser.GuildPermissions.Administrator)
-                    return false;
-
-                var permRole = pc.PermRole;
-                if (!ulong.TryParse(permRole, out var rid))
-                    rid = 0;
-                string returnMsg;
-                IRole role;
-                if (string.IsNullOrWhiteSpace(permRole) || (role = guild.GetRole(rid)) is null)
-                {
-                    returnMsg = $"You need Admin permissions in order to use permission commands.";
-                    if (pc.Verbose)
-                        try { await channel.SendErrorAsync(_eb, returnMsg); } catch { }
-
-                    return true;
-                }
-                else if (!guildUser.RoleIds.Contains(rid))
-                {
-                    returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
-                    if (pc.Verbose)
-                        try { await channel.SendErrorAsync(_eb, returnMsg); } catch { }
-
-                    return true;
-                }
-                return false;
+                return true;
             }
+
+            return false;
         }
 
         return false;

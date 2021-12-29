@@ -3,28 +3,18 @@ namespace NadekoBot.Modules.Gambling.Common;
 
 public class CurrencyRaffleGame
 {
-    public enum Type {
+    public enum Type
+    {
         Mixed,
         Normal
     }
 
-    public class User
-    {
-        public IUser DiscordUser { get; set; }
-        public long Amount { get; set; }
+    public IEnumerable<User> Users
+        => _users;
 
-        public override int GetHashCode()
-            => DiscordUser.GetHashCode();
-
-        public override bool Equals(object obj)
-            => obj is User u
-                ? u.DiscordUser == DiscordUser
-                : false;
-    }
+    public Type GameType { get; }
 
     private readonly HashSet<User> _users = new();
-    public IEnumerable<User> Users => _users;
-    public Type GameType { get; }
 
     public CurrencyRaffleGame(Type type)
         => GameType = type;
@@ -33,19 +23,12 @@ public class CurrencyRaffleGame
     {
         // if game type is normal, and someone already joined the game 
         // (that's the user who created it)
-        if (GameType == Type.Normal && _users.Count > 0 &&
-            _users.First().Amount != amount)
+        if (GameType == Type.Normal && _users.Count > 0 && _users.First().Amount != amount)
             return false;
 
-        if (!_users.Add(new()
-            {
-                DiscordUser = usr,
-                Amount = amount,
-            }))
-        {
+        if (!_users.Add(new() { DiscordUser = usr, Amount = amount }))
             return false;
-        }
-            
+
         return true;
     }
 
@@ -66,5 +49,17 @@ public class CurrencyRaffleGame
 
         var usrs = _users.ToArray();
         return usrs[rng.Next(0, usrs.Length)];
+    }
+
+    public class User
+    {
+        public IUser DiscordUser { get; set; }
+        public long Amount { get; set; }
+
+        public override int GetHashCode()
+            => DiscordUser.GetHashCode();
+
+        public override bool Equals(object obj)
+            => obj is User u ? u.DiscordUser == DiscordUser : false;
     }
 }

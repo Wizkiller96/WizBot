@@ -12,17 +12,29 @@ public partial class Gambling
     [Group]
     public class FlipCoinCommands : GamblingSubmodule<GamblingService>
     {
+        public enum BetFlipGuess
+        {
+            H = 1,
+            Head = 1,
+            Heads = 1,
+            T = 2,
+            Tail = 2,
+            Tails = 2
+        }
+
+        private static readonly NadekoRandom rng = new();
         private readonly IImageCache _images;
         private readonly ICurrencyService _cs;
-        private static readonly NadekoRandom rng = new();
 
-        public FlipCoinCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gss) : base(gss)
+        public FlipCoinCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gss)
+            : base(gss)
         {
             _images = data.LocalImages;
             _cs = cs;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Flip(int count = 1)
         {
             if (count is > 10 or < 1)
@@ -30,6 +42,7 @@ public partial class Gambling
                 await ReplyErrorLocalizedAsync(strs.flip_invalid(10));
                 return;
             }
+
             var headCount = 0;
             var tailCount = 0;
             var imgs = new Image<Rgba32>[count];
@@ -51,40 +64,31 @@ public partial class Gambling
 
             using var img = imgs.Merge(out var format);
             await using var stream = img.ToStream(format);
-            foreach (var i in imgs)
-            {
-                i.Dispose();
-            }
+            foreach (var i in imgs) i.Dispose();
             var msg = count != 1
                 ? Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_results(count, headCount, tailCount))
-                : Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flipped(headCount > 0
-                    ? Format.Bold(GetText(strs.heads))
-                    : Format.Bold(GetText(strs.tails))));
+                : Format.Bold(ctx.User.ToString())
+                  + " "
+                  + GetText(strs.flipped(headCount > 0
+                      ? Format.Bold(GetText(strs.heads))
+                      : Format.Bold(GetText(strs.tails))));
             await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
         }
 
-        public enum BetFlipGuess
-        {
-            H = 1,
-            Head = 1,
-            Heads = 1,
-            T = 2,
-            Tail = 2,
-            Tails = 2
-        }
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
         {
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;
 
-            var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, gamble: true);
+            var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, true);
             if (!removed)
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
+
             BetFlipGuess result;
             Uri imageToSend;
             var coins = _images.ImageUrls.Coins;
@@ -104,17 +108,17 @@ public partial class Gambling
             {
                 var toWin = (long)(amount * _config.BetFlip.Multiplier);
                 str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess(toWin + CurrencySign));
-                await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, gamble: true);
+                await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, true);
             }
             else
             {
-                str = ctx.User.ToString() + " " + GetText(strs.better_luck);
+                str = ctx.User + " " + GetText(strs.better_luck);
             }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
-                .WithDescription(str)
-                .WithOkColor()
-                .WithImageUrl(imageToSend.ToString()));
+                                            .WithDescription(str)
+                                            .WithOkColor()
+                                            .WithImageUrl(imageToSend.ToString()));
         }
     }
 }

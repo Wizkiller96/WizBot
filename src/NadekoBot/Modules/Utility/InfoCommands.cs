@@ -17,22 +17,23 @@ public partial class Utility
             _stats = stats;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ServerInfo(string guildName = null)
         {
             var channel = (ITextChannel)ctx.Channel;
             guildName = guildName?.ToUpperInvariant();
             SocketGuild guild;
-                
+
             if (string.IsNullOrWhiteSpace(guildName))
                 guild = (SocketGuild)channel.Guild;
             else
                 guild = _client.Guilds.FirstOrDefault(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant());
-                
+
             if (guild is null)
                 return;
-                
+
             var ownername = guild.GetUser(guild.OwnerId);
             var textchn = guild.TextChannels.Count;
             var voicechn = guild.VoiceChannels.Count;
@@ -42,35 +43,30 @@ public partial class Utility
             var features = string.Join(", ", guild.Features);
             if (string.IsNullOrWhiteSpace(features))
                 features = "-";
-                
+
             var embed = _eb.Create()
-                .WithAuthor(GetText(strs.server_info))
-                .WithTitle(guild.Name)
-                .AddField(GetText(strs.id), guild.Id.ToString(), true)
-                .AddField(GetText(strs.owner), ownername.ToString(), true)
-                .AddField(GetText(strs.members), guild.MemberCount.ToString(), true)
-                .AddField(GetText(strs.channels), channels, true)
-                .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
-                .AddField(GetText(strs.features), features)
-                .WithOkColor();
-                
+                           .WithAuthor(GetText(strs.server_info))
+                           .WithTitle(guild.Name)
+                           .AddField(GetText(strs.id), guild.Id.ToString(), true)
+                           .AddField(GetText(strs.owner), ownername.ToString(), true)
+                           .AddField(GetText(strs.members), guild.MemberCount.ToString(), true)
+                           .AddField(GetText(strs.channels), channels, true)
+                           .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                           .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
+                           .AddField(GetText(strs.features), features)
+                           .WithOkColor();
+
             if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                 embed.WithThumbnailUrl(guild.IconUrl);
-                
+
             if (guild.Emotes.Any())
-            {
                 embed.AddField(GetText(strs.custom_emojis) + $"({guild.Emotes.Count})",
-                    string.Join(" ", guild.Emotes
-                            .Shuffle()
-                            .Take(20)
-                            .Select(e => $"{e.Name} {e.ToString()}"))
-                        .TrimTo(1020));
-            }
+                    string.Join(" ", guild.Emotes.Shuffle().Take(20).Select(e => $"{e.Name} {e}")).TrimTo(1020));
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ChannelInfo(ITextChannel channel = null)
         {
@@ -80,16 +76,17 @@ public partial class Utility
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
             var usercount = (await ch.GetUsersAsync().FlattenAsync()).Count();
             var embed = _eb.Create()
-                .WithTitle(ch.Name)
-                .WithDescription(ch.Topic?.SanitizeMentions(true))
-                .AddField(GetText(strs.id), ch.Id.ToString(), true)
-                .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                .AddField(GetText(strs.users), usercount.ToString(), true)
-                .WithOkColor();
+                           .WithTitle(ch.Name)
+                           .WithDescription(ch.Topic?.SanitizeMentions(true))
+                           .AddField(GetText(strs.id), ch.Id.ToString(), true)
+                           .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                           .AddField(GetText(strs.users), usercount.ToString(), true)
+                           .WithOkColor();
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task UserInfo(IGuildUser usr = null)
         {
@@ -98,17 +95,15 @@ public partial class Utility
             if (user is null)
                 return;
 
-            var embed = _eb.Create()
-                .AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
-            if (!string.IsNullOrWhiteSpace(user.Nickname))
-            {
-                embed.AddField(GetText(strs.nickname), user.Nickname, true);
-            }
+            var embed = _eb.Create().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
+            if (!string.IsNullOrWhiteSpace(user.Nickname)) embed.AddField(GetText(strs.nickname), user.Nickname, true);
             embed.AddField(GetText(strs.id), user.Id.ToString(), true)
-                .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
-                .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
-                .AddField(GetText(strs.roles), $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}", true)
-                .WithOkColor();
+                 .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
+                 .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
+                 .AddField(GetText(strs.roles),
+                     $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}",
+                     true)
+                 .WithOkColor();
 
             var av = user.RealAvatarUrl();
             if (av != null && av.IsAbsoluteUri)
@@ -116,7 +111,8 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
         public async Task Activity(int page = 1)
@@ -130,19 +126,20 @@ public partial class Utility
             var startCount = page * activityPerPage;
 
             var str = new StringBuilder();
-            foreach (var kvp in CmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value).Skip(page * activityPerPage).Take(activityPerPage))
-            {
-                str.AppendLine(GetText(strs.activity_line(
-                    ++startCount,
+            foreach (var kvp in CmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value)
+                                          .Skip(page * activityPerPage)
+                                          .Take(activityPerPage))
+                str.AppendLine(GetText(strs.activity_line(++startCount,
                     Format.Bold(kvp.Key.ToString()),
-                    kvp.Value / _stats.GetUptime().TotalSeconds, kvp.Value)));
-            }
+                    kvp.Value / _stats.GetUptime().TotalSeconds,
+                    kvp.Value)));
 
             await ctx.Channel.EmbedAsync(_eb.Create()
-                .WithTitle(GetText(strs.activity_page(page + 1)))
-                .WithOkColor()
-                .WithFooter(GetText(strs.activity_users_total(CmdHandler.UserMessagesSent.Count)))
-                .WithDescription(str.ToString()));
+                                            .WithTitle(GetText(strs.activity_page(page + 1)))
+                                            .WithOkColor()
+                                            .WithFooter(GetText(
+                                                strs.activity_users_total(CmdHandler.UserMessagesSent.Count)))
+                                            .WithDescription(str.ToString()));
         }
     }
 }

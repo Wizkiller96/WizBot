@@ -3,7 +3,6 @@ namespace NadekoBot.Modules.Music.Services;
 
 public sealed partial class YtLoader
 {
-
     public class InitRange
     {
         public string Start { get; set; }

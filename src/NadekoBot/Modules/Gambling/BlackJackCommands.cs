@@ -9,25 +9,26 @@ public partial class Gambling
 {
     public class BlackJackCommands : GamblingSubmodule<BlackJackService>
     {
-        private readonly ICurrencyService _cs;
-        private readonly DbService _db;
-        private IUserMessage _msg;
-
         public enum BjAction
         {
             Hit = int.MinValue,
             Stand,
-            Double,
+            Double
         }
 
-        public BlackJackCommands(ICurrencyService cs, DbService db,
-            GamblingConfigService gamblingConf) : base(gamblingConf) 
+        private readonly ICurrencyService _cs;
+        private readonly DbService _db;
+        private IUserMessage _msg;
+
+        public BlackJackCommands(ICurrencyService cs, DbService db, GamblingConfigService gamblingConf)
+            : base(gamblingConf)
         {
             _cs = cs;
             _db = db;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task BlackJack(ShmartNumber amount)
         {
@@ -44,6 +45,7 @@ public partial class Gambling
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     return;
                 }
+
                 bj.StateUpdated += Bj_StateUpdated;
                 bj.GameEnded += Bj_GameEnded;
                 bj.Start();
@@ -55,9 +57,8 @@ public partial class Gambling
                 if (await bj.Join(ctx.User, amount))
                     await ReplyConfirmLocalizedAsync(strs.bj_joined);
                 else
-                {
-                    Log.Information($"{ctx.User} can't join a blackjack game as it's in " + bj.State.ToString() + " state already.");
-                }
+                    Log.Information(
+                        $"{ctx.User} can't join a blackjack game as it's in " + bj.State + " state already.");
             }
 
             await ctx.Message.DeleteAsync();
@@ -93,14 +94,11 @@ public partial class Gambling
                 var cStr = string.Concat(c.Select(x => x[..^1] + " "));
                 cStr += "\n" + string.Concat(c.Select(x => x.Last() + " "));
                 var embed = _eb.Create()
-                    .WithOkColor()
-                    .WithTitle("BlackJack")
-                    .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);
+                               .WithOkColor()
+                               .WithTitle("BlackJack")
+                               .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);
 
-                if (bj.CurrentUser != null)
-                {
-                    embed.WithFooter($"Player to make a choice: {bj.CurrentUser.DiscordUser.ToString()}");
-                }
+                if (bj.CurrentUser != null) embed.WithFooter($"Player to make a choice: {bj.CurrentUser.DiscordUser}");
 
                 foreach (var p in bj.Players)
                 {
@@ -111,37 +109,42 @@ public partial class Gambling
                     if (bj.State == Blackjack.GameState.Ended)
                     {
                         if (p.State == User.UserState.Lost)
-                        {
                             full = "❌ " + full;
-                        }
                         else
-                        {
                             full = "✅ " + full;
-                        }
                     }
                     else if (p == bj.CurrentUser)
+                    {
                         full = "▶ " + full;
+                    }
                     else if (p.State == User.UserState.Stand)
+                    {
                         full = "⏹ " + full;
+                    }
                     else if (p.State == User.UserState.Bust)
+                    {
                         full = "💥 " + full;
+                    }
                     else if (p.State == User.UserState.Blackjack)
+                    {
                         full = "💰 " + full;
+                    }
+
                     embed.AddField(full, cStr);
                 }
+
                 _msg = await ctx.Channel.EmbedAsync(embed);
             }
             catch
             {
-
             }
         }
 
         private string UserToString(User x)
         {
-            var playerName = x.State == User.UserState.Bust ?
-                Format.Strikethrough(x.DiscordUser.ToString().TrimTo(30)) :
-                x.DiscordUser.ToString();
+            var playerName = x.State == User.UserState.Bust
+                ? Format.Strikethrough(x.DiscordUser.ToString().TrimTo(30))
+                : x.DiscordUser.ToString();
 
             var hand = $"{string.Concat(x.Cards.Select(y => "〖" + y.GetEmojiString() + "〗"))}";
 
@@ -149,17 +152,23 @@ public partial class Gambling
             return $"{playerName} | Bet: {x.Bet}\n";
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
-        public Task Hit() => InternalBlackJack(BjAction.Hit);
+        public Task Hit()
+            => InternalBlackJack(BjAction.Hit);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
-        public Task Stand() => InternalBlackJack(BjAction.Stand);
+        public Task Stand()
+            => InternalBlackJack(BjAction.Stand);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
-        public Task Double() => InternalBlackJack(BjAction.Double);
+        public Task Double()
+            => InternalBlackJack(BjAction.Double);
 
         public async Task InternalBlackJack(BjAction a)
         {
@@ -171,12 +180,8 @@ public partial class Gambling
             else if (a == BjAction.Stand)
                 await bj.Stand(ctx.User);
             else if (a == BjAction.Double)
-            {
                 if (!await bj.Double(ctx.User))
-                {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                }
-            }
 
             await ctx.Message.DeleteAsync();
         }

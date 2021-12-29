@@ -6,13 +6,13 @@ namespace NadekoBot.Modules.Utility.Services;
 public sealed class RunningRepeater
 {
     public DateTime NextTime { get; private set; }
-        
+
     public Repeater Repeater { get; }
     public int ErrorCount { get; set; }
-        
+
     public RunningRepeater(Repeater repeater)
     {
-        this.Repeater = repeater;
+        Repeater = repeater;
         NextTime = CalculateInitialExecution();
     }
 
@@ -38,16 +38,12 @@ public sealed class RunningRepeater
             // if added timeofday is less than specified timeofday for initial trigger
             // that means the repeater first ran that same day at that exact specified time
             if (added.TimeOfDay <= initialTriggerTimeOfDay)
-            {
                 // in that case, just add the difference to make sure the timeofday is the same
                 initialDateTime = added + (initialTriggerTimeOfDay - added.TimeOfDay);
-            }
             else
-            {
                 // if not, then it ran at that time the following day
                 // in other words; Add one day, and subtract how much time passed since that time of day
                 initialDateTime = added + TimeSpan.FromDays(1) - (added.TimeOfDay - initialTriggerTimeOfDay);
-            }
 
             return CalculateInitialInterval(initialDateTime);
         }
@@ -57,7 +53,7 @@ public sealed class RunningRepeater
     }
 
     /// <summary>
-    /// Calculate when is the proper time to run the repeater again based on initial time repeater ran.
+    ///     Calculate when is the proper time to run the repeater again based on initial time repeater ran.
     /// </summary>
     /// <param name="repeaterter"></param>
     /// <param name="initialDateTime">Initial time repeater ran at (or should run at).</param>
@@ -65,11 +61,8 @@ public sealed class RunningRepeater
     {
         // if the initial time is greater than now, that means the repeater didn't still execute a single time.
         // just schedule it
-        if (initialDateTime > DateTime.UtcNow)
-        {
-            return initialDateTime;
-        }
-            
+        if (initialDateTime > DateTime.UtcNow) return initialDateTime;
+
         // else calculate based on minutes difference
 
         // get the difference
@@ -92,8 +85,8 @@ public sealed class RunningRepeater
     }
 
     public override bool Equals(object obj)
-        => obj is RunningRepeater rr && rr.Repeater.Id == this.Repeater.Id;
+        => obj is RunningRepeater rr && rr.Repeater.Id == Repeater.Id;
 
     public override int GetHashCode()
-        => this.Repeater.Id;
+        => Repeater.Id;
 }

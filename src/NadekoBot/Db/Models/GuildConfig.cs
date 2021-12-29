@@ -12,7 +12,9 @@ public class GuildConfig : DbEntity
 
     public bool DeleteMessageOnCommand { get; set; }
     public HashSet<DelMsgOnCmdChannel> DelMsgOnCmdChannels { get; set; } = new();
+
     public string AutoAssignRoleIds { get; set; }
+
     //greet stuff
     public bool AutoDeleteGreetMessages { get; set; } //unused
     public bool AutoDeleteByeMessages { get; set; } // unused
@@ -27,15 +29,6 @@ public class GuildConfig : DbEntity
 
     public bool SendChannelGreetMessage { get; set; }
     public string ChannelGreetMessageText { get; set; } = "Welcome to the %server% server, %user%!";
-
-    #region Boost Message
-
-    public bool SendBoostMessage { get; set; }
-    public string BoostMessage { get; set; } = "%user% just boosted this server!";
-    public ulong BoostMessageChannelId { get; set; }
-    public int BoostMessageDeleteAfter { get; set; }
-
-    #endregion
 
     public bool SendChannelByeMessage { get; set; }
     public string ChannelByeMessageText { get; set; } = "%user% has left!";
@@ -104,4 +97,13 @@ public class GuildConfig : DbEntity
     public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
     public int WarnExpireHours { get; set; } = 0;
     public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;
+
+    #region Boost Message
+
+    public bool SendBoostMessage { get; set; }
+    public string BoostMessage { get; set; } = "%user% just boosted this server!";
+    public ulong BoostMessageChannelId { get; set; }
+    public int BoostMessageDeleteAfter { get; set; }
+
+    #endregion
 }

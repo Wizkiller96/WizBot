@@ -1,6 +1,6 @@
-#nullable disable
-using NadekoBot.Services.Database.Models;
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db;
 
@@ -18,7 +18,5 @@ public static class SelfAssignableRolesExtensions
     }
 
     public static IEnumerable<SelfAssignedRole> GetFromGuild(this DbSet<SelfAssignedRole> roles, ulong guildId)
-        => roles.AsQueryable()
-            .Where(s => s.GuildId == guildId)
-            .ToArray();
+        => roles.AsQueryable().Where(s => s.GuildId == guildId).ToArray();
 }

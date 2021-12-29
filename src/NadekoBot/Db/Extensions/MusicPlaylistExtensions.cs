@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 
@@ -11,14 +11,9 @@ public static class MusicPlaylistExtensions
         if (num < 1)
             throw new IndexOutOfRangeException();
 
-        return playlists.AsQueryable()
-            .Skip((num - 1) * 20)
-            .Take(20)
-            .Include(pl => pl.Songs)
-            .ToList();
+        return playlists.AsQueryable().Skip((num - 1) * 20).Take(20).Include(pl => pl.Songs).ToList();
     }
 
     public static MusicPlaylist GetWithSongs(this DbSet<MusicPlaylist> playlists, int id)
-        => playlists.Include(mpl => mpl.Songs)
-            .FirstOrDefault(mpl => mpl.Id == id);
+        => playlists.Include(mpl => mpl.Songs).FirstOrDefault(mpl => mpl.Id == id);
 }

@@ -23,8 +23,8 @@ public class AnimeSearchService : INService
             throw new ArgumentNullException(nameof(query));
         try
         {
-
-            var link = "https://aniapi.nadeko.bot/anime/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
+            var link = "https://aniapi.nadeko.bot/anime/"
+                       + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
             link = link.ToLowerInvariant();
             var (ok, data) = await _cache.TryGetAnimeDataAsync(link);
             if (!ok)
@@ -33,6 +33,7 @@ public class AnimeSearchService : INService
                 {
                     data = await http.GetStringAsync(link);
                 }
+
                 await _cache.SetAnimeDataAsync(link, data);
             }
 
@@ -53,10 +54,8 @@ public class AnimeSearchService : INService
         query = query.Replace(" ", "-", StringComparison.InvariantCulture);
         try
         {
-            var link = "https://www.novelupdates.com/series/" + Uri.EscapeDataString(query
-                .Replace(" ", "-")
-                .Replace("/", " ")
-            );
+            var link = "https://www.novelupdates.com/series/"
+                       + Uri.EscapeDataString(query.Replace(" ", "-").Replace("/", " "));
             link = link.ToLowerInvariant();
             var (ok, data) = await _cache.TryGetNovelDataAsync(link);
             if (!ok)
@@ -71,32 +70,24 @@ public class AnimeSearchService : INService
                 var descElem = document.QuerySelector("div#editdescription > p");
                 var desc = descElem.InnerHtml;
 
-                var genres = document.QuerySelector("div#seriesgenre").Children
-                    .Select(x => x as IHtmlAnchorElement)
-                    .Where(x => x != null)
-                    .Select(x => $"[{x.InnerHtml}]({x.Href})")
-                    .ToArray();
+                var genres = document.QuerySelector("div#seriesgenre")
+                                     .Children.Select(x => x as IHtmlAnchorElement)
+                                     .Where(x => x != null)
+                                     .Select(x => $"[{x.InnerHtml}]({x.Href})")
+                                     .ToArray();
 
-                var authors = document
-                    .QuerySelector("div#showauthors")
-                    .Children
-                    .Select(x => x as IHtmlAnchorElement)
-                    .Where(x => x != null)
-                    .Select(x => $"[{x.InnerHtml}]({x.Href})")
-                    .ToArray();
+                var authors = document.QuerySelector("div#showauthors")
+                                      .Children.Select(x => x as IHtmlAnchorElement)
+                                      .Where(x => x != null)
+                                      .Select(x => $"[{x.InnerHtml}]({x.Href})")
+                                      .ToArray();
 
-                var score = ((IHtmlSpanElement)document
-                        .QuerySelector("h5.seriesother > span.uvotes"))
-                    .InnerHtml;
+                var score = ((IHtmlSpanElement)document.QuerySelector("h5.seriesother > span.uvotes")).InnerHtml;
 
-                var status = document
-                    .QuerySelector("div#editstatus")
-                    .InnerHtml;
-                var title = document
-                    .QuerySelector("div.w-blog-content > div.seriestitlenu")
-                    .InnerHtml;
+                var status = document.QuerySelector("div#editstatus").InnerHtml;
+                var title = document.QuerySelector("div.w-blog-content > div.seriestitlenu").InnerHtml;
 
-                var obj = new NovelResult()
+                var obj = new NovelResult
                 {
                     Description = desc,
                     Authors = authors,
@@ -105,11 +96,10 @@ public class AnimeSearchService : INService
                     Link = link,
                     Score = score,
                     Status = status,
-                    Title = title,
+                    Title = title
                 };
 
-                await _cache.SetNovelDataAsync(link,
-                    JsonConvert.SerializeObject(obj));
+                await _cache.SetNovelDataAsync(link, JsonConvert.SerializeObject(obj));
 
                 return obj;
             }
@@ -129,8 +119,8 @@ public class AnimeSearchService : INService
             throw new ArgumentNullException(nameof(query));
         try
         {
-
-            var link = "https://aniapi.nadeko.bot/manga/" + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
+            var link = "https://aniapi.nadeko.bot/manga/"
+                       + Uri.EscapeDataString(query.Replace("/", " ", StringComparison.InvariantCulture));
             link = link.ToLowerInvariant();
             var (ok, data) = await _cache.TryGetAnimeDataAsync(link);
             if (!ok)
@@ -139,6 +129,7 @@ public class AnimeSearchService : INService
                 {
                     data = await http.GetStringAsync(link);
                 }
+
                 await _cache.SetAnimeDataAsync(link, data);
             }
 

@@ -1,34 +1,34 @@
 #nullable disable
+using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
+using NadekoBot.Common.Configs;
+using NadekoBot.Common.ModuleBehaviors;
+using NadekoBot.Db;
+using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
-using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Common.Configs;
-using NadekoBot.Db;
-using NadekoBot.Modules.Administration.Services;
-using Discord.Interactions;
+using RunMode = Discord.Commands.RunMode;
 
 namespace NadekoBot;
 
 public sealed class Bot
 {
+    public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
+
+    public DiscordSocketClient Client { get; }
+    public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
+
+    private IServiceProvider Services { get; set; }
+
+    public string Mention { get; private set; }
+    public bool IsReady { get; private set; }
     private readonly IBotCredentials _creds;
     private readonly CommandService _commandService;
     private readonly DbService _db;
     private readonly IBotCredsProvider _credsProvider;
     private readonly InteractionService _interactionService;
-
-    public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
-        
-    public DiscordSocketClient Client { get; }
-    public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
-
-    private IServiceProvider Services { get; set; }
-        
-    public string Mention { get; private set; }
-    public bool IsReady { get; private set; }
 
     public Bot(int shardId, int? totalShards)
     {
@@ -37,13 +37,10 @@ public sealed class Bot
 
         _credsProvider = new BotCredsProvider(totalShards);
         _creds = _credsProvider.GetCreds();
-            
+
         _db = new(_creds);
 
-        if (shardId == 0)
-        {
-            _db.Setup();
-        }
+        if (shardId == 0) _db.Setup();
 
         Client = new(new()
         {
@@ -55,14 +52,10 @@ public sealed class Bot
             AlwaysDownloadUsers = false,
             AlwaysResolveStickers = false,
             AlwaysDownloadDefaultStickers = false,
-            GatewayIntents = GatewayIntents.All,
+            GatewayIntents = GatewayIntents.All
         });
 
-        _commandService = new(new()
-        {
-            CaseSensitiveCommands = false,
-            DefaultRunMode = Discord.Commands.RunMode.Sync,
-        });
+        _commandService = new(new() { CaseSensitiveCommands = false, DefaultRunMode = RunMode.Sync });
 
         _interactionService = new(Client.Rest);
 
@@ -85,49 +78,41 @@ public sealed class Bot
             uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
             AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
-            
-        var svcs = new ServiceCollection()
-                .AddTransient<IBotCredentials>(_ => _credsProvider.GetCreds()) // bot creds
-                .AddSingleton<IBotCredsProvider>(_credsProvider)
-                .AddSingleton(_db) // database
-                .AddRedis(_creds.RedisOptions) // redis
-                .AddSingleton(Client) // discord socket client
-                .AddSingleton(_commandService)
-                .AddSingleton(_interactionService)
-                .AddSingleton(this)
-                .AddSingleton<ISeria, JsonSeria>()
-                .AddSingleton<IPubSub, RedisPubSub>()
-                .AddSingleton<IConfigSeria, YamlSeria>()
-                .AddBotStringsServices(_creds.TotalShards)
-                .AddConfigServices()
-                .AddConfigMigrators()
-                .AddMemoryCache()
-                // music
-                .AddMusic()
-                // admin
+
+        var svcs = new ServiceCollection().AddTransient(_ => _credsProvider.GetCreds()) // bot creds
+                                          .AddSingleton(_credsProvider)
+                                          .AddSingleton(_db) // database
+                                          .AddRedis(_creds.RedisOptions) // redis
+                                          .AddSingleton(Client) // discord socket client
+                                          .AddSingleton(_commandService)
+                                          .AddSingleton(_interactionService)
+                                          .AddSingleton(this)
+                                          .AddSingleton<ISeria, JsonSeria>()
+                                          .AddSingleton<IPubSub, RedisPubSub>()
+                                          .AddSingleton<IConfigSeria, YamlSeria>()
+                                          .AddBotStringsServices(_creds.TotalShards)
+                                          .AddConfigServices()
+                                          .AddConfigMigrators()
+                                          .AddMemoryCache()
+                                          // music
+                                          .AddMusic();
+                                          // admin
 #if GLOBAL_NADEKO
-                .AddSingleton<ILogCommandService, DummyLogCommandService>()
+        svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
 #else
-                .AddSingleton<ILogCommandService, LogCommandService>()
+        svcs.AddSingleton<ILogCommandService, LogCommandService>();
 #endif
-            ;
 
         svcs.AddHttpClient();
-        svcs.AddHttpClient("memelist").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-        {
-            AllowAutoRedirect = false
-        });
+        svcs.AddHttpClient("memelist")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
 
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
-        {
             svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
-        }
         else
-        {
             svcs.AddSingleton<RemoteGrpcCoordinator>()
                 .AddSingleton<ICoordinator>(x => x.GetRequiredService<RemoteGrpcCoordinator>())
                 .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
-        }
 
         svcs.AddSingleton<RedisLocalDataCache>()
             .AddSingleton<ILocalDataCache>(x => x.GetRequiredService<RedisLocalDataCache>())
@@ -135,37 +120,31 @@ public sealed class Bot
             .AddSingleton<IImageCache>(x => x.GetRequiredService<RedisImagesCache>())
             .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RedisImagesCache>())
             .AddSingleton<IDataCache, RedisCache>();
-            
-        svcs.Scan(scan => scan
-            .FromAssemblyOf<IReadyExecutor>()
-            .AddClasses(classes => classes
-                    .AssignableToAny(
-                        // services
-                        typeof(INService),
-                    
-                        // behaviours
-                        typeof(IEarlyBehavior),
-                        typeof(ILateBlocker),
-                        typeof(IInputTransformer),
-                        typeof(ILateExecutor))
+
+        svcs.Scan(scan => scan.FromAssemblyOf<IReadyExecutor>()
+                              .AddClasses(classes => classes.AssignableToAny(
+                                      // services
+                                      typeof(INService),
+
+                                      // behaviours
+                                      typeof(IEarlyBehavior),
+                                      typeof(ILateBlocker),
+                                      typeof(IInputTransformer),
+                                      typeof(ILateExecutor))
 #if GLOBAL_NADEKO
                     .WithoutAttribute<NoPublicBotAttribute>()
 #endif
-            )
-            .AsSelfWithInterfaces()
-            .WithSingletonLifetime()
-        );
+                              )
+                              .AsSelfWithInterfaces()
+                              .WithSingletonLifetime());
 
         //initialize Services
         Services = svcs.BuildServiceProvider();
         var exec = Services.GetRequiredService<IBehaviourExecutor>();
         exec.Initialize();
 
-        if (Client.ShardId == 0)
-        {
-            ApplyConfigMigrations();
-        }
-            
+        if (Client.ShardId == 0) ApplyConfigMigrations();
+
         _ = LoadTypeReaders(typeof(Bot).Assembly);
 
         sw.Stop();
@@ -176,10 +155,7 @@ public sealed class Bot
     {
         // execute all migrators
         var migrators = Services.GetServices<IConfigMigrator>();
-        foreach (var migrator in migrators)
-        {
-            migrator.EnsureMigrated();
-        }
+        foreach (var migrator in migrators) migrator.EnsureMigrated();
     }
 
     private IEnumerable<object> LoadTypeReaders(Assembly assembly)
@@ -225,10 +201,7 @@ public sealed class Bot
                 clientReady.TrySetResult(true);
                 try
                 {
-                    foreach (var chan in await Client.GetDMChannelsAsync())
-                    {
-                        await chan.CloseAsync();
-                    }
+                    foreach (var chan in await Client.GetDMChannelsAsync()) await chan.CloseAsync();
                 }
                 catch
                 {
@@ -259,10 +232,10 @@ public sealed class Bot
         Client.Ready += SetClientReady;
         await clientReady.Task;
         Client.Ready -= SetClientReady;
-            
+
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
-            
+
         Log.Information("Shard {ShardId} logged in", Client.ShardId);
     }
 
@@ -282,6 +255,7 @@ public sealed class Bot
             {
                 gc = uow.GuildConfigsForId(arg.Id, null);
             }
+
             await JoinedGuild.Invoke(gc);
         });
         return Task.CompletedTask;
@@ -323,7 +297,7 @@ public sealed class Bot
     private Task ExecuteReadySubscriptions()
     {
         var readyExecutors = Services.GetServices<IReadyExecutor>();
-        var tasks = readyExecutors.Select(async toExec => 
+        var tasks = readyExecutors.Select(async toExec =>
         {
             try
             {

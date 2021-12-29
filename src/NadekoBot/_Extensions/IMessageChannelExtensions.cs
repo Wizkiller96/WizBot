@@ -2,6 +2,9 @@ namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions
 {
+    private static readonly IEmote _arrowLeft = new Emoji("⬅");
+    private static readonly IEmote _arrowRight = new Emoji("➡");
+
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
         => ch.SendMessageAsync(msg, embed: embed.Build(), options: new() { RetryMode = RetryMode.AlwaysRetry });
 
@@ -37,8 +40,7 @@ public static class MessageChannelExtensions
     {
         var embed = eb.Create().WithErrorColor().WithDescription(error).WithTitle(title);
 
-        if (url != null &&
-            Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
 
         if (!string.IsNullOrWhiteSpace(footer))
@@ -63,8 +65,7 @@ public static class MessageChannelExtensions
     {
         var embed = eb.Create().WithOkColor().WithDescription(text).WithTitle(title);
 
-        if (url != null &&
-            Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
 
         if (!string.IsNullOrWhiteSpace(footer))
@@ -84,23 +85,15 @@ public static class MessageChannelExtensions
         int columns = 3)
         => ch.SendMessageAsync($@"{seed}```css
 {string.Join("\n", items.Chunk(columns)
-    .Select(ig => string.Concat(ig.Select(howToPrint))))}
-```"
-        );
+                        .Select(ig => string.Concat(ig.Select(howToPrint))))}
+```");
 
     public static Task<IUserMessage> SendTableAsync<T>(
         this IMessageChannel ch,
         IEnumerable<T> items,
         Func<T, string> howToPrint,
         int columns = 3)
-        => ch.SendTableAsync("",
-            items,
-            howToPrint,
-            columns
-        );
-
-    private static readonly IEmote _arrowLeft = new Emoji("⬅");
-    private static readonly IEmote _arrowRight = new Emoji("➡");
+        => ch.SendTableAsync("", items, howToPrint, columns);
 
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
@@ -113,11 +106,10 @@ public static class MessageChannelExtensions
             x => Task.FromResult(pageFunc(x)),
             totalElements,
             itemsPerPage,
-            addPaginatedFooter
-        );
+            addPaginatedFooter);
 
     /// <summary>
-    /// danny kamisama
+    ///     danny kamisama
     /// </summary>
     public static async Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
@@ -132,8 +124,7 @@ public static class MessageChannelExtensions
         var lastPage = (totalElements - 1) / itemsPerPage;
 
         var canPaginate = true;
-        if (ctx.Guild is SocketGuild sg &&
-            !sg.CurrentUser.GetPermissions((IGuildChannel)ctx.Channel).AddReactions)
+        if (ctx.Guild is SocketGuild sg && !sg.CurrentUser.GetPermissions((IGuildChannel)ctx.Channel).AddReactions)
             canPaginate = false;
 
         if (!canPaginate)
@@ -143,8 +134,7 @@ public static class MessageChannelExtensions
 
         var msg = await ctx.Channel.EmbedAsync(embed);
 
-        if (lastPage == 0 ||
-            !canPaginate)
+        if (lastPage == 0 || !canPaginate)
             return;
 
         await msg.AddReactionAsync(_arrowLeft);
@@ -197,17 +187,12 @@ public static class MessageChannelExtensions
 
         try
         {
-            if (msg.Channel is ITextChannel &&
-                ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
-            {
+            if (msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 await msg.RemoveAllReactionsAsync();
-            }
             else
-            {
                 await msg.Reactions.Where(x => x.Value.IsMe)
-                    .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
-                    .WhenAll();
-            }
+                         .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
+                         .WhenAll();
         }
         catch
         {

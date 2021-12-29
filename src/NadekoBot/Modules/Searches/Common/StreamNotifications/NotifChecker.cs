@@ -1,5 +1,5 @@
-﻿using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
-using NadekoBot.Db.Models;
+﻿using NadekoBot.Db.Models;
+using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -7,158 +7,144 @@ namespace NadekoBot.Modules.Searches.Common.StreamNotifications;
 
 public class NotifChecker
 {
-    private readonly ConnectionMultiplexer _multi;
-    private readonly string _key;
-        
     public event Func<List<StreamData>, Task> OnStreamsOffline = _ => Task.CompletedTask;
     public event Func<List<StreamData>, Task> OnStreamsOnline = _ => Task.CompletedTask;
+    private readonly ConnectionMultiplexer _multi;
+    private readonly string _key;
 
     private readonly Dictionary<FollowedStream.FType, Provider> _streamProviders;
     private readonly HashSet<(FollowedStream.FType, string)> _offlineBuffer;
 
-    public NotifChecker(IHttpClientFactory httpClientFactory, ConnectionMultiplexer multi, string uniqueCacheKey,
+    public NotifChecker(
+        IHttpClientFactory httpClientFactory,
+        ConnectionMultiplexer multi,
+        string uniqueCacheKey,
         bool isMaster)
     {
         _multi = multi;
         _key = $"{uniqueCacheKey}_followed_streams_data";
         _streamProviders = new()
         {
-            {FollowedStream.FType.Twitch, new TwitchProvider(httpClientFactory)},
-            {FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory)}
+            { FollowedStream.FType.Twitch, new TwitchProvider(httpClientFactory) },
+            { FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory) }
         };
         _offlineBuffer = new();
-        if (isMaster)
-        {
-            CacheClearAllData();
-        }
+        if (isMaster) CacheClearAllData();
     }
-        
+
     // gets all streams which have been failing for more than the provided timespan
     public IEnumerable<StreamDataKey> GetFailingStreams(TimeSpan duration, bool remove = false)
     {
         var toReturn = _streamProviders.SelectMany(prov => prov.Value
-                .FailingStreams
-                .Where(fs => DateTime.UtcNow - fs.ErroringSince > duration)
-                .Select(fs => new StreamDataKey(prov.Value.Platform, fs.Item1)))
-            .ToList();
+                                                               .FailingStreams
+                                                               .Where(fs => DateTime.UtcNow - fs.ErroringSince
+                                                                            > duration)
+                                                               .Select(fs => new StreamDataKey(prov.Value.Platform,
+                                                                   fs.Item1)))
+                                       .ToList();
 
         if (remove)
-        {
             foreach (var toBeRemoved in toReturn)
-            {
                 _streamProviders[toBeRemoved.Type].ClearErrorsFor(toBeRemoved.Name);
-            }
-        }
-            
+
         return toReturn;
     }
 
-    public Task RunAsync() => Task.Run(async () =>
-    {
-        while (true)
+    public Task RunAsync()
+        => Task.Run(async () =>
         {
-            try
-            {
-                var allStreamData = CacheGetAllData();
-
-                var oldStreamDataDict = allStreamData
-                    // group by type
-                    .GroupBy(entry => entry.Key.Type)
-                    .ToDictionary(
-                        entry => entry.Key,
-                        entry => entry.AsEnumerable().ToDictionary(x => x.Key.Name, x => x.Value)
-                    );
-
-                var newStreamData = await oldStreamDataDict
-                    .Select(x =>
-                    {
-                        // get all stream data for the streams of this type
-                        if (_streamProviders.TryGetValue(x.Key, out var provider))
-                        {
-                            return provider.GetStreamDataAsync(x.Value.Select(entry => entry.Key).ToList());
-                        }
-
-                        // this means there's no provider for this stream data, (and there was before?)
-                        return Task.FromResult(new List<StreamData>());
-                    }).WhenAll();
-
-                var newlyOnline = new List<StreamData>();
-                var newlyOffline = new List<StreamData>();
-                // go through all new stream data, compare them with the old ones
-                foreach (var newData in newStreamData.SelectMany(x => x))
+            while (true)
+                try
                 {
-                    // update cached data
-                    var key = newData.CreateKey();
-                    CacheAddData(key, newData, replace: true);
+                    var allStreamData = CacheGetAllData();
 
-                    // compare old data with new data
-                    var oldData = oldStreamDataDict[key.Type][key.Name];
+                    var oldStreamDataDict = allStreamData
+                                            // group by type
+                                            .GroupBy(entry => entry.Key.Type)
+                                            .ToDictionary(entry => entry.Key,
+                                                entry => entry.AsEnumerable()
+                                                              .ToDictionary(x => x.Key.Name, x => x.Value));
 
-                    // this is the first pass
-                    if (oldData is null)
-                        continue;
+                    var newStreamData = await oldStreamDataDict.Select(x =>
+                                                               {
+                                                                   // get all stream data for the streams of this type
+                                                                   if (_streamProviders.TryGetValue(x.Key,
+                                                                           out var provider))
+                                                                       return provider.GetStreamDataAsync(x.Value
+                                                                           .Select(entry => entry.Key)
+                                                                           .ToList());
 
-                    // if the stream is offline, we need to check if it was
-                    // marked as offline once previously
-                    // if it was, that means this is second time we're getting offline
-                    // status for that stream -> notify subscribers
-                    // Note: This is done because twitch api will sometimes return an offline status
-                    //       shortly after the stream is already online, which causes duplicate notifications.
-                    //       (stream is online -> stream is offline -> stream is online again (and stays online))
-                    //       This offlineBuffer will make it so that the stream has to be marked as offline TWICE
-                    //       before it sends an offline notification to the subscribers.
-                    var streamId = (key.Type, key.Name);
-                    if (!newData.IsLive && _offlineBuffer.Remove(streamId))
+                                                                   // this means there's no provider for this stream data, (and there was before?)
+                                                                   return Task.FromResult(new List<StreamData>());
+                                                               })
+                                                               .WhenAll();
+
+                    var newlyOnline = new List<StreamData>();
+                    var newlyOffline = new List<StreamData>();
+                    // go through all new stream data, compare them with the old ones
+                    foreach (var newData in newStreamData.SelectMany(x => x))
                     {
-                        newlyOffline.Add(newData);
+                        // update cached data
+                        var key = newData.CreateKey();
+                        CacheAddData(key, newData, true);
+
+                        // compare old data with new data
+                        var oldData = oldStreamDataDict[key.Type][key.Name];
+
+                        // this is the first pass
+                        if (oldData is null)
+                            continue;
+
+                        // if the stream is offline, we need to check if it was
+                        // marked as offline once previously
+                        // if it was, that means this is second time we're getting offline
+                        // status for that stream -> notify subscribers
+                        // Note: This is done because twitch api will sometimes return an offline status
+                        //       shortly after the stream is already online, which causes duplicate notifications.
+                        //       (stream is online -> stream is offline -> stream is online again (and stays online))
+                        //       This offlineBuffer will make it so that the stream has to be marked as offline TWICE
+                        //       before it sends an offline notification to the subscribers.
+                        var streamId = (key.Type, key.Name);
+                        if (!newData.IsLive && _offlineBuffer.Remove(streamId))
+                        {
+                            newlyOffline.Add(newData);
+                        }
+                        else if (newData.IsLive != oldData.IsLive)
+                        {
+                            if (newData.IsLive)
+                            {
+                                _offlineBuffer.Remove(streamId);
+                                newlyOnline.Add(newData);
+                            }
+                            else
+                            {
+                                _offlineBuffer.Add(streamId);
+                                // newlyOffline.Add(newData);
+                            }
+                        }
                     }
-                    else if (newData.IsLive != oldData.IsLive)
-                    {
-                        if (newData.IsLive)
-                        {
-                            _offlineBuffer.Remove(streamId);
-                            newlyOnline.Add(newData);
-                        }
-                        else
-                        {
-                            _offlineBuffer.Add(streamId);
-                            // newlyOffline.Add(newData);
-                        }
-                    }
-                }
-                    
-                var tasks = new List<Task>
-                {
-                    Task.Delay(30_000)
-                };
 
-                if (newlyOnline.Count > 0)
-                {
-                    tasks.Add(OnStreamsOnline(newlyOnline));
-                }
+                    var tasks = new List<Task> { Task.Delay(30_000) };
 
-                if (newlyOffline.Count > 0)
-                {
-                    tasks.Add(OnStreamsOffline(newlyOffline));
-                }
+                    if (newlyOnline.Count > 0) tasks.Add(OnStreamsOnline(newlyOnline));
 
-                await Task.WhenAll(tasks);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error getting stream notifications: {ErrorMessage}", ex.Message);
-            }
-        }
-    });
+                    if (newlyOffline.Count > 0) tasks.Add(OnStreamsOffline(newlyOffline));
+
+                    await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error getting stream notifications: {ErrorMessage}", ex.Message);
+                }
+        });
 
     public bool CacheAddData(StreamDataKey key, StreamData? data, bool replace)
     {
         var db = _multi.GetDatabase();
-        return db.HashSet(
-            _key,
+        return db.HashSet(_key,
             JsonConvert.SerializeObject(key),
             JsonConvert.SerializeObject(data),
-            when: replace ? When.Always : When.NotExists);
+            replace ? When.Always : When.NotExists);
     }
 
     public void CacheDeleteData(StreamDataKey key)
@@ -176,17 +162,13 @@ public class NotifChecker
     public Dictionary<StreamDataKey, StreamData?> CacheGetAllData()
     {
         var db = _multi.GetDatabase();
-        if (!db.KeyExists(_key))
-        {
-            return new();
-        }
+        if (!db.KeyExists(_key)) return new();
 
         return db.HashGetAll(_key)
-            .ToDictionary(
-                entry => JsonConvert.DeserializeObject<StreamDataKey>(entry.Name),
-                entry => entry.Value.IsNullOrEmpty
-                    ? default(StreamData)
-                    : JsonConvert.DeserializeObject<StreamData>(entry.Value));
+                 .ToDictionary(entry => JsonConvert.DeserializeObject<StreamDataKey>(entry.Name),
+                     entry => entry.Value.IsNullOrEmpty
+                         ? default
+                         : JsonConvert.DeserializeObject<StreamData>(entry.Value));
     }
 
     public async Task<StreamData?> GetStreamDataByUrlAsync(string url)
@@ -207,7 +189,7 @@ public class NotifChecker
     }
 
     /// <summary>
-    /// Return currently available stream data, get new one if none available, and start tracking the stream.
+    ///     Return currently available stream data, get new one if none available, and start tracking the stream.
     /// </summary>
     /// <param name="url">Url of the stream</param>
     /// <returns>Stream data, if any</returns>
@@ -219,7 +201,7 @@ public class NotifChecker
     }
 
     /// <summary>
-    /// Make sure a stream is tracked using its stream data.
+    ///     Make sure a stream is tracked using its stream data.
     /// </summary>
     /// <param name="data">Data to try to track if not already tracked</param>
     /// <returns>Whether it's newly added</returns>
@@ -231,7 +213,7 @@ public class NotifChecker
 
         // if stream is found, add it to the cache for tracking only if it doesn't already exist
         // because stream will be checked and events will fire in a loop. We don't want to override old state
-        return CacheAddData(data.CreateKey(), data, replace: false);
+        return CacheAddData(data.CreateKey(), data, false);
     }
 
     public void UntrackStreamByKey(in StreamDataKey key)

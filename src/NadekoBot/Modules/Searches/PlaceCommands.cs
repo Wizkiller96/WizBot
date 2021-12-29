@@ -6,9 +6,6 @@ public partial class Searches
     [Group]
     public class PlaceCommands : NadekoSubmodule
     {
-        private static readonly string _typesStr = 
-            string.Join(", ", Enum.GetNames(typeof(PlaceType)));
-
         public enum PlaceType
         {
             Cage, //http://www.placecage.com
@@ -18,15 +15,18 @@ public partial class Searches
             Bear, //https://www.placebear.com
             Kitten, //http://placekitten.com
             Bacon, //http://baconmockup.com
-            Xoart, //http://xoart.link
+            Xoart //http://xoart.link
         }
 
-        [NadekoCommand, Aliases]
-        public async Task Placelist()
-            => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), 
-                    _typesStr);
+        private static readonly string _typesStr = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
+        public async Task Placelist()
+            => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), _typesStr);
+
+        [NadekoCommand]
+        [Aliases]
         public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
         {
             var url = string.Empty;
@@ -57,6 +57,7 @@ public partial class Searches
                     url = "http://xoart.link";
                     break;
             }
+
             var rng = new NadekoRandom();
             if (width is <= 0 or > 1000)
                 width = (uint)rng.Next(250, 850);

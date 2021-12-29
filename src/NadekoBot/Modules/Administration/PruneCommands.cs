@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Administration.Services;
-using ITextChannel = Discord.ITextChannel;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -12,7 +11,8 @@ public partial class Administration
         private static readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
 
         //delets her own messages, no perm required
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Prune(string parameter = null)
         {
@@ -24,8 +24,10 @@ public partial class Administration
                 await _service.PruneWhere((ITextChannel)ctx.Channel, 100, x => x.Author.Id == user.Id);
             ctx.Message.DeleteAfter(3);
         }
+
         // prune x
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
@@ -45,7 +47,8 @@ public partial class Administration
         }
 
         //prune @user [x]
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
@@ -54,7 +57,8 @@ public partial class Administration
             => Prune(user.Id, count, parameter);
 
         //prune userid [x]
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
@@ -71,9 +75,13 @@ public partial class Administration
                 count = 1000;
 
             if (parameter is "-s" or "--safe")
-                await _service.PruneWhere((ITextChannel)ctx.Channel, count, m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks && !m.IsPinned);
+                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                    count,
+                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks && !m.IsPinned);
             else
-                await _service.PruneWhere((ITextChannel)ctx.Channel, count, m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks);
+                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                    count,
+                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks);
         }
     }
 }

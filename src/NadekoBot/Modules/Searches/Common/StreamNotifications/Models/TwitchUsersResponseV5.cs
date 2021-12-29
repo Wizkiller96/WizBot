@@ -5,13 +5,13 @@ namespace NadekoBot.Modules.Searches.Common;
 
 public class TwitchUsersResponseV5
 {
-    [JsonProperty("users")] public List<User> Users { get; set; }
+    [JsonProperty("users")]
+    public List<User> Users { get; set; }
 
     public class User
     {
-
         [JsonProperty("_id")]
-        public string Id { get; set; } 
+        public string Id { get; set; }
 
         // [JsonProperty("bio")]
         // public string Bio { get; set; } 
@@ -33,6 +33,5 @@ public class TwitchUsersResponseV5
         //
         // [JsonProperty("updated_at")]
         // public DateTime UpdatedAt { get; set; } 
-
     }
 }

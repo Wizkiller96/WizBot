@@ -1,9 +1,9 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions;
 
@@ -12,13 +12,14 @@ public partial class Permissions
     [Group]
     public class CmdCdsCommands : NadekoSubmodule
     {
-        private readonly DbService _db;
-        private readonly CmdCdService _service;
-
         private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns
             => _service.CommandCooldowns;
+
         private ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns
             => _service.ActiveCooldowns;
+
+        private readonly DbService _db;
+        private readonly CmdCdService _service;
 
         public CmdCdsCommands(CmdCdService service, DbService db)
         {
@@ -26,7 +27,8 @@ public partial class Permissions
             _db = db;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task CmdCooldown(CommandOrCrInfo command, int secs)
         {
@@ -49,16 +51,14 @@ public partial class Permissions
                 localSet.RemoveWhere(cc => cc.CommandName == name);
                 if (secs != 0)
                 {
-                    var cc = new CommandCooldown()
-                    {
-                        CommandName = name,
-                        Seconds = secs,
-                    };
+                    var cc = new CommandCooldown { CommandName = name, Seconds = secs };
                     config.CommandCooldowns.Add(cc);
                     localSet.Add(cc);
                 }
+
                 await uow.SaveChangesAsync();
             }
+
             if (secs == 0)
             {
                 var activeCds = ActiveCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<ActiveCooldown>());
@@ -67,13 +67,12 @@ public partial class Permissions
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.cmdcd_add(
-                    Format.Bold(name),
-                    Format.Bold(secs.ToString())));
+                await ReplyConfirmLocalizedAsync(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString())));
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task AllCmdCooldowns()
         {
@@ -83,7 +82,10 @@ public partial class Permissions
             if (!localSet.Any())
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_none);
             else
-                await channel.SendTableAsync("", localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)), s => $"{s,-30}", 2);
+                await channel.SendTableAsync("",
+                    localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)),
+                    s => $"{s,-30}",
+                    2);
         }
     }
 }

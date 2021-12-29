@@ -5,7 +5,8 @@ public partial class Administration
     [Group]
     public class ServerGreetCommands : NadekoSubmodule<GreetSettingsService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task Boost()
@@ -18,7 +19,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.boost_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task BoostDel(int timer = 30)
@@ -34,7 +36,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.boostdel_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task BoostMsg([Leftover] string? text = null)
@@ -53,7 +56,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.boostmsg_enable($"`{Prefix}boost`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task GreetDel(int timer = 30)
@@ -69,7 +73,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.greetdel_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task Greet()
@@ -82,7 +87,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.greet_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task GreetMsg([Leftover] string? text = null)
@@ -97,12 +103,13 @@ public partial class Administration
             var sendGreetEnabled = _service.SetGreetMessage(ctx.Guild.Id, ref text);
 
             await ReplyConfirmLocalizedAsync(strs.greetmsg_new);
-            
+
             if (!sendGreetEnabled)
                 await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{Prefix}greet`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task GreetDm()
@@ -115,7 +122,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.greetdm_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task GreetDmMsg([Leftover] string? text = null)
@@ -134,7 +142,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{Prefix}greetdm`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task Bye()
@@ -147,7 +156,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.bye_off);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task ByeMsg([Leftover] string? text = null)
@@ -166,7 +176,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{Prefix}bye`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         public async Task ByeDel(int timer = 30)
@@ -180,7 +191,8 @@ public partial class Administration
         }
 
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]
@@ -190,13 +202,11 @@ public partial class Administration
 
             await _service.ByeTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetByeEnabled(ctx.Guild.Id);
-            if (!enabled)
-            {
-                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{Prefix}bye`"));
-            }
+            if (!enabled) await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{Prefix}bye`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]
@@ -206,13 +216,11 @@ public partial class Administration
 
             await _service.GreetTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
-            if (!enabled)
-            {
-                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{Prefix}greet`"));
-            }
+            if (!enabled) await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{Prefix}greet`"));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]

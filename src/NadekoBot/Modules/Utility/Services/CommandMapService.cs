@@ -1,16 +1,15 @@
 ﻿#nullable disable
-using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility.Services;
 
 public class CommandMapService : IInputTransformer, INService
 {
-    private readonly IEmbedBuilderService _eb;
-
     public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new();
+    private readonly IEmbedBuilderService _eb;
 
     private readonly DbService _db;
 
@@ -22,16 +21,13 @@ public class CommandMapService : IInputTransformer, INService
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
         var configs = uow.Set<GuildConfig>()
-            .Include(gc => gc.CommandAliases)
-            .Where(x => guildIds.Contains(x.GuildId))
-            .ToList();
-                
-        AliasMaps = new(configs
-            .ToDictionary(
-                x => x.GuildId,
-                x => new ConcurrentDictionary<string, string>(x.CommandAliases
-                    .DistinctBy(ca => ca.Trigger)
-                    .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
+                         .Include(gc => gc.CommandAliases)
+                         .Where(x => guildIds.Contains(x.GuildId))
+                         .ToList();
+
+        AliasMaps = new(configs.ToDictionary(x => x.GuildId,
+            x => new ConcurrentDictionary<string, string>(x.CommandAliases.DistinctBy(ca => ca.Trigger)
+                                                           .ToDictionary(ca => ca.Trigger, ca => ca.Mapping))));
 
         _db = db;
     }
@@ -49,7 +45,11 @@ public class CommandMapService : IInputTransformer, INService
         return count;
     }
 
-    public async Task<string> TransformInput(IGuild guild, IMessageChannel channel, IUser user, string input)
+    public async Task<string> TransformInput(
+        IGuild guild,
+        IMessageChannel channel,
+        IUser user,
+        string input)
     {
         await Task.Yield();
 
@@ -57,11 +57,9 @@ public class CommandMapService : IInputTransformer, INService
             return input;
 
         if (guild != null)
-        {
             if (AliasMaps.TryGetValue(guild.Id, out var maps))
             {
-                var keys = maps.Keys
-                    .OrderByDescending(x => x.Length);
+                var keys = maps.Keys.OrderByDescending(x => x.Length);
 
                 foreach (var k in keys)
                 {
@@ -79,17 +77,14 @@ public class CommandMapService : IInputTransformer, INService
                         var _ = Task.Run(async () =>
                         {
                             await Task.Delay(1500);
-                            await toDelete.DeleteAsync(new()
-                            {
-                                RetryMode = RetryMode.AlwaysRetry
-                            });
+                            await toDelete.DeleteAsync(new() { RetryMode = RetryMode.AlwaysRetry });
                         });
                     }
                     catch { }
+
                     return newInput;
                 }
             }
-        }
 
         return input;
     }

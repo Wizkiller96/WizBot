@@ -3,27 +3,11 @@ namespace NadekoBot.Modules.Gambling.Common.Slot;
 
 public class SlotGame
 {
-    public class Result
-    {
-        public float Multiplier { get; }
-        public int[] Rolls { get; }
-
-        public Result(float multiplier, int[] rolls)
-        {
-            Multiplier = multiplier;
-            Rolls = rolls;
-        }
-    }
-
     private static readonly Random _rng = new NadekoRandom();
-
-    public SlotGame()
-    {
-    }
 
     public Result Spin()
     {
-        var rolls = new int[] { _rng.Next(0, 6), _rng.Next(0, 6), _rng.Next(0, 6) };
+        var rolls = new[] { _rng.Next(0, 6), _rng.Next(0, 6), _rng.Next(0, 6) };
         var multi = 0;
 
         if (rolls.All(x => x == 5))
@@ -36,5 +20,17 @@ public class SlotGame
             multi = 1;
 
         return new(multi, rolls);
+    }
+
+    public class Result
+    {
+        public float Multiplier { get; }
+        public int[] Rolls { get; }
+
+        public Result(float multiplier, int[] rolls)
+        {
+            Multiplier = multiplier;
+            Rolls = rolls;
+        }
     }
 }

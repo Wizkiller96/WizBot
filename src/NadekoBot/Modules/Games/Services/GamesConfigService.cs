@@ -6,35 +6,39 @@ namespace NadekoBot.Modules.Games.Services;
 
 public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
 {
-    public override string Name { get; } = "games";
     private const string FilePath = "data/games.yml";
     private static readonly TypedKey<GamesConfig> changeKey = new("config.games.updated");
+    public override string Name { get; } = "games";
 
     public GamesConfigService(IConfigSeria serializer, IPubSub pubSub)
         : base(FilePath, serializer, pubSub, changeKey)
     {
-        AddParsedProp("trivia.min_win_req", gs => gs.Trivia.MinimumWinReq, int.TryParse,
-            ConfigPrinters.ToString, val => val > 0);
-        AddParsedProp("trivia.currency_reward", gs => gs.Trivia.CurrencyReward, long.TryParse,
-            ConfigPrinters.ToString, val => val >= 0);
-        AddParsedProp("hangman.currency_reward", gs => gs.Hangman.CurrencyReward, long.TryParse,
-            ConfigPrinters.ToString, val => val >= 0);
-            
+        AddParsedProp("trivia.min_win_req",
+            gs => gs.Trivia.MinimumWinReq,
+            int.TryParse,
+            ConfigPrinters.ToString,
+            val => val > 0);
+        AddParsedProp("trivia.currency_reward",
+            gs => gs.Trivia.CurrencyReward,
+            long.TryParse,
+            ConfigPrinters.ToString,
+            val => val >= 0);
+        AddParsedProp("hangman.currency_reward",
+            gs => gs.Hangman.CurrencyReward,
+            long.TryParse,
+            ConfigPrinters.ToString,
+            val => val >= 0);
+
         Migrate();
     }
-        
+
     private void Migrate()
     {
         if (data.Version < 1)
-        {
             ModifyConfig(c =>
             {
                 c.Version = 1;
-                c.Hangman = new()
-                {
-                    CurrencyReward = 0
-                };
+                c.Hangman = new() { CurrencyReward = 0 };
             });
-        }
     }
 }

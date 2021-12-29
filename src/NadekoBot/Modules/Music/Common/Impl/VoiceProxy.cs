@@ -12,19 +12,19 @@ public sealed class VoiceProxy : IVoiceProxy
         Started,
         Stopped
     }
-        
+
     private const int MAX_ERROR_COUNT = 20;
     private const int DELAY_ON_ERROR_MILISECONDS = 200;
 
     public VoiceProxyState State
         => _gateway switch
         {
-            {Started: true, Stopped: false} => VoiceProxyState.Started,
-            {Stopped: false} => VoiceProxyState.Created,
+            { Started: true, Stopped: false } => VoiceProxyState.Started,
+            { Stopped: false } => VoiceProxyState.Created,
             _ => VoiceProxyState.Stopped
         };
-            
-        
+
+
     private VoiceGateway _gateway;
 
     public VoiceProxy(VoiceGateway initial)
@@ -35,10 +35,7 @@ public sealed class VoiceProxy : IVoiceProxy
         try
         {
             var gw = _gateway;
-            if (gw is null || gw.Stopped || !gw.Started)
-            {
-                return false;
-            }
+            if (gw is null || gw.Stopped || !gw.Started) return false;
 
             vc.SendPcmFrame(gw, data, 0, length);
             return true;
@@ -54,10 +51,7 @@ public sealed class VoiceProxy : IVoiceProxy
         var errorCount = 0;
         do
         {
-            if (State == VoiceProxyState.Stopped)
-            {
-                break;
-            }
+            if (State == VoiceProxyState.Stopped) break;
 
             try
             {
@@ -98,7 +92,7 @@ public sealed class VoiceProxy : IVoiceProxy
 
     public Task StopGateway()
     {
-        if(_gateway is { } gw)
+        if (_gateway is { } gw)
             return gw.StopAsync();
 
         return Task.CompletedTask;

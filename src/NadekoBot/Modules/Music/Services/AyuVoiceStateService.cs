@@ -1,6 +1,6 @@
 ﻿#nullable disable
-using System.Reflection;
 using Ayu.Discord.Voice;
+using System.Reflection;
 
 namespace NadekoBot.Modules.Music.Services;
 
@@ -8,10 +8,10 @@ public sealed class AyuVoiceStateService : INService
 {
     // public delegate Task VoiceProxyUpdatedDelegate(ulong guildId, IVoiceProxy proxy);
     // public event VoiceProxyUpdatedDelegate OnVoiceProxyUpdate = delegate { return Task.CompletedTask; };
-        
+
     private readonly ConcurrentDictionary<ulong, IVoiceProxy> _voiceProxies = new();
     private readonly ConcurrentDictionary<ulong, SemaphoreSlim> _voiceGatewayLocks = new();
-        
+
     private readonly DiscordSocketClient _client;
     private readonly MethodInfo _sendVoiceStateUpdateMethodInfo;
     private readonly object _dnetApiClient;
@@ -23,13 +23,17 @@ public sealed class AyuVoiceStateService : INService
         _currentUserId = _client.CurrentUser.Id;
 
         var prop = _client.GetType()
-            .GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
-            .First(x => x.Name == "ApiClient" && x.PropertyType.Name == "DiscordSocketApiClient");
+                          .GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
+                          .First(x => x.Name == "ApiClient" && x.PropertyType.Name == "DiscordSocketApiClient");
         _dnetApiClient = prop.GetValue(_client, null);
         _sendVoiceStateUpdateMethodInfo = _dnetApiClient.GetType()
-            .GetMethod("SendVoiceStateUpdateAsync",
-                types: new[] { typeof(ulong), typeof(ulong?), typeof(bool), typeof(bool), typeof(RequestOptions) });
-            
+                                                        .GetMethod("SendVoiceStateUpdateAsync",
+                                                            new[]
+                                                            {
+                                                                typeof(ulong), typeof(ulong?), typeof(bool),
+                                                                typeof(bool), typeof(RequestOptions)
+                                                            });
+
         _client.LeftGuild += ClientOnLeftGuild;
     }
 
@@ -44,29 +48,32 @@ public sealed class AyuVoiceStateService : INService
         return Task.CompletedTask;
     }
 
-    private Task InvokeSendVoiceStateUpdateAsync(ulong guildId, ulong? channelId = null, bool isDeafened = false, bool isMuted = false)
+    private Task InvokeSendVoiceStateUpdateAsync(
+            ulong guildId,
+            ulong? channelId = null,
+            bool isDeafened = false,
+            bool isMuted = false)
         // return _voiceStateUpdate(guildId, channelId, isDeafened, isMuted);
-        => (Task) _sendVoiceStateUpdateMethodInfo.Invoke(_dnetApiClient, new object[] {guildId, channelId, isMuted, isDeafened, null});
+        => (Task)_sendVoiceStateUpdateMethodInfo.Invoke(_dnetApiClient,
+            new object[] { guildId, channelId, isMuted, isDeafened, null });
 
     private Task SendLeaveVoiceChannelInternalAsync(ulong guildId)
         => InvokeSendVoiceStateUpdateAsync(guildId);
 
     private Task SendJoinVoiceChannelInternalAsync(ulong guildId, ulong channelId)
         => InvokeSendVoiceStateUpdateAsync(guildId, channelId);
-        
-    private SemaphoreSlim GetVoiceGatewayLock(ulong guildId) => _voiceGatewayLocks.GetOrAdd(guildId, new SemaphoreSlim(1, 1));
-        
+
+    private SemaphoreSlim GetVoiceGatewayLock(ulong guildId)
+        => _voiceGatewayLocks.GetOrAdd(guildId, new SemaphoreSlim(1, 1));
+
     private async Task LeaveVoiceChannelInternalAsync(ulong guildId)
     {
         var complete = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
         Task OnUserVoiceStateUpdated(SocketUser user, SocketVoiceState oldState, SocketVoiceState newState)
         {
-            if (user is SocketGuildUser guildUser
-                && guildUser.Guild.Id == guildId
-                && newState.VoiceChannel?.Id is null)
-            {
+            if (user is SocketGuildUser guildUser && guildUser.Guild.Id == guildId && newState.VoiceChannel?.Id is null)
                 complete.TrySetResult(true);
-            }
 
             return Task.CompletedTask;
         }
@@ -89,6 +96,7 @@ public sealed class AyuVoiceStateService : INService
             _client.UserVoiceStateUpdated -= OnUserVoiceStateUpdated;
         }
     }
+
     public async Task LeaveVoiceChannel(ulong guildId)
     {
         var gwLock = GetVoiceGatewayLock(guildId);
@@ -105,8 +113,10 @@ public sealed class AyuVoiceStateService : INService
 
     private async Task<IVoiceProxy> InternalConnectToVcAsync(ulong guildId, ulong channelId)
     {
-        var voiceStateUpdatedSource = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
-        var voiceServerUpdatedSource = new TaskCompletionSource<SocketVoiceServer>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var voiceStateUpdatedSource =
+            new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var voiceServerUpdatedSource =
+            new TaskCompletionSource<SocketVoiceServer>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         Task OnUserVoiceStateUpdated(SocketUser user, SocketVoiceState oldState, SocketVoiceState newState)
         {
@@ -123,14 +133,11 @@ public sealed class AyuVoiceStateService : INService
 
         Task OnVoiceServerUpdated(SocketVoiceServer data)
         {
-            if (data.Guild.Id == guildId)
-            {
-                voiceServerUpdatedSource.TrySetResult(data);
-            }
+            if (data.Guild.Id == guildId) voiceServerUpdatedSource.TrySetResult(data);
 
             return Task.CompletedTask;
         }
-            
+
         try
         {
             _client.VoiceServerUpdated += OnVoiceServerUpdated;
@@ -149,10 +156,8 @@ public sealed class AyuVoiceStateService : INService
             // wait for both to end (max 1s) and check if either of them is a delay task
             var results = await Task.WhenAll(maybeUpdateTask, maybeServerTask);
             if (results[0] == delayTask || results[1] == delayTask)
-            {
                 // if either is delay, return null - connection unsuccessful
                 return null;
-            }
 
             // if both are succesful, that means we can safely get
             // the values from  completion sources
@@ -164,26 +169,20 @@ public sealed class AyuVoiceStateService : INService
                 return null;
 
             var voiceServerData = await voiceServerUpdatedSource.Task;
-                
-            VoiceGateway CreateVoiceGatewayLocal() =>
-                new(
-                    guildId,
-                    _currentUserId,
-                    session,
-                    voiceServerData.Token,
-                    voiceServerData.Endpoint
-                );
 
-            var current = _voiceProxies.AddOrUpdate(
-                guildId,
+            VoiceGateway CreateVoiceGatewayLocal()
+            {
+                return new(guildId, _currentUserId, session, voiceServerData.Token, voiceServerData.Endpoint);
+            }
+
+            var current = _voiceProxies.AddOrUpdate(guildId,
                 gid => new VoiceProxy(CreateVoiceGatewayLocal()),
                 (gid, currentProxy) =>
                 {
                     _ = currentProxy.StopGateway();
                     currentProxy.SetGateway(CreateVoiceGatewayLocal());
                     return currentProxy;
-                }
-            );
+                });
 
             _ = current.StartGateway(); // don't await, this blocks until gateway is closed
             return current;

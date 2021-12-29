@@ -1,8 +1,9 @@
 ﻿#nullable disable
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Services.Database.Models;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Net;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -10,8 +11,9 @@ public partial class Administration
 {
     public class RoleCommands : NadekoSubmodule<RoleCommandsService>
     {
-        private IServiceProvider _services;
         public enum Exclude { Excl }
+
+        private IServiceProvider _services;
 
         public RoleCommands(IServiceProvider services)
             => _services = services;
@@ -20,34 +22,32 @@ public partial class Administration
         {
             var target = messageId is { } msgId
                 ? await ctx.Channel.GetMessageAsync(msgId)
-                : (await ctx.Channel.GetMessagesAsync(2).FlattenAsync())
-                .Skip(1)
-                .FirstOrDefault();
+                : (await ctx.Channel.GetMessagesAsync(2).FlattenAsync()).Skip(1).FirstOrDefault();
 
             if (input.Length % 2 != 0)
                 return;
 
-            var all = await input
-                .Chunk(input.Length / 2)
-                .Select(async x =>
-                {
-                    var inputRoleStr = x.First();
-                    var roleReader = new RoleTypeReader<SocketRole>();
-                    var roleResult = await roleReader.ReadAsync(ctx, inputRoleStr, _services);
-                    if (!roleResult.IsSuccess)
-                    {
-                        Log.Warning("Role {0} not found.", inputRoleStr);
-                        return null;
-                    }
-                    var role = (IRole)roleResult.BestMatch;
-                    if (role.Position > ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()
-                        && ctx.User.Id != ctx.Guild.OwnerId)
-                        return null;
-                    var emote = x.Last().ToIEmote();
-                    return new { role, emote };
-                })
-                .Where(x => x != null)
-                .WhenAll();
+            var all = await input.Chunk(input.Length / 2)
+                                 .Select(async x =>
+                                 {
+                                     var inputRoleStr = x.First();
+                                     var roleReader = new RoleTypeReader<SocketRole>();
+                                     var roleResult = await roleReader.ReadAsync(ctx, inputRoleStr, _services);
+                                     if (!roleResult.IsSuccess)
+                                     {
+                                         Log.Warning("Role {0} not found.", inputRoleStr);
+                                         return null;
+                                     }
+
+                                     var role = (IRole)roleResult.BestMatch;
+                                     if (role.Position > ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()
+                                         && ctx.User.Id != ctx.Guild.OwnerId)
+                                         return null;
+                                     var emote = x.Last().ToIEmote();
+                                     return new { role, emote };
+                                 })
+                                 .Where(x => x != null)
+                                 .WhenAll();
 
             if (!all.Any())
                 return;
@@ -56,12 +56,10 @@ public partial class Administration
             {
                 try
                 {
-                    await target.AddReactionAsync(x.emote, new()
-                    {
-                        RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
-                    });
+                    await target.AddReactionAsync(x.emote,
+                        new() { RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit });
                 }
-                catch (Discord.Net.HttpException ex) when(ex.HttpCode == HttpStatusCode.BadRequest)
+                catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.BadRequest)
                 {
                     await ReplyErrorLocalizedAsync(strs.reaction_cant_access(Format.Code(x.emote.ToString())));
                     return;
@@ -70,75 +68,75 @@ public partial class Administration
                 await Task.Delay(500);
             }
 
-            if (_service.Add(ctx.Guild.Id, new()
-                {
-                    Exclusive = exclusive,
-                    MessageId = target.Id,
-                    ChannelId = target.Channel.Id,
-                    ReactionRoles = all.Select(x =>
+            if (_service.Add(ctx.Guild.Id,
+                    new()
                     {
-                        return new ReactionRole()
-                        {
-                            EmoteName = x.emote.ToString(),
-                            RoleId = x.role.Id,
-                        };
-                    }).ToList(),
-                }))
-            {
+                        Exclusive = exclusive,
+                        MessageId = target.Id,
+                        ChannelId = target.Channel.Id,
+                        ReactionRoles = all.Select(x =>
+                                           {
+                                               return new ReactionRole
+                                                   {
+                                                       EmoteName = x.emote.ToString(), RoleId = x.role.Id
+                                                   };
+                                           })
+                                           .ToList()
+                    }))
                 await ctx.OkAsync();
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.reaction_roles_full);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public Task ReactionRoles(ulong messageId, params string[] input) =>
-            InternalReactionRoles(false, messageId, input);
-            
-        [NadekoCommand, Aliases]
+        public Task ReactionRoles(ulong messageId, params string[] input)
+            => InternalReactionRoles(false, messageId, input);
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task ReactionRoles(ulong messageId, Exclude _, params string[] input) =>
-            InternalReactionRoles(true, messageId, input);
-            
-        [NadekoCommand, Aliases]
+        public Task ReactionRoles(ulong messageId, Exclude _, params string[] input)
+            => InternalReactionRoles(true, messageId, input);
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public Task ReactionRoles(params string[] input) =>
-            InternalReactionRoles(false, null, input);
+        public Task ReactionRoles(params string[] input)
+            => InternalReactionRoles(false, null, input);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task ReactionRoles(Exclude _, params string[] input) =>
-            InternalReactionRoles(true, null, input);
+        public Task ReactionRoles(Exclude _, params string[] input)
+            => InternalReactionRoles(true, null, input);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task ReactionRolesList()
         {
-            var embed = _eb.Create()
-                .WithOkColor();
-            if (!_service.Get(ctx.Guild.Id, out var rrs) ||
-                !rrs.Any())
+            var embed = _eb.Create().WithOkColor();
+            if (!_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any())
             {
                 embed.WithDescription(GetText(strs.no_reaction_roles));
             }
@@ -149,37 +147,33 @@ public partial class Administration
                 {
                     var ch = g.GetTextChannel(rr.ChannelId);
                     IUserMessage msg = null;
-                    if (ch is not null)
-                    {
-                        msg = await ch.GetMessageAsync(rr.MessageId) as IUserMessage;
-                    }
+                    if (ch is not null) msg = await ch.GetMessageAsync(rr.MessageId) as IUserMessage;
                     var content = msg?.Content.TrimTo(30) ?? "DELETED!";
                     embed.AddField($"**{rr.Index + 1}.** {ch?.Name ?? "DELETED!"}",
                         GetText(strs.reaction_roles_message(rr.ReactionRoles?.Count ?? 0, content)));
                 }
             }
+
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task ReactionRolesRemove(int index)
         {
-            if (index < 1 ||
-                !_service.Get(ctx.Guild.Id, out var rrs) ||
-                !rrs.Any() || rrs.Count < index)
-            {
+            if (index < 1 || !_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any() || rrs.Count < index)
                 return;
-            }
             index--;
             var rr = rrs[index];
             _service.Remove(ctx.Guild.Id, index);
             await ReplyConfirmLocalizedAsync(strs.reaction_role_removed(index + 1));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -193,9 +187,8 @@ public partial class Administration
             {
                 await targetUser.AddRoleAsync(roleToAdd);
 
-                await ReplyConfirmLocalizedAsync(
-                    strs.setrole(Format.Bold(roleToAdd.Name), Format.Bold(targetUser.ToString()))
-                );
+                await ReplyConfirmLocalizedAsync(strs.setrole(Format.Bold(roleToAdd.Name),
+                    Format.Bold(targetUser.ToString())));
             }
             catch (Exception ex)
             {
@@ -204,19 +197,22 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
         {
             var runnerUser = (IGuildUser)ctx.User;
-            if (ctx.User.Id != runnerUser.Guild.OwnerId && runnerUser.GetRoles().Max(x => x.Position) <= roleToRemove.Position)
+            if (ctx.User.Id != runnerUser.Guild.OwnerId
+                && runnerUser.GetRoles().Max(x => x.Position) <= roleToRemove.Position)
                 return;
             try
             {
                 await targetUser.RemoveRoleAsync(roleToRemove);
-                await ReplyConfirmLocalizedAsync(strs.remrole(Format.Bold(roleToRemove.Name), Format.Bold(targetUser.ToString())));
+                await ReplyConfirmLocalizedAsync(strs.remrole(Format.Bold(roleToRemove.Name),
+                    Format.Bold(targetUser.ToString())));
             }
             catch
             {
@@ -224,11 +220,12 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RenameRole(IRole roleToEdit, [Leftover]string newname)
+        public async Task RenameRole(IRole roleToEdit, [Leftover] string newname)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= roleToEdit.Position)
@@ -240,6 +237,7 @@ public partial class Administration
                     await ReplyErrorLocalizedAsync(strs.renrole_perms);
                     return;
                 }
+
                 await roleToEdit.ModifyAsync(g => g.Name = newname);
                 await ReplyConfirmLocalizedAsync(strs.renrole);
             }
@@ -249,7 +247,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -257,11 +256,11 @@ public partial class Administration
         {
             var guser = (IGuildUser)ctx.User;
 
-            var userRoles = user.GetRoles()
-                .Where(x => !x.IsManaged && x != x.Guild.EveryoneRole)
-                .ToList();
-                
-            if (user.Id == ctx.Guild.OwnerId || (ctx.User.Id != ctx.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
+            var userRoles = user.GetRoles().Where(x => !x.IsManaged && x != x.Guild.EveryoneRole).ToList();
+
+            if (user.Id == ctx.Guild.OwnerId
+                || (ctx.User.Id != ctx.Guild.OwnerId
+                    && guser.GetRoles().Max(x => x.Position) <= userRoles.Max(x => x.Position)))
                 return;
             try
             {
@@ -274,7 +273,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -287,22 +287,23 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.cr(Format.Bold(r.Name)));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async Task DeleteRole([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
-            if (ctx.User.Id != guser.Guild.OwnerId
-                && guser.GetRoles().Max(x => x.Position) <= role.Position)
+            if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
                 return;
 
             await role.DeleteAsync();
             await ReplyConfirmLocalizedAsync(strs.dr(Format.Bold(role.Name)));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -311,32 +312,30 @@ public partial class Administration
             var newHoisted = !role.IsHoisted;
             await role.ModifyAsync(r => r.Hoist = newHoisted);
             if (newHoisted)
-            {
                 await ReplyConfirmLocalizedAsync(strs.rolehoist_enabled(Format.Bold(role.Name)));
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.rolehoist_disabled(Format.Bold(role.Name)));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task RoleColor([Leftover] IRole role)
             => await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6"));
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task RoleColor(SixLabors.ImageSharp.Color color, [Leftover]IRole role)
+        public async Task RoleColor(Color color, [Leftover] IRole role)
         {
             try
             {
                 var rgba32 = color.ToPixel<Rgba32>();
-                await role.ModifyAsync(r => r.Color = new Color(rgba32.R, rgba32.G, rgba32.B));
+                await role.ModifyAsync(r => r.Color = new Discord.Color(rgba32.R, rgba32.G, rgba32.B));
                 await ReplyConfirmLocalizedAsync(strs.rc(Format.Bold(role.Name)));
             }
             catch (Exception)

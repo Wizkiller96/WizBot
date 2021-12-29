@@ -24,8 +24,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
             JToken obj;
             using (var http = _httpFactory.CreateClient())
             {
-                obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}"))[0];
+                obj = JArray.Parse(
+                    await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 10330)}"))[0];
             }
 
             await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}");
@@ -43,8 +43,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
             JToken obj;
             using (var http = _httpFactory.CreateClient())
             {
-                obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}"))[0];
+                obj = JArray.Parse(
+                    await http.GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}"))[0];
             }
 
             await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
@@ -55,7 +55,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireNsfw]
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageMessages)]
@@ -76,36 +77,42 @@ public class NSFW : NadekoModule<ISearchImagesService>
             return;
 
         t = new(async state =>
-        {
-            try
             {
-                if (tags is null || tags.Length == 0)
-                    await InternalDapiCommand(null, true, _service.Hentai);
-                else
+                try
                 {
-                    var groups = tags.Split('|');
-                    var group = groups[_rng.Next(0, groups.Length)];
-                    await InternalDapiCommand(group.Split(' '), true, _service.Hentai);
+                    if (tags is null || tags.Length == 0)
+                    {
+                        await InternalDapiCommand(null, true, _service.Hentai);
+                    }
+                    else
+                    {
+                        var groups = tags.Split('|');
+                        var group = groups[_rng.Next(0, groups.Length)];
+                        await InternalDapiCommand(group.Split(' '), true, _service.Hentai);
+                    }
                 }
-            }
-            catch
+                catch
+                {
+                    // ignored
+                }
+            },
+            null,
+            interval * 1000,
+            interval * 1000);
+
+        _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id,
+            t,
+            (key, old) =>
             {
-                // ignored
-            }
-        }, null, interval * 1000, interval * 1000);
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return t;
+            });
 
-        _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
-        {
-            old.Change(Timeout.Infinite, Timeout.Infinite);
-            return t;
-        });
-
-        await ReplyConfirmLocalizedAsync(strs.autohentai_started(
-            interval,
-            string.Join(", ", tags)));
+        await ReplyConfirmLocalizedAsync(strs.autohentai_started(interval, string.Join(", ", tags)));
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireNsfw]
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageMessages)]
@@ -126,28 +133,35 @@ public class NSFW : NadekoModule<ISearchImagesService>
             return;
 
         t = new(async state =>
-        {
-            try
             {
-                await InternalBoobs();
-            }
-            catch
-            {
-                // ignored
-            }
-        }, null, interval * 1000, interval * 1000);
+                try
+                {
+                    await InternalBoobs();
+                }
+                catch
+                {
+                    // ignored
+                }
+            },
+            null,
+            interval * 1000,
+            interval * 1000);
 
-        _service.AutoBoobTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
-        {
-            old.Change(Timeout.Infinite, Timeout.Infinite);
-            return t;
-        });
+        _service.AutoBoobTimers.AddOrUpdate(ctx.Channel.Id,
+            t,
+            (key, old) =>
+            {
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return t;
+            });
 
         await ReplyConfirmLocalizedAsync(strs.started(interval));
     }
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     [UserPerm(ChannelPerm.ManageMessages)]
     public async Task AutoButts(int interval = 0)
     {
@@ -166,33 +180,42 @@ public class NSFW : NadekoModule<ISearchImagesService>
             return;
 
         t = new(async state =>
-        {
-            try
             {
-                await InternalButts(ctx.Channel);
-            }
-            catch
-            {
-                // ignored
-            }
-        }, null, interval * 1000, interval * 1000);
+                try
+                {
+                    await InternalButts(ctx.Channel);
+                }
+                catch
+                {
+                    // ignored
+                }
+            },
+            null,
+            interval * 1000,
+            interval * 1000);
 
-        _service.AutoButtTimers.AddOrUpdate(ctx.Channel.Id, t, (key, old) =>
-        {
-            old.Change(Timeout.Infinite, Timeout.Infinite);
-            return t;
-        });
+        _service.AutoButtTimers.AddOrUpdate(ctx.Channel.Id,
+            t,
+            (key, old) =>
+            {
+                old.Change(Timeout.Infinite, Timeout.Infinite);
+                return t;
+            });
 
         await ReplyConfirmLocalizedAsync(strs.started(interval));
     }
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-    public Task Hentai(params string[] tags) 
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    public Task Hentai(params string[] tags)
         => InternalDapiCommand(tags, true, _service.Hentai);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public async Task HentaiBomb(params string[] tags)
     {
         if (!_hentaiBombBlacklist.Add(ctx.Guild?.Id ?? ctx.User.Id))
@@ -219,53 +242,73 @@ public class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Yandere(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Yandere);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Konachan(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Konachan);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Sankaku(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Sankaku);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task E621(params string[] tags)
         => InternalDapiCommand(tags, false, _service.E621);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Rule34(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Rule34);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Danbooru(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Danbooru);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Gelbooru(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Gelbooru);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Derpibooru(params string[] tags)
         => InternalDapiCommand(tags, false, _service.DerpiBooru);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public Task Safebooru(params string[] tags)
         => InternalDapiCommand(tags, false, _service.SafeBooru);
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public async Task Boobs()
     {
         try
@@ -273,8 +316,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
             JToken obj;
             using (var http = _httpFactory.CreateClient())
             {
-                obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}"))[0];
+                obj = JArray.Parse(
+                    await http.GetStringAsync($"http://api.oboobs.ru/boobs/{new NadekoRandom().Next(0, 12000)}"))[0];
             }
 
             await ctx.Channel.SendMessageAsync($"http://media.oboobs.ru/{obj["preview"]}");
@@ -285,8 +328,10 @@ public class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [NadekoCommand, Aliases]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [NadekoCommand]
+    [Aliases]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     public async Task Butts()
     {
         try
@@ -294,8 +339,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
             JToken obj;
             using (var http = _httpFactory.CreateClient())
             {
-                obj = JArray.Parse(await http
-                    .GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}"))[0];
+                obj = JArray.Parse(
+                    await http.GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 6100)}"))[0];
             }
 
             await ctx.Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
@@ -306,7 +351,8 @@ public class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
     public async Task NsfwTagBlacklist([Leftover] string tag = null)
@@ -314,10 +360,7 @@ public class NSFW : NadekoModule<ISearchImagesService>
         if (string.IsNullOrWhiteSpace(tag))
         {
             var blTags = await _service.GetBlacklistedTags(ctx.Guild.Id);
-            await SendConfirmAsync(GetText(strs.blacklisted_tag_list),
-                blTags.Any()
-                    ? string.Join(", ", blTags)
-                    : "-");
+            await SendConfirmAsync(GetText(strs.blacklisted_tag_list), blTags.Any() ? string.Join(", ", blTags) : "-");
         }
         else
         {
@@ -331,9 +374,11 @@ public class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireContext(ContextType.Guild)]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     [Priority(1)]
     public async Task Nhentai(uint id)
     {
@@ -348,9 +393,11 @@ public class NSFW : NadekoModule<ISearchImagesService>
         await SendNhentaiGalleryInternalAsync(g);
     }
 
-    [NadekoCommand, Aliases]
+    [NadekoCommand]
+    [Aliases]
     [RequireContext(ContextType.Guild)]
-    [RequireNsfw(Group = "nsfw_or_dm"), RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    [RequireNsfw(Group = "nsfw_or_dm")]
+    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
     [Priority(0)]
     public async Task Nhentai([Leftover] string query)
     {
@@ -368,42 +415,43 @@ public class NSFW : NadekoModule<ISearchImagesService>
     private async Task SendNhentaiGalleryInternalAsync(Gallery g)
     {
         var count = 0;
-        var tagString = g.Tags
-            .Shuffle()
-            .Select(tag => $"[{tag.Name}]({tag.Url})")
-            .TakeWhile(tag => (count += tag.Length) < 1000)
-            .Join(" ");
+        var tagString = g.Tags.Shuffle()
+                         .Select(tag => $"[{tag.Name}]({tag.Url})")
+                         .TakeWhile(tag => (count += tag.Length) < 1000)
+                         .Join(" ");
 
         var embed = _eb.Create()
-            .WithTitle(g.Title)
-            .WithDescription(g.FullTitle)
-            .WithImageUrl(g.Thumbnail)
-            .WithUrl(g.Url)
-            .AddField(GetText(strs.favorites), g.Likes, true)
-            .AddField(GetText(strs.pages), g.PageCount, true)
-            .AddField(GetText(strs.tags), tagString, true)
-            .WithFooter(g.UploadedAt.ToString("f"))
-            .WithOkColor();
+                       .WithTitle(g.Title)
+                       .WithDescription(g.FullTitle)
+                       .WithImageUrl(g.Thumbnail)
+                       .WithUrl(g.Url)
+                       .AddField(GetText(strs.favorites), g.Likes, true)
+                       .AddField(GetText(strs.pages), g.PageCount, true)
+                       .AddField(GetText(strs.tags), tagString, true)
+                       .WithFooter(g.UploadedAt.ToString("f"))
+                       .WithOkColor();
 
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    private async Task InternalDapiCommand(string[] tags,
+    private async Task InternalDapiCommand(
+        string[] tags,
         bool forceExplicit,
         Func<ulong?, bool, string[], Task<UrlReply>> func)
     {
         var data = await func(ctx.Guild?.Id, forceExplicit, tags);
-            
+
         if (data is null || !string.IsNullOrWhiteSpace(data.Error))
         {
             await ReplyErrorLocalizedAsync(strs.no_results);
             return;
         }
-        await ctx.Channel.EmbedAsync(_eb
-            .Create(ctx)
-            .WithOkColor()
-            .WithImageUrl(data.Url)
-            .WithDescription($"[link]({data.Url})")
-            .WithFooter($"{data.Rating} ({data.Provider}) | {string.Join(" | ", data.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).Take(5))}"));
+
+        await ctx.Channel.EmbedAsync(_eb.Create(ctx)
+                                        .WithOkColor()
+                                        .WithImageUrl(data.Url)
+                                        .WithDescription($"[link]({data.Url})")
+                                        .WithFooter(
+                                            $"{data.Rating} ({data.Provider}) | {string.Join(" | ", data.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).Take(5))}"));
     }
 }

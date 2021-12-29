@@ -5,15 +5,15 @@ namespace NadekoBot.Modules.Gambling.Common.Events;
 
 public class GameStatusEvent : ICurrencyEvent
 {
+    public event Func<ulong, Task> OnEnded;
+    private long PotSize { get; set; }
+    public bool Stopped { get; private set; }
+    public bool PotEmptied { get; private set; }
     private readonly DiscordSocketClient _client;
     private readonly IGuild _guild;
     private IUserMessage _msg;
     private readonly ICurrencyService _cs;
     private readonly long _amount;
-
-    private long PotSize { get; set; }
-    public bool Stopped { get; private set; }
-    public bool PotEmptied { get; private set; } = false;
 
     private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
     private readonly bool _isPotLimited;
@@ -21,21 +21,28 @@ public class GameStatusEvent : ICurrencyEvent
     private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
     private readonly ConcurrentQueue<ulong> _toAward = new();
     private readonly Timer _t;
-    private readonly Timer _timeout = null;
+    private readonly Timer _timeout;
     private readonly EventOptions _opts;
 
     private readonly string _code;
 
-    public event Func<ulong, Task> OnEnded;
-
     private readonly char[] _sneakyGameStatusChars = Enumerable.Range(48, 10)
-        .Concat(Enumerable.Range(65, 26))
-        .Concat(Enumerable.Range(97, 26))
-        .Select(x => (char)x)
-        .ToArray();
+                                                               .Concat(Enumerable.Range(65, 26))
+                                                               .Concat(Enumerable.Range(97, 26))
+                                                               .Select(x => (char)x)
+                                                               .ToArray();
 
-    public GameStatusEvent(DiscordSocketClient client, ICurrencyService cs,SocketGuild g, ITextChannel ch,
-        EventOptions opt, Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embedFunc)
+    private readonly object stopLock = new();
+
+    private readonly object potLock = new();
+
+    public GameStatusEvent(
+        DiscordSocketClient client,
+        ICurrencyService cs,
+        SocketGuild g,
+        ITextChannel ch,
+        EventOptions opt,
+        Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embedFunc)
     {
         _client = client;
         _guild = g;
@@ -51,9 +58,7 @@ public class GameStatusEvent : ICurrencyEvent
 
         _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
-        {
             _timeout = new(EventTimeout, null, TimeSpan.FromHours(_opts.Hours), Timeout.InfiniteTimeSpan);
-        }
     }
 
     private void EventTimeout(object state)
@@ -65,10 +70,7 @@ public class GameStatusEvent : ICurrencyEvent
     {
         var potEmpty = PotEmptied;
         var toAward = new List<ulong>();
-        while (_toAward.TryDequeue(out var x))
-        {
-            toAward.Add(x);
-        }
+        while (_toAward.TryDequeue(out var x)) toAward.Add(x);
 
         if (!toAward.Any())
             return;
@@ -78,15 +80,14 @@ public class GameStatusEvent : ICurrencyEvent
             await _cs.AddBulkAsync(toAward,
                 toAward.Select(x => "GameStatus Event"),
                 toAward.Select(x => _amount),
-                gamble: true);
+                true);
 
             if (_isPotLimited)
-            {
                 await _msg.ModifyAsync(m =>
-                {
-                    m.Embed = GetEmbed(PotSize).Build();
-                }, new() { RetryMode = RetryMode.AlwaysRetry });
-            }
+                    {
+                        m.Embed = GetEmbed(PotSize).Build();
+                    },
+                    new() { RetryMode = RetryMode.AlwaysRetry });
 
             Log.Information("Awarded {0} users {1} currency.{2}",
                 toAward.Count,
@@ -97,7 +98,6 @@ public class GameStatusEvent : ICurrencyEvent
             {
                 var _ = StopEvent();
             }
-
         }
         catch (Exception ex)
         {
@@ -119,13 +119,9 @@ public class GameStatusEvent : ICurrencyEvent
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (msg.Id == _msg.Id)
-        {
-            await StopEvent();
-        }
+        if (msg.Id == _msg.Id) await StopEvent();
     }
 
-    private readonly object stopLock = new();
     public async Task StopEvent()
     {
         await Task.Yield();
@@ -139,7 +135,12 @@ public class GameStatusEvent : ICurrencyEvent
             _client.SetGameAsync(null);
             _t.Change(Timeout.Infinite, Timeout.Infinite);
             _timeout?.Change(Timeout.Infinite, Timeout.Infinite);
-            try { var _ = _msg.DeleteAsync(); } catch { }
+            try
+            {
+                var _ = _msg.DeleteAsync();
+            }
+            catch { }
+
             var os = OnEnded(_guild.Id);
         }
     }
@@ -152,9 +153,7 @@ public class GameStatusEvent : ICurrencyEvent
                 || gu.IsBot // no bots
                 || msg.Content != _code // code has to be the same
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5) // no recently created accounts
-            {
                 return;
-            }
             // there has to be money left in the pot
             // and the user wasn't rewarded
             if (_awardedUsers.Add(msg.Author.Id) && TryTakeFromPot())
@@ -166,21 +165,16 @@ public class GameStatusEvent : ICurrencyEvent
 
             try
             {
-                await msg.DeleteAsync(new()
-                {
-                    RetryMode = RetryMode.AlwaysFail
-                });
+                await msg.DeleteAsync(new() { RetryMode = RetryMode.AlwaysFail });
             }
             catch { }
         });
         return Task.CompletedTask;
     }
 
-    private readonly object potLock = new();
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
-        {
             lock (potLock)
             {
                 if (PotSize < _amount)
@@ -189,7 +183,7 @@ public class GameStatusEvent : ICurrencyEvent
                 PotSize -= _amount;
                 return true;
             }
-        }
+
         return true;
     }
 }

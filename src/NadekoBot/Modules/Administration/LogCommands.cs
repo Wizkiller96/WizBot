@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using NadekoBot.Common.TypeReaders.Models;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -11,7 +11,8 @@ public partial class Administration
     [NoPublicBot]
     public class LogCommands : NadekoSubmodule<ILogCommandService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -24,7 +25,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.log_disabled);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
@@ -38,63 +40,74 @@ public partial class Administration
                        ?? new List<IgnoredLogItem>();
 
             var eb = _eb.Create(ctx)
-                .WithOkColor()
-                .AddField(GetText(strs.log_ignored_channels),
-                    chs.Count == 0 ? "-" : string.Join('\n', chs.Select(x => $"{x.LogItemId} | <#{x.LogItemId}>")))
-                .AddField(GetText(strs.log_ignored_users),
-                    usrs.Count == 0 ? "-" : string.Join('\n', usrs.Select(x => $"{x.LogItemId} | <@{x.LogItemId}>")));
+                        .WithOkColor()
+                        .AddField(GetText(strs.log_ignored_channels),
+                            chs.Count == 0
+                                ? "-"
+                                : string.Join('\n', chs.Select(x => $"{x.LogItemId} | <#{x.LogItemId}>")))
+                        .AddField(GetText(strs.log_ignored_users),
+                            usrs.Count == 0
+                                ? "-"
+                                : string.Join('\n', usrs.Select(x => $"{x.LogItemId} | <@{x.LogItemId}>")));
 
             await ctx.Channel.EmbedAsync(eb);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task LogIgnore([Leftover]ITextChannel target)
+        public async Task LogIgnore([Leftover] ITextChannel target)
         {
             target ??= (ITextChannel)ctx.Channel;
 
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.Channel);
 
             if (!removed)
-                await ReplyConfirmLocalizedAsync(strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await ReplyConfirmLocalizedAsync(
+                    strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
             else
-                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await ReplyConfirmLocalizedAsync(
+                    strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task LogIgnore([Leftover]IUser target)
+        public async Task LogIgnore([Leftover] IUser target)
         {
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
 
             if (!removed)
-                await ReplyConfirmLocalizedAsync(strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await ReplyConfirmLocalizedAsync(
+                    strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
             else
-                await ReplyConfirmLocalizedAsync(strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await ReplyConfirmLocalizedAsync(
+                    strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
         public async Task LogEvents()
         {
             var logSetting = _service.GetGuildLogSettings(ctx.Guild.Id);
-            var str = string.Join("\n", Enum.GetNames(typeof(LogType))
-                .Select(x =>
-                {
-                    var val = logSetting is null ? null : GetLogProperty(logSetting, Enum.Parse<LogType>(x));
-                    if (val != null)
-                        return $"{Format.Bold(x)} <#{val}>";
-                    return Format.Bold(x);
-                }));
+            var str = string.Join("\n",
+                Enum.GetNames(typeof(LogType))
+                    .Select(x =>
+                    {
+                        var val = logSetting is null ? null : GetLogProperty(logSetting, Enum.Parse<LogType>(x));
+                        if (val != null)
+                            return $"{Format.Bold(x)} <#{val}>";
+                        return Format.Bold(x);
+                    }));
 
-            await SendConfirmAsync(Format.Bold(GetText(strs.log_events)) + "\n" +
-                                   str);
+            await SendConfirmAsync(Format.Bold(GetText(strs.log_events)) + "\n" + str);
         }
 
         private static ulong? GetLogProperty(LogSetting l, LogType type)
@@ -136,7 +149,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]

@@ -10,10 +10,13 @@ public class Blackjack
         Ended
     }
 
-    private Deck Deck { get; set; } = new QuadDeck();
+    public event Func<Blackjack, Task> StateUpdated;
+    public event Func<Blackjack, Task> GameEnded;
+
+    private Deck Deck { get; } = new QuadDeck();
     public Dealer Dealer { get; set; }
 
-        
+
     public List<User> Players { get; set; } = new();
     public GameState State { get; set; } = GameState.Starting;
     public User CurrentUser { get; private set; }
@@ -21,9 +24,6 @@ public class Blackjack
     private TaskCompletionSource<bool> _currentUserMove;
     private readonly ICurrencyService _cs;
     private readonly DbService _db;
-
-    public event Func<Blackjack, Task> StateUpdated;
-    public event Func<Blackjack, Task> GameEnded;
 
     private readonly SemaphoreSlim locker = new(1, 1);
 
@@ -54,6 +54,7 @@ public class Blackjack
             {
                 locker.Release();
             }
+
             await PrintState();
             //if no users joined the game, end it
             if (!Players.Any())
@@ -62,6 +63,7 @@ public class Blackjack
                 var end = GameEnded?.Invoke(this);
                 return;
             }
+
             //give 1 card to the dealer and 2 to each player
             Dealer.Cards.Add(Deck.Draw());
             foreach (var usr in Players)
@@ -72,15 +74,15 @@ public class Blackjack
                 if (usr.GetHandValue() == 21)
                     usr.State = User.UserState.Blackjack;
             }
+
             //go through all users and ask them what they want to do
             foreach (var usr in Players.Where(x => !x.Done))
-            {
                 while (!usr.Done)
                 {
                     Log.Information($"Waiting for {usr.DiscordUser}'s move");
                     await PromptUserMove(usr);
                 }
-            }
+
             await PrintState();
             State = GameState.Ended;
             await Task.Delay(2500);
@@ -106,10 +108,7 @@ public class Blackjack
         // either wait for the user to make an action and
         // if he doesn't - stand
         var finished = await Task.WhenAny(pause, _currentUserMove.Task);
-        if (finished == pause)
-        {
-            await Stand(usr);
-        }
+        if (finished == pause) await Stand(usr);
         CurrentUser = null;
         _currentUserMove = null;
     }
@@ -125,10 +124,7 @@ public class Blackjack
             if (Players.Count >= 5)
                 return false;
 
-            if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true))
-            {
-                return false;
-            }
+            if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true)) return false;
 
             Players.Add(new(user, bet));
             var _ = PrintState();
@@ -146,7 +142,7 @@ public class Blackjack
 
         if (cu != null && cu.DiscordUser == u)
             return await Stand(cu);
-            
+
         return false;
     }
 
@@ -175,7 +171,8 @@ public class Blackjack
     {
         var hw = Dealer.GetHandValue();
         while (hw < 17
-               || (hw == 17 && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10))// hit on soft 17
+               || (hw == 17
+                   && Dealer.Cards.Count(x => x.Number == 1) > (Dealer.GetRawHandValue() - 17) / 10)) // hit on soft 17
         {
             /* Dealer has
                  A 6
@@ -201,37 +198,23 @@ public class Blackjack
         }
 
         if (hw > 21)
-        {
             foreach (var usr in Players)
-            {
                 if (usr.State is User.UserState.Stand or User.UserState.Blackjack)
                     usr.State = User.UserState.Won;
                 else
                     usr.State = User.UserState.Lost;
-            }
-        }
         else
-        {
             foreach (var usr in Players)
-            {
                 if (usr.State == User.UserState.Blackjack)
                     usr.State = User.UserState.Won;
                 else if (usr.State == User.UserState.Stand)
-                    usr.State = hw < usr.GetHandValue()
-                        ? User.UserState.Won
-                        : User.UserState.Lost;
+                    usr.State = hw < usr.GetHandValue() ? User.UserState.Won : User.UserState.Lost;
                 else
                     usr.State = User.UserState.Lost;
-            }
-        }
 
         foreach (var usr in Players)
-        {
             if (usr.State is User.UserState.Won or User.UserState.Blackjack)
-            {
-                await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, gamble: true);
-            }
-        }
+                await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, true);
     }
 
     public async Task<bool> Double(IUser u)
@@ -240,7 +223,7 @@ public class Blackjack
 
         if (cu != null && cu.DiscordUser == u)
             return await Double(cu);
-            
+
         return false;
     }
 
@@ -263,20 +246,14 @@ public class Blackjack
             u.Cards.Add(Deck.Draw());
 
             if (u.GetHandValue() == 21)
-            {
                 //blackjack
                 u.State = User.UserState.Blackjack;
-            }
             else if (u.GetHandValue() > 21)
-            {
                 // user busted
                 u.State = User.UserState.Bust;
-            }
             else
-            {
                 //with double you just get one card, and then you're done
                 u.State = User.UserState.Stand;
-            }
             _currentUserMove.TrySetResult(true);
 
             return true;
@@ -311,19 +288,12 @@ public class Blackjack
             u.Cards.Add(Deck.Draw());
 
             if (u.GetHandValue() == 21)
-            {
                 //blackjack
                 u.State = User.UserState.Blackjack;
-            }
             else if (u.GetHandValue() > 21)
-            {
                 // user busted
                 u.State = User.UserState.Bust;
-            }
-            else
-            {
-                //you can hit or stand again
-            }
+
             _currentUserMove.TrySetResult(true);
 
             return true;

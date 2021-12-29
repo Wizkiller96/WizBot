@@ -8,7 +8,8 @@ public partial class Utility
     [Group]
     public class InviteCommands : NadekoSubmodule<InviteService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.CreateInstantInvite)]
         [UserPerm(ChannelPerm.CreateInstantInvite)]
@@ -20,16 +21,17 @@ public partial class Utility
                 return;
 
             var ch = (ITextChannel)ctx.Channel;
-            var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, isTemporary: opts.Temporary, isUnique: opts.Unique);
+            var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, opts.Temporary, opts.Unique);
 
             await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}");
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
-        public async Task InviteList(int page = 1, [Leftover]ITextChannel ch = null)
+        public async Task InviteList(int page = 1, [Leftover] ITextChannel ch = null)
         {
             if (--page < 0)
                 return;
@@ -37,44 +39,40 @@ public partial class Utility
 
             var invites = await channel.GetInvitesAsync();
 
-            await ctx.SendPaginatedConfirmAsync(page, cur =>
-            {
-                var i = 1;
-                var invs = invites
-                    .Skip(cur * 9)
-                    .Take(9)
-                    .ToList();
-                    
-                if (!invs.Any())
+            await ctx.SendPaginatedConfirmAsync(page,
+                cur =>
                 {
-                    return _eb.Create()
-                        .WithErrorColor()
-                        .WithDescription(GetText(strs.no_invites));
-                }
+                    var i = 1;
+                    var invs = invites.Skip(cur * 9).Take(9).ToList();
 
-                var embed = _eb.Create().WithOkColor();
-                foreach (var inv in invites)
-                {
-                    var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
-                        ? "∞"
-                        : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow)
-                        .ToString(@"d\.hh\:mm\:ss");
-                    var creator = inv.Inviter.ToString().TrimTo(25);
-                    var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
-                        
-                    var desc = $@"`{GetText(strs.inv_uses)}` **{usesString}**
+                    if (!invs.Any())
+                        return _eb.Create().WithErrorColor().WithDescription(GetText(strs.no_invites));
+
+                    var embed = _eb.Create().WithOkColor();
+                    foreach (var inv in invites)
+                    {
+                        var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
+                            ? "∞"
+                            : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow).ToString(
+                                @"d\.hh\:mm\:ss");
+                        var creator = inv.Inviter.ToString().TrimTo(25);
+                        var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
+
+                        var desc = $@"`{GetText(strs.inv_uses)}` **{usesString}**
 `{GetText(strs.inv_expire)}` **{expiryString}**
 
 {inv.Url} ";
-                    embed.AddField($"#{i++} {creator}", desc);
-                }
+                        embed.AddField($"#{i++} {creator}", desc);
+                    }
 
-                return embed;
-                    
-            }, invites.Count, 9);
+                    return embed;
+                },
+                invites.Count,
+                9);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
@@ -82,7 +80,7 @@ public partial class Utility
         {
             if (--index < 0)
                 return;
-                
+
             var ch = (ITextChannel)ctx.Channel;
 
             var invites = await ch.GetInvitesAsync();

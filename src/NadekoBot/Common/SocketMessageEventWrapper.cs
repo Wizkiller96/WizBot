@@ -1,12 +1,16 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Common;
 
 public sealed class ReactionEventWrapper : IDisposable
 {
-    public IUserMessage Message { get; }
     public event Action<SocketReaction> OnReactionAdded = delegate { };
     public event Action<SocketReaction> OnReactionRemoved = delegate { };
     public event Action OnReactionsCleared = delegate { };
+
+    public IUserMessage Message { get; }
+    private readonly DiscordSocketClient _client;
+
+    private bool disposing;
 
     public ReactionEventWrapper(DiscordSocketClient client, IUserMessage msg)
     {
@@ -18,18 +22,25 @@ public sealed class ReactionEventWrapper : IDisposable
         _client.ReactionsCleared += Discord_ReactionsCleared;
     }
 
+    public void Dispose()
+    {
+        if (disposing)
+            return;
+        disposing = true;
+        UnsubAll();
+    }
+
     private Task Discord_ReactionsCleared(Cacheable<IUserMessage, ulong> msg, Cacheable<IMessageChannel, ulong> channel)
     {
         Task.Run(() =>
+        {
+            try
             {
-                try
-                {
-                    if (msg.Id == Message.Id)
-                        OnReactionsCleared?.Invoke();
-                }
-                catch { }
+                if (msg.Id == Message.Id)
+                    OnReactionsCleared?.Invoke();
             }
-        );
+            catch { }
+        });
 
         return Task.CompletedTask;
     }
@@ -40,15 +51,14 @@ public sealed class ReactionEventWrapper : IDisposable
         SocketReaction reaction)
     {
         Task.Run(() =>
+        {
+            try
             {
-                try
-                {
-                    if (msg.Id == Message.Id)
-                        OnReactionRemoved?.Invoke(reaction);
-                }
-                catch { }
+                if (msg.Id == Message.Id)
+                    OnReactionRemoved?.Invoke(reaction);
             }
-        );
+            catch { }
+        });
 
         return Task.CompletedTask;
     }
@@ -59,17 +69,16 @@ public sealed class ReactionEventWrapper : IDisposable
         SocketReaction reaction)
     {
         Task.Run(() =>
+        {
+            try
             {
-                try
-                {
-                    if (msg.Id == Message.Id)
-                        OnReactionAdded?.Invoke(reaction);
-                }
-                catch
-                {
-                }
+                if (msg.Id == Message.Id)
+                    OnReactionAdded?.Invoke(reaction);
             }
-        );
+            catch
+            {
+            }
+        });
 
         return Task.CompletedTask;
     }
@@ -82,16 +91,5 @@ public sealed class ReactionEventWrapper : IDisposable
         OnReactionAdded = null;
         OnReactionRemoved = null;
         OnReactionsCleared = null;
-    }
-
-    private bool disposing = false;
-    private readonly DiscordSocketClient _client;
-
-    public void Dispose()
-    {
-        if (disposing)
-            return;
-        disposing = true;
-        UnsubAll();
     }
 }

@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -13,13 +13,13 @@ public sealed class PlayingRotateService : INService
     private readonly DbService _db;
     private readonly Bot _bot;
 
-    private class TimerState
-    {
-        public int Index { get; set; }
-    }
-
-    public PlayingRotateService(DiscordSocketClient client, DbService db, Bot bot,
-        BotConfigService bss, IEnumerable<IPlaceholderProvider> phProviders, SelfService selfService)
+    public PlayingRotateService(
+        DiscordSocketClient client,
+        DbService db,
+        Bot bot,
+        BotConfigService bss,
+        IEnumerable<IPlaceholderProvider> phProviders,
+        SelfService selfService)
     {
         _db = db;
         _bot = bot;
@@ -28,10 +28,7 @@ public sealed class PlayingRotateService : INService
 
         if (client.ShardId == 0)
         {
-            _rep = new ReplacementBuilder()
-                .WithClient(client)
-                .WithProviders(phProviders)
-                .Build();
+            _rep = new ReplacementBuilder().WithClient(client).WithProviders(phProviders).Build();
 
             _t = new(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
@@ -41,17 +38,14 @@ public sealed class PlayingRotateService : INService
     {
         try
         {
-            var state = (TimerState) objState;
+            var state = (TimerState)objState;
 
             if (!_bss.Data.RotateStatuses) return;
 
             IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
             await using (var uow = _db.GetDbContext())
             {
-                rotatingStatuses = uow.RotatingStatus
-                    .AsNoTracking()
-                    .OrderBy(x => x.Id)
-                    .ToList();
+                rotatingStatuses = uow.RotatingStatus.AsNoTracking().OrderBy(x => x.Id).ToList();
             }
 
             if (rotatingStatuses.Count == 0)
@@ -76,11 +70,7 @@ public sealed class PlayingRotateService : INService
             throw new ArgumentOutOfRangeException(nameof(index));
 
         await using var uow = _db.GetDbContext();
-        var toRemove = await uow.RotatingStatus
-            .AsQueryable()
-            .AsNoTracking()
-            .Skip(index)
-            .FirstOrDefaultAsync();
+        var toRemove = await uow.RotatingStatus.AsQueryable().AsNoTracking().Skip(index).FirstOrDefaultAsync();
 
         if (toRemove is null)
             return null;
@@ -93,7 +83,7 @@ public sealed class PlayingRotateService : INService
     public async Task AddPlaying(ActivityType t, string status)
     {
         await using var uow = _db.GetDbContext();
-        var toAdd = new RotatingPlayingStatus {Status = status, Type = t};
+        var toAdd = new RotatingPlayingStatus { Status = status, Type = t };
         uow.Add(toAdd);
         await uow.SaveChangesAsync();
     }
@@ -109,5 +99,10 @@ public sealed class PlayingRotateService : INService
     {
         using var uow = _db.GetDbContext();
         return uow.RotatingStatus.AsNoTracking().ToList();
+    }
+
+    private class TimerState
+    {
+        public int Index { get; set; }
     }
 }

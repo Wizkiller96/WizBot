@@ -1,13 +1,18 @@
 ﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
+using NadekoBot.Modules.Games.Common.ChatterBot;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Modules.Games.Common.ChatterBot;
 
 namespace NadekoBot.Modules.Games.Services;
 
 public class ChatterBotService : IEarlyBehavior
 {
+    public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
+
+    public int Priority
+        => 1;
+
     private readonly DiscordSocketClient _client;
     private readonly PermissionService _perms;
     private readonly CommandHandler _cmd;
@@ -16,13 +21,15 @@ public class ChatterBotService : IEarlyBehavior
     private readonly IEmbedBuilderService _eb;
     private readonly IHttpClientFactory _httpFactory;
 
-    public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
-
-    public int Priority => 1;
-
-    public ChatterBotService(DiscordSocketClient client, PermissionService perms,
-        Bot bot, CommandHandler cmd, IBotStrings strings, IHttpClientFactory factory,
-        IBotCredentials creds, IEmbedBuilderService eb)
+    public ChatterBotService(
+        DiscordSocketClient client,
+        PermissionService perms,
+        Bot bot,
+        CommandHandler cmd,
+        IBotStrings strings,
+        IHttpClientFactory factory,
+        IBotCredentials creds,
+        IEmbedBuilderService eb)
     {
         _client = client;
         _perms = perms;
@@ -32,18 +39,16 @@ public class ChatterBotService : IEarlyBehavior
         _eb = eb;
         _httpFactory = factory;
 
-        ChatterBotGuilds = new(
-            bot.AllGuildConfigs
-                .Where(gc => gc.CleverbotEnabled)
-                .ToDictionary(gc => gc.GuildId, gc => new Lazy<IChatterBotSession>(() => CreateSession(), true)));
+        ChatterBotGuilds = new(bot.AllGuildConfigs.Where(gc => gc.CleverbotEnabled)
+                                  .ToDictionary(gc => gc.GuildId,
+                                      gc => new Lazy<IChatterBotSession>(() => CreateSession(), true)));
     }
 
     public IChatterBotSession CreateSession()
     {
         if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
             return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
-        else
-            return new CleverbotIOSession("GAh3wUfzDCpDpdpT", "RStKgqn7tcO9blbrv4KbXM8NDlb7H37C", _httpFactory);
+        return new CleverbotIOSession("GAh3wUfzDCpDpdpT", "RStKgqn7tcO9blbrv4KbXM8NDlb7H37C", _httpFactory);
     }
 
     public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
@@ -64,17 +69,11 @@ public class ChatterBotService : IEarlyBehavior
         var nickMention = $"<@!{nadekoId}> ";
         string message;
         if (msg.Content.StartsWith(normalMention, StringComparison.InvariantCulture))
-        {
             message = msg.Content[normalMention.Length..].Trim();
-        }
         else if (msg.Content.StartsWith(nickMention, StringComparison.InvariantCulture))
-        {
             message = msg.Content[nickMention.Length..].Trim();
-        }
         else
-        {
             return null;
-        }
 
         return message;
     }
@@ -92,6 +91,7 @@ public class ChatterBotService : IEarlyBehavior
         {
             await channel.SendConfirmAsync(_eb, response.SanitizeMentions(true)); // try twice :\
         }
+
         return true;
     }
 
@@ -106,19 +106,19 @@ public class ChatterBotService : IEarlyBehavior
                 return false;
 
             var pc = _perms.GetCacheFor(guild.Id);
-            if (!pc.Permissions.CheckPermissions(usrMsg,
-                    "cleverbot",
-                    "Games".ToLowerInvariant(),
-                    out var index))
+            if (!pc.Permissions.CheckPermissions(usrMsg, "cleverbot", "Games".ToLowerInvariant(), out var index))
             {
                 if (pc.Verbose)
                 {
                     var returnMsg = _strings.GetText(strs.perm_prevent(index + 1,
                         Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(sg), sg))));
-                        
-                    try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg); } catch { }
+
+                    try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg); }
+                    catch { }
+
                     Log.Information(returnMsg);
                 }
+
                 return true;
             }
 
@@ -135,8 +135,9 @@ Message: {usrMsg.Content}");
         }
         catch (Exception ex)
         {
-            Log.Warning(ex,"Error in cleverbot");
+            Log.Warning(ex, "Error in cleverbot");
         }
+
         return false;
     }
 }

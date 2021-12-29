@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.TypeInspectors;
@@ -17,15 +17,7 @@ public class CommentGatheringTypeInspector : TypeInspectorSkeleton
 
     private sealed class CommentsPropertyDescriptor : IPropertyDescriptor
     {
-        private readonly IPropertyDescriptor baseDescriptor;
-
-        public CommentsPropertyDescriptor(IPropertyDescriptor baseDescriptor)
-        {
-            this.baseDescriptor = baseDescriptor;
-            Name = baseDescriptor.Name;
-        }
-
-        public string Name { get; set; }
+        public string Name { get; }
 
         public Type Type
             => baseDescriptor.Type;
@@ -46,6 +38,14 @@ public class CommentGatheringTypeInspector : TypeInspectorSkeleton
 
         public bool CanWrite
             => baseDescriptor.CanWrite;
+
+        private readonly IPropertyDescriptor baseDescriptor;
+
+        public CommentsPropertyDescriptor(IPropertyDescriptor baseDescriptor)
+        {
+            this.baseDescriptor = baseDescriptor;
+            Name = baseDescriptor.Name;
+        }
 
         public void Write(object target, object value)
             => baseDescriptor.Write(target, value);

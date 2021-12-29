@@ -1,7 +1,6 @@
 #nullable disable
-using NadekoBot.Common.TypeReaders;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Modules.Permissions.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions;
 
@@ -19,107 +18,113 @@ public partial class Permissions
         {
             if (page < 0)
                 throw new ArgumentOutOfRangeException(nameof(page));
-                
-            var list = _service.GetBlacklist();
-            var items = await list
-                .Where(x => x.Type == type)
-                .Select(async i =>
-                {
-                    try
-                    {
-                        return i.Type switch
-                        {
-                            BlacklistType.Channel => Format.Code(i.ItemId.ToString())
-                                                     + " " + (_client.GetChannel(i.ItemId)?.ToString() ?? ""),
-                            BlacklistType.User => Format.Code(i.ItemId.ToString())
-                                                  + " " +
-                                                  ((await _client.Rest.GetUserAsync(i.ItemId))?.ToString() ?? ""),
-                            BlacklistType.Server => Format.Code(i.ItemId.ToString())
-                                                    + " " + (_client.GetGuild(i.ItemId)?.ToString() ?? ""),
-                            _ => Format.Code(i.ItemId.ToString())
-                        };
-                    }
-                    catch
-                    {
-                        Log.Warning("Can't get {BlacklistType} [{BlacklistItemId}]", i.Type, i.ItemId);
-                        return Format.Code(i.ItemId.ToString());
-                    }
-                })
-                .WhenAll();
 
-            await ctx.SendPaginatedConfirmAsync(page, (int curPage) =>
-            {
-                var pageItems = items
-                    .Skip(10 * curPage)
-                    .Take(10)
-                    .ToList();
-                    
-                if (pageItems.Count == 0)
+            var list = _service.GetBlacklist();
+            var items = await list.Where(x => x.Type == type)
+                                  .Select(async i =>
+                                  {
+                                      try
+                                      {
+                                          return i.Type switch
+                                          {
+                                              BlacklistType.Channel => Format.Code(i.ItemId.ToString())
+                                                                       + " "
+                                                                       + (_client.GetChannel(i.ItemId)?.ToString()
+                                                                          ?? ""),
+                                              BlacklistType.User => Format.Code(i.ItemId.ToString())
+                                                                    + " "
+                                                                    + ((await _client.Rest.GetUserAsync(i.ItemId))
+                                                                        ?.ToString()
+                                                                        ?? ""),
+                                              BlacklistType.Server => Format.Code(i.ItemId.ToString())
+                                                                      + " "
+                                                                      + (_client.GetGuild(i.ItemId)?.ToString() ?? ""),
+                                              _ => Format.Code(i.ItemId.ToString())
+                                          };
+                                      }
+                                      catch
+                                      {
+                                          Log.Warning("Can't get {BlacklistType} [{BlacklistItemId}]",
+                                              i.Type,
+                                              i.ItemId);
+                                          return Format.Code(i.ItemId.ToString());
+                                      }
+                                  })
+                                  .WhenAll();
+
+            await ctx.SendPaginatedConfirmAsync(page,
+                curPage =>
                 {
-                    return _eb.Create()
-                        .WithOkColor()
-                        .WithTitle(title)
-                        .WithDescription(GetText(strs.empty_page));
-                }
-                    
-                return _eb.Create()
-                    .WithTitle(title)
-                    .WithDescription(pageItems.Join('\n'))
-                    .WithOkColor();
-            }, items.Length, 10);
+                    var pageItems = items.Skip(10 * curPage).Take(10).ToList();
+
+                    if (pageItems.Count == 0)
+                        return _eb.Create().WithOkColor().WithTitle(title).WithDescription(GetText(strs.empty_page));
+
+                    return _eb.Create().WithTitle(title).WithDescription(pageItems.Join('\n')).WithOkColor();
+                },
+                items.Length,
+                10);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task UserBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
-                
+
             return ListBlacklistInternal(GetText(strs.blacklisted_users), BlacklistType.User, page);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task ChannelBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
-                
+
             return ListBlacklistInternal(GetText(strs.blacklisted_channels), BlacklistType.Channel, page);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task ServerBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
-                
+
             return ListBlacklistInternal(GetText(strs.blacklisted_servers), BlacklistType.Server, page);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task UserBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.User);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task UserBlacklist(AddRemove action, IUser usr)
             => Blacklist(action, usr.Id, BlacklistType.User);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task ChannelBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Channel);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task ServerBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Server);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public Task ServerBlacklist(AddRemove action, IGuild guild)
             => Blacklist(action, guild.Id, BlacklistType.Server);
@@ -127,13 +132,9 @@ public partial class Permissions
         private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
         {
             if (action == AddRemove.Add)
-            {
                 _service.Blacklist(type, id);
-            }
             else
-            {
                 _service.UnBlacklist(type, id);
-            }
 
             if (action == AddRemove.Add)
                 await ReplyConfirmLocalizedAsync(strs.blacklisted(Format.Code(type.ToString()),

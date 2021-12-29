@@ -1,38 +1,40 @@
 ﻿#nullable disable
-using System.Threading.Channels;
-using NadekoBot.Modules.Administration.Common;
-using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
+using NadekoBot.Modules.Administration.Common;
+using NadekoBot.Services.Database.Models;
+using System.Threading.Channels;
 
 namespace NadekoBot.Modules.Administration.Services;
 
 public class ProtectionService : INService
 {
+    public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered = delegate
+    {
+        return Task.CompletedTask;
+    };
+
     private readonly ConcurrentDictionary<ulong, AntiRaidStats> _antiRaidGuilds = new();
 
     private readonly ConcurrentDictionary<ulong, AntiSpamStats> _antiSpamGuilds = new();
 
     private readonly ConcurrentDictionary<ulong, AntiAltStats> _antiAltGuilds = new();
-        
-    public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered
-        = delegate { return Task.CompletedTask; };
 
     private readonly DiscordSocketClient _client;
     private readonly MuteService _mute;
     private readonly DbService _db;
     private readonly UserPunishService _punishService;
-        
-    private readonly Channel<PunishQueueItem> PunishUserQueue =
-        System.Threading.Channels.Channel.CreateUnbounded<PunishQueueItem>(new()
-        {
-            SingleReader = true,
-            SingleWriter = false
-        });
 
-    public ProtectionService(DiscordSocketClient client, Bot bot,
-        MuteService mute, DbService db, UserPunishService punishService)
-    { 
+    private readonly Channel<PunishQueueItem> PunishUserQueue =
+        Channel.CreateUnbounded<PunishQueueItem>(new() { SingleReader = true, SingleWriter = false });
+
+    public ProtectionService(
+        DiscordSocketClient client,
+        Bot bot,
+        MuteService mute,
+        DbService db,
+        UserPunishService punishService)
+    {
         _client = client;
         _mute = mute;
         _db = db;
@@ -42,18 +44,15 @@ public class ProtectionService : INService
         using (var uow = db.GetDbContext())
         {
             var configs = uow.Set<GuildConfig>()
-                .AsQueryable()
-                .Include(x => x.AntiRaidSetting)
-                .Include(x => x.AntiSpamSetting)
-                .ThenInclude(x => x.IgnoredChannels)
-                .Include(x => x.AntiAltSetting)
-                .Where(x => ids.Contains(x.GuildId))
-                .ToList();
+                             .AsQueryable()
+                             .Include(x => x.AntiRaidSetting)
+                             .Include(x => x.AntiSpamSetting)
+                             .ThenInclude(x => x.IgnoredChannels)
+                             .Include(x => x.AntiAltSetting)
+                             .Where(x => ids.Contains(x.GuildId))
+                             .ToList();
 
-            foreach (var gc in configs)
-            {
-                Initialize(gc);
-            }
+            foreach (var gc in configs) Initialize(gc);
         }
 
         _client.MessageReceived += HandleAntiSpam;
@@ -61,7 +60,7 @@ public class ProtectionService : INService
 
         bot.JoinedGuild += _bot_JoinedGuild;
         _client.LeftGuild += _client_LeftGuild;
-            
+
         _ = Task.Run(RunQueue);
     }
 
@@ -75,8 +74,13 @@ public class ProtectionService : INService
             var gu = item.User;
             try
             {
-                await _punishService.ApplyPunishment(gu.Guild, gu, _client.CurrentUser,
-                    item.Action, muteTime, item.RoleId, $"{item.Type} Protection");
+                await _punishService.ApplyPunishment(gu.Guild,
+                    gu,
+                    _client.CurrentUser,
+                    item.Action,
+                    muteTime,
+                    item.RoleId,
+                    $"{item.Type} Protection");
             }
             catch (Exception ex)
             {
@@ -104,11 +108,10 @@ public class ProtectionService : INService
     {
         using var uow = _db.GetDbContext();
         var gcWithData = uow.GuildConfigsForId(gc.GuildId,
-            set => set
-                .Include(x => x.AntiRaidSetting)
-                .Include(x => x.AntiAltSetting)
-                .Include(x => x.AntiSpamSetting)
-                .ThenInclude(x => x.IgnoredChannels));
+            set => set.Include(x => x.AntiRaidSetting)
+                      .Include(x => x.AntiAltSetting)
+                      .Include(x => x.AntiSpamSetting)
+                      .ThenInclude(x => x.IgnoredChannels));
 
         Initialize(gcWithData);
         return Task.CompletedTask;
@@ -121,7 +124,7 @@ public class ProtectionService : INService
 
         if (raid != null)
         {
-            var raidStats = new AntiRaidStats() { AntiRaidSettings = raid };
+            var raidStats = new AntiRaidStats { AntiRaidSettings = raid };
             _antiRaidGuilds[gc.GuildId] = raidStats;
         }
 
@@ -137,41 +140,38 @@ public class ProtectionService : INService
     {
         if (user.IsBot)
             return Task.CompletedTask;
-            
+
         _antiRaidGuilds.TryGetValue(user.Guild.Id, out var maybeStats);
         _antiAltGuilds.TryGetValue(user.Guild.Id, out var maybeAlts);
-            
+
         if (maybeStats is null && maybeAlts is null)
             return Task.CompletedTask;
 
         _ = Task.Run(async () =>
         {
             if (maybeAlts is { } alts)
-            {
                 if (user.CreatedAt != default)
                 {
                     var diff = DateTime.UtcNow - user.CreatedAt.UtcDateTime;
                     if (diff < alts.MinAge)
                     {
                         alts.Increment();
-                            
-                        await PunishUsers(
-                            alts.Action,
+
+                        await PunishUsers(alts.Action,
                             ProtectionType.Alting,
-                            alts.ActionDurationMinutes, 
+                            alts.ActionDurationMinutes,
                             alts.RoleId,
                             user);
-                            
+
                         return;
                     }
                 }
-            }
-                
+
             try
             {
                 if (maybeStats is not { } stats || !stats.RaidUsers.Add(user))
                     return;
-                    
+
                 ++stats.UsersCount;
 
                 if (stats.UsersCount >= stats.AntiRaidSettings.UserThreshold)
@@ -180,14 +180,13 @@ public class ProtectionService : INService
                     stats.RaidUsers.Clear();
                     var settings = stats.AntiRaidSettings;
 
-                    await PunishUsers(settings.Action, ProtectionType.Raiding,
-                        settings.PunishDuration, null,  users);
+                    await PunishUsers(settings.Action, ProtectionType.Raiding, settings.PunishDuration, null, users);
                 }
+
                 await Task.Delay(1000 * stats.AntiRaidSettings.Seconds);
 
                 stats.RaidUsers.TryRemove(user);
                 --stats.UsersCount;
-
             }
             catch
             {
@@ -208,29 +207,29 @@ public class ProtectionService : INService
         {
             try
             {
-                if (!_antiSpamGuilds.TryGetValue(channel.Guild.Id, out var spamSettings) ||
-                    spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new()
-                    {
-                        ChannelId = channel.Id
-                    }))
+                if (!_antiSpamGuilds.TryGetValue(channel.Guild.Id, out var spamSettings)
+                    || spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new() { ChannelId = channel.Id }))
                     return;
 
-                var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id, id => new(msg),
+                var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id,
+                    id => new(msg),
                     (id, old) =>
                     {
-                        old.ApplyNextMessage(msg); return old;
+                        old.ApplyNextMessage(msg);
+                        return old;
                     });
 
                 if (stats.Count >= spamSettings.AntiSpamSettings.MessageThreshold)
-                {
                     if (spamSettings.UserStats.TryRemove(msg.Author.Id, out stats))
                     {
                         stats.Dispose();
                         var settings = spamSettings.AntiSpamSettings;
-                        await PunishUsers(settings.Action, ProtectionType.Spamming, settings.MuteTime,
-                                settings.RoleId, (IGuildUser)msg.Author);
+                        await PunishUsers(settings.Action,
+                            ProtectionType.Spamming,
+                            settings.MuteTime,
+                            settings.RoleId,
+                            (IGuildUser)msg.Author);
                     }
-                }
             }
             catch
             {
@@ -240,18 +239,20 @@ public class ProtectionService : INService
         return Task.CompletedTask;
     }
 
-    private async Task PunishUsers(PunishmentAction action, ProtectionType pt, int muteTime, ulong? roleId,
+    private async Task PunishUsers(
+        PunishmentAction action,
+        ProtectionType pt,
+        int muteTime,
+        ulong? roleId,
         params IGuildUser[] gus)
     {
-        Log.Information(
-            "[{PunishType}] - Punishing [{Count}] users with [{PunishAction}] in {GuildName} guild",
+        Log.Information("[{PunishType}] - Punishing [{Count}] users with [{PunishAction}] in {GuildName} guild",
             pt,
             gus.Length,
             action,
             gus[0].Guild.Name);
-            
+
         foreach (var gu in gus)
-        {
             await PunishUserQueue.Writer.WriteAsync(new()
             {
                 Action = action,
@@ -260,24 +261,27 @@ public class ProtectionService : INService
                 MuteTime = muteTime,
                 RoleId = roleId
             });
-        }
 
         _ = OnAntiProtectionTriggered(action, pt, gus);
     }
 
-    public async Task<AntiRaidStats> StartAntiRaidAsync(ulong guildId, int userThreshold, int seconds,
-        PunishmentAction action, int minutesDuration)
+    public async Task<AntiRaidStats> StartAntiRaidAsync(
+        ulong guildId,
+        int userThreshold,
+        int seconds,
+        PunishmentAction action,
+        int minutesDuration)
     {
         var g = _client.GetGuild(guildId);
         await _mute.GetMuteRole(g);
 
         if (action == PunishmentAction.AddRole)
             return null;
-            
+
         if (!IsDurationAllowed(action))
             minutesDuration = 0;
 
-        var stats = new AntiRaidStats()
+        var stats = new AntiRaidStats
         {
             AntiRaidSettings = new()
             {
@@ -310,6 +314,7 @@ public class ProtectionService : INService
             uow.SaveChanges();
             return true;
         }
+
         return false;
     }
 
@@ -317,24 +322,26 @@ public class ProtectionService : INService
     {
         if (_antiSpamGuilds.TryRemove(guildId, out var removed))
         {
-            foreach (var (_, val) in removed.UserStats)
-            {
-                val.Dispose();
-            }
-            
+            foreach (var (_, val) in removed.UserStats) val.Dispose();
+
             using var uow = _db.GetDbContext();
-            var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting)
-                .ThenInclude(x => x.IgnoredChannels));
+            var gc = uow.GuildConfigsForId(guildId,
+                set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
 
             gc.AntiSpamSetting = null;
             uow.SaveChanges();
             return true;
         }
+
         return false;
     }
 
-    public async Task<AntiSpamStats> StartAntiSpamAsync(ulong guildId, int messageCount, PunishmentAction action,
-        int punishDurationMinutes, ulong? roleId)
+    public async Task<AntiSpamStats> StartAntiSpamAsync(
+        ulong guildId,
+        int messageCount,
+        PunishmentAction action,
+        int punishDurationMinutes,
+        ulong? roleId)
     {
         var g = _client.GetGuild(guildId);
         await _mute.GetMuteRole(g);
@@ -349,15 +356,17 @@ public class ProtectionService : INService
                 Action = action,
                 MessageThreshold = messageCount,
                 MuteTime = punishDurationMinutes,
-                RoleId = roleId,
+                RoleId = roleId
             }
         };
 
-        stats = _antiSpamGuilds.AddOrUpdate(guildId, stats, (key, old) =>
-        {
-            stats.AntiSpamSettings.IgnoredChannels = old.AntiSpamSettings.IgnoredChannels;
-            return stats;
-        });
+        stats = _antiSpamGuilds.AddOrUpdate(guildId,
+            stats,
+            (key, old) =>
+            {
+                stats.AntiSpamSettings.IgnoredChannels = old.AntiSpamSettings.IgnoredChannels;
+                return stats;
+            });
 
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
@@ -373,24 +382,20 @@ public class ProtectionService : INService
         {
             gc.AntiSpamSetting = stats.AntiSpamSettings;
         }
+
         await uow.SaveChangesAsync();
         return stats;
     }
 
     public async Task<bool?> AntiSpamIgnoreAsync(ulong guildId, ulong channelId)
     {
-        var obj = new AntiSpamIgnore()
-        {
-            ChannelId = channelId
-        };
+        var obj = new AntiSpamIgnore { ChannelId = channelId };
         bool added;
         await using var uow = _db.GetDbContext();
-        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
+        var gc = uow.GuildConfigsForId(guildId,
+            set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
         var spam = gc.AntiSpamSetting;
-        if (spam is null)
-        {
-            return null;
-        }
+        if (spam is null) return null;
 
         if (spam.IgnoredChannels.Add(obj)) // if adding to db is successful
         {
@@ -403,9 +408,7 @@ public class ProtectionService : INService
             var toRemove = spam.IgnoredChannels.First(x => x.ChannelId == channelId);
             uow.Set<AntiSpamIgnore>().Remove(toRemove); // remove from db
             if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
-            {
                 temp.AntiSpamSettings.IgnoredChannels.Remove(toRemove); // remove from local cache
-            }
             added = false;
         }
 
@@ -437,8 +440,12 @@ public class ProtectionService : INService
         }
     }
 
-    public async Task StartAntiAltAsync(ulong guildId, int minAgeMinutes, PunishmentAction action,
-        int actionDurationMinutes = 0, ulong? roleId = null)
+    public async Task StartAntiAltAsync(
+        ulong guildId,
+        int minAgeMinutes,
+        PunishmentAction action,
+        int actionDurationMinutes = 0,
+        ulong? roleId = null)
     {
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiAltSetting));
@@ -447,7 +454,7 @@ public class ProtectionService : INService
             Action = action,
             ActionDurationMinutes = actionDurationMinutes,
             MinAge = TimeSpan.FromMinutes(minAgeMinutes),
-            RoleId = roleId,
+            RoleId = roleId
         };
 
         await uow.SaveChangesAsync();

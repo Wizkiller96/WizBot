@@ -20,8 +20,8 @@ public static class MusicExtensions
     }
 
     public static string PrettyVolume(this IMusicPlayer mp)
-        => $"🔉 {(int) (mp.Volume * 100)}%";
-        
+        => $"🔉 {(int)(mp.Volume * 100)}%";
+
     public static string PrettyName(this ITrackInfo trackInfo)
         => $"**[{trackInfo.Title.TrimTo(60).Replace("[", "\\[").Replace("]", "\\]")}]({trackInfo.Url.TrimTo(50, true)})**";
 
@@ -45,7 +45,7 @@ public static class MusicExtensions
     }
 
     public static ICachableTrackData ToCachedData(this ITrackInfo trackInfo, string id)
-        => new CachableTrackData()
+        => new CachableTrackData
         {
             TotalDurationMs = trackInfo.Duration.TotalMilliseconds,
             Id = id,

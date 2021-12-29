@@ -1,6 +1,6 @@
-#nullable disable
-using System.Collections;
+﻿#nullable disable
 using NadekoBot.Services.Database.Models;
+using System.Collections;
 
 namespace NadekoBot.Common.Collections;
 
@@ -8,7 +8,6 @@ public class IndexedCollection<T> : IList<T>
     where T : class, IIndexed
 {
     public List<T> Source { get; }
-    private readonly object _locker = new();
 
     public int Count
         => Source.Count;
@@ -16,8 +15,20 @@ public class IndexedCollection<T> : IList<T>
     public bool IsReadOnly
         => false;
 
-    public int IndexOf([NotNull] T item)
-        => item.Index;
+    public virtual T this[int index]
+    {
+        get => Source[index];
+        set
+        {
+            lock (_locker)
+            {
+                value.Index = index;
+                Source[index] = value;
+            }
+        }
+    }
+
+    private readonly object _locker = new();
 
     public IndexedCollection()
         => Source = new();
@@ -31,23 +42,8 @@ public class IndexedCollection<T> : IList<T>
         }
     }
 
-    public void UpdateIndexes()
-    {
-        lock (_locker)
-        {
-            for (var i = 0; i < Source.Count; i++)
-            {
-                if (Source[i].Index != i)
-                    Source[i].Index = i;
-            }
-        }
-    }
-
-    public static implicit operator List<T>(IndexedCollection<T> x)
-        => x.Source;
-
-    public List<T> ToList()
-        => Source.ToList();
+    public int IndexOf([NotNull] T item)
+        => item.Index;
 
     public IEnumerator<T> GetEnumerator()
         => Source.GetEnumerator();
@@ -95,10 +91,8 @@ public class IndexedCollection<T> : IList<T>
             if (Source.Remove(item))
             {
                 for (var i = 0; i < Source.Count; i++)
-                {
                     if (Source[i].Index != i)
                         Source[i].Index = i;
-                }
 
                 return true;
             }
@@ -112,10 +106,7 @@ public class IndexedCollection<T> : IList<T>
         lock (_locker)
         {
             Source.Insert(index, item);
-            for (var i = index; i < Source.Count; i++)
-            {
-                Source[i].Index = i;
-            }
+            for (var i = index; i < Source.Count; i++) Source[i].Index = i;
         }
     }
 
@@ -124,23 +115,23 @@ public class IndexedCollection<T> : IList<T>
         lock (_locker)
         {
             Source.RemoveAt(index);
-            for (var i = index; i < Source.Count; i++)
-            {
-                Source[i].Index = i;
-            }
+            for (var i = index; i < Source.Count; i++) Source[i].Index = i;
         }
     }
 
-    public virtual T this[int index]
+    public void UpdateIndexes()
     {
-        get => Source[index];
-        set
+        lock (_locker)
         {
-            lock (_locker)
-            {
-                value.Index = index;
-                Source[index] = value;
-            }
+            for (var i = 0; i < Source.Count; i++)
+                if (Source[i].Index != i)
+                    Source[i].Index = i;
         }
     }
+
+    public static implicit operator List<T>(IndexedCollection<T> x)
+        => x.Source;
+
+    public List<T> ToList()
+        => Source.ToList();
 }

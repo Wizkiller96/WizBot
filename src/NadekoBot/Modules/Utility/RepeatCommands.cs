@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Common.TypeReaders;
-using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Common.TypeReaders.Models;
+using NadekoBot.Modules.Utility.Services;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -9,7 +9,8 @@ public partial class Utility
     [Group]
     public class RepeatCommands : NadekoSubmodule<RepeaterService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task RepeatInvoke(int index)
@@ -18,13 +19,11 @@ public partial class Utility
                 return;
 
             var success = await _service.TriggerExternal(ctx.Guild.Id, index);
-            if (!success)
-            {
-                await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
-            }
+            if (!success) await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task RepeatRemove(int index)
@@ -32,117 +31,114 @@ public partial class Utility
             if (--index < 0)
                 return;
 
-            var removed =  await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
+            var removed = await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
             if (removed is null)
             {
                 await ReplyErrorLocalizedAsync(strs.repeater_remove_fail);
                 return;
             }
-                
+
             var description = GetRepeaterInfoString(removed);
             await ctx.Channel.EmbedAsync(_eb.Create()
-                .WithOkColor()
-                .WithTitle(GetText(strs.repeater_removed(index + 1)))
-                .WithDescription(description));
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.repeater_removed(index + 1)))
+                                            .WithDescription(description));
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task RepeatRedundant(int index)
         {
             if (--index < 0)
                 return;
-                
+
             var result = await _service.ToggleRedundantAsync(ctx.Guild.Id, index);
-            
+
             if (result is null)
             {
                 await ReplyErrorLocalizedAsync(strs.index_out_of_range);
                 return;
             }
-            
+
             if (result.Value)
-            {
                 await ReplyErrorLocalizedAsync(strs.repeater_redundant_no(index + 1));
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.repeater_redundant_yes(index + 1));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(-1)]
-        public Task Repeat([Leftover]string message)
+        public Task Repeat([Leftover] string message)
             => Repeat(null, null, message);
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public Task Repeat(StoopidTime interval, [Leftover]string message)
+        public Task Repeat(StoopidTime interval, [Leftover] string message)
             => Repeat(null, interval, message);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
         public Task Repeat(GuildDateTime dt, [Leftover] string message)
             => Repeat(dt, null, message);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(2)]
-        public async Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover]string message)
+        public async Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
         {
             var startTimeOfDay = dt?.InputTimeUtc.TimeOfDay;
             // if interval not null, that means user specified it (don't change it)
-                
+
             // if interval is null set the default to:
             // if time of day is specified: 1 day
             // else 5 minutes
-            var realInterval = interval?.Time ?? (startTimeOfDay is null 
-                ? TimeSpan.FromMinutes(5) 
-                : TimeSpan.FromDays(1));
-                
-            if (string.IsNullOrWhiteSpace(message)
-                || (interval != null &&
-                    (interval.Time > TimeSpan.FromMinutes(25000) || interval.Time < TimeSpan.FromMinutes(1))))
-            {
-                return;
-            }
+            var realInterval =
+                interval?.Time ?? (startTimeOfDay is null ? TimeSpan.FromMinutes(5) : TimeSpan.FromDays(1));
 
-            message = ((IGuildUser) ctx.User).GuildPermissions.MentionEveryone
+            if (string.IsNullOrWhiteSpace(message)
+                || (interval != null
+                    && (interval.Time > TimeSpan.FromMinutes(25000) || interval.Time < TimeSpan.FromMinutes(1))))
+                return;
+
+            message = ((IGuildUser)ctx.User).GuildPermissions.MentionEveryone
                 ? message
                 : message.SanitizeMentions(true);
 
-            var runner = await _service.AddRepeaterAsync(
-                ctx.Channel.Id,
+            var runner = await _service.AddRepeaterAsync(ctx.Channel.Id,
                 ctx.Guild.Id,
                 realInterval,
                 message,
                 false,
-                startTimeOfDay
-            );
+                startTimeOfDay);
 
             if (runner is null)
             {
                 await ReplyErrorLocalizedAsync(strs.repeater_exceed_limit(5));
                 return;
             }
-                
+
             var description = GetRepeaterInfoString(runner);
             await ctx.Channel.EmbedAsync(_eb.Create()
-                .WithOkColor()
-                .WithTitle(GetText(strs.repeater_created))
-                .WithDescription(description));
+                                            .WithOkColor()
+                                            .WithTitle(GetText(strs.repeater_created))
+                                            .WithDescription(description));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task RepeatList()
@@ -153,45 +149,36 @@ public partial class Utility
                 await ReplyConfirmLocalizedAsync(strs.repeaters_none);
                 return;
             }
-            
-            var embed = _eb.Create()
-                .WithTitle(GetText(strs.list_of_repeaters))
-                .WithOkColor();
+
+            var embed = _eb.Create().WithTitle(GetText(strs.list_of_repeaters)).WithOkColor();
 
             var i = 0;
-            foreach(var runner in repeaters.OrderBy(r => r.Repeater.Id))
+            foreach (var runner in repeaters.OrderBy(r => r.Repeater.Id))
             {
                 var description = GetRepeaterInfoString(runner);
                 var name = $"#`{++i}`";
-                embed.AddField(
-                    name,
-                    description
-                );
+                embed.AddField(name, description);
             }
-            
+
             await ctx.Channel.EmbedAsync(embed);
         }
-            
+
         private string GetRepeaterInfoString(RunningRepeater runner)
         {
             var intervalString = Format.Bold(runner.Repeater.Interval.ToPrettyStringHm());
-            var executesIn = runner.NextTime < DateTime.UtcNow
-                ? TimeSpan.Zero
-                : runner.NextTime - DateTime.UtcNow;
+            var executesIn = runner.NextTime < DateTime.UtcNow ? TimeSpan.Zero : runner.NextTime - DateTime.UtcNow;
             var executesInString = Format.Bold(executesIn.ToPrettyStringHm());
             var message = Format.Sanitize(runner.Repeater.Message.TrimTo(50));
-            
+
             var description = string.Empty;
             if (_service.IsNoRedundant(runner.Repeater.Id))
-            {
                 description = Format.Underline(Format.Bold(GetText(strs.no_redundant))) + "\n\n";
-            }
-                
-            description += $"<#{runner.Repeater.ChannelId}>\n" +
-                           $"`{GetText(strs.interval_colon)}` {intervalString}\n" +
-                           $"`{GetText(strs.executes_in_colon)}` {executesInString}\n" +
-                           $"`{GetText(strs.message_colon)}` {message}";
-            
+
+            description += $"<#{runner.Repeater.ChannelId}>\n"
+                           + $"`{GetText(strs.interval_colon)}` {intervalString}\n"
+                           + $"`{GetText(strs.executes_in_colon)}` {executesInString}\n"
+                           + $"`{GetText(strs.message_colon)}` {message}";
+
             return description;
         }
     }

@@ -1,8 +1,8 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Gambling.Common;
-using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -37,18 +37,17 @@ public partial class Gambling
                     {
                         // ignored
                     }
+
                     break;
                 }
+
                 var currentCard = cards.Draw();
                 cardObjects.Add(currentCard);
                 images.Add(Image.Load(_images.GetCard(currentCard.ToString().ToLowerInvariant().Replace(' ', '_'))));
             }
 
             using var img = images.Merge();
-            foreach (var i in images)
-            {
-                i.Dispose();
-            }
+            foreach (var i in images) i.Dispose();
 
             var toSend = $"{Format.Bold(ctx.User.ToString())}";
             if (cardObjects.Count == 5)
@@ -60,7 +59,8 @@ public partial class Gambling
             return (img.ToStream(), toSend);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Draw(int num = 1)
         {
@@ -76,7 +76,8 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task DrawNew(int num = 1)
         {
             if (num < 1)
@@ -91,7 +92,8 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task DeckShuffle()
         {

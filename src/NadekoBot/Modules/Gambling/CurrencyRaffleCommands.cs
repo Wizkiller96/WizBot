@@ -1,6 +1,6 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -10,29 +10,35 @@ public partial class Gambling
     {
         public enum Mixed { Mixed }
 
-        public CurrencyRaffleCommands(GamblingConfigService gamblingConfService) : base(gamblingConfService)
+        public CurrencyRaffleCommands(GamblingConfigService gamblingConfService)
+            : base(gamblingConfService)
         {
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public Task RaffleCur(Mixed _, ShmartNumber amount) =>
-            RaffleCur(amount, true);
+        public Task RaffleCur(Mixed _, ShmartNumber amount)
+            => RaffleCur(amount, true);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task RaffleCur(ShmartNumber amount, bool mixed = false)
         {
             if (!await CheckBetMandatory(amount))
                 return;
+
             async Task OnEnded(IUser arg, long won)
             {
-                await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName, Format.Bold(arg.ToString()), won + CurrencySign)));
+                await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName,
+                    Format.Bold(arg.ToString()),
+                    won + CurrencySign)));
             }
-            var res = await _service.JoinOrCreateGame(ctx.Channel.Id,
-                    ctx.User, amount, mixed, OnEnded);
+
+            var res = await _service.JoinOrCreateGame(ctx.Channel.Id, ctx.User, amount, mixed, OnEnded);
 
             if (res.Item1 != null)
             {

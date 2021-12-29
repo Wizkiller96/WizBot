@@ -11,17 +11,10 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
     public int Version { get; set; }
 
     [Comment("Hangman related settings (.hangman command)")]
-    public HangmanConfig Hangman { get; set; } = new()
-    {
-        CurrencyReward = 0
-    };
-        
+    public HangmanConfig Hangman { get; set; } = new() { CurrencyReward = 0 };
+
     [Comment("Trivia related settings (.t command)")]
-    public TriviaConfig Trivia { get; set; } = new()
-    {
-        CurrencyReward = 0,
-        MinimumWinReq = 1,
-    };
+    public TriviaConfig Trivia { get; set; } = new() { CurrencyReward = 0, MinimumWinReq = 1 };
 
     [Comment("List of responses for the .8ball command. A random one will be selected every time")]
     public List<string> EightBallResponses { get; set; } = new()
@@ -76,7 +69,7 @@ public sealed partial class HangmanConfig
 public sealed partial class TriviaConfig
 {
     [Comment("The amount of currency awarded to the winner of the trivia game.")]
-    public long CurrencyReward { get; set; } = 0;
+    public long CurrencyReward { get; set; }
 
     [Comment(@"Users won't be able to start trivia games which have 
 a smaller win requirement than the one specified by this setting.")]

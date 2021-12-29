@@ -35,6 +35,5 @@ public static class UserExtensions
             ? null
             : new Uri(usr.AvatarId.StartsWith("a_", StringComparison.InvariantCulture)
                 ? $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.gif"
-                : $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.png"
-            );
+                : $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.png");
 }

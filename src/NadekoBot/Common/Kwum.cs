@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Runtime.CompilerServices;
 
 namespace NadekoBot.Common;
@@ -10,8 +10,8 @@ namespace NadekoBot.Common;
 public readonly struct kwum : IEquatable<kwum>
 #pragma warning restore IDE1006
 {
-    private readonly int _value;
     private const string VALID_CHARACTERS = "23456789abcdefghijkmnpqrstuvwxyz";
+    private readonly int _value;
 
     public kwum(int num)
         => _value = num;
@@ -23,10 +23,6 @@ public readonly struct kwum : IEquatable<kwum>
 
         _value = InternalCharToValue(c);
     }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int InternalCharToValue(in char c)
-        => VALID_CHARACTERS.IndexOf(c);
 
     public kwum(in ReadOnlySpan<char> input)
     {
@@ -40,6 +36,10 @@ public readonly struct kwum : IEquatable<kwum>
             _value += VALID_CHARACTERS.IndexOf(c) * (int)Math.Pow(VALID_CHARACTERS.Length, input.Length - index - 1);
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int InternalCharToValue(in char c)
+        => VALID_CHARACTERS.IndexOf(c);
 
     public static bool TryParse(in ReadOnlySpan<char> input, out kwum value)
     {

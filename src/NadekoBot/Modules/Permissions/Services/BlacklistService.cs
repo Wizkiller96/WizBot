@@ -1,20 +1,23 @@
 #nullable disable
-using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Services.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
 public sealed class BlacklistService : IEarlyBehavior
 {
+    public int Priority
+        => int.MaxValue;
+
     private readonly DbService _db;
     private readonly IPubSub _pubSub;
     private readonly IBotCredentials _creds;
     private IReadOnlyList<BlacklistEntry> _blacklist;
-    public int Priority => int.MaxValue;
 
     private readonly TypedKey<BlacklistEntry[]> blPubKey = new("blacklist.reload");
+
     public BlacklistService(DbService db, IPubSub pubSub, IBotCredentials creds)
     {
         _db = db;
@@ -37,10 +40,8 @@ public sealed class BlacklistService : IEarlyBehavior
         {
             if (guild != null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
             {
-                Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]",
-                    guild.Name,
-                    guild.Id);
-                    
+                Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]", guild.Name, guild.Id);
+
                 return Task.FromResult(true);
             }
 
@@ -49,16 +50,16 @@ public sealed class BlacklistService : IEarlyBehavior
                 Log.Information("Blocked input from blacklisted channel: {ChannelName} [{ChannelId}]",
                     usrMsg.Channel.Name,
                     usrMsg.Channel.Id);
-                    
+
                 return Task.FromResult(true);
             }
 
             if (bl.Type == BlacklistType.User && bl.ItemId == usrMsg.Author.Id)
             {
-                Log.Information("Blocked input from blacklisted user: {UserName} [{UserId}]", 
+                Log.Information("Blocked input from blacklisted user: {UserName} [{UserId}]",
                     usrMsg.Author.ToString(),
                     usrMsg.Author.Id);
-                    
+
                 return Task.FromResult(true);
             }
         }
@@ -74,57 +75,48 @@ public sealed class BlacklistService : IEarlyBehavior
         using var uow = _db.GetDbContext();
         var toPublish = uow.Blacklist.AsNoTracking().ToArray();
         _blacklist = toPublish;
-        if (publish)
-        {
-            _pubSub.Pub(blPubKey, toPublish);
-        }
+        if (publish) _pubSub.Pub(blPubKey, toPublish);
     }
 
     public void Blacklist(BlacklistType type, ulong id)
     {
         if (_creds.OwnerIds.Contains(id))
             return;
-            
+
         using var uow = _db.GetDbContext();
         var item = new BlacklistEntry { ItemId = id, Type = type };
         uow.Blacklist.Add(item);
         uow.SaveChanges();
-            
-        Reload(true);
+
+        Reload();
     }
-        
+
     public void UnBlacklist(BlacklistType type, ulong id)
     {
         using var uow = _db.GetDbContext();
-        var toRemove = uow.Blacklist
-            .FirstOrDefault(bi => bi.ItemId == id && bi.Type == type);
-            
+        var toRemove = uow.Blacklist.FirstOrDefault(bi => bi.ItemId == id && bi.Type == type);
+
         if (toRemove is not null)
             uow.Blacklist.Remove(toRemove);
-            
+
         uow.SaveChanges();
-            
-        Reload(true);
+
+        Reload();
     }
-        
+
     public void BlacklistUsers(IReadOnlyCollection<ulong> toBlacklist)
     {
-        using (var uow = _db.GetDbContext()) 
+        using (var uow = _db.GetDbContext())
         {
             var bc = uow.Blacklist;
             //blacklist the users
-            bc.AddRange(toBlacklist.Select(x =>
-                new BlacklistEntry
-                {
-                    ItemId = x,
-                    Type = BlacklistType.User,
-                }));
-                
+            bc.AddRange(toBlacklist.Select(x => new BlacklistEntry { ItemId = x, Type = BlacklistType.User }));
+
             //clear their currencies
             uow.DiscordUser.RemoveFromMany(toBlacklist);
             uow.SaveChanges();
         }
-            
-        Reload(true);
+
+        Reload();
     }
 }

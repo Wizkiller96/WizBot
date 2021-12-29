@@ -8,13 +8,14 @@ public partial class Administration
     [Group]
     public class AutoAssignRoleCommands : NadekoSubmodule<AutoAssignRoleService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async Task AutoAssignRole([Leftover] IRole role)
         {
-            var guser = (IGuildUser) ctx.User;
+            var guser = (IGuildUser)ctx.User;
             if (role.Id == ctx.Guild.EveryoneRole.Id)
                 return;
 
@@ -27,20 +28,15 @@ public partial class Administration
 
             var roles = await _service.ToggleAarAsync(ctx.Guild.Id, role.Id);
             if (roles.Count == 0)
-            {
                 await ReplyConfirmLocalizedAsync(strs.aar_disabled);
-            }
             else if (roles.Contains(role.Id))
-            {
                 await AutoAssignRole();
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.aar_role_removed(Format.Bold(role.ToString())));
-            }
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -51,18 +47,14 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.aar_none);
                 return;
             }
-                
-            var existing = roles.Select(rid => ctx.Guild.GetRole(rid)).Where(r => r is not null)
-                .ToList();
+
+            var existing = roles.Select(rid => ctx.Guild.GetRole(rid)).Where(r => r is not null).ToList();
 
             if (existing.Count != roles.Count)
-            {
                 await _service.SetAarRolesAsync(ctx.Guild.Id, existing.Select(x => x.Id));
-            }
 
             await ReplyConfirmLocalizedAsync(strs.aar_roles(
-                '\n' + existing.Select(x => Format.Bold(x.ToString()))
-                    .Join(",\n")));
+                '\n' + existing.Select(x => Format.Bold(x.ToString())).Join(",\n")));
         }
     }
 }

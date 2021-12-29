@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -12,11 +12,10 @@ public class GuildTimezoneService : INService
 
     public GuildTimezoneService(DiscordSocketClient client, Bot bot, DbService db)
     {
-        _timezones = bot.AllGuildConfigs
-            .Select(GetTimzezoneTuple)
-            .Where(x => x.Timezone != null)
-            .ToDictionary(x => x.GuildId, x => x.Timezone)
-            .ToConcurrent();
+        _timezones = bot.AllGuildConfigs.Select(GetTimzezoneTuple)
+                        .Where(x => x.Timezone != null)
+                        .ToDictionary(x => x.GuildId, x => x.Timezone)
+                        .ToConcurrent();
 
         var curUser = client.CurrentUser;
         if (curUser != null)
@@ -48,6 +47,7 @@ public class GuildTimezoneService : INService
         {
             tz = null;
         }
+
         return (x.GuildId, Timezone: tz);
     }
 

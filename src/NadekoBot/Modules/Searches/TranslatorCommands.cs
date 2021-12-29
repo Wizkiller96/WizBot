@@ -6,7 +6,14 @@ public partial class Searches
     [Group]
     public class TranslateCommands : NadekoSubmodule<ITranslateService>
     {
-        [NadekoCommand, Aliases]
+        public enum AutoDeleteAutoTranslate
+        {
+            Del,
+            Nodel
+        }
+
+        [NadekoCommand]
+        [Aliases]
         public async Task Translate(string from, string to, [Leftover] string text = null)
         {
             try
@@ -14,10 +21,7 @@ public partial class Searches
                 await ctx.Channel.TriggerTypingAsync();
                 var translation = await _service.Translate(from, to, text);
 
-                var embed = _eb.Create(ctx)
-                    .WithOkColor()
-                    .AddField(from, text, false)
-                    .AddField(to, translation, false);
+                var embed = _eb.Create(ctx).WithOkColor().AddField(from, text).AddField(to, translation);
 
                 await ctx.Channel.EmbedAsync(embed);
             }
@@ -27,55 +31,44 @@ public partial class Searches
             }
         }
 
-        public enum AutoDeleteAutoTranslate
-        {
-            Del,
-            Nodel
-        }
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [OwnerOnly]
         public async Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
         {
-            var toggle = await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
+            var toggle =
+                await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
             if (toggle)
-            {
                 await ReplyConfirmLocalizedAsync(strs.atl_started);
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.atl_stopped);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task AutoTransLang()
         {
             if (await _service.UnregisterUser(ctx.Channel.Id, ctx.User.Id))
-            {
                 await ReplyConfirmLocalizedAsync(strs.atl_removed);
-            }
         }
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task AutoTransLang(string from, string to)
         {
-            var succ = await _service.RegisterUserAsync(ctx.User.Id,
-                ctx.Channel.Id,
-                from.ToLower(),
-                to.ToLower());
+            var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, from.ToLower(), to.ToLower());
 
             if (succ is null)
             {
                 await ReplyErrorLocalizedAsync(strs.atl_not_enabled);
                 return;
             }
-                
+
             if (succ is false)
             {
                 await ReplyErrorLocalizedAsync(strs.invalid_lang);
@@ -85,9 +78,10 @@ public partial class Searches
             await ReplyConfirmLocalizedAsync(strs.atl_set(from, to));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Translangs()
-            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}", 3);
+            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}");
     }
 }

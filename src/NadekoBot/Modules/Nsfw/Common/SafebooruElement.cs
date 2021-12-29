@@ -7,8 +7,12 @@ public class SafebooruElement : IImageData
     public string Image { get; set; }
 
 
-    public string FileUrl => $"https://safebooru.org/images/{Directory}/{Image}";
+    public string FileUrl
+        => $"https://safebooru.org/images/{Directory}/{Image}";
+
     public string Rating { get; set; }
     public string Tags { get; set; }
-    public ImageData ToCachedImageData(Booru type) => new(FileUrl, Booru.Safebooru, this.Tags.Split(' '), Rating);
+
+    public ImageData ToCachedImageData(Booru type)
+        => new(FileUrl, Booru.Safebooru, Tags.Split(' '), Rating);
 }

@@ -3,25 +3,13 @@ using Cloneable;
 using NadekoBot.Common.Yml;
 using SixLabors.ImageSharp.PixelFormats;
 using YamlDotNet.Serialization;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Gambling.Common;
 
 [Cloneable]
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
-    public GamblingConfig()
-    {
-        BetRoll = new();
-        WheelOfFortune = new();
-        Waifu = new();
-        Currency = new();
-        BetFlip = new();
-        Generation = new();
-        Timely = new();
-        Decay = new();
-        Slots = new();
-    }
-
     [Comment(@"DO NOT CHANGE")]
     public int Version { get; set; } = 2;
 
@@ -60,13 +48,26 @@ Set 0 for unlimited")]
     [Comment(@"Amount of currency selfhosters will get PER pledged dollar CENT.
 1 = 100 currency per $. Used almost exclusively on public nadeko.")]
     public decimal PatreonCurrencyPerCent { get; set; } = 1;
-        
+
     [Comment(@"Currency reward per vote.
 This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting")]
     public long VoteReward { get; set; } = 100;
-        
+
     [Comment(@"Slot config")]
     public SlotsConfig Slots { get; set; }
+
+    public GamblingConfig()
+    {
+        BetRoll = new();
+        WheelOfFortune = new();
+        Waifu = new();
+        Currency = new();
+        BetFlip = new();
+        Generation = new();
+        Timely = new();
+        Decay = new();
+        Slots = new();
+    }
 }
 
 public class CurrencyConfig
@@ -108,8 +109,7 @@ Doesn't have to be ordered.")]
     public BetRollConfig()
         => Pairs = new BetRollPair[]
         {
-            new() { WhenAbove = 99, MultiplyBy = 10 },
-            new() { WhenAbove = 90, MultiplyBy = 4 },
+            new() { WhenAbove = 99, MultiplyBy = 10 }, new() { WhenAbove = 90, MultiplyBy = 4 },
             new() { WhenAbove = 66, MultiplyBy = 2 }
         };
 }
@@ -162,17 +162,7 @@ public partial class WheelOfFortuneSettings
     public decimal[] Multipliers { get; set; }
 
     public WheelOfFortuneSettings()
-        => Multipliers = new decimal[]
-        {
-            1.7M,
-            1.5M,
-            0.2M,
-            0.1M,
-            0.3M,
-            0.5M,
-            1.2M,
-            2.4M,
-        };
+        => Multipliers = new[] { 1.7M, 1.5M, 0.2M, 0.1M, 0.3M, 0.5M, 1.2M, 2.4M };
 }
 
 [Cloneable]
@@ -263,17 +253,17 @@ Default 1 (meaning no effect)")]
 Default 0.95 (meaning 95%)
 Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)")]
     public decimal GiftEffect { get; set; } = 0.95M;
-        
+
     [Comment(@"What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
 Default 0.5 (meaning 50%)
 Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)")]
     public decimal NegativeGiftEffect { get; set; } = 0.50M;
 }
 
-public sealed partial class SlotsConfig
+public sealed class SlotsConfig
 {
     [Comment(@"Hex value of the color which the numbers on the slot image will have.")]
-    public Rgba32 CurrencyFontColor { get; set; } = SixLabors.ImageSharp.Color.Red;
+    public Rgba32 CurrencyFontColor { get; set; } = Color.Red;
 }
 
 [Cloneable]
@@ -282,16 +272,19 @@ public sealed partial class WaifuItemModel
     public string ItemEmoji { get; set; }
     public int Price { get; set; }
     public string Name { get; set; }
-        
+
     [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
     public bool Negative { get; set; }
 
     public WaifuItemModel()
     {
-            
     }
-        
-    public WaifuItemModel(string itemEmoji, int price, string name, bool negative = false)
+
+    public WaifuItemModel(
+        string itemEmoji,
+        int price,
+        string name,
+        bool negative = false)
     {
         ItemEmoji = itemEmoji;
         Price = price;
@@ -300,9 +293,9 @@ public sealed partial class WaifuItemModel
     }
 
 
-    public override string ToString() => Name;
+    public override string ToString()
+        => Name;
 }
-
 
 [Cloneable]
 public sealed partial class BetRollPair

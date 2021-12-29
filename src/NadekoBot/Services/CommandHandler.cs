@@ -1,8 +1,10 @@
 #nullable disable
-using System.Collections.Immutable;
+using Discord.Interactions;
 using NadekoBot.Common.Configs;
 using NadekoBot.Db;
-using Discord.Interactions;
+using System.Collections.Immutable;
+using ExecuteResult = Discord.Commands.ExecuteResult;
+using PreconditionResult = Discord.Commands.PreconditionResult;
 
 namespace NadekoBot.Services;
 
@@ -10,14 +12,7 @@ public class CommandHandler : INService
 {
     private const int GlobalCommandsCooldown = 750;
 
-    private readonly DiscordSocketClient _client;
-    private readonly CommandService _commandService;
-    private readonly BotConfigService _bss;
-    private readonly Bot _bot;
-    private readonly IBehaviourExecutor _behaviourExecutor;
-    private readonly IServiceProvider _services;
-
-    private readonly ConcurrentDictionary<ulong, string> _prefixes;
+    private const float _oneThousandth = 1.0f / 1000;
 
     public event Func<IUserMessage, CommandInfo, Task> CommandExecuted = delegate { return Task.CompletedTask; };
     public event Func<CommandInfo, ITextChannel, string, Task> CommandErrored = delegate { return Task.CompletedTask; };
@@ -27,7 +22,18 @@ public class CommandHandler : INService
     public ConcurrentDictionary<ulong, uint> UserMessagesSent { get; } = new();
 
     public ConcurrentHashSet<ulong> UsersOnShortCooldown { get; } = new();
+
+    private readonly DiscordSocketClient _client;
+    private readonly CommandService _commandService;
+    private readonly BotConfigService _bss;
+    private readonly Bot _bot;
+    private readonly IBehaviourExecutor _behaviourExecutor;
+    private readonly IServiceProvider _services;
+
+    private readonly ConcurrentDictionary<ulong, string> _prefixes;
     private readonly Timer _clearUsersOnShortCooldown;
+    private readonly DbService _db;
+    private readonly InteractionService _interactions;
 
     public CommandHandler(
         DiscordSocketClient client,
@@ -49,17 +55,20 @@ public class CommandHandler : INService
         _interactions = interactions;
 
         _clearUsersOnShortCooldown = new(_ =>
-        {
-            UsersOnShortCooldown.Clear();
-        }, null, GlobalCommandsCooldown, GlobalCommandsCooldown);
-            
-        _prefixes = bot.AllGuildConfigs
-            .Where(x => x.Prefix != null)
-            .ToDictionary(x => x.GuildId, x => x.Prefix)
-            .ToConcurrent();
+            {
+                UsersOnShortCooldown.Clear();
+            },
+            null,
+            GlobalCommandsCooldown,
+            GlobalCommandsCooldown);
+
+        _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix != null)
+                       .ToDictionary(x => x.GuildId, x => x.Prefix)
+                       .ToConcurrent();
     }
 
-    public string GetPrefix(IGuild guild) => GetPrefix(guild?.Id);
+    public string GetPrefix(IGuild guild)
+        => GetPrefix(guild?.Id);
 
     public string GetPrefix(ulong? id = null)
     {
@@ -81,6 +90,7 @@ public class CommandHandler : INService
 
         return prefix;
     }
+
     public string SetPrefix(IGuild guild, string prefix)
     {
         if (string.IsNullOrWhiteSpace(prefix))
@@ -135,64 +145,55 @@ public class CommandHandler : INService
         await _interactions.ExecuteCommandAsync(ctx, _services);
     }
 
-    private const float _oneThousandth = 1.0f / 1000;
-    private readonly DbService _db;
-    private readonly InteractionService _interactions;
-
     private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
-        {
             Log.Information(@"Command Executed after {ExecTime}s
 	User: {User}
 	Server: {Server}
 	Channel: {Channel}
-	Message: {MessageContent}",
+	Message: {Message}",
                 string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
                 channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
                 channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]",
-                usrMsg.Content
-            );
-        }
+                usrMsg.Content);
         else
-        {
-            Log.Information("Succ | g:{0} | c: {1} | u: {2} | msg: {3}",
+            Log.Information("Succ | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}",
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
                 usrMsg.Author.Id,
                 usrMsg.Content.TrimTo(10));
-        }
         return Task.CompletedTask;
     }
 
-    private void LogErroredExecution(string errorMessage, IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
+    private void LogErroredExecution(
+        string errorMessage,
+        IUserMessage usrMsg,
+        ITextChannel channel,
+        params int[] execPoints)
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
-        {
             Log.Warning(@"Command Errored after {ExecTime}s
 	User: {User}
-	Server: {Server}
+	Server: {Guild}
 	Channel: {Channel}
-	Message: {MessageContent}
+	Message: {Message}
 	Error: {ErrorMessage}",
                 string.Join("/", execPoints.Select(x => (x * _oneThousandth).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
-                channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
-                channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]",
+                channel is null ? "DM" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
+                channel is null ? "DM" : channel.Name + " [" + channel.Id + "]",
                 usrMsg.Content,
-                errorMessage
-            );
-        }
+                errorMessage);
         else
-        {
-            Log.Warning("Err | g:{0} | c: {1} | u: {2} | msg: {3}\n\tErr: {4}",
+            Log.Warning(@"Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
+	Err: {ErrorMessage}",
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
                 usrMsg.Author.Id,
                 usrMsg.Content.TrimTo(10),
                 errorMessage);
-        }
     }
 
     private Task MessageReceivedHandler(SocketMessage msg)
@@ -205,29 +206,26 @@ public class CommandHandler : INService
             return Task.CompletedTask;
 
         Task.Run(async () =>
+        {
+            try
             {
-                try
-                {
 #if !GLOBAL_NADEKO
-                    // track how many messagges each user is sending
-                    UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
+                // track how many messagges each user is sending
+                UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
 #endif
 
-                    var channel = msg.Channel;
-                    var guild = (msg.Channel as SocketTextChannel)?.Guild;
+                var channel = msg.Channel;
+                var guild = (msg.Channel as SocketTextChannel)?.Guild;
 
-                    await TryRunCommand(guild, channel, usrMsg);
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error in CommandHandler");
-                    if (ex.InnerException != null)
-                    {
-                        Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
-                    }
-                }
+                await TryRunCommand(guild, channel, usrMsg);
             }
-        );
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Error in CommandHandler");
+                if (ex.InnerException != null)
+                    Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
+            }
+        });
 
         return Task.CompletedTask;
     }
@@ -243,13 +241,17 @@ public class CommandHandler : INService
         var blockTime = Environment.TickCount - startTime;
 
         var messageContent = await _behaviourExecutor.RunInputTransformersAsync(guild, usrMsg);
-            
+
         var prefix = GetPrefix(guild?.Id);
         var isPrefixCommand = messageContent.StartsWith(".prefix", StringComparison.InvariantCultureIgnoreCase);
         // execute the command and measure the time it took
         if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
         {
-            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg), messageContent, isPrefixCommand ? 1 : prefix.Length, _services, MultiMatchHandling.Best);
+            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg),
+                messageContent,
+                isPrefixCommand ? 1 : prefix.Length,
+                _services,
+                MultiMatchHandling.Best);
             startTime = Environment.TickCount - startTime;
 
             if (success)
@@ -258,7 +260,8 @@ public class CommandHandler : INService
                 await CommandExecuted(usrMsg, info);
                 return;
             }
-            else if (error != null)
+
+            if (error != null)
             {
                 LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
                 if (guild != null)
@@ -273,34 +276,38 @@ public class CommandHandler : INService
         await _behaviourExecutor.RunLateExecutorsAsync(guild, usrMsg);
     }
 
-    public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(CommandContext context, string input, int argPos, IServiceProvider serviceProvider, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
+    public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(
+        CommandContext context,
+        string input,
+        int argPos,
+        IServiceProvider serviceProvider,
+        MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
         => ExecuteCommand(context, input[argPos..], serviceProvider, multiMatchHandling);
 
 
-    public async Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommand(CommandContext context, string input, IServiceProvider services, MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
+    public async Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommand(
+        CommandContext context,
+        string input,
+        IServiceProvider services,
+        MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)
     {
         var searchResult = _commandService.Search(context, input);
         if (!searchResult.IsSuccess)
             return (false, null, null);
 
         var commands = searchResult.Commands;
-        var preconditionResults = new Dictionary<CommandMatch, Discord.Commands.PreconditionResult>();
+        var preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();
 
         foreach (var match in commands)
-        {
             preconditionResults[match] = await match.Command.CheckPreconditionsAsync(context, services);
-        }
 
-        var successfulPreconditions = preconditionResults
-            .Where(x => x.Value.IsSuccess)
-            .ToArray();
+        var successfulPreconditions = preconditionResults.Where(x => x.Value.IsSuccess).ToArray();
 
         if (successfulPreconditions.Length == 0)
         {
             //All preconditions failed, return the one from the highest priority command
-            var bestCandidate = preconditionResults
-                .OrderByDescending(x => x.Key.Command.Priority)
-                .FirstOrDefault(x => !x.Value.IsSuccess);
+            var bestCandidate = preconditionResults.OrderByDescending(x => x.Key.Command.Priority)
+                                                   .FirstOrDefault(x => !x.Value.IsSuccess);
             return (false, bestCandidate.Value.ErrorReason, commands[0].Command);
         }
 
@@ -315,8 +322,11 @@ public class CommandHandler : INService
                 switch (multiMatchHandling)
                 {
                     case MultiMatchHandling.Best:
-                        argList = parseResult.ArgValues.Select(x => x.Values.OrderByDescending(y => y.Score).First()).ToImmutableArray();
-                        paramList = parseResult.ParamValues.Select(x => x.Values.OrderByDescending(y => y.Score).First()).ToImmutableArray();
+                        argList = parseResult.ArgValues.Select(x => x.Values.OrderByDescending(y => y.Score).First())
+                                             .ToImmutableArray();
+                        paramList = parseResult.ParamValues
+                                               .Select(x => x.Values.OrderByDescending(y => y.Score).First())
+                                               .ToImmutableArray();
                         parseResult = ParseResult.FromSuccess(argList, paramList);
                         break;
                 }
@@ -324,6 +334,7 @@ public class CommandHandler : INService
 
             parseResultsDict[pair.Key] = parseResult;
         }
+
         // Calculates the 'score' of a command given a parse result
         float CalculateScore(CommandMatch match, ParseResult parseResult)
         {
@@ -331,8 +342,12 @@ public class CommandHandler : INService
 
             if (match.Command.Parameters.Count > 0)
             {
-                var argValuesSum = parseResult.ArgValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
-                var paramValuesSum = parseResult.ParamValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
+                var argValuesSum =
+                    parseResult.ArgValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score)
+                    ?? 0;
+                var paramValuesSum =
+                    parseResult.ParamValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score)
+                    ?? 0;
 
                 argValuesScore = argValuesSum / match.Command.Parameters.Count;
                 paramValuesScore = paramValuesSum / match.Command.Parameters.Count;
@@ -343,19 +358,14 @@ public class CommandHandler : INService
         }
 
         //Order the parse results by their score so that we choose the most likely result to execute
-        var parseResults = parseResultsDict
-            .OrderByDescending(x => CalculateScore(x.Key, x.Value))
-            .ToList();
+        var parseResults = parseResultsDict.OrderByDescending(x => CalculateScore(x.Key, x.Value)).ToList();
 
-        var successfulParses = parseResults
-            .Where(x => x.Value.IsSuccess)
-            .ToArray();
+        var successfulParses = parseResults.Where(x => x.Value.IsSuccess).ToArray();
 
         if (successfulParses.Length == 0)
         {
             //All parses failed, return the one from the highest priority command, using score as a tie breaker
-            var bestMatch = parseResults
-                .FirstOrDefault(x => !x.Value.IsSuccess);
+            var bestMatch = parseResults.FirstOrDefault(x => !x.Value.IsSuccess);
             return (false, bestMatch.Value.ErrorReason, commands[0].Command);
         }
 
@@ -373,12 +383,12 @@ public class CommandHandler : INService
 
         //If we get this far, at least one parse was successful. Execute the most likely overload.
         var chosenOverload = successfulParses[0];
-        var execResult = (Discord.Commands.ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services);
+        var execResult = (ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services);
 
-        if (execResult.Exception != null && (execResult.Exception is not HttpException he || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
-        {
+        if (execResult.Exception != null
+            && (execResult.Exception is not HttpException he
+                || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
             Log.Warning(execResult.Exception, "Command Error");
-        }
 
         return (true, null, cmd);
     }

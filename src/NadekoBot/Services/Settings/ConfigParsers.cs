@@ -1,16 +1,16 @@
 #nullable disable
-using System.Globalization;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Globalization;
 
 namespace NadekoBot.Services;
 
 /// <summary>
-/// Custom setting value parsers for types which don't have them by default
+///     Custom setting value parsers for types which don't have them by default
 /// </summary>
 public static class ConfigParsers
 {
     /// <summary>
-    /// Default string parser. Passes input to output and returns true.
+    ///     Default string parser. Passes input to output and returns true.
     /// </summary>
     public static bool String(string input, out string output)
     {
@@ -42,5 +42,5 @@ public static class ConfigPrinters
         => culture.Name;
 
     public static string Color(Rgba32 color)
-        => ((uint) ((color.B << 0) | (color.G << 8) | (color.R << 16))).ToString("X6");
+        => ((uint)((color.B << 0) | (color.G << 8) | (color.R << 16))).ToString("X6");
 }

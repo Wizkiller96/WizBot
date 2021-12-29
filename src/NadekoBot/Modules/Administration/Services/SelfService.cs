@@ -1,8 +1,8 @@
 ﻿#nullable disable
-using System.Collections.Immutable;
-using NadekoBot.Common.ModuleBehaviors;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
+using System.Collections.Immutable;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -56,58 +56,49 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         _activitySetKey = new("activity.set");
         _imagesReloadKey = new("images.reload");
         _guildLeaveKey = new("guild.leave");
-            
+
         HandleStatusChanges();
-            
-        if (_client.ShardId == 0)
-        {
-            _pubSub.Sub(_imagesReloadKey, async _ => await _imgs.Reload());
-        }
 
-        _pubSub.Sub(_guildLeaveKey, async input =>
-        {
-            var guildStr = input.ToString().Trim().ToUpperInvariant();
-            if (string.IsNullOrWhiteSpace(guildStr))
-                return;
+        if (_client.ShardId == 0) _pubSub.Sub(_imagesReloadKey, async _ => await _imgs.Reload());
 
-            var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr
-                                                            || g.Name.Trim().ToUpperInvariant() == guildStr);
-            if (server is null)
+        _pubSub.Sub(_guildLeaveKey,
+            async input =>
             {
-                return;
-            }
+                var guildStr = input.ToString().Trim().ToUpperInvariant();
+                if (string.IsNullOrWhiteSpace(guildStr))
+                    return;
 
-            if (server.OwnerId != _client.CurrentUser.Id)
-            {
-                await server.LeaveAsync();
-                Log.Information($"Left server {server.Name} [{server.Id}]");
-            }
-            else
-            {
-                await server.DeleteAsync();
-                Log.Information($"Deleted server {server.Name} [{server.Id}]");
-            }
-        });
+                var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr
+                                                                || g.Name.Trim().ToUpperInvariant() == guildStr);
+                if (server is null) return;
+
+                if (server.OwnerId != _client.CurrentUser.Id)
+                {
+                    await server.LeaveAsync();
+                    Log.Information($"Left server {server.Name} [{server.Id}]");
+                }
+                else
+                {
+                    await server.DeleteAsync();
+                    Log.Information($"Deleted server {server.Name} [{server.Id}]");
+                }
+            });
     }
 
     public async Task OnReadyAsync()
     {
         await using var uow = _db.GetDbContext();
 
-        _autoCommands = uow
-            .AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval >= 5)
-            .AsEnumerable()
-            .GroupBy(x => x.GuildId)
-            .ToDictionary(x => x.Key,
-                y => y.ToDictionary(x => x.Id, TimerFromAutoCommand)
-                    .ToConcurrent())
-            .ToConcurrent();
+        _autoCommands = uow.AutoCommands.AsNoTracking()
+                           .Where(x => x.Interval >= 5)
+                           .AsEnumerable()
+                           .GroupBy(x => x.GuildId)
+                           .ToDictionary(x => x.Key,
+                               y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
+                           .ToConcurrent();
 
         var startupCommands = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
         foreach (var cmd in startupCommands)
-        {
             try
             {
                 await ExecuteCommand(cmd);
@@ -115,19 +106,12 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             catch
             {
             }
-        }
 
-        if (_client.ShardId == 0)
-        {
-            await LoadOwnerChannels();
-        }
+        if (_client.ShardId == 0) await LoadOwnerChannels();
     }
 
     private Timer TimerFromAutoCommand(AutoCommand x)
-        => new(async obj => await ExecuteCommand((AutoCommand) obj),
-            x,
-            x.Interval * 1000,
-            x.Interval * 1000);
+        => new(async obj => await ExecuteCommand((AutoCommand)obj), x, x.Interval * 1000, x.Interval * 1000);
 
     private async Task ExecuteCommand(AutoCommand cmd)
     {
@@ -136,7 +120,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             if (cmd.GuildId is null)
                 return;
 
-            var guildShard = (int) ((cmd.GuildId.Value >> 22) % (ulong) _creds.TotalShards);
+            var guildShard = (int)((cmd.GuildId.Value >> 22) % (ulong)_creds.TotalShards);
             if (guildShard != _client.ShardId)
                 return;
             var prefix = _cmdHandler.GetPrefix(cmd.GuildId);
@@ -162,34 +146,26 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         if (cmd.Interval >= 5)
         {
             var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
-            autos.AddOrUpdate(cmd.Id, key => TimerFromAutoCommand(cmd), (key, old) =>
-            {
-                old.Change(Timeout.Infinite, Timeout.Infinite);
-                return TimerFromAutoCommand(cmd);
-            });
+            autos.AddOrUpdate(cmd.Id,
+                key => TimerFromAutoCommand(cmd),
+                (key, old) =>
+                {
+                    old.Change(Timeout.Infinite, Timeout.Infinite);
+                    return TimerFromAutoCommand(cmd);
+                });
         }
     }
 
     public IEnumerable<AutoCommand> GetStartupCommands()
     {
         using var uow = _db.GetDbContext();
-        return uow
-            .AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval == 0)
-            .OrderBy(x => x.Id)
-            .ToList();
+        return uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0).OrderBy(x => x.Id).ToList();
     }
-        
+
     public IEnumerable<AutoCommand> GetAutoCommands()
     {
         using var uow = _db.GetDbContext();
-        return uow
-            .AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval >= 5)
-            .OrderBy(x => x.Id)
-            .ToList();
+        return uow.AutoCommands.AsNoTracking().Where(x => x.Interval >= 5).OrderBy(x => x.Id).ToList();
     }
 
     private async Task LoadOwnerChannels()
@@ -204,8 +180,8 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         }));
 
         ownerChannels = channels.Where(x => x != null)
-            .ToDictionary(x => x.Recipient.Id, x => x)
-            .ToImmutableDictionary();
+                                .ToDictionary(x => x.Recipient.Id, x => x)
+                                .ToImmutableDictionary();
 
         if (!ownerChannels.Any())
             Log.Warning(
@@ -214,7 +190,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Count} owner message channels.");
     }
 
-    public Task LeaveGuild(string guildStr) 
+    public Task LeaveGuild(string guildStr)
         => _pubSub.Pub(_guildLeaveKey, guildStr);
 
     // forwards dms
@@ -223,25 +199,21 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         var bs = _bss.Data;
         if (msg.Channel is IDMChannel && bs.ForwardMessages && ownerChannels.Any())
         {
-            var title = _strings.GetText(strs.dm_from) +
-                        $" [{msg.Author}]({msg.Author.Id})";
+            var title = _strings.GetText(strs.dm_from) + $" [{msg.Author}]({msg.Author.Id})";
 
             var attachamentsTxt = _strings.GetText(strs.attachments);
 
             var toSend = msg.Content;
 
             if (msg.Attachments.Count > 0)
-            {
-                toSend += $"\n\n{Format.Code(attachamentsTxt)}:\n" +
-                          string.Join("\n", msg.Attachments.Select(a => a.ProxyUrl));
-            }
+                toSend += $"\n\n{Format.Code(attachamentsTxt)}:\n"
+                          + string.Join("\n", msg.Attachments.Select(a => a.ProxyUrl));
 
             if (bs.ForwardToAllOwners)
             {
                 var allOwnerChannels = ownerChannels.Values;
 
                 foreach (var ownerCh in allOwnerChannels.Where(ch => ch.Recipient.Id != msg.Author.Id))
-                {
                     try
                     {
                         await ownerCh.SendConfirmAsync(_eb, title, toSend);
@@ -250,13 +222,11 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                     {
                         Log.Warning("Can't contact owner with id {0}", ownerCh.Recipient.Id);
                     }
-                }
             }
             else
             {
                 var firstOwnerChannel = ownerChannels.Values.First();
                 if (firstOwnerChannel.Recipient.Id != msg.Author.Id)
-                {
                     try
                     {
                         await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend);
@@ -265,7 +235,6 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                     {
                         // ignored
                     }
-                }
             }
         }
     }
@@ -273,11 +242,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     public bool RemoveStartupCommand(int index, out AutoCommand cmd)
     {
         using var uow = _db.GetDbContext();
-        cmd = uow.AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval == 0)
-            .Skip(index)
-            .FirstOrDefault();
+        cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0).Skip(index).FirstOrDefault();
 
         if (cmd != null)
         {
@@ -288,15 +253,11 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         return false;
     }
-        
+
     public bool RemoveAutoCommand(int index, out AutoCommand cmd)
     {
         using var uow = _db.GetDbContext();
-        cmd = uow.AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval >= 5)
-            .Skip(index)
-            .FirstOrDefault();
+        cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval >= 5).Skip(index).FirstOrDefault();
 
         if (cmd != null)
         {
@@ -337,16 +298,13 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     public void ClearStartupCommands()
     {
         using var uow = _db.GetDbContext();
-        var toRemove = uow
-            .AutoCommands
-            .AsNoTracking()
-            .Where(x => x.Interval == 0);
+        var toRemove = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
 
         uow.AutoCommands.RemoveRange(toRemove);
         uow.SaveChanges();
     }
 
-    public Task ReloadImagesAsync() 
+    public Task ReloadImagesAsync()
         => _pubSub.Pub(_imagesReloadKey, true);
 
     public bool ForwardMessages()
@@ -363,22 +321,23 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         _bss.ModifyConfig(config => { isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners; });
         return isToAll;
     }
-        
-    private void HandleStatusChanges()
-        => _pubSub.Sub(_activitySetKey, async data =>
-        {
-            try
-            {
-                await _client.SetGameAsync(data.Name, data.Link, type: data.Type);
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Error setting activity");
-            }
-        });
 
-    public Task SetGameAsync(string game, ActivityType type) 
-        => _pubSub.Pub(_activitySetKey, new() {Name = game, Link = null, Type = type});
+    private void HandleStatusChanges()
+        => _pubSub.Sub(_activitySetKey,
+            async data =>
+            {
+                try
+                {
+                    await _client.SetGameAsync(data.Name, data.Link, data.Type);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error setting activity");
+                }
+            });
+
+    public Task SetGameAsync(string game, ActivityType type)
+        => _pubSub.Pub(_activitySetKey, new() { Name = game, Link = null, Type = type });
 
     public Task SetStreamAsync(string name, string link)
         => _pubSub.Pub(_activitySetKey, new() { Name = name, Link = link, Type = ActivityType.Streaming });

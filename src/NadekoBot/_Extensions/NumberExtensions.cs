@@ -42,12 +42,5 @@ public static class NumberExtensions
         => number == Math.Truncate(number);
 
     public static DateTimeOffset ToUnixTimestamp(this double number)
-        => new DateTimeOffset(1970,
-            1,
-            1,
-            0,
-            0,
-            0,
-            TimeSpan.Zero
-        ).AddSeconds(number);
+        => new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero).AddSeconds(number);
 }

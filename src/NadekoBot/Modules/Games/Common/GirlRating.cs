@@ -1,24 +1,29 @@
 ﻿#nullable disable
-using Image = SixLabors.ImageSharp.Image;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Games.Common;
 
 public class GirlRating
 {
-    private readonly IImageCache _images;
-
     public double Crazy { get; }
     public double Hot { get; }
     public int Roll { get; }
     public string Advice { get; }
 
+    public AsyncLazy<Stream> Stream { get; }
+    private readonly IImageCache _images;
+
     private readonly IHttpClientFactory _httpFactory;
 
-    public AsyncLazy<Stream> Stream { get; }
-
-    public GirlRating(IImageCache images, IHttpClientFactory factory, double crazy, double hot, int roll, string advice)
+    public GirlRating(
+        IImageCache images,
+        IHttpClientFactory factory,
+        double crazy,
+        double hot,
+        int roll,
+        string advice)
     {
         _images = images;
         Crazy = crazy;
@@ -26,7 +31,7 @@ public class GirlRating
         Roll = roll;
         Advice = advice; // convenient to have it here, even though atm there are only few different ones.
         _httpFactory = factory;
-            
+
         Stream = new(() =>
         {
             try

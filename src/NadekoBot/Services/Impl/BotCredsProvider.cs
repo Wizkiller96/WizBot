@@ -12,97 +12,86 @@ public interface IBotCredsProvider
     public IBotCredentials GetCreds();
     public void ModifyCredsFile(Action<Creds> func);
 }
-    
+
 public sealed class BotCredsProvider : IBotCredsProvider
 {
-    private readonly int? _totalShards;
     private const string _credsFileName = "creds.yml";
     private const string _credsExampleFileName = "creds_example.yml";
-        
-    private string CredsPath => Path.Combine(Directory.GetCurrentDirectory(), _credsFileName);
-    private string CredsExamplePath => Path.Combine(Directory.GetCurrentDirectory(), _credsExampleFileName);
-    private string OldCredsJsonPath => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
-    private string OldCredsJsonBackupPath => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
-        
+
+    private string CredsPath
+        => Path.Combine(Directory.GetCurrentDirectory(), _credsFileName);
+
+    private string CredsExamplePath
+        => Path.Combine(Directory.GetCurrentDirectory(), _credsExampleFileName);
+
+    private string OldCredsJsonPath
+        => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
+
+    private string OldCredsJsonBackupPath
+        => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
+
+    private readonly int? _totalShards;
+
 
     private readonly Creds _creds = new();
     private readonly IConfigurationRoot _config;
-        
+
 
     private readonly object reloadLock = new();
+
+    public BotCredsProvider(int? totalShards = null)
+    {
+        _totalShards = totalShards;
+        if (!File.Exists(CredsExamplePath)) File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
+
+        MigrateCredentials();
+
+        if (!File.Exists(CredsPath))
+            Log.Warning($"{CredsPath} is missing. "
+                        + "Attempting to load creds from environment variables prefixed with 'NadekoBot_'. "
+                        + $"Example is in {CredsExamplePath}");
+
+        _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
+                                            .AddEnvironmentVariables("NadekoBot_")
+                                            .Build();
+
+        ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
+
+        Reload();
+    }
+
     public void Reload()
     {
         lock (reloadLock)
         {
             _creds.OwnerIds.Clear();
             _config.Bind(_creds);
-                
+
             if (string.IsNullOrWhiteSpace(_creds.Token))
             {
-                Log.Error("Token is missing from creds.yml or Environment variables.\n" +
-                          "Add it and restart the program.");
+                Log.Error("Token is missing from creds.yml or Environment variables.\n"
+                          + "Add it and restart the program.");
                 Helpers.ReadErrorAndExit(5);
                 return;
             }
-                
+
             if (string.IsNullOrWhiteSpace(_creds.RestartCommand?.Cmd)
                 || string.IsNullOrWhiteSpace(_creds.RestartCommand?.Args))
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
-                {
-                    _creds.RestartCommand = new()
-                    {
-                        Args = "dotnet",
-                        Cmd = "NadekoBot.dll -- {0}",
-                    };
-                }
+                    _creds.RestartCommand = new() { Args = "dotnet", Cmd = "NadekoBot.dll -- {0}" };
                 else
-                {
-                    _creds.RestartCommand = new()
-                    {
-                        Args = "NadekoBot.exe",
-                        Cmd = "{0}",
-                    };
-                }
+                    _creds.RestartCommand = new() { Args = "NadekoBot.exe", Cmd = "{0}" };
             }
-                
+
             if (string.IsNullOrWhiteSpace(_creds.RedisOptions))
                 _creds.RedisOptions = "127.0.0.1,syncTimeout=3000";
-                
+
             if (string.IsNullOrWhiteSpace(_creds.CoinmarketcapApiKey))
                 _creds.CoinmarketcapApiKey = "e79ec505-0913-439d-ae07-069e296a6079";
 
             _creds.TotalShards = _totalShards ?? _creds.TotalShards;
         }
-    }
-
-    public BotCredsProvider(int? totalShards = null)
-    {
-        _totalShards = totalShards;
-        if (!File.Exists(CredsExamplePath))
-        {
-            File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
-        }
-             
-        MigrateCredentials();
-            
-        if (!File.Exists(CredsPath))
-        {
-            Log.Warning($"{CredsPath} is missing. " +
-                        $"Attempting to load creds from environment variables prefixed with 'NadekoBot_'. " +
-                        $"Example is in {CredsExamplePath}");
-        }
-            
-        _config = new ConfigurationBuilder()
-            .AddYamlFile(CredsPath, false, true)
-            .AddEnvironmentVariables("NadekoBot_")
-            .Build();
-            
-        ChangeToken.OnChange(
-            () => _config.GetReloadToken(),
-            Reload);
-            
-        Reload();
     }
 
     public void ModifyCredsFile(Action<Creds> func)
@@ -114,13 +103,13 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
         ymlData = Yaml.Serializer.Serialize(creds);
         File.WriteAllText(_credsFileName, ymlData);
-            
+
         Reload();
     }
-        
+
     /// <summary>
-    /// Checks if there's a V2 credentials file present, loads it if it exists,
-    /// converts it to new model, and saves it to YAML. Also backs up old credentials to credentials.json.bak
+    ///     Checks if there's a V2 credentials file present, loads it if it exists,
+    ///     converts it to new model, and saves it to YAML. Also backs up old credentials to credentials.json.bak
     /// </summary>
     private void MigrateCredentials()
     {
@@ -140,25 +129,20 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 OsuApiKey = oldCreds.OsuApiKey,
                 CleverbotApiKey = oldCreds.CleverbotApiKey,
                 TotalShards = oldCreds.TotalShards <= 1 ? 1 : oldCreds.TotalShards,
-                Patreon = new(oldCreds.PatreonAccessToken,
-                    null,
-                    null,
-                    oldCreds.PatreonCampaignId),
-                Votes = new(oldCreds.VotesUrl,
-                    oldCreds.VotesToken,
-                    string.Empty,
-                    string.Empty),
+                Patreon = new(oldCreds.PatreonAccessToken, null, null, oldCreds.PatreonCampaignId),
+                Votes = new(oldCreds.VotesUrl, oldCreds.VotesToken, string.Empty, string.Empty),
                 BotListToken = oldCreds.BotListToken,
                 RedisOptions = oldCreds.RedisOptions,
                 LocationIqApiKey = oldCreds.LocationIqApiKey,
                 TimezoneDbApiKey = oldCreds.TimezoneDbApiKey,
-                CoinmarketcapApiKey = oldCreds.CoinmarketcapApiKey,
+                CoinmarketcapApiKey = oldCreds.CoinmarketcapApiKey
             };
 
             File.Move(OldCredsJsonPath, OldCredsJsonBackupPath, true);
             File.WriteAllText(CredsPath, Yaml.Serializer.Serialize(creds));
 
-            Log.Warning("Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
+            Log.Warning(
+                "Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
         }
 
         if (File.Exists(_credsFileName))
@@ -170,8 +154,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 File.WriteAllText(_credsFileName, Yaml.Serializer.Serialize(creds));
             }
         }
-
     }
 
-    public IBotCredentials GetCreds() => _creds;
+    public IBotCredentials GetCreds()
+        => _creds;
 }

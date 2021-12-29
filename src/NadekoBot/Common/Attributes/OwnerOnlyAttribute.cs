@@ -14,7 +14,6 @@ public sealed class OwnerOnlyAttribute : PreconditionAttribute
 
         return Task.FromResult(creds.IsOwner(context.User) || context.Client.CurrentUser.Id == context.User.Id
             ? PreconditionResult.FromSuccess()
-            : PreconditionResult.FromError("Not owner")
-        );
+            : PreconditionResult.FromError("Not owner"));
     }
 }

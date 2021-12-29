@@ -7,11 +7,20 @@ public sealed partial class MusicQueue
         public ITrackInfo TrackInfo { get; }
         public string Queuer { get; }
 
-        public string Title => TrackInfo.Title;
-        public string Url => TrackInfo.Url;
-        public string Thumbnail => TrackInfo.Thumbnail;
-        public TimeSpan Duration => TrackInfo.Duration;
-        public MusicPlatform Platform => TrackInfo.Platform;
+        public string Title
+            => TrackInfo.Title;
+
+        public string Url
+            => TrackInfo.Url;
+
+        public string Thumbnail
+            => TrackInfo.Thumbnail;
+
+        public TimeSpan Duration
+            => TrackInfo.Duration;
+
+        public MusicPlatform Platform
+            => TrackInfo.Platform;
 
 
         public QueuedTrackInfo(ITrackInfo trackInfo, string queuer)
@@ -20,14 +29,13 @@ public sealed partial class MusicQueue
             Queuer = queuer;
         }
 
-        public ValueTask<string?> GetStreamUrl() => TrackInfo.GetStreamUrl();
+        public ValueTask<string?> GetStreamUrl()
+            => TrackInfo.GetStreamUrl();
     }
 }
 
 public sealed partial class MusicQueue : IMusicQueue
 {
-    private LinkedList<QueuedTrackInfo> _tracks;
-
     public int Index
     {
         get
@@ -41,8 +49,6 @@ public sealed partial class MusicQueue : IMusicQueue
         }
     }
 
-    private int _index;
-
     public int Count
     {
         get
@@ -53,6 +59,10 @@ public sealed partial class MusicQueue : IMusicQueue
             }
         }
     }
+
+    private LinkedList<QueuedTrackInfo> _tracks;
+
+    private int _index;
 
     private readonly object locker = new();
 
@@ -77,17 +87,12 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         lock (locker)
         {
-            if (_tracks.Count == 0)
-            {
-                return Enqueue(trackInfo, queuer, out index);
-            }
+            if (_tracks.Count == 0) return Enqueue(trackInfo, queuer, out index);
 
             var currentNode = _tracks.First!;
             int i;
             for (i = 1; i <= _index; i++)
-            {
                 currentNode = currentNode.Next!; // can't be null because index is always in range of the count
-            }
 
             var added = new QueuedTrackInfo(trackInfo, queuer);
             index = i;
@@ -160,10 +165,7 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         var removedNode = _tracks.First!;
         int i;
-        for (i = 0; i < index; i++)
-        {
-            removedNode = removedNode.Next!;
-        }
+        for (i = 0; i < index; i++) removedNode = removedNode.Next!;
 
         trackInfo = removedNode.Value;
         _tracks.Remove(removedNode);
@@ -303,10 +305,7 @@ public sealed partial class MusicQueue : IMusicQueue
             if (index < 0 || index >= _tracks.Count)
                 return false;
 
-            if (index == _index)
-            {
-                isCurrent = true;
-            }
+            if (index == _index) isCurrent = true;
 
             RemoveAtInternal(index, out trackInfo);
 

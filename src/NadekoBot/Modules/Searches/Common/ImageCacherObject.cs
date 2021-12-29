@@ -13,24 +13,26 @@ public class ImageCacherObject : IComparable<ImageCacherObject>
     public ImageCacherObject(DapiImageObject obj, Booru type)
     {
         if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(obj.FileUrl, UriKind.Absolute))
-        {
-            this.FileUrl = "https://danbooru.donmai.us" + obj.FileUrl;
-        }
+            FileUrl = "https://danbooru.donmai.us" + obj.FileUrl;
         else
-        {
-            this.FileUrl = obj.FileUrl.StartsWith("http", StringComparison.InvariantCulture) ? obj.FileUrl : "https:" + obj.FileUrl;
-        }
-        this.SearchType = type;
-        this.Rating = obj.Rating;
-        this.Tags = new((obj.Tags ?? obj.TagString).Split(' '));
+            FileUrl = obj.FileUrl.StartsWith("http", StringComparison.InvariantCulture)
+                ? obj.FileUrl
+                : "https:" + obj.FileUrl;
+        SearchType = type;
+        Rating = obj.Rating;
+        Tags = new((obj.Tags ?? obj.TagString).Split(' '));
     }
 
-    public ImageCacherObject(string url, Booru type, string tags, string rating)
+    public ImageCacherObject(
+        string url,
+        Booru type,
+        string tags,
+        string rating)
     {
-        this.SearchType = type;
-        this.FileUrl = url;
-        this.Tags = new(tags.Split(' '));
-        this.Rating = rating;
+        SearchType = type;
+        FileUrl = url;
+        Tags = new(tags.Split(' '));
+        Rating = rating;
     }
 
     public override string ToString()

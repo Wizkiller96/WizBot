@@ -5,22 +5,12 @@ namespace NadekoBot.Modules.Games.Hangman;
 
 public sealed class HangmanGame
 {
-    public enum Phase { Running, Ended }
     public enum GuessResult { NoAction, AlreadyTried, Incorrect, Guess, Win }
 
-    public record State(
-        int Errors,
-        Phase Phase,
-        string Word,
-        GuessResult GuessResult,
-        List<char> missedLetters,
-        string ImageUrl)
-    {
-        public bool Failed => Errors > 5;
-    }
+    public enum Phase { Running, Ended }
 
     private Phase CurrentPhase { get; set; }
-        
+
     private readonly HashSet<char> _incorrect = new();
     private readonly HashSet<char> _correct = new();
     private readonly HashSet<char> _remaining = new();
@@ -32,25 +22,17 @@ public sealed class HangmanGame
     {
         _word = term.Word;
         _imageUrl = term.ImageUrl;
-            
-        _remaining = _word
-            .ToLowerInvariant()
-            .Where(x => x.IsLetter())
-            .Select(char.ToLowerInvariant)
-            .ToHashSet();
+
+        _remaining = _word.ToLowerInvariant().Where(x => x.IsLetter()).Select(char.ToLowerInvariant).ToHashSet();
     }
 
     public State GetState(GuessResult guessResult = GuessResult.NoAction)
         => new(_incorrect.Count,
             CurrentPhase,
-            CurrentPhase == Phase.Ended
-                ? _word
-                : GetScrambledWord(),
+            CurrentPhase == Phase.Ended ? _word : GetScrambledWord(),
             guessResult,
             _incorrect.ToList(),
-            CurrentPhase == Phase.Ended
-                ? _imageUrl
-                : string.Empty);
+            CurrentPhase == Phase.Ended ? _imageUrl : string.Empty);
 
     private string GetScrambledWord()
     {
@@ -59,11 +41,11 @@ public sealed class HangmanGame
         {
             var ch = _word[i];
             if (ch == ' ')
-                output[i*2] = ' ';
+                output[i * 2] = ' ';
             if (!ch.IsLetter() || !_remaining.Contains(char.ToLowerInvariant(ch)))
-                output[i*2] = ch;
+                output[i * 2] = ch;
             else
-                output[i*2] = '_';
+                output[i * 2] = '_';
 
             output[(i * 2) + 1] = ' ';
         }
@@ -74,7 +56,7 @@ public sealed class HangmanGame
     public State Guess(string guess)
     {
         if (CurrentPhase != Phase.Running)
-            return GetState(GuessResult.NoAction);
+            return GetState();
 
         guess = guess.Trim();
         if (guess.Length > 1)
@@ -85,12 +67,12 @@ public sealed class HangmanGame
                 return GetState(GuessResult.Win);
             }
 
-            return GetState(GuessResult.NoAction);
+            return GetState();
         }
 
         var charGuess = guess[0];
         if (!char.IsLetter(charGuess))
-            return GetState(GuessResult.NoAction);
+            return GetState();
 
         if (_incorrect.Contains(charGuess) || _correct.Contains(charGuess))
             return GetState(GuessResult.AlreadyTried);
@@ -115,5 +97,17 @@ public sealed class HangmanGame
         }
 
         return GetState(GuessResult.Incorrect);
+    }
+
+    public record State(
+        int Errors,
+        Phase Phase,
+        string Word,
+        GuessResult GuessResult,
+        List<char> missedLetters,
+        string ImageUrl)
+    {
+        public bool Failed
+            => Errors > 5;
     }
 }

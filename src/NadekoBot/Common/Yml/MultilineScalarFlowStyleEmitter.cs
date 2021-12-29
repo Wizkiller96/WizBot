@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.EventEmitters;
@@ -19,9 +19,9 @@ public class MultilineScalarFlowStyleEmitter : ChainedEventEmitter
             var value = eventInfo.Source.Value as string;
             if (!string.IsNullOrEmpty(value))
             {
-                var isMultiLine = value.IndexOfAny(new char[] { '\r', '\n', '\x85', '\x2028', '\x2029' }) >= 0;
+                var isMultiLine = value.IndexOfAny(new[] { '\r', '\n', '\x85', '\x2028', '\x2029' }) >= 0;
                 if (isMultiLine)
-                    eventInfo = new(eventInfo.Source) { Style = ScalarStyle.Literal, };
+                    eventInfo = new(eventInfo.Source) { Style = ScalarStyle.Literal };
             }
         }
 

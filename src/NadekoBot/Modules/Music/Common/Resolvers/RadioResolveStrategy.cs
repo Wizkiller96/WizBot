@@ -10,33 +10,23 @@ public class RadioResolver : IRadioResolver
     private readonly Regex asxRegex = new("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
     private readonly Regex xspfRegex = new("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
 
-    public RadioResolver()
-    {
-    }
-
     public async Task<ITrackInfo> ResolveByQueryAsync(string query)
     {
         if (IsRadioLink(query))
             query = await HandleStreamContainers(query);
 
-        return new SimpleTrackInfo(
-            query.TrimTo(50),
+        return new SimpleTrackInfo(query.TrimTo(50),
             query,
             "https://cdn.discordapp.com/attachments/155726317222887425/261850925063340032/1482522097_radio.png",
             TimeSpan.MaxValue,
             MusicPlatform.Radio,
-            query
-        );
+            query);
     }
 
-    public static bool IsRadioLink(string query) =>
-        (query.StartsWith("http", StringComparison.InvariantCulture) ||
-         query.StartsWith("ww", StringComparison.InvariantCulture))
-        &&
-        (query.Contains(".pls") ||
-         query.Contains(".m3u") ||
-         query.Contains(".asx") ||
-         query.Contains(".xspf"));
+    public static bool IsRadioLink(string query)
+        => (query.StartsWith("http", StringComparison.InvariantCulture)
+            || query.StartsWith("ww", StringComparison.InvariantCulture))
+           && (query.Contains(".pls") || query.Contains(".m3u") || query.Contains(".asx") || query.Contains(".xspf"));
 
     private async Task<string> HandleStreamContainers(string query)
     {
@@ -50,8 +40,8 @@ public class RadioResolver : IRadioResolver
         {
             return query;
         }
+
         if (query.Contains(".pls"))
-        {
             //File1=http://armitunes.com:8000/
             //Regex.Match(query)
             try
@@ -65,14 +55,13 @@ public class RadioResolver : IRadioResolver
                 Log.Warning($"Failed reading .pls:\n{file}");
                 return null;
             }
-        }
+
         if (query.Contains(".m3u"))
-        {
             /* 
-# This is a comment
-               C:\xxx4xx\xxxxxx3x\xx2xxxx\xx.mp3
-               C:\xxx5xx\x6xxxxxx\x7xxxxx\xx.mp3
-            */
+    # This is a comment
+                   C:\xxx4xx\xxxxxx3x\xx2xxxx\xx.mp3
+                   C:\xxx5xx\x6xxxxxx\x7xxxxx\xx.mp3
+                */
             try
             {
                 var m = m3uRegex.Match(file);
@@ -85,9 +74,7 @@ public class RadioResolver : IRadioResolver
                 return null;
             }
 
-        }
         if (query.Contains(".asx"))
-        {
             //<ref href="http://armitunes.com:8000"/>
             try
             {
@@ -100,15 +87,14 @@ public class RadioResolver : IRadioResolver
                 Log.Warning($"Failed reading .asx:\n{file}");
                 return null;
             }
-        }
+
         if (query.Contains(".xspf"))
-        {
             /*
-            <?xml version="1.0" encoding="UTF-8"?>
-                <playlist version="1" xmlns="http://xspf.org/ns/0/">
-                    <trackList>
-                        <track><location>file:///mp3s/song_1.mp3</location></track>
-            */
+                <?xml version="1.0" encoding="UTF-8"?>
+                    <playlist version="1" xmlns="http://xspf.org/ns/0/">
+                        <trackList>
+                            <track><location>file:///mp3s/song_1.mp3</location></track>
+                */
             try
             {
                 var m = xspfRegex.Match(file);
@@ -120,7 +106,6 @@ public class RadioResolver : IRadioResolver
                 Log.Warning($"Failed reading .xspf:\n{file}");
                 return null;
             }
-        }
 
         return query;
     }

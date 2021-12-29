@@ -13,7 +13,5 @@ public class FeedSub : DbEntity
         => Url.GetHashCode(StringComparison.InvariantCulture) ^ GuildConfigId.GetHashCode();
 
     public override bool Equals(object obj)
-        => obj is FeedSub s
-           && s.Url.ToLower() == Url.ToLower()
-           && s.GuildConfigId == GuildConfigId;
+        => obj is FeedSub s && s.Url.ToLower() == Url.ToLower() && s.GuildConfigId == GuildConfigId;
 }

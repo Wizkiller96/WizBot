@@ -5,10 +5,9 @@ namespace NadekoBot.Modules.Games.Common;
 
 public class PollRunner
 {
+    public event Func<IUserMessage, IGuildUser, Task> OnVoted;
     public Poll Poll { get; }
     private readonly DbService _db;
-
-    public event Func<IUserMessage, IGuildUser, Task> OnVoted;
 
     private readonly SemaphoreSlim _locker = new(1, 1);
 
@@ -40,11 +39,7 @@ public class PollRunner
             if (usr is null)
                 return false;
 
-            voteObj = new()
-            {
-                UserId = msg.Author.Id,
-                VoteIndex = vote,
-            };
+            voteObj = new() { UserId = msg.Author.Id, VoteIndex = vote };
             if (!Poll.Votes.Add(voteObj))
                 return false;
 

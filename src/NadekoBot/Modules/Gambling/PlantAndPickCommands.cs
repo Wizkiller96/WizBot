@@ -1,7 +1,7 @@
 #nullable disable
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -12,17 +12,16 @@ public partial class Gambling
     {
         private readonly ILogCommandService logService;
 
-        public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss) : base(gss)
+        public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss)
+            : base(gss)
             => this.logService = logService;
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Pick(string pass = null)
         {
-            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
-            {
-                return;
-            }
+            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric()) return;
 
             var picked = await _service.PickAsync(ctx.Guild.Id, (ITextChannel)ctx.Channel, ctx.User.Id, pass);
 
@@ -33,27 +32,23 @@ public partial class Gambling
             }
 
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
-            {
                 try
                 {
                     logService.AddDeleteIgnore(ctx.Message.Id);
                     await ctx.Message.DeleteAsync();
                 }
                 catch { }
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Plant(ShmartNumber amount, string pass = null)
         {
             if (amount < 1)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
-            {
-                return;
-            }
+            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric()) return;
 
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
@@ -61,14 +56,17 @@ public partial class Gambling
                 await ctx.Message.DeleteAsync();
             }
 
-            var success = await _service.PlantAsync(ctx.Guild.Id, ctx.Channel, ctx.User.Id, ctx.User.ToString(), amount, pass);
-            if (!success)
-            {
-                await ReplyErrorLocalizedAsync(strs.not_enough( CurrencySign));
-            }
+            var success = await _service.PlantAsync(ctx.Guild.Id,
+                ctx.Channel,
+                ctx.User.Id,
+                ctx.User.ToString(),
+                amount,
+                pass);
+            if (!success) await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
 #if GLOBAL_NADEKO
@@ -78,16 +76,13 @@ public partial class Gambling
         {
             var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
-            {
                 await ReplyConfirmLocalizedAsync(strs.curgen_enabled);
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.curgen_disabled);
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [OwnerOnly]
@@ -97,19 +92,19 @@ public partial class Gambling
                 return Task.CompletedTask;
             var enabledIn = _service.GetAllGeneratingChannels();
 
-            return ctx.SendPaginatedConfirmAsync(page, cur =>
-            {
-                var items = enabledIn.Skip(page * 9).Take(9);
-
-                if (!items.Any())
+            return ctx.SendPaginatedConfirmAsync(page,
+                cur =>
                 {
-                    return _eb.Create().WithErrorColor()
-                        .WithDescription("-");
-                }
+                    var items = enabledIn.Skip(page * 9).Take(9);
 
-                return items.Aggregate(_eb.Create().WithOkColor(),
-                    (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
-            }, enabledIn.Count(), 9);
+                    if (!items.Any())
+                        return _eb.Create().WithErrorColor().WithDescription("-");
+
+                    return items.Aggregate(_eb.Create().WithOkColor(),
+                        (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
+                },
+                enabledIn.Count(),
+                9);
         }
     }
 }

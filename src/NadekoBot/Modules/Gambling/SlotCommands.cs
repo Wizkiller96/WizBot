@@ -1,15 +1,15 @@
 ﻿#nullable disable
-using System.Text;
 using NadekoBot.Db.Models;
-using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 using SixLabors.Fonts;
-using Image = SixLabors.ImageSharp.Image;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System.Text;
 using Color = SixLabors.ImageSharp.Color;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -31,64 +31,23 @@ public partial class Gambling
         private FontProvider _fonts;
         private readonly DbService _db;
 
-        public SlotCommands(IDataCache data,
-            FontProvider fonts, DbService db,
-            GamblingConfigService gamb) : base(gamb)
+        public SlotCommands(
+            IDataCache data,
+            FontProvider fonts,
+            DbService db,
+            GamblingConfigService gamb)
+            : base(gamb)
         {
             _images = data.LocalImages;
             _fonts = fonts;
             _db = db;
         }
 
-        public sealed class SlotMachine
-        {
-            public const int MAX_VALUE = 5;
+        public Task Test()
+            => Task.CompletedTask;
 
-            private static readonly List<Func<int[], int>> _winningCombos = new()
-            {
-                //three flowers
-                arr => arr.All(a=>a==MAX_VALUE) ? 30 : 0,
-                //three of the same
-                arr => !arr.Any(a => a != arr[0]) ? 10 : 0,
-                //two flowers
-                arr => arr.Count(a => a == MAX_VALUE) == 2 ? 4 : 0,
-                //one flower
-                arr => arr.Any(a => a == MAX_VALUE) ? 1 : 0,
-            };
-
-            public static SlotResult Pull()
-            {
-                var numbers = new int[3];
-                for (var i = 0; i < numbers.Length; i++)
-                {
-                    numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
-                }
-                var multi = 0;
-                foreach (var t in _winningCombos)
-                {
-                    multi = t(numbers);
-                    if (multi != 0)
-                        break;
-                }
-
-                return new(numbers, multi);
-            }
-
-            public struct SlotResult
-            {
-                public int[] Numbers { get; }
-                public int Multiplier { get; }
-                public SlotResult(int[] nums, int multi)
-                {
-                    Numbers = nums;
-                    Multiplier = multi;
-                }
-            }
-        }
-        
-        public Task Test() => Task.CompletedTask; 
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SlotStats()
         {
@@ -100,16 +59,17 @@ public partial class Gambling
                 bet = 1;
 
             var embed = _eb.Create()
-                .WithOkColor()
-                .WithTitle("Slot Stats")
-                .AddField("Total Bet", bet.ToString(), true)
-                .AddField("Paid Out", paid.ToString(), true)
-                .WithFooter($"Payout Rate: {paid * 1.0 / bet * 100:f4}%");
+                           .WithOkColor()
+                           .WithTitle("Slot Stats")
+                           .AddField("Total Bet", bet.ToString(), true)
+                           .AddField("Paid Out", paid.ToString(), true)
+                           .WithFooter($"Payout Rate: {paid * 1.0 / bet * 100:f4}%");
 
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task SlotTest(int tests = 1000)
         {
@@ -133,21 +93,24 @@ public partial class Gambling
                 sb.AppendLine($"x{key} occured {dict[key]} times. {dict[key] * 1.0f / tests * 100}%");
                 payout += key * dict[key];
             }
-            await SendConfirmAsync("Slot Test Results", sb.ToString(),
+
+            await SendConfirmAsync("Slot Test Results",
+                sb.ToString(),
                 footer: $"Total Bet: {tests} | Payout: {payout} | {payout * 1.0f / tests * 100}%");
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task Slot(ShmartNumber amount)
         {
             if (!_runningUsers.Add(ctx.User.Id))
                 return;
-               
+
             try
             {
                 if (!await CheckBetMandatory(amount))
                     return;
-                    
+
                 await ctx.Channel.TriggerTypingAsync();
 
                 var result = await _service.SlotAsync(ctx.User.Id, amount);
@@ -155,9 +118,7 @@ public partial class Gambling
                 if (result.Error != GamblingError.None)
                 {
                     if (result.Error == GamblingError.NotEnough)
-                    {
                         await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                    }
 
                     return;
                 }
@@ -168,40 +129,45 @@ public partial class Gambling
                 long ownedAmount;
                 await using (var uow = _db.GetDbContext())
                 {
-                    ownedAmount = uow.Set<DiscordUser>()
-                        .FirstOrDefault(x => x.UserId == ctx.User.Id)
-                        ?.CurrencyAmount ?? 0;
+                    ownedAmount = uow.Set<DiscordUser>().FirstOrDefault(x => x.UserId == ctx.User.Id)?.CurrencyAmount
+                                  ?? 0;
                 }
-                
+
                 using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out var format))
                 {
                     var numbers = new int[3];
                     result.Rolls.CopyTo(numbers, 0);
 
                     Color fontColor = _config.Slots.CurrencyFontColor;
-                       
+
                     bgImage.Mutate(x => x.DrawText(new()
                         {
                             TextOptions = new()
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 140,
+                                WrapTextWidth = 140
                             }
-                        }, result.Won.ToString(), _fonts.DottyFont.CreateFont(65), fontColor,
+                        },
+                        result.Won.ToString(),
+                        _fonts.DottyFont.CreateFont(65),
+                        fontColor,
                         new(227, 92)));
 
                     var bottomFont = _fonts.DottyFont.CreateFont(50);
-                       
+
                     bgImage.Mutate(x => x.DrawText(new()
                         {
                             TextOptions = new()
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 135,
+                                WrapTextWidth = 135
                             }
-                        }, amount.ToString(), bottomFont, fontColor,
+                        },
+                        amount.ToString(),
+                        bottomFont,
+                        fontColor,
                         new(129, 472)));
 
                     bgImage.Mutate(x => x.DrawText(new()
@@ -210,9 +176,12 @@ public partial class Gambling
                             {
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 135,
+                                WrapTextWidth = 135
                             }
-                        }, ownedAmount.ToString(), bottomFont, fontColor,
+                        },
+                        ownedAmount.ToString(),
+                        bottomFont,
+                        fontColor,
                         new(325, 472)));
                     //sw.PrintLap("drew red text");
 
@@ -238,8 +207,8 @@ public partial class Gambling
                     await using (var imgStream = bgImage.ToStream())
                     {
                         await ctx.Channel.SendFileAsync(imgStream,
-                            filename: "result.png",
-                            text: Format.Bold(ctx.User.ToString()) + " " + msg);
+                            "result.png",
+                            Format.Bold(ctx.User.ToString()) + " " + msg);
                     }
                 }
             }
@@ -250,6 +219,50 @@ public partial class Gambling
                     await Task.Delay(1000);
                     _runningUsers.Remove(ctx.User.Id);
                 });
+            }
+        }
+
+        public sealed class SlotMachine
+        {
+            public const int MAX_VALUE = 5;
+
+            private static readonly List<Func<int[], int>> _winningCombos = new()
+            {
+                //three flowers
+                arr => arr.All(a => a == MAX_VALUE) ? 30 : 0,
+                //three of the same
+                arr => !arr.Any(a => a != arr[0]) ? 10 : 0,
+                //two flowers
+                arr => arr.Count(a => a == MAX_VALUE) == 2 ? 4 : 0,
+                //one flower
+                arr => arr.Any(a => a == MAX_VALUE) ? 1 : 0
+            };
+
+            public static SlotResult Pull()
+            {
+                var numbers = new int[3];
+                for (var i = 0; i < numbers.Length; i++) numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
+                var multi = 0;
+                foreach (var t in _winningCombos)
+                {
+                    multi = t(numbers);
+                    if (multi != 0)
+                        break;
+                }
+
+                return new(numbers, multi);
+            }
+
+            public struct SlotResult
+            {
+                public int[] Numbers { get; }
+                public int Multiplier { get; }
+
+                public SlotResult(int[] nums, int multi)
+                {
+                    Numbers = nums;
+                    Multiplier = multi;
+                }
             }
         }
     }

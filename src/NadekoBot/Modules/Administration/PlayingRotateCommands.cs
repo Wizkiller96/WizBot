@@ -8,7 +8,8 @@ public partial class Administration
     [Group]
     public class PlayingRotateCommands : NadekoSubmodule<PlayingRotateService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task RotatePlaying()
         {
@@ -18,7 +19,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.ropl_disabled);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task AddPlaying(ActivityType t, [Leftover] string status)
         {
@@ -27,7 +29,8 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.ropl_added);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task ListPlaying()
         {
@@ -40,13 +43,13 @@ public partial class Administration
             else
             {
                 var i = 1;
-                await ReplyConfirmLocalizedAsync(strs.ropl_list(
-                    string.Join("\n\t", statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}"))));
+                await ReplyConfirmLocalizedAsync(strs.ropl_list(string.Join("\n\t",
+                    statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}"))));
             }
-
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [OwnerOnly]
         public async Task RemovePlaying(int index)
         {

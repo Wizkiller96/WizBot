@@ -16,13 +16,13 @@ public class EmbedBuilderService : IEmbedBuilderService, INService
     public EmbedBuilderService(BotConfigService botConfigService)
         => _botConfigService = botConfigService;
 
-    public IEmbedBuilder Create(ICommandContext ctx = null) 
+    public IEmbedBuilder Create(ICommandContext ctx = null)
         => new DiscordEmbedBuilderWrapper(_botConfigService.Data);
-        
-    public IEmbedBuilder Create(EmbedBuilder embed) 
+
+    public IEmbedBuilder Create(EmbedBuilder embed)
         => new DiscordEmbedBuilderWrapper(_botConfigService.Data, embed);
 }
-    
+
 public sealed class DiscordEmbedBuilderWrapper : IEmbedBuilder
 {
     private readonly BotConfig _botConfig;
@@ -57,7 +57,7 @@ public sealed class DiscordEmbedBuilderWrapper : IEmbedBuilder
 
     public IEmbedBuilder WithThumbnailUrl(string url)
         => Wrap(_embed.WithThumbnailUrl(url));
-        
+
     public IEmbedBuilder WithColor(EmbedColor color)
         => color switch
         {

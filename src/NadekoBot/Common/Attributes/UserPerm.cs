@@ -6,6 +6,16 @@ namespace Discord;
 [AttributeUsage(AttributeTargets.Method)]
 public class UserPermAttribute : RequireUserPermissionAttribute
 {
+    public UserPermAttribute(GuildPerm permission)
+        : base(permission)
+    {
+    }
+
+    public UserPermAttribute(ChannelPerm permission)
+        : base(permission)
+    {
+    }
+
     public override Task<PreconditionResult> CheckPermissionsAsync(
         ICommandContext context,
         CommandInfo command,
@@ -16,15 +26,5 @@ public class UserPermAttribute : RequireUserPermissionAttribute
             return Task.FromResult(PreconditionResult.FromSuccess());
 
         return base.CheckPermissionsAsync(context, command, services);
-    }
-
-    public UserPermAttribute(GuildPerm permission)
-        : base(permission)
-    {
-    }
-
-    public UserPermAttribute(ChannelPerm permission)
-        : base(permission)
-    {
     }
 }

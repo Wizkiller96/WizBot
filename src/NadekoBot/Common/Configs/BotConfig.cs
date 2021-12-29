@@ -1,8 +1,8 @@
 #nullable disable
-using System.Globalization;
 using Cloneable;
 using NadekoBot.Common.Yml;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Globalization;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 
@@ -19,16 +19,14 @@ next to the response. The color depends whether the command
 is completed, errored or in progress (pending)
 Color settings below are for the color of those lines.
 To get color's hex, you can go here https://htmlcolorcodes.com/
-and copy the hex code fo your selected color (marked as #)"
-    )]
+and copy the hex code fo your selected color (marked as #)")]
     public ColorConfig Color { get; set; }
 
     [Comment("Default bot language. It has to be in the list of supported languages (.langli)")]
     public CultureInfo DefaultLocale { get; set; }
 
     [Comment(@"Style in which executed commands will show up in the console.
-Allowed values: Simple, Normal, None"
-    )]
+Allowed values: Simple, Normal, None")]
     public ConsoleOutputType ConsoleOutputType { get; set; }
 
 //         [Comment(@"For what kind of updates will the bot check.
@@ -43,21 +41,18 @@ Allowed values: Simple, Normal, None"
 
     [Comment(
         @"Do you want the message to be forwarded only to the first owner specified in the list of owners (in creds.yml),
-or all owners? (this might cause the bot to lag if there's a lot of owners specified)"
-    )]
+or all owners? (this might cause the bot to lag if there's a lot of owners specified)")]
     public bool ForwardToAllOwners { get; set; }
 
     [Comment(@"When a user DMs the bot with a message which is not a command
 they will receive this message. Leave empty for no response. The string which will be sent whenever someone DMs the bot.
-Supports embeds. How it looks: https://puu.sh/B0BLV.png"
-    )]
+Supports embeds. How it looks: https://puu.sh/B0BLV.png")]
     [YamlMember(ScalarStyle = ScalarStyle.Literal)]
     public string DmHelpText { get; set; }
 
     [Comment(@"Only users who send a DM to the bot containing one of the specified words will get a DmHelpText response.
 Case insensitive.
-Leave empty to reply with DmHelpText to every DM."
-    )]
+Leave empty to reply with DmHelpText to every DM.")]
     public List<string> DmHelpTextKeywords { get; set; }
 
     [Comment(@"This is the response for the .h command")]
@@ -78,28 +73,13 @@ Keep in mind this might break some of your embeds - for example if you have %use
 it will become invalid, as it will resolve to a list of avatars of grouped users.
 note: This setting is primarily used if you're afraid of raids, or you're running medium/large bots where some
       servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
-      and (slightly) reduce the greet spam in those servers."
-    )]
+      and (slightly) reduce the greet spam in those servers.")]
     public bool GroupGreets { get; set; }
 
     [Comment(@"Whether the bot will rotate through all specified statuses.
 This setting can be changed via .rots command.
-See RotatingStatuses submodule in Administration."
-    )]
+See RotatingStatuses submodule in Administration.")]
     public bool RotateStatuses { get; set; }
-
-//         [Comment(@"Whether the prefix will be a suffix, or prefix.
-// For example, if your prefix is ! you will run a command called 'cash' by typing either
-// '!cash @Someone' if your prefixIsSuffix: false or
-// 'cash @Someone!' if your prefixIsSuffix: true")]
-//         public bool PrefixIsSuffix { get; set; }
-
-    // public string Prefixed(string text) => PrefixIsSuffix
-    //     ? text + Prefix
-    //     : Prefix + text;
-
-    public string Prefixed(string text)
-        => Prefix + text;
 
     public BotConfig()
     {
@@ -149,6 +129,19 @@ See RotatingStatuses submodule in Administration."
             "can you do"
         };
     }
+
+//         [Comment(@"Whether the prefix will be a suffix, or prefix.
+// For example, if your prefix is ! you will run a command called 'cash' by typing either
+// '!cash @Someone' if your prefixIsSuffix: false or
+// 'cash @Someone!' if your prefixIsSuffix: true")]
+//         public bool PrefixIsSuffix { get; set; }
+
+    // public string Prefixed(string text) => PrefixIsSuffix
+    //     ? text + Prefix
+    //     : Prefix + text;
+
+    public string Prefixed(string text)
+        => Prefix + text;
 }
 
 [Cloneable]
@@ -188,5 +181,5 @@ public enum ConsoleOutputType
 {
     Normal = 0,
     Simple = 1,
-    None = 2,
+    None = 2
 }

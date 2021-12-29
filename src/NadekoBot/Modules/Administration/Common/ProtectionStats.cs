@@ -25,18 +25,28 @@ public class AntiSpamStats
 
 public class AntiAltStats
 {
+    public PunishmentAction Action
+        => _setting.Action;
+
+    public int ActionDurationMinutes
+        => _setting.ActionDurationMinutes;
+
+    public ulong? RoleId
+        => _setting.RoleId;
+
+    public TimeSpan MinAge
+        => _setting.MinAge;
+
+    public int Counter
+        => _counter;
+
     private readonly AntiAltSetting _setting;
-    public PunishmentAction Action => _setting.Action;
-    public int ActionDurationMinutes => _setting.ActionDurationMinutes;
-    public ulong? RoleId => _setting.RoleId;
-    public TimeSpan MinAge => _setting.MinAge;
-        
-    private int _counter = 0;
-    public int Counter => _counter;
+
+    private int _counter;
 
     public AntiAltStats(AntiAltSetting setting)
         => _setting = setting;
 
-    public void Increment() => Interlocked.Increment(ref _counter);
-        
+    public void Increment()
+        => Interlocked.Increment(ref _counter);
 }

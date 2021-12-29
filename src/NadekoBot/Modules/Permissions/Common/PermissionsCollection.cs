@@ -4,15 +4,32 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Common;
 
-public class PermissionsCollection<T> : IndexedCollection<T> where T : class, IIndexed
+public class PermissionsCollection<T> : IndexedCollection<T>
+    where T : class, IIndexed
 {
+    public override T this[int index]
+    {
+        get => Source[index];
+        set
+        {
+            lock (_localLocker)
+            {
+                if (index == 0) // can't set first element. It's always allow all
+                    throw new IndexOutOfRangeException(nameof(index));
+                base[index] = value;
+            }
+        }
+    }
+
     private readonly object _localLocker = new();
-    public PermissionsCollection(IEnumerable<T> source) : base(source)
+
+    public PermissionsCollection(IEnumerable<T> source)
+        : base(source)
     {
     }
 
-    public static implicit operator List<T>(PermissionsCollection<T> x) => 
-        x.Source;
+    public static implicit operator List<T>(PermissionsCollection<T> x)
+        => x.Source;
 
     public override void Clear()
     {
@@ -29,10 +46,11 @@ public class PermissionsCollection<T> : IndexedCollection<T> where T : class, II
         bool removed;
         lock (_localLocker)
         {
-            if(Source.IndexOf(item) == 0)
+            if (Source.IndexOf(item) == 0)
                 throw new ArgumentException("You can't remove first permsission (allow all)");
             removed = base.Remove(item);
         }
+
         return removed;
     }
 
@@ -40,7 +58,7 @@ public class PermissionsCollection<T> : IndexedCollection<T> where T : class, II
     {
         lock (_localLocker)
         {
-            if(index == 0) // can't insert on first place. Last item is always allow all.
+            if (index == 0) // can't insert on first place. Last item is always allow all.
                 throw new IndexOutOfRangeException(nameof(index));
             base.Insert(index, item);
         }
@@ -50,22 +68,10 @@ public class PermissionsCollection<T> : IndexedCollection<T> where T : class, II
     {
         lock (_localLocker)
         {
-            if(index == 0) // you can't remove first permission (allow all)
+            if (index == 0) // you can't remove first permission (allow all)
                 throw new IndexOutOfRangeException(nameof(index));
 
             base.RemoveAt(index);
-        }
-    }
-
-    public override T this[int index] {
-        get => Source[index];
-        set {
-            lock (_localLocker)
-            {
-                if(index == 0) // can't set first element. It's always allow all
-                    throw new IndexOutOfRangeException(nameof(index));
-                base[index] = value;
-            }
         }
     }
 }

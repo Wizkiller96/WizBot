@@ -17,6 +17,7 @@ public class CryptoResponseData
 
     [JsonProperty("cmc_rank")]
     public int Rank { get; set; }
+
     public CurrencyQuotes Quote { get; set; }
 }
 

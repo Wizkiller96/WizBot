@@ -1,6 +1,6 @@
 #nullable disable
-using System.ComponentModel.DataAnnotations;
 using NadekoBot.Services.Database.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace NadekoBot.Db.Models;
 
@@ -8,12 +8,13 @@ public class ClubInfo : DbEntity
 {
     [MaxLength(20)]
     public string Name { get; set; }
+
     public int Discrim { get; set; }
 
     public string ImageUrl { get; set; } = string.Empty;
     public int MinimumLevelReq { get; set; } = 5;
     public int Xp { get; set; } = 0;
-        
+
     public int OwnerId { get; set; }
     public DiscordUser Owner { get; set; }
 

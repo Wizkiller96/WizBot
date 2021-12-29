@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db.Models;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Xp;
 
@@ -13,8 +13,13 @@ public class FullUserStats
     public int GlobalRanking { get; }
     public int GuildRanking { get; }
 
-    public FullUserStats(DiscordUser usr, UserXpStats fullGuildStats, LevelStats global,
-        LevelStats guild, int globalRanking, int guildRanking)
+    public FullUserStats(
+        DiscordUser usr,
+        UserXpStats fullGuildStats,
+        LevelStats global,
+        LevelStats guild,
+        int globalRanking,
+        int guildRanking)
     {
         User = usr;
         Global = global;

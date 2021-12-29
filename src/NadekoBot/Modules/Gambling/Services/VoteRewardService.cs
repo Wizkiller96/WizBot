@@ -1,7 +1,7 @@
 #nullable disable
+using NadekoBot.Common.ModuleBehaviors;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
@@ -10,7 +10,7 @@ public class VoteModel
     [JsonPropertyName("userId")]
     public ulong UserId { get; set; }
 }
-    
+
 public class VoteRewardService : INService, IReadyExecutor
 {
     private readonly DiscordSocketClient _client;
@@ -33,18 +33,17 @@ public class VoteRewardService : INService, IReadyExecutor
         _currencyService = currencyService;
         _gamb = gamb;
     }
-        
+
     public async Task OnReadyAsync()
     {
         if (_client.ShardId != 0)
             return;
-            
-        _http = new(new HttpClientHandler()
+
+        _http = new(new HttpClientHandler
         {
-            AllowAutoRedirect = false,
-            ServerCertificateCustomValidationCallback = delegate { return true; }
+            AllowAutoRedirect = false, ServerCertificateCustomValidationCallback = delegate { return true; }
         });
-            
+
         while (true)
         {
             await Task.Delay(30000);
@@ -54,8 +53,7 @@ public class VoteRewardService : INService, IReadyExecutor
 
             try
             {
-                if (!string.IsNullOrWhiteSpace(topggKey)
-                    && !string.IsNullOrWhiteSpace(topggServiceUrl))
+                if (!string.IsNullOrWhiteSpace(topggKey) && !string.IsNullOrWhiteSpace(topggServiceUrl))
                 {
                     _http.DefaultRequestHeaders.Authorization = new(topggKey);
                     var uri = new Uri(new(topggServiceUrl), "topgg/new");
@@ -82,11 +80,10 @@ public class VoteRewardService : INService, IReadyExecutor
 
             var discordsKey = _creds.Votes?.DiscordsKey;
             var discordsServiceUrl = _creds.Votes?.DiscordsServiceUrl;
-                
+
             try
             {
-                if (!string.IsNullOrWhiteSpace(discordsKey)
-                    && !string.IsNullOrWhiteSpace(discordsServiceUrl))
+                if (!string.IsNullOrWhiteSpace(discordsKey) && !string.IsNullOrWhiteSpace(discordsServiceUrl))
                 {
                     _http.DefaultRequestHeaders.Authorization = new(discordsKey);
                     var res = await _http.GetStringAsync(new Uri(new(discordsServiceUrl), "discords/new"));
@@ -95,7 +92,7 @@ public class VoteRewardService : INService, IReadyExecutor
                     if (data is { Count: > 0 })
                     {
                         var ids = data.Select(x => x.UserId).ToList();
-                            
+
                         await _currencyService.AddBulkAsync(ids,
                             data.Select(_ => "discords.com vote reward"),
                             data.Select(x => _gamb.Data.VoteReward),

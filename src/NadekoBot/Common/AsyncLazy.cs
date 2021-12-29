@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 using System.Runtime.CompilerServices;
 
 namespace NadekoBot.Common;

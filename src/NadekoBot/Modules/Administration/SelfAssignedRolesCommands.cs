@@ -1,6 +1,6 @@
 ﻿#nullable disable
-using System.Text;
 using NadekoBot.Modules.Administration.Services;
+using System.Text;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -9,7 +9,8 @@ public partial class Administration
     [Group]
     public class SelfAssignedRolesCommands : NadekoSubmodule<SelfAssignedRolesService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.ManageMessages)]
@@ -18,24 +19,22 @@ public partial class Administration
             var newVal = _service.ToggleAdSarm(ctx.Guild.Id);
 
             if (newVal)
-            {
                 await ReplyConfirmLocalizedAsync(strs.adsarm_enable(Prefix));
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.adsarm_disable(Prefix));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task Asar([Leftover] IRole role) =>
-            Asar(0, role);
+        public Task Asar([Leftover] IRole role)
+            => Asar(0, role);
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -49,16 +48,14 @@ public partial class Administration
             var succ = _service.AddNew(ctx.Guild.Id, role, group);
 
             if (succ)
-            {
-                await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name), Format.Bold(group.ToString())));
-            }
+                await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name),
+                    Format.Bold(group.ToString())));
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name)));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -70,16 +67,14 @@ public partial class Administration
             var set = await _service.SetNameAsync(ctx.Guild.Id, group, name);
 
             if (set)
-            {
-                await ReplyConfirmLocalizedAsync(strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name.ToString())));
-            }
+                await ReplyConfirmLocalizedAsync(
+                    strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name)));
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString())));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task Rsar([Leftover] IRole role)
@@ -90,16 +85,13 @@ public partial class Administration
 
             var success = _service.RemoveSar(role.Guild.Id, role.Id);
             if (!success)
-            {
                 await ReplyErrorLocalizedAsync(strs.self_assign_not);
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.self_assign_rem(Format.Bold(role.Name)));
-            }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Lsar(int page = 1)
         {
@@ -108,57 +100,55 @@ public partial class Administration
 
             var (exclusive, roles, groups) = _service.GetRoles(ctx.Guild);
 
-            await ctx.SendPaginatedConfirmAsync(page, cur =>
-            {
-                var rolesStr = new StringBuilder();
-                var roleGroups = roles
-                    .OrderBy(x => x.Model.Group)
-                    .Skip(cur * 20)
-                    .Take(20)
-                    .GroupBy(x => x.Model.Group)
-                    .OrderBy(x => x.Key);
-
-                foreach (var kvp in roleGroups)
+            await ctx.SendPaginatedConfirmAsync(page,
+                cur =>
                 {
-                    var groupNameText = string.Empty;
-                    if (!groups.TryGetValue(kvp.Key, out var name))
-                    {
-                        groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
-                    }
-                    else
-                    {
-                        groupNameText = Format.Bold($"{kvp.Key} - {name.TrimTo(25, true)}");
-                    }
+                    var rolesStr = new StringBuilder();
+                    var roleGroups = roles.OrderBy(x => x.Model.Group)
+                                          .Skip(cur * 20)
+                                          .Take(20)
+                                          .GroupBy(x => x.Model.Group)
+                                          .OrderBy(x => x.Key);
 
-                    rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
-                    foreach (var (model, role) in kvp.AsEnumerable())
+                    foreach (var kvp in roleGroups)
                     {
-                        if (role is null)
-                        {
-                            continue;
-                        }
+                        var groupNameText = string.Empty;
+                        if (!groups.TryGetValue(kvp.Key, out var name))
+                            groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
                         else
-                        {
-                            // first character is invisible space
-                            if (model.LevelRequirement == 0)
-                                rolesStr.AppendLine("‌‌   " + role.Name);
-                            else
-                                rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
-                        }
-                    }
-                    rolesStr.AppendLine();
-                }
+                            groupNameText = Format.Bold($"{kvp.Key} - {name.TrimTo(25, true)}");
 
-                return _eb.Create().WithOkColor()
-                    .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
-                    .WithDescription(rolesStr.ToString())
-                    .WithFooter(exclusive
-                        ? GetText(strs.self_assign_are_exclusive)
-                        : GetText(strs.self_assign_are_not_exclusive));
-            }, roles.Count(), 20);
+                        rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
+                        foreach (var (model, role) in kvp.AsEnumerable())
+                            if (role is null)
+                            {
+                            }
+                            else
+                            {
+                                // first character is invisible space
+                                if (model.LevelRequirement == 0)
+                                    rolesStr.AppendLine("‌‌   " + role.Name);
+                                else
+                                    rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
+                            }
+
+                        rolesStr.AppendLine();
+                    }
+
+                    return _eb.Create()
+                              .WithOkColor()
+                              .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
+                              .WithDescription(rolesStr.ToString())
+                              .WithFooter(exclusive
+                                  ? GetText(strs.self_assign_are_exclusive)
+                                  : GetText(strs.self_assign_are_not_exclusive));
+                },
+                roles.Count(),
+                20);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -171,7 +161,8 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.self_assign_no_excl);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
@@ -188,12 +179,12 @@ public partial class Administration
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.self_assign_level_req(
-                Format.Bold(role.Name),
+            await ReplyConfirmLocalizedAsync(strs.self_assign_level_req(Format.Bold(role.Name),
                 Format.Bold(level.ToString())));
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Iam([Leftover] IRole role)
         {
@@ -203,25 +194,15 @@ public partial class Administration
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.AssignResult.Err_Not_Assignable)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
-            }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Lvl_Req)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_level(Format.Bold(extra.ToString())));
-            }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Already_Have)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_already(Format.Bold(role.Name)));
-            }
             else if (result == SelfAssignedRolesService.AssignResult.Err_Not_Perms)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
-            }
             else
-            {
                 msg = await ReplyConfirmLocalizedAsync(strs.self_assign_success(Format.Bold(role.Name)));
-            }
 
             if (autoDelete)
             {
@@ -230,7 +211,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task Iamnot([Leftover] IRole role)
         {
@@ -240,21 +222,13 @@ public partial class Administration
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Assignable)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
-            }
             else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Have)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_have(Format.Bold(role.Name)));
-            }
             else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Perms)
-            {
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
-            }
             else
-            {
                 msg = await ReplyConfirmLocalizedAsync(strs.self_assign_remove(Format.Bold(role.Name)));
-            }
 
             if (autoDelete)
             {

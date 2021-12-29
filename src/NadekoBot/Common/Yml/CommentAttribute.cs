@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Common.Yml;
 
 public class CommentAttribute : Attribute

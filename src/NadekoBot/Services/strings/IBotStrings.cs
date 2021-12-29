@@ -4,7 +4,7 @@ using System.Globalization;
 namespace NadekoBot.Services;
 
 /// <summary>
-/// Defines methods to retrieve and reload bot strings 
+///     Defines methods to retrieve and reload bot strings
 /// </summary>
 public interface IBotStrings
 {

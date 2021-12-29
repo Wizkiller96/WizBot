@@ -33,15 +33,10 @@ public class EventPubSub : IPubSub
         lock (_locker)
         {
             if (_actions.TryGetValue(key.Key, out var actions))
-            {
                 // if this class ever gets used, this needs to be properly implemented
                 // 1. ignore all valuetasks which are completed
                 // 2. run all other tasks in parallel
-                return actions
-                    .SelectMany(kvp => kvp.Value)
-                    .Select(action => action(data).AsTask())
-                    .WhenAll();
-            }
+                return actions.SelectMany(kvp => kvp.Value).Select(action => action(data).AsTask()).WhenAll();
 
             return Task.CompletedTask;
         }
@@ -53,7 +48,6 @@ public class EventPubSub : IPubSub
         {
             // get subscriptions for this action
             if (_actions.TryGetValue(key.Key, out var actions))
-            {
                 // get subscriptions which have the same action hash code
                 // note: having this as a list allows for multiple subscriptions of
                 //       the same insance's/static method
@@ -71,13 +65,9 @@ public class EventPubSub : IPubSub
                         // if our dictionary has no more elements after 
                         // removing the entry
                         // it's safe to remove it from the key's subscriptions
-                        if (actions.Count == 0)
-                        {
-                            _actions.Remove(key.Key);
-                        }
+                        if (actions.Count == 0) _actions.Remove(key.Key);
                     }
                 }
-            }
 
             return Task.CompletedTask;
         }

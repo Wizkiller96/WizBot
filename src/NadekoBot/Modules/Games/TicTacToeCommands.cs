@@ -15,7 +15,8 @@ public partial class Games
         public TicTacToeCommands(DiscordSocketClient client)
             => _client = client;
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [NadekoOptions(typeof(TicTacToe.Options))]
         public async Task TicTacToe(params string[] args)
@@ -34,7 +35,8 @@ public partial class Games
                     });
                     return;
                 }
-                game = new(base.Strings, this._client, channel, (IGuildUser)ctx.User, options, _eb);
+
+                game = new(Strings, _client, channel, (IGuildUser)ctx.User, options, _eb);
                 _service.TicTacToeGames.Add(channel.Id, game);
                 await ReplyConfirmLocalizedAsync(strs.ttt_created);
 

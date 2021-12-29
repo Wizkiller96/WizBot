@@ -7,14 +7,15 @@ namespace NadekoBot.Modules.Music.Services;
 
 public sealed partial class YtLoader
 {
-    private readonly IHttpClientFactory _httpFactory;
     private static readonly byte[] YT_RESULT_INITIAL_DATA = Encoding.UTF8.GetBytes("var ytInitialData = ");
     private static readonly byte[] YT_RESULT_JSON_END = Encoding.UTF8.GetBytes(";<");
-        
-    private static readonly string[] durationFormats = new[]
+
+    private static readonly string[] durationFormats =
     {
         @"m\:ss", @"mm\:ss", @"h\:mm\:ss", @"hh\:mm\:ss", @"hhh\:mm\:ss"
     };
+
+    private readonly IHttpClientFactory _httpFactory;
 
     public YtLoader(IHttpClientFactory httpFactory)
         => _httpFactory = httpFactory;
@@ -54,7 +55,7 @@ public sealed partial class YtLoader
     public async Task<IList<TrackInfo>> LoadResultsAsync(string query)
     {
         query = Uri.EscapeDataString(query);
-            
+
         using var http = _httpFactory.CreateClient();
         http.DefaultRequestHeaders.Add("Cookie", "CONSENT=YES+cb.20210530-19-p0.en+FX+071;");
 
@@ -76,20 +77,19 @@ public sealed partial class YtLoader
         var root = JsonDocument.Parse(mem).RootElement;
 
         var tracksJsonItems = root
-            .GetProperty("contents")
-            .GetProperty("twoColumnSearchResultsRenderer")
-            .GetProperty("primaryContents")
-            .GetProperty("sectionListRenderer")
-            .GetProperty("contents")
-            [0]
-            .GetProperty("itemSectionRenderer")
-            .GetProperty("contents")
-            .EnumerateArray();
-            
+                              .GetProperty("contents")
+                              .GetProperty("twoColumnSearchResultsRenderer")
+                              .GetProperty("primaryContents")
+                              .GetProperty("sectionListRenderer")
+                              .GetProperty("contents")[0]
+                              .GetProperty("itemSectionRenderer")
+                              .GetProperty("contents")
+                              .EnumerateArray();
+
         var tracks = new List<TrackInfo>();
         foreach (var track in tracksJsonItems)
         {
-            if(!track.TryGetProperty("videoRenderer", out var elem))
+            if (!track.TryGetProperty("videoRenderer", out var elem))
                 continue;
 
             var videoId = elem.GetProperty("videoId").GetString();
@@ -97,18 +97,20 @@ public sealed partial class YtLoader
             var title = elem.GetProperty("title").GetProperty("runs")[0].GetProperty("text").GetString();
             var durationString = elem.GetProperty("lengthText").GetProperty("simpleText").GetString();
 
-            if (!TimeSpan.TryParseExact(durationString, durationFormats, CultureInfo.InvariantCulture,
+            if (!TimeSpan.TryParseExact(durationString,
+                    durationFormats,
+                    CultureInfo.InvariantCulture,
                     out var duration))
             {
                 Log.Warning("Cannot parse duration: {DurationString}", durationString);
                 continue;
             }
-                
+
             tracks.Add(new YtTrackInfo(title, videoId, duration));
             if (tracks.Count >= 5)
                 break;
         }
-            
+
         return tracks;
     }
 
@@ -120,11 +122,9 @@ public sealed partial class YtLoader
             return null; // todo future try selecting html
         startIndex += YT_RESULT_INITIAL_DATA.Length;
 
-        var endIndex = 140_000 + startIndex + responseSpan[(startIndex + 20_000)..].IndexOf(YT_RESULT_JSON_END) + 20_000;
+        var endIndex =
+            140_000 + startIndex + responseSpan[(startIndex + 20_000)..].IndexOf(YT_RESULT_JSON_END) + 20_000;
         startIndex += 140_000;
-        return response.AsMemory(
-            startIndex,
-            endIndex - startIndex
-        );
+        return response.AsMemory(startIndex, endIndex - startIndex);
     }
 }

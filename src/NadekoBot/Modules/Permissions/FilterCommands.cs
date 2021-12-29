@@ -1,8 +1,8 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
-using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions;
 
@@ -16,7 +16,8 @@ public partial class Permissions
         public FilterCommands(DbService db)
             => _db = db;
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task FwClear()
@@ -25,7 +26,8 @@ public partial class Permissions
             await ReplyConfirmLocalizedAsync(strs.fw_cleared);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task SrvrFilterInv()
         {
@@ -51,7 +53,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ChnlFilterInv()
         {
@@ -60,21 +63,15 @@ public partial class Permissions
             FilterChannelId removed;
             await using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterInvitesChannelIds));
-                var match = new FilterChannelId()
-                {
-                    ChannelId = channel.Id
-                };
+                var config = uow.GuildConfigsForId(channel.Guild.Id,
+                    set => set.Include(gc => gc.FilterInvitesChannelIds));
+                var match = new FilterChannelId { ChannelId = channel.Id };
                 removed = config.FilterInvitesChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
                 if (removed is null)
-                {
                     config.FilterInvitesChannelIds.Add(match);
-                }
                 else
-                {
                     uow.Remove(removed);
-                }
                 await uow.SaveChangesAsync();
             }
 
@@ -90,7 +87,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task SrvrFilterLin()
         {
@@ -116,7 +114,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ChnlFilterLin()
         {
@@ -125,21 +124,15 @@ public partial class Permissions
             FilterLinksChannelId removed;
             await using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
-                var match = new FilterLinksChannelId()
-                {
-                    ChannelId = channel.Id
-                };
+                var config =
+                    uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
+                var match = new FilterLinksChannelId { ChannelId = channel.Id };
                 removed = config.FilterLinksChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
                 if (removed is null)
-                {
                     config.FilterLinksChannelIds.Add(match);
-                }
                 else
-                {
                     uow.Remove(removed);
-                }
                 await uow.SaveChangesAsync();
             }
 
@@ -155,7 +148,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task SrvrFilterWords()
         {
@@ -181,7 +175,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task ChnlFilterWords()
         {
@@ -190,21 +185,15 @@ public partial class Permissions
             FilterChannelId removed;
             await using (var uow = _db.GetDbContext())
             {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
+                var config =
+                    uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
 
-                var match = new FilterChannelId()
-                {
-                    ChannelId = channel.Id
-                };
+                var match = new FilterChannelId { ChannelId = channel.Id };
                 removed = config.FilterWordsChannelIds.FirstOrDefault(fc => fc.Equals(match));
                 if (removed is null)
-                {
                     config.FilterWordsChannelIds.Add(match);
-                }
                 else
-                {
                     uow.Remove(removed);
-                }
                 await uow.SaveChangesAsync();
             }
 
@@ -220,7 +209,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task FilterWord([Leftover] string word)
         {
@@ -241,14 +231,13 @@ public partial class Permissions
                 if (removed is null)
                     config.FilteredWords.Add(new() { Word = word });
                 else
-                {
                     uow.Remove(removed);
-                }
 
                 await uow.SaveChangesAsync();
             }
 
-            var filteredWords = _service.ServerFilteredWords.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<string>());
+            var filteredWords =
+                _service.ServerFilteredWords.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<string>());
 
             if (removed is null)
             {
@@ -262,7 +251,8 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         public async Task LstFilterWords(int page = 1)
         {
@@ -278,10 +268,11 @@ public partial class Permissions
 
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage => _eb.Create()
-                    .WithTitle(GetText(strs.filter_word_list))
-                    .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
-                    .WithOkColor()
-                , fws.Length, 10);
+                              .WithTitle(GetText(strs.filter_word_list))
+                              .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
+                              .WithOkColor(),
+                fws.Length,
+                10);
         }
     }
 }

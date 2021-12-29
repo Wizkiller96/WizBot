@@ -1,10 +1,10 @@
-#nullable disable
+﻿#nullable disable
 using NadekoBot.Common.TypeReaders.Models;
 
 namespace NadekoBot.Common.TypeReaders;
 
 /// <summary>
-/// Used instead of bool for more flexible keywords for true/false only in the permission module
+///     Used instead of bool for more flexible keywords for true/false only in the permission module
 /// </summary>
 public sealed class PermissionActionTypeReader : NadekoTypeReader<PermissionAction>
 {
@@ -32,7 +32,8 @@ public sealed class PermissionActionTypeReader : NadekoTypeReader<PermissionActi
             case "BAN":
                 return Task.FromResult(TypeReaderResult.FromSuccess(PermissionAction.Disable));
             default:
-                return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Did not receive a valid boolean value"));
+                return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed,
+                    "Did not receive a valid boolean value"));
         }
     }
 }

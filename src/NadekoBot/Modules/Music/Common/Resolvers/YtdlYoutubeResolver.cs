@@ -5,17 +5,22 @@ namespace NadekoBot.Modules.Music;
 
 public sealed class YtdlYoutubeResolver : IYoutubeResolver
 {
-    private static readonly string[] durationFormats = new[]
-        {"ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss"};
+    private static readonly string[] durationFormats =
+    {
+        "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss"
+    };
 
-    public Regex YtVideoIdRegex { get; }
-        = new(
-            @"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})",
-            RegexOptions.Compiled
-        );
+    private static readonly Regex expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
+
+
+    private static readonly Regex _simplePlaylistRegex = new(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
+
+    public Regex YtVideoIdRegex { get; } =
+        new(@"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})",
+            RegexOptions.Compiled);
 
     private readonly ITrackCacher _trackCacher;
-        
+
     private readonly YtdlOperation _ytdlPlaylistOperation;
     private readonly YtdlOperation _ytdlIdOperation;
     private readonly YtdlOperation _ytdlSearchOperation;
@@ -27,72 +32,51 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         _trackCacher = trackCacher;
         _google = google;
 
-        _ytdlPlaylistOperation = 
-            new("-4 " +
-                "--geo-bypass " +
-                "--encoding UTF8 " +
-                "-f bestaudio " +
-                "-e " +
-                "--get-url " +
-                "--get-id " +
-                "--get-thumbnail " +
-                "--get-duration " +
-                "--no-check-certificate " +
-                "-i " +
-                "--yes-playlist " +
-                "-- \"{0}\"");
+        _ytdlPlaylistOperation = new("-4 "
+                                     + "--geo-bypass "
+                                     + "--encoding UTF8 "
+                                     + "-f bestaudio "
+                                     + "-e "
+                                     + "--get-url "
+                                     + "--get-id "
+                                     + "--get-thumbnail "
+                                     + "--get-duration "
+                                     + "--no-check-certificate "
+                                     + "-i "
+                                     + "--yes-playlist "
+                                     + "-- \"{0}\"");
 
-        _ytdlIdOperation = 
-            new("-4 " +
-                "--geo-bypass " +
-                "--encoding UTF8 " +
-                "-f bestaudio " +
-                "-e " +
-                "--get-url " +
-                "--get-id " +
-                "--get-thumbnail " +
-                "--get-duration " +
-                "--no-check-certificate " +
-                "-- \"{0}\"");
-            
-        _ytdlSearchOperation = 
-            new("-4 " +
-                "--geo-bypass " +
-                "--encoding UTF8 " +
-                "-f bestaudio " +
-                "-e " +
-                "--get-url " +
-                "--get-id " +
-                "--get-thumbnail " +
-                "--get-duration " +
-                "--no-check-certificate " +
-                "--default-search " +
-                "\"ytsearch:\" -- \"{0}\"");
+        _ytdlIdOperation = new("-4 "
+                               + "--geo-bypass "
+                               + "--encoding UTF8 "
+                               + "-f bestaudio "
+                               + "-e "
+                               + "--get-url "
+                               + "--get-id "
+                               + "--get-thumbnail "
+                               + "--get-duration "
+                               + "--no-check-certificate "
+                               + "-- \"{0}\"");
+
+        _ytdlSearchOperation = new("-4 "
+                                   + "--geo-bypass "
+                                   + "--encoding UTF8 "
+                                   + "-f bestaudio "
+                                   + "-e "
+                                   + "--get-url "
+                                   + "--get-id "
+                                   + "--get-thumbnail "
+                                   + "--get-duration "
+                                   + "--no-check-certificate "
+                                   + "--default-search "
+                                   + "\"ytsearch:\" -- \"{0}\"");
     }
 
-    private readonly struct YtTrackData
-    {
-        public readonly string Title;
-        public readonly string Id;
-        public readonly string Thumbnail;
-        public readonly string? StreamUrl;
-        public readonly TimeSpan Duration;
-
-        public YtTrackData(string title, string id, string thumbnail, string? streamUrl, TimeSpan duration)
-        {
-            Title = title.Trim();
-            Id = id.Trim();
-            Thumbnail = thumbnail;
-            StreamUrl = streamUrl;
-            Duration = duration;
-        }
-    }
-        
     private YtTrackData ResolveYtdlData(string ytdlOutputString)
     {
         if (string.IsNullOrWhiteSpace(ytdlOutputString))
             return default;
-            
+
         var dataArray = ytdlOutputString.Trim().Split('\n');
 
         if (dataArray.Length < 5)
@@ -102,26 +86,15 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         }
 
         if (!TimeSpan.TryParseExact(dataArray[4], durationFormats, CultureInfo.InvariantCulture, out var time))
-        {
             time = TimeSpan.Zero;
-        }
 
-        var thumbnail = Uri.IsWellFormedUriString(dataArray[3], UriKind.Absolute)
-            ? dataArray[3].Trim()
-            : string.Empty;
+        var thumbnail = Uri.IsWellFormedUriString(dataArray[3], UriKind.Absolute) ? dataArray[3].Trim() : string.Empty;
 
-        return new(
-            dataArray[0],
-            dataArray[1],
-            thumbnail,
-            dataArray[2],
-            time
-        );
+        return new(dataArray[0], dataArray[1], thumbnail, dataArray[2], time);
     }
 
     private ITrackInfo DataToInfo(in YtTrackData trackData)
-        => new RemoteTrackInfo(
-            trackData.Title,
+        => new RemoteTrackInfo(trackData.Title,
             $"https://youtube.com/watch?v={trackData.Id}",
             trackData.Thumbnail,
             trackData.Duration,
@@ -129,13 +102,10 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             CreateCacherFactory(trackData.Id));
 
     private Func<Task<string?>> CreateCacherFactory(string id)
-        => () => _trackCacher.GetOrCreateStreamLink(
-            id,
+        => () => _trackCacher.GetOrCreateStreamLink(id,
             MusicPlatform.Youtube,
-            async () => await ExtractNewStreamUrlAsync(id)
-        );
+            async () => await ExtractNewStreamUrlAsync(id));
 
-    private static readonly Regex expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
     private static TimeSpan GetExpiry(string streamUrl)
     {
         var match = expiryRegex.Match(streamUrl);
@@ -157,54 +127,41 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         var trackInfo = ResolveYtdlData(data);
         if (string.IsNullOrWhiteSpace(trackInfo.StreamUrl))
             return default;
-            
+
         return (trackInfo.StreamUrl!, GetExpiry(trackInfo.StreamUrl!));
     }
 
     public async Task<ITrackInfo?> ResolveByIdAsync(string id)
     {
         id = id.Trim();
-            
+
         var cachedData = await _trackCacher.GetCachedDataByIdAsync(id, MusicPlatform.Youtube);
         if (cachedData is null)
         {
             Log.Information("Resolving youtube track by Id: {YoutubeId}", id);
 
             var data = await _ytdlIdOperation.GetDataAsync(id);
-                
+
             var trackInfo = ResolveYtdlData(data);
             if (string.IsNullOrWhiteSpace(trackInfo.Title))
                 return default;
-                
+
             var toReturn = DataToInfo(in trackInfo);
 
-            await Task.WhenAll(
-                _trackCacher.CacheTrackDataAsync(toReturn.ToCachedData(id)),
-                CacheStreamUrlAsync(trackInfo)
-            );
-                
+            await Task.WhenAll(_trackCacher.CacheTrackDataAsync(toReturn.ToCachedData(id)),
+                CacheStreamUrlAsync(trackInfo));
+
             return toReturn;
         }
 
-        return DataToInfo(new(
-            cachedData.Title,
-            cachedData.Id,
-            cachedData.Thumbnail,
-            null,
-            cachedData.Duration
-        ));
+        return DataToInfo(new(cachedData.Title, cachedData.Id, cachedData.Thumbnail, null, cachedData.Duration));
     }
 
     private Task CacheStreamUrlAsync(YtTrackData trackInfo)
-        => _trackCacher.CacheStreamUrlAsync(
-            trackInfo.Id,
+        => _trackCacher.CacheStreamUrlAsync(trackInfo.Id,
             MusicPlatform.Youtube,
             trackInfo.StreamUrl!,
-            GetExpiry(trackInfo.StreamUrl!)
-        );
-
-
-    private static readonly Regex _simplePlaylistRegex = new(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
+            GetExpiry(trackInfo.StreamUrl!));
 
     public async IAsyncEnumerable<ITrackInfo> ResolveTracksByPlaylistIdAsync(string playlistId)
     {
@@ -241,11 +198,9 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                     continue;
 
                 var info = DataToInfo(in trackData);
-                await Task.WhenAll(
-                    _trackCacher.CacheTrackDataAsync(info.ToCachedData(trackData.Id)),
-                    CacheStreamUrlAsync(trackData)
-                );
-                    
+                await Task.WhenAll(_trackCacher.CacheTrackDataAsync(info.ToCachedData(trackData.Id)),
+                    CacheStreamUrlAsync(trackData));
+
                 trackIds.Add(trackData.Id);
                 yield return info;
             }
@@ -306,7 +261,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
 
     public Task<ITrackInfo?> ResolveByQueryAsync(string query)
         => ResolveByQueryAsync(query, true);
-        
+
     public async Task<ITrackInfo?> ResolveByQueryAsync(string query, bool tryResolving)
     {
         if (tryResolving)
@@ -315,29 +270,44 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             if (match.Success)
                 return await ResolveByIdAsync(match.Groups["id"].Value);
         }
-                
+
         Log.Information("Resolving youtube song by search term: {YoutubeQuery}", query);
-            
+
         var cachedData = await _trackCacher.GetCachedDataByQueryAsync(query, MusicPlatform.Youtube);
         if (cachedData is null)
         {
             var stringData = await _ytdlSearchOperation.GetDataAsync(query);
             var trackData = ResolveYtdlData(stringData);
-                
+
             var trackInfo = DataToInfo(trackData);
-            await Task.WhenAll(
-                _trackCacher.CacheTrackDataByQueryAsync(query, trackInfo.ToCachedData(trackData.Id)),
-                CacheStreamUrlAsync(trackData)
-            );
+            await Task.WhenAll(_trackCacher.CacheTrackDataByQueryAsync(query, trackInfo.ToCachedData(trackData.Id)),
+                CacheStreamUrlAsync(trackData));
             return trackInfo;
         }
-            
-        return DataToInfo(new(
-            cachedData.Title,
-            cachedData.Id,
-            cachedData.Thumbnail,
-            null,
-            cachedData.Duration
-        ));
+
+        return DataToInfo(new(cachedData.Title, cachedData.Id, cachedData.Thumbnail, null, cachedData.Duration));
+    }
+
+    private readonly struct YtTrackData
+    {
+        public readonly string Title;
+        public readonly string Id;
+        public readonly string Thumbnail;
+        public readonly string? StreamUrl;
+        public readonly TimeSpan Duration;
+
+        public YtTrackData(
+            string title,
+            string id,
+            string thumbnail,
+            string? streamUrl,
+            TimeSpan duration)
+        {
+            Title = title.Trim();
+            Id = id.Trim();
+            Thumbnail = thumbnail;
+            StreamUrl = streamUrl;
+            Duration = duration;
+        }
     }
 }

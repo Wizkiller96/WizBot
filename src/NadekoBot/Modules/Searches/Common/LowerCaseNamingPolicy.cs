@@ -6,7 +6,7 @@ namespace SystemTextJsonSamples;
 public class LowerCaseNamingPolicy : JsonNamingPolicy
 {
     public static LowerCaseNamingPolicy Default = new();
-        
-    public override string ConvertName(string name) =>
-        name.ToLower();
+
+    public override string ConvertName(string name)
+        => name.ToLower();
 }

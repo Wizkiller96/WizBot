@@ -1,9 +1,10 @@
+using YamlDotNet.Serialization;
+
 namespace NadekoBot.Common.Attributes;
 
 public static class CommandNameLoadHelper
 {
-    private static readonly YamlDotNet.Serialization.IDeserializer _deserializer =
-        new YamlDotNet.Serialization.Deserializer();
+    private static readonly IDeserializer _deserializer = new Deserializer();
 
     public static Lazy<Dictionary<string, string[]>> LazyCommandAliases = new(() => LoadCommandNames());
 

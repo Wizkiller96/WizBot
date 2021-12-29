@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot.Common;
 
 public static class PlatformHelper
@@ -13,8 +13,7 @@ public static class PlatformHelper
         get
         {
             var now = Environment.TickCount;
-            if (processorCount == 0 ||
-                now - lastProcessorCountRefreshTicks >= PROCESSOR_COUNT_REFRESH_INTERVAL_MS)
+            if (processorCount == 0 || now - lastProcessorCountRefreshTicks >= PROCESSOR_COUNT_REFRESH_INTERVAL_MS)
             {
                 processorCount = Environment.ProcessorCount;
                 lastProcessorCountRefreshTicks = now;

@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Common.ModuleBehaviors;
 using CommandLine;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Help.Services;
@@ -13,7 +13,8 @@ public class HelpService : ILateExecutor, INService
     private readonly BotConfigService _bss;
     private readonly IEmbedBuilderService _eb;
 
-    public HelpService(CommandHandler ch,
+    public HelpService(
+        CommandHandler ch,
         IBotStrings strings,
         DiscordPermOverrideService dpos,
         BotConfigService bss,
@@ -33,23 +34,23 @@ public class HelpService : ILateExecutor, INService
         {
             if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
                 return Task.CompletedTask;
-                
+
             // only send dm help text if it contains one of the keywords, if they're specified
             // if they're not, then reply to every DM
             if (settings.DmHelpTextKeywords.Any() && !settings.DmHelpTextKeywords.Any(k => msg.Content.Contains(k)))
                 return Task.CompletedTask;
 
-            var rep = new ReplacementBuilder()
-                .WithOverride("%prefix%", () => _bss.Data.Prefix)
-                .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
-                .WithUser(msg.Author)
-                .Build();
-                
+            var rep = new ReplacementBuilder().WithOverride("%prefix%", () => _bss.Data.Prefix)
+                                              .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
+                                              .WithUser(msg.Author)
+                                              .Build();
+
             var text = SmartText.CreateFrom(settings.DmHelpText);
             text = rep.Replace(text);
 
             return msg.Channel.SendAsync(text);
         }
+
         return Task.CompletedTask;
     }
 
@@ -61,30 +62,24 @@ public class HelpService : ILateExecutor, INService
         var alias = com.Aliases.Skip(1).FirstOrDefault();
         if (alias != null)
             str += $" **/ `{prefix + alias}`**";
-        var em = _eb.Create()
-            .AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
+        var em = _eb.Create().AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
         var reqs = GetCommandRequirements(com, overrides);
-        if(reqs.Any())
-        {
-            em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
-        }
+        if (reqs.Any()) em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
-        em
-            .AddField(_strings.GetText(strs.usage),
-                string.Join("\n", Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix),
-                    arg => Format.Code(arg))),
-                false)
-            .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
-            .WithOkColor();
+        em.AddField(_strings.GetText(strs.usage),
+              string.Join("\n",
+                  Array.ConvertAll(com.RealRemarksArr(_strings, guild?.Id, prefix), arg => Format.Code(arg))))
+          .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
+          .WithOkColor();
 
         var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
         if (opt != null)
         {
             var hs = GetCommandOptionHelp(opt);
-            if(!string.IsNullOrWhiteSpace(hs))
-                em.AddField(GetText(strs.options, guild), hs, false);
+            if (!string.IsNullOrWhiteSpace(hs))
+                em.AddField(GetText(strs.options, guild), hs);
         }
 
         return em;
@@ -100,34 +95,33 @@ public class HelpService : ILateExecutor, INService
     public static List<string> GetCommandOptionHelpList(Type opt)
     {
         var strs = opt.GetProperties()
-            .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-            .Where(x => x != null)
-            .Cast<OptionAttribute>()
-            .Select(x =>
-            {
-                var toReturn = $"`--{x.LongName}`";
+                      .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
+                      .Where(x => x != null)
+                      .Cast<OptionAttribute>()
+                      .Select(x =>
+                      {
+                          var toReturn = $"`--{x.LongName}`";
 
-                if (!string.IsNullOrWhiteSpace(x.ShortName))
-                    toReturn += $" (`-{x.ShortName}`)";
+                          if (!string.IsNullOrWhiteSpace(x.ShortName))
+                              toReturn += $" (`-{x.ShortName}`)";
 
-                toReturn += $"   {x.HelpText}  ";
-                return toReturn;
-            })
-            .ToList();
+                          toReturn += $"   {x.HelpText}  ";
+                          return toReturn;
+                      })
+                      .ToList();
 
         return strs;
     }
 
-        
+
     public static string[] GetCommandRequirements(CommandInfo cmd, GuildPerm? overrides = null)
     {
         var toReturn = new List<string>();
 
-        if(cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
+        if (cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
             toReturn.Add("Bot Owner Only");
-            
-        var userPerm = (UserPermAttribute)cmd.Preconditions
-            .FirstOrDefault(ca => ca is UserPermAttribute);
+
+        var userPerm = (UserPermAttribute)cmd.Preconditions.FirstOrDefault(ca => ca is UserPermAttribute);
 
         var userPermString = string.Empty;
         if (userPerm is not null)
@@ -140,14 +134,14 @@ public class HelpService : ILateExecutor, INService
 
         if (overrides is null)
         {
-            if(!string.IsNullOrWhiteSpace(userPermString))
+            if (!string.IsNullOrWhiteSpace(userPermString))
                 toReturn.Add(userPermString);
         }
         else
         {
-            if(!string.IsNullOrWhiteSpace(userPermString))
+            if (!string.IsNullOrWhiteSpace(userPermString))
                 toReturn.Add(Format.Strikethrough(userPermString));
-                
+
             toReturn.Add(GetPreconditionString(overrides.Value));
         }
 
@@ -155,13 +149,11 @@ public class HelpService : ILateExecutor, INService
     }
 
     public static string GetPreconditionString(ChannelPerm perm)
-        => (perm.ToString() + " Channel Permission")
-            .Replace("Guild", "Server", StringComparison.InvariantCulture);
+        => (perm + " Channel Permission").Replace("Guild", "Server", StringComparison.InvariantCulture);
 
     public static string GetPreconditionString(GuildPerm perm)
-        => (perm.ToString() + " Server Permission")
-            .Replace("Guild", "Server", StringComparison.InvariantCulture);
+        => (perm + " Server Permission").Replace("Guild", "Server", StringComparison.InvariantCulture);
 
-    private string GetText(LocStr str, IGuild guild, params object[] replacements) =>
-        _strings.GetText(str, guild?.Id);
+    private string GetText(LocStr str, IGuild guild, params object[] replacements)
+        => _strings.GetText(str, guild?.Id);
 }

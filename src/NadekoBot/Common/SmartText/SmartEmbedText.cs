@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 namespace NadekoBot;
 
 public sealed record SmartEmbedText : SmartText
@@ -17,12 +17,14 @@ public sealed record SmartEmbedText : SmartText
     public uint Color { get; set; } = 7458112;
 
     public bool IsValid
-        => !string.IsNullOrWhiteSpace(Title) || !string.IsNullOrWhiteSpace(Description) ||
-           !string.IsNullOrWhiteSpace(Url) || !string.IsNullOrWhiteSpace(Thumbnail) ||
-           !string.IsNullOrWhiteSpace(Image) ||
-           (Footer != null &&
-            (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl))) ||
-           Fields is { Length: > 0 };
+        => !string.IsNullOrWhiteSpace(Title)
+           || !string.IsNullOrWhiteSpace(Description)
+           || !string.IsNullOrWhiteSpace(Url)
+           || !string.IsNullOrWhiteSpace(Thumbnail)
+           || !string.IsNullOrWhiteSpace(Image)
+           || (Footer != null
+               && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl)))
+           || Fields is { Length: > 0 };
 
     public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
     {
@@ -40,9 +42,11 @@ public sealed record SmartEmbedText : SmartText
 
         if (eb.Fields.Length > 0)
             set.Fields = eb.Fields.Select(field
-                    => new SmartTextEmbedField() { Inline = field.Inline, Name = field.Name, Value = field.Value, }
-                )
-                .ToArray();
+                               => new SmartTextEmbedField
+                                   {
+                                       Inline = field.Inline, Name = field.Name, Value = field.Value
+                                   })
+                           .ToArray();
 
         set.Color = eb.Color?.RawValue ?? 0;
         return set;
@@ -58,31 +62,24 @@ public sealed record SmartEmbedText : SmartText
         if (!string.IsNullOrWhiteSpace(Description))
             embed.WithDescription(Description);
 
-        if (Url != null &&
-            Uri.IsWellFormedUriString(Url, UriKind.Absolute))
+        if (Url != null && Uri.IsWellFormedUriString(Url, UriKind.Absolute))
             embed.WithUrl(Url);
 
         if (Footer != null)
-        {
             embed.WithFooter(efb =>
-                {
-                    efb.WithText(Footer.Text);
-                    if (Uri.IsWellFormedUriString(Footer.IconUrl, UriKind.Absolute))
-                        efb.WithIconUrl(Footer.IconUrl);
-                }
-            );
-        }
+            {
+                efb.WithText(Footer.Text);
+                if (Uri.IsWellFormedUriString(Footer.IconUrl, UriKind.Absolute))
+                    efb.WithIconUrl(Footer.IconUrl);
+            });
 
-        if (Thumbnail != null &&
-            Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
+        if (Thumbnail != null && Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
             embed.WithThumbnailUrl(Thumbnail);
 
-        if (Image != null &&
-            Uri.IsWellFormedUriString(Image, UriKind.Absolute))
+        if (Image != null && Uri.IsWellFormedUriString(Image, UriKind.Absolute))
             embed.WithImageUrl(Image);
 
-        if (Author != null &&
-            !string.IsNullOrWhiteSpace(Author.Name))
+        if (Author != null && !string.IsNullOrWhiteSpace(Author.Name))
         {
             if (!Uri.IsWellFormedUriString(Author.IconUrl, UriKind.Absolute))
                 Author.IconUrl = null;
@@ -93,14 +90,9 @@ public sealed record SmartEmbedText : SmartText
         }
 
         if (Fields != null)
-        {
             foreach (var f in Fields)
-            {
-                if (!string.IsNullOrWhiteSpace(f.Name) &&
-                    !string.IsNullOrWhiteSpace(f.Value))
+                if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
                     embed.AddField(f.Name, f.Value, f.Inline);
-            }
-        }
 
         return embed;
     }
@@ -108,12 +100,10 @@ public sealed record SmartEmbedText : SmartText
     public void NormalizeFields()
     {
         if (Fields is { Length: > 0 })
-        {
             foreach (var f in Fields)
             {
                 f.Name = f.Name.TrimTo(256);
                 f.Value = f.Value.TrimTo(1024);
             }
-        }
     }
 }

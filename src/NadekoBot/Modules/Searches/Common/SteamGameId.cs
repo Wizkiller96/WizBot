@@ -7,7 +7,7 @@ public class SteamGameId
 {
     [JsonProperty("name")]
     public string Name { get; set; }
-        
+
     [JsonProperty("appid")]
     public int AppId { get; set; }
 }

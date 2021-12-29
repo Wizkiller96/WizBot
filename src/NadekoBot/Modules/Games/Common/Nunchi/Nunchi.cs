@@ -10,11 +10,11 @@ public sealed class NunchiGame : IDisposable
         Joining,
         Playing,
         WaitingForNextRound,
-        Ended,
+        Ended
     }
 
-    public int CurrentNumber { get; private set; } = new NadekoRandom().Next(0, 100);
-    public Phase CurrentPhase { get; private set; } = Phase.Joining;
+    private const int _killTimeout = 20 * 1000;
+    private const int _nextRoundTimeout = 5 * 1000;
 
     public event Func<NunchiGame, Task> OnGameStarted;
     public event Func<NunchiGame, int, Task> OnRoundStarted;
@@ -22,16 +22,19 @@ public sealed class NunchiGame : IDisposable
     public event Func<NunchiGame, (ulong Id, string Name)?, Task> OnRoundEnded; // tuple of the user who failed
     public event Func<NunchiGame, string, Task> OnGameEnded; // name of the user who won
 
+    public int CurrentNumber { get; private set; } = new NadekoRandom().Next(0, 100);
+    public Phase CurrentPhase { get; private set; } = Phase.Joining;
+
+    public ImmutableArray<(ulong Id, string Name)> Participants
+        => _participants.ToImmutableArray();
+
+    public int ParticipantCount
+        => _participants.Count;
+
     private readonly SemaphoreSlim _locker = new(1, 1);
 
     private HashSet<(ulong Id, string Name)> _participants = new();
     private readonly HashSet<(ulong Id, string Name)> _passed = new();
-
-    public ImmutableArray<(ulong Id, string Name)> Participants => _participants.ToImmutableArray();
-    public int ParticipantCount => _participants.Count;
-
-    private const int _killTimeout = 20 * 1000;
-    private const int _nextRoundTimeout = 5 * 1000;
     private Timer _killTimer;
 
     public NunchiGame(ulong creatorId, string creatorName)
@@ -64,19 +67,22 @@ public sealed class NunchiGame : IDisposable
             }
 
             _killTimer = new(async state =>
-            {
-                await _locker.WaitAsync();
-                try
                 {
-                    if (CurrentPhase != Phase.Playing)
-                        return;
+                    await _locker.WaitAsync();
+                    try
+                    {
+                        if (CurrentPhase != Phase.Playing)
+                            return;
 
-                    //if some players took too long to type a number, boot them all out and start a new round
-                    _participants = new HashSet<(ulong, string)>(_passed);
-                    EndRound();
-                }
-                finally { _locker.Release(); }
-            }, null, _killTimeout, _killTimeout);
+                        //if some players took too long to type a number, boot them all out and start a new round
+                        _participants = new HashSet<(ulong, string)>(_passed);
+                        EndRound();
+                    }
+                    finally { _locker.Release(); }
+                },
+                null,
+                _killTimeout,
+                _killTimeout);
 
             CurrentPhase = Phase.Playing;
             var _ = OnGameStarted?.Invoke(this);
@@ -145,7 +151,7 @@ public sealed class NunchiGame : IDisposable
         _killTimer.Change(_killTimeout, _killTimeout);
         CurrentNumber = new NadekoRandom().Next(0, 100); // reset the counter
         _passed.Clear(); // reset all users who passed (new round starts)
-        if(failure != null)
+        if (failure != null)
             _participants.Remove(failure.Value); // remove the dude who failed from the list of players
 
         var __ = OnRoundEnded?.Invoke(this, failure);
@@ -156,6 +162,7 @@ public sealed class NunchiGame : IDisposable
             var _ = OnGameEnded?.Invoke(this, _participants.Count > 0 ? _participants.First().Name : null);
             return;
         }
+
         CurrentPhase = Phase.WaitingForNextRound;
         var throwawayDelay = Task.Run(async () =>
         {
@@ -163,7 +170,6 @@ public sealed class NunchiGame : IDisposable
             CurrentPhase = Phase.Playing;
             var ___ = OnRoundStarted?.Invoke(this, CurrentNumber);
         });
-            
     }
 
     public void Dispose()

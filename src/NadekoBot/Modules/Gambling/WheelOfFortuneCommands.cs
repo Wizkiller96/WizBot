@@ -1,8 +1,8 @@
 ﻿#nullable disable
-using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
-using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 using System.Collections.Immutable;
+using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -10,15 +10,8 @@ public partial class Gambling
 {
     public class WheelOfFortuneCommands : GamblingSubmodule<GamblingService>
     {
-        private static readonly ImmutableArray<string> _emojis = new string[] {
-            "⬆",
-            "↖",
-            "⬅",
-            "↙",
-            "⬇",
-            "↘",
-            "➡",
-            "↗" }.ToImmutableArray();
+        private static readonly ImmutableArray<string> _emojis =
+            new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
         private readonly ICurrencyService _cs;
         private readonly DbService _db;
@@ -30,13 +23,14 @@ public partial class Gambling
             _db = db;
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         public async Task WheelOfFortune(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;
 
-            if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, gamble: true))
+            if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, true))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
@@ -45,8 +39,7 @@ public partial class Gambling
             var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
 
             var wofMultipliers = _config.WheelOfFortune.Multipliers;
-            await SendConfirmAsync(
-                Format.Bold($@"{ctx.User.ToString()} won: {result.Amount + CurrencySign}
+            await SendConfirmAsync(Format.Bold($@"{ctx.User.ToString()} won: {result.Amount + CurrencySign}
 
    『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
 

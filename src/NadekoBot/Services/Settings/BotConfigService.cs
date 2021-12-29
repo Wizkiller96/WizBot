@@ -5,15 +5,14 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace NadekoBot.Services;
 
 /// <summary>
-/// Settings service for bot-wide configuration.
+///     Settings service for bot-wide configuration.
 /// </summary>
 public sealed class BotConfigService : ConfigServiceBase<BotConfig>
 {
-    public override string Name { get; } = "bot";
-        
     private const string FilePath = "data/bot.yml";
     private static readonly TypedKey<BotConfig> changeKey = new("config.bot.updated");
-        
+    public override string Name { get; } = "bot";
+
     public BotConfigService(IConfigSeria serializer, IPubSub pubSub)
         : base(FilePath, serializer, pubSub, changeKey)
     {
@@ -25,15 +24,12 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
         AddParsedProp("console.type", bs => bs.ConsoleOutputType, Enum.TryParse, ConfigPrinters.ToString);
         AddParsedProp("locale", bs => bs.DefaultLocale, ConfigParsers.Culture, ConfigPrinters.Culture);
         AddParsedProp("prefix", bs => bs.Prefix, ConfigParsers.String, ConfigPrinters.ToString);
-            
+
         Migrate();
     }
 
     private void Migrate()
     {
-        if (data.Version < 2)
-        {
-            ModifyConfig(c => c.Version = 2);
-        }
+        if (data.Version < 2) ModifyConfig(c => c.Version = 2);
     }
 }

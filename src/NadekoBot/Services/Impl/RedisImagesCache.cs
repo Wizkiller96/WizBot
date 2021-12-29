@@ -1,26 +1,13 @@
 ﻿#nullable disable
-using Newtonsoft.Json;
-using StackExchange.Redis;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace NadekoBot.Services;
 
 public sealed class RedisImagesCache : IImageCache, IReadyExecutor
 {
-    private readonly ConnectionMultiplexer _con;
-    private readonly IBotCredentials _creds;
-    private readonly HttpClient _http;
-    private readonly string _imagesPath;
-
-    private IDatabase Db
-        => _con.GetDatabase();
-
-    private const string BASE_PATH = "data/";
-    private const string CARDS_PATH = $"{BASE_PATH}images/cards";
-
-    public ImageUrls ImageUrls { get; private set; }
-
     public enum ImageKeys
     {
         CoinHeads,
@@ -35,6 +22,14 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         RipBg,
         XpBg
     }
+
+    private const string BASE_PATH = "data/";
+    private const string CARDS_PATH = $"{BASE_PATH}images/cards";
+
+    private IDatabase Db
+        => _con.GetDatabase();
+
+    public ImageUrls ImageUrls { get; private set; }
 
     public IReadOnlyList<byte[]> Heads
         => GetByteArrayData(ImageKeys.CoinHeads);
@@ -69,17 +64,10 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     public byte[] RipOverlay
         => GetByteData(ImageKeys.RipOverlay);
 
-    public byte[] GetCard(string key)
-        // since cards are always local for now, don't cache them
-        => File.ReadAllBytes(Path.Join(CARDS_PATH, key + ".jpg"));
-
-    public async Task OnReadyAsync()
-    {
-        if (await AllKeysExist())
-            return;
-
-        await Reload();
-    }
+    private readonly ConnectionMultiplexer _con;
+    private readonly IBotCredentials _creds;
+    private readonly HttpClient _http;
+    private readonly string _imagesPath;
 
     public RedisImagesCache(ConnectionMultiplexer con, IBotCredentials creds)
     {
@@ -91,6 +79,18 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         Migrate();
 
         ImageUrls = Yaml.Deserializer.Deserialize<ImageUrls>(File.ReadAllText(_imagesPath));
+    }
+
+    public byte[] GetCard(string key)
+        // since cards are always local for now, don't cache them
+        => File.ReadAllBytes(Path.Join(CARDS_PATH, key + ".jpg"));
+
+    public async Task OnReadyAsync()
+    {
+        if (await AllKeysExist())
+            return;
+
+        await Reload();
     }
 
     private void Migrate()
@@ -105,21 +105,22 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
 
             if (oldData is not null)
             {
-                var newData = new ImageUrls()
+                var newData = new ImageUrls
                 {
                     Coins =
                         new()
                         {
-                            Heads = oldData.Coins.Heads.Length == 1 &&
-                                    oldData.Coins.Heads[0].ToString() ==
-                                    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
-                                ? new[] { new Uri("https://cdn.nadeko.bot/coins/heads3.png") }
-                                : oldData.Coins.Heads,
-                            Tails = oldData.Coins.Tails.Length == 1 &&
-                                    oldData.Coins.Tails[0].ToString() ==
-                                    "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
+                            Heads =
+                                oldData.Coins.Heads.Length == 1
+                                && oldData.Coins.Heads[0].ToString()
+                                == "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
+                                    ? new[] { new Uri("https://cdn.nadeko.bot/coins/heads3.png") }
+                                    : oldData.Coins.Heads,
+                            Tails = oldData.Coins.Tails.Length == 1
+                                    && oldData.Coins.Tails[0].ToString()
+                                    == "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
                                 ? new[] { new Uri("https://cdn.nadeko.bot/coins/tails3.png") }
-                                : oldData.Coins.Tails,
+                                : oldData.Coins.Tails
                         },
                     Dice = oldData.Dice.Map(x => x.ToNewCdn()),
                     Currency = oldData.Currency.Map(x => x.ToNewCdn()),
@@ -128,7 +129,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                         {
                             Dot = oldData.Rategirl.Dot.ToNewCdn(), Matrix = oldData.Rategirl.Matrix.ToNewCdn()
                         },
-                    Rip = new() { Bg = oldData.Rip.Bg.ToNewCdn(), Overlay = oldData.Rip.Overlay.ToNewCdn(), },
+                    Rip = new() { Bg = oldData.Rip.Bg.ToNewCdn(), Overlay = oldData.Rip.Overlay.ToNewCdn() },
                     Slots = new()
                     {
                         Bg = new("https://cdn.nadeko.bot/slots/slots_bg.png"),
@@ -139,8 +140,8 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                             "https://cdn.nadeko.bot/slots/4.png", "https://cdn.nadeko.bot/slots/5.png"
                         }.Map(x => new Uri(x))
                     },
-                    Xp = new() { Bg = oldData.Xp.Bg.ToNewCdn(), },
-                    Version = 2,
+                    Xp = new() { Bg = oldData.Xp.Bg.ToNewCdn() },
+                    Version = 2
                 };
 
                 File.Move(oldFilePath, backupFilePath, true);
@@ -161,7 +162,6 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     {
         ImageUrls = Yaml.Deserializer.Deserialize<ImageUrls>(await File.ReadAllTextAsync(_imagesPath));
         foreach (var key in GetAllKeys())
-        {
             switch (key)
             {
                 case ImageKeys.CoinHeads:
@@ -200,7 +200,6 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
     }
 
     private async Task Load(ImageKeys key, Uri uri)
@@ -221,20 +220,17 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         await Db.ListRightPushAsync(GetRedisKey(key), vals);
 
         if (uris.Length != vals.Length)
-        {
-            Log.Information("{Loaded}/{Max} URIs for the key '{ImageKey}' have been loaded.\n" +
-                            "Some of the supplied URIs are either unavailable or invalid",
+            Log.Information(
+                "{Loaded}/{Max} URIs for the key '{ImageKey}' have been loaded.\n"
+                + "Some of the supplied URIs are either unavailable or invalid",
                 vals.Length,
                 uris.Length,
-                key
-            );
-        }
+                key);
     }
 
     private async Task<byte[]> GetImageData(Uri uri)
     {
         if (uri.IsFile)
-        {
             try
             {
                 var bytes = await File.ReadAllBytesAsync(uri.LocalPath);
@@ -245,7 +241,6 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                 Log.Warning(ex, "Failed reading image bytes from uri: {Uri}", uri.ToString());
                 return null;
             }
-        }
 
         try
         {
@@ -260,9 +255,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
 
     private async Task<bool> AllKeysExist()
     {
-        var tasks = await GetAllKeys()
-            .Select(x => Db.KeyExistsAsync(GetRedisKey(x)))
-            .WhenAll();
+        var tasks = await GetAllKeys().Select(x => Db.KeyExistsAsync(GetRedisKey(x))).WhenAll();
 
         return tasks.All(exist => exist);
     }

@@ -6,30 +6,47 @@ namespace NadekoBot.Services;
 
 public class StatsService : IStatsService, IReadyExecutor, INService, IDisposable
 {
+    public const string BotVersion = "4.0.0";
+
+    public string Author
+        => "Kwoth#2452";
+
+    public string Library
+        => "Discord.Net";
+
+    public double MessagesPerSecond
+        => MessageCounter / GetUptime().TotalSeconds;
+
+    public long TextChannels
+        => Interlocked.Read(ref _textChannels);
+
+    public long VoiceChannels
+        => Interlocked.Read(ref _voiceChannels);
+
+    public long MessageCounter
+        => Interlocked.Read(ref _messageCounter);
+
+    public long CommandsRan
+        => Interlocked.Read(ref _commandsRan);
+
     private readonly Process _currentProcess = Process.GetCurrentProcess();
     private readonly DiscordSocketClient _client;
     private readonly IBotCredentials _creds;
     private readonly DateTime _started;
 
-    public const string BotVersion = "4.0.0";
-    public string Author => "Kwoth#2452";
-    public string Library => "Discord.Net";
-    public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
-
     private long _textChannels;
-    public long TextChannels => Interlocked.Read(ref _textChannels);
     private long _voiceChannels;
-    public long VoiceChannels => Interlocked.Read(ref _voiceChannels);
     private long _messageCounter;
-    public long MessageCounter => Interlocked.Read(ref _messageCounter);
     private long _commandsRan;
-    public long CommandsRan => Interlocked.Read(ref _commandsRan);
 
     private readonly Timer _botlistTimer;
     private readonly IHttpClientFactory _httpFactory;
 
-    public StatsService(DiscordSocketClient client, CommandHandler cmdHandler,
-        IBotCredentials creds, IHttpClientFactory factory)
+    public StatsService(
+        DiscordSocketClient client,
+        CommandHandler cmdHandler,
+        IBotCredentials creds,
+        IHttpClientFactory factory)
     {
         _client = client;
         _creds = creds;
@@ -116,34 +133,39 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
         };
 
         _botlistTimer = new(async state =>
-        {
-            if (string.IsNullOrWhiteSpace(_creds.BotListToken))
-                return;
-            try
             {
-                using var http = _httpFactory.CreateClient();
-                using var content = new FormUrlEncodedContent(
-                    new Dictionary<string, string> {
-                        { "shard_count",  _creds.TotalShards.ToString()},
+                if (string.IsNullOrWhiteSpace(_creds.BotListToken))
+                    return;
+                try
+                {
+                    using var http = _httpFactory.CreateClient();
+                    using var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                    {
+                        { "shard_count", _creds.TotalShards.ToString() },
                         { "shard_id", client.ShardId.ToString() },
                         { "server_count", client.Guilds.Count().ToString() }
                     });
-                content.Headers.Clear();
-                content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
+                    content.Headers.Clear();
+                    content.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+                    http.DefaultRequestHeaders.Add("Authorization", _creds.BotListToken);
 
-                using (await http.PostAsync(new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"), content)) { }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error ");
-                // ignored
-            }
-        }, null, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
+                    using (await http.PostAsync(
+                               new Uri($"https://discordbots.org/api/bots/{client.CurrentUser.Id}/stats"),
+                               content)) { }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error ");
+                    // ignored
+                }
+            },
+            null,
+            TimeSpan.FromMinutes(5),
+            TimeSpan.FromHours(1));
     }
 
-    public TimeSpan GetUptime() =>
-        DateTime.UtcNow - _started;
+    public TimeSpan GetUptime()
+        => DateTime.UtcNow - _started;
 
     public string GetUptimeString(string separator = ", ")
     {

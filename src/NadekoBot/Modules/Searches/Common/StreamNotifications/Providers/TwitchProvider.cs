@@ -1,17 +1,18 @@
-﻿using System.Text.RegularExpressions;
-using NadekoBot.Db.Models;
+﻿using NadekoBot.Db.Models;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 public class TwitchProvider : Provider
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
     private static Regex Regex { get; } = new(@"twitch.tv/(?<name>.+[^/])/?",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public override FollowedStream.FType Platform => FollowedStream.FType.Twitch;
+    public override FollowedStream.FType Platform
+        => FollowedStream.FType.Twitch;
+
+    private readonly IHttpClientFactory _httpClientFactory;
 
     public TwitchProvider(IHttpClientFactory httpClientFactory)
         => _httpClientFactory = httpClientFactory;
@@ -40,7 +41,7 @@ public class TwitchProvider : Provider
 
     public override async Task<StreamData?> GetStreamDataAsync(string id)
     {
-        var data = await GetStreamDataAsync(new List<string> {id});
+        var data = await GetStreamDataAsync(new List<string> { id });
 
         return data.FirstOrDefault();
     }
@@ -56,7 +57,6 @@ public class TwitchProvider : Provider
 
         var toReturn = new List<StreamData>();
         foreach (var login in logins)
-        {
             try
             {
                 // get id based on the username
@@ -70,8 +70,7 @@ public class TwitchProvider : Provider
 
                 // get stream data
                 var str = await http.GetStringAsync($"https://api.twitch.tv/kraken/streams/{user.Id}");
-                var resObj =
-                    JsonConvert.DeserializeAnonymousType(str, new {Stream = new TwitchResponseV5.Stream()});
+                var resObj = JsonConvert.DeserializeAnonymousType(str, new { Stream = new TwitchResponseV5.Stream() });
 
                 // if stream is null, user is not streaming
                 if (resObj?.Stream is null)
@@ -79,7 +78,7 @@ public class TwitchProvider : Provider
                     // if user is not streaming, get his offline banner
                     var chStr = await http.GetStringAsync($"https://api.twitch.tv/kraken/channels/{user.Id}");
                     var ch = JsonConvert.DeserializeObject<TwitchResponseV5.Channel>(chStr)!;
-                            
+
                     toReturn.Add(new()
                     {
                         StreamType = FollowedStream.FType.Twitch,
@@ -102,11 +101,9 @@ public class TwitchProvider : Provider
                 Log.Warning("Something went wrong retreiving {StreamPlatform} stream data for {Login}: {ErrorMessage}",
                     Platform,
                     login,
-                    ex.Message
-                );
+                    ex.Message);
                 _failingStreams.TryAdd(login, DateTime.UtcNow);
             }
-        }
 
         return toReturn;
     }

@@ -10,7 +10,7 @@ public class GreetGrouper<T>
 
 
     /// <summary>
-    /// Creates a group, if group already exists, adds the specified user
+    ///     Creates a group, if group already exists, adds the specified user
     /// </summary>
     /// <param name="guildId">Id of the server for which to create group for</param>
     /// <param name="toAddIfExists">User to add if group already exists</param>
@@ -31,7 +31,7 @@ public class GreetGrouper<T>
     }
 
     /// <summary>
-    /// Remove the specified amount of items from the group. If all items are removed, group will be removed.
+    ///     Remove the specified amount of items from the group. If all items are removed, group will be removed.
     /// </summary>
     /// <param name="guildId">Id of the group</param>
     /// <param name="count">Maximum number of items to retrieve</param>
@@ -54,8 +54,7 @@ public class GreetGrouper<T>
                 // if there are more in the group than what's needed
                 // take the requested number, remove them from the set
                 // and return them
-                var toReturn = set.TakeWhile(_ => count-- != 0)
-                    .ToList();
+                var toReturn = set.TakeWhile(_ => count-- != 0).ToList();
                 foreach (var item in toReturn)
                     set.Remove(item);
 

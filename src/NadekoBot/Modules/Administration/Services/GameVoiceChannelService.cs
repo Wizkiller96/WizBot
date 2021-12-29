@@ -16,9 +16,8 @@ public class GameVoiceChannelService : INService
         _db = db;
         _client = client;
 
-        GameVoiceChannels = new(
-            bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel != null)
-                .Select(gc => gc.GameVoiceChannel.Value));
+        GameVoiceChannels = new(bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel != null)
+                                   .Select(gc => gc.GameVoiceChannel.Value));
 
         _client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
         _client.GuildMemberUpdated += _client_GuildMemberUpdated;
@@ -39,11 +38,8 @@ public class GameVoiceChannelService : INService
                 var oldActivity = before.Value.Activities.FirstOrDefault();
                 var newActivity = after.Activities.FirstOrDefault();
                 if (oldActivity != newActivity && newActivity is { Type: ActivityType.Playing })
-                {
                     //trigger gvc
                     await TriggerGvc(after, newActivity.Name);
-                }
-
             }
             catch (Exception ex)
             {
@@ -87,12 +83,10 @@ public class GameVoiceChannelService : INService
 
                 var game = gUser.Activities.FirstOrDefault()?.Name;
 
-                if (oldState.VoiceChannel == newState.VoiceChannel ||
-                    newState.VoiceChannel is null)
+                if (oldState.VoiceChannel == newState.VoiceChannel || newState.VoiceChannel is null)
                     return;
 
-                if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id) ||
-                    string.IsNullOrWhiteSpace(game))
+                if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id) || string.IsNullOrWhiteSpace(game))
                     return;
 
                 await TriggerGvc(gUser, game);
@@ -112,8 +106,7 @@ public class GameVoiceChannelService : INService
             return;
 
         game = game.TrimTo(50).ToLowerInvariant();
-        var vch = gUser.Guild.VoiceChannels
-            .FirstOrDefault(x => x.Name.ToLowerInvariant() == game);
+        var vch = gUser.Guild.VoiceChannels.FirstOrDefault(x => x.Name.ToLowerInvariant() == game);
 
         if (vch is null)
             return;

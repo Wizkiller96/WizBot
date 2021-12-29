@@ -8,7 +8,8 @@ public partial class Utility
     [Group]
     public class VerboseErrorCommands : NadekoSubmodule<VerboseErrorsService>
     {
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task VerboseError(bool? newstate = null)

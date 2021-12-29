@@ -2,9 +2,10 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using NadekoBot.Services.Database.Models;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
+using NadekoBot.Services.Database.Models;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace NadekoBot.Services.Database;
@@ -47,7 +48,7 @@ public class NadekoContext : DbContext
 
     public DbSet<RotatingPlayingStatus> RotatingStatus { get; set; }
     public DbSet<BlacklistEntry> Blacklist { get; set; }
-    public DbSet<AutoCommand> AutoCommands { get; set; } 
+    public DbSet<AutoCommand> AutoCommands { get; set; }
     public DbSet<RewardedUser> RewardedUsers { get; set; }
     public DbSet<PlantedCurrency> PlantedCurrency { get; set; }
     public DbSet<BanTemplate> BanTemplates { get; set; }
@@ -62,16 +63,10 @@ public class NadekoContext : DbContext
     public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
 
-    public NadekoContext(DbContextOptions<NadekoContext> options) : base(options)
+    public NadekoContext(DbContextOptions<NadekoContext> options)
+        : base(options)
     {
     }
-        
-#if DEBUG
-    private static readonly ILoggerFactory _debugLoggerFactory =
-        LoggerFactory.Create(x => x.AddConsole());
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
-#endif
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,75 +81,56 @@ public class NadekoContext : DbContext
         #region GuildConfig
 
         var configEntity = modelBuilder.Entity<GuildConfig>();
-        configEntity
-            .HasIndex(c => c.GuildId)
-            .IsUnique();
+        configEntity.HasIndex(c => c.GuildId).IsUnique();
 
-        modelBuilder.Entity<AntiSpamSetting>()
-            .HasOne(x => x.GuildConfig)
-            .WithOne(x => x.AntiSpamSetting);
+        modelBuilder.Entity<AntiSpamSetting>().HasOne(x => x.GuildConfig).WithOne(x => x.AntiSpamSetting);
 
-        modelBuilder.Entity<AntiRaidSetting>()
-            .HasOne(x => x.GuildConfig)
-            .WithOne(x => x.AntiRaidSetting);
+        modelBuilder.Entity<AntiRaidSetting>().HasOne(x => x.GuildConfig).WithOne(x => x.AntiRaidSetting);
 
         modelBuilder.Entity<GuildConfig>()
-            .HasOne(x => x.AntiAltSetting)
-            .WithOne()
-            .HasForeignKey<AntiAltSetting>(x => x.GuildConfigId)
-            .OnDelete(DeleteBehavior.Cascade);
+                    .HasOne(x => x.AntiAltSetting)
+                    .WithOne()
+                    .HasForeignKey<AntiAltSetting>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<FeedSub>()
-            .HasAlternateKey(x => new { x.GuildConfigId, x.Url });
+        modelBuilder.Entity<FeedSub>().HasAlternateKey(x => new { x.GuildConfigId, x.Url });
 
-        modelBuilder.Entity<PlantedCurrency>()
-            .HasIndex(x => x.MessageId)
-            .IsUnique();
+        modelBuilder.Entity<PlantedCurrency>().HasIndex(x => x.MessageId).IsUnique();
 
-        modelBuilder.Entity<PlantedCurrency>()
-            .HasIndex(x => x.ChannelId);
+        modelBuilder.Entity<PlantedCurrency>().HasIndex(x => x.ChannelId);
 
-        configEntity.HasIndex(x => x.WarnExpireHours)
-            .IsUnique(false);
+        configEntity.HasIndex(x => x.WarnExpireHours).IsUnique(false);
 
         #endregion
 
         #region streamrole
-        modelBuilder.Entity<StreamRoleSettings>()
-            .HasOne(x => x.GuildConfig)
-            .WithOne(x => x.StreamRole);
+
+        modelBuilder.Entity<StreamRoleSettings>().HasOne(x => x.GuildConfig).WithOne(x => x.StreamRole);
+
         #endregion
-            
+
         #region Self Assignable Roles
 
         var selfassignableRolesEntity = modelBuilder.Entity<SelfAssignedRole>();
 
-        selfassignableRolesEntity
-            .HasIndex(s => new { s.GuildId, s.RoleId })
-            .IsUnique();
+        selfassignableRolesEntity.HasIndex(s => new { s.GuildId, s.RoleId }).IsUnique();
 
-        selfassignableRolesEntity
-            .Property(x => x.Group)
-            .HasDefaultValue(0);
+        selfassignableRolesEntity.Property(x => x.Group).HasDefaultValue(0);
 
         #endregion
 
         #region MusicPlaylists
+
         var musicPlaylistEntity = modelBuilder.Entity<MusicPlaylist>();
 
-        musicPlaylistEntity
-            .HasMany(p => p.Songs)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-
+        musicPlaylistEntity.HasMany(p => p.Songs).WithOne().OnDelete(DeleteBehavior.Cascade);
 
         #endregion
 
         #region Waifus
 
         var wi = modelBuilder.Entity<WaifuInfo>();
-        wi.HasOne(x => x.Waifu)
-            .WithOne();
+        wi.HasOne(x => x.Waifu).WithOne();
 
         wi.HasIndex(x => x.Price);
         wi.HasIndex(x => x.ClaimerId);
@@ -168,28 +144,21 @@ public class NadekoContext : DbContext
 
         modelBuilder.Entity<DiscordUser>(du =>
         {
-            du.Property(x => x.IsClubAdmin)
-                .HasDefaultValue(false);
+            du.Property(x => x.IsClubAdmin).HasDefaultValue(false);
 
-            du.Property(x => x.NotifyOnLevelUp)
-                .HasDefaultValue(XpNotificationLocation.None);
+            du.Property(x => x.NotifyOnLevelUp).HasDefaultValue(XpNotificationLocation.None);
 
-            du.Property(x => x.LastXpGain)
-                .HasDefaultValueSql("datetime('now', '-1 years')");
+            du.Property(x => x.LastXpGain).HasDefaultValueSql("datetime('now', '-1 years')");
 
-            du.Property(x => x.LastLevelUp)
-                .HasDefaultValueSql("datetime('now')");
+            du.Property(x => x.LastLevelUp).HasDefaultValueSql("datetime('now')");
 
             du.HasAlternateKey(w => w.UserId);
-            du.HasOne(x => x.Club)
-                .WithMany(x => x.Users)
-                .IsRequired(false);
+            du.HasOne(x => x.Club).WithMany(x => x.Users).IsRequired(false);
 
             du.HasIndex(x => x.TotalXp);
             du.HasIndex(x => x.CurrencyAmount);
             du.HasIndex(x => x.UserId);
         });
-
 
         #endregion
 
@@ -200,27 +169,25 @@ public class NadekoContext : DbContext
             warn.HasIndex(x => x.GuildId);
             warn.HasIndex(x => x.UserId);
             warn.HasIndex(x => x.DateAdded);
-            warn.Property(x => x.Weight)
-                .HasDefaultValue(1);
+            warn.Property(x => x.Weight).HasDefaultValue(1);
         });
 
         #endregion
 
         #region PatreonRewards
+
         var pr = modelBuilder.Entity<RewardedUser>();
-        pr.HasIndex(x => x.PatreonUserId)
-            .IsUnique();
+        pr.HasIndex(x => x.PatreonUserId).IsUnique();
+
         #endregion
 
         #region XpStats
-        var xps = modelBuilder.Entity<UserXpStats>();
-        xps
-            .HasIndex(x => new { x.UserId, x.GuildId })
-            .IsUnique();
 
-        xps
-            .Property(x => x.LastLevelUp)
-            .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 307, DateTimeKind.Local));
+        var xps = modelBuilder.Entity<UserXpStats>();
+        xps.HasIndex(x => new { x.UserId, x.GuildId }).IsUnique();
+
+        xps.Property(x => x.LastLevelUp)
+           .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 307, DateTimeKind.Local));
 
         xps.HasIndex(x => x.UserId);
         xps.HasIndex(x => x.GuildId);
@@ -230,156 +197,134 @@ public class NadekoContext : DbContext
         #endregion
 
         #region XpSettings
-        modelBuilder.Entity<XpSettings>()
-            .HasOne(x => x.GuildConfig)
-            .WithOne(x => x.XpSettings);
+
+        modelBuilder.Entity<XpSettings>().HasOne(x => x.GuildConfig).WithOne(x => x.XpSettings);
+
         #endregion
 
         #region XpRoleReward
-        modelBuilder.Entity<XpRoleReward>()
-            .HasIndex(x => new { x.XpSettingsId, x.Level })
-            .IsUnique();
+
+        modelBuilder.Entity<XpRoleReward>().HasIndex(x => new { x.XpSettingsId, x.Level }).IsUnique();
+
         #endregion
 
         #region Club
+
         var ci = modelBuilder.Entity<ClubInfo>();
-        ci.HasOne(x => x.Owner)
-            .WithOne()
-            .HasForeignKey<ClubInfo>(x => x.OwnerId);
+        ci.HasOne(x => x.Owner).WithOne().HasForeignKey<ClubInfo>(x => x.OwnerId);
 
 
         ci.HasAlternateKey(x => new { x.Name, x.Discrim });
+
         #endregion
 
         #region ClubManytoMany
 
-        modelBuilder.Entity<ClubApplicants>()
-            .HasKey(t => new { t.ClubId, t.UserId });
+        modelBuilder.Entity<ClubApplicants>().HasKey(t => new { t.ClubId, t.UserId });
 
-        modelBuilder.Entity<ClubApplicants>()
-            .HasOne(pt => pt.User)
-            .WithMany();
+        modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.User).WithMany();
 
-        modelBuilder.Entity<ClubApplicants>()
-            .HasOne(pt => pt.Club)
-            .WithMany(x => x.Applicants);
+        modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.Club).WithMany(x => x.Applicants);
 
-        modelBuilder.Entity<ClubBans>()
-            .HasKey(t => new { t.ClubId, t.UserId });
+        modelBuilder.Entity<ClubBans>().HasKey(t => new { t.ClubId, t.UserId });
 
-        modelBuilder.Entity<ClubBans>()
-            .HasOne(pt => pt.User)
-            .WithMany();
+        modelBuilder.Entity<ClubBans>().HasOne(pt => pt.User).WithMany();
 
-        modelBuilder.Entity<ClubBans>()
-            .HasOne(pt => pt.Club)
-            .WithMany(x => x.Bans);
+        modelBuilder.Entity<ClubBans>().HasOne(pt => pt.Club).WithMany(x => x.Bans);
 
         #endregion
 
         #region Polls
-        modelBuilder.Entity<Poll>()
-            .HasIndex(x => x.GuildId)
-            .IsUnique();
+
+        modelBuilder.Entity<Poll>().HasIndex(x => x.GuildId).IsUnique();
+
         #endregion
 
         #region CurrencyTransactions
-        modelBuilder.Entity<CurrencyTransaction>()
-            .HasIndex(x => x.UserId)
-            .IsUnique(false);
+
+        modelBuilder.Entity<CurrencyTransaction>().HasIndex(x => x.UserId).IsUnique(false);
+
         #endregion
 
         #region Reminders
-        modelBuilder.Entity<Reminder>()
-            .HasIndex(x => x.When);
+
+        modelBuilder.Entity<Reminder>().HasIndex(x => x.When);
+
         #endregion
 
-        #region  GroupName
-        modelBuilder.Entity<GroupName>()
-            .HasIndex(x => new { x.GuildConfigId, x.Number })
-            .IsUnique();
+        #region GroupName
+
+        modelBuilder.Entity<GroupName>().HasIndex(x => new { x.GuildConfigId, x.Number }).IsUnique();
 
         modelBuilder.Entity<GroupName>()
-            .HasOne(x => x.GuildConfig)
-            .WithMany(x => x.SelfAssignableRoleGroupNames)
-            .IsRequired();
+                    .HasOne(x => x.GuildConfig)
+                    .WithMany(x => x.SelfAssignableRoleGroupNames)
+                    .IsRequired();
+
         #endregion
-            
+
         #region BanTemplate
 
-        modelBuilder.Entity<BanTemplate>()
-            .HasIndex(x => x.GuildId)
-            .IsUnique();
+        modelBuilder.Entity<BanTemplate>().HasIndex(x => x.GuildId).IsUnique();
 
         #endregion
-            
+
         #region Perm Override
 
-        modelBuilder.Entity<DiscordPermOverride>()
-            .HasIndex(x => new {x.GuildId, x.Command})
-            .IsUnique();
+        modelBuilder.Entity<DiscordPermOverride>().HasIndex(x => new { x.GuildId, x.Command }).IsUnique();
 
         #endregion
-            
+
         #region Music
 
-        modelBuilder.Entity<MusicPlayerSettings>()
-            .HasIndex(x => x.GuildId)
-            .IsUnique();
+        modelBuilder.Entity<MusicPlayerSettings>().HasIndex(x => x.GuildId).IsUnique();
 
-        modelBuilder.Entity<MusicPlayerSettings>()
-            .Property(x => x.Volume)
-            .HasDefaultValue(100);
+        modelBuilder.Entity<MusicPlayerSettings>().Property(x => x.Volume).HasDefaultValue(100);
 
         #endregion
 
         #region Reaction roles
 
         modelBuilder.Entity<ReactionRoleMessage>(rrm => rrm
-            .HasMany(x => x.ReactionRoles)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade));
+                                                        .HasMany(x => x.ReactionRoles)
+                                                        .WithOne()
+                                                        .OnDelete(DeleteBehavior.Cascade));
 
         #endregion
 
         #region LogSettings
 
+        modelBuilder.Entity<LogSetting>(ls => ls.HasIndex(x => x.GuildId).IsUnique());
+
         modelBuilder.Entity<LogSetting>(ls => ls
-            .HasIndex(x => x.GuildId)
-            .IsUnique());
-            
-        modelBuilder.Entity<LogSetting>(ls => ls
-            .HasMany(x => x.LogIgnores)
-            .WithOne(x => x.LogSetting)
-            .OnDelete(DeleteBehavior.Cascade));
+                                              .HasMany(x => x.LogIgnores)
+                                              .WithOne(x => x.LogSetting)
+                                              .OnDelete(DeleteBehavior.Cascade));
 
         modelBuilder.Entity<IgnoredLogItem>(ili => ili
-            .HasIndex(x => new { x.LogSettingId, x.LogItemId, x.ItemType })
-            .IsUnique());
+                                                   .HasIndex(x => new { x.LogSettingId, x.LogItemId, x.ItemType })
+                                                   .IsUnique());
 
         #endregion
 
-        modelBuilder.Entity<ImageOnlyChannel>(ioc => ioc
-            .HasIndex(x => x.ChannelId)
-            .IsUnique());
+        modelBuilder.Entity<ImageOnlyChannel>(ioc => ioc.HasIndex(x => x.ChannelId).IsUnique());
 
-        modelBuilder.Entity<NsfwBlacklistedTag>(nbt => nbt
-            .HasIndex(x => x.GuildId)
-            .IsUnique(false));
+        modelBuilder.Entity<NsfwBlacklistedTag>(nbt => nbt.HasIndex(x => x.GuildId).IsUnique(false));
 
         var atch = modelBuilder.Entity<AutoTranslateChannel>();
-        atch.HasIndex(x => x.GuildId)
-            .IsUnique(false);
+        atch.HasIndex(x => x.GuildId).IsUnique(false);
 
-        atch.HasIndex(x => x.ChannelId)
-            .IsUnique();
+        atch.HasIndex(x => x.ChannelId).IsUnique();
 
-        atch
-            .HasMany(x => x.Users)
-            .WithOne(x => x.Channel)
-            .OnDelete(DeleteBehavior.Cascade);
+        atch.HasMany(x => x.Users).WithOne(x => x.Channel).OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<AutoTranslateUser>(atu => atu
-            .HasAlternateKey(x => new { x.ChannelId, x.UserId }));
+        modelBuilder.Entity<AutoTranslateUser>(atu => atu.HasAlternateKey(x => new { x.ChannelId, x.UserId }));
     }
+
+#if DEBUG
+    private static readonly ILoggerFactory _debugLoggerFactory = LoggerFactory.Create(x => x.AddConsole());
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
+#endif
 }

@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Db.Models;
 using NadekoBot.Db;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Xp.Services;
 
@@ -28,22 +28,16 @@ public class ClubService : INService
         if (xp.Level >= 5 && du.Club is null)
         {
             du.IsClubAdmin = true;
-            du.Club = new()
-            {
-                Name = clubName,
-                Discrim = uow.Clubs.GetNextDiscrim(clubName),
-                Owner = du,
-            };
+            du.Club = new() { Name = clubName, Discrim = uow.Clubs.GetNextDiscrim(clubName), Owner = du };
             uow.Clubs.Add(du.Club);
             uow.SaveChanges();
         }
         else
+        {
             return false;
+        }
 
-        uow.Set<ClubApplicants>()
-            .RemoveRange(uow.Set<ClubApplicants>()
-                .AsQueryable()
-                .Where(x => x.UserId == du.Id));
+        uow.Set<ClubApplicants>().RemoveRange(uow.Set<ClubApplicants>().AsQueryable().Where(x => x.UserId == du.Id));
         club = du.Club;
         uow.SaveChanges();
 
@@ -54,12 +48,10 @@ public class ClubService : INService
     {
         ClubInfo club;
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByOwner(@from.Id);
+        club = uow.Clubs.GetByOwner(from.Id);
         var newOwnerUser = uow.GetOrCreateUser(newOwner);
 
-        if (club is null ||
-            club.Owner.UserId != @from.Id ||
-            !club.Users.Contains(newOwnerUser))
+        if (club is null || club.Owner.UserId != from.Id || !club.Users.Contains(newOwnerUser))
             return null;
 
         club.Owner.IsClubAdmin = true; // old owner will stay as admin
@@ -76,8 +68,7 @@ public class ClubService : INService
         var club = uow.Clubs.GetByOwner(owner.Id);
         var adminUser = uow.GetOrCreateUser(toAdmin);
 
-        if (club is null || club.Owner.UserId != owner.Id ||
-            !club.Users.Contains(adminUser))
+        if (club is null || club.Owner.UserId != owner.Id || !club.Users.Contains(adminUser))
             throw new InvalidOperationException();
 
         if (club.OwnerId == adminUser.Id)
@@ -134,8 +125,7 @@ public class ClubService : INService
         club = uow.Clubs.GetByName(name, discrim);
         if (club is null)
             return false;
-        else
-            return true;
+        return true;
     }
 
     public bool ApplyToClub(IUser user, ClubInfo club)
@@ -148,17 +138,11 @@ public class ClubService : INService
             || new LevelStats(du.TotalXp).Level < club.MinimumLevelReq
             || club.Bans.Any(x => x.UserId == du.Id)
             || club.Applicants.Any(x => x.UserId == du.Id))
-        {
             //user banned or a member of a club, or already applied,
             // or doesn't min minumum level requirement, can't apply
             return false;
-        }
 
-        var app = new ClubApplicants
-        {
-            ClubId = club.Id,
-            UserId = du.Id,
-        };
+        var app = new ClubApplicants { ClubId = club.Id, UserId = du.Id };
 
         uow.Set<ClubApplicants>().Add(app);
 
@@ -174,7 +158,8 @@ public class ClubService : INService
         if (club is null)
             return false;
 
-        var applicant = club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
+        var applicant =
+            club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
         if (applicant is null)
             return false;
 
@@ -184,9 +169,7 @@ public class ClubService : INService
 
         //remove that user's all other applications
         uow.Set<ClubApplicants>()
-            .RemoveRange(uow.Set<ClubApplicants>()
-                .AsQueryable()
-                .Where(x => x.UserId == applicant.User.Id));
+           .RemoveRange(uow.Set<ClubApplicants>().AsQueryable().Where(x => x.UserId == applicant.User.Id));
 
         discordUser = applicant.User;
         uow.SaveChanges();
@@ -261,18 +244,17 @@ public class ClubService : INService
             return false;
 
         var usr = club.Users.FirstOrDefault(x => x.ToString().ToUpperInvariant() == userName.ToUpperInvariant())
-                  ?? club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant())?.User;
+                  ?? club.Applicants
+                         .FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant())
+                         ?.User;
         if (usr is null)
             return false;
 
-        if (club.OwnerId == usr.Id || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
+        if (club.OwnerId == usr.Id
+            || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
             return false;
 
-        club.Bans.Add(new()
-        {
-            Club = club,
-            User = usr,
-        });
+        club.Bans.Add(new() { Club = club, User = usr });
         club.Users.Remove(usr);
 
         var app = club.Applicants.FirstOrDefault(x => x.UserId == usr.Id);

@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Xp;
 [Cloneable]
 public sealed partial class XpConfig : ICloneable<XpConfig>
 {
-    [Comment(@"DO NOT CHANGE")] 
+    [Comment(@"DO NOT CHANGE")]
     public int Version { get; set; } = 2;
 
     [Comment(@"How much XP will the users receive per message")]

@@ -1,9 +1,9 @@
 ﻿#nullable disable
 using Humanizer.Localisation;
-using NadekoBot.Services.Database.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Utility.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -12,6 +12,20 @@ public partial class Utility
     [Group]
     public class RemindCommands : NadekoSubmodule<RemindService>
     {
+        public enum MeOrHere
+        {
+            Me,
+            Here
+        }
+
+        public enum Server
+        {
+            Server = int.MinValue,
+            Srvr = int.MinValue,
+            Serv = int.MinValue,
+            S = int.MinValue
+        }
+
         private readonly DbService _db;
         private readonly GuildTimezoneService _tz;
 
@@ -21,13 +35,8 @@ public partial class Utility
             _tz = tz;
         }
 
-        public enum MeOrHere
-        {
-            Me,
-            Here
-        }
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public async Task Remind(MeOrHere meorhere, [Leftover] string remindString)
         {
@@ -36,22 +45,23 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.remind_invalid);
                 return;
             }
-                
+
             ulong target;
             target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
-            if (!await RemindInternal(target, meorhere == MeOrHere.Me || ctx.Guild is null, remindData.Time, remindData.What))
-            {
-                await ReplyErrorLocalizedAsync(strs.remind_too_long);
-            }
+            if (!await RemindInternal(target,
+                    meorhere == MeOrHere.Me || ctx.Guild is null,
+                    remindData.Time,
+                    remindData.What)) await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
         public async Task Remind(ITextChannel channel, [Leftover] string remindString)
         {
-            var perms = ((IGuildUser) ctx.User).GetPermissions(channel);
+            var perms = ((IGuildUser)ctx.User).GetPermissions(channel);
             if (!perms.SendMessages || !perms.ViewChannel)
             {
                 await ReplyErrorLocalizedAsync(strs.cant_read_or_send);
@@ -66,55 +76,39 @@ public partial class Utility
 
 
             if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What))
-            {
                 await ReplyErrorLocalizedAsync(strs.remind_too_long);
-            }
         }
 
-        public enum Server
-        {
-            Server = int.MinValue,
-            Srvr = int.MinValue,
-            Serv = int.MinValue,
-            S = int.MinValue, 
-        }
-
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
         public Task RemindList(Server _, int page = 1)
             => RemindListInternal(page, true);
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task RemindList(int page = 1)
             => RemindListInternal(page, false);
-            
+
         private async Task RemindListInternal(int page, bool isServer)
         {
             if (--page < 0)
                 return;
 
             var embed = _eb.Create()
-                .WithOkColor()
-                .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
+                           .WithOkColor()
+                           .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 
             List<Reminder> rems;
             await using (var uow = _db.GetDbContext())
             {
                 if (isServer)
-                {
-                    rems = uow.Reminders
-                        .RemindersForServer(ctx.Guild.Id, page)
-                        .ToList();
-                }
+                    rems = uow.Reminders.RemindersForServer(ctx.Guild.Id, page).ToList();
                 else
-                {
-                    rems = uow.Reminders
-                        .RemindersFor(ctx.User.Id, page)
-                        .ToList();
-                }
+                    rems = uow.Reminders.RemindersFor(ctx.User.Id, page).ToList();
             }
 
             if (rems.Any())
@@ -125,11 +119,11 @@ public partial class Utility
                     var when = rem.When;
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
-                        $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC " +
-                        $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: Culture)})",
+                        $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC "
+                        + $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: Culture)})",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
-`Message:` {rem.Message?.TrimTo(50)}", false);
+`Message:` {rem.Message?.TrimTo(50)}");
                 }
             }
             else
@@ -141,18 +135,20 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand, Aliases]
+        [NadekoCommand]
+        [Aliases]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
         public Task RemindDelete(Server _, int index)
             => RemindDelete(index, true);
-            
-        [NadekoCommand, Aliases]
+
+        [NadekoCommand]
+        [Aliases]
         [Priority(1)]
         public Task RemindDelete(int index)
             => RemindDelete(index, false);
-            
+
         private async Task RemindDelete(int index, bool isServer)
         {
             if (--index < 0)
@@ -162,13 +158,9 @@ public partial class Utility
             await using (var uow = _db.GetDbContext())
             {
                 var rems = isServer
-                    ? uow.Reminders
-                        .RemindersForServer(ctx.Guild.Id, index / 10)
-                        .ToList()
-                    : uow.Reminders
-                        .RemindersFor(ctx.User.Id, index / 10)
-                        .ToList();
-                    
+                    ? uow.Reminders.RemindersForServer(ctx.Guild.Id, index / 10).ToList()
+                    : uow.Reminders.RemindersFor(ctx.User.Id, index / 10).ToList();
+
                 var pageIndex = index % 10;
                 if (rems.Count > pageIndex)
                 {
@@ -179,16 +171,16 @@ public partial class Utility
             }
 
             if (rem is null)
-            {
                 await ReplyErrorLocalizedAsync(strs.reminder_not_exist);
-            }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
-            }
         }
 
-        private async Task<bool> RemindInternal(ulong targetId, bool isPrivate, TimeSpan ts, string message)
+        private async Task<bool> RemindInternal(
+            ulong targetId,
+            bool isPrivate,
+            TimeSpan ts,
+            string message)
         {
             var time = DateTime.UtcNow + ts;
 
@@ -197,11 +189,8 @@ public partial class Utility
 
             if (ctx.Guild != null)
             {
-                var perms = ((IGuildUser) ctx.User).GetPermissions((IGuildChannel) ctx.Channel);
-                if (!perms.MentionEveryone)
-                {
-                    message = message.SanitizeAllMentions();
-                }
+                var perms = ((IGuildUser)ctx.User).GetPermissions((IGuildChannel)ctx.Channel);
+                if (!perms.MentionEveryone) message = message.SanitizeAllMentions();
             }
 
             var rem = new Reminder
@@ -220,17 +209,16 @@ public partial class Utility
                 await uow.SaveChangesAsync();
             }
 
-            var gTime = ctx.Guild is null
-                ? time
-                : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
+            var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
             try
             {
-                await SendConfirmAsync(
-                    "⏰ " + GetText(strs.remind(
-                        Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
-                        Format.Bold(message),
-                        ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
-                        gTime, gTime)));
+                await SendConfirmAsync("⏰ "
+                                       + GetText(strs.remind(
+                                           Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
+                                           Format.Bold(message),
+                                           ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
+                                           gTime,
+                                           gTime)));
             }
             catch
             {

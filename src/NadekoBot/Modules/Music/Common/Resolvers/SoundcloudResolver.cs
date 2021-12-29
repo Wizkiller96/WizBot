@@ -1,5 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Music.Resolvers;
 
@@ -16,37 +17,29 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
         _httpFactory = httpFactory;
     }
 
-    public bool IsSoundCloudLink(string url) =>
-        System.Text.RegularExpressions.Regex.IsMatch(url, "(.*)(soundcloud.com|snd.sc)(.*)");
+    public bool IsSoundCloudLink(string url)
+        => Regex.IsMatch(url, "(.*)(soundcloud.com|snd.sc)(.*)");
 
     public async IAsyncEnumerable<ITrackInfo> ResolvePlaylistAsync(string playlist)
     {
         playlist = Uri.EscapeDataString(playlist);
-            
+
         using var http = _httpFactory.CreateClient();
         var responseString = await http.GetStringAsync($"https://scapi.nadeko.bot/resolve?url={playlist}");
         var scvids = JObject.Parse(responseString)["tracks"]?.ToObject<SoundCloudVideo[]>();
-        if (scvids is null)
-        {
-            yield break;
-        }
+        if (scvids is null) yield break;
 
         foreach (var videosChunk in scvids.Where(x => x.Streamable is true).Chunk(5))
         {
-            var cachableTracks = videosChunk
-                .Select(VideoModelToCachedData)
-                .ToList();
+            var cachableTracks = videosChunk.Select(VideoModelToCachedData).ToList();
 
             await cachableTracks.Select(_trackCacher.CacheTrackDataAsync).WhenAll();
-            foreach(var info in cachableTracks.Select(CachableDataToTrackInfo))
-            {
-                yield return info;
-            }
+            foreach (var info in cachableTracks.Select(CachableDataToTrackInfo)) yield return info;
         }
     }
 
     private ICachableTrackData VideoModelToCachedData(SoundCloudVideo svideo)
-        => new CachableTrackData()
+        => new CachableTrackData
         {
             Title = svideo.FullName,
             Url = svideo.TrackLink,
@@ -55,16 +48,14 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
             Id = svideo.Id.ToString(),
             Platform = MusicPlatform.SoundCloud
         };
-        
+
     private ITrackInfo CachableDataToTrackInfo(ICachableTrackData trackData)
-        => new SimpleTrackInfo(
-            trackData.Title,
+        => new SimpleTrackInfo(trackData.Title,
             trackData.Url,
             trackData.Thumbnail,
             trackData.Duration,
             trackData.Platform,
-            GetStreamUrl(trackData.Id)
-        );
+            GetStreamUrl(trackData.Id));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetStreamUrl(string trackId)
@@ -75,7 +66,7 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
         var cached = await _trackCacher.GetCachedDataByQueryAsync(query, MusicPlatform.SoundCloud);
         if (cached is not null)
             return CachableDataToTrackInfo(cached);
-            
+
         var svideo = !IsSoundCloudLink(query)
             ? await _sc.GetVideoByQueryAsync(query)
             : await _sc.ResolveVideoAsync(query);
@@ -85,7 +76,7 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
 
         var cachableData = VideoModelToCachedData(svideo);
         await _trackCacher.CacheTrackDataByQueryAsync(query, cachableData);
-            
+
         return CachableDataToTrackInfo(cachableData);
     }
 }

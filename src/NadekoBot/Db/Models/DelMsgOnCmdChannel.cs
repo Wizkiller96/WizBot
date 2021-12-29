@@ -10,6 +10,5 @@ public class DelMsgOnCmdChannel : DbEntity
         => ChannelId.GetHashCode();
 
     public override bool Equals(object obj)
-        => obj is DelMsgOnCmdChannel x
-           && x.ChannelId == ChannelId;
+        => obj is DelMsgOnCmdChannel x && x.ChannelId == ChannelId;
 }

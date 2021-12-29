@@ -1,6 +1,6 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Help.Services;
 using NadekoBot.Db;
+using NadekoBot.Modules.Help.Services;
 
 namespace NadekoBot.Modules.Utility.Services;
 
@@ -11,7 +11,11 @@ public class VerboseErrorsService : INService
     private readonly CommandHandler _ch;
     private readonly HelpService _hs;
 
-    public VerboseErrorsService(Bot bot, DbService db, CommandHandler ch, HelpService hs)
+    public VerboseErrorsService(
+        Bot bot,
+        DbService db,
+        CommandHandler ch,
+        HelpService hs)
     {
         _db = db;
         _ch = ch;
@@ -19,10 +23,7 @@ public class VerboseErrorsService : INService
 
         _ch.CommandErrored += LogVerboseError;
 
-        guildsEnabled = new(bot
-            .AllGuildConfigs
-            .Where(x => x.VerboseErrors)
-            .Select(x => x.GuildId));
+        guildsEnabled = new(bot.AllGuildConfigs.Where(x => x.VerboseErrors).Select(x => x.GuildId));
     }
 
     private async Task LogVerboseError(CommandInfo cmd, ITextChannel channel, string reason)
@@ -33,9 +34,9 @@ public class VerboseErrorsService : INService
         try
         {
             var embed = _hs.GetCommandHelp(cmd, channel.Guild)
-                .WithTitle("Command Error")
-                .WithDescription(reason)
-                .WithErrorColor();
+                           .WithTitle("Command Error")
+                           .WithDescription(reason)
+                           .WithErrorColor();
 
             await channel.EmbedAsync(embed);
         }
@@ -45,13 +46,14 @@ public class VerboseErrorsService : INService
         }
     }
 
-    public bool ToggleVerboseErrors(ulong guildId, bool? enabled=null)
+    public bool ToggleVerboseErrors(ulong guildId, bool? enabled = null)
     {
         using (var uow = _db.GetDbContext())
         {
             var gc = uow.GuildConfigsForId(guildId, set => set);
 
-            if (enabled==null) enabled = gc.VerboseErrors = !gc.VerboseErrors; // Old behaviour, now behind a condition
+            if (enabled == null)
+                enabled = gc.VerboseErrors = !gc.VerboseErrors; // Old behaviour, now behind a condition
             else gc.VerboseErrors = (bool)enabled; // New behaviour, just set it.
 
             uow.SaveChanges();
@@ -62,6 +64,6 @@ public class VerboseErrorsService : INService
         else
             guildsEnabled.TryRemove(guildId);
 
-        return (bool)enabled;            
+        return (bool)enabled;
     }
 }
