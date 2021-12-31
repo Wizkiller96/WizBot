@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class StreamNotificationCommands : NadekoSubmodule<StreamNotificationService>
+    public partial class StreamNotificationCommands : NadekoSubmodule<StreamNotificationService>
     {
         private readonly DbService _db;
 
@@ -19,11 +19,10 @@ public partial class Searches
         // private static readonly Regex picartoRegex = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
         //     RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task StreamAdd(string link)
+        public async partial Task StreamAdd(string link)
         {
             var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
             if (data is null)
@@ -36,12 +35,11 @@ public partial class Searches
             await ctx.Channel.EmbedAsync(embed, GetText(strs.stream_tracked));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public async Task StreamRemove(int index)
+        public async partial Task StreamRemove(int index)
         {
             if (--index < 0)
                 return;
@@ -56,20 +54,18 @@ public partial class Searches
             await ReplyConfirmLocalizedAsync(strs.stream_removed(Format.Bold(fs.Username), fs.Type));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task StreamsClear()
+        public async partial Task StreamsClear()
         {
             var count = _service.ClearAllStreams(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.streams_cleared);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamList(int page = 1)
+        public async partial Task StreamList(int page = 1)
         {
             if (page-- < 1) return;
 
@@ -113,11 +109,10 @@ public partial class Searches
                 12);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task StreamOffline()
+        public async partial Task StreamOffline()
         {
             var newValue = _service.ToggleStreamOffline(ctx.Guild.Id);
             if (newValue)
@@ -126,11 +121,10 @@ public partial class Searches
                 await ReplyConfirmLocalizedAsync(strs.stream_off_disabled);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task StreamMessage(int index, [Leftover] string message)
+        public async partial Task StreamMessage(int index, [Leftover] string message)
         {
             if (--index < 0)
                 return;
@@ -147,11 +141,10 @@ public partial class Searches
                 await ReplyConfirmLocalizedAsync(strs.stream_message_set(Format.Bold(fs.Username)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task StreamMessageAll([Leftover] string message)
+        public async partial Task StreamMessageAll([Leftover] string message)
         {
             var count = _service.SetStreamMessageForAll(ctx.Guild.Id, message);
 
@@ -164,10 +157,9 @@ public partial class Searches
             await ReplyConfirmLocalizedAsync(strs.stream_message_set_all(count));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamCheck(string url)
+        public async partial Task StreamCheck(string url)
         {
             try
             {

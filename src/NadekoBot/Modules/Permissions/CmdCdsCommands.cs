@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public class CmdCdsCommands : NadekoSubmodule
+    public partial class CmdCdsCommands : NadekoSubmodule
     {
         private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns
             => _service.CommandCooldowns;
@@ -27,10 +27,9 @@ public partial class Permissions
             _db = db;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task CmdCooldown(CommandOrCrInfo command, int secs)
+        public async partial Task CmdCooldown(CommandOrCrInfo command, int secs)
         {
             var channel = (ITextChannel)ctx.Channel;
             if (secs is < 0 or > 3600)
@@ -71,10 +70,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AllCmdCooldowns()
+        public async partial Task AllCmdCooldowns()
         {
             var channel = (ITextChannel)ctx.Channel;
             var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());

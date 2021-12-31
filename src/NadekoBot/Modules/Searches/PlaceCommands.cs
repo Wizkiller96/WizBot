@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class PlaceCommands : NadekoSubmodule
+    public partial class PlaceCommands : NadekoSubmodule
     {
         public enum PlaceType
         {
@@ -20,14 +20,12 @@ public partial class Searches
 
         private static readonly string _typesStr = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Placelist()
+        [Cmd]
+        public async partial Task Placelist()
             => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), _typesStr);
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
+        [Cmd]
+        public async partial Task Place(PlaceType placeType, uint width = 0, uint height = 0)
         {
             var url = string.Empty;
             switch (placeType)

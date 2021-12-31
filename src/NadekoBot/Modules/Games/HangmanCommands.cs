@@ -5,12 +5,11 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class HangmanCommands : NadekoSubmodule<IHangmanService>
+    public partial class HangmanCommands : NadekoSubmodule<IHangmanService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Hangmanlist()
+        public async partial Task Hangmanlist()
             => await SendConfirmAsync(GetText(strs.hangman_types(Prefix)), _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
@@ -44,10 +43,9 @@ public partial class Games
                      .WithFooter(state.missedLetters.Join(' '));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Hangman([Leftover] string? type = null)
+        public async partial Task Hangman([Leftover] string? type = null)
         {
             if (!_service.StartHangman(ctx.Channel.Id, type, out var hangman))
             {
@@ -60,10 +58,9 @@ public partial class Games
             await ctx.Channel.EmbedAsync(eb);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task HangmanStop()
+        public async partial Task HangmanStop()
         {
             if (await _service.StopHangman(ctx.Channel.Id)) await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
         }

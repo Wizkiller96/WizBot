@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class RemindCommands : NadekoSubmodule<RemindService>
+    public partial class RemindCommands : NadekoSubmodule<RemindService>
     {
         public enum MeOrHere
         {
@@ -35,10 +35,9 @@ public partial class Utility
             _tz = tz;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task Remind(MeOrHere meorhere, [Leftover] string remindString)
+        public async partial Task Remind(MeOrHere meorhere, [Leftover] string remindString)
         {
             if (!_service.TryParseRemindMessage(remindString, out var remindData))
             {
@@ -54,12 +53,11 @@ public partial class Utility
                     remindData.What)) await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public async Task Remind(ITextChannel channel, [Leftover] string remindString)
+        public async partial Task Remind(ITextChannel channel, [Leftover] string remindString)
         {
             var perms = ((IGuildUser)ctx.User).GetPermissions(channel);
             if (!perms.SendMessages || !perms.ViewChannel)
@@ -79,18 +77,16 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public Task RemindList(Server _, int page = 1)
+        public partial Task RemindList(Server _, int page = 1)
             => RemindListInternal(page, true);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task RemindList(int page = 1)
+        public partial Task RemindList(int page = 1)
             => RemindListInternal(page, false);
 
         private async Task RemindListInternal(int page, bool isServer)
@@ -135,18 +131,16 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public Task RemindDelete(Server _, int index)
+        public partial Task RemindDelete(Server _, int index)
             => RemindDelete(index, true);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task RemindDelete(int index)
+        public partial Task RemindDelete(int index)
             => RemindDelete(index, false);
 
         private async Task RemindDelete(int index, bool isServer)

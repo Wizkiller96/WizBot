@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class SelfCommands : NadekoSubmodule<SelfService>
+    public partial class SelfCommands : NadekoSubmodule<SelfService>
     {
         public enum SettableUserStatus
         {
@@ -28,12 +28,11 @@ public partial class Administration
             _coord = coord;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task StartupCommandAdd([Leftover] string cmdText)
+        public async partial Task StartupCommandAdd([Leftover] string cmdText)
         {
             if (cmdText.StartsWith(Prefix + "die", StringComparison.InvariantCulture))
                 return;
@@ -62,12 +61,11 @@ public partial class Administration
                                             .AddField(GetText(strs.command_text), cmdText));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task AutoCommandAdd(int interval, [Leftover] string cmdText)
+        public async partial Task AutoCommandAdd(int interval, [Leftover] string cmdText)
         {
             if (cmdText.StartsWith(Prefix + "die", StringComparison.InvariantCulture))
                 return;
@@ -92,11 +90,10 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task StartupCommandsList(int page = 1)
+        public async partial Task StartupCommandsList(int page = 1)
         {
             if (page-- < 1)
                 return;
@@ -121,11 +118,10 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task AutoCommandsList(int page = 1)
+        public async partial Task AutoCommandsList(int page = 1)
         {
             if (page-- < 1)
                 return;
@@ -153,10 +149,9 @@ public partial class Administration
         private string GetIntervalText(int interval)
             => $"[{GetText(strs.interval)}]: {interval}";
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task Wait(int miliseconds)
+        public async partial Task Wait(int miliseconds)
         {
             if (miliseconds <= 0)
                 return;
@@ -171,12 +166,11 @@ public partial class Administration
             await Task.Delay(miliseconds);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task AutoCommandRemove([Leftover] int index)
+        public async partial Task AutoCommandRemove([Leftover] int index)
         {
             if (!_service.RemoveAutoCommand(--index, out _))
             {
@@ -187,11 +181,10 @@ public partial class Administration
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task StartupCommandRemove([Leftover] int index)
+        public async partial Task StartupCommandRemove([Leftover] int index)
         {
             if (!_service.RemoveStartupCommand(--index, out _))
                 await ReplyErrorLocalizedAsync(strs.scrm_fail);
@@ -199,22 +192,20 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.scrm);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]
-        public async Task StartupCommandsClear()
+        public async partial Task StartupCommandsClear()
         {
             _service.ClearStartupCommands();
 
             await ReplyConfirmLocalizedAsync(strs.startcmds_cleared);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ForwardMessages()
+        public async partial Task ForwardMessages()
         {
             var enabled = _service.ForwardMessages();
 
@@ -224,10 +215,9 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.fwdm_stop);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ForwardToAll()
+        public async partial Task ForwardToAll()
         {
             var enabled = _service.ForwardToAll();
 
@@ -237,9 +227,8 @@ public partial class Administration
                 await ReplyPendingLocalizedAsync(strs.fwall_stop);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ShardStats(int page = 1)
+        [Cmd]
+        public async partial Task ShardStats(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -290,10 +279,9 @@ public partial class Administration
             };
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task RestartShard(int shardId)
+        public async partial Task RestartShard(int shardId)
         {
             var success = _coord.RestartShard(shardId);
             if (success)
@@ -302,17 +290,15 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.no_shard_id);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public Task Leave([Leftover] string guildStr)
+        public partial Task Leave([Leftover] string guildStr)
             => _service.LeaveGuild(guildStr);
 
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task Die(bool graceful = false)
+        public async partial Task Die(bool graceful = false)
         {
             try
             {
@@ -327,10 +313,9 @@ public partial class Administration
             _coord.Die(graceful);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task Restart()
+        public async partial Task Restart()
         {
             var success = _coord.RestartBot();
             if (!success)
@@ -343,10 +328,9 @@ public partial class Administration
             catch { }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SetName([Leftover] string newName)
+        public async partial Task SetName([Leftover] string newName)
         {
             if (string.IsNullOrWhiteSpace(newName))
                 return;
@@ -363,12 +347,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageNicknames)]
         [BotPerm(GuildPerm.ChangeNickname)]
         [Priority(0)]
-        public async Task SetNick([Leftover] string newNick = null)
+        public async partial Task SetNick([Leftover] string newNick = null)
         {
             if (string.IsNullOrWhiteSpace(newNick))
                 return;
@@ -378,12 +361,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageNicknames)]
         [UserPerm(GuildPerm.ManageNicknames)]
         [Priority(1)]
-        public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
+        public async partial Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
         {
             var sg = (SocketGuild)ctx.Guild;
             if (sg.OwnerId == gu.Id
@@ -398,30 +380,27 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SetStatus([Leftover] SettableUserStatus status)
+        public async partial Task SetStatus([Leftover] SettableUserStatus status)
         {
             await _client.SetStatusAsync(SettableUserStatusToUserStatus(status));
 
             await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SetAvatar([Leftover] string img = null)
+        public async partial Task SetAvatar([Leftover] string img = null)
         {
             var success = await _service.SetAvatar(img);
 
             if (success) await ReplyConfirmLocalizedAsync(strs.set_avatar);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SetGame(ActivityType type, [Leftover] string game = null)
+        public async partial Task SetGame(ActivityType type, [Leftover] string game = null)
         {
             var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
@@ -430,10 +409,9 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.set_game);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SetStream(string url, [Leftover] string name = null)
+        public async partial Task SetStream(string url, [Leftover] string name = null)
         {
             name ??= "";
 
@@ -442,10 +420,9 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.set_stream);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task Send(string where, [Leftover] SmartText text = null)
+        public async partial Task Send(string where, [Leftover] SmartText text = null)
         {
             var ids = where.Split('|');
             if (ids.Length != 2)
@@ -489,28 +466,25 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.message_sent);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ImagesReload()
+        public async partial Task ImagesReload()
         {
             await _service.ReloadImagesAsync();
             await ReplyConfirmLocalizedAsync(strs.images_loading);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task StringsReload()
+        public async partial Task StringsReload()
         {
             _strings.Reload();
             await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task CoordReload()
+        public async partial Task CoordReload()
         {
             await _coord.Reload();
             await ctx.OkAsync();

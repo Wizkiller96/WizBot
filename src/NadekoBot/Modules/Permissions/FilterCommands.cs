@@ -9,27 +9,25 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public class FilterCommands : NadekoSubmodule<FilterService>
+    public partial class FilterCommands : NadekoSubmodule<FilterService>
     {
         private readonly DbService _db;
 
         public FilterCommands(DbService db)
             => _db = db;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task FwClear()
+        public async partial Task FwClear()
         {
             _service.ClearFilteredWords(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.fw_cleared);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task SrvrFilterInv()
+        public async partial Task SrvrFilterInv()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -53,10 +51,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task ChnlFilterInv()
+        public async partial Task ChnlFilterInv()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -87,10 +84,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task SrvrFilterLin()
+        public async partial Task SrvrFilterLin()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -114,10 +110,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task ChnlFilterLin()
+        public async partial Task ChnlFilterLin()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -148,10 +143,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task SrvrFilterWords()
+        public async partial Task SrvrFilterWords()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -175,10 +169,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task ChnlFilterWords()
+        public async partial Task ChnlFilterWords()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -209,10 +202,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task FilterWord([Leftover] string word)
+        public async partial Task FilterWord([Leftover] string word)
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -251,10 +243,9 @@ public partial class Permissions
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task LstFilterWords(int page = 1)
+        public async partial Task LstFilterWords(int page = 1)
         {
             page--;
             if (page < 0)

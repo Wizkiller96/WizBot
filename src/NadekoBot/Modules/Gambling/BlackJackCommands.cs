@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Gambling;
 
 public partial class Gambling
 {
-    public class BlackJackCommands : GamblingSubmodule<BlackJackService>
+    public partial class BlackJackCommands : GamblingSubmodule<BlackJackService>
     {
         public enum BjAction
         {
@@ -27,10 +27,9 @@ public partial class Gambling
             _db = db;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task BlackJack(ShmartNumber amount)
+        public async partial Task BlackJack(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;
@@ -152,25 +151,22 @@ public partial class Gambling
             return $"{playerName} | Bet: {x.Bet}\n";
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task Hit()
+        public partial Task Hit()
             => InternalBlackJack(BjAction.Hit);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task Stand()
+        public partial Task Stand()
             => InternalBlackJack(BjAction.Stand);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task Double()
+        public partial Task Double()
             => InternalBlackJack(BjAction.Double);
 
-        public async Task InternalBlackJack(BjAction a)
+        private async Task InternalBlackJack(BjAction a)
         {
             if (!_service.Games.TryGetValue(ctx.Channel.Id, out var bj))
                 return;

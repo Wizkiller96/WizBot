@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class InfoCommands : NadekoSubmodule
+    public partial class InfoCommands : NadekoSubmodule
     {
         private readonly DiscordSocketClient _client;
         private readonly IStatsService _stats;
@@ -17,10 +17,9 @@ public partial class Utility
             _stats = stats;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task ServerInfo(string guildName = null)
+        public async partial Task ServerInfo(string guildName = null)
         {
             var channel = (ITextChannel)ctx.Channel;
             guildName = guildName?.ToUpperInvariant();
@@ -65,10 +64,9 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task ChannelInfo(ITextChannel channel = null)
+        public async partial Task ChannelInfo(ITextChannel channel = null)
         {
             var ch = channel ?? (ITextChannel)ctx.Channel;
             if (ch is null)
@@ -85,10 +83,9 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task UserInfo(IGuildUser usr = null)
+        public async partial Task UserInfo(IGuildUser usr = null)
         {
             var user = usr ?? ctx.User as IGuildUser;
 
@@ -111,11 +108,10 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async Task Activity(int page = 1)
+        public async partial Task Activity(int page = 1)
         {
             const int activityPerPage = 10;
             page -= 1;

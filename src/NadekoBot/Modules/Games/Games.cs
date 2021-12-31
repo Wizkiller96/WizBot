@@ -20,9 +20,8 @@ public partial class Games : NadekoModule<GamesService>
         _httpFactory = factory;
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Choose([Leftover] string list = null)
+    [Cmd]
+    public async partial Task Choose([Leftover] string list = null)
     {
         if (string.IsNullOrWhiteSpace(list))
             return;
@@ -33,9 +32,8 @@ public partial class Games : NadekoModule<GamesService>
         await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task EightBall([Leftover] string question = null)
+    [Cmd]
+    public async partial Task EightBall([Leftover] string question = null)
     {
         if (string.IsNullOrWhiteSpace(question))
             return;
@@ -48,10 +46,9 @@ public partial class Games : NadekoModule<GamesService>
                                         .AddField("🎱 " + GetText(strs._8ball), res));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RateGirl([Leftover] IGuildUser usr)
+    public async partial Task RateGirl([Leftover] IGuildUser usr)
     {
         var gr = _service.GirlRatings.GetOrAdd(usr.Id, GetGirl);
         var originalStream = await gr.Stream;
@@ -141,9 +138,8 @@ public partial class Games : NadekoModule<GamesService>
         return new(_images, _httpFactory, crazy, hot, roll, advice);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Linux(string guhnoo, string loonix)
+    [Cmd]
+    public async partial Task Linux(string guhnoo, string loonix)
         => await SendConfirmAsync(
             $@"I'd just like to interject for moment. What you're refering to as {loonix}, is in fact, {guhnoo}/{loonix}, or as I've recently taken to calling it, {guhnoo} plus {loonix}. {loonix} is not an operating system unto itself, but rather another free component of a fully functioning {guhnoo} system made useful by the {guhnoo} corelibs, shell utilities and vital system components comprising a full OS as defined by POSIX.
 

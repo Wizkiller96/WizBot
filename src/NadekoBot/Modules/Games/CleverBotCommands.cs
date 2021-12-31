@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class ChatterBotCommands : NadekoSubmodule<ChatterBotService>
+    public partial class ChatterBotCommands : NadekoSubmodule<ChatterBotService>
     {
         private readonly DbService _db;
 
@@ -15,11 +15,10 @@ public partial class Games
             => _db = db;
 
         [NoPublicBot]
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task Cleverbot()
+        public async partial Task Cleverbot()
         {
             var channel = (ITextChannel)ctx.Channel;
 

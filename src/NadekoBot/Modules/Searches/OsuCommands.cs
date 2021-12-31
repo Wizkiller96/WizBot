@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class OsuCommands : NadekoSubmodule
+    public partial class OsuCommands : NadekoSubmodule
     {
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
@@ -18,9 +18,8 @@ public partial class Searches
             _httpFactory = factory;
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Osu(string user, [Leftover] string mode = null)
+        [Cmd]
+        public async partial Task Osu(string user, [Leftover] string mode = null)
         {
             if (string.IsNullOrWhiteSpace(user))
                 return;
@@ -75,9 +74,8 @@ public partial class Searches
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Gatari(string user, [Leftover] string mode = null)
+        [Cmd]
+        public async partial Task Gatari(string user, [Leftover] string mode = null)
         {
             using var http = _httpFactory.CreateClient();
             var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
@@ -114,9 +112,8 @@ public partial class Searches
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Osu5(string user, [Leftover] string mode = null)
+        [Cmd]
+        public async partial Task Osu5(string user, [Leftover] string mode = null)
         {
             ;
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))

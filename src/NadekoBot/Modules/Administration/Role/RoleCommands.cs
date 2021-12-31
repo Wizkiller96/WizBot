@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Administration;
 
 public partial class Administration
 {
-    public class RoleCommands : NadekoSubmodule<RoleCommandsService>
+    public partial class RoleCommands : NadekoSubmodule<RoleCommandsService>
     {
         public enum Exclude { Excl }
 
@@ -88,52 +88,47 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.reaction_roles_full);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public Task ReactionRoles(ulong messageId, params string[] input)
+        public partial Task ReactionRoles(ulong messageId, params string[] input)
             => InternalReactionRoles(false, messageId, input);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task ReactionRoles(ulong messageId, Exclude _, params string[] input)
+        public partial Task ReactionRoles(ulong messageId, Exclude _, params string[] input)
             => InternalReactionRoles(true, messageId, input);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public Task ReactionRoles(params string[] input)
+        public partial Task ReactionRoles(params string[] input)
             => InternalReactionRoles(false, null, input);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task ReactionRoles(Exclude _, params string[] input)
+        public partial Task ReactionRoles(Exclude _, params string[] input)
             => InternalReactionRoles(true, null, input);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task ReactionRolesList()
+        public async partial Task ReactionRolesList()
         {
             var embed = _eb.Create().WithOkColor();
             if (!_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any())
@@ -157,12 +152,11 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task ReactionRolesRemove(int index)
+        public async partial Task ReactionRolesRemove(int index)
         {
             if (index < 1 || !_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any() || rrs.Count < index)
                 return;
@@ -172,12 +166,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.reaction_role_removed(index + 1));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task SetRole(IGuildUser targetUser, [Leftover] IRole roleToAdd)
+        public async partial Task SetRole(IGuildUser targetUser, [Leftover] IRole roleToAdd)
         {
             var runnerUser = (IGuildUser)ctx.User;
             var runnerMaxRolePosition = runnerUser.GetRoles().Max(x => x.Position);
@@ -197,12 +190,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
+        public async partial Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
         {
             var runnerUser = (IGuildUser)ctx.User;
             if (ctx.User.Id != runnerUser.Guild.OwnerId
@@ -220,12 +212,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RenameRole(IRole roleToEdit, [Leftover] string newname)
+        public async partial Task RenameRole(IRole roleToEdit, [Leftover] string newname)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= roleToEdit.Position)
@@ -247,12 +238,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RemoveAllRoles([Leftover] IGuildUser user)
+        public async partial Task RemoveAllRoles([Leftover] IGuildUser user)
         {
             var guser = (IGuildUser)ctx.User;
 
@@ -273,12 +263,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task CreateRole([Leftover] string roleName = null)
+        public async partial Task CreateRole([Leftover] string roleName = null)
         {
             if (string.IsNullOrWhiteSpace(roleName))
                 return;
@@ -287,12 +276,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.cr(Format.Bold(r.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task DeleteRole([Leftover] IRole role)
+        public async partial Task DeleteRole([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -302,12 +290,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.dr(Format.Bold(role.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RoleHoist(IRole role)
+        public async partial Task RoleHoist(IRole role)
         {
             var newHoisted = !role.IsHoisted;
             await role.ModifyAsync(r => r.Hoist = newHoisted);
@@ -317,20 +304,18 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.rolehoist_disabled(Format.Bold(role.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task RoleColor([Leftover] IRole role)
+        public async partial Task RoleColor([Leftover] IRole role)
             => await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6"));
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task RoleColor(Color color, [Leftover] IRole role)
+        public async partial Task RoleColor(Color color, [Leftover] IRole role)
         {
             try
             {

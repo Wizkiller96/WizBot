@@ -6,15 +6,14 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class InviteCommands : NadekoSubmodule<InviteService>
+    public partial class InviteCommands : NadekoSubmodule<InviteService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.CreateInstantInvite)]
         [UserPerm(ChannelPerm.CreateInstantInvite)]
         [NadekoOptions(typeof(InviteService.Options))]
-        public async Task InviteCreate(params string[] args)
+        public async partial Task InviteCreate(params string[] args)
         {
             var (opts, success) = OptionsParser.ParseFrom(new InviteService.Options(), args);
             if (!success)
@@ -26,12 +25,11 @@ public partial class Utility
             await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}");
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
-        public async Task InviteList(int page = 1, [Leftover] ITextChannel ch = null)
+        public async partial Task InviteList(int page = 1, [Leftover] ITextChannel ch = null)
         {
             if (--page < 0)
                 return;
@@ -71,12 +69,11 @@ public partial class Utility
                 9);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
-        public async Task InviteDelete(int index)
+        public async partial Task InviteDelete(int index)
         {
             if (--index < 0)
                 return;

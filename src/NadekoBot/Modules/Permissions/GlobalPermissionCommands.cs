@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public class GlobalPermissionCommands : NadekoSubmodule
+    public partial class GlobalPermissionCommands : NadekoSubmodule
     {
         private GlobalPermissionService _service;
         private readonly DbService _db;
@@ -18,10 +18,9 @@ public partial class Permissions
             _db = db;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task GlobalPermList()
+        public async partial Task GlobalPermList()
         {
             var blockedModule = _service.BlockedModules;
             var blockedCommands = _service.BlockedCommands;
@@ -42,10 +41,9 @@ public partial class Permissions
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task GlobalModule(ModuleOrCrInfo module)
+        public async partial Task GlobalModule(ModuleOrCrInfo module)
         {
             var moduleName = module.Name.ToLowerInvariant();
 
@@ -60,10 +58,9 @@ public partial class Permissions
             await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task GlobalCommand(CommandOrCrInfo cmd)
+        public async partial Task GlobalCommand(CommandOrCrInfo cmd)
         {
             var commandName = cmd.Name.ToLowerInvariant();
             var added = _service.ToggleCommand(commandName);

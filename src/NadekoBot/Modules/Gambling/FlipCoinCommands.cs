@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class FlipCoinCommands : GamblingSubmodule<GamblingService>
+    public partial class FlipCoinCommands : GamblingSubmodule<GamblingService>
     {
         public enum BetFlipGuess
         {
@@ -33,9 +33,8 @@ public partial class Gambling
             _cs = cs;
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Flip(int count = 1)
+        [Cmd]
+        public async partial Task Flip(int count = 1)
         {
             if (count is > 10 or < 1)
             {
@@ -75,9 +74,8 @@ public partial class Gambling
             await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
+        [Cmd]
+        public async partial Task Betflip(ShmartNumber amount, BetFlipGuess guess)
         {
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;

@@ -345,3 +345,4 @@ resharper_csharp_wrap_before_first_type_parameter_constraint = true
 resharper_csharp_place_type_constraints_on_same_line = false
 resharper_csharp_wrap_before_extends_colon = true
 resharper_csharp_place_constructor_initializer_on_same_line = false
+resharper_force_attribute_style = separate

@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class QuoteCommands : NadekoSubmodule
+    public partial class QuoteCommands : NadekoSubmodule
     {
         private const string _prependExport =
             @"# Keys are keywords, Each key has a LIST of quotes in the following format:
@@ -40,18 +40,16 @@ public partial class Utility
             _http = http;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public Task ListQuotes(OrderType order = OrderType.Keyword)
+        public partial Task ListQuotes(OrderType order = OrderType.Keyword)
             => ListQuotes(1, order);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
+        public async partial Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
         {
             page -= 1;
             if (page < 0)
@@ -72,10 +70,9 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.quotes_page_none);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuotePrint([Leftover] string keyword)
+        public async partial Task QuotePrint([Leftover] string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword))
                 return;
@@ -104,10 +101,9 @@ public partial class Utility
             await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteShow(int id)
+        public async partial Task QuoteShow(int id)
         {
             Quote quote;
             await using (var uow = _db.GetDbContext())
@@ -136,10 +132,9 @@ public partial class Utility
                                                .WithFooter(
                                                    GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})"))));
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteSearch(string keyword, [Leftover] string text)
+        public async partial Task QuoteSearch(string keyword, [Leftover] string text)
         {
             if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
                 return;
@@ -161,10 +156,9 @@ public partial class Utility
                                                + keywordquote.Text.SanitizeAllMentions());
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteId(int id)
+        public async partial Task QuoteId(int id)
         {
             if (id < 0)
                 return;
@@ -194,10 +188,9 @@ public partial class Utility
             await ctx.Channel.SendAsync(infoText + text, true);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteAdd(string keyword, [Leftover] string text)
+        public async partial Task QuoteAdd(string keyword, [Leftover] string text)
         {
             if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
                 return;
@@ -221,10 +214,9 @@ public partial class Utility
             await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteDelete(int id)
+        public async partial Task QuoteDelete(int id)
         {
             var hasManageMessages = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
 
@@ -253,11 +245,10 @@ public partial class Utility
                 await SendErrorAsync(response);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task DelAllQuotes([Leftover] string keyword)
+        public async partial Task DelAllQuotes([Leftover] string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword))
                 return;
@@ -274,11 +265,10 @@ public partial class Utility
             await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task QuotesExport()
+        public async partial Task QuotesExport()
         {
             IEnumerable<Quote> quotes;
             await using (var uow = _db.GetDbContext())
@@ -295,15 +285,14 @@ public partial class Utility
             await ctx.Channel.SendFileAsync(stream, "quote-export.yml");
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Ratelimit(300)]
 #if GLOBAL_NADEKO
             [OwnerOnly]
 #endif
-        public async Task QuotesImport([Leftover] string input = null)
+        public async partial Task QuotesImport([Leftover] string input = null)
         {
             input = input?.Trim();
 
@@ -338,7 +327,7 @@ public partial class Utility
             await ctx.OkAsync();
         }
 
-        public async Task<bool> ImportCrsAsync(ulong guildId, string input)
+        private async Task<bool> ImportCrsAsync(ulong guildId, string input)
         {
             Dictionary<string, List<ExportedQuote>> data;
             try

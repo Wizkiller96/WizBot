@@ -17,10 +17,9 @@ public partial class Permissions : NadekoModule<PermissionService>
     public Permissions(DbService db)
         => _db = db;
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Verbose(PermissionAction action = null)
+    public async partial Task Verbose(PermissionAction action = null)
     {
         await using (var uow = _db.GetDbContext())
         {
@@ -37,12 +36,11 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.verbose_false);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [Priority(0)]
-    public async Task PermRole([Leftover] IRole role = null)
+    public async partial Task PermRole([Leftover] IRole role = null)
     {
         if (role != null && role == role.Guild.EveryoneRole)
             return;
@@ -69,12 +67,11 @@ public partial class Permissions : NadekoModule<PermissionService>
         await ReplyConfirmLocalizedAsync(strs.permrole_changed(Format.Bold(role.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [Priority(1)]
-    public async Task PermRole(Reset _)
+    public async partial Task PermRole(Reset _)
     {
         await using (var uow = _db.GetDbContext())
         {
@@ -87,10 +84,9 @@ public partial class Permissions : NadekoModule<PermissionService>
         await ReplyConfirmLocalizedAsync(strs.permrole_reset);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ListPerms(int page = 1)
+    public async partial Task ListPerms(int page = 1)
     {
         if (page < 1)
             return;
@@ -121,10 +117,9 @@ public partial class Permissions : NadekoModule<PermissionService>
         await ctx.Channel.SendMessageAsync(toSend);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RemovePerm(int index)
+    public async partial Task RemovePerm(int index)
     {
         index -= 1;
         if (index < 0)
@@ -152,10 +147,9 @@ public partial class Permissions : NadekoModule<PermissionService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task MovePerm(int from, int to)
+    public async partial Task MovePerm(int from, int to)
     {
         from -= 1;
         to -= 1;
@@ -205,10 +199,9 @@ public partial class Permissions : NadekoModule<PermissionService>
         await ReplyConfirmLocalizedAsync(strs.perm_out_of_range);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task SrvrCmd(CommandOrCrInfo command, PermissionAction action)
+    public async partial Task SrvrCmd(CommandOrCrInfo command, PermissionAction action)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -227,10 +220,9 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.sx_disable(Format.Code(command.Name), GetText(strs.of_command)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task SrvrMdl(ModuleOrCrInfo module, PermissionAction action)
+    public async partial Task SrvrMdl(ModuleOrCrInfo module, PermissionAction action)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -248,10 +240,9 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.sx_disable(Format.Code(module.Name), GetText(strs.of_module)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task UsrCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] IGuildUser user)
+    public async partial Task UsrCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] IGuildUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -274,10 +265,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(user.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task UsrMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IGuildUser user)
+    public async partial Task UsrMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IGuildUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -299,10 +289,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(user.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RoleCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] IRole role)
+    public async partial Task RoleCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -328,10 +317,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(role.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RoleMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IRole role)
+    public async partial Task RoleMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -357,10 +345,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(role.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ChnlCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] ITextChannel chnl)
+    public async partial Task ChnlCmd(CommandOrCrInfo command, PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -383,10 +370,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(chnl.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ChnlMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] ITextChannel chnl)
+    public async partial Task ChnlMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -408,10 +394,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Format.Code(chnl.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task AllChnlMdls(PermissionAction action, [Leftover] ITextChannel chnl)
+    public async partial Task AllChnlMdls(PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -429,10 +414,9 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.acm_disable(Format.Code(chnl.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task AllRoleMdls(PermissionAction action, [Leftover] IRole role)
+    public async partial Task AllRoleMdls(PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -453,10 +437,9 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.arm_disable(Format.Code(role.Name)));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task AllUsrMdls(PermissionAction action, [Leftover] IUser user)
+    public async partial Task AllUsrMdls(PermissionAction action, [Leftover] IUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -474,10 +457,9 @@ public partial class Permissions : NadekoModule<PermissionService>
             await ReplyConfirmLocalizedAsync(strs.aum_disable(Format.Code(user.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task AllSrvrMdls(PermissionAction action)
+    public async partial Task AllSrvrMdls(PermissionAction action)
     {
         var newPerm = new Permissionv2
         {

@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class PlantPickCommands : GamblingSubmodule<PlantPickService>
+    public partial class PlantPickCommands : GamblingSubmodule<PlantPickService>
     {
         private readonly ILogCommandService logService;
 
@@ -16,10 +16,9 @@ public partial class Gambling
             : base(gss)
             => this.logService = logService;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Pick(string pass = null)
+        public async partial Task Pick(string pass = null)
         {
             if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric()) return;
 
@@ -40,10 +39,9 @@ public partial class Gambling
                 catch { }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Plant(ShmartNumber amount, string pass = null)
+        public async partial Task Plant(ShmartNumber amount, string pass = null)
         {
             if (amount < 1)
                 return;
@@ -65,14 +63,13 @@ public partial class Gambling
             if (!success) await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
 #if GLOBAL_NADEKO
             [OwnerOnly]
 #endif
-        public async Task GenCurrency()
+        public async partial Task GenCurrency()
         {
             var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
@@ -81,12 +78,11 @@ public partial class Gambling
                 await ReplyConfirmLocalizedAsync(strs.curgen_disabled);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [OwnerOnly]
-        public Task GenCurList(int page = 1)
+        public partial Task GenCurList(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;

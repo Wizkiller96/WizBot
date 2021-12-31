@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class LocalizationCommands : NadekoSubmodule
+    public partial class LocalizationCommands : NadekoSubmodule
     {
         private static readonly IReadOnlyDictionary<string, string> supportedLocales = new Dictionary<string, string>
         {
@@ -38,20 +38,18 @@ public partial class Administration
             { "uk-UA", "Українська, Україна" }
         };
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task LanguageSet()
+        public async partial Task LanguageSet()
             => await ReplyConfirmLocalizedAsync(strs.lang_set_show(Format.Bold(Culture.ToString()),
                 Format.Bold(Culture.NativeName)));
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(1)]
-        public async Task LanguageSet(string name)
+        public async partial Task LanguageSet(string name)
         {
             try
             {
@@ -75,18 +73,16 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task LanguageSetDefault()
+        [Cmd]
+        public async partial Task LanguageSetDefault()
         {
             var cul = Localization.DefaultCultureInfo;
             await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task LanguageSetDefault(string name)
+        public async partial Task LanguageSetDefault(string name)
         {
             try
             {
@@ -111,9 +107,8 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task LanguagesList()
+        [Cmd]
+        public async partial Task LanguagesList()
             => await ctx.Channel.EmbedAsync(_eb.Create()
                                                .WithOkColor()
                                                .WithTitle(GetText(strs.lang_list))

@@ -8,16 +8,15 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class FeedCommands : NadekoSubmodule<FeedsService>
+    public partial class FeedCommands : NadekoSubmodule<FeedsService>
     {
         private static readonly Regex YtChannelRegex =
             new(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
+        public partial Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
         {
             var m = YtChannelRegex.Match(url);
             if (!m.Success) return ReplyErrorLocalizedAsync(strs.invalid_input);
@@ -27,11 +26,10 @@ public partial class Searches
             return Feed("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId, channel);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task Feed(string url, [Leftover] ITextChannel channel = null)
+        public async partial Task Feed(string url, [Leftover] ITextChannel channel = null)
         {
             var success = Uri.TryCreate(url, UriKind.Absolute, out var uri)
                           && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
@@ -62,11 +60,10 @@ public partial class Searches
             await ReplyConfirmLocalizedAsync(strs.feed_not_valid);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task FeedRemove(int index)
+        public async partial Task FeedRemove(int index)
         {
             if (_service.RemoveFeed(ctx.Guild.Id, --index))
                 await ReplyConfirmLocalizedAsync(strs.feed_removed);
@@ -74,11 +71,10 @@ public partial class Searches
                 await ReplyErrorLocalizedAsync(strs.feed_out_of_range);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task FeedList()
+        public async partial Task FeedList()
         {
             var feeds = _service.GetFeeds(ctx.Guild.Id);
 

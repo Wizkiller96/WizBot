@@ -28,7 +28,7 @@ public sealed class Bot
     private readonly CommandService _commandService;
     private readonly DbService _db;
     private readonly IBotCredsProvider _credsProvider;
-    private readonly InteractionService _interactionService;
+    // private readonly InteractionService _interactionService;
 
     public Bot(int shardId, int? totalShards)
     {
@@ -57,7 +57,7 @@ public sealed class Bot
 
         _commandService = new(new() { CaseSensitiveCommands = false, DefaultRunMode = RunMode.Sync });
 
-        _interactionService = new(Client.Rest);
+        // _interactionService = new(Client.Rest);
 
 #if GLOBAL_NADEKO || DEBUG
         Client.Log += Client_Log;
@@ -85,7 +85,7 @@ public sealed class Bot
                                           .AddRedis(_creds.RedisOptions) // redis
                                           .AddSingleton(Client) // discord socket client
                                           .AddSingleton(_commandService)
-                                          .AddSingleton(_interactionService)
+                                          // .AddSingleton(_interactionService)
                                           .AddSingleton(this)
                                           .AddSingleton<ISeria, JsonSeria>()
                                           .AddSingleton<IPubSub, RedisPubSub>()
@@ -287,8 +287,7 @@ public sealed class Bot
         await commandHandler.StartHandling();
 
         await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
-        await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
-        await _interactionService.RegisterCommandsToGuildAsync(117523346618318850);
+        // await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
         IsReady = true;
         _ = Task.Run(ExecuteReadySubscriptions);
         Log.Information("Shard {ShardId} ready", Client.ShardId);

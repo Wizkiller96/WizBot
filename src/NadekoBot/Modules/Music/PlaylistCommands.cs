@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Music;
 public sealed partial class Music
 {
     [Group]
-    public sealed class PlaylistCommands : NadekoModule<IMusicService>
+    public sealed partial class PlaylistCommands : NadekoModule<IMusicService>
     {
         private static readonly SemaphoreSlim _playlistLock = new(1, 1);
         private readonly DbService _db;
@@ -35,10 +35,9 @@ public sealed partial class Music
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Playlists([Leftover] int num = 1)
+        public async partial Task Playlists([Leftover] int num = 1)
         {
             if (num <= 0)
                 return;
@@ -59,10 +58,9 @@ public sealed partial class Music
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task DeletePlaylist([Leftover] int id)
+        public async partial Task DeletePlaylist([Leftover] int id)
         {
             var success = false;
             try
@@ -89,10 +87,9 @@ public sealed partial class Music
                 await ReplyConfirmLocalizedAsync(strs.playlist_deleted);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task PlaylistShow(int id, int page = 1)
+        public async partial Task PlaylistShow(int id, int page = 1)
         {
             if (page-- < 1)
                 return;
@@ -117,10 +114,9 @@ public sealed partial class Music
                 20);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Save([Leftover] string name)
+        public async partial Task Save([Leftover] string name)
         {
             if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
             {
@@ -156,10 +152,9 @@ public sealed partial class Music
                                             .AddField(GetText(strs.id), playlist.Id.ToString()));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Load([Leftover] int id)
+        public async partial Task Load([Leftover] int id)
         {
             // expensive action, 1 at a time
             await _playlistLock.WaitAsync();

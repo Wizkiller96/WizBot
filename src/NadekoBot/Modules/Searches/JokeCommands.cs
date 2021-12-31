@@ -6,29 +6,25 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class JokeCommands : NadekoSubmodule<SearchesService>
+    public partial class JokeCommands : NadekoSubmodule<SearchesService>
     {
-        [NadekoCommand]
-        [Aliases]
-        public async Task Yomama()
+        [Cmd]
+        public async partial Task Yomama()
             => await SendConfirmAsync(await _service.GetYomamaJoke());
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Randjoke()
+        [Cmd]
+        public async partial Task Randjoke()
         {
             var (setup, punchline) = await _service.GetRandomJoke();
             await SendConfirmAsync(setup, punchline);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ChuckNorris()
+        [Cmd]
+        public async partial Task ChuckNorris()
             => await SendConfirmAsync(await _service.GetChuckNorrisJoke());
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task WowJoke()
+        [Cmd]
+        public async partial Task WowJoke()
         {
             if (!_service.WowJokes.Any())
             {
@@ -40,9 +36,8 @@ public partial class Searches
             await SendConfirmAsync(joke.Question, joke.Answer);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task MagicItem()
+        [Cmd]
+        public async partial Task MagicItem()
         {
             if (!_service.WowJokes.Any())
             {

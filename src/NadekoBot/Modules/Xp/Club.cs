@@ -6,16 +6,15 @@ namespace NadekoBot.Modules.Xp;
 public partial class Xp
 {
     [Group]
-    public class Club : NadekoSubmodule<ClubService>
+    public partial class Club : NadekoSubmodule<ClubService>
     {
         private readonly XpService _xps;
 
         public Club(XpService xps)
             => _xps = xps;
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubTransfer([Leftover] IUser newOwner)
+        [Cmd]
+        public async partial Task ClubTransfer([Leftover] IUser newOwner)
         {
             var club = _service.TransferClub(ctx.User, newOwner);
 
@@ -26,9 +25,8 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubAdmin([Leftover] IUser toAdmin)
+        [Cmd]
+        public async partial Task ClubAdmin([Leftover] IUser toAdmin)
         {
             bool admin;
             try
@@ -47,9 +45,8 @@ public partial class Xp
                 await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubCreate([Leftover] string clubName)
+        [Cmd]
+        public async partial Task ClubCreate([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
             {
@@ -66,9 +63,8 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubIcon([Leftover] string url = null)
+        [Cmd]
+        public async partial Task ClubIcon([Leftover] string url = null)
         {
             if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
                 || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
@@ -80,10 +76,9 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.club_icon_set);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task ClubInformation(IUser user = null)
+        public async partial Task ClubInformation(IUser user = null)
         {
             user ??= ctx.User;
             var club = _service.GetClubByMember(user);
@@ -96,10 +91,9 @@ public partial class Xp
             await ClubInformation(club.ToString());
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task ClubInformation([Leftover] string clubName = null)
+        public async partial Task ClubInformation([Leftover] string clubName = null)
         {
             if (string.IsNullOrWhiteSpace(clubName))
             {
@@ -159,9 +153,8 @@ public partial class Xp
                 10);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public Task ClubBans(int page = 1)
+        [Cmd]
+        public partial Task ClubBans(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -187,9 +180,8 @@ public partial class Xp
         }
 
 
-        [NadekoCommand]
-        [Aliases]
-        public Task ClubApps(int page = 1)
+        [Cmd]
+        public partial Task ClubApps(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -214,9 +206,8 @@ public partial class Xp
                 10);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubApply([Leftover] string clubName)
+        [Cmd]
+        public async partial Task ClubApply([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName))
                 return;
@@ -233,16 +224,14 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_apply_error);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task ClubAccept(IUser user)
+        public partial Task ClubAccept(IUser user)
             => ClubAccept(user.ToString());
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task ClubAccept([Leftover] string userName)
+        public async partial Task ClubAccept([Leftover] string userName)
         {
             if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
@@ -250,9 +239,8 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_accept_error);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Clubleave()
+        [Cmd]
+        public async partial Task Clubleave()
         {
             if (_service.LeaveClub(ctx.User))
                 await ReplyConfirmLocalizedAsync(strs.club_left);
@@ -260,16 +248,14 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_not_in_club);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task ClubKick([Leftover] IUser user)
+        public partial Task ClubKick([Leftover] IUser user)
             => ClubKick(user.ToString());
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public Task ClubKick([Leftover] string userName)
+        public partial Task ClubKick([Leftover] string userName)
         {
             if (_service.Kick(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_kick(Format.Bold(userName),
@@ -277,16 +263,14 @@ public partial class Xp
             return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task ClubBan([Leftover] IUser user)
+        public partial Task ClubBan([Leftover] IUser user)
             => ClubBan(user.ToString());
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public Task ClubBan([Leftover] string userName)
+        public partial Task ClubBan([Leftover] string userName)
         {
             if (_service.Ban(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_banned(Format.Bold(userName),
@@ -294,16 +278,14 @@ public partial class Xp
             return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public Task ClubUnBan([Leftover] IUser user)
+        public partial Task ClubUnBan([Leftover] IUser user)
             => ClubUnBan(user.ToString());
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public Task ClubUnBan([Leftover] string userName)
+        public partial Task ClubUnBan([Leftover] string userName)
         {
             if (_service.UnBan(ctx.User.Id, userName, out var club))
                 return ReplyConfirmLocalizedAsync(strs.club_user_unbanned(Format.Bold(userName),
@@ -311,9 +293,8 @@ public partial class Xp
             return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubLevelReq(int level)
+        [Cmd]
+        public async partial Task ClubLevelReq(int level)
         {
             if (_service.ChangeClubLevelReq(ctx.User.Id, level))
                 await ReplyConfirmLocalizedAsync(strs.club_level_req_changed(Format.Bold(level.ToString())));
@@ -321,9 +302,8 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_level_req_change_error);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubDescription([Leftover] string desc = null)
+        [Cmd]
+        public async partial Task ClubDescription([Leftover] string desc = null)
         {
             if (_service.ChangeClubDescription(ctx.User.Id, desc))
                 await ReplyConfirmLocalizedAsync(strs.club_desc_updated(Format.Bold(desc ?? "-")));
@@ -331,9 +311,8 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_desc_update_failed);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task ClubDisband()
+        [Cmd]
+        public async partial Task ClubDisband()
         {
             if (_service.Disband(ctx.User.Id, out var club))
                 await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.ToString())));
@@ -341,9 +320,8 @@ public partial class Xp
                 await ReplyErrorLocalizedAsync(strs.club_disband_error);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public Task ClubLeaderboard(int page = 1)
+        [Cmd]
+        public partial Task ClubLeaderboard(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;

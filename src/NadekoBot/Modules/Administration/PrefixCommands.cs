@@ -4,33 +4,30 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class PrefixCommands : NadekoSubmodule
+    public partial class PrefixCommands : NadekoSubmodule
     {
         public enum Set
         {
             Set
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task PrefixCommand()
+        public async partial Task PrefixCommand()
             => await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(CmdHandler.GetPrefix(ctx.Guild))));
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public Task PrefixCommand(Set _, [Leftover] string prefix)
+        public partial Task PrefixCommand(Set _, [Leftover] string prefix)
             => PrefixCommand(prefix);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public async Task PrefixCommand([Leftover] string prefix)
+        public async partial Task PrefixCommand([Leftover] string prefix)
         {
             if (string.IsNullOrWhiteSpace(prefix))
                 return;
@@ -41,10 +38,9 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.prefix_new(Format.Code(oldPrefix), Format.Code(newPrefix)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task DefPrefix([Leftover] string prefix = null)
+        public async partial Task DefPrefix([Leftover] string prefix = null)
         {
             if (string.IsNullOrWhiteSpace(prefix))
             {

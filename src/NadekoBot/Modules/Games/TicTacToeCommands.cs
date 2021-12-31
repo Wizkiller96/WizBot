@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class TicTacToeCommands : NadekoSubmodule<GamesService>
+    public partial class TicTacToeCommands : NadekoSubmodule<GamesService>
     {
         private readonly SemaphoreSlim _sem = new(1, 1);
         private readonly DiscordSocketClient _client;
@@ -15,11 +15,10 @@ public partial class Games
         public TicTacToeCommands(DiscordSocketClient client)
             => _client = client;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptions(typeof(TicTacToe.Options))]
-        public async Task TicTacToe(params string[] args)
+        public async partial Task TicTacToe(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
             var channel = (ITextChannel)ctx.Channel;

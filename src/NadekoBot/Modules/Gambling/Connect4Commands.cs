@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class Connect4Commands : GamblingSubmodule<GamblingService>
+    public partial class Connect4Commands : GamblingSubmodule<GamblingService>
     {
         private static readonly string[] numbers =
         {
@@ -41,11 +41,10 @@ public partial class Gambling
             _cs = cs;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(Connect4Game.Options))]
-        public async Task Connect4(params string[] args)
+        public async partial Task Connect4(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new Connect4Game.Options(), args);
             if (!await CheckBetOptional(options.Bet))

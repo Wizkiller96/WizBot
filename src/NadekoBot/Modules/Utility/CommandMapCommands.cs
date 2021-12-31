@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class CommandMapCommands : NadekoSubmodule<CommandMapService>
+    public partial class CommandMapCommands : NadekoSubmodule<CommandMapService>
     {
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
@@ -20,21 +20,19 @@ public partial class Utility
             _client = client;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AliasesClear()
+        public async partial Task AliasesClear()
         {
             var count = _service.ClearAliases(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.aliases_cleared(count));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
-        public async Task Alias(string trigger, [Leftover] string mapping = null)
+        public async partial Task Alias(string trigger, [Leftover] string mapping = null)
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -101,10 +99,9 @@ public partial class Utility
         }
 
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AliasList(int page = 1)
+        public async partial Task AliasList(int page = 1)
         {
             var channel = (ITextChannel)ctx.Channel;
             page -= 1;

@@ -7,15 +7,14 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class DiscordPermOverrideCommands : NadekoSubmodule<DiscordPermOverrideService>
+    public partial class DiscordPermOverrideCommands : NadekoSubmodule<DiscordPermOverrideService>
     {
         // override stats, it should require that the user has managessages guild permission
         // .po 'stats' add user guild managemessages
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task DiscordPermOverride(CommandOrCrInfo cmd, params GuildPerm[] perms)
+        public async partial Task DiscordPermOverride(CommandOrCrInfo cmd, params GuildPerm[] perms)
         {
             if (perms is null || perms.Length == 0)
             {
@@ -31,11 +30,10 @@ public partial class Administration
                 Format.Code(cmd.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task DiscordPermOverrideReset()
+        public async partial Task DiscordPermOverrideReset()
         {
             var result = await PromptUserConfirmAsync(_eb.Create()
                                                          .WithOkColor()
@@ -48,11 +46,10 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.perm_override_all);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task DiscordPermOverrideList(int page = 1)
+        public async partial Task DiscordPermOverrideList(int page = 1)
         {
             if (--page < 0)
                 return;

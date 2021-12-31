@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     // [Group]
-    // public class YtTrackCommands : NadekoSubmodule<YtTrackService>
+    // public partial class YtTrackCommands : NadekoSubmodule<YtTrackService>
     // {
     //     ;
     //     [RequireContext(ContextType.Guild)]

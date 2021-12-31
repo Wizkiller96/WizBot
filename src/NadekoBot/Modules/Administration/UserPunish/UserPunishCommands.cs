@@ -11,7 +11,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class UserPunishCommands : NadekoSubmodule<UserPunishService>
+    public partial class UserPunishCommands : NadekoSubmodule<UserPunishService>
     {
         public enum AddRole
         {
@@ -48,18 +48,16 @@ public partial class Administration
             return true;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public Task Warn(IGuildUser user, [Leftover] string reason = null)
+        public partial Task Warn(IGuildUser user, [Leftover] string reason = null)
             => Warn(1, user, reason);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
+        public async partial Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
         {
             if (weight <= 0)
                 return;
@@ -109,13 +107,12 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [NadekoOptions(typeof(WarnExpireOptions))]
         [Priority(1)]
-        public async Task WarnExpire()
+        public async partial Task WarnExpire()
         {
             var expireDays = await _service.GetWarnExpire(ctx.Guild.Id);
 
@@ -125,13 +122,12 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.warns_expire_in(expireDays));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [NadekoOptions(typeof(WarnExpireOptions))]
         [Priority(2)]
-        public async Task WarnExpire(int days, params string[] args)
+        public async partial Task WarnExpire(int days, params string[] args)
         {
             if (days is < 0 or > 366)
                 return;
@@ -153,23 +149,21 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.warn_expire_set_clear(Format.Bold(days.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(2)]
-        public Task Warnlog(int page, [Leftover] IGuildUser user = null)
+        public partial Task Warnlog(int page, [Leftover] IGuildUser user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
             return Warnlog(page, user.Id);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(3)]
-        public Task Warnlog(IGuildUser user = null)
+        public partial Task Warnlog(IGuildUser user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
@@ -178,20 +172,18 @@ public partial class Administration
                 : Task.CompletedTask;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public Task Warnlog(int page, ulong userId)
+        public partial Task Warnlog(int page, ulong userId)
             => InternalWarnlog(userId, page - 1);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public Task Warnlog(ulong userId)
+        public partial Task Warnlog(ulong userId)
             => InternalWarnlog(userId, 0);
 
         private async Task InternalWarnlog(ulong userId, int inputPage)
@@ -244,11 +236,10 @@ public partial class Administration
                 9);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task WarnlogAll(int page = 1)
+        public async partial Task WarnlogAll(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -279,18 +270,16 @@ public partial class Administration
                 15);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public Task Warnclear(IGuildUser user, int index = 0)
+        public partial Task Warnclear(IGuildUser user, int index = 0)
             => Warnclear(user.Id, index);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task Warnclear(ulong userId, int index = 0)
+        public async partial Task Warnclear(ulong userId, int index = 0)
         {
             if (index < 0)
                 return;
@@ -309,12 +298,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public async Task WarnPunish(
+        public async partial Task WarnPunish(
             int number,
             AddRole _,
             IRole role,
@@ -343,11 +331,10 @@ public partial class Administration
                     Format.Bold(time.Input)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
+        public async partial Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
         {
             // this should never happen. Addrole has its own method with higher priority
             if (punish == PunishmentAction.AddRole)
@@ -367,21 +354,19 @@ public partial class Administration
                     Format.Bold(time.Input)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task WarnPunish(int number)
+        public async partial Task WarnPunish(int number)
         {
             if (!_service.WarnPunishRemove(ctx.Guild.Id, number)) return;
 
             await ReplyConfirmLocalizedAsync(strs.warn_punish_rem(Format.Bold(number.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task WarnPunishList()
+        public async partial Task WarnPunishList()
         {
             var ps = _service.WarnPunishList(ctx.Guild.Id);
 
@@ -395,13 +380,12 @@ public partial class Administration
             await SendConfirmAsync(GetText(strs.warn_punish_list), list);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public async Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
+        public async partial Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
         {
             if (time.Time > TimeSpan.FromDays(49))
                 return;
@@ -440,13 +424,12 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(toSend);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public async Task Ban(ulong userId, [Leftover] string msg = null)
+        public async partial Task Ban(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -464,13 +447,12 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(2)]
-        public async Task Ban(IGuildUser user, [Leftover] string msg = null)
+        public async partial Task Ban(IGuildUser user, [Leftover] string msg = null)
         {
             if (!await CheckRoleHierarchy(user))
                 return;
@@ -501,12 +483,11 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(toSend);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async Task BanMessage([Leftover] string message = null)
+        public async partial Task BanMessage([Leftover] string message = null)
         {
             if (message is null)
             {
@@ -525,33 +506,30 @@ public partial class Administration
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async Task BanMsgReset()
+        public async partial Task BanMsgReset()
         {
             _service.SetBanTemplate(ctx.Guild.Id, null);
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public Task BanMessageTest([Leftover] string reason = null)
+        public partial Task BanMessageTest([Leftover] string reason = null)
             => InternalBanMessageTest(reason, null);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
+        public partial Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
             => InternalBanMessageTest(reason, duration.Time);
 
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
@@ -579,12 +557,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async Task Unban([Leftover] string user)
+        public async partial Task Unban([Leftover] string user)
         {
             var bans = await ctx.Guild.GetBansAsync();
 
@@ -599,12 +576,11 @@ public partial class Administration
             await UnbanInternal(bun.User);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async Task Unban(ulong userId)
+        public async partial Task Unban(ulong userId)
         {
             var bans = await ctx.Guild.GetBansAsync();
 
@@ -626,20 +602,18 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.unbanned_user(Format.Bold(user.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.BanMembers)]
-        public Task Softban(IGuildUser user, [Leftover] string msg = null)
+        public partial Task Softban(IGuildUser user, [Leftover] string msg = null)
             => SoftbanInternal(user, msg);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async Task Softban(ulong userId, [Leftover] string msg = null)
+        public async partial Task Softban(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -679,22 +653,20 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(toSend);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers)]
         [BotPerm(GuildPerm.KickMembers)]
         [Priority(1)]
-        public Task Kick(IGuildUser user, [Leftover] string msg = null)
+        public partial Task Kick(IGuildUser user, [Leftover] string msg = null)
             => KickInternal(user, msg);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers)]
         [BotPerm(GuildPerm.KickMembers)]
         [Priority(0)]
-        public async Task Kick(ulong userId, [Leftover] string msg = null)
+        public async partial Task Kick(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -703,7 +675,7 @@ public partial class Administration
             await KickInternal(user, msg);
         }
 
-        public async Task KickInternal(IGuildUser user, string msg = null)
+        private async Task KickInternal(IGuildUser user, string msg = null)
         {
             if (!await CheckRoleHierarchy(user))
                 return;
@@ -732,13 +704,12 @@ public partial class Administration
             await ctx.Channel.EmbedAsync(toSend);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Ratelimit(30)]
-        public async Task MassBan(params string[] userStrings)
+        public async partial Task MassBan(params string[] userStrings)
         {
             if (userStrings.Length == 0)
                 return;
@@ -806,13 +777,12 @@ public partial class Administration
                                                                .Build());
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [OwnerOnly]
-        public async Task MassKill([Leftover] string people)
+        public async partial Task MassKill([Leftover] string people)
         {
             if (string.IsNullOrWhiteSpace(people))
                 return;

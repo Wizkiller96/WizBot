@@ -3,7 +3,7 @@ using NadekoBot.Modules.CustomReactions.Services;
 
 namespace NadekoBot.Modules.CustomReactions;
 
-public class CustomReactions : NadekoModule<CustomReactionsService>
+public partial class CustomReactions : NadekoModule<CustomReactionsService>
 {
     public enum All
     {
@@ -23,9 +23,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         => (ctx.Guild is null && _creds.IsOwner(ctx.User))
            || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task AddCustReact(string key, [Leftover] string message)
+    [Cmd]
+    public async partial Task AddCustReact(string key, [Leftover] string message)
     {
         var channel = ctx.Channel as ITextChannel;
         if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
@@ -48,9 +47,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
                                             message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task EditCustReact(kwum id, [Leftover] string message)
+    [Cmd]
+    public async partial Task EditCustReact(kwum id, [Leftover] string message)
     {
         var channel = ctx.Channel as ITextChannel;
         if (string.IsNullOrWhiteSpace(message) || id < 0)
@@ -76,10 +74,9 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.edit_fail);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [Priority(1)]
-    public async Task ListCustReact(int page = 1)
+    public async partial Task ListCustReact(int page = 1)
     {
         if (--page < 0 || page > 999)
             return;
@@ -113,9 +110,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             20);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task ShowCustReact(kwum id)
+    [Cmd]
+    public async partial Task ShowCustReact(kwum id)
     {
         var found = _service.GetCustomReaction(ctx.Guild?.Id, id);
 
@@ -133,9 +129,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
                                             found.Response.TrimTo(1000).Replace("](", "]\\(")));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task DelCustReact(kwum id)
+    [Cmd]
+    public async partial Task DelCustReact(kwum id)
     {
         if (!AdminInGuildOrOwnerInDm())
         {
@@ -156,9 +151,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             await ReplyErrorLocalizedAsync(strs.no_found_id);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task CrReact(kwum id, params string[] emojiStrs)
+    [Cmd]
+    public async partial Task CrReact(kwum id, params string[] emojiStrs)
     {
         if (!AdminInGuildOrOwnerInDm())
         {
@@ -211,30 +205,25 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
             string.Join(", ", succ.Select(x => x.ToString()))));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public Task CrCa(kwum id)
+    [Cmd]
+    public partial Task CrCa(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.ContainsAnywhere);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task CrDm(kwum id)
+    [Cmd]
+    public partial Task CrDm(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.DmResponse);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task CrAd(kwum id)
+    [Cmd]
+    public partial Task CrAd(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.AutoDelete);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task CrAt(kwum id)
+    [Cmd]
+    public partial Task CrAt(kwum id)
         => InternalCrEdit(id, CustomReactionsService.CrField.AllowTarget);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [OwnerOnly]
-    public async Task CrsReload()
+    public async partial Task CrsReload()
     {
         await _service.TriggerReloadCustomReactions();
 
@@ -265,11 +254,10 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
                 Format.Code(id.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task CrClear()
+    public async partial Task CrClear()
     {
         if (await PromptUserConfirmAsync(_eb.Create()
                                             .WithTitle("Custom reaction clear")
@@ -280,9 +268,8 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task CrsExport()
+    [Cmd]
+    public async partial Task CrsExport()
     {
         if (!AdminInGuildOrOwnerInDm())
         {
@@ -297,12 +284,11 @@ public class CustomReactions : NadekoModule<CustomReactionsService>
         await ctx.Channel.SendFileAsync(stream, "crs-export.yml");
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
 #if GLOBAL_NADEKO
         [OwnerOnly]
 #endif
-    public async Task CrsImport([Leftover] string input = null)
+    public async partial Task CrsImport([Leftover] string input = null)
     {
         if (!AdminInGuildOrOwnerInDm())
         {

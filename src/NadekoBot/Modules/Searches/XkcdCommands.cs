@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class XkcdCommands : NadekoSubmodule
+    public partial class XkcdCommands : NadekoSubmodule
     {
         private const string _xkcdUrl = "https://xkcd.com";
         private readonly IHttpClientFactory _httpFactory;
@@ -14,10 +14,9 @@ public partial class Searches
         public XkcdCommands(IHttpClientFactory factory)
             => _httpFactory = factory;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task Xkcd(string arg = null)
+        public async partial Task Xkcd(string arg = null)
         {
             if (arg?.ToLowerInvariant().Trim() == "latest")
             {
@@ -49,10 +48,9 @@ public partial class Searches
             await Xkcd(new NadekoRandom().Next(1, 1750));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task Xkcd(int num)
+        public async partial Task Xkcd(int num)
         {
             if (num < 1)
                 return;

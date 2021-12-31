@@ -8,16 +8,15 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class WaifuClaimCommands : GamblingSubmodule<WaifuService>
+    public partial class WaifuClaimCommands : GamblingSubmodule<WaifuService>
     {
         public WaifuClaimCommands(GamblingConfigService gamblingConfService)
             : base(gamblingConfService)
         {
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task WaifuReset()
+        [Cmd]
+        public async partial Task WaifuReset()
         {
             var price = _service.GetResetPrice(ctx.User);
             var embed = _eb.Create()
@@ -36,10 +35,9 @@ public partial class Gambling
             await ReplyErrorLocalizedAsync(strs.waifu_reset_fail);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task WaifuClaim(int amount, [Leftover] IUser target)
+        public async partial Task WaifuClaim(int amount, [Leftover] IUser target)
         {
             if (amount < _config.Waifu.MinPrice)
             {
@@ -76,11 +74,10 @@ public partial class Gambling
             await SendConfirmAsync(ctx.User.Mention + msg);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task WaifuTransfer(ulong waifuId, IUser newOwner)
+        public async partial Task WaifuTransfer(ulong waifuId, IUser newOwner)
         {
             if (!await _service.WaifuTransfer(ctx.User, waifuId, newOwner))
             {
@@ -93,11 +90,10 @@ public partial class Gambling
                 Format.Bold(newOwner.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task WaifuTransfer(IUser waifu, IUser newOwner)
+        public async partial Task WaifuTransfer(IUser waifu, IUser newOwner)
         {
             if (!await _service.WaifuTransfer(ctx.User, waifu.Id, newOwner))
             {
@@ -110,11 +106,10 @@ public partial class Gambling
                 Format.Bold(newOwner.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(-1)]
-        public Task Divorce([Leftover] string target)
+        public partial Task Divorce([Leftover] string target)
         {
             var waifuUserId = _service.GetWaifuUserId(ctx.User.Id, target);
             if (waifuUserId == default) return ReplyErrorLocalizedAsync(strs.waifu_not_yours);
@@ -122,18 +117,16 @@ public partial class Gambling
             return Divorce(waifuUserId);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public Task Divorce([Leftover] IGuildUser target)
+        public partial Task Divorce([Leftover] IGuildUser target)
             => Divorce(target.Id);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task Divorce([Leftover] ulong targetId)
+        public async partial Task Divorce([Leftover] ulong targetId)
         {
             if (targetId == ctx.User.Id)
                 return;
@@ -153,10 +146,9 @@ public partial class Gambling
                     Format.Bold(remaining?.Minutes.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Affinity([Leftover] IGuildUser u = null)
+        public async partial Task Affinity([Leftover] IGuildUser u = null)
         {
             if (u?.Id == ctx.User.Id)
             {
@@ -185,10 +177,9 @@ public partial class Gambling
                     Format.Bold(u.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task WaifuLb(int page = 1)
+        public async partial Task WaifuLb(int page = 1)
         {
             page--;
 
@@ -218,11 +209,10 @@ public partial class Gambling
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public Task WaifuInfo([Leftover] IUser target = null)
+        public partial Task WaifuInfo([Leftover] IUser target = null)
         {
             if (target is null)
                 target = ctx.User;
@@ -230,11 +220,10 @@ public partial class Gambling
             return InternalWaifuInfo(target.Id, target.ToString());
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public Task WaifuInfo(ulong targetId)
+        public partial Task WaifuInfo(ulong targetId)
             => InternalWaifuInfo(targetId);
 
         private Task InternalWaifuInfo(ulong targetId, string name = null)
@@ -284,11 +273,10 @@ public partial class Gambling
             return ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task WaifuGift(int page = 1)
+        public async partial Task WaifuGift(int page = 1)
         {
             if (--page < 0 || page > (_config.Waifu.Items.Count - 1) / 9)
                 return;
@@ -315,11 +303,10 @@ public partial class Gambling
                 9);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task WaifuGift(string itemName, [Leftover] IUser waifu)
+        public async partial Task WaifuGift(string itemName, [Leftover] IUser waifu)
         {
             if (waifu.Id == ctx.User.Id)
                 return;

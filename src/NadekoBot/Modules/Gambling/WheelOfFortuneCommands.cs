@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Gambling;
 
 public partial class Gambling
 {
-    public class WheelOfFortuneCommands : GamblingSubmodule<GamblingService>
+    public partial class WheelOfFortuneCommands : GamblingSubmodule<GamblingService>
     {
         private static readonly ImmutableArray<string> _emojis =
             new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
@@ -23,9 +23,8 @@ public partial class Gambling
             _db = db;
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task WheelOfFortune(ShmartNumber amount)
+        [Cmd]
+        public async partial Task WheelOfFortune(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;

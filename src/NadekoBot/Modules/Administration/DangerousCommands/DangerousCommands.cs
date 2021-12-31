@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Administration
     {
         [Group]
         [OwnerOnly]
-        public class DangerousCommands : NadekoSubmodule<DangerousCommandsService>
+        public partial class DangerousCommands : NadekoSubmodule<DangerousCommandsService>
         {
             private async Task InternalExecSql(string sql, params object[] reps)
             {
@@ -31,10 +31,9 @@ namespace NadekoBot.Modules.Administration
                 }
             }
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task SqlSelect([Leftover] string sql)
+            public partial Task SqlSelect([Leftover] string sql)
             {
                 var result = _service.SelectSql(sql);
 
@@ -56,52 +55,44 @@ namespace NadekoBot.Modules.Administration
                     20);
             }
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task SqlExec([Leftover] string sql)
+            public partial Task SqlExec([Leftover] string sql)
                 => InternalExecSql(sql);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeleteWaifus()
+            public partial Task DeleteWaifus()
                 => SqlExec(DangerousCommandsService.WaifusDeleteSql);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeleteWaifu(IUser user)
+            public partial Task DeleteWaifu(IUser user)
                 => DeleteWaifu(user.Id);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeleteWaifu(ulong userId)
+            public partial Task DeleteWaifu(ulong userId)
                 => InternalExecSql(DangerousCommandsService.WaifuDeleteSql, userId);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeleteCurrency()
+            public partial Task DeleteCurrency()
                 => SqlExec(DangerousCommandsService.CurrencyDeleteSql);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeletePlaylists()
+            public partial Task DeletePlaylists()
                 => SqlExec(DangerousCommandsService.MusicPlaylistDeleteSql);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task DeleteXp()
+            public partial Task DeleteXp()
                 => SqlExec(DangerousCommandsService.XpDeleteSql);
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public async Task PurgeUser(ulong userId)
+            public async partial Task PurgeUser(ulong userId)
             {
                 var embed = _eb.Create()
                                .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
@@ -112,14 +103,13 @@ namespace NadekoBot.Modules.Administration
                 await ctx.OkAsync();
             }
 
-            [NadekoCommand]
-            [Aliases]
+            [Cmd]
             [OwnerOnly]
-            public Task PurgeUser([Leftover] IUser user)
+            public partial Task PurgeUser([Leftover] IUser user)
                 => PurgeUser(user.Id);
             //[NadekoCommand, Usage, Description, Aliases]
             //[OwnerOnly]
-            //public Task DeleteUnusedCrnQ() =>
+            //public partial Task DeleteUnusedCrnQ() =>
             //    SqlExec(DangerousCommandsService.DeleteUnusedCustomReactionsAndQuotes);
         }
     }

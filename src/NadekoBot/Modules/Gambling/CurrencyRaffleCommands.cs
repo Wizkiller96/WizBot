@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Gambling;
 
 public partial class Gambling
 {
-    public class CurrencyRaffleCommands : GamblingSubmodule<CurrencyRaffleService>
+    public partial class CurrencyRaffleCommands : GamblingSubmodule<CurrencyRaffleService>
     {
         public enum Mixed { Mixed }
 
@@ -15,18 +15,16 @@ public partial class Gambling
         {
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public Task RaffleCur(Mixed _, ShmartNumber amount)
+        public partial Task RaffleCur(Mixed _, ShmartNumber amount)
             => RaffleCur(amount, true);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task RaffleCur(ShmartNumber amount, bool mixed = false)
+        public async partial Task RaffleCur(ShmartNumber amount, bool mixed = false)
         {
             if (!await CheckBetMandatory(amount))
                 return;

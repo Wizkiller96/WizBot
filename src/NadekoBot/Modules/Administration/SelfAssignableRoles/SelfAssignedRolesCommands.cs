@@ -7,14 +7,13 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class SelfAssignedRolesCommands : NadekoSubmodule<SelfAssignedRolesService>
+    public partial class SelfAssignedRolesCommands : NadekoSubmodule<SelfAssignedRolesService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.ManageMessages)]
-        public async Task AdSarm()
+        public async partial Task AdSarm()
         {
             var newVal = _service.ToggleAdSarm(ctx.Guild.Id);
 
@@ -24,22 +23,20 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.adsarm_disable(Prefix));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public Task Asar([Leftover] IRole role)
+        public partial Task Asar([Leftover] IRole role)
             => Asar(0, role);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task Asar(int group, [Leftover] IRole role)
+        public async partial Task Asar(int group, [Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -54,13 +51,12 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task Sargn(int group, [Leftover] string name = null)
+        public async partial Task Sargn(int group, [Leftover] string name = null)
         {
             var guser = (IGuildUser)ctx.User;
 
@@ -73,11 +69,10 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task Rsar([Leftover] IRole role)
+        public async partial Task Rsar([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -90,10 +85,9 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.self_assign_rem(Format.Bold(role.Name)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Lsar(int page = 1)
+        public async partial Task Lsar(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -147,12 +141,11 @@ public partial class Administration
                 20);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task Togglexclsar()
+        public async partial Task Togglexclsar()
         {
             var areExclusive = _service.ToggleEsar(ctx.Guild.Id);
             if (areExclusive)
@@ -161,12 +154,11 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.self_assign_no_excl);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task RoleLevelReq(int level, [Leftover] IRole role)
+        public async partial Task RoleLevelReq(int level, [Leftover] IRole role)
         {
             if (level < 0)
                 return;
@@ -183,23 +175,22 @@ public partial class Administration
                 Format.Bold(level.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Iam([Leftover] IRole role)
+        public async partial Task Iam([Leftover] IRole role)
         {
             var guildUser = (IGuildUser)ctx.User;
 
             var (result, autoDelete, extra) = await _service.Assign(guildUser, role);
 
             IUserMessage msg;
-            if (result == SelfAssignedRolesService.AssignResult.Err_Not_Assignable)
+            if (result == SelfAssignedRolesService.AssignResult.ErrNotAssignable)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
-            else if (result == SelfAssignedRolesService.AssignResult.Err_Lvl_Req)
+            else if (result == SelfAssignedRolesService.AssignResult.ErrLvlReq)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_level(Format.Bold(extra.ToString())));
-            else if (result == SelfAssignedRolesService.AssignResult.Err_Already_Have)
+            else if (result == SelfAssignedRolesService.AssignResult.ErrAlreadyHave)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_already(Format.Bold(role.Name)));
-            else if (result == SelfAssignedRolesService.AssignResult.Err_Not_Perms)
+            else if (result == SelfAssignedRolesService.AssignResult.ErrNotPerms)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
             else
                 msg = await ReplyConfirmLocalizedAsync(strs.self_assign_success(Format.Bold(role.Name)));
@@ -211,21 +202,20 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Iamnot([Leftover] IRole role)
+        public async partial Task Iamnot([Leftover] IRole role)
         {
             var guildUser = (IGuildUser)ctx.User;
 
             var (result, autoDelete) = await _service.Remove(guildUser, role);
 
             IUserMessage msg;
-            if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Assignable)
+            if (result == SelfAssignedRolesService.RemoveResult.ErrNotAssignable)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
-            else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Have)
+            else if (result == SelfAssignedRolesService.RemoveResult.ErrNotHave)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_have(Format.Bold(role.Name)));
-            else if (result == SelfAssignedRolesService.RemoveResult.Err_Not_Perms)
+            else if (result == SelfAssignedRolesService.RemoveResult.ErrNotPerms)
                 msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
             else
                 msg = await ReplyConfirmLocalizedAsync(strs.self_assign_remove(Format.Bold(role.Name)));

@@ -8,18 +8,17 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class AcropobiaCommands : NadekoSubmodule<GamesService>
+    public partial class AcropobiaCommands : NadekoSubmodule<GamesService>
     {
         private readonly DiscordSocketClient _client;
 
         public AcropobiaCommands(DiscordSocketClient client)
             => _client = client;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptions(typeof(AcrophobiaGame.Options))]
-        public async Task Acrophobia(params string[] args)
+        public async partial Task Acrophobia(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new AcrophobiaGame.Options(), args);
             var channel = (ITextChannel)ctx.Channel;

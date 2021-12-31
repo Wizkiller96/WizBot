@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class MuteCommands : NadekoSubmodule<MuteService>
+    public partial class MuteCommands : NadekoSubmodule<MuteService>
     {
         private async Task<bool> VerifyMutePermissions(IGuildUser runnerUser, IGuildUser targetUser)
         {
@@ -23,11 +23,10 @@ public partial class Administration
             return true;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task MuteRole([Leftover] IRole role = null)
+        public async partial Task MuteRole([Leftover] IRole role = null)
         {
             if (role is null)
             {
@@ -48,12 +47,11 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.mute_role_set);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(0)]
-        public async Task Mute(IGuildUser target, [Leftover] string reason = "")
+        public async partial Task Mute(IGuildUser target, [Leftover] string reason = "")
         {
             try
             {
@@ -70,12 +68,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async Task Mute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async partial Task Mute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -95,11 +92,10 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
-        public async Task Unmute(IGuildUser user, [Leftover] string reason = "")
+        public async partial Task Unmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -112,12 +108,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task ChatMute(IGuildUser user, [Leftover] string reason = "")
+        public async partial Task ChatMute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -134,12 +129,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public async Task ChatMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async partial Task ChatMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -159,11 +153,10 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task ChatUnmute(IGuildUser user, [Leftover] string reason = "")
+        public async partial Task ChatUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -176,12 +169,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(0)]
-        public async Task VoiceMute(IGuildUser user, [Leftover] string reason = "")
+        public async partial Task VoiceMute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -197,12 +189,11 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async partial Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -221,11 +212,10 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
-        public async Task VoiceUnmute(IGuildUser user, [Leftover] string reason = "")
+        public async partial Task VoiceUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {

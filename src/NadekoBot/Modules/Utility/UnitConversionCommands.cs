@@ -6,11 +6,10 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class UnitConverterCommands : NadekoSubmodule<ConverterService>
+    public partial class UnitConverterCommands : NadekoSubmodule<ConverterService>
     {
-        [NadekoCommand]
-        [Aliases]
-        public async Task ConvertList()
+        [Cmd]
+        public async partial  Task ConvertList()
         {
             var units = _service.Units;
 
@@ -24,10 +23,9 @@ public partial class Utility
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task Convert(string origin, string target, decimal value)
+        public async partial Task Convert(string origin, string target, decimal value)
         {
             var originUnit = _service.Units.FirstOrDefault(x
                 => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(origin.ToUpperInvariant()));

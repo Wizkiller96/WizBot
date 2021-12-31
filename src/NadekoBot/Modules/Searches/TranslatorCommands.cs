@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class TranslateCommands : NadekoSubmodule<ITranslateService>
+    public partial class TranslateCommands : NadekoSubmodule<ITranslateService>
     {
         public enum AutoDeleteAutoTranslate
         {
@@ -12,9 +12,8 @@ public partial class Searches
             Nodel
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Translate(string from, string to, [Leftover] string text = null)
+        [Cmd]
+        public async partial Task Translate(string from, string to, [Leftover] string text = null)
         {
             try
             {
@@ -31,13 +30,12 @@ public partial class Searches
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [OwnerOnly]
-        public async Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
+        public async partial Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
         {
             var toggle =
                 await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
@@ -47,19 +45,17 @@ public partial class Searches
                 await ReplyConfirmLocalizedAsync(strs.atl_stopped);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AutoTransLang()
+        public async partial Task AutoTransLang()
         {
             if (await _service.UnregisterUser(ctx.Channel.Id, ctx.User.Id))
                 await ReplyConfirmLocalizedAsync(strs.atl_removed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AutoTransLang(string from, string to)
+        public async partial Task AutoTransLang(string from, string to)
         {
             var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, from.ToLower(), to.ToLower());
 
@@ -78,10 +74,9 @@ public partial class Searches
             await ReplyConfirmLocalizedAsync(strs.atl_set(from, to));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Translangs()
+        public async partial Task Translangs()
             => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}");
     }
 }

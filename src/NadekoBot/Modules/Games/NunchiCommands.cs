@@ -7,17 +7,16 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class NunchiCommands : NadekoSubmodule<GamesService>
+    public partial class NunchiCommands : NadekoSubmodule<GamesService>
     {
         private readonly DiscordSocketClient _client;
 
         public NunchiCommands(DiscordSocketClient client)
             => _client = client;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Nunchi()
+        public async partial Task Nunchi()
         {
             var newNunchi = new NunchiGame(ctx.User.Id, ctx.User.ToString());
             NunchiGame nunchi;

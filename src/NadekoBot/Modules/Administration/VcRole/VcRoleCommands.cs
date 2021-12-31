@@ -6,14 +6,13 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class VcRoleCommands : NadekoSubmodule<VcRoleService>
+    public partial class VcRoleCommands : NadekoSubmodule<VcRoleService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task VcRoleRm(ulong vcId)
+        public async partial Task VcRoleRm(ulong vcId)
         {
             if (_service.RemoveVcRole(ctx.Guild.Id, vcId))
                 await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vcId.ToString())));
@@ -21,12 +20,11 @@ public partial class Administration
                 await ReplyErrorLocalizedAsync(strs.vcrole_not_found);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task VcRole([Leftover] IRole role = null)
+        public async partial Task VcRole([Leftover] IRole role = null)
         {
             var user = (IGuildUser)ctx.User;
 
@@ -50,10 +48,9 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task VcRoleList()
+        public async partial Task VcRoleList()
         {
             var guild = (SocketGuild)ctx.Guild;
             string text;

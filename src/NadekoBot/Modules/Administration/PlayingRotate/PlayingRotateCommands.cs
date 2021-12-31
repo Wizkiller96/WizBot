@@ -6,12 +6,11 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class PlayingRotateCommands : NadekoSubmodule<PlayingRotateService>
+    public partial class PlayingRotateCommands : NadekoSubmodule<PlayingRotateService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task RotatePlaying()
+        public async partial Task RotatePlaying()
         {
             if (_service.ToggleRotatePlaying())
                 await ReplyConfirmLocalizedAsync(strs.ropl_enabled);
@@ -19,20 +18,18 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.ropl_disabled);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task AddPlaying(ActivityType t, [Leftover] string status)
+        public async partial Task AddPlaying(ActivityType t, [Leftover] string status)
         {
             await _service.AddPlaying(t, status);
 
             await ReplyConfirmLocalizedAsync(strs.ropl_added);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ListPlaying()
+        public async partial Task ListPlaying()
         {
             var statuses = _service.GetRotatingStatuses();
 
@@ -48,10 +45,9 @@ public partial class Administration
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task RemovePlaying(int index)
+        public async partial Task RemovePlaying(int index)
         {
             index -= 1;
 

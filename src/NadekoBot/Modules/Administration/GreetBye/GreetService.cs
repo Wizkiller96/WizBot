@@ -3,7 +3,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Services;
 
-public class GreetSettingsService : INService
+public class GreetService : INService
 {
     public bool GroupGreets
         => _bss.Data.GroupGreets;
@@ -17,7 +17,7 @@ public class GreetSettingsService : INService
     private readonly GreetGrouper<IUser> _byes = new();
     private readonly BotConfigService _bss;
 
-    public GreetSettingsService(
+    public GreetService(
         DiscordSocketClient client,
         Bot bot,
         DbService db,

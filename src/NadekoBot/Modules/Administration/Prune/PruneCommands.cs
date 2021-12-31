@@ -6,15 +6,14 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class PruneCommands : NadekoSubmodule<PruneService>
+    public partial class PruneCommands : NadekoSubmodule<PruneService>
     {
         private static readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
 
         //delets her own messages, no perm required
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Prune(string parameter = null)
+        public async partial Task Prune(string parameter = null)
         {
             var user = await ctx.Guild.GetCurrentUserAsync();
 
@@ -26,13 +25,12 @@ public partial class Administration
         }
 
         // prune x
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(1)]
-        public async Task Prune(int count, string parameter = null)
+        public async partial Task Prune(int count, string parameter = null)
         {
             count++;
             if (count < 1)
@@ -47,23 +45,21 @@ public partial class Administration
         }
 
         //prune @user [x]
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
-        public Task Prune(IGuildUser user, int count = 100, string parameter = null)
+        public partial Task Prune(IGuildUser user, int count = 100, string parameter = null)
             => Prune(user.Id, count, parameter);
 
         //prune userid [x]
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
-        public async Task Prune(ulong userId, int count = 100, string parameter = null)
+        public async partial Task Prune(ulong userId, int count = 100, string parameter = null)
         {
             if (userId == ctx.User.Id)
                 count++;

@@ -29,10 +29,9 @@ public partial class Xp : NadekoModule<XpService>
         _gss = gss;
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Experience([Leftover] IUser user = null)
+    public async partial Task Experience([Leftover] IUser user = null)
     {
         user ??= ctx.User;
         await ctx.Channel.TriggerTypingAsync();
@@ -43,11 +42,10 @@ public partial class Xp : NadekoModule<XpService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task XpRewsReset()
+    public async partial Task XpRewsReset()
     {
         var reply = await PromptUserConfirmAsync(_eb.Create()
                                                     .WithPendingColor()
@@ -60,10 +58,9 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.OkAsync();
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task XpLevelUpRewards(int page = 1)
+    public partial Task XpLevelUpRewards(int page = 1)
     {
         page--;
 
@@ -119,25 +116,23 @@ public partial class Xp : NadekoModule<XpService>
             9);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageRoles)]
     [RequireContext(ContextType.Guild)]
     [Priority(2)]
-    public async Task XpRoleReward(int level)
+    public async partial Task XpRoleReward(int level)
     {
         _service.ResetRoleReward(ctx.Guild.Id, level);
         await ReplyConfirmLocalizedAsync(strs.xp_role_reward_cleared(level));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageRoles)]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public async Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
+    public async partial Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
     {
         if (level < 1)
             return;
@@ -150,11 +145,10 @@ public partial class Xp : NadekoModule<XpService>
                 Format.Bold(role.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public async Task XpCurrencyReward(int level, int amount = 0)
+    public async partial Task XpCurrencyReward(int level, int amount = 0)
     {
         if (level < 1 || amount < 0)
             return;
@@ -177,10 +171,9 @@ public partial class Xp : NadekoModule<XpService>
         return GetText(strs.xpn_notif_disabled);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpNotify()
+    public async partial Task XpNotify()
     {
         var globalSetting = _service.GetNotificationType(ctx.User);
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
@@ -193,10 +186,9 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
+    public async partial Task XpNotify(NotifyPlace place, XpNotificationLocation type)
     {
         if (place == NotifyPlace.Guild)
             await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type);
@@ -206,11 +198,10 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.OkAsync();
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task XpExclude(Server _)
+    public async partial Task XpExclude(Server _)
     {
         var ex = _service.ToggleExcludeServer(ctx.Guild.Id);
 
@@ -220,11 +211,10 @@ public partial class Xp : NadekoModule<XpService>
             await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(ctx.Guild.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [UserPerm(GuildPerm.ManageRoles)]
     [RequireContext(ContextType.Guild)]
-    public async Task XpExclude(Role _, [Leftover] IRole role)
+    public async partial Task XpExclude(Role _, [Leftover] IRole role)
     {
         var ex = _service.ToggleExcludeRole(ctx.Guild.Id, role.Id);
 
@@ -234,11 +224,10 @@ public partial class Xp : NadekoModule<XpService>
             await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(role.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [UserPerm(GuildPerm.ManageChannels)]
     [RequireContext(ContextType.Guild)]
-    public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
+    public async partial Task XpExclude(Channel _, [Leftover] IChannel channel = null)
     {
         if (channel is null)
             channel = ctx.Channel;
@@ -251,10 +240,9 @@ public partial class Xp : NadekoModule<XpService>
             await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(channel.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpExclusionList()
+    public async partial Task XpExclusionList()
     {
         var serverExcluded = _service.IsServerExcluded(ctx.Guild.Id);
         var roles = _service.GetExcludedRoles(ctx.Guild.Id)
@@ -292,20 +280,18 @@ public partial class Xp : NadekoModule<XpService>
             15);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [NadekoOptions(typeof(LbOpts))]
     [Priority(0)]
     [RequireContext(ContextType.Guild)]
-    public Task XpLeaderboard(params string[] args)
+    public partial Task XpLeaderboard(params string[] args)
         => XpLeaderboard(1, args);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [NadekoOptions(typeof(LbOpts))]
     [Priority(1)]
     [RequireContext(ContextType.Guild)]
-    public async Task XpLeaderboard(int page = 1, params string[] args)
+    public async partial Task XpLeaderboard(int page = 1, params string[] args)
     {
         if (--page < 0 || page > 100)
             return;
@@ -363,10 +349,9 @@ public partial class Xp : NadekoModule<XpService>
             false);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpGlobalLeaderboard(int page = 1)
+    public async partial Task XpGlobalLeaderboard(int page = 1)
     {
         if (--page < 0 || page > 99)
             return;
@@ -387,11 +372,10 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task XpAdd(int amount, ulong userId)
+    public async partial Task XpAdd(int amount, ulong userId)
     {
         if (amount == 0)
             return;
@@ -401,18 +385,16 @@ public partial class Xp : NadekoModule<XpService>
         await ReplyConfirmLocalizedAsync(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public Task XpAdd(int amount, [Leftover] IGuildUser user)
+    public partial Task XpAdd(int amount, [Leftover] IGuildUser user)
         => XpAdd(amount, user.Id);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public async Task XpTemplateReload()
+    public async partial Task XpTemplateReload()
     {
         _service.ReloadXpTemplate();
         await Task.Delay(1000);

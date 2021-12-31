@@ -16,7 +16,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class SlotCommands : GamblingSubmodule<GamblingService>
+    public partial class SlotCommands : GamblingSubmodule<GamblingService>
     {
         private static long _totalBet;
         private static long _totalPaidOut;
@@ -46,10 +46,9 @@ public partial class Gambling
         public Task Test()
             => Task.CompletedTask;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SlotStats()
+        public async partial Task SlotStats()
         {
             //i remembered to not be a moron
             var paid = _totalPaidOut;
@@ -68,10 +67,9 @@ public partial class Gambling
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task SlotTest(int tests = 1000)
+        public async partial Task SlotTest(int tests = 1000)
         {
             if (tests <= 0)
                 return;
@@ -99,9 +97,8 @@ public partial class Gambling
                 footer: $"Total Bet: {tests} | Payout: {payout} | {payout * 1.0f / tests * 100}%");
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Slot(ShmartNumber amount)
+        [Cmd]
+        public async partial Task Slot(ShmartNumber amount)
         {
             if (!_runningUsers.Add(ctx.User.Id))
                 return;

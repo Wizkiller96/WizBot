@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class MemegenCommands : NadekoSubmodule
+    public partial class MemegenCommands : NadekoSubmodule
     {
         private static readonly ImmutableDictionary<char, string> _map = new Dictionary<char, string>
         {
@@ -27,9 +27,8 @@ public partial class Searches
         public MemegenCommands(IHttpClientFactory factory)
             => _httpFactory = factory;
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Memelist(int page = 1)
+        [Cmd]
+        public async partial Task Memelist(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -55,9 +54,8 @@ public partial class Searches
                 15);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Memegen(string meme, [Leftover] string memeText = null)
+        [Cmd]
+        public async partial Task Memegen(string meme, [Leftover] string memeText = null)
         {
             var memeUrl = $"http://api.memegen.link/{meme}";
             if (!string.IsNullOrWhiteSpace(memeText))

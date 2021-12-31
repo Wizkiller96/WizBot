@@ -8,18 +8,17 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class PollCommands : NadekoSubmodule<PollService>
+    public partial class PollCommands : NadekoSubmodule<PollService>
     {
         private readonly DiscordSocketClient _client;
 
         public PollCommands(DiscordSocketClient client)
             => _client = client;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async Task Poll([Leftover] string arg)
+        public async partial Task Poll([Leftover] string arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
                 return;
@@ -44,11 +43,10 @@ public partial class Games
                 await ReplyErrorLocalizedAsync(strs.poll_already_running);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async Task PollStats()
+        public async partial Task PollStats()
         {
             if (!_service.ActivePolls.TryGetValue(ctx.Guild.Id, out var pr))
                 return;
@@ -56,11 +54,10 @@ public partial class Games
             await ctx.Channel.EmbedAsync(GetStats(pr.Poll, GetText(strs.current_poll_results)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async Task Pollend()
+        public async partial Task Pollend()
         {
             var channel = (ITextChannel)ctx.Channel;
 

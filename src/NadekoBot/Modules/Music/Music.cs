@@ -153,10 +153,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // join vc
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Join()
+    public async partial Task Join()
     {
         var user = (IGuildUser)ctx.User;
 
@@ -172,10 +171,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // leave vc (destroy)
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Destroy()
+    public async partial Task Destroy()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -185,45 +183,39 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // play - no args = next
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(2)]
-    public Task Play()
+    public partial Task Play()
         => Next();
 
     // play - index = skip to that index
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public Task Play(int index)
+    public partial Task Play(int index)
         => MoveToIndex(index);
 
     // play - query = q(query)
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public Task Play([Leftover] string query)
+    public partial Task Play([Leftover] string query)
         => QueueByQuery(query);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task Queue([Leftover] string query)
+    public partial Task Queue([Leftover] string query)
         => QueueByQuery(query);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task QueueNext([Leftover] string query)
+    public partial Task QueueNext([Leftover] string query)
         => QueueByQuery(query, true);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Volume(int vol)
+    public async partial Task Volume(int vol)
     {
         if (vol is < 0 or > 100)
         {
@@ -239,10 +231,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ReplyConfirmLocalizedAsync(strs.volume_set(vol));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Next()
+    public async partial Task Next()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -253,10 +244,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // list queue, relevant page
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ListQueue()
+    public async partial Task ListQueue()
     {
         // show page with the current song
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
@@ -269,10 +259,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // list queue, specify page
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ListQueue(int page)
+    public async partial Task ListQueue(int page)
     {
         if (--page < 0)
             return;
@@ -341,10 +330,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     }
 
     // search
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task QueueSearch([Leftover] string query)
+    public async partial Task QueueSearch([Leftover] string query)
     {
         _ = ctx.Channel.TriggerTypingAsync();
 
@@ -394,11 +382,10 @@ public sealed partial class Music : NadekoModule<IMusicService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public async Task TrackRemove(int index)
+    public async partial Task TrackRemove(int index)
     {
         if (index < 1)
         {
@@ -431,11 +418,10 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await _service.SendToOutputAsync(ctx.Guild.Id, embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async Task TrackRemove(All _ = All.All)
+    public async partial Task TrackRemove(All _ = All.All)
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -451,10 +437,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ReplyConfirmLocalizedAsync(strs.queue_cleared);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Stop()
+    public async partial Task Stop()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -478,10 +463,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
             _ => PlayerRepeatType.Queue
         };
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task QueueRepeat(InputRepeatType type = InputRepeatType.Queue)
+    public async partial Task QueueRepeat(InputRepeatType type = InputRepeatType.Queue)
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -497,10 +481,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
             await ReplyConfirmLocalizedAsync(strs.repeating_track);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Pause()
+    public async partial Task Pause()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -515,24 +498,21 @@ public sealed partial class Music : NadekoModule<IMusicService>
         mp.TogglePause();
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task Radio(string radioLink)
+    public partial Task Radio(string radioLink)
         => QueueByQuery(radioLink, false, MusicPlatform.Radio);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public Task Local([Leftover] string path)
+    public partial Task Local([Leftover] string path)
         => QueueByQuery(path, false, MusicPlatform.Local);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public async Task LocalPlaylist([Leftover] string dirPath)
+    public async partial Task LocalPlaylist([Leftover] string dirPath)
     {
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
@@ -569,10 +549,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ReplyConfirmLocalizedAsync(strs.dir_queue_complete);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task MoveSong(int from, int to)
+    public async partial Task MoveSong(int from, int to)
     {
         if (--from < 0 || --to < 0 || from == to)
         {
@@ -611,16 +590,14 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task SoundCloudQueue([Leftover] string query)
+    public partial Task SoundCloudQueue([Leftover] string query)
         => QueueByQuery(query, false, MusicPlatform.SoundCloud);
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task SoundCloudPl([Leftover] string playlist)
+    public async partial Task SoundCloudPl([Leftover] string playlist)
     {
         if (string.IsNullOrWhiteSpace(playlist))
             return;
@@ -643,10 +620,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ctx.OkAsync();
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Playlist([Leftover] string playlistQuery)
+    public async partial Task Playlist([Leftover] string playlistQuery)
     {
         if (string.IsNullOrWhiteSpace(playlistQuery))
             return;
@@ -675,10 +651,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ctx.OkAsync();
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task NowPlaying()
+    public async partial Task NowPlaying()
     {
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
@@ -702,10 +677,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task PlaylistShuffle()
+    public async partial Task PlaylistShuffle()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -722,32 +696,29 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await ReplyConfirmLocalizedAsync(strs.queue_shuffled);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
-    public async Task SetMusicChannel()
+    public async partial Task SetMusicChannel()
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
 
         await ReplyConfirmLocalizedAsync(strs.set_music_channel);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
-    public async Task UnsetMusicChannel()
+    public async partial Task UnsetMusicChannel()
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, null);
 
         await ReplyConfirmLocalizedAsync(strs.unset_music_channel);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task AutoDisconnect()
+    public async partial Task AutoDisconnect()
     {
         var newState = await _service.ToggleAutoDisconnectAsync(ctx.Guild.Id);
 
@@ -757,21 +728,19 @@ public sealed partial class Music : NadekoModule<IMusicService>
             await ReplyConfirmLocalizedAsync(strs.autodc_disable);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task MusicQuality()
+    public async partial Task MusicQuality()
     {
         var quality = await _service.GetMusicQualityAsync(ctx.Guild.Id);
         await ReplyConfirmLocalizedAsync(strs.current_music_quality(Format.Bold(quality.ToString())));
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task MusicQuality(QualityPreset preset)
+    public async partial Task MusicQuality(QualityPreset preset)
     {
         await _service.SetMusicQualityAsync(ctx.Guild.Id, preset);
         await ReplyConfirmLocalizedAsync(strs.music_quality_set(Format.Bold(preset.ToString())));

@@ -6,12 +6,11 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class TimeZoneCommands : NadekoSubmodule<GuildTimezoneService>
+    public partial class TimeZoneCommands : NadekoSubmodule<GuildTimezoneService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Timezones(int page = 1)
+        public async partial Task Timezones(int page = 1)
         {
             page--;
 
@@ -47,17 +46,15 @@ public partial class Administration
                 timezonesPerPage);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Timezone()
+        public async partial Task Timezone()
             => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id)));
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task Timezone([Leftover] string id)
+        public async partial Task Timezone([Leftover] string id)
         {
             TimeZoneInfo tz;
             try { tz = TimeZoneInfo.FindSystemTimeZoneById(id); }

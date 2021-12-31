@@ -6,13 +6,12 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class VerboseErrorCommands : NadekoSubmodule<VerboseErrorsService>
+    public partial class VerboseErrorCommands : NadekoSubmodule<VerboseErrorsService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task VerboseError(bool? newstate = null)
+        public async partial Task VerboseError(bool? newstate = null)
         {
             var state = _service.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 

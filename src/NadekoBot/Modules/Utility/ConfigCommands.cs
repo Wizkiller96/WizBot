@@ -3,17 +3,16 @@ namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {
-    public class ConfigCommands : NadekoSubmodule
+    public partial class ConfigCommands : NadekoSubmodule
     {
         private readonly IEnumerable<IConfigService> _settingServices;
 
         public ConfigCommands(IEnumerable<IConfigService> settingServices)
             => _settingServices = settingServices;
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ConfigReload(string name)
+        public async partial Task ConfigReload(string name)
         {
             var setting = _settingServices.FirstOrDefault(x
                 => x.Name.StartsWith(name, StringComparison.InvariantCultureIgnoreCase));
@@ -34,10 +33,9 @@ public partial class Utility
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task Config(string name = null, string prop = null, [Leftover] string value = null)
+        public async partial Task Config(string name = null, string prop = null, [Leftover] string value = null)
         {
             var configNames = _settingServices.Select(x => x.Name);
 

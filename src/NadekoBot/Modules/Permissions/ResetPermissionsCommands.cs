@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public class ResetPermissionsCommands : NadekoSubmodule
+    public partial class ResetPermissionsCommands : NadekoSubmodule
     {
         private readonly GlobalPermissionService _gps;
         private readonly PermissionService _perms;
@@ -17,20 +17,18 @@ public partial class Permissions
             _perms = perms;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ResetPerms()
+        public async partial Task ResetPerms()
         {
             await _perms.Reset(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.perms_reset);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [OwnerOnly]
-        public async Task ResetGlobalPerms()
+        public async partial Task ResetGlobalPerms()
         {
             await _gps.Reset();
             await ReplyConfirmLocalizedAsync(strs.global_perms_reset);

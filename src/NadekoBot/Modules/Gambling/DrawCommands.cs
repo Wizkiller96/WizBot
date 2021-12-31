@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class DrawCommands : NadekoSubmodule
+    public partial class DrawCommands : NadekoSubmodule
     {
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;
@@ -59,10 +59,9 @@ public partial class Gambling
             return (img.ToStream(), toSend);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Draw(int num = 1)
+        public async partial Task Draw(int num = 1)
         {
             if (num < 1)
                 num = 1;
@@ -76,9 +75,8 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task DrawNew(int num = 1)
+        [Cmd]
+        public async partial Task DrawNew(int num = 1)
         {
             if (num < 1)
                 num = 1;
@@ -92,10 +90,9 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task DeckShuffle()
+        public async partial Task DeckShuffle()
         {
             //var channel = (ITextChannel)ctx.Channel;
 

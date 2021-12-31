@@ -5,20 +5,18 @@ namespace NadekoBot.Modules.Xp;
 
 public partial class Xp
 {
-    public class ResetCommands : NadekoSubmodule<XpService>
+    public partial class ResetCommands : NadekoSubmodule<XpService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public Task XpReset(IGuildUser user)
+        public partial Task XpReset(IGuildUser user)
             => XpReset(user.Id);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task XpReset(ulong userId)
+        public async partial Task XpReset(ulong userId)
         {
             var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_user_confirm));
 
@@ -30,11 +28,10 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.reset_user(userId));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task XpReset()
+        public async partial Task XpReset()
         {
             var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_server_confirm));
 

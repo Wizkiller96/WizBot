@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class PokemonSearchCommands : NadekoSubmodule<SearchesService>
+    public partial class PokemonSearchCommands : NadekoSubmodule<SearchesService>
     {
         public IReadOnlyDictionary<string, SearchPokemon> Pokemons
             => _cache.LocalData.Pokemons;
@@ -20,9 +20,8 @@ public partial class Searches
         public PokemonSearchCommands(IDataCache cache)
             => _cache = cache;
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Pokemon([Leftover] string pokemon = null)
+        [Cmd]
+        public async partial Task Pokemon([Leftover] string pokemon = null)
         {
             pokemon = pokemon?.Trim().ToUpperInvariant();
             if (string.IsNullOrWhiteSpace(pokemon))
@@ -51,9 +50,8 @@ public partial class Searches
             await ReplyErrorLocalizedAsync(strs.pokemon_none);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task PokemonAbility([Leftover] string ability = null)
+        [Cmd]
+        public async partial Task PokemonAbility([Leftover] string ability = null)
         {
             ability = ability?.Trim().ToUpperInvariant().Replace(" ", "", StringComparison.InvariantCulture);
             if (string.IsNullOrWhiteSpace(ability))

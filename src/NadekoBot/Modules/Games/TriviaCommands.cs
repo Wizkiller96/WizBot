@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public class TriviaCommands : NadekoSubmodule<GamesService>
+    public partial class TriviaCommands : NadekoSubmodule<GamesService>
     {
         private readonly IDataCache _cache;
         private readonly ICurrencyService _cs;
@@ -26,15 +26,14 @@ public partial class Games
             _client = client;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         [NadekoOptionsAttribute(typeof(TriviaOptions))]
-        public Task Trivia(params string[] args)
+        public partial Task Trivia(params string[] args)
             => InternalTrivia(args);
 
-        public async Task InternalTrivia(params string[] args)
+        private async Task InternalTrivia(params string[] args)
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -71,10 +70,9 @@ public partial class Games
             await SendErrorAsync(GetText(strs.trivia_already_running) + "\n" + trivia.CurrentQuestion);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Tl()
+        public async partial Task Tl()
         {
             if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out var trivia))
             {
@@ -85,10 +83,9 @@ public partial class Games
             await ReplyErrorLocalizedAsync(strs.trivia_none);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Tq()
+        public async partial Task Tq()
         {
             var channel = (ITextChannel)ctx.Channel;
 

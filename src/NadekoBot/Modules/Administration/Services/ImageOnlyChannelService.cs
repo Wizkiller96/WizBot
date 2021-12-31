@@ -118,11 +118,9 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         if (user.GetRoles().Max(x => x.Position) >= botUser.GetRoles().Max(x => x.Position))
             return false;
 
-        // can't modify channel perms if not admin apparently
-        if (!botUser.GuildPermissions.ManageGuild)
+        if (!botUser.GetPermissions(tch).ManageChannel)
         {
             ToggleImageOnlyChannel(tch.GuildId, tch.Id, true);
-            ;
             return false;
         }
 
@@ -142,7 +140,7 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error deleting message {MessageId} in image-only channel {ChannelId}.", msg.Id, tch.Id);
+            Log.Error(ex, "Error deleting message {MessageId} in image-only channel {ChannelId}", msg.Id, tch.Id);
         }
 
         return true;

@@ -9,13 +9,12 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class ProtectionCommands : NadekoSubmodule<ProtectionService>
+    public partial class ProtectionCommands : NadekoSubmodule<ProtectionService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AntiAlt()
+        public async partial Task AntiAlt()
         {
             if (await _service.TryStopAntiAlt(ctx.Guild.Id))
             {
@@ -26,11 +25,10 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.protection_not_running("Anti-Alt"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] StoopidTime punishTime = null)
+        public async partial Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] StoopidTime punishTime = null)
         {
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
             var punishTimeMinutes = (int?)punishTime?.Time.TotalMinutes ?? 0;
@@ -46,11 +44,10 @@ public partial class Administration
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] IRole role)
+        public async partial Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] IRole role)
         {
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
 
@@ -62,35 +59,32 @@ public partial class Administration
             await ctx.OkAsync();
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public Task AntiRaid()
+        public partial Task AntiRaid()
         {
             if (_service.TryStopAntiRaid(ctx.Guild.Id))
                 return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Raid"));
             return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Raid"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(1)]
-        public Task AntiRaid(
+        public partial Task AntiRaid(
             int userThreshold,
             int seconds,
             PunishmentAction action,
             [Leftover] StoopidTime punishTime)
             => InternalAntiRaid(userThreshold, seconds, action, punishTime);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(2)]
-        public Task AntiRaid(int userThreshold, int seconds, PunishmentAction action)
+        public partial Task AntiRaid(int userThreshold, int seconds, PunishmentAction action)
             => InternalAntiRaid(userThreshold, seconds, action);
 
         private async Task InternalAntiRaid(
@@ -133,23 +127,21 @@ public partial class Administration
                 $"{ctx.User.Mention} {GetAntiRaidString(stats)}");
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public Task AntiSpam()
+        public partial Task AntiSpam()
         {
             if (_service.TryStopAntiSpam(ctx.Guild.Id))
                 return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Spam"));
             return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Spam"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] IRole role)
+        public partial Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] IRole role)
         {
             if (action != PunishmentAction.AddRole)
                 return Task.CompletedTask;
@@ -157,23 +149,21 @@ public partial class Administration
             return InternalAntiSpam(messageCount, action, null, role);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(1)]
-        public Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] StoopidTime punishTime)
+        public partial Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] StoopidTime punishTime)
             => InternalAntiSpam(messageCount, action, punishTime);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(2)]
-        public Task AntiSpam(int messageCount, PunishmentAction action)
+        public partial Task AntiSpam(int messageCount, PunishmentAction action)
             => InternalAntiSpam(messageCount, action);
 
-        public async Task InternalAntiSpam(
+        private async Task InternalAntiSpam(
             int messageCount,
             PunishmentAction action,
             StoopidTime timeData = null,
@@ -196,11 +186,10 @@ public partial class Administration
                 $"{ctx.User.Mention} {GetAntiSpamString(stats)}");
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AntispamIgnore()
+        public async partial Task AntispamIgnore()
         {
             var added = await _service.AntiSpamIgnoreAsync(ctx.Guild.Id, ctx.Channel.Id);
 
@@ -216,10 +205,9 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.spam_not_ignore("Anti-Spam"));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AntiList()
+        public async partial Task AntiList()
         {
             var (spam, raid, alt) = _service.GetAntiStats(ctx.Guild.Id);
 

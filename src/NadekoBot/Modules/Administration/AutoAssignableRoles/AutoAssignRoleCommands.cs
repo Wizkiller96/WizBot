@@ -6,14 +6,13 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class AutoAssignRoleCommands : NadekoSubmodule<AutoAssignRoleService>
+    public partial class AutoAssignRoleCommands : NadekoSubmodule<AutoAssignRoleService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task AutoAssignRole([Leftover] IRole role)
+        public async partial Task AutoAssignRole([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (role.Id == ctx.Guild.EveryoneRole.Id)
@@ -35,12 +34,11 @@ public partial class Administration
                 await ReplyConfirmLocalizedAsync(strs.aar_role_removed(Format.Bold(role.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task AutoAssignRole()
+        public async partial Task AutoAssignRole()
         {
             if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
             {

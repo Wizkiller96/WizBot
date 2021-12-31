@@ -6,14 +6,13 @@ namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {
-    public class StreamRoleCommands : NadekoSubmodule<StreamRoleService>
+    public partial class StreamRoleCommands : NadekoSubmodule<StreamRoleService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamRole(IRole fromRole, IRole addRole)
+        public async partial Task StreamRole(IRole fromRole, IRole addRole)
         {
             await _service.SetStreamRole(fromRole, addRole);
 
@@ -21,23 +20,21 @@ public partial class Utility
                 Format.Bold(addRole.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamRole()
+        public async partial Task StreamRole()
         {
             await _service.StopStreamRole(ctx.Guild);
             await ReplyConfirmLocalizedAsync(strs.stream_role_disabled);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamRoleKeyword([Leftover] string keyword = null)
+        public async partial Task StreamRoleKeyword([Leftover] string keyword = null)
         {
             var kw = await _service.SetKeyword(ctx.Guild, keyword);
 
@@ -47,12 +44,11 @@ public partial class Utility
                 await ReplyConfirmLocalizedAsync(strs.stream_role_kw_set(Format.Bold(kw)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamRoleBlacklist(AddRemove action, [Leftover] IGuildUser user)
+        public async partial Task StreamRoleBlacklist(AddRemove action, [Leftover] IGuildUser user)
         {
             var success = await _service.ApplyListAction(StreamRoleListType.Blacklist,
                 ctx.Guild,
@@ -71,12 +67,11 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.stream_role_bl_rem_fail(Format.Bold(user.ToString())));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async Task StreamRoleWhitelist(AddRemove action, [Leftover] IGuildUser user)
+        public async partial Task StreamRoleWhitelist(AddRemove action, [Leftover] IGuildUser user)
         {
             var success = await _service.ApplyListAction(StreamRoleListType.Whitelist,
                 ctx.Guild,

@@ -11,7 +11,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class AnimalRacingCommands : GamblingSubmodule<AnimalRaceService>
+    public partial class AnimalRacingCommands : GamblingSubmodule<AnimalRaceService>
     {
         private readonly ICurrencyService _cs;
         private readonly DiscordSocketClient _client;
@@ -31,11 +31,10 @@ public partial class Gambling
             _gamesConf = gamesConf;
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(RaceOptions))]
-        public Task Race(params string[] args)
+        public partial Task Race(params string[] args)
         {
             var (options, success) = OptionsParser.ParseFrom(new RaceOptions(), args);
 
@@ -124,10 +123,9 @@ public partial class Gambling
             return ReplyErrorLocalizedAsync(strs.animal_race_failed);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task JoinRace(ShmartNumber amount = default)
+        public async partial Task JoinRace(ShmartNumber amount = default)
         {
             if (!await CheckBetOptional(amount))
                 return;

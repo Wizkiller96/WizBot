@@ -7,11 +7,10 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public class CalcCommands : NadekoSubmodule
+    public partial class CalcCommands : NadekoSubmodule
     {
-        [NadekoCommand]
-        [Aliases]
-        public async Task Calculate([Leftover] string expression)
+        [Cmd]
+        public async partial Task Calculate([Leftover] string expression)
         {
             var expr = new Expression(expression, EvaluateOptions.IgnoreCase | EvaluateOptions.NoCache);
             expr.EvaluateParameter += Expr_EvaluateParameter;
@@ -35,9 +34,8 @@ public partial class Utility
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task CalcOps()
+        [Cmd]
+        public async partial Task CalcOps()
         {
             var selection = typeof(Math).GetTypeInfo()
                                         .GetMethods()

@@ -11,7 +11,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class ShopCommands : GamblingSubmodule<IShopService>
+    public partial class ShopCommands : GamblingSubmodule<IShopService>
     {
         public enum List
         {
@@ -65,10 +65,9 @@ public partial class Gambling
                 9);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task Shop(int page = 1)
+        public partial Task Shop(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -76,10 +75,9 @@ public partial class Gambling
             return ShopInternalAsync(page);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Buy(int index)
+        public async partial Task Buy(int index)
         {
             index -= 1;
             if (index < 0)
@@ -204,12 +202,11 @@ public partial class Gambling
         private static long GetProfitAmount(int price)
             => (int)Math.Ceiling(0.90 * price);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task ShopAdd(Role _, int price, [Leftover] IRole role)
+        public async partial Task ShopAdd(Role _, int price, [Leftover] IRole role)
         {
             if (price < 1)
                 return;
@@ -236,11 +233,10 @@ public partial class Gambling
             await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopAdd(List _, int price, [Leftover] string name)
+        public async partial Task ShopAdd(List _, int price, [Leftover] string name)
         {
             if (price < 1)
                 return;
@@ -266,11 +262,10 @@ public partial class Gambling
             await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopListAdd(int index, [Leftover] string itemText)
+        public async partial Task ShopListAdd(int index, [Leftover] string itemText)
         {
             index -= 1;
             if (index < 0)
@@ -301,11 +296,10 @@ public partial class Gambling
                 await ReplyConfirmLocalizedAsync(strs.shop_list_item_added);
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopRemove(int index)
+        public async partial Task ShopRemove(int index)
         {
             index -= 1;
             if (index < 0)
@@ -332,11 +326,10 @@ public partial class Gambling
                 await ctx.Channel.EmbedAsync(EntryToEmbed(removed).WithTitle(GetText(strs.shop_item_rm)));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopChangePrice(int index, int price)
+        public async partial Task ShopChangePrice(int index, int price)
         {
             if (--index < 0 || price <= 0)
                 return;
@@ -353,11 +346,10 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopChangeName(int index, [Leftover] string newName)
+        public async partial Task ShopChangeName(int index, [Leftover] string newName)
         {
             if (--index < 0 || string.IsNullOrWhiteSpace(newName))
                 return;
@@ -374,11 +366,10 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopSwap(int index1, int index2)
+        public async partial Task ShopSwap(int index1, int index2)
         {
             if (--index1 < 0 || --index2 < 0 || index1 == index2)
                 return;
@@ -395,11 +386,10 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task ShopMove(int fromIndex, int toIndex)
+        public async partial Task ShopMove(int fromIndex, int toIndex)
         {
             if (--fromIndex < 0 || --toIndex < 0 || fromIndex == toIndex)
                 return;

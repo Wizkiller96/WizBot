@@ -9,6 +9,7 @@
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
     <OutputType>exe</OutputType>
     <ApplicationIcon>nadeko_icon.ico</ApplicationIcon>
+    <NoWarn>CS1066</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>

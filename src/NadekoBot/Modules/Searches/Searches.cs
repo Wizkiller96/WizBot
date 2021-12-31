@@ -40,9 +40,8 @@ public partial class Searches : NadekoModule<SearchesService>
         _tzSvc = tzSvc;
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Rip([Leftover] IGuildUser usr)
+    [Cmd]
+    public async partial Task Rip([Leftover] IGuildUser usr)
     {
         var av = usr.RealAvatarUrl();
         if (av is null)
@@ -53,9 +52,8 @@ public partial class Searches : NadekoModule<SearchesService>
             $"Rip {Format.Bold(usr.ToString())} \n\t- " + Format.Italics(ctx.User.ToString()));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Weather([Leftover] string query)
+    [Cmd]
+    public async partial Task Weather([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -104,9 +102,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Time([Leftover] string query)
+    [Cmd]
+    public async partial Task Time([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -153,9 +150,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.SendMessageAsync(embed: eb.Build());
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Youtube([Leftover] string query = null)
+    [Cmd]
+    public async partial Task Youtube([Leftover] string query = null)
     {
         if (!await ValidateQuery(query))
             return;
@@ -170,9 +166,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.SendMessageAsync(result);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Movie([Leftover] string query = null)
+    [Cmd]
+    public async partial Task Movie([Leftover] string query = null)
     {
         if (!await ValidateQuery(query))
             return;
@@ -197,24 +192,20 @@ public partial class Searches : NadekoModule<SearchesService>
                                         .WithImageUrl(movie.Poster));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public Task RandomCat()
+    [Cmd]
+    public partial Task RandomCat()
         => InternalRandomImage(SearchesService.ImageTag.Cats);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task RandomDog()
+    [Cmd]
+    public partial Task RandomDog()
         => InternalRandomImage(SearchesService.ImageTag.Dogs);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task RandomFood()
+    [Cmd]
+    public partial Task RandomFood()
         => InternalRandomImage(SearchesService.ImageTag.Food);
 
-    [NadekoCommand]
-    [Aliases]
-    public Task RandomBird()
+    [Cmd]
+    public partial Task RandomBird()
         => InternalRandomImage(SearchesService.ImageTag.Birds);
 
     private Task InternalRandomImage(SearchesService.ImageTag tag)
@@ -223,9 +214,8 @@ public partial class Searches : NadekoModule<SearchesService>
         return ctx.Channel.EmbedAsync(_eb.Create().WithOkColor().WithImageUrl(url));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Image([Leftover] string query = null)
+    [Cmd]
+    public async partial Task Image([Leftover] string query = null)
     {
         var oterms = query?.Trim();
         if (!await ValidateQuery(query))
@@ -277,9 +267,8 @@ public partial class Searches : NadekoModule<SearchesService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Lmgtfy([Leftover] string ffs = null)
+    [Cmd]
+    public async partial Task Lmgtfy([Leftover] string ffs = null)
     {
         if (!await ValidateQuery(ffs))
             return;
@@ -288,9 +277,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await SendConfirmAsync($"<{shortenedUrl}>");
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Shorten([Leftover] string query)
+    [Cmd]
+    public async partial Task Shorten([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -327,9 +315,8 @@ public partial class Searches : NadekoModule<SearchesService>
                                         .AddField(GetText(strs.short_url), $"<{shortLink}>"));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Google([Leftover] string query = null)
+    [Cmd]
+    public async partial Task Google([Leftover] string query = null)
     {
         query = query?.Trim();
         if (!await ValidateQuery(query))
@@ -360,9 +347,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task DuckDuckGo([Leftover] string query = null)
+    [Cmd]
+    public async partial Task DuckDuckGo([Leftover] string query = null)
     {
         query = query?.Trim();
         if (!await ValidateQuery(query))
@@ -392,9 +378,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task MagicTheGathering([Leftover] string search)
+    [Cmd]
+    public async partial Task MagicTheGathering([Leftover] string search)
     {
         if (!await ValidateQuery(search))
             return;
@@ -420,9 +405,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Hearthstone([Leftover] string name)
+    [Cmd]
+    public async partial Task Hearthstone([Leftover] string name)
     {
         var arg = name;
         if (!await ValidateQuery(name))
@@ -451,9 +435,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task UrbanDict([Leftover] string query = null)
+    [Cmd]
+    public async partial Task UrbanDict([Leftover] string query = null)
     {
         if (!await ValidateQuery(query))
             return;
@@ -491,9 +474,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await ReplyErrorLocalizedAsync(strs.ud_error);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Define([Leftover] string word)
+    [Cmd]
+    public async partial Task Define([Leftover] string word)
     {
         if (!await ValidateQuery(word))
             return;
@@ -562,9 +544,8 @@ public partial class Searches : NadekoModule<SearchesService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Catfact()
+    [Cmd]
+    public async partial Task Catfact()
     {
         using var http = _httpFactory.CreateClient();
         var response = await http.GetStringAsync("https://catfact.ninja/fact");
@@ -576,10 +557,9 @@ public partial class Searches : NadekoModule<SearchesService>
     }
 
     //done in 3.0
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Revav([Leftover] IGuildUser usr = null)
+    public async partial Task Revav([Leftover] IGuildUser usr = null)
     {
         if (usr is null)
             usr = (IGuildUser)ctx.User;
@@ -592,9 +572,8 @@ public partial class Searches : NadekoModule<SearchesService>
     }
 
     //done in 3.0
-    [NadekoCommand]
-    [Aliases]
-    public async Task Revimg([Leftover] string imageLink = null)
+    [Cmd]
+    public async partial Task Revimg([Leftover] string imageLink = null)
     {
         imageLink = imageLink?.Trim() ?? "";
 
@@ -603,9 +582,8 @@ public partial class Searches : NadekoModule<SearchesService>
         await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}");
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Wiki([Leftover] string query = null)
+    [Cmd]
+    public async partial Task Wiki([Leftover] string query = null)
     {
         query = query?.Trim();
 
@@ -623,9 +601,8 @@ public partial class Searches : NadekoModule<SearchesService>
             await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Color(params Color[] colors)
+    [Cmd]
+    public async partial Task Color(params Color[] colors)
     {
         if (!colors.Any())
             return;
@@ -643,10 +620,9 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.SendFileAsync(ms, "colors.png");
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Avatar([Leftover] IGuildUser usr = null)
+    public async partial Task Avatar([Leftover] IGuildUser usr = null)
     {
         if (usr is null)
             usr = (IGuildUser)ctx.User;
@@ -668,9 +644,8 @@ public partial class Searches : NadekoModule<SearchesService>
             ctx.User.Mention);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Wikia(string target, [Leftover] string query)
+    [Cmd]
+    public async partial Task Wikia(string target, [Leftover] string query)
     {
         if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
         {
@@ -709,10 +684,9 @@ public partial class Searches : NadekoModule<SearchesService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Bible(string book, string chapterAndVerse)
+    public async partial Task Bible(string book, string chapterAndVerse)
     {
         var obj = new BibleVerses();
         try
@@ -740,9 +714,8 @@ public partial class Searches : NadekoModule<SearchesService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Steam([Leftover] string query)
+    [Cmd]
+    public async partial Task Steam([Leftover] string query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return;
@@ -769,7 +742,7 @@ public partial class Searches : NadekoModule<SearchesService>
         await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}");
     }
 
-    public async Task<bool> ValidateQuery(string query)
+    private async Task<bool> ValidateQuery(string query)
     {
         if (!string.IsNullOrWhiteSpace(query)) return true;
 

@@ -10,7 +10,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;
 
-public class Help : NadekoModule<HelpService>
+public partial class Help : NadekoModule<HelpService>
 {
     public const string PatreonUrl = "https://patreon.com/nadekobot";
     public const string PaypalUrl = "https://paypal.me/Kwoth";
@@ -59,9 +59,8 @@ public class Help : NadekoModule<HelpService>
         return r.Replace(text);
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Modules(int page = 1)
+    [Cmd]
+    public async partial Task Modules(int page = 1)
     {
         if (--page < 0)
             return;
@@ -162,10 +161,9 @@ public class Help : NadekoModule<HelpService>
         }
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [NadekoOptions(typeof(CommandsOptions))]
-    public async Task Commands(string module = null, params string[] args)
+    public async partial Task Commands(string module = null, params string[] args)
     {
         module = module?.Trim().ToUpperInvariant();
         if (string.IsNullOrWhiteSpace(module))
@@ -255,10 +253,9 @@ public class Help : NadekoModule<HelpService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [Priority(0)]
-    public async Task H([Leftover] string fail)
+    public async partial Task H([Leftover] string fail)
     {
         var prefixless =
             _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
@@ -271,10 +268,9 @@ public class Help : NadekoModule<HelpService>
         await ReplyErrorLocalizedAsync(strs.command_not_found);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [Priority(1)]
-    public async Task H([Leftover] CommandInfo com = null)
+    public async partial Task H([Leftover] CommandInfo com = null)
     {
         var channel = ctx.Channel;
 
@@ -302,10 +298,9 @@ public class Help : NadekoModule<HelpService>
         await channel.EmbedAsync(embed);
     }
 
-    [NadekoCommand]
-    [Aliases]
+    [Cmd]
     [OwnerOnly]
-    public async Task GenCmdList()
+    public async partial Task GenCmdList()
     {
         _ = ctx.Channel.TriggerTypingAsync();
 
@@ -408,15 +403,13 @@ public class Help : NadekoModule<HelpService>
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
     }
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Guide()
+    [Cmd]
+    public async partial Task Guide()
         => await ConfirmLocalizedAsync(strs.guide("https://nadeko.bot/commands",
             "http://nadekobot.readthedocs.io/en/latest/"));
 
-    [NadekoCommand]
-    [Aliases]
-    public async Task Donate()
+    [Cmd]
+    public async partial Task Donate()
         => await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
 }
 

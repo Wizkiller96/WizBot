@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public class DiceRollCommands : NadekoSubmodule
+    public partial class DiceRollCommands : NadekoSubmodule
     {
         private static readonly Regex dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$",
             RegexOptions.Compiled);
@@ -22,9 +22,8 @@ public partial class Gambling
         public DiceRollCommands(IDataCache data)
             => _images = data.LocalImages;
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task Roll()
+        [Cmd]
+        public async partial Task Roll()
         {
             var rng = new NadekoRandom();
             var gen = rng.Next(1, 101);
@@ -41,29 +40,25 @@ public partial class Gambling
                 Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
         }
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task Roll(int num)
+        public async partial Task Roll(int num)
             => await InternalRoll(num, true);
 
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(1)]
-        public async Task Rolluo(int num = 1)
+        public async partial Task Rolluo(int num = 1)
             => await InternalRoll(num, false);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task Roll(string arg)
+        public async partial Task Roll(string arg)
             => await InternallDndRoll(arg, true);
 
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task Rolluo(string arg)
+        public async partial Task Rolluo(string arg)
             => await InternallDndRoll(arg, false);
 
         private async Task InternalRoll(int num, bool ordered)
@@ -174,9 +169,8 @@ public partial class Gambling
             }
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task NRoll([Leftover] string range)
+        [Cmd]
+        public async partial Task NRoll([Leftover] string range)
         {
             int rolled;
             if (range.Contains("-"))

@@ -12,7 +12,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public class PathOfExileCommands : NadekoSubmodule<SearchesService>
+    public partial class PathOfExileCommands : NadekoSubmodule<SearchesService>
     {
         private const string _poeURL = "https://www.pathofexile.com/character-window/get-characters?accountName=";
         private const string _ponURL = "http://poe.ninja/api/Data/GetCurrencyOverview?league=";
@@ -114,9 +114,8 @@ public partial class Searches
         public PathOfExileCommands(IHttpClientFactory httpFactory)
             => _httpFactory = httpFactory;
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task PathOfExile(string usr, string league = "", int page = 1)
+        [Cmd]
+        public async partial Task PathOfExile(string usr, string league = "", int page = 1)
         {
             if (--page < 0)
                 return;
@@ -177,9 +176,8 @@ public partial class Searches
                 9);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task PathOfExileLeagues()
+        [Cmd]
+        public async partial Task PathOfExileLeagues()
         {
             var leagues = new List<Leagues>();
 
@@ -219,9 +217,8 @@ public partial class Searches
             await ctx.Channel.EmbedAsync(embed);
         }
 
-        [NadekoCommand]
-        [Aliases]
-        public async Task PathOfExileCurrency(string leagueName, string currencyName, string convertName = "Chaos Orb")
+        [Cmd]
+        public async partial Task PathOfExileCurrency(string leagueName, string currencyName, string convertName = "Chaos Orb")
         {
             if (string.IsNullOrWhiteSpace(leagueName))
             {

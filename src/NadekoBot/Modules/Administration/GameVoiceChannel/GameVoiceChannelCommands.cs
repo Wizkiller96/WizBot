@@ -6,14 +6,13 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public class GameChannelCommands : NadekoSubmodule<GameVoiceChannelService>
+    public partial class GameVoiceChannelCommands : NadekoSubmodule<GameVoiceChannelService>
     {
-        [NadekoCommand]
-        [Aliases]
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.MoveMembers)]
-        public async Task GameVoiceChannel()
+        public async partial Task GameVoiceChannel()
         {
             var vch = ((IGuildUser)ctx.User).VoiceChannel;
 
