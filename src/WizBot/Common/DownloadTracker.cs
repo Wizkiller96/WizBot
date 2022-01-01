@@ -19,6 +19,9 @@ namespace WizBot.Common
         /// <returns>Task representing download state</returns>
         public async Task EnsureUsersDownloadedAsync(IGuild guild)
         {
+#if !GLOBAL_WIZBOT
+            return;
+#endif
             await downloadUsersSemaphore.WaitAsync();
             try
             {
