@@ -142,13 +142,12 @@ public class CmdAttribute : System.Attribute
         foreach (var className in model.ClassHierarchy)
         {
             tw.WriteLine($"public partial class {className}");
-            tw.Write("{");
+            tw.WriteLine("{");
             tw.Indent ++;
         }
         
         foreach (var method in model.Methods)
         {
-            tw.WriteLine();
             tw.WriteLine("[NadekoCommand]");
             tw.WriteLine("[Aliases]");
             tw.WriteLine($"public partial {method.ReturnType} {method.MethodName}({string.Join(", ", method.Params)});");
