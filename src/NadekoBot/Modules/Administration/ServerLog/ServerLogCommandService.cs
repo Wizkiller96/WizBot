@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Services.Database.Models;
 

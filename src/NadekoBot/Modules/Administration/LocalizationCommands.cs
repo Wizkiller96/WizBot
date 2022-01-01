@@ -8,7 +8,7 @@ public partial class Administration
     [Group]
     public partial class LocalizationCommands : NadekoSubmodule
     {
-        private static readonly IReadOnlyDictionary<string, string> supportedLocales = new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> _supportedLocales = new Dictionary<string, string>
         {
             { "ar", "العربية" },
             { "zh-TW", "繁體中文, 台灣" },
@@ -113,7 +113,7 @@ public partial class Administration
                                                .WithOkColor()
                                                .WithTitle(GetText(strs.lang_list))
                                                .WithDescription(string.Join("\n",
-                                                   supportedLocales.Select(
+                                                   _supportedLocales.Select(
                                                        x => $"{Format.Code(x.Key),-10} => {x.Value}"))));
     }
 }

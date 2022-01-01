@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration.Common;
 using NadekoBot.Services.Database.Models;
 using System.Threading.Channels;
 
@@ -25,7 +24,7 @@ public class ProtectionService : INService
     private readonly DbService _db;
     private readonly UserPunishService _punishService;
 
-    private readonly Channel<PunishQueueItem> PunishUserQueue =
+    private readonly Channel<PunishQueueItem> _punishUserQueue =
         Channel.CreateUnbounded<PunishQueueItem>(new() { SingleReader = true, SingleWriter = false });
 
     public ProtectionService(
@@ -68,7 +67,7 @@ public class ProtectionService : INService
     {
         while (true)
         {
-            var item = await PunishUserQueue.Reader.ReadAsync();
+            var item = await _punishUserQueue.Reader.ReadAsync();
 
             var muteTime = item.MuteTime;
             var gu = item.User;
@@ -253,7 +252,7 @@ public class ProtectionService : INService
             gus[0].Guild.Name);
 
         foreach (var gu in gus)
-            await PunishUserQueue.Writer.WriteAsync(new()
+            await _punishUserQueue.Writer.WriteAsync(new()
             {
                 Action = action,
                 Type = pt,

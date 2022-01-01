@@ -117,9 +117,7 @@ public partial class Utility : NadekoModule
         await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
         var users = await ctx.Guild.GetUsersAsync(
-#if GLOBAL_NADEKO
                     CacheMode.CacheOnly
-#endif
         );
 
         var roleUsers = users.Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))

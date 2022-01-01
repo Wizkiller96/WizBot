@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
-using NadekoBot.Modules.CustomReactions.Extensions;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
@@ -11,7 +10,7 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace NadekoBot.Modules.CustomReactions.Services;
+namespace NadekoBot.Modules.CustomReactions;
 
 public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 {

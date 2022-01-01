@@ -1,7 +1,7 @@
 #nullable disable
 using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Modules.Administration.Common;
+namespace NadekoBot.Modules.Administration;
 
 public class PunishQueueItem
 {

@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using NadekoBot.Modules.CustomReactions.Services;
+using NadekoBot.Modules.CustomReactions;
 
 namespace NadekoBot.Common.TypeReaders;
 

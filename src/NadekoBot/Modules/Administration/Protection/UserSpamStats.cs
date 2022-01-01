@@ -1,5 +1,5 @@
 #nullable disable
-namespace NadekoBot.Modules.Administration.Common;
+namespace NadekoBot.Modules.Administration;
 
 public sealed class UserSpamStats : IDisposable
 {
@@ -8,9 +8,9 @@ public sealed class UserSpamStats : IDisposable
 
     public string LastMessage { get; set; }
 
-    private ConcurrentQueue<Timer> timers { get; }
+    private ConcurrentQueue<Timer> timers;
 
-    private readonly object applyLock = new();
+    private readonly object _applyLock = new();
 
     public UserSpamStats(IUserMessage msg)
     {
@@ -22,7 +22,7 @@ public sealed class UserSpamStats : IDisposable
 
     public void ApplyNextMessage(IUserMessage message)
     {
-        lock (applyLock)
+        lock (_applyLock)
         {
             var upperMsg = message.Content.ToUpperInvariant();
             if (upperMsg != LastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))

@@ -2,7 +2,7 @@
 using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
 
-namespace NadekoBot.Modules.CustomReactions.Extensions;
+namespace NadekoBot.Modules.CustomReactions;
 
 public static class CustomReactionExtensions
 {

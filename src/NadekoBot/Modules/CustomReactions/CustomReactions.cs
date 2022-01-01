@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using NadekoBot.Modules.CustomReactions.Services;
 
 namespace NadekoBot.Modules.CustomReactions;
 
