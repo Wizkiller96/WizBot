@@ -109,9 +109,7 @@ namespace WizBot.Modules.Utility
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild).ConfigureAwait(false);
 
             var users = await ctx.Guild.GetUsersAsync(
-                #if GLOBAL_WIZBOT
-                    CacheMode.CacheOnly
-                #endif
+                CacheMode.CacheOnly
             );
             var roleUsers = users
                 .Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))
