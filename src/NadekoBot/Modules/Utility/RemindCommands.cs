@@ -181,7 +181,7 @@ public partial class Utility
             if (ts > TimeSpan.FromDays(60))
                 return false;
 
-            if (ctx.Guild != null)
+            if (ctx.Guild is not null)
             {
                 var perms = ((IGuildUser)ctx.User).GetPermissions((IGuildChannel)ctx.Channel);
                 if (!perms.MentionEveryone) message = message.SanitizeAllMentions();

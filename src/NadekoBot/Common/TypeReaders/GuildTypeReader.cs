@@ -16,7 +16,7 @@ public sealed class GuildTypeReader : NadekoTypeReader<IGuild>
                     ?? //by id
                     guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == input); //by name
 
-        if (guild != null)
+        if (guild is not null)
             return Task.FromResult(TypeReaderResult.FromSuccess(guild));
 
         return Task.FromResult(

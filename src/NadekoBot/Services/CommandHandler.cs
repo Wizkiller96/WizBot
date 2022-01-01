@@ -61,7 +61,7 @@ public class CommandHandler : INService
             GLOBAL_COMMANDS_COOLDOWN,
             GLOBAL_COMMANDS_COOLDOWN);
 
-        _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix != null)
+        _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix is not null)
                        .ToDictionary(x => x.GuildId, x => x.Prefix)
                        .ToConcurrent();
     }
@@ -111,7 +111,7 @@ public class CommandHandler : INService
 
     public async Task ExecuteExternal(ulong? guildId, ulong channelId, string commandText)
     {
-        if (guildId != null)
+        if (guildId is not null)
         {
             var guild = _client.GetGuild(guildId.Value);
             if (guild?.GetChannel(channelId) is not SocketTextChannel channel)
@@ -210,7 +210,7 @@ public class CommandHandler : INService
             {
 #if !GLOBAL_NADEKO
                 // track how many messagges each user is sending
-                UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (key, old) => ++old);
+                UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (_, old) => ++old);
 #endif
 
                 var channel = msg.Channel;
@@ -221,7 +221,7 @@ public class CommandHandler : INService
             catch (Exception ex)
             {
                 Log.Warning(ex, "Error in CommandHandler");
-                if (ex.InnerException != null)
+                if (ex.InnerException is not null)
                     Log.Warning(ex.InnerException, "Inner Exception of the error in CommandHandler");
             }
         });
@@ -260,10 +260,10 @@ public class CommandHandler : INService
                 return;
             }
 
-            if (error != null)
+            if (error is not null)
             {
                 LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
-                if (guild != null)
+                if (guild is not null)
                     await CommandErrored(info, channel as ITextChannel, error);
             }
         }
@@ -384,7 +384,7 @@ public class CommandHandler : INService
         var chosenOverload = successfulParses[0];
         var execResult = (ExecuteResult)await chosenOverload.Key.ExecuteAsync(context, chosenOverload.Value, services);
 
-        if (execResult.Exception != null
+        if (execResult.Exception is not null
             && (execResult.Exception is not HttpException he
                 || he.DiscordCode != DiscordErrorCode.InsufficientPermissions))
             Log.Warning(execResult.Exception, "Command Error");

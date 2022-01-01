@@ -108,10 +108,10 @@ public class FeedsService : INService
                                 previewElement = afi.Element.Elements()
                                                     .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
 
-                            if (previewElement != null)
+                            if (previewElement is not null)
                             {
                                 var urlAttribute = previewElement.Attribute("url");
-                                if (urlAttribute != null
+                                if (urlAttribute is not null
                                     && !string.IsNullOrWhiteSpace(urlAttribute.Value)
                                     && Uri.IsWellFormedUriString(urlAttribute.Value, UriKind.Absolute))
                                 {
@@ -129,10 +129,10 @@ public class FeedsService : INService
                             embed.WithDescription(desc.TrimTo(2048));
 
                         //send the created embed to all subscribed channels
-                        var feedSendTasks = kvp.Value.Where(x => x.GuildConfig != null)
+                        var feedSendTasks = kvp.Value.Where(x => x.GuildConfig is not null)
                                                .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
                                                                    ?.GetTextChannel(x.ChannelId))
-                                               .Where(x => x != null)
+                                               .Where(x => x is not null)
                                                .Select(x => x.EmbedAsync(embed));
 
                         allSendTasks.Add(feedSendTasks.WhenAll());
@@ -174,7 +174,7 @@ public class FeedsService : INService
         foreach (var feed in gc.FeedSubs)
             _subs.AddOrUpdate(feed.Url.ToLower(),
                 new HashSet<FeedSub> { feed },
-                (k, old) =>
+                (_, old) =>
                 {
                     old.Add(feed);
                     return old;
@@ -198,7 +198,7 @@ public class FeedsService : INService
         var toRemove = items[index];
         _subs.AddOrUpdate(toRemove.Url.ToLower(),
             new HashSet<FeedSub>(),
-            (key, old) =>
+            (_, old) =>
             {
                 old.Remove(toRemove);
                 return old;

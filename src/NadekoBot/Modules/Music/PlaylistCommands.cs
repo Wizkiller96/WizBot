@@ -68,7 +68,7 @@ public sealed partial class Music
                 await using var uow = _db.GetDbContext();
                 var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
-                if (pl != null)
+                if (pl is not null)
                     if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                     {
                         uow.MusicPlaylists.Remove(pl);
@@ -212,7 +212,7 @@ public sealed partial class Music
                 await mp.EnqueueManyAsync(mpl.Songs.Select(x => (x.Query, (MusicPlatform)x.ProviderType)),
                     ctx.User.ToString());
 
-                if (msg != null) await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
+                if (msg is not null) await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
             }
             finally
             {

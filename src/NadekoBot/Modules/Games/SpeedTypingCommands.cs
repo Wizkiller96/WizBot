@@ -27,7 +27,7 @@ public partial class Games
             var channel = (ITextChannel)ctx.Channel;
 
             var game = _service.RunningContests.GetOrAdd(ctx.Guild.Id,
-                id => new(_games, _client, channel, Prefix, options, _eb));
+                _ => new(_games, _client, channel, Prefix, options, _eb));
 
             if (game.IsActive)
                 await SendErrorAsync($"Contest already running in {game.Channel.Mention} channel.");

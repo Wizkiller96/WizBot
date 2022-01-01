@@ -83,7 +83,7 @@ public partial class Utility
             await using (var uow = _db.GetDbContext())
             {
                 quote = await uow.Quotes.GetRandomQuoteByKeywordAsync(ctx.Guild.Id, keyword);
-                //if (quote != null)
+                //if (quote is not null)
                 //{
                 //    quote.UseCount += 1;
                 //    uow.Complete();

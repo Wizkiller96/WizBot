@@ -80,7 +80,7 @@ public class UserPunishService : INService
 
         var p = ps.FirstOrDefault(x => x.Count == warnings);
 
-        if (p != null)
+        if (p is not null)
         {
             var user = await guild.GetUserAsync(userId);
             if (user is null)
@@ -305,9 +305,9 @@ WHERE GuildId={guildId}
         IRole role = null)
     {
         // these 3 don't make sense with time
-        if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles && time != null)
+        if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles && time is not null)
             return false;
-        if (number <= 0 || (time != null && time.Time > TimeSpan.FromDays(49)))
+        if (number <= 0 || (time is not null && time.Time > TimeSpan.FromDays(49)))
             return false;
 
         using var uow = _db.GetDbContext();
@@ -336,7 +336,7 @@ WHERE GuildId={guildId}
         var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
         var p = ps.FirstOrDefault(x => x.Count == number);
 
-        if (p != null)
+        if (p is not null)
         {
             uow.Remove(p);
             uow.SaveChanges();

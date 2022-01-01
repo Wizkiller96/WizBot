@@ -137,7 +137,7 @@ public class VcRoleService : INService
         using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
         var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one
-        if (toDelete != null) uow.Remove(toDelete);
+        if (toDelete is not null) uow.Remove(toDelete);
         conf.VcRoleInfos.Add(new() { VoiceChannelId = vcId, RoleId = role.Id }); // add new one
         uow.SaveChanges();
     }
@@ -178,10 +178,10 @@ public class VcRoleService : INService
                     if (VcRoles.TryGetValue(guildId, out var guildVcRoles))
                     {
                         //remove old
-                        if (oldVc != null && guildVcRoles.TryGetValue(oldVc.Id, out var role))
+                        if (oldVc is not null && guildVcRoles.TryGetValue(oldVc.Id, out var role))
                             Assign(false, gusr, role);
                         //add new
-                        if (newVc != null && guildVcRoles.TryGetValue(newVc.Id, out role)) Assign(true, gusr, role);
+                        if (newVc is not null && guildVcRoles.TryGetValue(newVc.Id, out role)) Assign(true, gusr, role);
                     }
                 }
             }

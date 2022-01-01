@@ -240,7 +240,7 @@ public class GreetService : INService
                 if (conf.SendChannelGreetMessage)
                 {
                     var channel = await user.Guild.GetTextChannelAsync(conf.GreetMessageChannelId);
-                    if (channel != null)
+                    if (channel is not null)
                     {
                         if (GroupGreets)
                         {

@@ -41,7 +41,7 @@ public partial class Administration
             if (parameter is "-s" or "--safe")
                 await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => !x.IsPinned);
             else
-                await _service.PruneWhere((ITextChannel)ctx.Channel, count, x => true);
+                await _service.PruneWhere((ITextChannel)ctx.Channel, count, _ => true);
         }
 
         //prune @user [x]

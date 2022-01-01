@@ -214,7 +214,7 @@ public sealed class MusicService : IMusicService
     }
 
     private Func<IMusicPlayer, Task> OnQueueStopped(ulong guildId)
-        => mp =>
+        => _ =>
         {
             if (_settings.TryGetValue(guildId, out var settings))
                 if (settings.AutoDisconnect)
@@ -355,7 +355,7 @@ public sealed class MusicService : IMusicService
             },
             channelId);
 
-        _outputChannels.AddOrUpdate(guildId, (channel, channel), (key, old) => (old.Default, channel));
+        _outputChannels.AddOrUpdate(guildId, (channel, channel), (_, old) => (old.Default, channel));
 
         return true;
     }

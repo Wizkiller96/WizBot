@@ -40,7 +40,7 @@ public static class MessageChannelExtensions
     {
         var embed = eb.Create().WithErrorColor().WithDescription(error).WithTitle(title);
 
-        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        if (url is not null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
 
         if (!string.IsNullOrWhiteSpace(footer))
@@ -65,7 +65,7 @@ public static class MessageChannelExtensions
     {
         var embed = eb.Create().WithOkColor().WithDescription(text).WithTitle(title);
 
-        if (url != null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        if (url is not null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
 
         if (!string.IsNullOrWhiteSpace(footer))

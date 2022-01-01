@@ -38,7 +38,7 @@ public sealed class BlacklistService : IEarlyBehavior
     {
         foreach (var bl in _blacklist)
         {
-            if (guild != null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
+            if (guild is not null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
             {
                 Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]", guild.Name, guild.Id);
 

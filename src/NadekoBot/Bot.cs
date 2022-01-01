@@ -315,7 +315,7 @@ public sealed class Bot
 
     private Task Client_Log(LogMessage arg)
     {
-        if (arg.Exception != null)
+        if (arg.Exception is not null)
             Log.Warning(arg.Exception, "{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
         else
             Log.Warning("{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);

@@ -22,7 +22,7 @@ public partial class Gambling
             if (num is < 1 or > 10)
                 throw new ArgumentOutOfRangeException(nameof(num));
 
-            var cards = guildId is null ? new() : _allDecks.GetOrAdd(ctx.Guild, s => new());
+            var cards = guildId is null ? new() : _allDecks.GetOrAdd(ctx.Guild, _ => new());
             var images = new List<Image<Rgba32>>();
             var cardObjects = new List<Deck.Card>();
             for (var i = 0; i < num; i++)
@@ -53,7 +53,7 @@ public partial class Gambling
             if (cardObjects.Count == 5)
                 toSend += $" drew `{Deck.GetHandValue(cardObjects)}`";
 
-            if (guildId != null)
+            if (guildId is not null)
                 toSend += "\n" + GetText(strs.cards_left(Format.Bold(cards.CardPool.Count.ToString())));
 
             return (img.ToStream(), toSend);
@@ -97,8 +97,8 @@ public partial class Gambling
             //var channel = (ITextChannel)ctx.Channel;
 
             _allDecks.AddOrUpdate(ctx.Guild,
-                g => new(),
-                (g, c) =>
+                _ => new(),
+                (_, c) =>
                 {
                     c.Restart();
                     return c;

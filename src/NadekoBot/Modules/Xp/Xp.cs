@@ -247,13 +247,13 @@ public partial class Xp : NadekoModule<XpService>
         var serverExcluded = _service.IsServerExcluded(ctx.Guild.Id);
         var roles = _service.GetExcludedRoles(ctx.Guild.Id)
                             .Select(x => ctx.Guild.GetRole(x))
-                            .Where(x => x != null)
+                            .Where(x => x is not null)
                             .Select(x => $"`role`   {x.Mention}")
                             .ToList();
 
         var chans = (await _service.GetExcludedChannels(ctx.Guild.Id)
                                    .Select(x => ctx.Guild.GetChannelAsync(x))
-                                   .WhenAll()).Where(x => x != null)
+                                   .WhenAll()).Where(x => x is not null)
                                               .Select(x => $"`channel` <#{x.Id}>")
                                               .ToList();
 

@@ -122,13 +122,13 @@ public class ProtectionService : INService
         var raid = gc.AntiRaidSetting;
         var spam = gc.AntiSpamSetting;
 
-        if (raid != null)
+        if (raid is not null)
         {
             var raidStats = new AntiRaidStats { AntiRaidSettings = raid };
             _antiRaidGuilds[gc.GuildId] = raidStats;
         }
 
-        if (spam != null)
+        if (spam is not null)
             _antiSpamGuilds[gc.GuildId] = new() { AntiSpamSettings = spam };
 
         var alt = gc.AntiAltSetting;
@@ -212,8 +212,8 @@ public class ProtectionService : INService
                     return;
 
                 var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id,
-                    id => new(msg),
-                    (id, old) =>
+                    _ => new(msg),
+                    (_, old) =>
                     {
                         old.ApplyNextMessage(msg);
                         return old;
@@ -292,7 +292,7 @@ public class ProtectionService : INService
             }
         };
 
-        _antiRaidGuilds.AddOrUpdate(guildId, stats, (key, old) => stats);
+        _antiRaidGuilds.AddOrUpdate(guildId, stats, (_, _) => stats);
 
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiRaidSetting));
@@ -362,7 +362,7 @@ public class ProtectionService : INService
 
         stats = _antiSpamGuilds.AddOrUpdate(guildId,
             stats,
-            (key, old) =>
+            (_, old) =>
             {
                 stats.AntiSpamSettings.IgnoredChannels = old.AntiSpamSettings.IgnoredChannels;
                 return stats;
@@ -371,7 +371,7 @@ public class ProtectionService : INService
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.AntiSpamSetting));
 
-        if (gc.AntiSpamSetting != null)
+        if (gc.AntiSpamSetting is not null)
         {
             gc.AntiSpamSetting.Action = stats.AntiSpamSettings.Action;
             gc.AntiSpamSetting.MessageThreshold = stats.AntiSpamSettings.MessageThreshold;

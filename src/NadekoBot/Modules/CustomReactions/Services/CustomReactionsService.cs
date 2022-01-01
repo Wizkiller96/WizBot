@@ -351,7 +351,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         if (maybeGuildId is { } guildId)
             _newGuildReactions.AddOrUpdate(guildId,
                 new[] { cr },
-                (key, old) =>
+                (_, old) =>
                 {
                     var newArray = old.ToArray();
                     for (var i = 0; i < newArray.Length; i++)
@@ -375,7 +375,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         cr.Trigger = cr.Trigger.Replace(MentionPh, _client.CurrentUser.Mention);
 
         if (maybeGuildId is { } guildId)
-            _newGuildReactions.AddOrUpdate(guildId, new[] { cr }, (key, old) => old.With(cr));
+            _newGuildReactions.AddOrUpdate(guildId, new[] { cr }, (_, old) => old.With(cr));
         else
             return _pubSub.Pub(_gcrAddedKey, cr);
 
@@ -492,7 +492,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     {
         using var uow = _db.GetDbContext();
         var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
-        return cr != null;
+        return cr is not null;
     }
 
     public string ExportCrs(ulong? guildId)

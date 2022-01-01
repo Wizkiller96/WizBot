@@ -700,7 +700,7 @@ public partial class Searches : NadekoModule<SearchesService>
         {
         }
 
-        if (obj.Error != null || obj.Verses is null || obj.Verses.Length == 0)
+        if (obj.Error is not null || obj.Verses is null || obj.Verses.Length == 0)
         {
             await SendErrorAsync(obj.Error ?? "No verse found.");
         }

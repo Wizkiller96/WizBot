@@ -176,7 +176,7 @@ public class MuteService : INService
         await using var uow = _db.GetDbContext();
         var config = uow.GuildConfigsForId(guildId, set => set);
         config.MuteRoleName = name;
-        GuildMuteRoles.AddOrUpdate(guildId, name, (id, old) => name);
+        GuildMuteRoles.AddOrUpdate(guildId, name, (_, _) => name);
         await uow.SaveChangesAsync();
     }
 
@@ -243,7 +243,7 @@ public class MuteService : INService
                     set => set.Include(gc => gc.MutedUsers).Include(gc => gc.UnmuteTimers));
                 var match = new MutedUserId { UserId = usrId };
                 var toRemove = config.MutedUsers.FirstOrDefault(x => x.Equals(match));
-                if (toRemove != null) uow.Remove(toRemove);
+                if (toRemove is not null) uow.Remove(toRemove);
                 if (MutedUsers.TryGetValue(guildId, out var muted))
                     muted.TryRemove(usrId);
 
@@ -252,7 +252,7 @@ public class MuteService : INService
                 await uow.SaveChangesAsync();
             }
 
-            if (usr != null)
+            if (usr is not null)
             {
                 try { await usr.ModifyAsync(x => x.Mute = false); }
                 catch { }
@@ -405,7 +405,7 @@ public class MuteService : INService
                         RemoveTimerFromDb(guildId, userId, type);
                         StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId); // load the guild
-                        if (guild != null) await guild.RemoveBanAsync(userId);
+                        if (guild is not null) await guild.RemoveBanAsync(userId);
                     }
                     catch (Exception ex)
                     {
@@ -419,7 +419,7 @@ public class MuteService : INService
                         var guild = _client.GetGuild(guildId);
                         var user = guild?.GetUser(userId);
                         var role = guild.GetRole(roleId.Value);
-                        if (guild != null && user != null && user.Roles.Contains(role))
+                        if (guild is not null && user is not null && user.Roles.Contains(role))
                             await user.RemoveRoleAsync(role);
                     }
                     catch (Exception ex)
@@ -444,8 +444,8 @@ public class MuteService : INService
 
         //add it, or stop the old one and add this one
         userUnTimers.AddOrUpdate((userId, type),
-            key => toAdd,
-            (key, old) =>
+            _ => toAdd,
+            (_, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return toAdd;
@@ -475,7 +475,7 @@ public class MuteService : INService
             toDelete = config.UnbanTimer.FirstOrDefault(x => x.UserId == userId);
         }
 
-        if (toDelete != null) uow.Remove(toDelete);
+        if (toDelete is not null) uow.Remove(toDelete);
         uow.SaveChanges();
     }
 }

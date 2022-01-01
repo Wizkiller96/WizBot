@@ -46,7 +46,7 @@ public partial class Administration
                                      var emote = x.Last().ToIEmote();
                                      return new { role, emote };
                                  })
-                                 .Where(x => x != null)
+                                 .Where(x => x is not null)
                                  .WhenAll();
 
             if (!all.Any())

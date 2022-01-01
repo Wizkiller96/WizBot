@@ -75,7 +75,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new(async state =>
+        t = new(async _ =>
             {
                 try
                 {
@@ -101,7 +101,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id,
             t,
-            (key, old) =>
+            (_, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -130,7 +130,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new(async state =>
+        t = new(async _ =>
             {
                 try
                 {
@@ -147,7 +147,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         _service.AutoBoobTimers.AddOrUpdate(ctx.Channel.Id,
             t,
-            (key, old) =>
+            (_, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -176,7 +176,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
         if (interval < 20)
             return;
 
-        t = new(async state =>
+        t = new(async _ =>
             {
                 try
                 {
@@ -193,7 +193,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         _service.AutoButtTimers.AddOrUpdate(ctx.Channel.Id,
             t,
-            (key, old) =>
+            (_, old) =>
             {
                 old.Change(Timeout.Infinite, Timeout.Infinite);
                 return t;
@@ -222,7 +222,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                 _service.Konachan(ctx.Guild?.Id, true, tags),
                 _service.Gelbooru(ctx.Guild?.Id, true, tags));
 
-            var linksEnum = images.Where(l => l != null).ToArray();
+            var linksEnum = images.Where(l => l is not null).ToArray();
             if (!linksEnum.Any())
             {
                 await ReplyErrorLocalizedAsync(strs.no_results);

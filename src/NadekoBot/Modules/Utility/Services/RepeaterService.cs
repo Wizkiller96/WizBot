@@ -212,7 +212,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             try
             {
                 var lastMsgInChannel = await channel.GetMessagesAsync(2).Flatten().FirstAsync();
-                if (lastMsgInChannel != null && lastMsgInChannel.Id == repeater.LastMessageId)
+                if (lastMsgInChannel is not null && lastMsgInChannel.Id == repeater.LastMessageId)
                     return;
             }
             catch (Exception ex)
@@ -228,7 +228,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
             try
             {
                 var oldMsg = await channel.GetMessageAsync(lastMessageId);
-                if (oldMsg != null) await oldMsg.DeleteAsync();
+                if (oldMsg is not null) await oldMsg.DeleteAsync();
             }
             catch (Exception ex)
             {

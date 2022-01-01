@@ -67,7 +67,7 @@ public class YtdlOperation
         process.Start();
 
         string line;
-        while ((line = await process.StandardOutput.ReadLineAsync()) != null)
+        while ((line = await process.StandardOutput.ReadLineAsync()) is not null)
             yield return line;
     }
 }

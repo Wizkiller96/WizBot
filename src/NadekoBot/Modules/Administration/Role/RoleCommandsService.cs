@@ -54,7 +54,7 @@ public class RoleCommandsService : INService
             var reactionRole = conf.ReactionRoles.FirstOrDefault(x
                 => x.EmoteName == reaction.Emote.Name || x.EmoteName == reaction.Emote.ToString());
 
-            if (reactionRole != null)
+            if (reactionRole is not null)
             {
                 if (!conf.Exclusive)
                 {
@@ -125,7 +125,7 @@ public class RoleCommandsService : INService
                 var reactionRole = conf.ReactionRoles.FirstOrDefault(x
                     => x.EmoteName == reaction.Emote.Name || x.EmoteName == reaction.Emote.ToString());
 
-                if (reactionRole != null)
+                if (reactionRole is not null)
                 {
                     var role = gusr.Guild.GetRole(reactionRole.RoleId);
                     if (role is null)
@@ -181,7 +181,7 @@ public class RoleCommandsService : INService
     {
         var toAdd = user.Guild.GetRole(dbRero.RoleId);
 
-        return toAdd != null && !user.Roles.Contains(toAdd) ? user.AddRoleAsync(toAdd) : Task.CompletedTask;
+        return toAdd is not null && !user.Roles.Contains(toAdd) ? user.AddRoleAsync(toAdd) : Task.CompletedTask;
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public class RoleCommandsService : INService
         var roleIds = dbReroMsg.ReactionRoles.Select(x => x.RoleId)
                                .Where(x => x != dbRero.RoleId)
                                .Select(x => user.Guild.GetRole(x))
-                               .Where(x => x != null);
+                               .Where(x => x is not null);
 
         var removeReactionsTask = RemoveOldReactionsAsync(reactionMessage, user, reaction, cToken);
 

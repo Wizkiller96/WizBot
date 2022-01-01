@@ -66,7 +66,7 @@ public class VoteRewardService : INService, IReadyExecutor
 
                         await _currencyService.AddBulkAsync(ids,
                             data.Select(_ => "top.gg vote reward"),
-                            data.Select(x => _gamb.Data.VoteReward),
+                            data.Select(_ => _gamb.Data.VoteReward),
                             true);
 
                         Log.Information("Rewarding {Count} top.gg voters", ids.Count());
@@ -95,7 +95,7 @@ public class VoteRewardService : INService, IReadyExecutor
 
                         await _currencyService.AddBulkAsync(ids,
                             data.Select(_ => "discords.com vote reward"),
-                            data.Select(x => _gamb.Data.VoteReward),
+                            data.Select(_ => _gamb.Data.VoteReward),
                             true);
 
                         Log.Information("Rewarding {Count} discords.com voters", ids.Count());

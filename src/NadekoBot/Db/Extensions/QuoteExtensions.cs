@@ -31,7 +31,7 @@ public static class QuoteExtensions
     {
         var rng = new NadekoRandom();
         return (await quotes.AsQueryable().Where(q => q.GuildId == guildId && q.Keyword == keyword).ToListAsync())
-               .OrderBy(q => rng.Next())
+               .OrderBy(_ => rng.Next())
                .FirstOrDefault();
     }
 
@@ -48,7 +48,7 @@ public static class QuoteExtensions
                                         && EF.Functions.Like(q.Text.ToUpper(), $"%{text.ToUpper()}%")
                                 // && q.Text.Contains(text, StringComparison.OrdinalIgnoreCase)
                             )
-                            .ToListAsync()).OrderBy(q => rngk.Next())
+                            .ToListAsync()).OrderBy(_ => rngk.Next())
                                            .FirstOrDefault();
     }
 

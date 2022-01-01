@@ -39,7 +39,7 @@ public partial class Games
                 _service.TicTacToeGames.Add(channel.Id, game);
                 await ReplyConfirmLocalizedAsync(strs.ttt_created);
 
-                game.OnEnded += g =>
+                game.OnEnded += _ =>
                 {
                     _service.TicTacToeGames.Remove(channel.Id);
                     _sem.Dispose();

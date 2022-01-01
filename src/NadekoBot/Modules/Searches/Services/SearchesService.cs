@@ -549,7 +549,7 @@ public class SearchesService : INService
 
                                return new GoogleSearchResult(name, href, txt);
                            })
-                           .Where(x => x != null)
+                           .Where(x => x is not null)
                            .ToList();
 
         return new(results.AsReadOnly(), fullQueryLink, totalResults);
@@ -596,7 +596,7 @@ public class SearchesService : INService
 
                                return new GoogleSearchResult(name, href, txt);
                            })
-                           .Where(x => x != null)
+                           .Where(x => x is not null)
                            .ToList();
 
         return new(results.AsReadOnly(), fullQueryLink, "0");

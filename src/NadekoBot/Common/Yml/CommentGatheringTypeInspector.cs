@@ -57,7 +57,7 @@ public class CommentGatheringTypeInspector : TypeInspectorSkeleton
         public IObjectDescriptor Read(object target)
         {
             var comment = baseDescriptor.GetCustomAttribute<CommentAttribute>();
-            return comment != null
+            return comment is not null
                 ? new CommentsObjectDescriptor(baseDescriptor.Read(target), comment.Comment)
                 : baseDescriptor.Read(target);
         }

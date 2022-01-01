@@ -1,5 +1,6 @@
 using NadekoBot.Common.Yml;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 

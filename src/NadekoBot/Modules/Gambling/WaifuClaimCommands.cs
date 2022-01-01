@@ -159,7 +159,7 @@ public partial class Gambling
             var (oldAff, sucess, remaining) = await _service.ChangeAffinityAsync(ctx.User, u);
             if (!sucess)
             {
-                if (remaining != null)
+                if (remaining is not null)
                     await ReplyErrorLocalizedAsync(strs.waifu_affinity_cooldown(
                         Format.Bold(((int)remaining?.TotalHours).ToString()),
                         Format.Bold(remaining?.Minutes.ToString())));

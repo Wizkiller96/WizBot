@@ -22,7 +22,7 @@ public sealed record SmartEmbedText : SmartText
            || !string.IsNullOrWhiteSpace(Url)
            || !string.IsNullOrWhiteSpace(Thumbnail)
            || !string.IsNullOrWhiteSpace(Image)
-           || (Footer != null
+           || (Footer is not null
                && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl)))
            || Fields is { Length: > 0 };
 
@@ -62,10 +62,10 @@ public sealed record SmartEmbedText : SmartText
         if (!string.IsNullOrWhiteSpace(Description))
             embed.WithDescription(Description);
 
-        if (Url != null && Uri.IsWellFormedUriString(Url, UriKind.Absolute))
+        if (Url is not null && Uri.IsWellFormedUriString(Url, UriKind.Absolute))
             embed.WithUrl(Url);
 
-        if (Footer != null)
+        if (Footer is not null)
             embed.WithFooter(efb =>
             {
                 efb.WithText(Footer.Text);
@@ -73,13 +73,13 @@ public sealed record SmartEmbedText : SmartText
                     efb.WithIconUrl(Footer.IconUrl);
             });
 
-        if (Thumbnail != null && Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
+        if (Thumbnail is not null && Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
             embed.WithThumbnailUrl(Thumbnail);
 
-        if (Image != null && Uri.IsWellFormedUriString(Image, UriKind.Absolute))
+        if (Image is not null && Uri.IsWellFormedUriString(Image, UriKind.Absolute))
             embed.WithImageUrl(Image);
 
-        if (Author != null && !string.IsNullOrWhiteSpace(Author.Name))
+        if (Author is not null && !string.IsNullOrWhiteSpace(Author.Name))
         {
             if (!Uri.IsWellFormedUriString(Author.IconUrl, UriKind.Absolute))
                 Author.IconUrl = null;
@@ -89,7 +89,7 @@ public sealed record SmartEmbedText : SmartText
             embed.WithAuthor(Author.Name, Author.IconUrl, Author.Url);
         }
 
-        if (Fields != null)
+        if (Fields is not null)
             foreach (var f in Fields)
                 if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
                     embed.AddField(f.Name, f.Value, f.Inline);

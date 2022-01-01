@@ -271,7 +271,7 @@ public class CmdAttribute : System.Attribute
         // determine the namespace the class is declared in, if any
         var nameSpace = string.Empty;
         var parentOfInterest = declarationSyntax.Parent;
-        while (parentOfInterest != null)
+        while (parentOfInterest is not null)
         {
             parentOfInterest = parentOfInterest.Parent;
             

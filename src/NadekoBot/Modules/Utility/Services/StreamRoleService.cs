@@ -77,7 +77,7 @@ public class StreamRoleService : INService
                 if (action == AddRemove.Rem)
                 {
                     var toDelete = streamRoleSettings.Whitelist.FirstOrDefault(x => x.Equals(userObj));
-                    if (toDelete != null)
+                    if (toDelete is not null)
                     {
                         uow.Remove(toDelete);
                         success = true;
@@ -95,7 +95,7 @@ public class StreamRoleService : INService
                 if (action == AddRemove.Rem)
                 {
                     var toRemove = streamRoleSettings.Blacklist.FirstOrDefault(x => x.Equals(userObj));
-                    if (toRemove != null)
+                    if (toRemove is not null)
                     {
                         success = true;
                         success = streamRoleSettings.Blacklist.Remove(toRemove);
@@ -299,5 +299,5 @@ public class StreamRoleService : INService
     }
 
     private void UpdateCache(ulong guildId, StreamRoleSettings setting)
-        => guildSettings.AddOrUpdate(guildId, key => setting, (key, old) => setting);
+        => guildSettings.AddOrUpdate(guildId, _ => setting, (_, _) => setting);
 }

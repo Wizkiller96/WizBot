@@ -41,7 +41,7 @@ public class ChatterBotService : IEarlyBehavior
 
         ChatterBotGuilds = new(bot.AllGuildConfigs.Where(gc => gc.CleverbotEnabled)
                                   .ToDictionary(gc => gc.GuildId,
-                                      gc => new Lazy<IChatterBotSession>(() => CreateSession(), true)));
+                                      _ => new Lazy<IChatterBotSession>(() => CreateSession(), true)));
     }
 
     public IChatterBotSession CreateSession()

@@ -50,13 +50,13 @@ public class Replacer
             Image = Replace(embedData.Image),
             Url = Replace(embedData.Url)
         };
-        if (embedData.Author != null)
+        if (embedData.Author is not null)
             newEmbedData.Author = new()
             {
                 Name = Replace(embedData.Author.Name), IconUrl = Replace(embedData.Author.IconUrl)
             };
 
-        if (embedData.Fields != null)
+        if (embedData.Fields is not null)
         {
             var fields = new List<SmartTextEmbedField>();
             foreach (var f in embedData.Fields)
@@ -71,7 +71,7 @@ public class Replacer
             newEmbedData.Fields = fields.ToArray();
         }
 
-        if (embedData.Footer != null)
+        if (embedData.Footer is not null)
             newEmbedData.Footer = new()
             {
                 Text = Replace(embedData.Footer.Text), IconUrl = Replace(embedData.Footer.IconUrl)

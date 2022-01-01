@@ -56,7 +56,7 @@ public class CommandMapService : IInputTransformer, INService
         if (guild is null || string.IsNullOrWhiteSpace(input))
             return input;
 
-        if (guild != null)
+        if (guild is not null)
             if (AliasMaps.TryGetValue(guild.Id, out var maps))
             {
                 var keys = maps.Keys.OrderByDescending(x => x.Length);

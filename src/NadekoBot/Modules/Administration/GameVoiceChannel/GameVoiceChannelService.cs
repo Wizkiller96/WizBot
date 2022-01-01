@@ -16,7 +16,7 @@ public class GameVoiceChannelService : INService
         _db = db;
         _client = client;
 
-        GameVoiceChannels = new(bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel != null)
+        GameVoiceChannels = new(bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel is not null)
                                    .Select(gc => gc.GameVoiceChannel.Value));
 
         _client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
@@ -62,7 +62,7 @@ public class GameVoiceChannelService : INService
         }
         else
         {
-            if (gc.GameVoiceChannel != null)
+            if (gc.GameVoiceChannel is not null)
                 GameVoiceChannels.TryRemove(gc.GameVoiceChannel.Value);
             GameVoiceChannels.Add(vchId);
             id = gc.GameVoiceChannel = vchId;

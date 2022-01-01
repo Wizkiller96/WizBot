@@ -38,7 +38,7 @@ public class RedisCache : IDataCache
     {
         var _db = Redis.GetDatabase();
         byte[] x = await _db.StringGetAsync("image_" + key);
-        return (x != null, x);
+        return (x is not null, x);
     }
 
     public Task SetImageDataAsync(Uri key, byte[] data)
@@ -51,7 +51,7 @@ public class RedisCache : IDataCache
     {
         var _db = Redis.GetDatabase();
         string x = await _db.StringGetAsync("anime_" + key);
-        return (x != null, x);
+        return (x is not null, x);
     }
 
     public Task SetAnimeDataAsync(string key, string data)
@@ -64,7 +64,7 @@ public class RedisCache : IDataCache
     {
         var _db = Redis.GetDatabase();
         string x = await _db.StringGetAsync("novel_" + key);
-        return (x != null, x);
+        return (x is not null, x);
     }
 
     public Task SetNovelDataAsync(string key, string data)
@@ -156,7 +156,7 @@ public class RedisCache : IDataCache
     public bool TryGetEconomy(out string data)
     {
         var _db = Redis.GetDatabase();
-        if ((data = _db.StringGet($"{_redisKey}_economy")) != null) return true;
+        if ((data = _db.StringGet($"{_redisKey}_economy")) is not null) return true;
 
         return false;
     }

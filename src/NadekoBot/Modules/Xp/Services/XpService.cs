@@ -90,7 +90,7 @@ public class XpService : INService
                 });
 
         //load settings
-        var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings != null).ToList();
+        var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings is not null).ToList();
 
         _excludedChannels = allGuildConfigs.ToDictionary(x => x.GuildId,
                                                x => new ConcurrentHashSet<ulong>(x.XpSettings.ExclusionList
@@ -156,7 +156,7 @@ public class XpService : INService
                         var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
                         usr.Xp += xp;
                         du.TotalXp += xp;
-                        if (du.Club != null) du.Club.Xp += xp;
+                        if (du.Club is not null) du.Club.Xp += xp;
                         var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
 
                         if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
@@ -194,7 +194,7 @@ public class XpService : INService
                             for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
                             {
                                 var rrew = rrews.FirstOrDefault(x => x.Level == i);
-                                if (rrew != null)
+                                if (rrew is not null)
                                 {
                                     var role = first.User.Guild.GetRole(rrew.RoleId);
                                     if (role is not null)
@@ -208,7 +208,7 @@ public class XpService : INService
 
                                 //get currency reward for this level
                                 var crew = crews.FirstOrDefault(x => x.Level == i);
-                                if (crew != null)
+                                if (crew is not null)
                                     //give the user the reward if it exists
                                     await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
                             }
@@ -228,7 +228,7 @@ public class XpService : INService
                                                       Format.Bold(x.Level.ToString()),
                                                       Format.Bold(x.Guild.ToString() ?? "-")),
                                                   x.Guild.Id));
-                                      else if (x.MessageChannel != null) // channel
+                                      else if (x.MessageChannel is not null) // channel
                                           await x.MessageChannel.SendConfirmAsync(_eb,
                                               _strings.GetText(strs.level_up_channel(x.User.Mention,
                                                       Format.Bold(x.Level.ToString())),
@@ -289,7 +289,7 @@ public class XpService : INService
         if (amount <= 0)
         {
             var toRemove = settings.CurrencyRewards.FirstOrDefault(x => x.Level == level);
-            if (toRemove != null)
+            if (toRemove is not null)
             {
                 uow.Remove(toRemove);
                 settings.CurrencyRewards.Remove(toRemove);
@@ -299,7 +299,7 @@ public class XpService : INService
         {
             var rew = settings.CurrencyRewards.FirstOrDefault(x => x.Level == level);
 
-            if (rew != null)
+            if (rew is not null)
                 rew.Amount = amount;
             else
                 settings.CurrencyRewards.Add(new() { Level = level, Amount = amount });
@@ -326,7 +326,7 @@ public class XpService : INService
         var settings = uow.XpSettingsFor(guildId);
 
         var toRemove = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
-        if (toRemove != null)
+        if (toRemove is not null)
         {
             uow.Remove(toRemove);
             settings.RoleRewards.Remove(toRemove);
@@ -347,7 +347,7 @@ public class XpService : INService
 
         var rew = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
 
-        if (rew != null)
+        if (rew is not null)
         {
             rew.RoleId = roleId;
             rew.Remove = remove;
@@ -424,9 +424,9 @@ public class XpService : INService
 
         var _ = Task.Run(() =>
         {
-            if (before.VoiceChannel != null) ScanChannelForVoiceXp(before.VoiceChannel);
+            if (before.VoiceChannel is not null) ScanChannelForVoiceXp(before.VoiceChannel);
 
-            if (after.VoiceChannel != null && after.VoiceChannel != before.VoiceChannel)
+            if (after.VoiceChannel is not null && after.VoiceChannel != before.VoiceChannel)
                 ScanChannelForVoiceXp(after.VoiceChannel);
             else if (after.VoiceChannel is null)
                 // In this case, the user left the channel and the previous for loops didn't catch
@@ -634,7 +634,7 @@ public class XpService : INService
         roles.TryRemove(rId);
 
         var toDelete = xpSetting.ExclusionList.FirstOrDefault(x => x.Equals(excludeObj));
-        if (toDelete != null)
+        if (toDelete is not null)
         {
             uow.Remove(toDelete);
             uow.SaveChanges();
@@ -822,7 +822,7 @@ public class XpService : INService
                         new(_template.User.TimeOnLevel.Guild.Pos.X, _template.User.TimeOnLevel.Guild.Pos.Y)));
             //avatar
 
-            if (stats.User.AvatarId != null && _template.User.Icon.Show)
+            if (stats.User.AvatarId is not null && _template.User.Icon.Show)
                 try
                 {
                     var avatarUrl = stats.User.RealAvatarUrl();

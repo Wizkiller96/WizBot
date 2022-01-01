@@ -21,7 +21,7 @@ public sealed class RunningRepeater
 
     private DateTime CalculateInitialExecution()
     {
-        if (Repeater.StartTimeOfDay != null)
+        if (Repeater.StartTimeOfDay is not null)
         {
             // if there was a start time of day
             // calculate whats the next time of day repeat should trigger at

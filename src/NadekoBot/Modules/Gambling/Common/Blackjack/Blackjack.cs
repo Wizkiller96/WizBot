@@ -140,7 +140,7 @@ public class Blackjack
     {
         var cu = CurrentUser;
 
-        if (cu != null && cu.DiscordUser == u)
+        if (cu is not null && cu.DiscordUser == u)
             return await Stand(cu);
 
         return false;
@@ -221,7 +221,7 @@ public class Blackjack
     {
         var cu = CurrentUser;
 
-        if (cu != null && cu.DiscordUser == u)
+        if (cu is not null && cu.DiscordUser == u)
             return await Double(cu);
 
         return false;
@@ -268,7 +268,7 @@ public class Blackjack
     {
         var cu = CurrentUser;
 
-        if (cu != null && cu.DiscordUser == u)
+        if (cu is not null && cu.DiscordUser == u)
             return await Hit(cu);
 
         return false;

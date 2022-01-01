@@ -18,7 +18,7 @@ public partial class Xp
         {
             var club = _service.TransferClub(ctx.User, newOwner);
 
-            if (club != null)
+            if (club is not null)
                 await ReplyConfirmLocalizedAsync(strs.club_transfered(Format.Bold(club.Name),
                     Format.Bold(newOwner.ToString())));
             else
@@ -66,7 +66,7 @@ public partial class Xp
         [Cmd]
         public async partial Task ClubIcon([Leftover] string url = null)
         {
-            if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url != null)
+            if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url is not null)
                 || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
             {
                 await ReplyErrorLocalizedAsync(strs.club_icon_error);
@@ -166,7 +166,7 @@ public partial class Xp
             var bans = club.Bans.Select(x => x.User).ToArray();
 
             return ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
+                _ =>
                 {
                     var toShow = string.Join("\n", bans.Skip(page * 10).Take(10).Select(x => x.ToString()));
 
@@ -193,7 +193,7 @@ public partial class Xp
             var apps = club.Applicants.Select(x => x.User).ToArray();
 
             return ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
+                _ =>
                 {
                     var toShow = string.Join("\n", apps.Skip(page * 10).Take(10).Select(x => x.ToString()));
 

@@ -139,7 +139,7 @@ public static class Extensions
 
     public static IEmbedBuilder AddPaginatedFooter(this IEmbedBuilder embed, int curPage, int? lastPage)
     {
-        if (lastPage != null)
+        if (lastPage is not null)
             return embed.WithFooter($"{curPage + 1} / {lastPage + 1}");
         return embed.WithFooter(curPage.ToString());
     }
@@ -196,7 +196,7 @@ public static class Extensions
         Task.Run(async () =>
         {
             await Task.Delay(seconds * 1000);
-            if (logService != null) logService.AddDeleteIgnore(msg.Id);
+            if (logService is not null) logService.AddDeleteIgnore(msg.Id);
 
             try { await msg.DeleteAsync(); }
             catch { }
@@ -206,7 +206,7 @@ public static class Extensions
 
     public static ModuleInfo GetTopLevelModule(this ModuleInfo module)
     {
-        while (module.Parent != null) module = module.Parent;
+        while (module.Parent is not null) module = module.Parent;
 
         return module;
     }
@@ -269,7 +269,7 @@ public static class Extensions
     }
 
     public static IEnumerable<IRole> GetRoles(this IGuildUser user)
-        => user.RoleIds.Select(r => user.Guild.GetRole(r)).Where(r => r != null);
+        => user.RoleIds.Select(r => user.Guild.GetRole(r)).Where(r => r is not null);
 
     public static bool IsImage(this HttpResponseMessage msg)
         => IsImage(msg, out _);

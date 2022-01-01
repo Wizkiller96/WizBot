@@ -102,7 +102,7 @@ public partial class Utility
                 interval?.Time ?? (startTimeOfDay is null ? TimeSpan.FromMinutes(5) : TimeSpan.FromDays(1));
 
             if (string.IsNullOrWhiteSpace(message)
-                || (interval != null
+                || (interval is not null
                     && (interval.Time > TimeSpan.FromMinutes(25000) || interval.Time < TimeSpan.FromMinutes(1))))
                 return;
 

@@ -219,7 +219,7 @@ public partial class Help : NadekoModule<HelpService>
         }
 
         var cnt = 0;
-        var groups = cmdsWithGroup.GroupBy(x => cnt++ / 48).ToArray();
+        var groups = cmdsWithGroup.GroupBy(_ => cnt++ / 48).ToArray();
         var embed = _eb.Create().WithOkColor();
         foreach (var g in groups)
         {
@@ -259,7 +259,7 @@ public partial class Help : NadekoModule<HelpService>
     {
         var prefixless =
             _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
-        if (prefixless != null)
+        if (prefixless is not null)
         {
             await H(prefixless);
             return;
@@ -316,7 +316,7 @@ public partial class Help : NadekoModule<HelpService>
                                          var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x
                                                  => x is NadekoOptionsAttribute))
                                              ?.OptionType;
-                                         if (opt != null) optHelpStr = HelpService.GetCommandOptionHelpList(opt);
+                                         if (opt is not null) optHelpStr = HelpService.GetCommandOptionHelpList(opt);
 
                                          return new CommandJsonObject
                                          {

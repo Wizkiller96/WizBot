@@ -38,7 +38,7 @@ public partial class Gambling
 
             var res = await _service.JoinOrCreateGame(ctx.Channel.Id, ctx.User, amount, mixed, OnEnded);
 
-            if (res.Item1 != null)
+            if (res.Item1 is not null)
             {
                 await SendConfirmAsync(GetText(strs.rafflecur(res.Item1.GameType.ToString())),
                     string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({x.Amount})")),

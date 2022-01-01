@@ -17,13 +17,13 @@ public static class PollExtensions
         if (p is null)
             return;
 
-        if (p.Votes != null)
+        if (p.Votes is not null)
         {
             ctx.RemoveRange(p.Votes);
             p.Votes.Clear();
         }
 
-        if (p.Answers != null)
+        if (p.Answers is not null)
         {
             ctx.RemoveRange(p.Answers);
             p.Answers.Clear();

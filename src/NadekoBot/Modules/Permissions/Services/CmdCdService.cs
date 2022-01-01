@@ -22,10 +22,10 @@ public class CmdCdService : ILateBlocker, INService
 
         var cmdcds = CommandCooldowns.GetOrAdd(guild.Id, new ConcurrentHashSet<CommandCooldown>());
         CommandCooldown cdRule;
-        if ((cdRule = cmdcds.FirstOrDefault(cc => cc.CommandName == commandName)) != null)
+        if ((cdRule = cmdcds.FirstOrDefault(cc => cc.CommandName == commandName)) is not null)
         {
             var activeCdsForGuild = ActiveCooldowns.GetOrAdd(guild.Id, new ConcurrentHashSet<ActiveCooldown>());
-            if (activeCdsForGuild.FirstOrDefault(ac => ac.UserId == user.Id && ac.Command == commandName) != null)
+            if (activeCdsForGuild.FirstOrDefault(ac => ac.UserId == user.Id && ac.Command == commandName) is not null)
                 return Task.FromResult(true);
 
             activeCdsForGuild.Add(new() { UserId = user.Id, Command = commandName });

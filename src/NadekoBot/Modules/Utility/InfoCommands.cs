@@ -103,7 +103,7 @@ public partial class Utility
                  .WithOkColor();
 
             var av = user.RealAvatarUrl();
-            if (av != null && av.IsAbsoluteUri)
+            if (av is not null && av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
             await ctx.Channel.EmbedAsync(embed);
         }

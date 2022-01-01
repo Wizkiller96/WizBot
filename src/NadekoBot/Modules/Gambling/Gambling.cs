@@ -110,7 +110,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         TimeSpan? rem;
-        if ((rem = _cache.AddTimelyClaim(ctx.User.Id, period)) != null)
+        if ((rem = _cache.AddTimelyClaim(ctx.User.Id, period)) is not null)
         {
             await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem?.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")));
             return;
@@ -308,8 +308,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         var users = (await ctx.Guild.GetUsersAsync()).Where(u => u.GetRoles().Contains(role)).ToList();
 
         await _cs.AddBulkAsync(users.Select(x => x.Id),
-            users.Select(x => $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-            users.Select(x => amount),
+            users.Select(_ => $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
+            users.Select(_ => amount),
             true);
 
         await ReplyConfirmLocalizedAsync(strs.mass_award(n(amount),
@@ -326,8 +326,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         var users = (await role.GetMembersAsync()).ToList();
 
         await _cs.RemoveBulkAsync(users.Select(x => x.Id),
-            users.Select(x => $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-            users.Select(x => amount),
+            users.Select(_ => $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
+            users.Select(_ => amount),
             true);
 
         await ReplyConfirmLocalizedAsync(strs.mass_take(n(amount),
@@ -532,7 +532,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
             var sg = (SocketGuild)ctx.Guild;
-            cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) != null).ToList();
+            cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
         }
         else
         {

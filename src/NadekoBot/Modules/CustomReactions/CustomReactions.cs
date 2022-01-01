@@ -21,7 +21,7 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
 
     private bool AdminInGuildOrOwnerInDm()
         => (ctx.Guild is null && _creds.IsOwner(ctx.User))
-           || (ctx.Guild != null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
+           || (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
     [Cmd]
     public async partial Task AddCustReact(string key, [Leftover] string message)
@@ -55,14 +55,14 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
             return;
 
         if ((channel is null && !_creds.IsOwner(ctx.User))
-            || (channel != null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
+            || (channel is not null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
         {
             await ReplyErrorLocalizedAsync(strs.insuff_perms);
             return;
         }
 
         var cr = await _service.EditAsync(ctx.Guild?.Id, id, message);
-        if (cr != null)
+        if (cr is not null)
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.edited_cust_react))
@@ -140,7 +140,7 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
 
         var cr = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
-        if (cr != null)
+        if (cr is not null)
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.deleted))

@@ -71,7 +71,7 @@ public partial class Games
 
         public IEmbedBuilder GetStats(Poll poll, string title)
         {
-            var results = poll.Votes.GroupBy(kvp => kvp.VoteIndex).ToDictionary(x => x.Key, x => x.Sum(kvp => 1));
+            var results = poll.Votes.GroupBy(kvp => kvp.VoteIndex).ToDictionary(x => x.Key, x => x.Sum(_ => 1));
 
             var totalVotesCast = results.Sum(x => x.Value);
 

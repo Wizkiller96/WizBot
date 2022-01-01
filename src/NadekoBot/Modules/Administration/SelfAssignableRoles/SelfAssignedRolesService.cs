@@ -77,7 +77,7 @@ public class SelfAssignedRolesService : INService
             foreach (var roleId in sameRoles)
             {
                 var sameRole = guildUser.Guild.GetRole(roleId);
-                if (sameRole != null)
+                if (sameRole is not null)
                     try
                     {
                         await guildUser.RemoveRoleAsync(sameRole);
@@ -111,7 +111,7 @@ public class SelfAssignedRolesService : INService
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            if (toUpdate != null)
+            if (toUpdate is not null)
                 gc.SelfAssignableRoleGroupNames.Remove(toUpdate);
         }
         else if (toUpdate is null)
@@ -174,7 +174,7 @@ public class SelfAssignedRolesService : INService
         using var uow = _db.GetDbContext();
         var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
         var sar = roles.FirstOrDefault(x => x.RoleId == role.Id);
-        if (sar != null)
+        if (sar is not null)
         {
             sar.LevelRequirement = level;
             uow.SaveChanges();
@@ -216,6 +216,6 @@ public class SelfAssignedRolesService : INService
             uow.SaveChanges();
         }
 
-        return (exclusive, roles.Where(x => x.Role != null), groupNames);
+        return (exclusive, roles.Where(x => x.Role is not null), groupNames);
     }
 }

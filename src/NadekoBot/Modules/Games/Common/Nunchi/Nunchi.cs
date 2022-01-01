@@ -66,7 +66,7 @@ public sealed class NunchiGame : IDisposable
                 return false;
             }
 
-            _killTimer = new(async state =>
+            _killTimer = new(async _ =>
                 {
                     await _locker.WaitAsync();
                     try
@@ -151,7 +151,7 @@ public sealed class NunchiGame : IDisposable
         _killTimer.Change(_killTimeout, _killTimeout);
         CurrentNumber = new NadekoRandom().Next(0, 100); // reset the counter
         _passed.Clear(); // reset all users who passed (new round starts)
-        if (failure != null)
+        if (failure is not null)
             _participants.Remove(failure.Value); // remove the dude who failed from the list of players
 
         var __ = OnRoundEnded?.Invoke(this, failure);

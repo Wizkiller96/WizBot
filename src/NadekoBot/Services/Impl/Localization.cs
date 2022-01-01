@@ -40,7 +40,7 @@ public class Localization : ILocalization, INService
 
                                                         return cultureInfo;
                                                     })
-                                                .Where(x => x.Value != null));
+                                                .Where(x => x.Value is not null));
     }
 
     public void SetGuildCulture(IGuild guild, CultureInfo ci)
@@ -61,7 +61,7 @@ public class Localization : ILocalization, INService
             uow.SaveChanges();
         }
 
-        GuildCultureInfos.AddOrUpdate(guildId, ci, (id, old) => ci);
+        GuildCultureInfos.AddOrUpdate(guildId, ci, (_, _) => ci);
     }
 
     public void RemoveGuildCulture(IGuild guild)

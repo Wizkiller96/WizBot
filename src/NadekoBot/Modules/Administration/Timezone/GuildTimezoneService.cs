@@ -13,12 +13,12 @@ public class GuildTimezoneService : INService
     public GuildTimezoneService(DiscordSocketClient client, Bot bot, DbService db)
     {
         _timezones = bot.AllGuildConfigs.Select(GetTimzezoneTuple)
-                        .Where(x => x.Timezone != null)
+                        .Where(x => x.Timezone is not null)
                         .ToDictionary(x => x.GuildId, x => x.Timezone)
                         .ToConcurrent();
 
         var curUser = client.CurrentUser;
-        if (curUser != null)
+        if (curUser is not null)
             AllServices.TryAdd(curUser.Id, this);
         _db = db;
 
@@ -28,7 +28,7 @@ public class GuildTimezoneService : INService
     private Task Bot_JoinedGuild(GuildConfig arg)
     {
         var (guildId, tz) = GetTimzezoneTuple(arg);
-        if (tz != null)
+        if (tz is not null)
             _timezones.TryAdd(guildId, tz);
         return Task.CompletedTask;
     }
@@ -69,7 +69,7 @@ public class GuildTimezoneService : INService
         if (tz is null)
             _timezones.TryRemove(guildId, out tz);
         else
-            _timezones.AddOrUpdate(guildId, tz, (key, old) => tz);
+            _timezones.AddOrUpdate(guildId, tz, (_, _) => tz);
     }
 
     public TimeZoneInfo GetTimeZoneOrUtc(ulong guildId)

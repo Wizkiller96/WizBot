@@ -123,7 +123,7 @@ namespace Ayu.Discord.Gateway
 
         public async Task<bool> CloseAsync(string msg = "Stop")
         {
-            if (_ws != null && _ws.State != WebSocketState.Closed)
+            if (_ws is not null && _ws.State != WebSocketState.Closed)
             {
                 try
                 {

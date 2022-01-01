@@ -54,7 +54,7 @@ public partial class Utility
                     var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                     var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
                     var tr = config.CommandAliases.FirstOrDefault(x => x.Trigger == trigger);
-                    if (tr != null)
+                    if (tr is not null)
                         uow.Set<CommandAlias>().Remove(tr);
                     uow.SaveChanges();
                 }
@@ -91,7 +91,7 @@ public partial class Utility
                         uow.SaveChanges();
                     }
 
-                    map.AddOrUpdate(trigger, mapping, (key, old) => mapping);
+                    map.AddOrUpdate(trigger, mapping, (_, _) => mapping);
                     return map;
                 });
 

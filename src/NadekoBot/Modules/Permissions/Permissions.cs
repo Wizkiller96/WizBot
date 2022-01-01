@@ -42,7 +42,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     [Priority(0)]
     public async partial Task PermRole([Leftover] IRole role = null)
     {
-        if (role != null && role == role.Guild.EveryoneRole)
+        if (role is not null && role == role.Guild.EveryoneRole)
             return;
 
         if (role is null)

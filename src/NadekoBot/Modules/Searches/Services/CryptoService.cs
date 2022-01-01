@@ -45,7 +45,7 @@ public class CryptoService : INService
             crypto = nearest?.Elem;
         }
 
-        if (nearest != null) return (null, crypto);
+        if (nearest is not null) return (null, crypto);
 
         return (crypto, null);
     }

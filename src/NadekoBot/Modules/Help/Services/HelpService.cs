@@ -60,7 +60,7 @@ public class HelpService : ILateExecutor, INService
 
         var str = $"**`{prefix + com.Aliases.First()}`**";
         var alias = com.Aliases.Skip(1).FirstOrDefault();
-        if (alias != null)
+        if (alias is not null)
             str += $" **/ `{prefix + alias}`**";
         var em = _eb.Create().AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
 
@@ -75,7 +75,7 @@ public class HelpService : ILateExecutor, INService
           .WithOkColor();
 
         var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
-        if (opt != null)
+        if (opt is not null)
         {
             var hs = GetCommandOptionHelp(opt);
             if (!string.IsNullOrWhiteSpace(hs))
@@ -96,7 +96,7 @@ public class HelpService : ILateExecutor, INService
     {
         var strs = opt.GetProperties()
                       .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-                      .Where(x => x != null)
+                      .Where(x => x is not null)
                       .Cast<OptionAttribute>()
                       .Select(x =>
                       {

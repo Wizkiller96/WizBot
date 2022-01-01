@@ -132,7 +132,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
             return Task.CompletedTask;
         };
 
-        _botlistTimer = new(async state =>
+        _botlistTimer = new(async _ =>
             {
                 if (string.IsNullOrWhiteSpace(_creds.BotListToken))
                     return;

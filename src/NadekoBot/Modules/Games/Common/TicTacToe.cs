@@ -140,14 +140,14 @@ public class TicTacToe
                         return;
 
                     _phase = Phase.Ended;
-                    if (_users[1] != null)
+                    if (_users[1] is not null)
                     {
                         _winner = _users[_curUserIndex ^= 1];
                         var del = _previousMessage?.DeleteAsync();
                         try
                         {
                             await _channel.EmbedAsync(GetEmbed(GetText(strs.ttt_time_expired)));
-                            if (del != null)
+                            if (del is not null)
                                 await del;
                         }
                         catch { }
@@ -266,7 +266,7 @@ public class TicTacToe
 
                         try
                         {
-                            if (del2 != null) await del2;
+                            if (del2 is not null) await del2;
                         }
                         catch { }
                     });

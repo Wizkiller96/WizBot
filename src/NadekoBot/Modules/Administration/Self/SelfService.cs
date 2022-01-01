@@ -147,8 +147,8 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         {
             var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
             autos.AddOrUpdate(cmd.Id,
-                key => TimerFromAutoCommand(cmd),
-                (key, old) =>
+                _ => TimerFromAutoCommand(cmd),
+                (_, old) =>
                 {
                     old.Change(Timeout.Infinite, Timeout.Infinite);
                     return TimerFromAutoCommand(cmd);
@@ -179,7 +179,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             return user.CreateDMChannelAsync();
         }));
 
-        ownerChannels = channels.Where(x => x != null)
+        ownerChannels = channels.Where(x => x is not null)
                                 .ToDictionary(x => x.Recipient.Id, x => x)
                                 .ToImmutableDictionary();
 
@@ -244,7 +244,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         using var uow = _db.GetDbContext();
         cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0).Skip(index).FirstOrDefault();
 
-        if (cmd != null)
+        if (cmd is not null)
         {
             uow.Remove(cmd);
             uow.SaveChanges();
@@ -259,7 +259,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         using var uow = _db.GetDbContext();
         cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval >= 5).Skip(index).FirstOrDefault();
 
-        if (cmd != null)
+        if (cmd is not null)
         {
             uow.Remove(cmd);
             if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))

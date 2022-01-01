@@ -392,12 +392,12 @@ public partial class Administration
 
             var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, user.Id);
 
-            if (guildUser != null && !await CheckRoleHierarchy(guildUser))
+            if (guildUser is not null && !await CheckRoleHierarchy(guildUser))
                 return;
 
             var dmFailed = false;
 
-            if (guildUser != null)
+            if (guildUser is not null)
                 try
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));

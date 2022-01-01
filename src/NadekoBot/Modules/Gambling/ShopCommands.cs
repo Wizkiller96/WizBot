@@ -181,7 +181,7 @@ public partial class Gambling
                                                                                       .ThenInclude(x => x.Items))
                                                                               .ShopEntries);
                             entry = entries.ElementAtOrDefault(index);
-                            if (entry != null)
+                            if (entry is not null)
                                 if (entry.Items.Add(item))
                                     uow.SaveChanges();
                         }
@@ -281,7 +281,7 @@ public partial class Gambling
                                                                           .ThenInclude(x => x.Items))
                                                                   .ShopEntries);
                 entry = entries.ElementAtOrDefault(index);
-                if (entry != null && (rightType = entry.Type == ShopEntryType.List))
+                if (entry is not null && (rightType = entry.Type == ShopEntryType.List))
                     if (added = entry.Items.Add(item))
                         uow.SaveChanges();
             }
@@ -312,7 +312,7 @@ public partial class Gambling
 
                 var entries = new IndexedCollection<ShopEntry>(config.ShopEntries);
                 removed = entries.ElementAtOrDefault(index);
-                if (removed != null)
+                if (removed is not null)
                 {
                     uow.RemoveRange(removed.Items);
                     uow.Remove(removed);

@@ -133,7 +133,7 @@ public sealed class Connect4Game : IDisposable
             }
 
             CurrentPhase = Phase.P1Move; //start the game
-            _playerTimeoutTimer = new(async state =>
+            _playerTimeoutTimer = new(async _ =>
                 {
                     await _locker.WaitAsync();
                     try
@@ -347,7 +347,7 @@ public sealed class Connect4Game : IDisposable
             return;
         }
 
-        if (winId != null)
+        if (winId is not null)
             _cs.AddAsync(winId.Value, "Connnect4-win", (long)(_options.Bet * 1.98), true);
     }
 

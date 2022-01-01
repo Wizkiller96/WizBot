@@ -73,7 +73,7 @@ public partial class Gambling
         {
             try
             {
-                if (_msg != null)
+                if (_msg is not null)
                 {
                     var _ = _msg.DeleteAsync();
                 }
@@ -97,7 +97,7 @@ public partial class Gambling
                                .WithTitle("BlackJack")
                                .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);
 
-                if (bj.CurrentUser != null) embed.WithFooter($"Player to make a choice: {bj.CurrentUser.DiscordUser}");
+                if (bj.CurrentUser is not null) embed.WithFooter($"Player to make a choice: {bj.CurrentUser.DiscordUser}");
 
                 foreach (var p in bj.Players)
                 {

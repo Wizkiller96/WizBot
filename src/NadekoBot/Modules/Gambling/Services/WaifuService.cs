@@ -125,7 +125,7 @@ public class WaifuService : INService
 
         //wives stay though
 
-        uow.SaveChanges();
+        await uow.SaveChangesAsync();
 
         return true;
     }
@@ -236,7 +236,7 @@ public class WaifuService : INService
             }
             else
             {
-                if (w.Affinity != null)
+                if (w.Affinity is not null)
                     oldAff = w.Affinity;
                 w.Affinity = newAff;
                 success = true;
@@ -270,11 +270,10 @@ public class WaifuService : INService
         DivorceResult result;
         TimeSpan? remaining = null;
         long amount = 0;
-        WaifuInfo w = null;
+        WaifuInfo w;
         await using (var uow = _db.GetDbContext())
         {
             w = uow.WaifuInfo.ByWaifuUserId(targetId);
-            var now = DateTime.UtcNow;
             if (w?.Claimer is null || w.Claimer.UserId != user.Id)
             {
                 result = DivorceResult.NotYourWife;
@@ -373,7 +372,7 @@ public class WaifuService : INService
     public WaifuInfoStats GetFullWaifuInfoAsync(IGuildUser target)
     {
         using var uow = _db.GetDbContext();
-        var du = uow.GetOrCreateUser(target);
+        _ = uow.GetOrCreateUser(target);
 
         return GetFullWaifuInfoAsync(target.Id);
     }

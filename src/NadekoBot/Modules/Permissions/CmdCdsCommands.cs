@@ -45,7 +45,7 @@ public partial class Permissions
                 var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
                 var toDelete = config.CommandCooldowns.FirstOrDefault(cc => cc.CommandName == name);
-                if (toDelete != null)
+                if (toDelete is not null)
                     uow.Set<CommandCooldown>().Remove(toDelete);
                 localSet.RemoveWhere(cc => cc.CommandName == name);
                 if (secs != 0)

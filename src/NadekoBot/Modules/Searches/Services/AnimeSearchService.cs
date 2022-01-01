@@ -72,13 +72,13 @@ public class AnimeSearchService : INService
 
                 var genres = document.QuerySelector("div#seriesgenre")
                                      .Children.Select(x => x as IHtmlAnchorElement)
-                                     .Where(x => x != null)
+                                     .Where(x => x is not null)
                                      .Select(x => $"[{x.InnerHtml}]({x.Href})")
                                      .ToArray();
 
                 var authors = document.QuerySelector("div#showauthors")
                                       .Children.Select(x => x as IHtmlAnchorElement)
-                                      .Where(x => x != null)
+                                      .Where(x => x is not null)
                                       .Select(x => $"[{x.InnerHtml}]({x.Href})")
                                       .ToArray();
 

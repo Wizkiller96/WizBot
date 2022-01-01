@@ -81,7 +81,7 @@ public class PlantPickService : INService
         else
         {
             var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
-            if (toDelete != null) uow.Remove(toDelete);
+            if (toDelete is not null) uow.Remove(toDelete);
             _generationChannels.TryRemove(cid);
             enabled = false;
         }

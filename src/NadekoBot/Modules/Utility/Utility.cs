@@ -90,7 +90,7 @@ public partial class Utility : NadekoModule
                                                   .Where(u => u.Activities.FirstOrDefault()?.Name?.ToUpperInvariant()
                                                               == game)
                                                   .Select(u => u.Username)
-                                                  .OrderBy(x => rng.Next())
+                                                  .OrderBy(_ => rng.Next())
                                                   .Take(60)
                                                   .ToArray());
 
@@ -100,7 +100,7 @@ public partial class Utility : NadekoModule
         else
             await SendConfirmAsync("```css\n"
                                    + string.Join("\n",
-                                       arr.GroupBy(item => i++ / 2)
+                                       arr.GroupBy(_ => i++ / 2)
                                           .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}"))))
                                    + "\n```");
     }
@@ -198,7 +198,7 @@ public partial class Utility : NadekoModule
         if (page is < 1 or > 100)
             return;
 
-        if (target != null)
+        if (target is not null)
         {
             var roles = target.GetRoles()
                               .Except(new[] { guild.EveryoneRole })

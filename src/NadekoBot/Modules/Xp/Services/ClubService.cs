@@ -88,7 +88,7 @@ public class ClubService : INService
 
     public async Task<bool> SetClubIcon(ulong ownerUserId, Uri url)
     {
-        if (url != null)
+        if (url is not null)
         {
             using var http = _httpFactory.CreateClient();
             using var temp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
@@ -134,7 +134,7 @@ public class ClubService : INService
         var du = uow.GetOrCreateUser(user);
         uow.SaveChanges();
 
-        if (du.Club != null
+        if (du.Club is not null
             || new LevelStats(du.TotalXp).Level < club.MinimumLevelReq
             || club.Bans.Any(x => x.UserId == du.Id)
             || club.Applicants.Any(x => x.UserId == du.Id))
@@ -258,7 +258,7 @@ public class ClubService : INService
         club.Users.Remove(usr);
 
         var app = club.Applicants.FirstOrDefault(x => x.UserId == usr.Id);
-        if (app != null)
+        if (app is not null)
             club.Applicants.Remove(app);
 
         uow.SaveChanges();
@@ -299,7 +299,7 @@ public class ClubService : INService
 
         club.Users.Remove(usr);
         var app = club.Applicants.FirstOrDefault(x => x.UserId == usr.Id);
-        if (app != null)
+        if (app is not null)
             club.Applicants.Remove(app);
         uow.SaveChanges();
 

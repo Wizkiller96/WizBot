@@ -62,7 +62,7 @@ public class ReplacementBuilder
             () =>
             {
                 var to = TimeZoneInfo.Local;
-                if (g != null)
+                if (g is not null)
                     if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
                         to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
 

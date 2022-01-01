@@ -219,10 +219,10 @@ public partial class Administration
 
             var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.prot_active));
 
-            if (spam != null)
+            if (spam is not null)
                 embed.AddField("Anti-Spam", GetAntiSpamString(spam).TrimTo(1024), true);
 
-            if (raid != null)
+            if (raid is not null)
                 embed.AddField("Anti-Raid", GetAntiRaidString(raid).TrimTo(1024), true);
 
             if (alt is not null)
