@@ -1,10 +1,9 @@
 #nullable disable
-using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration.Services;
+using NadekoBot.Modules.Administration;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;

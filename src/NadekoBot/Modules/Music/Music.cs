@@ -1,5 +1,4 @@
 #nullable disable
-using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Music.Services;
 using NadekoBot.Services.Database.Models;
 
