@@ -15,7 +15,7 @@ internal sealed class NadekoModuleAttribute : GroupAttribute
 internal sealed class NadekoDescriptionAttribute : SummaryAttribute
 {
     public NadekoDescriptionAttribute([CallerMemberName] string name = "")
-        : base(name)
+        : base(name.ToLowerInvariant())
     {
     }
 }
@@ -24,7 +24,7 @@ internal sealed class NadekoDescriptionAttribute : SummaryAttribute
 internal sealed class NadekoUsageAttribute : RemarksAttribute
 {
     public NadekoUsageAttribute([CallerMemberName] string name = "")
-        : base(name)
+        : base(name.ToLowerInvariant())
     {
     }
 }

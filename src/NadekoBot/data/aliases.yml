@@ -1212,12 +1212,16 @@ exprreact:
   - exreact
   - exr
 exprad:
+  - exprad
   - exad
 exprat:
+  - exprat
   - exat
 exprdm:
+  - exprdm
   - exdm
 exprca:
+  - exprca
   - exca
 exprsreload:
   - expreload
