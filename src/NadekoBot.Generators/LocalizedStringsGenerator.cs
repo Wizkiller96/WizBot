@@ -55,7 +55,7 @@ namespace NadekoBot.Generators
             using (var stringWriter = new StringWriter())
             using (var sw = new IndentedTextWriter(stringWriter))
             {
-                sw.WriteLine("namespace NadekoBot");
+                sw.WriteLine("namespace NadekoBot;");
                 sw.WriteLine();
 
                 sw.WriteLine("public static class strs");
