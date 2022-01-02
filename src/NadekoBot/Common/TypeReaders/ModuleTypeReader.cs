@@ -34,7 +34,7 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
                           .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
                           ?.Key;
-        if (module is null && input != "ACTUALCUSTOMREACTIONS")
+        if (module is null && input != "ACTUALEXPRESSIONS")
             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
 
         return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input }));

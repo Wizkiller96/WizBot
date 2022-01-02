@@ -18,8 +18,16 @@ public partial class Utility
         }
 
         [Cmd]
+        [OwnerOnly]
+        public partial Task ServerInfo([Leftover] string guildName)
+            => InternalServerInfo(guildName);
+        
+        [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task ServerInfo(string guildName = null)
+        public partial Task ServerInfo()
+            => InternalServerInfo();
+        
+        private async Task InternalServerInfo(string guildName = null)
         {
             var channel = (ITextChannel)ctx.Channel;
             guildName = guildName?.ToUpperInvariant();
@@ -103,7 +111,7 @@ public partial class Utility
                  .WithOkColor();
 
             var av = user.RealAvatarUrl();
-            if (av is not null && av.IsAbsoluteUri)
+            if (av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
             await ctx.Channel.EmbedAsync(embed);
         }

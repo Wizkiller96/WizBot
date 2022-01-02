@@ -276,10 +276,10 @@ public partial class Utility
                 quotes = uow.Quotes.GetForGuild(ctx.Guild.Id).ToList();
             }
 
-            var crsDict = quotes.GroupBy(x => x.Keyword)
+            var exprsDict = quotes.GroupBy(x => x.Keyword)
                                 .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
 
-            var text = _prependExport + _exportSerializer.Serialize(crsDict).UnescapeUnicodeCodePoints();
+            var text = _prependExport + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
 
             await using var stream = await text.ToStream();
             await ctx.Channel.SendFileAsync(stream, "quote-export.yml");
@@ -317,7 +317,7 @@ public partial class Utility
                 }
             }
 
-            var succ = await ImportCrsAsync(ctx.Guild.Id, input);
+            var succ = await ImportExprsAsync(ctx.Guild.Id, input);
             if (!succ)
             {
                 await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
@@ -327,7 +327,7 @@ public partial class Utility
             await ctx.OkAsync();
         }
 
-        private async Task<bool> ImportCrsAsync(ulong guildId, string input)
+        private async Task<bool> ImportExprsAsync(ulong guildId, string input)
         {
             Dictionary<string, List<ExportedQuote>> data;
             try

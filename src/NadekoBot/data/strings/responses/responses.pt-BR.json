@@ -937,7 +937,7 @@
     "module_description_music": "Toque músicas do YouTube, arquivos locais do SoundCloud e rádios ao vivo",
     "module_description_utility": "Controle falas customizadas, mensagens repetidas e veja fatos sobre o servidor",
     "module_description_administration": "Moderação, punir usuários, configurar cargos dados á si mesmo e mensagens de boas vindas",
-    "module_description_customreactions": "Configure respostas customizáveis para o bot para certas palavras ou frases",
+    "module_description_expressions": "Configure respostas customizáveis para o bot para certas palavras ou frases",
     "module_description_permissions": "Configure permissões para comandos, filtro de palavras e configure intervalo de comandos",
     "module_description_searches": "Procure por piadas, imagens de animais, anime e manga",
     "module_description_xp": "Ganhe xp baseado na atividade em chat, verifique cartão de xp do usuário",

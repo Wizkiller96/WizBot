@@ -12,8 +12,9 @@ namespace NadekoBot.Modules.Help;
 
 public partial class Help : NadekoModule<HelpService>
 {
-    public const string PatreonUrl = "https://patreon.com/nadekobot";
-    public const string PaypalUrl = "https://paypal.me/Kwoth";
+    public const string PATREON_URL = "https://patreon.com/nadekobot";
+    public const string PAYPAL_URL = "https://paypal.me/Kwoth";
+    
     private readonly CommandService _cmds;
     private readonly BotConfigService _bss;
     private readonly GlobalPermissionService _perms;
@@ -106,8 +107,8 @@ public partial class Help : NadekoModule<HelpService>
                 return strs.module_description_help;
             case "administration":
                 return strs.module_description_administration;
-            case "customreactions":
-                return strs.module_description_customreactions;
+            case "expressions":
+                return strs.module_description_expressions;
             case "searches":
                 return strs.module_description_searches;
             case "utility":
@@ -313,7 +314,7 @@ public partial class Help : NadekoModule<HelpService>
                                      .Select(com =>
                                      {
                                          List<string> optHelpStr = null;
-                                         var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x
+                                         var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(static x
                                                  => x is NadekoOptionsAttribute))
                                              ?.OptionType;
                                          if (opt is not null) optHelpStr = HelpService.GetCommandOptionHelpList(opt);
@@ -371,7 +372,7 @@ public partial class Help : NadekoModule<HelpService>
             var versionListString = Encoding.UTF8.GetString(ms.ToArray());
 
             var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
-            if (!versionList.Contains(StatsService.BotVersion))
+            if (versionList is not null && !versionList.Contains(StatsService.BotVersion))
             {
                 // save the file with new version added
                 // versionList.Add(StatsService.BotVersion);
@@ -410,16 +411,5 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     public async partial Task Donate()
-        => await ReplyConfirmLocalizedAsync(strs.donate(PatreonUrl, PaypalUrl));
-}
-
-internal class CommandJsonObject
-{
-    public string[] Aliases { get; set; }
-    public string Description { get; set; }
-    public string[] Usage { get; set; }
-    public string Submodule { get; set; }
-    public string Module { get; set; }
-    public List<string> Options { get; set; }
-    public string[] Requirements { get; set; }
+        => await ReplyConfirmLocalizedAsync(strs.donate(PATREON_URL, PAYPAL_URL));
 }

@@ -110,7 +110,7 @@ namespace NadekoBot.Modules.Administration
             //[NadekoCommand, Usage, Description, Aliases]
             //[OwnerOnly]
             //public partial Task DeleteUnusedCrnQ() =>
-            //    SqlExec(DangerousCommandsService.DeleteUnusedCustomReactionsAndQuotes);
+            //    SqlExec(DangerousCommandsService.DeleteUnusedExpressionsAndQuotes);
         }
     }
 }

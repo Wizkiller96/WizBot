@@ -1,6 +1,6 @@
 namespace NadekoBot.Extensions;
 
-// made for customreactions because they almost never get added
+// made for expressions because they almost never get added
 // and they get looped through constantly
 public static class ArrayExtensions
 {
@@ -13,10 +13,10 @@ public static class ArrayExtensions
     /// <returns>A new array with the new element at the end</returns>
     public static T[] With<T>(this T[] input, T added)
     {
-        var newCrs = new T[input.Length + 1];
-        Array.Copy(input, 0, newCrs, 0, input.Length);
-        newCrs[input.Length] = added;
-        return newCrs;
+        var newExprs = new T[input.Length + 1];
+        Array.Copy(input, 0, newExprs, 0, input.Length);
+        newExprs[input.Length] = added;
+        return newExprs;
     }
 
     /// <summary>

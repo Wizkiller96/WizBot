@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using NadekoBot.Modules.CustomReactions;
+using NadekoBot.Modules.NadekoExpressions;
 
 namespace NadekoBot.Common.TypeReaders;
 
@@ -35,12 +35,12 @@ public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
 {
     private readonly CommandService _cmds;
     private readonly CommandHandler _commandHandler;
-    private readonly CustomReactionsService _crs;
+    private readonly NadekoExpressionsService _exprs;
 
-    public CommandOrCrTypeReader(CommandService cmds, CustomReactionsService crs, CommandHandler commandHandler)
+    public CommandOrCrTypeReader(CommandService cmds, NadekoExpressionsService exprs, CommandHandler commandHandler)
     {
         _cmds = cmds;
-        _crs = crs;
+        _exprs = exprs;
         _commandHandler = commandHandler;
     }
 
@@ -48,7 +48,7 @@ public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
     {
         input = input.ToUpperInvariant();
 
-        if (_crs.ReactionExists(context.Guild?.Id, input))
+        if (_exprs.ExpressionExists(context.Guild?.Id, input))
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(context, input);

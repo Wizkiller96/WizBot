@@ -2,9 +2,9 @@
 using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
 
-namespace NadekoBot.Modules.CustomReactions;
+namespace NadekoBot.Modules.NadekoExpressions;
 
-public static class CustomReactionExtensions
+public static class NadekoExpressionExtensions
 {
     private static string ResolveTriggerString(this string str, DiscordSocketClient client)
         => str.Replace("%bot.mention%", client.CurrentUser.Mention, StringComparison.Ordinal);

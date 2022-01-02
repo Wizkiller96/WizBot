@@ -31,5 +31,21 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
     private void Migrate()
     {
         if (data.Version < 2) ModifyConfig(c => c.Version = 2);
+
+        if (data.Version < 3)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 3;
+                c.Blocked.Modules = c.Blocked.Modules?.Select(static x
+                                         => string.Equals(x,
+                                             "ActualCustomReactions",
+                                             StringComparison.InvariantCultureIgnoreCase)
+                                             ? "ACTUALEXPRESSIONS"
+                                             : x)
+                                     .Distinct()
+                                     .ToHashSet();
+            });
+        }
     }
 }

@@ -31,7 +31,7 @@ SET ClubId=NULL,
 DELETE FROM ClubApplicants;
 DELETE FROM ClubBans;
 DELETE FROM Clubs;";
-//        public const string DeleteUnusedCustomReactionsAndQuotes = @"DELETE FROM CustomReactions 
+//        public const string DeleteUnusedExpressionsAndQuotes = @"DELETE FROM Expressions 
 //WHERE UseCount=0 AND (DateAdded < date('now', '-7 day') OR DateAdded is null);
 
 //DELETE FROM Quotes 

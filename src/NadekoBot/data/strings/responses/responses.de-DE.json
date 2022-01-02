@@ -937,7 +937,7 @@
     "module_description_music": "Spiele Musik von YouTube, lokalen Dateien und Radio Streams",
     "module_description_utility": "Verwalte benutzerdefinierte Zitate, wiederholte Nachrichten und überprüfe Fakten über den Server",
     "module_description_administration": "Moderation, bestrafe Nutzer, richte selbst zuweisbare Rollen und Willkommensnachrichten ein",
-    "module_description_customreactions": "Richte benutzerdefinierte Bot-antworten für bestimmte Wörter oder Sätze ein",
+    "module_description_expressions": "Richte benutzerdefinierte Bot-antworten für bestimmte Wörter oder Sätze ein",
     "module_description_permissions": "Richte Berechtigungen für Befehle ein, filtere Wörter und richte Abklingzeiten für Befehle ein",
     "module_description_searches": "Suche nach Witzen, Bilder von Tieren, Anime und Manga",
     "module_description_xp": "Erhalte XP basierend auf Chataktivität, prüfe Nutzer XP-karten",

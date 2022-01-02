@@ -937,7 +937,7 @@
     "module_description_music": "Jouez de la musique à partir de youtube, des fichiers locaux soundcloud et des flux radio",
     "module_description_utility": "Gérez les citations personnalisés, répéteurs et consulter les faits à propos du serveur",
     "module_description_administration": "Modération, punition des utilisateurs, configuration de rôles auto-assignables et messages d'accueil",
-    "module_description_customreactions": "Configurer des réponses de bot personnalisées à certains mots ou expressions",
+    "module_description_expressions": "Configurer des réponses de bot personnalisées à certains mots ou expressions",
     "module_description_permissions": "Configurer les autorisations pour les commandes, filtrer les mots et configurer les temps de recharge des commandes",
     "module_description_searches": "Recherche de blagues, d'images d'animaux, d'anime et de manga",
     "module_description_xp": "Gagnez de l'XP en fonction de l'activité de tchat, vérifiez les cartes XP des utilisateurs",

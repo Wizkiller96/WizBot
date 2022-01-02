@@ -62,11 +62,13 @@ public class HelpService : ILateExecutor, INService
         var alias = com.Aliases.Skip(1).FirstOrDefault();
         if (alias is not null)
             str += $" **/ `{prefix + alias}`**";
+
         var em = _eb.Create().AddField(str, $"{com.RealSummary(_strings, guild?.Id, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
         var reqs = GetCommandRequirements(com, overrides);
-        if (reqs.Any()) em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
+        if (reqs.Any())
+            em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
         em.AddField(_strings.GetText(strs.usage),
               string.Join("\n",
@@ -128,6 +130,7 @@ public class HelpService : ILateExecutor, INService
         {
             if (userPerm.ChannelPermission is { } cPerm)
                 userPermString = GetPreconditionString(cPerm);
+            
             if (userPerm.GuildPermission is { } gPerm)
                 userPermString = GetPreconditionString(gPerm);
         }
@@ -149,11 +152,11 @@ public class HelpService : ILateExecutor, INService
     }
 
     public static string GetPreconditionString(ChannelPerm perm)
-        => (perm + " Channel Permission").Replace("Guild", "Server", StringComparison.InvariantCulture);
+        => (perm + " Channel Permission").Replace("Guild", "Server");
 
     public static string GetPreconditionString(GuildPerm perm)
-        => (perm + " Server Permission").Replace("Guild", "Server", StringComparison.InvariantCulture);
+        => (perm + " Server Permission").Replace("Guild", "Server");
 
-    private string GetText(LocStr str, IGuild guild, params object[] replacements)
+    private string GetText(LocStr str, IGuild guild)
         => _strings.GetText(str, guild?.Id);
 }

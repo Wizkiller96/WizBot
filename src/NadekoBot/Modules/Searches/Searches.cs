@@ -44,8 +44,6 @@ public partial class Searches : NadekoModule<SearchesService>
     public async partial Task Rip([Leftover] IGuildUser usr)
     {
         var av = usr.RealAvatarUrl();
-        if (av is null)
-            return;
         await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av);
         await ctx.Channel.SendFileAsync(picStream,
             "rip.png",
@@ -220,7 +218,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var oterms = query?.Trim();
         if (!await ValidateQuery(query))
             return;
-        query = WebUtility.UrlEncode(oterms).Replace(' ', '+');
+        query = WebUtility.UrlEncode(oterms)?.Replace(' ', '+');
         try
         {
             var res = await _google.GetImageAsync(oterms);

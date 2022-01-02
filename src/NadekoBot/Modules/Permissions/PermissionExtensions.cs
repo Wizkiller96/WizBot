@@ -39,9 +39,9 @@ public static class PermissionExtensions
         string moduleName)
     {
         if (!((perm.SecondaryTarget == SecondaryPermissionType.Command
-               && perm.SecondaryTargetName.ToLowerInvariant() == commandName.ToLowerInvariant())
+               && string.Equals(perm.SecondaryTargetName, commandName, StringComparison.InvariantCultureIgnoreCase))
               || (perm.SecondaryTarget == SecondaryPermissionType.Module
-                  && perm.SecondaryTargetName.ToLowerInvariant() == moduleName.ToLowerInvariant())
+                  && string.Equals(perm.SecondaryTargetName, moduleName, StringComparison.InvariantCultureIgnoreCase))
               || perm.SecondaryTarget == SecondaryPermissionType.AllModules))
             return null;
 

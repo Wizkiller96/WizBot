@@ -1,5 +1,4 @@
 using Humanizer.Localisation;
-using NadekoBot.Modules.Administration.Services;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
@@ -120,19 +119,15 @@ public static class Extensions
         IBotStrings strings,
         ulong? guildId,
         string prefix)
-        => string.Format(strings.GetCommandStrings(cmd.Name, guildId).Desc, prefix);
+        => string.Format(strings.GetCommandStrings(cmd.Summary, guildId).Desc, prefix);
 
     public static string[] RealRemarksArr(
         this CommandInfo cmd,
         IBotStrings strings,
         ulong? guildId,
         string prefix)
-        => Array.ConvertAll(strings.GetCommandStrings(cmd.MethodName(), guildId).Args,
+        => Array.ConvertAll(strings.GetCommandStrings(cmd.Remarks, guildId).Args,
             arg => GetFullUsage(cmd.Name, arg, prefix));
-
-    private static string MethodName(this CommandInfo cmd)
-        => ((NadekoCommandAttribute?)cmd.Attributes.FirstOrDefault(x => x is NadekoCommandAttribute))?.MethodName
-           ?? cmd.Name;
 
     private static string GetFullUsage(string commandName, string args, string prefix)
         => $"{prefix}{commandName} {string.Format(args, prefix)}";

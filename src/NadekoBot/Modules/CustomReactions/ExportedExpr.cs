@@ -1,7 +1,7 @@
 #nullable disable
 using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Modules.CustomReactions;
+namespace NadekoBot.Modules.NadekoExpressions;
 
 public class ExportedExpr
 {

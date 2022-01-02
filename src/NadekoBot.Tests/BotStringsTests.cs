@@ -14,6 +14,7 @@ namespace NadekoBot.Tests
         private const string responsesPath = "../../../../NadekoBot/data/strings/responses";
         private const string commandsPath = "../../../../NadekoBot/data/strings/commands";
         private const string aliasesPath = "../../../../NadekoBot/data/aliases.yml";
+        
         [Test]
         public void AllCommandNamesHaveStrings()
         {

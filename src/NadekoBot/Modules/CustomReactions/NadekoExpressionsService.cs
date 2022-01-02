@@ -10,33 +10,28 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace NadekoBot.Modules.CustomReactions;
+namespace NadekoBot.Modules.NadekoExpressions;
 
-public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
+// todo recheck whether ACTUALEXPRESSIONS perm works
+// todo run db migration and rename ACTUALCUSTOMREACTIONS to ACTUALEXPRESSIONS
+
+public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 {
-    public enum CrField
-    {
-        AutoDelete,
-        DmResponse,
-        AllowTarget,
-        ContainsAnywhere,
-        Message
-    }
 
-    private const string MentionPh = "%bot.mention%";
+    private const string MENTION_PH = "%bot.mention%";
 
-    private const string _prependExport =
-        @"# Keys are triggers, Each key has a LIST of custom reactions in the following format:
+    private const string PREPEND_EXPORT =
+        @"# Keys are triggers, Each key has a LIST of expressions in the following format:
 # - res: Response string
-#   id: Alphanumeric id used for commands related to the custom reaction. (Note, when using .crsimport, a new id will be generated.)
+#   id: Alphanumeric id used for commands related to the expression. (Note, when using .exprsimport, a new id will be generated.)
 #   react: 
 #     - <List
 #     -  of
 #     - reactions>
-#   at: Whether custom reaction allows targets (see .h .crat) 
-#   ca: Whether custom reaction expects trigger anywhere (see .h .crca) 
-#   dm: Whether custom reaction DMs the response (see .h .crdm) 
-#   ad: Whether custom reaction automatically deletes triggering message (see .h .crad) 
+#   at: Whether expression allows targets (see .h .exprat) 
+#   ca: Whether expression expects trigger anywhere (see .h .exprca) 
+#   dm: Whether expression DMs the response (see .h .exprdm) 
+#   ad: Whether expression automatically deletes triggering message (see .h .exprad) 
 
 ";
 
@@ -53,19 +48,19 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public int Priority
         => 0;
 
-    private readonly object _gcrWriteLock = new();
+    private readonly object _gexprWriteLock = new();
 
-    private readonly TypedKey<CustomReaction> _gcrAddedKey = new("gcr.added");
-    private readonly TypedKey<int> _gcrDeletedkey = new("gcr.deleted");
-    private readonly TypedKey<CustomReaction> _gcrEditedKey = new("gcr.edited");
-    private readonly TypedKey<bool> _crsReloadedKey = new("crs.reloaded");
+    private readonly TypedKey<CustomReaction> _gexprAddedKey = new("gexpr.added");
+    private readonly TypedKey<int> _gexprDeletedkey = new("gexpr.deleted");
+    private readonly TypedKey<CustomReaction> _gexprEditedKey = new("gexpr.edited");
+    private readonly TypedKey<bool> _exprsReloadedKey = new("exprs.reloaded");
 
-    // it is perfectly fine to have global customreactions as an array
-    // 1. custom reactions are almost never added (compared to how many times they are being looped through)
+    // it is perfectly fine to have global expressions as an array
+    // 1. expressions are almost never added (compared to how many times they are being looped through)
     // 2. only need write locks for this as we'll rebuild+replace the array on every edit
     // 3. there's never many of them (at most a thousand, usually < 100)
-    private CustomReaction[] _globalReactions;
-    private ConcurrentDictionary<ulong, CustomReaction[]> _newGuildReactions;
+    private CustomReaction[] globalReactions;
+    private ConcurrentDictionary<ulong, CustomReaction[]> newGuildReactions;
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -81,7 +76,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private bool ready;
 
-    public CustomReactionsService(
+    public NadekoExpressionsService(
         PermissionService perms,
         DbService db,
         IBotStrings strings,
@@ -105,10 +100,10 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         _eb = eb;
         _rng = new NadekoRandom();
 
-        _pubSub.Sub(_crsReloadedKey, OnCrsShouldReload);
-        pubSub.Sub(_gcrAddedKey, OnGcrAdded);
-        pubSub.Sub(_gcrDeletedkey, OnGcrDeleted);
-        pubSub.Sub(_gcrEditedKey, OnGcrEdited);
+        _pubSub.Sub(_exprsReloadedKey, OnExprsShouldReload);
+        pubSub.Sub(_gexprAddedKey, OnGexprAdded);
+        pubSub.Sub(_gexprDeletedkey, OnGexprDeleted);
+        pubSub.Sub(_gexprEditedKey, OnGexprEdited);
 
         bot.JoinedGuild += OnJoinedGuild;
         _client.LeftGuild += OnLeftGuild;
@@ -117,39 +112,39 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     private async Task ReloadInternal(IReadOnlyList<ulong> allGuildIds)
     {
         await using var uow = _db.GetDbContext();
-        var guildItems = await uow.CustomReactions.AsNoTracking()
+        var guildItems = await uow.Expressions.AsNoTracking()
                                   .Where(x => allGuildIds.Contains(x.GuildId.Value))
                                   .ToListAsync();
 
-        _newGuildReactions = guildItems.GroupBy(k => k.GuildId!.Value)
+        newGuildReactions = guildItems.GroupBy(k => k.GuildId!.Value)
                                        .ToDictionary(g => g.Key,
                                            g => g.Select(x =>
                                                  {
-                                                     x.Trigger = x.Trigger.Replace(MentionPh, _bot.Mention);
+                                                     x.Trigger = x.Trigger.Replace(MENTION_PH, _bot.Mention);
                                                      return x;
                                                  })
                                                  .ToArray())
                                        .ToConcurrent();
 
-        lock (_gcrWriteLock)
+        lock (_gexprWriteLock)
         {
-            var globalItems = uow.CustomReactions.AsNoTracking()
+            var globalItems = uow.Expressions.AsNoTracking()
                                  .Where(x => x.GuildId == null || x.GuildId == 0)
                                  .AsEnumerable()
                                  .Select(x =>
                                  {
-                                     x.Trigger = x.Trigger.Replace(MentionPh, _bot.Mention);
+                                     x.Trigger = x.Trigger.Replace(MENTION_PH, _bot.Mention);
                                      return x;
                                  })
                                  .ToArray();
 
-            _globalReactions = globalItems;
+            globalReactions = globalItems;
         }
 
         ready = true;
     }
 
-    private CustomReaction TryGetCustomReaction(IUserMessage umsg)
+    private CustomReaction TryGetExpression(IUserMessage umsg)
     {
         if (!ready)
             return null;
@@ -159,37 +154,37 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
         var content = umsg.Content.Trim().ToLowerInvariant();
 
-        if (_newGuildReactions.TryGetValue(channel.Guild.Id, out var reactions) && reactions.Length > 0)
+        if (newGuildReactions.TryGetValue(channel.Guild.Id, out var reactions) && reactions.Length > 0)
         {
-            var cr = MatchCustomReactions(content, reactions);
-            if (cr is not null)
-                return cr;
+            var expr = MatchExpressions(content, reactions);
+            if (expr is not null)
+                return expr;
         }
 
-        var localGrs = _globalReactions;
+        var localGrs = globalReactions;
 
-        return MatchCustomReactions(content, localGrs);
+        return MatchExpressions(content, localGrs);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CustomReaction MatchCustomReactions(in ReadOnlySpan<char> content, CustomReaction[] crs)
+    private CustomReaction MatchExpressions(in ReadOnlySpan<char> content, CustomReaction[] exprs)
     {
         var result = new List<CustomReaction>(1);
-        for (var i = 0; i < crs.Length; i++)
+        for (var i = 0; i < exprs.Length; i++)
         {
-            var cr = crs[i];
-            var trigger = cr.Trigger;
+            var expr = exprs[i];
+            var trigger = expr.Trigger;
             if (content.Length > trigger.Length)
             {
                 // if input is greater than the trigger, it can only work if:
                 // it has CA enabled
-                if (cr.ContainsAnywhere)
+                if (expr.ContainsAnywhere)
                 {
                     // if ca is enabled, we have to check if it is a word within the content
                     var wp = content.GetWordPosition(trigger);
 
                     // if it is, then that's valid
-                    if (wp != WordPosition.None) result.Add(cr);
+                    if (wp != WordPosition.None) result.Add(expr);
 
                     // if it's not, then it cant' work under any circumstance,
                     // because content is greater than the trigger length
@@ -199,12 +194,12 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
                 // if CA is disabled, and CR has AllowTarget, then the
                 // content has to start with the trigger followed by a space
-                if (cr.AllowTarget
+                if (expr.AllowTarget
                     && content.StartsWith(trigger, StringComparison.OrdinalIgnoreCase)
                     && content[trigger.Length] == ' ')
-                    result.Add(cr);
+                    result.Add(expr);
             }
-            else if (content.Length < cr.Trigger.Length)
+            else if (content.Length < expr.Trigger.Length)
             {
                 // if input length is less than trigger length, it means
                 // that the reaction can never be triggered
@@ -213,7 +208,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
             {
                 // if input length is the same as trigger length
                 // reaction can only trigger if the strings are equal
-                if (content.SequenceEqual(cr.Trigger)) result.Add(cr);
+                if (content.SequenceEqual(expr.Trigger)) result.Add(expr);
             }
         }
 
@@ -229,21 +224,21 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
     {
-        // maybe this message is a custom reaction
-        var cr = TryGetCustomReaction(msg);
+        // maybe this message is an expression
+        var expr = TryGetExpression(msg);
 
-        if (cr is null || cr.Response == "-")
+        if (expr is null || expr.Response == "-")
             return false;
 
-        if (await _cmdCds.TryBlock(guild, msg.Author, cr.Trigger))
+        if (await _cmdCds.TryBlock(guild, msg.Author, expr.Trigger))
             return false;
 
         try
         {
-            if (_gperm.BlockedModules.Contains("ActualCustomReactions"))
+            if (_gperm.BlockedModules.Contains("ACTUALEXPRESSIONS"))
             {
                 Log.Information(
-                    "User {UserName} [{UserId}] tried to use a custom reaction but 'ActualCustomReactions' are globally disabled.",
+                    "User {UserName} [{UserId}] tried to use an expression but 'ActualExpressions' are globally disabled",
                     msg.Author.ToString(),
                     msg.Author.Id);
 
@@ -253,7 +248,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
             if (guild is SocketGuild sg)
             {
                 var pc = _perms.GetCacheFor(guild.Id);
-                if (!pc.Permissions.CheckPermissions(msg, cr.Trigger, "ActualCustomReactions", out var index))
+                if (!pc.Permissions.CheckPermissions(msg, expr.Trigger, "ACTUALEXPRESSIONS", out var index))
                 {
                     if (pc.Verbose)
                     {
@@ -276,9 +271,9 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                 }
             }
 
-            var sentMsg = await cr.Send(msg, _client, false);
+            var sentMsg = await expr.Send(msg, _client, false);
 
-            var reactions = cr.GetReactions();
+            var reactions = expr.GetReactions();
             foreach (var reaction in reactions)
             {
                 try
@@ -289,14 +284,14 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                 {
                     Log.Warning("Unable to add reactions to message {Message} in server {GuildId}",
                         sentMsg.Id,
-                        cr.GuildId);
+                        expr.GuildId);
                     break;
                 }
 
                 await Task.Delay(1000);
             }
 
-            if (cr.AutoDeleteTrigger)
+            if (expr.AutoDeleteTrigger)
                 try
                 {
                     await msg.DeleteAsync();
@@ -310,7 +305,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
                 msg.Channel.Id,
                 msg.Author.Id,
                 msg.Author.ToString(),
-                cr.Trigger);
+                expr.Trigger);
 
             return true;
         }
@@ -322,61 +317,61 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         return false;
     }
 
-    public async Task ResetCrReactions(ulong? maybeGuildId, int id)
+    public async Task ResetExprReactions(ulong? maybeGuildId, int id)
     {
-        CustomReaction cr;
+        CustomReaction expr;
         await using var uow = _db.GetDbContext();
-        cr = uow.CustomReactions.GetById(id);
-        if (cr is null)
+        expr = uow.Expressions.GetById(id);
+        if (expr is null)
             return;
 
-        cr.Reactions = string.Empty;
+        expr.Reactions = string.Empty;
 
         await uow.SaveChangesAsync();
     }
 
-    private Task UpdateInternalAsync(ulong? maybeGuildId, CustomReaction cr)
+    private Task UpdateInternalAsync(ulong? maybeGuildId, CustomReaction expr)
     {
         if (maybeGuildId is { } guildId)
-            UpdateInternal(guildId, cr);
+            UpdateInternal(guildId, expr);
         else
-            return _pubSub.Pub(_gcrEditedKey, cr);
+            return _pubSub.Pub(_gexprEditedKey, expr);
 
         return Task.CompletedTask;
     }
 
-    private void UpdateInternal(ulong? maybeGuildId, CustomReaction cr)
+    private void UpdateInternal(ulong? maybeGuildId, CustomReaction expr)
     {
         if (maybeGuildId is { } guildId)
-            _newGuildReactions.AddOrUpdate(guildId,
-                new[] { cr },
+            newGuildReactions.AddOrUpdate(guildId,
+                new[] { expr },
                 (_, old) =>
                 {
                     var newArray = old.ToArray();
                     for (var i = 0; i < newArray.Length; i++)
-                        if (newArray[i].Id == cr.Id)
-                            newArray[i] = cr;
+                        if (newArray[i].Id == expr.Id)
+                            newArray[i] = expr;
                     return newArray;
                 });
         else
-            lock (_gcrWriteLock)
+            lock (_gexprWriteLock)
             {
-                var crs = _globalReactions;
-                for (var i = 0; i < crs.Length; i++)
-                    if (crs[i].Id == cr.Id)
-                        crs[i] = cr;
+                var exprs = globalReactions;
+                for (var i = 0; i < exprs.Length; i++)
+                    if (exprs[i].Id == expr.Id)
+                        exprs[i] = expr;
             }
     }
 
-    private Task AddInternalAsync(ulong? maybeGuildId, CustomReaction cr)
+    private Task AddInternalAsync(ulong? maybeGuildId, CustomReaction expr)
     {
         // only do this for perf purposes
-        cr.Trigger = cr.Trigger.Replace(MentionPh, _client.CurrentUser.Mention);
+        expr.Trigger = expr.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
 
         if (maybeGuildId is { } guildId)
-            _newGuildReactions.AddOrUpdate(guildId, new[] { cr }, (_, old) => old.With(cr));
+            newGuildReactions.AddOrUpdate(guildId, new[] { expr }, (_, old) => old.With(expr));
         else
-            return _pubSub.Pub(_gcrAddedKey, cr);
+            return _pubSub.Pub(_gexprAddedKey, expr);
 
         return Task.CompletedTask;
     }
@@ -385,125 +380,128 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     {
         if (maybeGuildId is { } guildId)
         {
-            _newGuildReactions.AddOrUpdate(guildId,
+            newGuildReactions.AddOrUpdate(guildId,
                 Array.Empty<CustomReaction>(),
                 (key, old) => DeleteInternal(old, id, out _));
 
             return Task.CompletedTask;
         }
 
-        lock (_gcrWriteLock)
+        lock (_gexprWriteLock)
         {
-            var cr = Array.Find(_globalReactions, item => item.Id == id);
-            if (cr is not null) return _pubSub.Pub(_gcrDeletedkey, cr.Id);
+            var expr = Array.Find(globalReactions, item => item.Id == id);
+            if (expr is not null) return _pubSub.Pub(_gexprDeletedkey, expr.Id);
         }
 
         return Task.CompletedTask;
     }
 
-    private CustomReaction[] DeleteInternal(IReadOnlyList<CustomReaction> crs, int id, out CustomReaction deleted)
+    private CustomReaction[] DeleteInternal(
+        IReadOnlyList<CustomReaction> exprs,
+        int id,
+        out CustomReaction deleted)
     {
         deleted = null;
-        if (crs is null || crs.Count == 0)
-            return crs as CustomReaction[] ?? crs?.ToArray();
+        if (exprs is null || exprs.Count == 0)
+            return exprs as CustomReaction[] ?? exprs?.ToArray();
 
-        var newCrs = new CustomReaction[crs.Count - 1];
-        for (int i = 0, k = 0; i < crs.Count; i++, k++)
+        var newExprs = new CustomReaction[exprs.Count - 1];
+        for (int i = 0, k = 0; i < exprs.Count; i++, k++)
         {
-            if (crs[i].Id == id)
+            if (exprs[i].Id == id)
             {
-                deleted = crs[i];
+                deleted = exprs[i];
                 k--;
                 continue;
             }
 
-            newCrs[k] = crs[i];
+            newExprs[k] = exprs[i];
         }
 
-        return newCrs;
+        return newExprs;
     }
 
-    public async Task SetCrReactions(ulong? guildId, int id, IEnumerable<string> emojis)
+    public async Task SetExprReactions(ulong? guildId, int id, IEnumerable<string> emojis)
     {
-        CustomReaction cr;
+        CustomReaction expr;
         await using (var uow = _db.GetDbContext())
         {
-            cr = uow.CustomReactions.GetById(id);
-            if (cr is null)
+            expr = uow.Expressions.GetById(id);
+            if (expr is null)
                 return;
 
-            cr.Reactions = string.Join("@@@", emojis);
+            expr.Reactions = string.Join("@@@", emojis);
 
             await uow.SaveChangesAsync();
         }
 
-        await UpdateInternalAsync(guildId, cr);
+        await UpdateInternalAsync(guildId, expr);
     }
 
-    public async Task<(bool Sucess, bool NewValue)> ToggleCrOptionAsync(int id, CrField field)
+    public async Task<(bool Sucess, bool NewValue)> ToggleExprOptionAsync(int id, ExprField field)
     {
         var newVal = false;
-        CustomReaction cr;
+        CustomReaction expr;
         await using (var uow = _db.GetDbContext())
         {
-            cr = uow.CustomReactions.GetById(id);
-            if (cr is null)
+            expr = uow.Expressions.GetById(id);
+            if (expr is null)
                 return (false, false);
-            if (field == CrField.AutoDelete)
-                newVal = cr.AutoDeleteTrigger = !cr.AutoDeleteTrigger;
-            else if (field == CrField.ContainsAnywhere)
-                newVal = cr.ContainsAnywhere = !cr.ContainsAnywhere;
-            else if (field == CrField.DmResponse)
-                newVal = cr.DmResponse = !cr.DmResponse;
-            else if (field == CrField.AllowTarget)
-                newVal = cr.AllowTarget = !cr.AllowTarget;
+            if (field == ExprField.AutoDelete)
+                newVal = expr.AutoDeleteTrigger = !expr.AutoDeleteTrigger;
+            else if (field == ExprField.ContainsAnywhere)
+                newVal = expr.ContainsAnywhere = !expr.ContainsAnywhere;
+            else if (field == ExprField.DmResponse)
+                newVal = expr.DmResponse = !expr.DmResponse;
+            else if (field == ExprField.AllowTarget)
+                newVal = expr.AllowTarget = !expr.AllowTarget;
 
             await uow.SaveChangesAsync();
         }
 
-        await UpdateInternalAsync(cr.GuildId, cr);
+        await UpdateInternalAsync(expr.GuildId, expr);
 
         return (true, newVal);
     }
 
-    public CustomReaction GetCustomReaction(ulong? guildId, int id)
+    public CustomReaction GetExpression(ulong? guildId, int id)
     {
         using var uow = _db.GetDbContext();
-        var cr = uow.CustomReactions.GetById(id);
-        if (cr is null || cr.GuildId != guildId)
+        var expr = uow.Expressions.GetById(id);
+        if (expr is null || expr.GuildId != guildId)
             return null;
 
-        return cr;
+        return expr;
     }
 
-    public int DeleteAllCustomReactions(ulong guildId)
+    public int DeleteAllExpressions(ulong guildId)
     {
         using var uow = _db.GetDbContext();
-        var count = uow.CustomReactions.ClearFromGuild(guildId);
+        var count = uow.Expressions.ClearFromGuild(guildId);
         uow.SaveChanges();
 
-        _newGuildReactions.TryRemove(guildId, out _);
+        newGuildReactions.TryRemove(guildId, out _);
 
         return count;
     }
 
-    public bool ReactionExists(ulong? guildId, string input)
+    public bool ExpressionExists(ulong? guildId, string input)
     {
         using var uow = _db.GetDbContext();
-        var cr = uow.CustomReactions.GetByGuildIdAndInput(guildId, input);
-        return cr is not null;
+        var expr = uow.Expressions.GetByGuildIdAndInput(guildId, input);
+        return expr is not null;
     }
 
-    public string ExportCrs(ulong? guildId)
+    public string ExportExpressions(ulong? guildId)
     {
-        var crs = GetCustomReactionsFor(guildId);
+        var exprs = GetExpressionsFor(guildId);
 
-        var crsDict = crs.GroupBy(x => x.Trigger).ToDictionary(x => x.Key, x => x.Select(ExportedExpr.FromModel));
+        var exprsDict = exprs.GroupBy(x => x.Trigger).ToDictionary(x => x.Key, x => x.Select(ExportedExpr.FromModel));
 
-        return _prependExport + _exportSerializer.Serialize(crsDict).UnescapeUnicodeCodePoints();
+        return PREPEND_EXPORT + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
     }
 
-    public async Task<bool> ImportCrsAsync(ulong? guildId, string input)
+    public async Task<bool> ImportExpressionsAsync(ulong? guildId, string input)
     {
         Dictionary<string, List<ExportedExpr>> data;
         try
@@ -521,22 +519,22 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
         foreach (var entry in data)
         {
             var trigger = entry.Key;
-            await uow.CustomReactions.AddRangeAsync(entry.Value.Where(cr => !string.IsNullOrWhiteSpace(cr.Res))
-                                                         .Select(cr => new CustomReaction
+            await uow.Expressions.AddRangeAsync(entry.Value.Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
+                                                         .Select(expr => new CustomReaction
                                                          {
                                                              GuildId = guildId,
-                                                             Response = cr.Res,
-                                                             Reactions = cr.React?.Join("@@@"),
+                                                             Response = expr.Res,
+                                                             Reactions = expr.React?.Join("@@@"),
                                                              Trigger = trigger,
-                                                             AllowTarget = cr.At,
-                                                             ContainsAnywhere = cr.Ca,
-                                                             DmResponse = cr.Dm,
-                                                             AutoDeleteTrigger = cr.Ad
+                                                             AllowTarget = expr.At,
+                                                             ContainsAnywhere = expr.Ca,
+                                                             DmResponse = expr.Dm,
+                                                             AutoDeleteTrigger = expr.Ad
                                                          }));
         }
 
         await uow.SaveChangesAsync();
-        await TriggerReloadCustomReactions();
+        await TriggerReloadExpressions();
         return true;
     }
 
@@ -545,54 +543,54 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public Task OnReadyAsync()
         => ReloadInternal(_bot.GetCurrentGuildIds());
 
-    private ValueTask OnCrsShouldReload(bool _)
+    private ValueTask OnExprsShouldReload(bool _)
         => new(ReloadInternal(_bot.GetCurrentGuildIds()));
 
-    private ValueTask OnGcrAdded(CustomReaction c)
+    private ValueTask OnGexprAdded(CustomReaction c)
     {
-        lock (_gcrWriteLock)
+        lock (_gexprWriteLock)
         {
-            var newGlobalReactions = new CustomReaction[_globalReactions.Length + 1];
-            Array.Copy(_globalReactions, newGlobalReactions, _globalReactions.Length);
-            newGlobalReactions[_globalReactions.Length] = c;
-            _globalReactions = newGlobalReactions;
+            var newGlobalReactions = new CustomReaction[globalReactions.Length + 1];
+            Array.Copy(globalReactions, newGlobalReactions, globalReactions.Length);
+            newGlobalReactions[globalReactions.Length] = c;
+            globalReactions = newGlobalReactions;
         }
 
         return default;
     }
 
-    private ValueTask OnGcrEdited(CustomReaction c)
+    private ValueTask OnGexprEdited(CustomReaction c)
     {
-        lock (_gcrWriteLock)
+        lock (_gexprWriteLock)
         {
-            for (var i = 0; i < _globalReactions.Length; i++)
-                if (_globalReactions[i].Id == c.Id)
+            for (var i = 0; i < globalReactions.Length; i++)
+                if (globalReactions[i].Id == c.Id)
                 {
-                    _globalReactions[i] = c;
+                    globalReactions[i] = c;
                     return default;
                 }
 
-            // if edited cr is not found?!
+            // if edited expr is not found?!
             // add it
-            OnGcrAdded(c);
+            OnGexprAdded(c);
         }
 
         return default;
     }
 
-    private ValueTask OnGcrDeleted(int id)
+    private ValueTask OnGexprDeleted(int id)
     {
-        lock (_gcrWriteLock)
+        lock (_gexprWriteLock)
         {
-            var newGlobalReactions = DeleteInternal(_globalReactions, id, out _);
-            _globalReactions = newGlobalReactions;
+            var newGlobalReactions = DeleteInternal(globalReactions, id, out _);
+            globalReactions = newGlobalReactions;
         }
 
         return default;
     }
 
-    public Task TriggerReloadCustomReactions()
-        => _pubSub.Pub(_crsReloadedKey, true);
+    public Task TriggerReloadExpressions()
+        => _pubSub.Pub(_exprsReloadedKey, true);
 
     #endregion
 
@@ -600,7 +598,7 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
 
     private Task OnLeftGuild(SocketGuild arg)
     {
-        _newGuildReactions.TryRemove(arg.Id, out _);
+        newGuildReactions.TryRemove(arg.Id, out _);
 
         return Task.CompletedTask;
     }
@@ -608,9 +606,9 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     private async Task OnJoinedGuild(GuildConfig gc)
     {
         await using var uow = _db.GetDbContext();
-        var crs = await uow.CustomReactions.AsNoTracking().Where(x => x.GuildId == gc.GuildId).ToArrayAsync();
+        var exprs = await uow.Expressions.AsNoTracking().Where(x => x.GuildId == gc.GuildId).ToArrayAsync();
 
-        _newGuildReactions[gc.GuildId] = crs;
+        newGuildReactions[gc.GuildId] = exprs;
     }
 
     #endregion
@@ -620,59 +618,59 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     public async Task<CustomReaction> AddAsync(ulong? guildId, string key, string message)
     {
         key = key.ToLowerInvariant();
-        var cr = new CustomReaction { GuildId = guildId, Trigger = key, Response = message };
+        var expr = new CustomReaction { GuildId = guildId, Trigger = key, Response = message };
 
-        if (cr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
-            cr.AllowTarget = true;
+        if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
+            expr.AllowTarget = true;
 
         await using (var uow = _db.GetDbContext())
         {
-            uow.CustomReactions.Add(cr);
+            uow.Expressions.Add(expr);
             await uow.SaveChangesAsync();
         }
 
-        await AddInternalAsync(guildId, cr);
+        await AddInternalAsync(guildId, expr);
 
-        return cr;
+        return expr;
     }
 
     public async Task<CustomReaction> EditAsync(ulong? guildId, int id, string message)
     {
         await using var uow = _db.GetDbContext();
-        var cr = uow.CustomReactions.GetById(id);
+        var expr = uow.Expressions.GetById(id);
 
-        if (cr is null || cr.GuildId != guildId)
+        if (expr is null || expr.GuildId != guildId)
             return null;
 
         // disable allowtarget if message had target, but it was removed from it
         if (!message.Contains("%target%", StringComparison.OrdinalIgnoreCase)
-            && cr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
-            cr.AllowTarget = false;
+            && expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
+            expr.AllowTarget = false;
 
-        cr.Response = message;
+        expr.Response = message;
 
         // enable allow target if message is edited to contain target
-        if (cr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
-            cr.AllowTarget = true;
+        if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
+            expr.AllowTarget = true;
 
         await uow.SaveChangesAsync();
-        await UpdateInternalAsync(guildId, cr);
+        await UpdateInternalAsync(guildId, expr);
 
-        return cr;
+        return expr;
     }
 
 
     public async Task<CustomReaction> DeleteAsync(ulong? guildId, int id)
     {
         await using var uow = _db.GetDbContext();
-        var toDelete = uow.CustomReactions.GetById(id);
+        var toDelete = uow.Expressions.GetById(id);
 
         if (toDelete is null)
             return null;
 
         if ((toDelete.IsGlobal() && guildId is null) || guildId == toDelete.GuildId)
         {
-            uow.CustomReactions.Remove(toDelete);
+            uow.Expressions.Remove(toDelete);
             await uow.SaveChangesAsync();
             await DeleteInternalAsync(guildId, id);
             return toDelete;
@@ -682,12 +680,12 @@ public sealed class CustomReactionsService : IEarlyBehavior, IReadyExecutor
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public CustomReaction[] GetCustomReactionsFor(ulong? maybeGuildId)
+    public CustomReaction[] GetExpressionsFor(ulong? maybeGuildId)
     {
         if (maybeGuildId is { } guildId)
-            return _newGuildReactions.TryGetValue(guildId, out var crs) ? crs : Array.Empty<CustomReaction>();
+            return newGuildReactions.TryGetValue(guildId, out var exprs) ? exprs : Array.Empty<CustomReaction>();
 
-        return _globalReactions;
+        return globalReactions;
     }
 
     #endregion

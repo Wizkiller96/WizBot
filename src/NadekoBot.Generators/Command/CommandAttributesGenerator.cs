@@ -171,6 +171,7 @@ public class CmdAttribute : System.Attribute
         foreach (var method in model.Methods)
         {
             tw.WriteLine("[NadekoCommand]");
+            tw.WriteLine("[NadekoDescription]");
             tw.WriteLine("[Aliases]");
             tw.WriteLine($"public partial {method.ReturnType} {method.MethodName}({string.Join(", ", method.Params)});");
         }

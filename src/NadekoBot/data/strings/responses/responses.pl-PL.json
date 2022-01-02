@@ -937,7 +937,7 @@
     "module_description_music": "Odtwarzaj muzykę z youtube, plików lokalnych, soundcloud'a i radia internetowego",
     "module_description_utility": "Zarządzaj customowymi cytatami, powtarzającymi wiadomościami i sprawdź fakty na temat serwera",
     "module_description_administration": "Moderacja, kary dla użytkowników, ustaw role do samodzielnego przypisania oraz wiadomości powitalne",
-    "module_description_customreactions": "Ustaw customowe odpowiedzi bota na określone słowa bądź zdania",
+    "module_description_expressions": "Ustaw customowe odpowiedzi bota na określone słowa bądź zdania",
     "module_description_permissions": "Ustaw uprawnienia dla komend, filtruj słowa i ustaw cooldown'y dla komend",
     "module_description_searches": "Wyszukaj żarty, obrazki ze zwierzętami, anime i mangą.",
     "module_description_xp": "Zdobywaj xp bazujące na aktywności na czacie, sprawdź karty xp użytkowników.",

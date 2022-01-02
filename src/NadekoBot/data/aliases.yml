@@ -92,29 +92,6 @@ iam:
 iamnot:
 - iamnot
 - iamn
-addcustreact:
-- addcustreact
-- acr
-- expradd
-- exadd
-- exa
-listcustreact:
-- listcustreact
-- lcr
-- exprli
-- exl
-showcustreact:
-- showcustreact
-- scr
-- exs
-delcustreact:
-- delcustreact
-- dcr
-- exprdel
-- exd
-crclear:
-- crclear
-- exclear
 fwclear:
 - fwclear
 aliasesclear:
@@ -900,25 +877,6 @@ languageslist:
 - langli
 rategirl:
 - rategirl
-crreact:
-- crreact
-- crr
-crad:
-- crad
-- exad
-crat:
-- crat
-- exat
-crdm:
-- crdm
-- exdm
-crca:
-- crca
-- exca
-crsreload:
-- crsreload
-- expreload
-- exrel
 aliaslist:
 - aliaslist
 - cmdmaplist
@@ -1142,10 +1100,6 @@ feedremove:
 feedlist:
 - feedlist
 - feeds
-editcustreact:
-- editcustreact
-- ecr
-- exe
 say:
 - say
 sqlexec:
@@ -1238,12 +1192,6 @@ economy:
 - economy
 purgeuser:
 - purgeuser 
-crsimport:
-  - crsimport
-  - eximport
-crsexport:
-  - crsexport
-  - exexport
 imageonlychannel:
   - imageonlychannel
   - imageonly
@@ -1258,3 +1206,48 @@ quotesimport:
   - qimport
 showembed:
   - showembed
+# NadekoExpressions
+exprreact:
+  - exreact
+  - exr
+exprad:
+  - exad
+exprat:
+  - exat
+exprdm:
+  - exdm
+exprca:
+  - exca
+exprsreload:
+  - expreload
+  - exrel
+expradd:
+  - expradd
+  - exadd
+  - exa
+exprlist:
+  - exprlist
+  - exl
+  - exprli
+  - exlist
+  - exli
+exprshow:
+  - exprshow
+  - exs
+  - exshow
+exprdelete:
+  - exprdel
+  - exd
+  - exdel
+exprclear:
+  - exprclear
+  - exc
+  - exclear
+expredit:
+  - expredit
+  - exe
+  - exedit
+exprsimport:
+  - eximport
+exprsexport:
+  - exexport

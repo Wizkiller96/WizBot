@@ -937,7 +937,7 @@
     "module_description_music": "Reproduce música de YouTube, archivos locales, SoundCloud y radios.",
     "module_description_utility": "Administra citas personalizadas, repeticiones de mensajes y revisa datos sobre el servidor",
     "module_description_administration": "Moderación, castigos, configuración de roles autoasignables y saludos",
-    "module_description_customreactions": "Ajusta las respuestas del bot a ciertas palabras o frases",
+    "module_description_expressions": "Ajusta las respuestas del bot a ciertas palabras o frases",
     "module_description_permissions": "Ajusta permisos para los comandos, filtro de palabras y configura enfriamiento para los comandos.",
     "module_description_searches": "Busca bromas, imágenes de animales, anime y manga",
     "module_description_xp": "Gana EXP según la actividad del chat, revisa la tarjeta de EXP de los usuarios.",

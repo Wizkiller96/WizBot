@@ -950,7 +950,7 @@
   "module_description_music": "Play music from youtube, local files soundcloud and radio streams",  
   "module_description_utility": "Manage custom quotes, repeating messages and check facts about the server",  
   "module_description_administration": "Moderation, punish users, setup self assignable roles and greet messages",
-  "module_description_customreactions": "Setup custom bot responses to certain words or phrases",  
+  "module_description_expressions": "Setup custom bot responses to certain words or phrases",  
   "module_description_permissions": "Setup perms for commands, filter words and set up command cooldowns",
   "module_description_searches": "Search for jokes, images of animals, anime and manga",
   "module_description_xp": "Gain xp based on chat activity, check users' xp cards",

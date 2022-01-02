@@ -34,7 +34,7 @@ public class NadekoContext : DbContext
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<SelfAssignedRole> SelfAssignableRoles { get; set; }
     public DbSet<MusicPlaylist> MusicPlaylists { get; set; }
-    public DbSet<CustomReaction> CustomReactions { get; set; }
+    public DbSet<CustomReaction> Expressions { get; set; }
     public DbSet<CurrencyTransaction> CurrencyTransactions { get; set; }
     public DbSet<WaifuUpdate> WaifuUpdates { get; set; }
     public DbSet<Warning> Warnings { get; set; }
@@ -62,6 +62,8 @@ public class NadekoContext : DbContext
     public DbSet<NsfwBlacklistedTag> NsfwBlacklistedTags { get; set; }
     public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
+    
+    public DbSet<Permissionv2> Permissions { get; set; }
 
     public NadekoContext(DbContextOptions<NadekoContext> options)
         : base(options)
