@@ -22,7 +22,7 @@ public partial class Searches
 
         [Cmd]
         public async partial Task Placelist()
-            => await SendConfirmAsync(GetText(strs.list_of_place_tags(Prefix)), _typesStr);
+            => await SendConfirmAsync(GetText(strs.list_of_place_tags(prefix)), _typesStr);
 
         [Cmd]
         public async partial Task Place(PlaceType placeType, uint width = 0, uint height = 0)

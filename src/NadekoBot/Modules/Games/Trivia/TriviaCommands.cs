@@ -50,7 +50,7 @@ public partial class Games
                 channel.Guild,
                 channel,
                 opts,
-                Prefix + "tq",
+                prefix + "tq",
                 _eb);
             if (_service.RunningTrivias.TryAdd(channel.Guild.Id, trivia))
             {

@@ -471,6 +471,7 @@ join:
 trackremove:
 - songremove
 - srm
+- trackremove
 movesong:
 - movesong
 - ms
@@ -980,7 +981,7 @@ globalpermlist:
 - listglobalperms
 resetglobalperms:
 - resetglobalperms
-prefixcommand:
+prefix:
 - prefix
 defprefix:
 - defprefix

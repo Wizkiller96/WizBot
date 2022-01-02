@@ -108,7 +108,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                               .Select(p =>
                               {
                                   var str =
-                                      $"`{p.Index + 1}.` {Format.Bold(p.GetCommand(Prefix, (SocketGuild)ctx.Guild))}";
+                                      $"`{p.Index + 1}.` {Format.Bold(p.GetCommand(prefix, (SocketGuild)ctx.Guild))}";
                                   if (p.Index == 0)
                                       str += $" [{GetText(strs.uneditable)}]";
                                   return str;
@@ -139,7 +139,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             }
 
             await ReplyConfirmLocalizedAsync(strs.removed(index + 1,
-                Format.Code(p.GetCommand(Prefix, (SocketGuild)ctx.Guild))));
+                Format.Code(p.GetCommand(prefix, (SocketGuild)ctx.Guild))));
         }
         catch (IndexOutOfRangeException)
         {
@@ -186,7 +186,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                 }
 
                 await ReplyConfirmLocalizedAsync(strs.moved_permission(
-                    Format.Code(fromPerm.GetCommand(Prefix, (SocketGuild)ctx.Guild)),
+                    Format.Code(fromPerm.GetCommand(prefix, (SocketGuild)ctx.Guild)),
                     ++from,
                     ++to));
 

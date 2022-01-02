@@ -50,7 +50,7 @@ public partial class Administration
 
             await ReplyConfirmLocalizedAsync(strs.boostmsg_new);
             if (!sendBoostEnabled)
-                await ReplyPendingLocalizedAsync(strs.boostmsg_enable($"`{Prefix}boost`"));
+                await ReplyPendingLocalizedAsync(strs.boostmsg_enable($"`{prefix}boost`"));
         }
 
         [Cmd]
@@ -99,7 +99,7 @@ public partial class Administration
             await ReplyConfirmLocalizedAsync(strs.greetmsg_new);
 
             if (!sendGreetEnabled)
-                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{Prefix}greet`"));
+                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
         }
 
         [Cmd]
@@ -131,7 +131,7 @@ public partial class Administration
 
             await ReplyConfirmLocalizedAsync(strs.greetdmmsg_new);
             if (!sendGreetEnabled)
-                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{Prefix}greetdm`"));
+                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{prefix}greetdm`"));
         }
 
         [Cmd]
@@ -163,7 +163,7 @@ public partial class Administration
 
             await ReplyConfirmLocalizedAsync(strs.byemsg_new);
             if (!sendByeEnabled)
-                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{Prefix}bye`"));
+                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
         }
 
         [Cmd]
@@ -190,7 +190,7 @@ public partial class Administration
 
             await _service.ByeTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetByeEnabled(ctx.Guild.Id);
-            if (!enabled) await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{Prefix}bye`"));
+            if (!enabled) await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
         }
 
         [Cmd]
@@ -203,7 +203,7 @@ public partial class Administration
 
             await _service.GreetTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
-            if (!enabled) await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{Prefix}greet`"));
+            if (!enabled) await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
         }
 
         [Cmd]
@@ -222,7 +222,7 @@ public partial class Administration
                 await ctx.WarningAsync();
             var enabled = _service.GetGreetDmEnabled(ctx.Guild.Id);
             if (!enabled)
-                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{Prefix}greetdm`"));
+                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{prefix}greetdm`"));
         }
     }
 }

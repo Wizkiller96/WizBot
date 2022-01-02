@@ -18,9 +18,9 @@ public partial class Administration
             var newVal = _service.ToggleAdSarm(ctx.Guild.Id);
 
             if (newVal)
-                await ReplyConfirmLocalizedAsync(strs.adsarm_enable(Prefix));
+                await ReplyConfirmLocalizedAsync(strs.adsarm_enable(prefix));
             else
-                await ReplyConfirmLocalizedAsync(strs.adsarm_disable(Prefix));
+                await ReplyConfirmLocalizedAsync(strs.adsarm_disable(prefix));
         }
 
         [Cmd]

@@ -122,7 +122,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             queuedMessage?.DeleteAfter(10, _logService);
             if (mp.IsStopped)
             {
-                var msg = await ReplyPendingLocalizedAsync(strs.queue_stopped(Format.Code(Prefix + "play")));
+                var msg = await ReplyPendingLocalizedAsync(strs.queue_stopped(Format.Code(prefix + "play")));
                 msg.DeleteAfter(10, _logService);
             }
         }
@@ -281,7 +281,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             var repeatType = mp.Repeat;
             var add = string.Empty;
             if (mp.IsStopped)
-                add += Format.Bold(GetText(strs.queue_stopped(Format.Code(Prefix + "play")))) + "\n";
+                add += Format.Bold(GetText(strs.queue_stopped(Format.Code(prefix + "play")))) + "\n";
             // var mps = mp.MaxPlaytimeSeconds;
             // if (mps > 0)
             //     add += Format.Bold(GetText(strs.song_skips_after(TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss")))) + "\n";

@@ -34,7 +34,7 @@ public partial class Administration
         [OwnerOnly]
         public async partial Task StartupCommandAdd([Leftover] string cmdText)
         {
-            if (cmdText.StartsWith(Prefix + "die", StringComparison.InvariantCulture))
+            if (cmdText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
                 return;
 
             var guser = (IGuildUser)ctx.User;
@@ -67,7 +67,7 @@ public partial class Administration
         [OwnerOnly]
         public async partial Task AutoCommandAdd(int interval, [Leftover] string cmdText)
         {
-            if (cmdText.StartsWith(Prefix + "die", StringComparison.InvariantCulture))
+            if (cmdText.StartsWith(prefix + "die", StringComparison.InvariantCulture))
                 return;
 
             if (interval < 5)

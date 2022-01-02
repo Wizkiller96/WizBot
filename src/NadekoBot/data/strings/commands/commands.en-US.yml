@@ -1,4 +1,4 @@
-help:
+h:
   desc: "Either shows a help for a single command, or DMs you help link if no parameters are specified."
   args:
     - "{0}cmds"
@@ -124,7 +124,7 @@ repeat:
     - "1h5m Hello @erryone"
     - "10:00 Daily have a nice day! This will execute once every 24h."
     - "21:00 30m Starting at 21 and every 30 minutes after that i will send this message!"
-repeatredun:
+repeatredundant:
   desc: "Specify repeater's index (use `{0}repli` to find it) to toggle whether that repeater's message should be reposted if the last message in the channel is the same repeater's message. This is useful if you want to remind everyone to be nice in the channel every so often, but don't want to have the bot spam the channel. This is NOT useful if you want to periodically ping someone."
   args:
     - "1"
@@ -192,11 +192,11 @@ iamnot:
   desc: "Removes a specified role from you. Role must be on a list of self-assignable roles."
   args:
     - "Gamer"
-addcustreact:
+expradd:
   desc: "Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
   args:
     - "\"hello\" Hi there %user.mention%"
-listcustreact:
+exprlist:
   desc: |- 
     Lists global or server custom reactions (20 commands per page).
     Running the command in DM will list global custom reactions, while running it in a server will list server custom reactions.
@@ -208,19 +208,15 @@ listcustreact:
   args:
     - "1"
     - "all"
-listcustreactg:
-  desc: "Lists global or server custom reactions (20 commands per page) grouped by trigger, and show a number of responses for each. Running the command in DM will list global custom reactions, while running it in server will list that server's custom reactions."
-  args:
-    - "1"
-showcustreact:
+exprshow:
   desc: "Shows a custom reaction's response on a given ID."
   args:
     - "1"
-delcustreact:
+exprdelete:
   desc: "Deletes a custom reaction on a specific index. If ran in DM, it is bot owner only and deletes a global custom reaction. If ran in a server, it requires Administration privileges and removes server custom reaction."
   args:
     - "5"
-crclear:
+exprclear:
   desc: "Deletes all custom reactions on this server."
   args:
     - ""
@@ -847,7 +843,7 @@ join:
   desc: "Makes the bot join your voice channel."
   args:
     - ""
-songremove:
+trackremove:
   desc: "Remove a song by its # in the queue, or 'all' (or provide no parameter) to remove all songs from the queue."
   args:
     - "5"
@@ -916,11 +912,11 @@ streamoffline:
   desc: "Toggles whether the bot will also notify when added streams go offline."
   args:
     - ""
-streammsg:
+streammessage:
   desc: "Sets the message which will show when the stream on the specified index comes online. You can use %user% and %platform% placeholders."
   args:
     - "1 Hey @erryone %user% is back online on %platform%!1!!"
-streammsgall:
+streammessageall:
   desc: "Sets the message which will show when any of the currently followed streams comes online. This does not apply to the streams which get added afterwards. You can use %user% and %platform% placeholders."
   args:
     - "Hey @erryone %user% is back online!1!!"
@@ -1167,7 +1163,7 @@ cash:
   args:
     - ""
     - "@Someone"
-curtrs:
+currencytransactions:
   desc: "Shows your currency transactions on the specified page. Bot owner can see other people's transactions too."
   args:
     - "2"
@@ -1522,7 +1518,7 @@ timezone:
   args:
     - ""
     - "GMT Standard Time"
-langsetdefault:
+languagesetdefault:
   desc: "Sets the bot's default response language. All servers which use a default locale will use this one. Setting to `default` will use the host's current culture. Provide no parameters to see currently set language."
   args:
     - "en-US"
@@ -1540,37 +1536,37 @@ rategirl:
   desc: "Use the universal hot-crazy wife zone matrix to determine the girl's worth. It is everything young men need to know about women. At any moment in time, any woman you have previously located on this chart can vanish from that location and appear anywhere else on the chart."
   args:
     - "@SomeGurl"
-crreact:
+exprreact:
   desc: "Sets or resets reactions (up to 3) which will be added to the response message of the CustomReaction with the specified ID. Provide no emojis to reset."
   args:
     - "59 \U0001F44D \U0001F44E "
     - "59 <a:nFlower:408963839191941120>"
     - "59"
-crad:
+exprad:
   desc: "Toggles whether the message triggering the custom reaction will be automatically deleted."
   args:
     - "59"
-crat:
+exprat:
   desc: "Toggles whether the custom reaction will allow extra input after the trigger. For example, with this feature enabled, custom reaction with trigger 'hi' will also be invoked when a user types 'hi there'. This feature is automatically enabled on custom reactions which have '%target%' in their response."
   args:
     - "59"
-crdm:
+exprdm:
   desc: "Toggles whether the response message of the custom reaction will be sent as a direct message."
   args:
     - "44"
-crca:
+exprca:
   desc: "Toggles whether the custom reaction will trigger if the triggering message contains the keyword (instead of only starting with it)."
   args:
     - "44"
-crsreload:
+exprsreload:
   desc: "Reloads all custom reactions on all shards. Use this if you've made changes to the database while the bot is running, or used `{0}deleteunusedcrnq`"
   args:
     - ""
-crsimport:
+exprsimport:
   desc: "Upload the file or send the raw .yml data with this command to import all custom reactions from the specified string or file into the current server (or as global custom reactions in dm)"
   args:
     - "<upload .yml file>"
-crsexport:
+exprsexport:
   desc: "Exports custom reactions from the current server (or global custom reactions in DMs) into a .yml file"
   args:
     - ""
@@ -1608,31 +1604,31 @@ warn:
   args:
     - "@Someone Very rude person"
     - "3 @Someone Very rude person"
-scadd:
+startupcommandadd:
   desc: "Adds a command to the list of commands which will be executed automatically in the current channel, in the order they were added in, by the bot when it startups up."
   args:
     - "{0}stats"
-acadd:
+autocommandadd:
   desc: "Adds a command to the list of commands which will be executed automatically every X seconds."
   args:
     - "60 {0}prune 1000"
-scrm:
+startupcommandremove:
   desc: "Removes a startup command on the specified index."
   args:
     - "3"
-acrm:
+autocommandremove:
   desc: "Removes an auto command on the specified index."
   args:
     - "3"
-scclear:
+startupcommandsclear:
   desc: "Removes all startup commands."
   args:
     - ""
-sclist:
+startupcommandslist:
   desc: "Lists all startup commands in the order they will be executed in."
   args:
     - ""
-aclist:
+autocommandslist:
   desc: "Lists all auto commands and the intervals in which they execute."
   args:
     - ""
@@ -1646,7 +1642,7 @@ banmessage:
   args:
     - "%ban.user%, you've been banned from %server.name%. Reason: %ban.reason%"
     - "{{ \"description\": \"%ban.user% you have been banned from %server.name% by %ban.mod%\" }}"
-banmsgtest:
+banmessagetest:
   desc: "If ban message is not disabled, bot will send you the message as if you were banned by yourself. Used for testing the ban message."
   args:
     - "No reason"
@@ -1791,7 +1787,7 @@ configreload:
   args:
     - "bot"
     - "gambling"
-nsfwtagbl:
+nsfwtagblacklist:
   desc: "Toggles whether the tag is blacklisted or not in nsfw searches. Provide no parameters to see the list of blacklisted tags."
   args:
     - "poop"
@@ -1800,7 +1796,7 @@ experience:
   args:
     - ""
     - "@someguy"
-xptempreload:
+xptemplatereload:
   desc: "Reloads the xp template file. Xp template file allows you to customize the position and color of elements on the `{0}xp` card."
   args:
     - ""
@@ -1818,7 +1814,7 @@ xpnotify:
   args:
     - "global dm"
     - "server channel"
-xplvluprewards:
+xpleveluprewards:
   desc: "Shows currently set level up rewards."
   args:
     - ""
@@ -1835,7 +1831,7 @@ xprolereward:
     - "3 add Social"
     - "5 add Member"
     - "5"
-xpcurreward:
+xpcurrencyreward:
   desc: "Sets a currency reward on a specified level. Provide no amount in order to remove the reward."
   args:
     - "3 50"
@@ -1843,7 +1839,7 @@ xpleaderboard:
   desc: "Shows current server's xp leaderboard."
   args:
     - ""
-xpgleaderboard:
+xpgloballeaderboard:
   desc: "Shows the global xp leaderboard."
   args:
     - ""
@@ -1859,7 +1855,7 @@ clubtransfer:
   desc: "Transfers the ownership of the club to another member of the club."
   args:
     - "@Someone"
-clubinfo:
+clubinformation:
   desc: "Shows information about the club."
   args:
     - "My Brand New Club#23"
@@ -1895,7 +1891,7 @@ clublevelreq:
   desc: "Sets the club required level to apply to join the club. You must be club owner. You can't set this number below 5."
   args:
     - "7"
-clubdesc:
+clubdescription:
   desc: "Sets the club description. Maximum 150 characters. Club owner only."
   args:
     - "This is the best club please join."
@@ -1911,7 +1907,7 @@ clubbans:
   desc: "Shows the list of users who have banned from your club. Paginated. You must be club owner to use this command."
   args:
     - "2"
-clublb:
+clubleaderboard:
   desc: "Shows club rankings on the specified page."
   args:
     - "2"
@@ -1952,7 +1948,7 @@ feedlist:
   desc: "Shows the list of feeds you've subscribed to on this server."
   args:
     - ""
-editcustreact:
+expredit:
   desc: "Edits the custom reaction's response given its ID."
   args:
     - "123 I'm a magical girl"
@@ -1989,16 +1985,16 @@ deletexp:
   desc: "Deletes everything from UserXpStats, Clubs and sets users' TotalXP to 0."
   args:
     - ""
-dpo:
+discordpermoverride:
   desc: "Overrides required user permissions that the command has with the specified ones. You can only use server-level permissions. This action will make the bot ignore user permission requirements which command has by default. Provide no permissions to reset to default."
   args:
     - "{0}prune ManageMessages BanMembers"
     - "{0}prune"
-dpol:
+discordpermoverridelist:
   desc: "Lists all discord permission overrides on this server."
   args:
     - ""
-dpor:
+discordpermoverridereset:
   desc: "Resets ALL currently set discord permission overrides on this server. This will make all commands have default discord permission requirements."
   args:
     - ""

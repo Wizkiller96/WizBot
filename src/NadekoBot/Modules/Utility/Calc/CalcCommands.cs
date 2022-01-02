@@ -42,7 +42,7 @@ public partial class Utility
                                         .DistinctBy(x => x.Name)
                                         .Select(x => x.Name)
                                         .Except(new[] { "ToString", "Equals", "GetHashCode", "GetType" });
-            await SendConfirmAsync(GetText(strs.calcops(Prefix)), string.Join(", ", selection));
+            await SendConfirmAsync(GetText(strs.calcops(prefix)), string.Join(", ", selection));
         }
     }
 }

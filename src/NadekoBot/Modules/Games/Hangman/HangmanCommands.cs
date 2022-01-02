@@ -10,7 +10,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async partial Task Hangmanlist()
-            => await SendConfirmAsync(GetText(strs.hangman_types(Prefix)), _service.GetHangmanTypes().Join('\n'));
+            => await SendConfirmAsync(GetText(strs.hangman_types(prefix)), _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
             => $@". ┌─────┐

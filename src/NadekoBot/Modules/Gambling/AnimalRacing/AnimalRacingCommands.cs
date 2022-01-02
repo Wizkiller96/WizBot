@@ -83,7 +83,7 @@ public partial class Gambling
 
             return SendConfirmAsync(GetText(strs.animal_race),
                 GetText(strs.animal_race_starting(options.StartTime)),
-                footer: GetText(strs.animal_race_join_instr(Prefix)));
+                footer: GetText(strs.animal_race_join_instr(prefix)));
         }
 
         private Task Ar_OnStarted(AnimalRace race)

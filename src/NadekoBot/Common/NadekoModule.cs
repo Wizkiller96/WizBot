@@ -16,7 +16,7 @@ public abstract class NadekoModule : ModuleBase
     public ILocalization Localization { get; set; }
     public IEmbedBuilderService _eb { get; set; }
 
-    public string Prefix
+    protected string prefix
         => CmdHandler.GetPrefix(ctx.Guild);
 
     protected ICommandContext ctx

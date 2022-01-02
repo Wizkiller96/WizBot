@@ -51,9 +51,9 @@ public partial class Help : NadekoModule<HelpService>
         var clientId = await _lazyClientId.Value;
         var r = new ReplacementBuilder().WithDefault(Context)
                                         .WithOverride("{0}", () => clientId.ToString())
-                                        .WithOverride("{1}", () => Prefix)
-                                        .WithOverride("%prefix%", () => Prefix)
-                                        .WithOverride("%bot.prefix%", () => Prefix)
+                                        .WithOverride("{1}", () => prefix)
+                                        .WithOverride("%prefix%", () => prefix)
+                                        .WithOverride("%bot.prefix%", () => prefix)
                                         .Build();
 
         var text = SmartText.CreateFrom(botSettings.HelpText);
@@ -89,7 +89,7 @@ public partial class Help : NadekoModule<HelpService>
                             .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
                                 GetText(GetModuleLocStr(module.Name))
                                 + "\n"
-                                + Format.Code(GetText(strs.module_footer(Prefix, module.Name.ToLowerInvariant()))),
+                                + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
                                 true));
 
                 return embed;
@@ -233,9 +233,9 @@ public partial class Help : NadekoModule<HelpService>
                                        //if cross is specified, and the command doesn't satisfy the requirements, cross it out
                                        if (opts.View == CommandsOptions.ViewType.Cross)
                                            return
-                                               $"{(succ.Contains(x) ? "✅" : "❌")}{Prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                                               $"{(succ.Contains(x) ? "✅" : "❌")}{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
                                        return
-                                           $"{Prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                                           $"{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
                                    });
 
                 if (i == last - 1 && (i + 1) % 2 != 0)
@@ -250,7 +250,7 @@ public partial class Help : NadekoModule<HelpService>
             }
         }
 
-        embed.WithFooter(GetText(strs.commands_instr(Prefix)));
+        embed.WithFooter(GetText(strs.commands_instr(prefix)));
         await ctx.Channel.EmbedAsync(embed);
     }
 
@@ -321,9 +321,9 @@ public partial class Help : NadekoModule<HelpService>
 
                                          return new CommandJsonObject
                                          {
-                                             Aliases = com.Aliases.Select(alias => Prefix + alias).ToArray(),
-                                             Description = com.RealSummary(_strings, ctx.Guild?.Id, Prefix),
-                                             Usage = com.RealRemarksArr(_strings, ctx.Guild?.Id, Prefix),
+                                             Aliases = com.Aliases.Select(alias => prefix + alias).ToArray(),
+                                             Description = com.RealSummary(_strings, ctx.Guild?.Id, prefix),
+                                             Usage = com.RealRemarksArr(_strings, ctx.Guild?.Id, prefix),
                                              Submodule = com.Module.Name,
                                              Module = com.Module.GetTopLevelModule().Name,
                                              Options = optHelpStr,

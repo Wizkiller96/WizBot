@@ -26,15 +26,13 @@ namespace NadekoBot.Tests
             var culture = new CultureInfo("en-US");
 
             var isSuccess = true;
-            foreach (var entry in CommandNameLoadHelper.LoadCommandNames(aliasesPath))
+            foreach (var (methodName, _) in CommandNameLoadHelper.LoadAliases(aliasesPath))
             {
-                var commandName = entry.Value[0];
-
-                var cmdStrings = strings.GetCommandStrings(culture.Name, commandName);
+                var cmdStrings = strings.GetCommandStrings(culture.Name, methodName);
                 if (cmdStrings is null)
                 {
                     isSuccess = false;
-                    TestContext.Out.WriteLine($"{commandName} doesn't exist in commands.en-US.yml");
+                    TestContext.Out.WriteLine($"{methodName} doesn't exist in commands.en-US.yml");
                 }
             }
 
@@ -56,7 +54,7 @@ namespace NadekoBot.Tests
         [Test]
         public void AllCommandMethodsHaveNames()
         {
-            var allAliases = CommandNameLoadHelper.LoadCommandNames(
+            var allAliases = CommandNameLoadHelper.LoadAliases(
                 aliasesPath);
 
             var methodNames = GetCommandMethodNames();
@@ -77,7 +75,7 @@ namespace NadekoBot.Tests
         [Test]
         public void NoObsoleteAliases()
         {
-            var allAliases = CommandNameLoadHelper.LoadCommandNames(aliasesPath);
+            var allAliases = CommandNameLoadHelper.LoadAliases(aliasesPath);
 
             var methodNames = GetCommandMethodNames()
                 .ToHashSet();
@@ -95,7 +93,10 @@ namespace NadekoBot.Tests
                 }
             }
             
-            Assert.IsTrue(isSuccess);
+            if(isSuccess)
+                Assert.Pass();
+            else
+                Assert.Warn("There are some unused entries in data/aliases.yml");
         }
         
         // [Test]
