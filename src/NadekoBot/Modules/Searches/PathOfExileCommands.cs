@@ -14,17 +14,17 @@ public partial class Searches
     [Group]
     public partial class PathOfExileCommands : NadekoSubmodule<SearchesService>
     {
-        private const string _poeURL = "https://www.pathofexile.com/character-window/get-characters?accountName=";
-        private const string _ponURL = "http://poe.ninja/api/Data/GetCurrencyOverview?league=";
-        private const string _pogsURL = "http://pathofexile.gamepedia.com/api.php?action=opensearch&search=";
+        private const string POE_URL = "https://www.pathofexile.com/character-window/get-characters?accountName=";
+        private const string PON_URL = "http://poe.ninja/api/Data/GetCurrencyOverview?league=";
+        private const string POGS_URL = "http://pathofexile.gamepedia.com/api.php?action=opensearch&search=";
 
-        private const string _pogURL =
+        private const string POG_URL =
             "https://pathofexile.gamepedia.com/api.php?action=browsebysubject&format=json&subject=";
 
-        private const string _pogiURL =
+        private const string POGI_URL =
             "https://pathofexile.gamepedia.com/api.php?action=query&prop=imageinfo&iiprop=url&format=json&titles=File:";
 
-        private const string _profileURL = "https://www.pathofexile.com/account/view-profile/";
+        private const string PROFILE_URL = "https://www.pathofexile.com/account/view-profile/";
 
         private readonly IHttpClientFactory _httpFactory;
 
@@ -131,7 +131,7 @@ public partial class Searches
             try
             {
                 using var http = _httpFactory.CreateClient();
-                var res = await http.GetStringAsync($"{_poeURL}{usr}");
+                var res = await http.GetStringAsync($"{POE_URL}{usr}");
                 characters = JsonConvert.DeserializeObject<List<Account>>(res);
             }
             catch
@@ -150,7 +150,7 @@ public partial class Searches
                     var embed = _eb.Create()
                                    .WithAuthor($"Characters on {usr}'s account",
                                        "https://web.poecdn.com/image/favicon/ogimage.png",
-                                       $"{_profileURL}{usr}")
+                                       $"{PROFILE_URL}{usr}")
                                    .WithOkColor();
 
                     var tempList = characters.Skip(curPage * 9).Take(9).ToList();
@@ -237,7 +237,7 @@ public partial class Searches
 
             try
             {
-                var res = $"{_ponURL}{leagueName}";
+                var res = $"{PON_URL}{leagueName}";
                 using var http = _httpFactory.CreateClient();
                 var obj = JObject.Parse(await http.GetStringAsync(res));
 

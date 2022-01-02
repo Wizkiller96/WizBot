@@ -71,7 +71,7 @@ public class VoteRewardService : INService, IReadyExecutor
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Critical error loading top.gg vote rewards.");
+                Log.Error(ex, "Critical error loading top.gg vote rewards");
             }
 
             var discordsKey = _creds.Votes?.DiscordsKey;

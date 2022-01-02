@@ -2,7 +2,7 @@
 
 namespace NadekoBot.Modules.CustomReactions;
 
-public partial class CustomReactions : NadekoModule<CustomReactionsService>
+public partial class NadekoExpressions : NadekoModule<CustomReactionsService>
 {
     public enum All
     {
@@ -12,7 +12,7 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
     private readonly IBotCredentials _creds;
     private readonly IHttpClientFactory _clientFactory;
 
-    public CustomReactions(IBotCredentials creds, IHttpClientFactory clientFactory)
+    public NadekoExpressions(IBotCredentials creds, IHttpClientFactory clientFactory)
     {
         _creds = creds;
         _clientFactory = clientFactory;
@@ -25,7 +25,6 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
     [Cmd]
     public async partial Task AddCustReact(string key, [Leftover] string message)
     {
-        var channel = ctx.Channel as ITextChannel;
         if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
             return;
 
@@ -231,7 +230,6 @@ public partial class CustomReactions : NadekoModule<CustomReactionsService>
 
     private async Task InternalCrEdit(kwum id, CustomReactionsService.CrField option)
     {
-        var cr = _service.GetCustomReaction(ctx.Guild?.Id, id);
         if (!AdminInGuildOrOwnerInDm())
         {
             await ReplyErrorLocalizedAsync(strs.insuff_perms);
