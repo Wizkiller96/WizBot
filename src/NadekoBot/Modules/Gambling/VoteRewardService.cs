@@ -15,21 +15,17 @@ public class VoteRewardService : INService, IReadyExecutor
 {
     private readonly DiscordSocketClient _client;
     private readonly IBotCredentials _creds;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ICurrencyService _currencyService;
     private readonly GamblingConfigService _gamb;
-    private HttpClient _http;
 
     public VoteRewardService(
         DiscordSocketClient client,
         IBotCredentials creds,
-        IHttpClientFactory httpClientFactory,
         ICurrencyService currencyService,
         GamblingConfigService gamb)
     {
         _client = client;
         _creds = creds;
-        _httpClientFactory = httpClientFactory;
         _currencyService = currencyService;
         _gamb = gamb;
     }
@@ -39,7 +35,7 @@ public class VoteRewardService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
 
-        _http = new(new HttpClientHandler
+        var http = new HttpClient(new HttpClientHandler
         {
             AllowAutoRedirect = false, ServerCertificateCustomValidationCallback = delegate { return true; }
         });
@@ -55,9 +51,9 @@ public class VoteRewardService : INService, IReadyExecutor
             {
                 if (!string.IsNullOrWhiteSpace(topggKey) && !string.IsNullOrWhiteSpace(topggServiceUrl))
                 {
-                    _http.DefaultRequestHeaders.Authorization = new(topggKey);
+                    http.DefaultRequestHeaders.Authorization = new(topggKey);
                     var uri = new Uri(new(topggServiceUrl), "topgg/new");
-                    var res = await _http.GetStringAsync(uri);
+                    var res = await http.GetStringAsync(uri);
                     var data = JsonSerializer.Deserialize<List<VoteModel>>(res);
 
                     if (data is { Count: > 0 })
@@ -85,8 +81,8 @@ public class VoteRewardService : INService, IReadyExecutor
             {
                 if (!string.IsNullOrWhiteSpace(discordsKey) && !string.IsNullOrWhiteSpace(discordsServiceUrl))
                 {
-                    _http.DefaultRequestHeaders.Authorization = new(discordsKey);
-                    var res = await _http.GetStringAsync(new Uri(new(discordsServiceUrl), "discords/new"));
+                    http.DefaultRequestHeaders.Authorization = new(discordsKey);
+                    var res = await http.GetStringAsync(new Uri(new(discordsServiceUrl), "discords/new"));
                     var data = JsonSerializer.Deserialize<List<VoteModel>>(res);
 
                     if (data is { Count: > 0 })
