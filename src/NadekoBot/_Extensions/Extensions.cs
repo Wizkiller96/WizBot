@@ -126,11 +126,11 @@ public static class Extensions
         IBotStrings strings,
         ulong? guildId,
         string prefix)
-        => Array.ConvertAll(strings.GetCommandStrings(cmd.Remarks, guildId).Args,
+        => Array.ConvertAll(strings.GetCommandStrings(cmd.Summary, guildId).Args,
             arg => GetFullUsage(cmd.Name, arg, prefix));
 
     private static string GetFullUsage(string commandName, string args, string prefix)
-        => $"{prefix}{commandName} {string.Format(args, prefix)}";
+        => $"{prefix}{commandName} {string.Format(args, prefix)}".TrimEnd();
 
     public static IEmbedBuilder AddPaginatedFooter(this IEmbedBuilder embed, int curPage, int? lastPage)
     {
