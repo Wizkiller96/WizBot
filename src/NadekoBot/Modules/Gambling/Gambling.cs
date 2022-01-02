@@ -200,7 +200,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (--page < 0)
             return;
 
-        var trs = new List<CurrencyTransaction>();
+        List<CurrencyTransaction> trs;
         await using (var uow = _db.GetDbContext())
         {
             trs = uow.CurrencyTransactions.GetPageFor(userId, page);

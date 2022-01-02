@@ -1,6 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,10 +11,16 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Generators
 {
-    internal class TranslationPair
+    internal readonly struct TranslationPair
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public string Name { get; }
+        public string Value { get; }
+
+        public TranslationPair(string name, string value)
+        {
+            Name = name;
+            Value = value;
+        }
     }
 
     [Generator]
@@ -48,8 +56,7 @@ namespace NadekoBot.Generators
             using (var sw = new IndentedTextWriter(stringWriter))
             {
                 sw.WriteLine("namespace NadekoBot");
-                sw.WriteLine("{");
-                sw.Indent++;
+                sw.WriteLine();
 
                 sw.WriteLine("public static class strs");
                 sw.WriteLine("{");
@@ -82,8 +89,6 @@ namespace NadekoBot.Generators
 
                 sw.Indent--;
                 sw.WriteLine("}");
-                sw.Indent--;
-                sw.WriteLine("}");
 
 
                 sw.Flush();
@@ -93,21 +98,33 @@ namespace NadekoBot.Generators
             context.AddSource("LocStr.g.cs", LOC_STR_SOURCE);
         }
 
-        private List<TranslationPair> GetFields(string dataText)
+        private List<TranslationPair> GetFields(string? dataText)
         {
             if (string.IsNullOrWhiteSpace(dataText))
-                throw new ArgumentNullException(nameof(dataText));
+                return new();
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(dataText);
+            Dictionary<string, string> data;
+            try
+            {
+                var output = JsonConvert.DeserializeObject<Dictionary<string, string>>(dataText!);
+                if (output is null)
+                    return new();
+
+                data = output;
+            }
+            catch
+            {
+                Debug.WriteLine("Failed parsing responses file.");
+                return new();
+            }
 
             var list = new List<TranslationPair>();
             foreach (var entry in data)
             {
-                list.Add(new TranslationPair()
-                {
-                    Name = entry.Key,
-                    Value = entry.Value
-                });
+                list.Add(new(
+                    entry.Key,
+                    entry.Value
+                ));
             }
 
             return list;
