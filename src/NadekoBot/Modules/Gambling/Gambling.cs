@@ -64,7 +64,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
-        Log.Information(string.Join(",", flowersCi.NumberFormat.NativeDigits));
         return cur.ToString("C0", flowersCi);
     }
 
@@ -109,10 +108,9 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        TimeSpan? rem;
-        if ((rem = _cache.AddTimelyClaim(ctx.User.Id, period)) is not null)
+        if (_cache.AddTimelyClaim(ctx.User.Id, period) is { } rem)
         {
-            await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem?.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")));
+            await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")));
             return;
         }
 
@@ -240,7 +238,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async partial Task Give(ShmartNumber amount, IGuildUser receiver, [Leftover] string msg = null)
+    public async partial Task Give(ShmartNumber amount, IGuildUser receiver, [Leftover] string msg)
     {
         if (amount <= 0 || ctx.User.Id == receiver.Id || receiver.IsBot)
             return;
@@ -409,15 +407,15 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         if (_service.Duels.TryAdd((u.Id, ctx.User.Id), game))
         {
-            game.OnGameTick += Game_OnGameTick;
-            game.OnEnded += Game_OnEnded;
+            game.OnGameTick += GameOnGameTick;
+            game.OnEnded += GameOnEnded;
 
             await ReplyConfirmLocalizedAsync(strs.roll_duel_challenge(Format.Bold(ctx.User.ToString()),
                 Format.Bold(u.ToString()),
                 Format.Bold(n(amount))));
         }
 
-        async Task Game_OnGameTick(RollDuelGame arg)
+        async Task GameOnGameTick(RollDuelGame arg)
         {
             var rolls = arg.Rolls.Last();
             description += $@"{Format.Bold(ctx.User.ToString())} rolled **{rolls.Item1}**
@@ -435,7 +433,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 });
         }
 
-        async Task Game_OnEnded(RollDuelGame rdGame, RollDuelGame.Reason reason)
+        async Task GameOnEnded(RollDuelGame rdGame, RollDuelGame.Reason reason)
         {
             try
             {
@@ -515,14 +513,13 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-        var cleanRichest = new List<DiscordUser>();
+        List<DiscordUser> cleanRichest;
         // it's pointless to have clean on dm context
-        if (ctx.Guild is null) opts.Clean = false;
+        if (ctx.Guild is null)
+            opts.Clean = false;
 
         if (opts.Clean)
         {
-            var now = DateTime.UtcNow;
-
             await using (var uow = _db.GetDbContext())
             {
                 cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 10_000);
@@ -585,7 +582,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (!await CheckBetOptional(amount) || amount == 1)
             return;
 
-        string getRpsPick(RpsPick p)
+        string GetRpsPick(RpsPick p)
         {
             switch (p)
             {
@@ -614,7 +611,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             await _cs.AddAsync(ctx.User.Id, "Rps-draw", amount, true);
             embed.WithOkColor();
-            msg = GetText(strs.rps_draw(getRpsPick(pick)));
+            msg = GetText(strs.rps_draw(GetRpsPick(pick)));
         }
         else if ((pick == RpsPick.Paper && nadekoPick == RpsPick.Rock)
                  || (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors)
@@ -624,13 +621,13 @@ public partial class Gambling : GamblingModule<GamblingService>
             await _cs.AddAsync(ctx.User.Id, "Rps-win", amount, true);
             embed.WithOkColor();
             embed.AddField(GetText(strs.won), n(amount));
-            msg = GetText(strs.rps_win(ctx.User.Mention, getRpsPick(pick), getRpsPick(nadekoPick)));
+            msg = GetText(strs.rps_win(ctx.User.Mention, GetRpsPick(pick), GetRpsPick(nadekoPick)));
         }
         else
         {
             embed.WithErrorColor();
             amount = 0;
-            msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, getRpsPick(nadekoPick), getRpsPick(pick)));
+            msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, GetRpsPick(nadekoPick), GetRpsPick(pick)));
         }
 
         embed.WithDescription(msg);

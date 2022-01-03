@@ -1,5 +1,6 @@
 ﻿#nullable disable
-using Microsoft.EntityFrameworkCore;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 using System.Text.RegularExpressions;
 
@@ -42,29 +43,30 @@ public class RemindService : INService
                 if (reminders.Count == 0)
                     continue;
 
-                Log.Information($"Executing {reminders.Count} reminders.");
+                Log.Information("Executing {ReminderCount} reminders", reminders.Count);
 
                 // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
                 foreach (var group in reminders.Chunk(5))
                 {
                     var executedReminders = group.ToList();
                     await executedReminders.Select(ReminderTimerAction).WhenAll();
-                    await RemoveReminders(executedReminders);
+                    await RemoveReminders(executedReminders.Select(x => x.Id));
                     await Task.Delay(1500);
                 }
             }
             catch (Exception ex)
             {
-                Log.Warning($"Error in reminder loop: {ex.Message}");
-                Log.Warning(ex.ToString());
+                Log.Warning(ex, "Error in reminder loop: {ErrorMessage}", ex.Message);
             }
         }
     }
 
-    private async Task RemoveReminders(List<Reminder> reminders)
+    private async Task RemoveReminders(IEnumerable<int> reminders)
     {
         await using var uow = _db.GetDbContext();
-        uow.Set<Reminder>().RemoveRange(reminders);
+        await uow.Reminders
+           .ToLinqToDBTable()
+           .DeleteAsync(x => reminders.Contains(x.Id));
 
         await uow.SaveChangesAsync();
     }
@@ -73,9 +75,12 @@ public class RemindService : INService
     {
         using var uow = _db.GetDbContext();
         return uow.Reminders
-                  .FromSqlInterpolated(
-                      $"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
-                  .ToListAsync();
+                  .ToLinqToDBTable()
+                  .Where(x => (x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId)
+                              && x.When < now)
+                  // .FromSqlInterpolated(
+                  //     $"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
+                  .ToListAsyncLinqToDB();
     }
 
     public bool TryParseRemindMessage(string input, out RemindObject obj)
@@ -91,7 +96,7 @@ public class RemindService : INService
 
         if (string.IsNullOrWhiteSpace(what))
         {
-            Log.Warning("No message provided for the reminder.");
+            Log.Warning("No message provided for the reminder");
             return false;
         }
 
@@ -106,13 +111,13 @@ public class RemindService : INService
 
             if (!int.TryParse(m.Groups[groupName].Value, out var value))
             {
-                Log.Warning($"Reminder regex group {groupName} has invalid value.");
+                Log.Warning("Reminder regex group {GroupName} has invalid value", groupName);
                 return false;
             }
 
             if (value < 1)
             {
-                Log.Warning("Reminder time value has to be an integer greater than 0.");
+                Log.Warning("Reminder time value has to be an integer greater than 0");
                 return false;
             }
 
@@ -155,7 +160,10 @@ public class RemindService : INService
                                        (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
                 r.Message);
         }
-        catch (Exception ex) { Log.Information(ex.Message + $"({r.Id})"); }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error executing reminder {ReminderId}: {ErrorMessage}", r.Id, ex.Message);
+        }
     }
 
     public struct RemindObject
