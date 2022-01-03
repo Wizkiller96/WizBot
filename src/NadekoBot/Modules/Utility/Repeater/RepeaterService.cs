@@ -8,11 +8,10 @@ namespace NadekoBot.Modules.Utility.Services;
 
 public sealed class RepeaterService : IReadyExecutor, INService
 {
-    public const int MAX_REPEATERS = 5;
+    private const int MAX_REPEATERS = 5;
 
     private readonly DbService _db;
     private readonly IBotCredentials _creds;
-    private readonly IEmbedBuilderService _eb;
     private readonly DiscordSocketClient _client;
     private readonly LinkedList<RunningRepeater> _repeaterQueue;
     private readonly ConcurrentHashSet<int> _noRedundant;
@@ -22,18 +21,16 @@ public sealed class RepeaterService : IReadyExecutor, INService
     public RepeaterService(
         DiscordSocketClient client,
         DbService db,
-        IBotCredentials creds,
-        IEmbedBuilderService eb)
+        IBotCredentials creds)
     {
         _db = db;
         _creds = creds;
-        _eb = eb;
         _client = client;
 
         var uow = _db.GetDbContext();
         var shardRepeaters = uow.Set<Repeater>()
-                                .FromSqlInterpolated($@"select * from repeaters 
-where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
+                                .Where(x => ((int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards)
+                                            == _client.ShardId)
                                 .AsNoTracking()
                                 .ToList();
 
@@ -51,6 +48,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
     private async Task RunRepeatersLoop()
     {
         while (true)
+        {
             try
             {
                 // calculate timeout for the first item
@@ -92,6 +90,7 @@ where ((guildid >> 22) % {_creds.TotalShards}) == {_client.ShardId};")
                 Log.Error(ex, "Critical error in repeater queue: {ErrorMessage}", ex.Message);
                 await Task.Delay(5000);
             }
+        }
     }
 
     private async Task HandlePostExecute(RunningRepeater rep)

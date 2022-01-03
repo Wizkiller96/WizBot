@@ -3,10 +3,11 @@ using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-// todo if any activity...
+// todo dateonly timeonly
+// todo new apis
 public class GameVoiceChannelService : INService
 {
-    public ConcurrentHashSet<ulong> GameVoiceChannels { get; } = new();
+    public ConcurrentHashSet<ulong> GameVoiceChannels { get; }
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -16,30 +17,38 @@ public class GameVoiceChannelService : INService
         _db = db;
         _client = client;
 
-        GameVoiceChannels = new(bot.AllGuildConfigs.Where(gc => gc.GameVoiceChannel is not null)
-                                   .Select(gc => gc.GameVoiceChannel.Value));
+        GameVoiceChannels = new(bot.AllGuildConfigs
+                                   .Where(gc => gc.GameVoiceChannel is not null)
+                                   .Select(gc => gc.GameVoiceChannel!.Value));
 
-        _client.UserVoiceStateUpdated += Client_UserVoiceStateUpdated;
-        _client.GuildMemberUpdated += _client_GuildMemberUpdated;
+        _client.UserVoiceStateUpdated += OnUserVoiceStateUpdated;
+        _client.PresenceUpdated += OnPresenceUpdate;
     }
 
-    private Task _client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> before, SocketGuildUser after)
+    private Task OnPresenceUpdate(SocketUser socketUser, SocketPresence before, SocketPresence after)
     {
         var _ = Task.Run(async () =>
         {
             try
             {
-                //if the user is in the voice channel and that voice channel is gvc
-                var vc = after.VoiceChannel;
-                if (vc is null || !GameVoiceChannels.Contains(vc.Id) || !before.HasValue)
+                if (socketUser is not SocketGuildUser newUser)
                     return;
+                // if the user is in the voice channel and that voice channel is gvc
 
-                //if the activity has changed, and is a playing activity
-                var oldActivity = before.Value.Activities.FirstOrDefault();
-                var newActivity = after.Activities.FirstOrDefault();
-                if (oldActivity != newActivity && newActivity is { Type: ActivityType.Playing })
-                    //trigger gvc
-                    await TriggerGvc(after, newActivity.Name);
+                if (newUser.VoiceChannel is not { } vc 
+                    || !GameVoiceChannels.Contains(vc.Id))
+                    return;
+                
+                     //if the activity has changed, and is a playi1ng activity
+                     foreach (var activity in after.Activities)
+                     {
+                         if (activity is { Type: ActivityType.Playing })
+                         {
+                             //trigger gvc
+                             if (await TriggerGvc(newUser, activity.Name))
+                                 return;
+                         }
+                     }
             }
             catch (Exception ex)
             {
@@ -72,7 +81,7 @@ public class GameVoiceChannelService : INService
         return id;
     }
 
-    private Task Client_UserVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState, SocketVoiceState newState)
+    private Task OnUserVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState, SocketVoiceState newState)
     {
         var _ = Task.Run(async () =>
         {
@@ -81,15 +90,17 @@ public class GameVoiceChannelService : INService
                 if (usr is not SocketGuildUser gUser)
                     return;
 
-                var game = gUser.Activities.FirstOrDefault()?.Name;
-
-                if (oldState.VoiceChannel == newState.VoiceChannel || newState.VoiceChannel is null)
+                if (newState.VoiceChannel is null)
                     return;
 
-                if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id) || string.IsNullOrWhiteSpace(game))
+                if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id))
                     return;
-
-                await TriggerGvc(gUser, game);
+                
+                foreach (var game in gUser.Activities.Select(x => x.Name))
+                {
+                    if (await TriggerGvc(gUser, game))
+                        return;
+                }
             }
             catch (Exception ex)
             {
@@ -100,18 +111,19 @@ public class GameVoiceChannelService : INService
         return Task.CompletedTask;
     }
 
-    private async Task TriggerGvc(SocketGuildUser gUser, string game)
+    private async Task<bool> TriggerGvc(SocketGuildUser gUser, string game)
     {
         if (string.IsNullOrWhiteSpace(game))
-            return;
+            return false;
 
         game = game.TrimTo(50).ToLowerInvariant();
         var vch = gUser.Guild.VoiceChannels.FirstOrDefault(x => x.Name.ToLowerInvariant() == game);
 
         if (vch is null)
-            return;
+            return false;
 
         await Task.Delay(1000);
         await gUser.ModifyAsync(gu => gu.Channel = vch);
+        return true;
     }
 }

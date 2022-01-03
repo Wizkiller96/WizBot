@@ -41,7 +41,8 @@ public abstract record SmartText
 
             smartEmbedText.NormalizeFields();
 
-            if (!smartEmbedText.IsValid) return new SmartPlainText(input);
+            if (!smartEmbedText.IsValid) 
+                return new SmartPlainText(input);
 
             return smartEmbedText;
         }

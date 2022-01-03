@@ -12,12 +12,8 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace NadekoBot.Modules.NadekoExpressions;
 
-// todo recheck whether ACTUALEXPRESSIONS perm works
-// todo run db migration and rename ACTUALCUSTOMREACTIONS to ACTUALEXPRESSIONS
-
 public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 {
-
     private const string MENTION_PH = "%bot.mention%";
 
     private const string PREPEND_EXPORT =
