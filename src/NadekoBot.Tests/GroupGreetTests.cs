@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NadekoBot.Extensions;
 using NadekoBot.Services;
 using NUnit.Framework;
 
@@ -62,8 +63,8 @@ namespace NadekoBot.Tests
             _grouper.CreateOrAdd(0, 5);
             
             // add 15 items
-            await Task.WhenAll(Enumerable.Range(10, 15)
-                .Select(x => Task.Run(() => _grouper.CreateOrAdd(0, x))));
+            await Enumerable.Range(10, 15)
+                .Select(x => Task.Run(() => _grouper.CreateOrAdd(0, x))).WhenAll();
             
             // get 5 at most
             _grouper.ClearGroup(0, 5, out var items);

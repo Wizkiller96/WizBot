@@ -46,7 +46,7 @@ public class PruneService : INService
                     await Task.WhenAll(Task.Delay(1000), channel.DeleteMessagesAsync(bulkDeletable));
 
                 foreach (var group in singleDeletable.Chunk(5))
-                    await Task.WhenAll(Task.Delay(1000), group.Select(x => x.DeleteAsync()).WhenAll());
+                    await Task.WhenAll(Task.Delay(5000), group.Select(x => x.DeleteAsync()).WhenAll());
 
                 //this isn't good, because this still work as if i want to remove only specific user's messages from the last
                 //100 messages, Maybe this needs to be reduced by msgs.Length instead of 100

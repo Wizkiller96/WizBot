@@ -170,14 +170,14 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
     private async Task LoadOwnerChannels()
     {
-        var channels = await Task.WhenAll(_creds.OwnerIds.Select(id =>
+        var channels = await _creds.OwnerIds.Select(id =>
         {
             var user = _client.GetUser(id);
             if (user is null)
                 return Task.FromResult<IDMChannel>(null);
 
             return user.CreateDMChannelAsync();
-        }));
+        }).WhenAll();
 
         ownerChannels = channels.Where(x => x is not null)
                                 .ToDictionary(x => x.Recipient.Id, x => x)

@@ -88,8 +88,6 @@ public static class EnumerableExtensions
         where T : class, IIndexed
         => new(enumerable);
 
-    // todo use this extension instead of Task.WhenAll
-
     /// <summary>
     ///     Creates a task that will complete when all of the <see cref="Task{TResult}" /> objects in an enumerable
     ///     collection have completed
