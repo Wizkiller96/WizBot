@@ -2,8 +2,6 @@
 
 namespace NadekoBot.Modules.NadekoExpressions;
 
-// todo string.join to .Join(", ")
-
 [Name("Expressions")]
 public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 {

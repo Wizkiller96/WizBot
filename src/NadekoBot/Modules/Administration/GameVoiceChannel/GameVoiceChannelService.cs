@@ -4,7 +4,7 @@ using NadekoBot.Db;
 namespace NadekoBot.Modules.Administration.Services;
 
 // todo dateonly timeonly
-// todo new apis
+// todo timer
 public class GameVoiceChannelService : INService
 {
     public ConcurrentHashSet<ulong> GameVoiceChannels { get; }

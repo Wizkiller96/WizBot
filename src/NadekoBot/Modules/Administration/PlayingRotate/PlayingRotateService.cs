@@ -1,66 +1,64 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public sealed class PlayingRotateService : INService
+public sealed class PlayingRotateService : INService, IReadyExecutor
 {
-    private readonly Timer _t;
     private readonly BotConfigService _bss;
     private readonly SelfService _selfService;
     private readonly Replacer _rep;
     private readonly DbService _db;
-    private readonly Bot _bot;
 
     public PlayingRotateService(
         DiscordSocketClient client,
         DbService db,
-        Bot bot,
         BotConfigService bss,
         IEnumerable<IPlaceholderProvider> phProviders,
         SelfService selfService)
     {
         _db = db;
-        _bot = bot;
         _bss = bss;
         _selfService = selfService;
 
         if (client.ShardId == 0)
         {
             _rep = new ReplacementBuilder().WithClient(client).WithProviders(phProviders).Build();
-
-            _t = new(RotatingStatuses, new TimerState(), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         }
     }
 
-    private async void RotatingStatuses(object objState)
+    public async Task OnReadyAsync()
     {
-        try
+        var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        var index = 0;
+        while (await timer.WaitForNextTickAsync())
         {
-            var state = (TimerState)objState;
-
-            if (!_bss.Data.RotateStatuses) return;
-
-            IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
-            await using (var uow = _db.GetDbContext())
+            try
             {
-                rotatingStatuses = uow.RotatingStatus.AsNoTracking().OrderBy(x => x.Id).ToList();
+                if (!_bss.Data.RotateStatuses) return;
+
+                IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
+                await using (var uow = _db.GetDbContext())
+                {
+                    rotatingStatuses = uow.RotatingStatus.AsNoTracking().OrderBy(x => x.Id).ToList();
+                }
+
+                if (rotatingStatuses.Count == 0)
+                    return;
+
+                var playingStatus = index >= rotatingStatuses.Count
+                    ? rotatingStatuses[index = 0]
+                    : rotatingStatuses[index++];
+
+                var statusText = _rep.Replace(playingStatus.Status);
+                await _selfService.SetGameAsync(statusText, playingStatus.Type);
             }
-
-            if (rotatingStatuses.Count == 0)
-                return;
-
-            var playingStatus = state.Index >= rotatingStatuses.Count
-                ? rotatingStatuses[state.Index = 0]
-                : rotatingStatuses[state.Index++];
-
-            var statusText = _rep.Replace(playingStatus.Status);
-            await _selfService.SetGameAsync(statusText, playingStatus.Type);
-        }
-        catch (Exception ex)
-        {
-            Log.Warning(ex, "Rotating playing status errored: {ErrorMessage}", ex.Message);
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Rotating playing status errored: {ErrorMessage}", ex.Message);
+            }
         }
     }
 
@@ -99,10 +97,5 @@ public sealed class PlayingRotateService : INService
     {
         using var uow = _db.GetDbContext();
         return uow.RotatingStatus.AsNoTracking().ToList();
-    }
-
-    private class TimerState
-    {
-        public int Index { get; set; }
     }
 }

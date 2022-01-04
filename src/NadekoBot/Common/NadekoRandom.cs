@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 
 namespace NadekoBot.Common;
-// todo minby maxby
+
 public class NadekoRandom : Random
 {
     private readonly RandomNumberGenerator _rng;

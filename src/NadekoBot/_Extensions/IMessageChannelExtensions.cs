@@ -84,8 +84,9 @@ public static class MessageChannelExtensions
         Func<T, string> howToPrint,
         int columns = 3)
         => ch.SendMessageAsync($@"{seed}```css
-{string.Join("\n", items.Chunk(columns)
-                        .Select(ig => string.Concat(ig.Select(howToPrint))))}
+{items.Chunk(columns)
+      .Select(ig => string.Concat(ig.Select(howToPrint)))
+      .Join("\n")}
 ```");
 
     public static Task<IUserMessage> SendTableAsync<T>(

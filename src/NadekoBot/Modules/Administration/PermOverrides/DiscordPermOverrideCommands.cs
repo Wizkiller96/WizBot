@@ -41,6 +41,7 @@ public partial class Administration
 
             if (!result)
                 return;
+            
             await _service.ClearAllOverrides(ctx.Guild.Id);
 
             await ReplyConfirmLocalizedAsync(strs.perm_override_all);
@@ -66,8 +67,8 @@ public partial class Administration
                     if (thisPageOverrides.Count == 0)
                         eb.WithDescription(GetText(strs.perm_override_page_none));
                     else
-                        eb.WithDescription(string.Join("\n",
-                            thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")));
+                        eb.WithDescription(thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")
+                                                            .Join("\n"));
 
                     return eb;
                 },

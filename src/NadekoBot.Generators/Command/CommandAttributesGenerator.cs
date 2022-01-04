@@ -96,57 +96,6 @@ public class CmdAttribute : System.Attribute
         }
     }
 
-    // private static void GenerateFileFromModel(in SourceProductionContext ctx, IGrouping<string, DataModel> @group)
-    // {
-    //     using var sw = new StringWriter();
-    //     using var tw = new IndentedTextWriter(sw);
-    //
-    //     foreach (var model in group)
-    //     {
-    //         tw.WriteLine($"public partial {model.ReturnType} {model.MethodName}({string.Join(", ", model.Params)});");
-    //     }
-    //
-    //     GenerateFileFromModel(ctx, sw.ToString(), group.Key, group.AsEnumerable());
-    //     
-    //     
-    // }
-
-    // private static void GenerateFileFromModel(SourceProductionContext ctx, string innerContent, string groupName, IEnumerable<DataModel> modelsEnum)
-    // {
-    //     using var sw = new StringWriter();
-    //     using var tw = new IndentedTextWriter(sw);
-    //
-    //     var models = modelsEnum.ToList();
-    //     var referenceModel = models.First();
-    //     tw.WriteLine($"namespace {referenceModel.Namespace};");
-    //     
-    //     foreach (var className in referenceModel.ClassNames.Reverse().ToList())
-    //     {
-    //         tw.WriteLine($"public partial class {className}");
-    //         tw.WriteLine("{");
-    //         tw.WriteLine();
-    //         tw.Indent ++;
-    //     }
-    //     
-    //     foreach (var model in models)
-    //     {
-    //         tw.WriteLine($"public partial {model.ReturnType} {model.MethodName}({string.Join(", ", model.Params)});");
-    //     }
-    //     
-    //     foreach (var _ in referenceModel.ClassNames)
-    //     {
-    //         tw.Indent --;
-    //         tw.WriteLine("}");
-    //     }
-    //     
-    //     // tw.Indent--;
-    //     // tw.WriteLine("}");
-    //     tw.Flush();
-    //
-    //     ctx.AddSource($"{groupName}.qwertyus.g.cs",
-    //         SourceText.From(sw.ToString(), Encoding.UTF8));
-    // }
-
     private static string GetSourceText(FileModel model)
     {
         using var sw = new StringWriter();

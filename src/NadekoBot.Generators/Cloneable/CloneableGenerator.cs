@@ -158,7 +158,7 @@ namespace {namespaceName}
         {{
             return new {classSymbol.Name}
             {{
-{string.Join($",{Environment.NewLine}", fieldAssignmentsCodeFast)}
+{string.Join(",\n", fieldAssignmentsCodeFast)}
             }};
         }}
 
@@ -174,7 +174,7 @@ namespace {namespaceName}
             referenceChain.Push(this);
             var result = new {classSymbol.Name}
             {{
-{string.Join($",{Environment.NewLine}", fieldAssignmentsCodeSafe)}
+{string.Join($",\n", fieldAssignmentsCodeSafe)}
             }};
             referenceChain.Pop();
             return result;

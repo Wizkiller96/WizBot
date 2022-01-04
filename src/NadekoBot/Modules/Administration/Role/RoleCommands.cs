@@ -40,7 +40,9 @@ public partial class Administration
                                      }
 
                                      var role = (IRole)roleResult.BestMatch;
-                                     if (role.Position > ((IGuildUser)ctx.User).GetRoles().Select(r => r.Position).Max()
+                                     if (role.Position > ((IGuildUser)ctx.User).GetRoles()
+                                                                               .Select(r => r.Position)
+                                                                               .Max()
                                          && ctx.User.Id != ctx.Guild.OwnerId)
                                          return null;
                                      var emote = x.Last().ToIEmote();

@@ -45,7 +45,7 @@ public static class StringExtensions
             tokens[i] = token[..1].ToUpperInvariant() + token[1..];
         }
 
-        return string.Join(" ", tokens).Replace(" Of ", " of ").Replace(" The ", " the ");
+        return tokens.Join(" ").Replace(" Of ", " of ").Replace(" The ", " the ");
     }
 
     //http://www.dotnetperls.com/levenshtein
@@ -124,7 +124,7 @@ public static class StringExtensions
     }
 
     public static string GetInitials(this string txt, string glue = "")
-        => string.Join(glue, txt.Split(' ').Select(x => x.FirstOrDefault()));
+        => txt.Split(' ').Select(x => x.FirstOrDefault()).Join(glue);
 
     public static bool IsAlphaNumeric(this string txt)
         => txt.All(c => _lettersAndDigits.Contains(c));
