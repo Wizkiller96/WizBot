@@ -18,7 +18,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
         new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
 
-    private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> _autoCommands = new();
+    private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> autoCommands = new();
 
     private readonly IImageCache _imgs;
     private readonly IHttpClientFactory _httpFactory;
@@ -75,12 +75,12 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 if (server.OwnerId != _client.CurrentUser.Id)
                 {
                     await server.LeaveAsync();
-                    Log.Information($"Left server {server.Name} [{server.Id}]");
+                    Log.Information("Left server {Name} [{Id}]", server.Name, server.Id);
                 }
                 else
                 {
                     await server.DeleteAsync();
-                    Log.Information($"Deleted server {server.Name} [{server.Id}]");
+                    Log.Information("Deleted server {Name} [{Id}]", server.Name, server.Id);
                 }
             });
     }
@@ -89,7 +89,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     {
         await using var uow = _db.GetDbContext();
 
-        _autoCommands = uow.AutoCommands.AsNoTracking()
+        autoCommands = uow.AutoCommands.AsNoTracking()
                            .Where(x => x.Interval >= 5)
                            .AsEnumerable()
                            .GroupBy(x => x.GuildId)
@@ -145,7 +145,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         if (cmd.Interval >= 5)
         {
-            var autos = _autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
+            var autos = autoCommands.GetOrAdd(cmd.GuildId, new ConcurrentDictionary<int, Timer>());
             autos.AddOrUpdate(cmd.Id,
                 _ => TimerFromAutoCommand(cmd),
                 (_, old) =>
@@ -185,9 +185,9 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         if (!ownerChannels.Any())
             Log.Warning(
-                "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server.");
+                "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server");
         else
-            Log.Information($"Created {ownerChannels.Count} out of {_creds.OwnerIds.Count} owner message channels.");
+            Log.Information("Created {OwnerChannelCount} out of {TotalOwnerChannelCount} owner message channels", ownerChannels.Count, _creds.OwnerIds.Count);
     }
 
     public Task LeaveGuild(string guildStr)
@@ -220,7 +220,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                     }
                     catch
                     {
-                        Log.Warning("Can't contact owner with id {0}", ownerCh.Recipient.Id);
+                        Log.Warning("Can't contact owner with id {OwnerId}", ownerCh.Recipient.Id);
                     }
             }
             else
@@ -262,7 +262,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         if (cmd is not null)
         {
             uow.Remove(cmd);
-            if (_autoCommands.TryGetValue(cmd.GuildId, out var autos))
+            if (autoCommands.TryGetValue(cmd.GuildId, out var autos))
                 if (autos.TryRemove(cmd.Id, out var timer))
                     timer.Change(Timeout.Infinite, Timeout.Infinite);
             uow.SaveChanges();

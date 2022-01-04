@@ -5,10 +5,10 @@ namespace NadekoBot.Modules.Music.Resolvers;
 
 public class RadioResolver : IRadioResolver
 {
-    private readonly Regex plsRegex = new("File1=(?<url>.*?)\\n", RegexOptions.Compiled);
-    private readonly Regex m3uRegex = new("(?<url>^[^#].*)", RegexOptions.Compiled | RegexOptions.Multiline);
-    private readonly Regex asxRegex = new("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
-    private readonly Regex xspfRegex = new("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
+    private readonly Regex _plsRegex = new("File1=(?<url>.*?)\\n", RegexOptions.Compiled);
+    private readonly Regex _m3URegex = new("(?<url>^[^#].*)", RegexOptions.Compiled | RegexOptions.Multiline);
+    private readonly Regex _asxRegex = new("<ref href=\"(?<url>.*?)\"", RegexOptions.Compiled);
+    private readonly Regex _xspfRegex = new("<location>(?<url>.*?)</location>", RegexOptions.Compiled);
 
     public async Task<ITrackInfo> ResolveByQueryAsync(string query)
     {
@@ -46,13 +46,13 @@ public class RadioResolver : IRadioResolver
             //Regex.Match(query)
             try
             {
-                var m = plsRegex.Match(file);
+                var m = _plsRegex.Match(file);
                 var res = m.Groups["url"]?.ToString();
                 return res?.Trim();
             }
             catch
             {
-                Log.Warning($"Failed reading .pls:\n{file}");
+                Log.Warning("Failed reading .pls:\n{PlsFile}", file);
                 return null;
             }
 
@@ -64,13 +64,13 @@ public class RadioResolver : IRadioResolver
                 */
             try
             {
-                var m = m3uRegex.Match(file);
+                var m = _m3URegex.Match(file);
                 var res = m.Groups["url"]?.ToString();
                 return res?.Trim();
             }
             catch
             {
-                Log.Warning($"Failed reading .m3u:\n{file}");
+                Log.Warning("Failed reading .m3u:\n{M3uFile}", file);
                 return null;
             }
 
@@ -78,13 +78,13 @@ public class RadioResolver : IRadioResolver
             //<ref href="http://armitunes.com:8000"/>
             try
             {
-                var m = asxRegex.Match(file);
+                var m = _asxRegex.Match(file);
                 var res = m.Groups["url"]?.ToString();
                 return res?.Trim();
             }
             catch
             {
-                Log.Warning($"Failed reading .asx:\n{file}");
+                Log.Warning("Failed reading .asx:\n{AsxFile}", file);
                 return null;
             }
 
@@ -97,13 +97,13 @@ public class RadioResolver : IRadioResolver
                 */
             try
             {
-                var m = xspfRegex.Match(file);
+                var m = _xspfRegex.Match(file);
                 var res = m.Groups["url"]?.ToString();
                 return res?.Trim();
             }
             catch
             {
-                Log.Warning($"Failed reading .xspf:\n{file}");
+                Log.Warning("Failed reading .xspf:\n{XspfFile}", file);
                 return null;
             }
 

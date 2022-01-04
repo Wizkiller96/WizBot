@@ -63,7 +63,7 @@ public partial class Administration
             }
             catch (Exception ex)
             {
-                Log.Warning(ex.ToString());
+                Log.Warning(ex, "Exception in the mute command");
                 await ReplyErrorLocalizedAsync(strs.mute_error);
             }
         }
@@ -124,7 +124,7 @@ public partial class Administration
             }
             catch (Exception ex)
             {
-                Log.Warning(ex.ToString());
+                Log.Warning(ex, "Exception in the chatmute command");
                 await ReplyErrorLocalizedAsync(strs.mute_error);
             }
         }
@@ -148,7 +148,7 @@ public partial class Administration
             }
             catch (Exception ex)
             {
-                Log.Warning(ex.ToString());
+                Log.Warning(ex, "Error in chatmute command");
                 await ReplyErrorLocalizedAsync(strs.mute_error);
             }
         }

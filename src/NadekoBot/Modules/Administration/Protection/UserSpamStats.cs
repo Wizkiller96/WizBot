@@ -1,52 +1,65 @@
 #nullable disable
 namespace NadekoBot.Modules.Administration;
 
-public sealed class UserSpamStats : IDisposable
+public sealed class UserSpamStats
 {
     public int Count
-        => timers.Count;
+    {
+        get
+        {
+            lock (_applyLock)
+            {
+                Cleanup();
+                Log.Information("{Count}",_messageTracker.Count.ToString());
+                return _messageTracker.Count;
+            }
+        }
+    }
 
-    public string LastMessage { get; set; }
+    private string lastMessage;
 
-    private ConcurrentQueue<Timer> timers;
+    private readonly Queue<DateTime> _messageTracker;
 
     private readonly object _applyLock = new();
 
+    private readonly TimeSpan _maxTime = TimeSpan.FromMinutes(30);
+
     public UserSpamStats(IUserMessage msg)
     {
-        LastMessage = msg.Content.ToUpperInvariant();
-        timers = new();
+        lastMessage = msg.Content.ToUpperInvariant();
+        _messageTracker = new();
 
         ApplyNextMessage(msg);
     }
 
     public void ApplyNextMessage(IUserMessage message)
     {
+        var upperMsg = message.Content.ToUpperInvariant();
+
         lock (_applyLock)
         {
-            var upperMsg = message.Content.ToUpperInvariant();
-            if (upperMsg != LastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))
+            if (upperMsg != lastMessage || (string.IsNullOrWhiteSpace(upperMsg) && message.Attachments.Any()))
             {
-                LastMessage = upperMsg;
-                while (timers.TryDequeue(out var old))
-                    old.Change(Timeout.Infinite, Timeout.Infinite);
+                // if it's a new message, reset spam counter
+                lastMessage = upperMsg;
+                _messageTracker.Clear();
             }
 
-            var t = new Timer(_ =>
-                {
-                    if (timers.TryDequeue(out var old))
-                        old.Change(Timeout.Infinite, Timeout.Infinite);
-                },
-                null,
-                TimeSpan.FromMinutes(30),
-                TimeSpan.FromMinutes(30));
-            timers.Enqueue(t);
+            _messageTracker.Enqueue(DateTime.UtcNow);
         }
     }
 
-    public void Dispose()
+    private void Cleanup()
     {
-        while (timers.TryDequeue(out var old))
-            old.Change(Timeout.Infinite, Timeout.Infinite);
+        lock (_applyLock)
+        {
+            while (_messageTracker.TryPeek(out var dateTime))
+            {
+                if (DateTime.UtcNow - dateTime < _maxTime)
+                    break;
+
+                _messageTracker.Dequeue();
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ public static class NadekoExpressionExtensions
         => str.Replace("%bot.mention%", client.CurrentUser.Mention, StringComparison.Ordinal);
 
     public static async Task<IUserMessage> Send(
-        this CustomReaction cr,
+        this NadekoExpression cr,
         IUserMessage ctx,
         DiscordSocketClient client,
         bool sanitize)

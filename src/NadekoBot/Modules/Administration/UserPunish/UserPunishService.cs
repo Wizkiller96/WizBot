@@ -162,7 +162,9 @@ public class UserPunishService : INService
                 }
                 else
                 {
-                    Log.Warning($"Can't find role {roleId.Value} on server {guild.Id} to apply punishment.");
+                    Log.Warning("Can't find role {RoleId} on server {GuildId} to apply punishment",
+                        roleId.Value,
+                        guild.Id);
                 }
 
                 break;
@@ -217,7 +219,9 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
         if (cleared > 0 || deleted > 0)
-            Log.Information($"Cleared {cleared} warnings and deleted {deleted} warnings due to expiry.");
+            Log.Information("Cleared {ClearedWarnings} warnings and deleted {DeletedWarnings} warnings due to expiry",
+                cleared,
+                deleted);
     }
 
     public async Task CheckWarnExpiresAsync(ulong guildId)
@@ -305,7 +309,8 @@ WHERE GuildId={guildId}
         IRole role = null)
     {
         // these 3 don't make sense with time
-        if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles && time is not null)
+        if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles
+            && time is not null)
             return false;
         if (number <= 0 || (time is not null && time.Time > TimeSpan.FromDays(49)))
             return false;

@@ -1,7 +1,7 @@
 #nullable disable
 namespace NadekoBot.Services.Database.Models;
 
-public class CustomReaction : DbEntity
+public class NadekoExpression : DbEntity
 {
     public ulong? GuildId { get; set; }
     public string Response { get; set; }

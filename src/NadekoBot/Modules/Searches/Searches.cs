@@ -19,7 +19,7 @@ namespace NadekoBot.Modules.Searches;
 
 public partial class Searches : NadekoModule<SearchesService>
 {
-    private static readonly ConcurrentDictionary<string, string> cachedShortenedLinks = new();
+    private static readonly ConcurrentDictionary<string, string> _cachedShortenedLinks = new();
     private readonly IBotCredentials _creds;
     private readonly IGoogleApiService _google;
     private readonly IHttpClientFactory _httpFactory;
@@ -141,7 +141,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var eb = _eb.Create()
                     .WithOkColor()
                     .WithTitle(GetText(strs.time_new))
-                    .WithDescription(Format.Code(data.Time.ToString()))
+                    .WithDescription(Format.Code(data.Time.ToString(Culture)))
                     .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
                     .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
@@ -282,20 +282,20 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
 
         query = query.Trim();
-        if (!cachedShortenedLinks.TryGetValue(query, out var shortLink))
+        if (!_cachedShortenedLinks.TryGetValue(query, out var shortLink))
             try
             {
-                using var _http = _httpFactory.CreateClient();
+                using var http = _httpFactory.CreateClient();
                 using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
                 var formData = new MultipartFormDataContent { { new StringContent(query), "url" } };
                 req.Content = formData;
 
-                using var res = await _http.SendAsync(req);
+                using var res = await http.SendAsync(req);
                 var content = await res.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<ShortenData>(content);
 
                 if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
-                    cachedShortenedLinks.TryAdd(query, data.ResultUrl);
+                    _cachedShortenedLinks.TryAdd(query, data.ResultUrl);
                 else
                     return;
 
@@ -406,7 +406,6 @@ public partial class Searches : NadekoModule<SearchesService>
     [Cmd]
     public async partial Task Hearthstone([Leftover] string name)
     {
-        var arg = name;
         if (!await ValidateQuery(name))
             return;
 
@@ -496,7 +495,8 @@ public partial class Searches : NadekoModule<SearchesService>
                             .Where(x => x.Senses is not null
                                         && x.Senses.Count > 0
                                         && x.Senses[0].Definition is not null)
-                            .Select(x => (Sense: x.Senses[0], x.PartOfSpeech));
+                            .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
+                            .ToList();
 
             if (!datas.Any())
             {
@@ -505,17 +505,17 @@ public partial class Searches : NadekoModule<SearchesService>
             }
 
 
-            var col = datas.Select(data => (
-                               Definition: data.Sense.Definition is string
-                                   ? data.Sense.Definition.ToString()
-                                   : ((JArray)JToken.Parse(data.Sense.Definition.ToString())).First.ToString(),
-                               Example: data.Sense.Examples is null || data.Sense.Examples.Count == 0
+            var col = datas.Select(x => (
+                               Definition: x.Sense.Definition is string
+                                   ? x.Sense.Definition.ToString()
+                                   : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
+                               Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
                                    ? string.Empty
-                                   : data.Sense.Examples[0].Text, Word: word,
-                               WordType: string.IsNullOrWhiteSpace(data.PartOfSpeech) ? "-" : data.PartOfSpeech))
+                                   : x.Sense.Examples[0].Text, Word: word,
+                               WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
                            .ToList();
 
-            Log.Information($"Sending {col.Count} definition for: {word}");
+            Log.Information("Sending {Count} definition for: {Word}", col.Count, word);
 
             await ctx.SendPaginatedConfirmAsync(0,
                 page =>
@@ -547,8 +547,6 @@ public partial class Searches : NadekoModule<SearchesService>
     {
         using var http = _httpFactory.CreateClient();
         var response = await http.GetStringAsync("https://catfact.ninja/fact");
-        if (response is null)
-            return;
 
         var fact = JObject.Parse(response)["fact"].ToString();
         await SendConfirmAsync("🐈" + GetText(strs.catfact), fact);
@@ -563,9 +561,6 @@ public partial class Searches : NadekoModule<SearchesService>
             usr = (IGuildUser)ctx.User;
 
         var av = usr.RealAvatarUrl();
-        if (av is null)
-            return;
-
         await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}");
     }
 
@@ -690,7 +685,7 @@ public partial class Searches : NadekoModule<SearchesService>
         try
         {
             using var http = _httpFactory.CreateClient();
-            var res = await http.GetStringAsync("https://bible-api.com/" + book + " " + chapterAndVerse);
+            var res = await http.GetStringAsync($"https://bible-api.com/{book} {chapterAndVerse}");
 
             obj = JsonConvert.DeserializeObject<BibleVerses>(res);
         }

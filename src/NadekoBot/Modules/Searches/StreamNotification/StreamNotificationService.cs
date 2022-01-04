@@ -24,7 +24,6 @@ public sealed class StreamNotificationService : INService
     private readonly Dictionary<StreamDataKey, Dictionary<ulong, HashSet<FollowedStream>>> _shardTrackedStreams;
     private readonly ConcurrentHashSet<ulong> _offlineNotificationServers;
 
-    private readonly IBotCredentials _creds;
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
     private readonly Timer _notifCleanupTimer;
@@ -49,7 +48,6 @@ public sealed class StreamNotificationService : INService
         _db = db;
         _client = client;
         _strings = strings;
-        _creds = creds;
         _pubSub = pubSub;
         _eb = eb;
         _streamTracker = new(httpFactory, redis, creds.RedisKey(), client.ShardId == 0);
@@ -123,8 +121,12 @@ public sealed class StreamNotificationService : INService
                         using var uow = _db.GetDbContext();
                         foreach (var kvp in deleteGroups)
                         {
-                            Log.Information($"Deleting {kvp.Value.Count} {kvp.Key} streams because "
-                                            + $"they've been erroring for more than {errorLimit}: {string.Join(", ", kvp.Value)}");
+                            Log.Information(
+                                "Deleting {StreamCount} {Platform} streams because they've been erroring for more than {ErrorLimit}: {RemovedList}",
+                                kvp.Value.Count,
+                                kvp.Key,
+                                errorLimit,
+                                string.Join(", ", kvp.Value));
 
                             var toDelete = uow.Set<FollowedStream>()
                                               .AsQueryable()
@@ -140,8 +142,7 @@ public sealed class StreamNotificationService : INService
                     }
                     catch (Exception ex)
                     {
-                        Log.Error("Error cleaning up FollowedStreams");
-                        Log.Error(ex.ToString());
+                        Log.Error(ex, "Error cleaning up FollowedStreams");
                     }
                 },
                 null,

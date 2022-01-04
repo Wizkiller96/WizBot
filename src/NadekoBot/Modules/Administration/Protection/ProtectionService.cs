@@ -221,7 +221,6 @@ public class ProtectionService : INService
                 if (stats.Count >= spamSettings.AntiSpamSettings.MessageThreshold)
                     if (spamSettings.UserStats.TryRemove(msg.Author.Id, out stats))
                     {
-                        stats.Dispose();
                         var settings = spamSettings.AntiSpamSettings;
                         await PunishUsers(settings.Action,
                             ProtectionType.Spamming,
@@ -319,10 +318,8 @@ public class ProtectionService : INService
 
     public bool TryStopAntiSpam(ulong guildId)
     {
-        if (_antiSpamGuilds.TryRemove(guildId, out var removed))
+        if (_antiSpamGuilds.TryRemove(guildId, out _))
         {
-            foreach (var (_, val) in removed.UserStats) val.Dispose();
-
             using var uow = _db.GetDbContext();
             var gc = uow.GuildConfigsForId(guildId,
                 set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));

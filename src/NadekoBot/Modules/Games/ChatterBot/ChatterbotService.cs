@@ -116,7 +116,7 @@ public class ChatterBotService : IEarlyBehavior
                     try { await usrMsg.Channel.SendErrorAsync(_eb, returnMsg); }
                     catch { }
 
-                    Log.Information(returnMsg);
+                    Log.Information("{PermissionMessage}", returnMsg);
                 }
 
                 return true;
@@ -125,11 +125,19 @@ public class ChatterBotService : IEarlyBehavior
             var cleverbotExecuted = await TryAsk(cbs, (ITextChannel)usrMsg.Channel, message);
             if (cleverbotExecuted)
             {
-                Log.Information($@"CleverBot Executed
-Server: {guild.Name} [{guild.Id}]
-Channel: {usrMsg.Channel?.Name} [{usrMsg.Channel?.Id}]
-UserId: {usrMsg.Author} [{usrMsg.Author.Id}]
-Message: {usrMsg.Content}");
+                Log.Information(@"CleverBot Executed
+Server: {GuildName} [{GuildId}]
+Channel: {ChannelName} [{ChannelId}]
+UserId: {Author} [{AuthorId}]
+Message: {Content}",
+                    guild.Name,
+                    guild.Id,
+                    usrMsg.Channel?.Name,
+                    usrMsg.Channel?.Id,
+                    usrMsg.Author,
+                    usrMsg.Author.Id,
+                    usrMsg.Content);
+                
                 return true;
             }
         }

@@ -46,17 +46,17 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 
     private readonly object _gexprWriteLock = new();
 
-    private readonly TypedKey<CustomReaction> _gexprAddedKey = new("gexpr.added");
+    private readonly TypedKey<NadekoExpression> _gexprAddedKey = new("gexpr.added");
     private readonly TypedKey<int> _gexprDeletedkey = new("gexpr.deleted");
-    private readonly TypedKey<CustomReaction> _gexprEditedKey = new("gexpr.edited");
+    private readonly TypedKey<NadekoExpression> _gexprEditedKey = new("gexpr.edited");
     private readonly TypedKey<bool> _exprsReloadedKey = new("exprs.reloaded");
 
     // it is perfectly fine to have global expressions as an array
     // 1. expressions are almost never added (compared to how many times they are being looped through)
     // 2. only need write locks for this as we'll rebuild+replace the array on every edit
     // 3. there's never many of them (at most a thousand, usually < 100)
-    private CustomReaction[] globalReactions;
-    private ConcurrentDictionary<ulong, CustomReaction[]> newGuildReactions;
+    private NadekoExpression[] globalReactions;
+    private ConcurrentDictionary<ulong, NadekoExpression[]> newGuildReactions;
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -140,7 +140,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         ready = true;
     }
 
-    private CustomReaction TryGetExpression(IUserMessage umsg)
+    private NadekoExpression TryGetExpression(IUserMessage umsg)
     {
         if (!ready)
             return null;
@@ -163,9 +163,9 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private CustomReaction MatchExpressions(in ReadOnlySpan<char> content, CustomReaction[] exprs)
+    private NadekoExpression MatchExpressions(in ReadOnlySpan<char> content, NadekoExpression[] exprs)
     {
-        var result = new List<CustomReaction>(1);
+        var result = new List<NadekoExpression>(1);
         for (var i = 0; i < exprs.Length; i++)
         {
             var expr = exprs[i];
@@ -248,19 +248,19 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                 {
                     if (pc.Verbose)
                     {
-                        var returnMsg = _strings.GetText(strs.perm_prevent(index + 1,
+                        var permissionMessage = _strings.GetText(strs.perm_prevent(index + 1,
                                 Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg))),
                             sg.Id);
 
                         try
                         {
-                            await msg.Channel.SendErrorAsync(_eb, returnMsg);
+                            await msg.Channel.SendErrorAsync(_eb, permissionMessage);
                         }
                         catch
                         {
                         }
 
-                        Log.Information(returnMsg);
+                        Log.Information("{PermissionMessage}", permissionMessage);
                     }
 
                     return true;
@@ -307,7 +307,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         }
         catch (Exception ex)
         {
-            Log.Warning(ex.Message);
+            Log.Warning(ex, "Error in Expression RunBehavior: {ErrorMessage}", ex.Message);
         }
 
         return false;
@@ -315,7 +315,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 
     public async Task ResetExprReactions(ulong? maybeGuildId, int id)
     {
-        CustomReaction expr;
+        NadekoExpression expr;
         await using var uow = _db.GetDbContext();
         expr = uow.Expressions.GetById(id);
         if (expr is null)
@@ -326,7 +326,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         await uow.SaveChangesAsync();
     }
 
-    private Task UpdateInternalAsync(ulong? maybeGuildId, CustomReaction expr)
+    private Task UpdateInternalAsync(ulong? maybeGuildId, NadekoExpression expr)
     {
         if (maybeGuildId is { } guildId)
             UpdateInternal(guildId, expr);
@@ -336,7 +336,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private void UpdateInternal(ulong? maybeGuildId, CustomReaction expr)
+    private void UpdateInternal(ulong? maybeGuildId, NadekoExpression expr)
     {
         if (maybeGuildId is { } guildId)
             newGuildReactions.AddOrUpdate(guildId,
@@ -359,7 +359,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
             }
     }
 
-    private Task AddInternalAsync(ulong? maybeGuildId, CustomReaction expr)
+    private Task AddInternalAsync(ulong? maybeGuildId, NadekoExpression expr)
     {
         // only do this for perf purposes
         expr.Trigger = expr.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
@@ -377,7 +377,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         if (maybeGuildId is { } guildId)
         {
             newGuildReactions.AddOrUpdate(guildId,
-                Array.Empty<CustomReaction>(),
+                Array.Empty<NadekoExpression>(),
                 (key, old) => DeleteInternal(old, id, out _));
 
             return Task.CompletedTask;
@@ -392,16 +392,16 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private CustomReaction[] DeleteInternal(
-        IReadOnlyList<CustomReaction> exprs,
+    private NadekoExpression[] DeleteInternal(
+        IReadOnlyList<NadekoExpression> exprs,
         int id,
-        out CustomReaction deleted)
+        out NadekoExpression deleted)
     {
         deleted = null;
         if (exprs is null || exprs.Count == 0)
-            return exprs as CustomReaction[] ?? exprs?.ToArray();
+            return exprs as NadekoExpression[] ?? exprs?.ToArray();
 
-        var newExprs = new CustomReaction[exprs.Count - 1];
+        var newExprs = new NadekoExpression[exprs.Count - 1];
         for (int i = 0, k = 0; i < exprs.Count; i++, k++)
         {
             if (exprs[i].Id == id)
@@ -419,7 +419,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 
     public async Task SetExprReactions(ulong? guildId, int id, IEnumerable<string> emojis)
     {
-        CustomReaction expr;
+        NadekoExpression expr;
         await using (var uow = _db.GetDbContext())
         {
             expr = uow.Expressions.GetById(id);
@@ -437,7 +437,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     public async Task<(bool Sucess, bool NewValue)> ToggleExprOptionAsync(int id, ExprField field)
     {
         var newVal = false;
-        CustomReaction expr;
+        NadekoExpression expr;
         await using (var uow = _db.GetDbContext())
         {
             expr = uow.Expressions.GetById(id);
@@ -460,7 +460,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return (true, newVal);
     }
 
-    public CustomReaction GetExpression(ulong? guildId, int id)
+    public NadekoExpression GetExpression(ulong? guildId, int id)
     {
         using var uow = _db.GetDbContext();
         var expr = uow.Expressions.GetById(id);
@@ -516,7 +516,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         {
             var trigger = entry.Key;
             await uow.Expressions.AddRangeAsync(entry.Value.Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
-                                                         .Select(expr => new CustomReaction
+                                                         .Select(expr => new NadekoExpression
                                                          {
                                                              GuildId = guildId,
                                                              Response = expr.Res,
@@ -542,11 +542,11 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     private ValueTask OnExprsShouldReload(bool _)
         => new(ReloadInternal(_bot.GetCurrentGuildIds()));
 
-    private ValueTask OnGexprAdded(CustomReaction c)
+    private ValueTask OnGexprAdded(NadekoExpression c)
     {
         lock (_gexprWriteLock)
         {
-            var newGlobalReactions = new CustomReaction[globalReactions.Length + 1];
+            var newGlobalReactions = new NadekoExpression[globalReactions.Length + 1];
             Array.Copy(globalReactions, newGlobalReactions, globalReactions.Length);
             newGlobalReactions[globalReactions.Length] = c;
             globalReactions = newGlobalReactions;
@@ -555,7 +555,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return default;
     }
 
-    private ValueTask OnGexprEdited(CustomReaction c)
+    private ValueTask OnGexprEdited(NadekoExpression c)
     {
         lock (_gexprWriteLock)
         {
@@ -611,10 +611,10 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 
     #region Basic Operations
 
-    public async Task<CustomReaction> AddAsync(ulong? guildId, string key, string message)
+    public async Task<NadekoExpression> AddAsync(ulong? guildId, string key, string message)
     {
         key = key.ToLowerInvariant();
-        var expr = new CustomReaction { GuildId = guildId, Trigger = key, Response = message };
+        var expr = new NadekoExpression { GuildId = guildId, Trigger = key, Response = message };
 
         if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
             expr.AllowTarget = true;
@@ -630,7 +630,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return expr;
     }
 
-    public async Task<CustomReaction> EditAsync(ulong? guildId, int id, string message)
+    public async Task<NadekoExpression> EditAsync(ulong? guildId, int id, string message)
     {
         await using var uow = _db.GetDbContext();
         var expr = uow.Expressions.GetById(id);
@@ -656,7 +656,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     }
 
 
-    public async Task<CustomReaction> DeleteAsync(ulong? guildId, int id)
+    public async Task<NadekoExpression> DeleteAsync(ulong? guildId, int id)
     {
         await using var uow = _db.GetDbContext();
         var toDelete = uow.Expressions.GetById(id);
@@ -676,10 +676,10 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public CustomReaction[] GetExpressionsFor(ulong? maybeGuildId)
+    public NadekoExpression[] GetExpressionsFor(ulong? maybeGuildId)
     {
         if (maybeGuildId is { } guildId)
-            return newGuildReactions.TryGetValue(guildId, out var exprs) ? exprs : Array.Empty<CustomReaction>();
+            return newGuildReactions.TryGetValue(guildId, out var exprs) ? exprs : Array.Empty<NadekoExpression>();
 
         return globalReactions;
     }

@@ -86,7 +86,7 @@ public partial class Administration
             }
             catch (Exception ex)
             {
-                Log.Warning(ex.Message);
+                Log.Warning(ex, "Exception occured while warning a user");
                 var errorEmbed = _eb.Create().WithErrorColor().WithDescription(GetText(strs.cant_apply_punishment));
 
                 if (dmFailed) errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -565,7 +565,7 @@ public partial class Administration
         {
             var bans = await ctx.Guild.GetBansAsync();
 
-            var bun = bans.FirstOrDefault(x => x.User.ToString().ToLowerInvariant() == user.ToLowerInvariant());
+            var bun = bans.FirstOrDefault(x => x.User.ToString()!.ToLowerInvariant() == user.ToLowerInvariant());
 
             if (bun is null)
             {

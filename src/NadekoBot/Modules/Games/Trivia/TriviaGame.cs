@@ -264,7 +264,7 @@ public class TriviaGame
                     embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
                 await Channel.EmbedAsync(embed);
             }
-            catch (Exception ex) { Log.Warning(ex.ToString()); }
+            catch (Exception ex) { Log.Warning(ex, "Exception in a potential guess"); }
         });
         return Task.CompletedTask;
     }

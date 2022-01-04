@@ -6,19 +6,18 @@ using NadekoBot.Services.Database.Models;
 using StackExchange.Redis;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace NadekoBot.Modules.Utility.Services;
+namespace NadekoBot.Modules.Utility;
 
 public class PatreonRewardsService : INService
 {
     public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
 
     public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
-    private readonly SemaphoreSlim getPledgesLocker = new(1, 1);
+    private readonly SemaphoreSlim _getPledgesLocker = new(1, 1);
 
     private readonly Timer _updater;
-    private readonly SemaphoreSlim claimLockJustInCase = new(1, 1);
+    private readonly SemaphoreSlim _claimLockJustInCase = new(1, 1);
     private readonly DbService _db;
     private readonly ICurrencyService _currency;
     private readonly GamblingConfigService _gamblingConfigService;
@@ -128,7 +127,7 @@ public class PatreonRewardsService : INService
         }
 
         LastUpdate = DateTime.UtcNow;
-        await getPledgesLocker.WaitAsync();
+        await _getPledgesLocker.WaitAsync();
         try
         {
             var members = new List<PatreonMember>();
@@ -154,7 +153,7 @@ public class PatreonRewardsService : INService
 
                     members.AddRange(data.Data);
                     users.AddRange(data.Included);
-                } while (!string.IsNullOrWhiteSpace(page = data?.Links?.Next));
+                } while (!string.IsNullOrWhiteSpace(page = data.Links?.Next));
             }
 
             var userData = members.Join(users,
@@ -185,13 +184,13 @@ public class PatreonRewardsService : INService
         }
         finally
         {
-            getPledgesLocker.Release();
+            _getPledgesLocker.Release();
         }
     }
 
     public async Task<int> ClaimReward(ulong userId, string patreonUserId, int cents)
     {
-        await claimLockJustInCase.WaitAsync();
+        await _claimLockJustInCase.WaitAsync();
         var settings = _gamblingConfigService.Data;
         var now = DateTime.UtcNow;
         try
@@ -213,7 +212,7 @@ public class PatreonRewardsService : INService
 
                 await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, true);
 
-                Log.Information($"Sending new currency reward to {userId}");
+                Log.Information("Sending new currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,
                     "Thank you for your pledge! " + $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} !");
                 return eligibleFor;
@@ -228,7 +227,7 @@ public class PatreonRewardsService : INService
 
                 await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, true);
 
-                Log.Information($"Sending recurring currency reward to {userId}");
+                Log.Information("Sending recurring currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,
                     "Thank you for your continued support! "
                     + $"You've been awarded **{eligibleFor}**{settings.Currency.Sign} for this month's support!");
@@ -246,7 +245,7 @@ public class PatreonRewardsService : INService
 
                 await _currency.AddAsync(userId, "Patreon reward - update", toAward, true);
 
-                Log.Information($"Sending updated currency reward to {userId}");
+                Log.Information("Sending updated currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,
                     "Thank you for increasing your pledge! "
                     + $"You've been awarded an additional **{toAward}**{settings.Currency.Sign} !");
@@ -257,7 +256,7 @@ public class PatreonRewardsService : INService
         }
         finally
         {
-            claimLockJustInCase.Release();
+            _claimLockJustInCase.Release();
         }
     }
 
@@ -275,24 +274,5 @@ public class PatreonRewardsService : INService
         {
             // ignored
         }
-    }
-
-
-    private sealed class PatreonRefreshData
-    {
-        [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
-
-        [JsonPropertyName("refresh_token")]
-        public string RefreshToken { get; set; }
-
-        [JsonPropertyName("expires_in")]
-        public long ExpiresIn { get; set; }
-
-        [JsonPropertyName("scope")]
-        public string Scope { get; set; }
-
-        [JsonPropertyName("token_type")]
-        public string TokenType { get; set; }
     }
 }

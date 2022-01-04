@@ -56,8 +56,9 @@ public partial class Gambling
                 if (await bj.Join(ctx.User, amount))
                     await ReplyConfirmLocalizedAsync(strs.bj_joined);
                 else
-                    Log.Information(
-                        $"{ctx.User} can't join a blackjack game as it's in " + bj.State + " state already.");
+                    Log.Information("{User} can't join a blackjack game as it's in {BlackjackState} state already",
+                        ctx.User,
+                        bj.State);
             }
 
             await ctx.Message.DeleteAsync();

@@ -25,7 +25,7 @@ public class Blackjack
     private readonly ICurrencyService _cs;
     private readonly DbService _db;
 
-    private readonly SemaphoreSlim locker = new(1, 1);
+    private readonly SemaphoreSlim _locker = new(1, 1);
 
     public Blackjack(ICurrencyService cs, DbService db)
     {
@@ -45,14 +45,14 @@ public class Blackjack
         {
             //wait for players to join
             await Task.Delay(20000);
-            await locker.WaitAsync();
+            await _locker.WaitAsync();
             try
             {
                 State = GameState.Playing;
             }
             finally
             {
-                locker.Release();
+                _locker.Release();
             }
 
             await PrintState();
@@ -79,7 +79,7 @@ public class Blackjack
             foreach (var usr in Players.Where(x => !x.Done))
                 while (!usr.Done)
                 {
-                    Log.Information($"Waiting for {usr.DiscordUser}'s move");
+                    Log.Information("Waiting for {DiscordUser}'s move", usr.DiscordUser);
                     await PromptUserMove(usr);
                 }
 
@@ -115,7 +115,7 @@ public class Blackjack
 
     public async Task<bool> Join(IUser user, long bet)
     {
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             if (State != GameState.Starting)
@@ -132,7 +132,7 @@ public class Blackjack
         }
         finally
         {
-            locker.Release();
+            _locker.Release();
         }
     }
 
@@ -148,7 +148,7 @@ public class Blackjack
 
     public async Task<bool> Stand(User u)
     {
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)
@@ -163,7 +163,7 @@ public class Blackjack
         }
         finally
         {
-            locker.Release();
+            _locker.Release();
         }
     }
 
@@ -229,7 +229,7 @@ public class Blackjack
 
     public async Task<bool> Double(User u)
     {
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)
@@ -260,7 +260,7 @@ public class Blackjack
         }
         finally
         {
-            locker.Release();
+            _locker.Release();
         }
     }
 
@@ -276,7 +276,7 @@ public class Blackjack
 
     public async Task<bool> Hit(User u)
     {
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             if (State != GameState.Playing)
@@ -300,7 +300,7 @@ public class Blackjack
         }
         finally
         {
-            locker.Release();
+            _locker.Release();
         }
     }
 

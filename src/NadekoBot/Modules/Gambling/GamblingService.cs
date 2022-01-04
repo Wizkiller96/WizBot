@@ -51,9 +51,12 @@ public class GamblingService : INService
                     if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
                         return;
 
-                    Log.Information($"Decaying users' currency - decay: {config.Decay.Percent * 100}% "
-                                    + $"| max: {maxDecay} "
-                                    + $"| threshold: {config.Decay.MinThreshold}");
+                    Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
+                                    | max: {MaxDecay} 
+                                    | threshold: {DecayMinTreshold}",
+                        config.Decay.Percent * 100,
+                        maxDecay,
+                        config.Decay.MinThreshold);
 
                     if (maxDecay == 0)
                         maxDecay = int.MaxValue;

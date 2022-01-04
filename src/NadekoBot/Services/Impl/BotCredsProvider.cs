@@ -15,14 +15,14 @@ public interface IBotCredsProvider
 
 public sealed class BotCredsProvider : IBotCredsProvider
 {
-    private const string _credsFileName = "creds.yml";
-    private const string _credsExampleFileName = "creds_example.yml";
+    private const string CREDS_FILE_NAME = "creds.yml";
+    private const string CREDS_EXAMPLE_FILE_NAME = "creds_example.yml";
 
     private string CredsPath
-        => Path.Combine(Directory.GetCurrentDirectory(), _credsFileName);
+        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_FILE_NAME);
 
     private string CredsExamplePath
-        => Path.Combine(Directory.GetCurrentDirectory(), _credsExampleFileName);
+        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_EXAMPLE_FILE_NAME);
 
     private string OldCredsJsonPath
         => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
@@ -37,7 +37,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private readonly IConfigurationRoot _config;
 
 
-    private readonly object reloadLock = new();
+    private readonly object _reloadLock = new();
 
     public BotCredsProvider(int? totalShards = null)
     {
@@ -47,9 +47,10 @@ public sealed class BotCredsProvider : IBotCredsProvider
         MigrateCredentials();
 
         if (!File.Exists(CredsPath))
-            Log.Warning($"{CredsPath} is missing. "
-                        + "Attempting to load creds from environment variables prefixed with 'NadekoBot_'. "
-                        + $"Example is in {CredsExamplePath}");
+            Log.Warning(
+                "{CredsPath} is missing. Attempting to load creds from environment variables prefixed with 'NadekoBot_'. Example is in {CredsExamplePath}",
+                CredsPath,
+                CredsExamplePath);
 
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("NadekoBot_")
@@ -62,15 +63,14 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
     public void Reload()
     {
-        lock (reloadLock)
+        lock (_reloadLock)
         {
             _creds.OwnerIds.Clear();
             _config.Bind(_creds);
 
             if (string.IsNullOrWhiteSpace(_creds.Token))
             {
-                Log.Error("Token is missing from creds.yml or Environment variables.\n"
-                          + "Add it and restart the program.");
+                Log.Error("Token is missing from creds.yml or Environment variables.\nAdd it and restart the program");
                 Helpers.ReadErrorAndExit(5);
                 return;
             }
@@ -96,13 +96,13 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
     public void ModifyCredsFile(Action<Creds> func)
     {
-        var ymlData = File.ReadAllText(_credsFileName);
+        var ymlData = File.ReadAllText(CREDS_FILE_NAME);
         var creds = Yaml.Deserializer.Deserialize<Creds>(ymlData);
 
         func(creds);
 
         ymlData = Yaml.Serializer.Serialize(creds);
-        File.WriteAllText(_credsFileName, ymlData);
+        File.WriteAllText(CREDS_FILE_NAME, ymlData);
 
         Reload();
     }
@@ -145,13 +145,13 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 "Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
         }
 
-        if (File.Exists(_credsFileName))
+        if (File.Exists(CREDS_FILE_NAME))
         {
-            var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(_credsFileName));
+            var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));
             if (creds.Version <= 1)
             {
                 creds.Version = 2;
-                File.WriteAllText(_credsFileName, Yaml.Serializer.Serialize(creds));
+                File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }
     }

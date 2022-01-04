@@ -13,7 +13,7 @@ public class ExportedExpr
     public bool Ca { get; set; }
     public string[] React;
 
-    public static ExportedExpr FromModel(CustomReaction cr)
+    public static ExportedExpr FromModel(NadekoExpression cr)
         => new()
         {
             Res = cr.Response,

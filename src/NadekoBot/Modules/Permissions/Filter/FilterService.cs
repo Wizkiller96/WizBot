@@ -92,7 +92,8 @@ public sealed class FilterService : IEarlyBehavior
         WordFilteringServers.TryRemove(guildId);
         ServerFilteredWords.TryRemove(guildId, out _);
 
-        foreach (var c in gc.FilterWordsChannelIds) WordFilteringChannels.TryRemove(c.ChannelId);
+        foreach (var c in gc.FilterWordsChannelIds)
+            WordFilteringChannels.TryRemove(c.ChannelId);
 
         gc.FilterWords = false;
         gc.FilteredWords.Clear();
@@ -131,7 +132,9 @@ public sealed class FilterService : IEarlyBehavior
         var filteredServerWords = FilteredWordsForServer(guild.Id) ?? new ConcurrentHashSet<string>();
         var wordsInMessage = usrMsg.Content.ToLowerInvariant().Split(' ');
         if (filteredChannelWords.Count != 0 || filteredServerWords.Count != 0)
+        {
             foreach (var word in wordsInMessage)
+            {
                 if (filteredChannelWords.Contains(word) || filteredServerWords.Contains(word))
                 {
                     Log.Information("User {UserName} [{UserId}] used a filtered word in {ChannelId} channel",
@@ -145,12 +148,15 @@ public sealed class FilterService : IEarlyBehavior
                     }
                     catch (HttpException ex)
                     {
-                        Log.Warning("I do not have permission to filter words in channel with id " + usrMsg.Channel.Id,
-                            ex);
+                        Log.Warning(ex,
+                            "I do not have permission to filter words in channel with id {Id}",
+                            usrMsg.Channel.Id);
                     }
 
                     return true;
                 }
+            }
+        }
 
         return false;
     }
@@ -177,7 +183,9 @@ public sealed class FilterService : IEarlyBehavior
             }
             catch (HttpException ex)
             {
-                Log.Warning("I do not have permission to filter invites in channel with id " + usrMsg.Channel.Id, ex);
+                Log.Warning(ex,
+                    "I do not have permission to filter invites in channel with id {Id}",
+                    usrMsg.Channel.Id);
                 return true;
             }
         }
@@ -207,7 +215,7 @@ public sealed class FilterService : IEarlyBehavior
             }
             catch (HttpException ex)
             {
-                Log.Warning("I do not have permission to filter links in channel with id " + usrMsg.Channel.Id, ex);
+                Log.Warning(ex, "I do not have permission to filter links in channel with id {Id}", usrMsg.Channel.Id);
                 return true;
             }
         }

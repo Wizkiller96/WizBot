@@ -31,8 +31,7 @@ public class OfficialCleverbotSession : IChatterBotSession
         }
         catch
         {
-            Log.Warning("Unexpected cleverbot response received: ");
-            Log.Warning(dataString);
+            Log.Warning("Unexpected cleverbot response received: {ResponseString}", dataString);
             return null;
         }
     }

@@ -37,7 +37,7 @@ public class YtdlOperation
         {
             using var process = CreateProcess(args);
 
-            Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+            Log.Debug("Executing {FileName} {Arguments}", process.StartInfo.FileName, process.StartInfo.Arguments);
             process.Start();
 
             var str = await process.StandardOutput.ReadToEndAsync();
@@ -63,7 +63,7 @@ public class YtdlOperation
     {
         using var process = CreateProcess(args);
 
-        Log.Debug($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+        Log.Debug("Executing {FileName} {Arguments}", process.StartInfo.FileName, process.StartInfo.Arguments);
         process.Start();
 
         string line;

@@ -68,12 +68,12 @@ public class SearchesService : INService
         if (File.Exists("data/wowjokes.json"))
             WowJokes = JsonConvert.DeserializeObject<List<WoWJoke>>(File.ReadAllText("data/wowjokes.json"));
         else
-            Log.Warning("data/wowjokes.json is missing. WOW Jokes are not loaded.");
+            Log.Warning("data/wowjokes.json is missing. WOW Jokes are not loaded");
 
         if (File.Exists("data/magicitems.json"))
             MagicItems = JsonConvert.DeserializeObject<List<MagicItem>>(File.ReadAllText("data/magicitems.json"));
         else
-            Log.Warning("data/magicitems.json is missing. Magic items are not loaded.");
+            Log.Warning("data/magicitems.json is missing. Magic items are not loaded");
 
         if (File.Exists("data/yomama.txt"))
         {
@@ -165,14 +165,14 @@ public class SearchesService : INService
                                                  + "appid=42cd627dd60debf25a5739e50a217d74&"
                                                  + "units=metric");
 
-            if (data is null)
+            if (string.IsNullOrWhiteSpace(data))
                 return null;
 
             return JsonConvert.DeserializeObject<WeatherData>(data);
         }
         catch (Exception ex)
         {
-            Log.Warning(ex.Message);
+            Log.Warning(ex, "Error getting weather data");
             return null;
         }
     }
@@ -196,7 +196,7 @@ public class SearchesService : INService
 
         try
         {
-            using var _http = _httpFactory.CreateClient();
+            using var http = _httpFactory.CreateClient();
             var res = await _cache.GetOrAddCachedDataAsync($"geo_{query}",
                 _ =>
                 {
@@ -207,7 +207,7 @@ public class SearchesService : INService
                               + $"q={Uri.EscapeDataString(query)}&"
                               + "format=json";
 
-                    var res = _http.GetStringAsync(url);
+                    var res = http.GetStringAsync(url);
                     return res;
                 },
                 "",
@@ -227,7 +227,7 @@ public class SearchesService : INService
                 + $"key={_creds.TimezoneDbApiKey}&format=json&"
                 + "by=position&"
                 + $"lat={geoData.Lat}&lng={geoData.Lon}");
-            using var geoRes = await _http.SendAsync(req);
+            using var geoRes = await http.SendAsync(req);
             var resString = await geoRes.Content.ReadAsStringAsync();
             var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(resString);
 
@@ -403,7 +403,7 @@ public class SearchesService : INService
         }
         catch (Exception ex)
         {
-            Log.Error(ex.Message);
+            Log.Error(ex, "Error getting Hearthstone Card: {ErrorMessage}", ex.Message);
             return null;
         }
     }
