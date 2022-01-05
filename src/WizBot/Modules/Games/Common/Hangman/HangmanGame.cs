@@ -105,6 +105,7 @@ namespace WizBot.Modules.Games.Hangman
                     return GetState(GuessResult.Win);
                 }
 
+                _correct.Add(charGuess);
                 return GetState(GuessResult.Guess);
             }
 
