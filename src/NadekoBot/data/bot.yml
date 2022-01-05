@@ -81,6 +81,6 @@ prefix: .
 #       and (slightly) reduce the greet spam in those servers.
 groupGreets: false
 # Whether the bot will rotate through all specified statuses.
-# This setting can be changed via .rots command.
+# This setting can be changed via .ropl command.
 # See RotatingStatuses submodule in Administration.
 rotateStatuses: false

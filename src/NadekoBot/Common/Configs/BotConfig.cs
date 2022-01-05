@@ -77,7 +77,7 @@ note: This setting is primarily used if you're afraid of raids, or you're runnin
     public bool GroupGreets { get; set; }
 
     [Comment(@"Whether the bot will rotate through all specified statuses.
-This setting can be changed via .rots command.
+This setting can be changed via .ropl command.
 See RotatingStatuses submodule in Administration.")]
     public bool RotateStatuses { get; set; }
 

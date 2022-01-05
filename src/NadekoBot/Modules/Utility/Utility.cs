@@ -253,7 +253,7 @@ public partial class Utility : NadekoModule
 
         await ctx.Channel.EmbedAsync(_eb.Create()
                                         .WithOkColor()
-                                        .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
+                                        .WithAuthor($"NadekoBot v{StatsService.BOT_VERSION}",
                                             "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
                                             "https://nadekobot.readthedocs.io/en/latest/")
                                         .AddField(GetText(strs.author), _stats.Author, true)

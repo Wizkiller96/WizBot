@@ -37,7 +37,8 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         {
             try
             {
-                if (!_bss.Data.RotateStatuses) return;
+                if (!_bss.Data.RotateStatuses) 
+                    continue;
 
                 IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
                 await using (var uow = _db.GetDbContext())
@@ -46,7 +47,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                 }
 
                 if (rotatingStatuses.Count == 0)
-                    return;
+                    continue;
 
                 var playingStatus = index >= rotatingStatuses.Count
                     ? rotatingStatuses[index = 0]

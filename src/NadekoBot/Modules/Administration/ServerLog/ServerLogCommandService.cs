@@ -1,19 +1,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration;
 
-public sealed class LogCommandService : ILogCommandService
+public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 {
     public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
     private ConcurrentDictionary<ITextChannel, List<string>> PresenceUpdates { get; } = new();
     private readonly DiscordSocketClient _client;
 
-    private readonly Timer _timerReference;
     private readonly IBotStrings _strings;
     private readonly DbService _db;
     private readonly MuteService _mute;
@@ -58,11 +58,6 @@ public sealed class LogCommandService : ILogCommandService
             GuildLogSettings = configs.ToDictionary(ls => ls.GuildId).ToConcurrent();
         }
 
-        _timerReference = new(Callback,
-            null,
-            TimeSpan.FromSeconds(15),
-            TimeSpan.FromSeconds(15));
-
         //_client.MessageReceived += _client_MessageReceived;
         _client.MessageUpdated += _client_MessageUpdated;
         _client.MessageDeleted += _client_MessageDeleted;
@@ -96,28 +91,34 @@ public sealed class LogCommandService : ILogCommandService
 #endif
     }
 
-    private async void Callback(object? state)
+    public async Task OnReadyAsync()
     {
-        try
+#if GLOBAL_NADEKO
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        while (await timer.WaitForNextTickAsync())
         {
-            var keys = PresenceUpdates.Keys.ToList();
+            try
+            {
+                var keys = PresenceUpdates.Keys.ToList();
 
-            await keys.Select(key =>
-                      {
-                          if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
-                              return Task.CompletedTask;
-                          if (PresenceUpdates.TryRemove(key, out var msgs))
-                          {
-                              var title = GetText(key.Guild, strs.presence_updates);
-                              var desc = string.Join(Environment.NewLine, msgs);
-                              return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
-                          }
-
+                await keys.Select(key =>
+                  {
+                      if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
                           return Task.CompletedTask;
-                      })
-                      .WhenAll();
+                      if (PresenceUpdates.TryRemove(key, out var msgs))
+                      {
+                          var title = GetText(key.Guild, strs.presence_updates);
+                          var desc = string.Join(Environment.NewLine, msgs);
+                          return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
+                      }
+
+                      return Task.CompletedTask;
+                  })
+                  .WhenAll();
+            }
+            catch { }
         }
-        catch { }
+#endif
     }
 
     public LogSetting? GetGuildLogSettings(ulong guildId)

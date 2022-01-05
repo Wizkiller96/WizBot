@@ -362,7 +362,7 @@ public partial class Help : NadekoModule<HelpService>
                     ContentType = "application/json",
                     ContentBody = uploadData,
                     // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
-                    Key = $"cmds/{StatsService.BotVersion}.json",
+                    Key = $"cmds/{StatsService.BOT_VERSION}.json",
                     CannedACL = S3CannedACL.PublicRead
                 });
             }
@@ -372,11 +372,11 @@ public partial class Help : NadekoModule<HelpService>
             var versionListString = Encoding.UTF8.GetString(ms.ToArray());
 
             var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
-            if (versionList is not null && !versionList.Contains(StatsService.BotVersion))
+            if (versionList is not null && !versionList.Contains(StatsService.BOT_VERSION))
             {
                 // save the file with new version added
                 // versionList.Add(StatsService.BotVersion);
-                versionListString = JsonSerializer.Serialize(versionList.Prepend(StatsService.BotVersion),
+                versionListString = JsonSerializer.Serialize(versionList.Prepend(StatsService.BOT_VERSION),
                     new JsonSerializerOptions { WriteIndented = true });
 
                 // upload the updated version list
@@ -395,7 +395,7 @@ public partial class Help : NadekoModule<HelpService>
             {
                 Log.Warning(
                     "Version {Version} already exists in the version file. " + "Did you forget to increment it?",
-                    StatsService.BotVersion);
+                    StatsService.BOT_VERSION);
             }
         }
 

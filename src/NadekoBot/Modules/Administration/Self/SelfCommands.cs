@@ -243,8 +243,8 @@ public partial class Administration
 
             var allShardStrings = statuses.Select(st =>
                                           {
-                                              var stateStr = ConnectionStateToEmoji(st);
                                               var timeDiff = DateTime.UtcNow - st.LastUpdate;
+                                              var stateStr = ConnectionStateToEmoji(st);
                                               var maxGuildCountLength =
                                                   statuses.Max(x => x.GuildCount).ToString().Length;
                                               return $"`{stateStr} "
@@ -272,9 +272,9 @@ public partial class Administration
             var timeDiff = DateTime.UtcNow - status.LastUpdate;
             return status.ConnectionState switch
             {
-                ConnectionState.Connected => "✅",
                 ConnectionState.Disconnected => "🔻",
                 _ when timeDiff > TimeSpan.FromSeconds(30) => " ❗ ",
+                ConnectionState.Connected => "✅",
                 _ => " ⏳"
             };
         }

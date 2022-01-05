@@ -16,7 +16,7 @@ public class MuteService : INService
 {
     public enum TimerType { Mute, Ban, AddRole }
 
-    private static readonly OverwritePermissions denyOverwrite = new(addReactions: PermValue.Deny,
+    private static readonly OverwritePermissions _denyOverwrite = new(addReactions: PermValue.Deny,
         sendMessages: PermValue.Deny,
         attachFiles: PermValue.Deny);
 
@@ -26,7 +26,7 @@ public class MuteService : INService
     public ConcurrentDictionary<ulong, string> GuildMuteRoles { get; }
     public ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> MutedUsers { get; }
 
-    public ConcurrentDictionary<ulong, ConcurrentDictionary<(ulong, TimerType), Timer>> Un_Timers { get; } = new();
+    public ConcurrentDictionary<ulong, ConcurrentDictionary<(ulong, TimerType), Timer>> UnTimers { get; } = new();
 
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
@@ -312,7 +312,7 @@ public class MuteService : INService
                 if (!toOverwrite.PermissionOverwrites.Any(x => x.TargetId == muteRole.Id
                                                                && x.TargetType == PermissionTarget.Role))
                 {
-                    await toOverwrite.AddPermissionOverwriteAsync(muteRole, denyOverwrite);
+                    await toOverwrite.AddPermissionOverwriteAsync(muteRole, _denyOverwrite);
 
                     await Task.Delay(200);
                 }
@@ -394,12 +394,13 @@ public class MuteService : INService
         ulong? roleId = null)
     {
         //load the unmute timers for this guild
-        var userUnTimers = Un_Timers.GetOrAdd(guildId, new ConcurrentDictionary<(ulong, TimerType), Timer>());
+        var userUnTimers = UnTimers.GetOrAdd(guildId, new ConcurrentDictionary<(ulong, TimerType), Timer>());
 
         //unmute timer to be added
         var toAdd = new Timer(async _ =>
             {
                 if (type == TimerType.Ban)
+                {
                     try
                     {
                         RemoveTimerFromDb(guildId, userId, type);
@@ -409,24 +410,28 @@ public class MuteService : INService
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning(ex, "Couldn't unban user {0} in guild {1}", userId, guildId);
+                        Log.Warning(ex, "Couldn't unban user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
                 else if (type == TimerType.AddRole)
+                {
                     try
                     {
                         RemoveTimerFromDb(guildId, userId, type);
                         StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId);
                         var user = guild?.GetUser(userId);
-                        var role = guild.GetRole(roleId.Value);
+                        var role = guild?.GetRole(roleId.Value);
                         if (guild is not null && user is not null && user.Roles.Contains(role))
                             await user.RemoveRoleAsync(role);
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning(ex, "Couldn't remove role from user {0} in guild {1}", userId, guildId);
+                        Log.Warning(ex, "Couldn't remove role from user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
                 else
+                {
                     try
                     {
                         // unmute the user, this will also remove the timer from the db
@@ -435,8 +440,9 @@ public class MuteService : INService
                     catch (Exception ex)
                     {
                         RemoveTimerFromDb(guildId, userId, type); // if unmute errored, just remove unmute from db
-                        Log.Warning(ex, "Couldn't unmute user {0} in guild {1}", userId, guildId);
+                        Log.Warning(ex, "Couldn't unmute user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
             },
             null,
             after,
@@ -454,7 +460,7 @@ public class MuteService : INService
 
     public void StopTimer(ulong guildId, ulong userId, TimerType type)
     {
-        if (!Un_Timers.TryGetValue(guildId, out var userTimer))
+        if (!UnTimers.TryGetValue(guildId, out var userTimer))
             return;
 
         if (userTimer.TryRemove((userId, type), out var removed)) removed.Change(Timeout.Infinite, Timeout.Infinite);

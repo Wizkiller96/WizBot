@@ -441,9 +441,7 @@ namespace NadekoBot.Coordinator
         }
 
         public string GetConfigText()
-        {
-            return File.ReadAllText(CONFIG_PATH);
-        }
+            => File.ReadAllText(CONFIG_PATH);
 
         public void SetConfigText(string text)
         {
