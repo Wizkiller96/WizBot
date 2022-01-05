@@ -11,6 +11,9 @@ This part is completely optional, **however it's necessary for music and a few o
         - Under the `YouTube APIs` section
             - Select `YouTube Data API v3`,
             - Click enable.
+        - Search for `Custom Search API`
+            - Select `Custom Search API`,
+            - Click enable.
         - Open up the `Navigation menu` on the top right with the three lines.
         - select `APIs & Services`, then select `Credentials`
           - Click `Create Credentials` button,
