@@ -98,11 +98,16 @@ version: 1
 token: 'MTE5Nzc3MDIxMzE5NTc3NjEw.VlhNCw.BuqJFyzdIUAK1PRf1eK1Cu89Jew'
 # List of Ids of the users who have bot owner permissions
 # **DO NOT ADD PEOPLE YOU DON'T TRUST**
-ownerIds: [
-    105635123466156544,
-    145521851676884992,
-    341420590009417729
-]
+ownerIds:
+  - 105635123466156544
+  - 145521851676884992
+  - 341420590009417729
+# List of Ids of the users who have bot admin permissions
+# **DO NOT ADD PEOPLE YOU DON'T TRUST**
+adminIds:
+  - 105635123324156352
+  - 645621758676884932
+  - 243420594549413529
 # The number of shards that the bot will running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1
