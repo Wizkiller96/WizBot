@@ -1230,20 +1230,24 @@ expradd:
   - expradd
   - exadd
   - exa
+  - acr
 exprlist:
   - exprlist
   - exl
   - exprli
   - exlist
   - exli
+  - lcr
 exprshow:
   - exprshow
   - exs
   - exshow
+  - scr
 exprdelete:
   - exprdel
   - exd
   - exdel
+  - dcr
 exprclear:
   - exprclear
   - exc
