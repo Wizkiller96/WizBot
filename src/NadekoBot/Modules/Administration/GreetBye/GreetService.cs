@@ -29,11 +29,11 @@ public class GreetService : INService
 
         _guildConfigsCache = new(bot.AllGuildConfigs.ToDictionary(g => g.GuildId, GreetSettings.Create));
 
-        _client.UserJoined += UserJoined;
-        _client.UserLeft += UserLeft;
+        _client.UserJoined += OnUserJoined;
+        _client.UserLeft += OnUserLeft;
 
-        bot.JoinedGuild += Bot_JoinedGuild;
-        _client.LeftGuild += _client_LeftGuild;
+        bot.JoinedGuild += OnBotJoinedGuild;
+        _client.LeftGuild += OnClientLeftGuild;
 
         _client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
     }
@@ -80,19 +80,19 @@ public class GreetService : INService
             }
         };
 
-    private Task _client_LeftGuild(SocketGuild arg)
+    private Task OnClientLeftGuild(SocketGuild arg)
     {
         _guildConfigsCache.TryRemove(arg.Id, out _);
         return Task.CompletedTask;
     }
 
-    private Task Bot_JoinedGuild(GuildConfig gc)
+    private Task OnBotJoinedGuild(GuildConfig gc)
     {
         _guildConfigsCache[gc.GuildId] = GreetSettings.Create(gc);
         return Task.CompletedTask;
     }
 
-    private Task UserLeft(SocketGuild guild, SocketUser user)
+    private Task OnUserLeft(SocketGuild guild, SocketUser user)
     {
         var _ = Task.Run(async () =>
         {
@@ -214,9 +214,19 @@ public class GreetService : INService
         var rep = new ReplacementBuilder().WithDefault(user, channel, (SocketGuild)user.Guild, _client).Build();
 
         var text = SmartText.CreateFrom(conf.DmGreetMessageText);
-        rep.Replace(text);
+        text = rep.Replace(text);
         try
         {
+            if (text is SmartPlainText pt)
+            {
+                text = new SmartEmbedText() { PlainText = pt.Text };
+            }
+
+            ((SmartEmbedText)text).Footer = new()
+            {
+                Text = $"This message was sent from {user.Guild} server.", IconUrl = user.Guild.IconUrl
+            };
+
             await channel.SendAsync(text);
         }
         catch
@@ -227,7 +237,7 @@ public class GreetService : INService
         return true;
     }
 
-    private Task UserJoined(IGuildUser user)
+    private Task OnUserJoined(IGuildUser user)
     {
         var _ = Task.Run(async () =>
         {
