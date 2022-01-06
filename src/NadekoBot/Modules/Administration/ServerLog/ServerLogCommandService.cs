@@ -93,7 +93,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     public async Task OnReadyAsync()
     {
-#if GLOBAL_NADEKO
+#if !GLOBAL_NADEKO
         var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
         while (await timer.WaitForNextTickAsync())
         {
@@ -102,19 +102,19 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var keys = PresenceUpdates.Keys.ToList();
 
                 await keys.Select(key =>
-                  {
-                      if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
-                          return Task.CompletedTask;
-                      if (PresenceUpdates.TryRemove(key, out var msgs))
-                      {
-                          var title = GetText(key.Guild, strs.presence_updates);
-                          var desc = string.Join(Environment.NewLine, msgs);
-                          return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
-                      }
+                          {
+                              if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
+                                  return Task.CompletedTask;
+                              if (PresenceUpdates.TryRemove(key, out var msgs))
+                              {
+                                  var title = GetText(key.Guild, strs.presence_updates);
+                                  var desc = string.Join(Environment.NewLine, msgs);
+                                  return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
+                              }
 
-                      return Task.CompletedTask;
-                  })
-                  .WhenAll();
+                              return Task.CompletedTask;
+                          })
+                          .WhenAll();
             }
             catch { }
         }

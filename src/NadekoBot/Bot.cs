@@ -154,7 +154,8 @@ public sealed class Bot
     {
         // execute all migrators
         var migrators = Services.GetServices<IConfigMigrator>();
-        foreach (var migrator in migrators) migrator.EnsureMigrated();
+        foreach (var migrator in migrators)
+            migrator.EnsureMigrated();
     }
 
     private IEnumerable<object> LoadTypeReaders(Assembly assembly)
