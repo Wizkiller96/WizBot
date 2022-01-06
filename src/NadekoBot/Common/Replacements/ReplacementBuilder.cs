@@ -63,8 +63,10 @@ public class ReplacementBuilder
             {
                 var to = TimeZoneInfo.Local;
                 if (g is not null)
+                {
                     if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
                         to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
+                }
 
                 return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ")
                        + to.StandardName.GetInitials();
