@@ -23,7 +23,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     {
         await using (var uow = _db.GetDbContext())
         {
-            var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
+            var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
             if (action is null) action = new(!config.VerbosePermissions); // New behaviour, can toggle.
             config.VerbosePermissions = action.Value;
             await uow.SaveChangesAsync();
@@ -58,7 +58,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
         await using (var uow = _db.GetDbContext())
         {
-            var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
+            var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
             config.PermissionRole = role.Id.ToString();
             uow.SaveChanges();
             _service.UpdateCache(config);
@@ -75,7 +75,7 @@ public partial class Permissions : NadekoModule<PermissionService>
     {
         await using (var uow = _db.GetDbContext())
         {
-            var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
+            var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
             config.PermissionRole = null;
             await uow.SaveChangesAsync();
             _service.UpdateCache(config);
@@ -129,7 +129,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             Permissionv2 p;
             await using (var uow = _db.GetDbContext())
             {
-                var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
+                var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
                 var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
                 p = permsCol[index];
                 permsCol.RemoveAt(index);
@@ -159,7 +159,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                 Permissionv2 fromPerm;
                 await using (var uow = _db.GetDbContext())
                 {
-                    var config = uow.GcWithPermissionsv2For(ctx.Guild.Id);
+                    var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
                     var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
 
                     var fromFound = from < permsCol.Count;

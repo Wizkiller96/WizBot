@@ -32,7 +32,7 @@ public class PermissionService : ILateBlocker, INService
         _eb = eb;
 
         using var uow = _db.GetDbContext();
-        foreach (var x in uow.GuildConfigs.Permissionsv2ForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+        foreach (var x in uow.GuildConfigs.PermissionsForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
             Cache.TryAdd(x.GuildId,
                 new()
                 {
@@ -61,7 +61,7 @@ public class PermissionService : ILateBlocker, INService
     public async Task AddPermissions(ulong guildId, params Permissionv2[] perms)
     {
         await using var uow = _db.GetDbContext();
-        var config = uow.GcWithPermissionsv2For(guildId);
+        var config = uow.GcWithPermissionsFor(guildId);
         //var orderedPerms = new PermissionsCollection<Permissionv2>(config.Permissions);
         var max = config.Permissions.Max(x => x.Index); //have to set its index to be the highest
         foreach (var perm in perms)
@@ -165,7 +165,7 @@ public class PermissionService : ILateBlocker, INService
     public async Task Reset(ulong guildId)
     {
         await using var uow = _db.GetDbContext();
-        var config = uow.GcWithPermissionsv2For(guildId);
+        var config = uow.GcWithPermissionsFor(guildId);
         config.Permissions = Permissionv2.GetDefaultPermlist;
         await uow.SaveChangesAsync();
         UpdateCache(config);

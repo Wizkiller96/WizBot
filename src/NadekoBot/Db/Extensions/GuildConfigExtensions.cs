@@ -112,14 +112,14 @@ public static class GuildConfigExtensions
         return logSetting;
     }
 
-    public static IEnumerable<GuildConfig> Permissionsv2ForAll(this DbSet<GuildConfig> configs, List<ulong> include)
+    public static IEnumerable<GuildConfig> PermissionsForAll(this DbSet<GuildConfig> configs, List<ulong> include)
     {
         var query = configs.AsQueryable().Where(x => include.Contains(x.GuildId)).Include(gc => gc.Permissions);
 
         return query.ToList();
     }
 
-    public static GuildConfig GcWithPermissionsv2For(this NadekoContext ctx, ulong guildId)
+    public static GuildConfig GcWithPermissionsFor(this NadekoContext ctx, ulong guildId)
     {
         var config = ctx.GuildConfigs.AsQueryable()
                         .Where(gc => gc.GuildId == guildId)

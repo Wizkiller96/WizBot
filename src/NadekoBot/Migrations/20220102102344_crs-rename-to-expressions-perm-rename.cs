@@ -53,6 +53,10 @@ namespace NadekoBot.Migrations
             migrationBuilder.Sql(@"UPDATE Permissions
 SET SecondaryTargetName='ACTUALEXPRESSIONS'
 WHERE SecondaryTargetName='ActualCustomReactions' COLLATE NOCASE;");
+            
+            migrationBuilder.Sql(@"UPDATE Permissions
+SET SecondaryTargetName='EXPRESSIONS'
+WHERE SecondaryTargetName='CustomReactions' COLLATE NOCASE;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
