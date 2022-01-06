@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Nsfw.Common;
 
@@ -17,8 +18,8 @@ public class GelbooruImageDownloader : ImageDownloader<DapiImageObject>
         CancellationToken cancel = default)
     {
         var tagString = ImageDownloaderHelper.GetTagString(tags, isExplicit);
-        var uri = "http://gelbooru.com/index.php?page=dapi&s=post&json=1&q=index&limit=100"
-                  + $"&tags={tagString}&pid={page}";
+        var uri =
+            $"http://gelbooru.com/index.php?page=dapi&s=post&json=1&q=index&limit=100&tags={tagString}&pid={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         using var res = await _http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
@@ -26,10 +27,16 @@ public class GelbooruImageDownloader : ImageDownloader<DapiImageObject>
         if (string.IsNullOrWhiteSpace(resString))
             return new();
 
-        var images = JsonSerializer.Deserialize<List<DapiImageObject>>(resString, _serializerOptions);
-        if (images is null)
+        var images = JsonSerializer.Deserialize<GelbooruResponse>(resString, _serializerOptions);
+        if (images is null or { Post: null })
             return new();
 
-        return images.Where(x => x.FileUrl is not null).ToList();
+        return images.Post.Where(x => x.FileUrl is not null).ToList();
     }
+}
+
+public class GelbooruResponse
+{
+    [JsonPropertyName("post")]
+    public List<DapiImageObject> Post { get; set; }
 }

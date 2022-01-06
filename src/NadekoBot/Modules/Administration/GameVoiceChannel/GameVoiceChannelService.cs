@@ -116,7 +116,7 @@ public class GameVoiceChannelService : INService
         if (string.IsNullOrWhiteSpace(game))
             return false;
 
-        game = game.TrimTo(50).ToLowerInvariant();
+        game = game.TrimTo(50)!.ToLowerInvariant();
         var vch = gUser.Guild.VoiceChannels.FirstOrDefault(x => x.Name.ToLowerInvariant() == game);
 
         if (vch is null)
