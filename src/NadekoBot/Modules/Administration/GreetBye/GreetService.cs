@@ -88,9 +88,7 @@ public class GreetService : INService
 
     private Task Bot_JoinedGuild(GuildConfig gc)
     {
-        _guildConfigsCache.AddOrUpdate(gc.GuildId,
-            GreetSettings.Create(gc),
-            delegate { return GreetSettings.Create(gc); });
+        _guildConfigsCache[gc.GuildId] = GreetSettings.Create(gc);
         return Task.CompletedTask;
     }
 
@@ -142,7 +140,7 @@ public class GreetService : INService
     public string? GetDmGreetMsg(ulong id)
     {
         using var uow = _db.GetDbContext();
-        return uow.GuildConfigsForId(id, set => set)?.DmGreetMessageText;
+        return uow.GuildConfigsForId(id, set => set).DmGreetMessageText;
     }
 
     public string? GetGreetMsg(ulong gid)
@@ -330,21 +328,20 @@ public class GreetService : INService
         await uow.SaveChangesAsync();
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         return true;
     }
 
     public async Task<bool> SetGreet(ulong guildId, ulong channelId, bool? value = null)
     {
-        bool enabled;
         await using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set);
-        enabled = conf.SendChannelGreetMessage = value ?? !conf.SendChannelGreetMessage;
+        var enabled = conf.SendChannelGreetMessage = value ?? !conf.SendChannelGreetMessage;
         conf.GreetMessageChannelId = channelId;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
         return enabled;
@@ -376,7 +373,7 @@ public class GreetService : INService
         var enabled = conf.SendDmGreetMessage = value ?? !conf.SendDmGreetMessage;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
         return enabled;
@@ -394,7 +391,7 @@ public class GreetService : INService
         conf.DmGreetMessageText = message;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         uow.SaveChanges();
         return conf.SendDmGreetMessage;
@@ -408,7 +405,7 @@ public class GreetService : INService
         conf.ByeMessageChannelId = channelId;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
         return enabled;
@@ -426,7 +423,7 @@ public class GreetService : INService
         conf.ChannelByeMessageText = message;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         uow.SaveChanges();
         return conf.SendChannelByeMessage;
@@ -442,22 +439,22 @@ public class GreetService : INService
         conf.AutoDeleteByeMessagesTimer = timer;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
     }
 
-    public async Task SetGreetDel(ulong id, int timer)
+    public async Task SetGreetDel(ulong guildId, int timer)
     {
         if (timer is < 0 or > 600)
             return;
 
         await using var uow = _db.GetDbContext();
-        var conf = uow.GuildConfigsForId(id, set => set);
+        var conf = uow.GuildConfigsForId(guildId, set => set);
         conf.AutoDeleteGreetMessagesTimer = timer;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(id, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
     }
@@ -471,7 +468,7 @@ public class GreetService : INService
         conf.BoostMessage = message;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         uow.SaveChanges();
         return conf.SendBoostMessage;
@@ -487,7 +484,7 @@ public class GreetService : INService
         conf.BoostMessageDeleteAfter = timer;
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
 
         await uow.SaveChangesAsync();
     }
@@ -501,7 +498,7 @@ public class GreetService : INService
         await uow.SaveChangesAsync();
 
         var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache.AddOrUpdate(guildId, toAdd, (_, _) => toAdd);
+        _guildConfigsCache[guildId] = toAdd;
         return conf.SendBoostMessage;
     }
 
