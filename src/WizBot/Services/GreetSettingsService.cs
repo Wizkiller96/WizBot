@@ -250,6 +250,16 @@ namespace WizBot.Services
             rep.Replace(text);
             try
             {
+                if (text is SmartPlainText pt)
+                {
+                    text = new SmartEmbedText() { PlainText = pt.Text };
+                }
+
+                ((SmartEmbedText)text).Footer = new()
+                {
+                    Text = $"This message was sent from {user.Guild} server.", IconUrl = user.Guild.IconUrl
+                };
+
                 await channel.SendAsync(text).ConfigureAwait(false);
             }
             catch
