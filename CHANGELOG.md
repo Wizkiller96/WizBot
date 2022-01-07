@@ -10,6 +10,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Ban message color with plain text fixed
 - Fixed some grpc coordinator bugs
 - Fixed a string in `.xpex`
+- Google version of .img will now have safe search enabled
+- Fixed a small bug in `.hangman`
 
 ## [3.0.11] - 19.12.2021
 
