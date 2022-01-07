@@ -8,14 +8,16 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 using WizBot.Modules.Administration;
 using Serilog;
 
 namespace WizBot.Services
 {
-    public class GreetSettingsService : INService
+    public class GreetSettingsService : INService, IReadyExecutor
     {
         private readonly DbService _db;
 
@@ -50,6 +52,17 @@ namespace WizBot.Services
             _client.LeftGuild += _client_LeftGuild;
             
             _client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
+        }
+        
+        public async Task OnReadyAsync()
+        {
+            while (true)
+            {
+                var (conf, user, compl) = await _greetDmQueue.Reader.ReadAsync();
+                var res = await GreetDmUserInternal(conf, user);
+                compl.TrySetResult(res);
+                await Task.Delay(2000);
+            }
         }
 
         private Task ClientOnGuildMemberUpdated(SocketGuildUser oldUser, SocketGuildUser newUser)
@@ -240,16 +253,33 @@ namespace WizBot.Services
             }
         }
 
-        private async Task<bool> GreetDmUser(GreetSettings conf, IDMChannel channel, IGuildUser user)
+        private readonly Channel<(GreetSettings, IGuildUser, TaskCompletionSource<bool>)> _greetDmQueue =
+            Channel.CreateBounded<(GreetSettings, IGuildUser, TaskCompletionSource<bool>)>(new BoundedChannelOptions(60)
+            {
+                // The limit of 60 users should be only hit when there's a raid. In that case 
+                // probably the best thing to do is to drop newest (raiding) users
+                FullMode = BoundedChannelFullMode.DropNewest
+            });
+    
+        private async Task<bool> GreetDmUser(GreetSettings conf, IGuildUser user)
         {
-            var rep = new ReplacementBuilder()
-                .WithDefault(user, channel, (SocketGuild)user.Guild, _client)
-                .Build();
-
-            var text = SmartText.CreateFrom(conf.DmGreetMessageText);
-            rep.Replace(text);
+            var completionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            await _greetDmQueue.Writer.WriteAsync((conf, user, completionSource));
+            return await completionSource.Task;
+        }
+    
+        private async Task<bool> GreetDmUserInternal(GreetSettings conf, IGuildUser user)
+        {
             try
             {
+                var rep = new ReplacementBuilder()
+                    .WithUser(user)
+                    .WithServer(_client, (SocketGuild)user.Guild)
+                    .Build();
+
+                var text = SmartText.CreateFrom(conf.DmGreetMessageText);
+                text = rep.Replace(text);
+            
                 if (text is SmartPlainText pt)
                 {
                     text = new SmartEmbedText() { PlainText = pt.Text };
@@ -260,7 +290,11 @@ namespace WizBot.Services
                     Text = $"This message was sent from {user.Guild} server.", IconUrl = user.Guild.IconUrl
                 };
 
-                await channel.SendAsync(text).ConfigureAwait(false);
+                var ch = await user.GetOrCreateDMChannelAsync();
+                if (ch is null)
+                    return false;
+                
+                await ch.SendAsync(text);
             }
             catch
             {
@@ -311,12 +345,7 @@ namespace WizBot.Services
 
                     if (conf.SendDmGreetMessage)
                     {
-                        var channel = await user.GetOrCreateDMChannelAsync().ConfigureAwait(false);
-
-                        if (channel != null)
-                        {
-                            await GreetDmUser(conf, channel, user);
-                        }
+                        await GreetDmUser(conf, user);
                     }
                 }
                 catch
@@ -487,10 +516,10 @@ namespace WizBot.Services
             return GreetUsers(conf, channel, user);
         }
         
-        public Task<bool> GreetDmTest(IDMChannel channel, IGuildUser user)
+        public Task<bool> GreetDmTest(IGuildUser user)
         {
             var conf = GetOrAddSettingsForGuild(user.GuildId);
-            return GreetDmUser(conf, channel, user);
+            return GreetDmUser(conf, user);
         }
         #endregion
 
