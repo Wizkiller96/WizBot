@@ -4,6 +4,7 @@ using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Utility.Common.Patreon;
 using NadekoBot.Services.Database.Models;
 using StackExchange.Redis;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -112,15 +113,22 @@ public class PatreonRewardsService : INService
         if (DateTime.UtcNow.Day < 5)
             return;
 
-        // if the user has the necessary patreon creds
-        // and the access token expired or doesn't exist
-        // -> update access token
-        if (!HasPatreonCreds(creds))
+        if (string.IsNullOrWhiteSpace(creds.Patreon.CampaignId))
             return;
 
-        if (LastAccessTokenUpdate(creds).Month < DateTime.UtcNow.Month
+        var lastUpdate = LastAccessTokenUpdate(creds);
+        var now = DateTime.UtcNow;
+            
+        if (lastUpdate.Year != now.Year
+            || lastUpdate.Month != now.Month
             || string.IsNullOrWhiteSpace(creds.Patreon.AccessToken))
         {
+            // if the user has the necessary patreon creds
+            // and the access token expired or doesn't exist
+            // -> update access token
+            if (!HasPatreonCreds(creds))
+                return;
+            
             var success = await UpdateAccessToken(creds);
             if (!success)
                 return;
@@ -177,6 +185,12 @@ public class PatreonRewardsService : INService
                                   .ToList();
 
             foreach (var pledge in userData) await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            Log.Warning("Patreon credentials invalid or expired. I will try to refresh them during the next run");
+            var db = _redis.GetDatabase();
+            await db.KeyDeleteAsync($"{creds.RedisKey()}_patreon_update");
         }
         catch (Exception ex)
         {
