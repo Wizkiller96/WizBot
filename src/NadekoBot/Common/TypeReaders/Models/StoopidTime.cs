@@ -20,7 +20,6 @@ public class StoopidTime
 
         if (m.Length == 0) throw new ArgumentException("Invalid string input format.");
 
-        var output = string.Empty;
         var namesAndValues = new Dictionary<string, int>();
 
         foreach (var groupName in _regex.GetGroupNames())
@@ -35,7 +34,6 @@ public class StoopidTime
             if (value < 1) throw new ArgumentException($"Invalid {groupName} value.");
 
             namesAndValues[groupName] = value;
-            output += m.Groups[groupName].Value + " " + groupName + " ";
         }
 
         var ts = new TimeSpan((30 * namesAndValues["months"]) + (7 * namesAndValues["weeks"]) + namesAndValues["days"],

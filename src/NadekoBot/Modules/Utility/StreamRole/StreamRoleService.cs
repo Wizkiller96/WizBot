@@ -11,20 +11,20 @@ public class StreamRoleService : INService
 {
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
-    private readonly ConcurrentDictionary<ulong, StreamRoleSettings> guildSettings;
+    private readonly ConcurrentDictionary<ulong, StreamRoleSettings> _guildSettings;
 
     public StreamRoleService(DiscordSocketClient client, DbService db, Bot bot)
     {
         _db = db;
         _client = client;
 
-        guildSettings = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.StreamRole)
+        _guildSettings = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.StreamRole)
                            .Where(x => x.Value is { Enabled: true })
                            .ToConcurrent();
 
         _client.GuildMemberUpdated += Client_GuildMemberUpdated;
 
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -39,10 +39,10 @@ public class StreamRoleService : INService
 
     private Task Client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> cacheable, SocketGuildUser after)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             //if user wasn't streaming or didn't have a game status at all
-            if (guildSettings.TryGetValue(after.Guild.Id, out var setting)) await RescanUser(after, setting);
+            if (_guildSettings.TryGetValue(after.Guild.Id, out var setting)) await RescanUser(after, setting);
         });
 
         return Task.CompletedTask;
@@ -51,6 +51,7 @@ public class StreamRoleService : INService
     /// <summary>
     ///     Adds or removes a user from a blacklist or a whitelist in the specified guild.
     /// </summary>
+    /// <param name="listType">List type</param>
     /// <param name="guild">Guild</param>
     /// <param name="action">Add or rem action</param>
     /// <param name="userId">User's Id</param>
@@ -97,7 +98,6 @@ public class StreamRoleService : INService
                     var toRemove = streamRoleSettings.Blacklist.FirstOrDefault(x => x.Equals(userObj));
                     if (toRemove is not null)
                     {
-                        success = true;
                         success = streamRoleSettings.Blacklist.Remove(toRemove);
                     }
                 }
@@ -123,7 +123,7 @@ public class StreamRoleService : INService
     /// <returns>The keyword set</returns>
     public async Task<string> SetKeyword(IGuild guild, string keyword)
     {
-        keyword = keyword?.Trim()?.ToLowerInvariant();
+        keyword = keyword?.Trim().ToLowerInvariant();
 
         await using (var uow = _db.GetDbContext())
         {
@@ -145,7 +145,7 @@ public class StreamRoleService : INService
     /// <returns>The keyword set</returns>
     public string GetKeyword(ulong guildId)
     {
-        if (guildSettings.TryGetValue(guildId, out var outSetting))
+        if (_guildSettings.TryGetValue(guildId, out var outSetting))
             return outSetting.Keyword;
 
         StreamRoleSettings setting;
@@ -193,7 +193,8 @@ public class StreamRoleService : INService
     /// <summary>
     ///     Stops the stream role feature on the specified guild.
     /// </summary>
-    /// <param name="guildId">Guild's Id</param>
+    /// <param name="guild">Guild</param>
+    /// <param name="cleanup">Whether to rescan users</param>
     public async Task StopStreamRole(IGuild guild, bool cleanup = false)
     {
         await using (var uow = _db.GetDbContext())
@@ -205,7 +206,7 @@ public class StreamRoleService : INService
             await uow.SaveChangesAsync();
         }
 
-        if (guildSettings.TryRemove(guild.Id, out var setting) && cleanup)
+        if (_guildSettings.TryRemove(guild.Id, out _) && cleanup)
             await RescanUsers(guild);
     }
 
@@ -231,7 +232,7 @@ public class StreamRoleService : INService
                 if (addRole is null)
                 {
                     await StopStreamRole(user.Guild);
-                    Log.Warning("Stream role in server {0} no longer exists. Stopping.", setting.AddRoleId);
+                    Log.Warning("Stream role in server {RoleId} no longer exists. Stopping", setting.AddRoleId);
                     return;
                 }
 
@@ -239,7 +240,7 @@ public class StreamRoleService : INService
                 if (!user.RoleIds.Contains(addRole.Id))
                 {
                     await user.AddRoleAsync(addRole);
-                    Log.Information("Added stream role to user {0} in {1} server",
+                    Log.Information("Added stream role to user {User} in {Server} server",
                         user.ToString(),
                         user.Guild.ToString());
                 }
@@ -266,7 +267,7 @@ public class StreamRoleService : INService
                         throw new StreamRoleNotFoundException();
 
                     await user.RemoveRoleAsync(addRole);
-                    Log.Information("Removed stream role from the user {0} in {1} server",
+                    Log.Information("Removed stream role from the user {User} in {Server} server",
                         user.ToString(),
                         user.Guild.ToString());
                 }
@@ -281,7 +282,7 @@ public class StreamRoleService : INService
 
     private async Task RescanUsers(IGuild guild)
     {
-        if (!guildSettings.TryGetValue(guild.Id, out var setting))
+        if (!_guildSettings.TryGetValue(guild.Id, out var setting))
             return;
 
         var addRole = guild.GetRole(setting.AddRoleId);
@@ -299,5 +300,5 @@ public class StreamRoleService : INService
     }
 
     private void UpdateCache(ulong guildId, StreamRoleSettings setting)
-        => guildSettings.AddOrUpdate(guildId, _ => setting, (_, _) => setting);
+        => _guildSettings.AddOrUpdate(guildId, _ => setting, (_, _) => setting);
 }

@@ -11,17 +11,14 @@ public class ConverterService : INService
 
     private readonly Timer _currencyUpdater;
     private readonly TimeSpan _updateInterval = new(12, 0, 0);
-    private readonly DbService _db;
     private readonly IDataCache _cache;
     private readonly IHttpClientFactory _httpFactory;
 
     public ConverterService(
         DiscordSocketClient client,
-        DbService db,
         IDataCache cache,
         IHttpClientFactory factory)
     {
-        _db = db;
         _cache = cache;
         _httpFactory = factory;
 

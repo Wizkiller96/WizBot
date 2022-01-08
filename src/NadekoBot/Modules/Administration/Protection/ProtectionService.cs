@@ -94,7 +94,7 @@ public class ProtectionService : INService
 
     private Task _client_LeftGuild(SocketGuild guild)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             TryStopAntiRaid(guild.Id);
             TryStopAntiSpam(guild.Id);
@@ -202,7 +202,7 @@ public class ProtectionService : INService
 
         if (msg.Channel is not ITextChannel channel)
             return Task.CompletedTask;
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {

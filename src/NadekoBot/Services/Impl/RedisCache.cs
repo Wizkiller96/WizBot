@@ -15,7 +15,7 @@ public class RedisCache : IDataCache
     private readonly string _redisKey;
     private readonly EndPoint _redisEndpoint;
 
-    private readonly object timelyLock = new();
+    private readonly object _timelyLock = new();
 
     public RedisCache(
         ConnectionMultiplexer redis,
@@ -36,77 +36,77 @@ public class RedisCache : IDataCache
     // can re-use the same image/anime data
     public async Task<(bool Success, byte[] Data)> TryGetImageDataAsync(Uri key)
     {
-        var _db = Redis.GetDatabase();
-        byte[] x = await _db.StringGetAsync("image_" + key);
+        var db = Redis.GetDatabase();
+        byte[] x = await db.StringGetAsync("image_" + key);
         return (x is not null, x);
     }
 
     public Task SetImageDataAsync(Uri key, byte[] data)
     {
-        var _db = Redis.GetDatabase();
-        return _db.StringSetAsync("image_" + key, data);
+        var db = Redis.GetDatabase();
+        return db.StringSetAsync("image_" + key, data);
     }
 
     public async Task<(bool Success, string Data)> TryGetAnimeDataAsync(string key)
     {
-        var _db = Redis.GetDatabase();
-        string x = await _db.StringGetAsync("anime_" + key);
+        var db = Redis.GetDatabase();
+        string x = await db.StringGetAsync("anime_" + key);
         return (x is not null, x);
     }
 
     public Task SetAnimeDataAsync(string key, string data)
     {
-        var _db = Redis.GetDatabase();
-        return _db.StringSetAsync("anime_" + key, data, TimeSpan.FromHours(3));
+        var db = Redis.GetDatabase();
+        return db.StringSetAsync("anime_" + key, data, TimeSpan.FromHours(3));
     }
 
     public async Task<(bool Success, string Data)> TryGetNovelDataAsync(string key)
     {
-        var _db = Redis.GetDatabase();
-        string x = await _db.StringGetAsync("novel_" + key);
+        var db = Redis.GetDatabase();
+        string x = await db.StringGetAsync("novel_" + key);
         return (x is not null, x);
     }
 
     public Task SetNovelDataAsync(string key, string data)
     {
-        var _db = Redis.GetDatabase();
-        return _db.StringSetAsync("novel_" + key, data, TimeSpan.FromHours(3));
+        var db = Redis.GetDatabase();
+        return db.StringSetAsync("novel_" + key, data, TimeSpan.FromHours(3));
     }
 
     public TimeSpan? AddTimelyClaim(ulong id, int period)
     {
         if (period == 0)
             return null;
-        lock (timelyLock)
+        lock (_timelyLock)
         {
             var time = TimeSpan.FromHours(period);
-            var _db = Redis.GetDatabase();
-            if ((bool?)_db.StringGet($"{_redisKey}_timelyclaim_{id}") is null)
+            var db = Redis.GetDatabase();
+            if ((bool?)db.StringGet($"{_redisKey}_timelyclaim_{id}") is null)
             {
-                _db.StringSet($"{_redisKey}_timelyclaim_{id}", true, time);
+                db.StringSet($"{_redisKey}_timelyclaim_{id}", true, time);
                 return null;
             }
 
-            return _db.KeyTimeToLive($"{_redisKey}_timelyclaim_{id}");
+            return db.KeyTimeToLive($"{_redisKey}_timelyclaim_{id}");
         }
     }
 
     public void RemoveAllTimelyClaims()
     {
         var server = Redis.GetServer(_redisEndpoint);
-        var _db = Redis.GetDatabase();
+        var db = Redis.GetDatabase();
         foreach (var k in server.Keys(pattern: $"{_redisKey}_timelyclaim_*"))
-            _db.KeyDelete(k, CommandFlags.FireAndForget);
+            db.KeyDelete(k, CommandFlags.FireAndForget);
     }
 
     public bool TryAddAffinityCooldown(ulong userId, out TimeSpan? time)
     {
-        var _db = Redis.GetDatabase();
-        time = _db.KeyTimeToLive($"{_redisKey}_affinity_{userId}");
+        var db = Redis.GetDatabase();
+        time = db.KeyTimeToLive($"{_redisKey}_affinity_{userId}");
         if (time is null)
         {
             time = TimeSpan.FromMinutes(30);
-            _db.StringSet($"{_redisKey}_affinity_{userId}", true, time);
+            db.StringSet($"{_redisKey}_affinity_{userId}", true, time);
             return true;
         }
 
@@ -115,12 +115,12 @@ public class RedisCache : IDataCache
 
     public bool TryAddDivorceCooldown(ulong userId, out TimeSpan? time)
     {
-        var _db = Redis.GetDatabase();
-        time = _db.KeyTimeToLive($"{_redisKey}_divorce_{userId}");
+        var db = Redis.GetDatabase();
+        time = db.KeyTimeToLive($"{_redisKey}_divorce_{userId}");
         if (time is null)
         {
             time = TimeSpan.FromHours(6);
-            _db.StringSet($"{_redisKey}_divorce_{userId}", true, time);
+            db.StringSet($"{_redisKey}_divorce_{userId}", true, time);
             return true;
         }
 
@@ -129,42 +129,43 @@ public class RedisCache : IDataCache
 
     public Task SetStreamDataAsync(string url, string data)
     {
-        var _db = Redis.GetDatabase();
-        return _db.StringSetAsync($"{_redisKey}_stream_{url}", data, TimeSpan.FromHours(6));
+        var db = Redis.GetDatabase();
+        return db.StringSetAsync($"{_redisKey}_stream_{url}", data, TimeSpan.FromHours(6));
     }
 
     public bool TryGetStreamData(string url, out string dataStr)
     {
-        var _db = Redis.GetDatabase();
-        dataStr = _db.StringGet($"{_redisKey}_stream_{url}");
+        var db = Redis.GetDatabase();
+        dataStr = db.StringGet($"{_redisKey}_stream_{url}");
 
         return !string.IsNullOrWhiteSpace(dataStr);
     }
 
     public TimeSpan? TryAddRatelimit(ulong id, string name, int expireIn)
     {
-        var _db = Redis.GetDatabase();
-        if (_db.StringSet($"{_redisKey}_ratelimit_{id}_{name}",
+        var db = Redis.GetDatabase();
+        if (db.StringSet($"{_redisKey}_ratelimit_{id}_{name}",
                 0, // i don't use the value
                 TimeSpan.FromSeconds(expireIn),
                 When.NotExists))
             return null;
 
-        return _db.KeyTimeToLive($"{_redisKey}_ratelimit_{id}_{name}");
+        return db.KeyTimeToLive($"{_redisKey}_ratelimit_{id}_{name}");
     }
 
     public bool TryGetEconomy(out string data)
     {
-        var _db = Redis.GetDatabase();
-        if ((data = _db.StringGet($"{_redisKey}_economy")) is not null) return true;
+        var db = Redis.GetDatabase();
+        data = db.StringGet($"{_redisKey}_economy");
+        if (data is not null) return true;
 
         return false;
     }
 
     public void SetEconomy(string data)
     {
-        var _db = Redis.GetDatabase();
-        _db.StringSet($"{_redisKey}_economy", data, TimeSpan.FromMinutes(3));
+        var db = Redis.GetDatabase();
+        db.StringSet($"{_redisKey}_economy", data, TimeSpan.FromMinutes(3));
     }
 
     public async Task<TOut> GetOrAddCachedDataAsync<TParam, TOut>(
@@ -174,9 +175,9 @@ public class RedisCache : IDataCache
         TimeSpan expiry)
         where TOut : class
     {
-        var _db = Redis.GetDatabase();
+        var db = Redis.GetDatabase();
 
-        var data = await _db.StringGetAsync(key);
+        var data = await db.StringGetAsync(key);
         if (!data.HasValue)
         {
             var obj = await factory(param);
@@ -184,7 +185,7 @@ public class RedisCache : IDataCache
             if (obj is null)
                 return default;
 
-            await _db.StringSetAsync(key, JsonConvert.SerializeObject(obj), expiry);
+            await db.StringSetAsync(key, JsonConvert.SerializeObject(obj), expiry);
 
             return obj;
         }

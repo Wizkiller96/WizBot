@@ -477,7 +477,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(word))
             return;
 
-        using var _http = _httpFactory.CreateClient();
+        using var http = _httpFactory.CreateClient();
         string res;
         try
         {
@@ -485,7 +485,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 e =>
                 {
                     e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-                    return _http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword="
+                    return http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword="
                                                 + WebUtility.UrlEncode(word));
                 });
 

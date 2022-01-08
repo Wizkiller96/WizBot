@@ -5,14 +5,12 @@ using Grpc.Core;
 
 namespace NadekoBot.Coordinator
 {
-    public sealed class CoordinatorService : NadekoBot.Coordinator.Coordinator.CoordinatorBase
+    public sealed class CoordinatorService : Coordinator.CoordinatorBase
     {
         private readonly CoordinatorRunner _runner;
 
         public CoordinatorService(CoordinatorRunner runner)
-        {
-            _runner = runner;
-        }
+            => _runner = runner;
 
         public override Task<HeartbeatReply> Heartbeat(HeartbeatRequest request, ServerCallContext context)
         {

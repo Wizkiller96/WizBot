@@ -30,7 +30,7 @@ public class CmdCdService : ILateBlocker, INService
 
             activeCdsForGuild.Add(new() { UserId = user.Id, Command = commandName });
 
-            var _ = Task.Run(async () =>
+            _= Task.Run(async () =>
             {
                 try
                 {

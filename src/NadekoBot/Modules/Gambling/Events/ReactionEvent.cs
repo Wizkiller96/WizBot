@@ -11,8 +11,8 @@ public class ReactionEvent : ICurrencyEvent
     public bool PotEmptied { get; private set; }
     private readonly DiscordSocketClient _client;
     private readonly IGuild _guild;
-    private IUserMessage _msg;
-    private IEmote _emote;
+    private IUserMessage msg;
+    private IEmote emote;
     private readonly ICurrencyService _cs;
     private readonly long _amount;
 
@@ -27,9 +27,9 @@ public class ReactionEvent : ICurrencyEvent
     private readonly EventOptions _opts;
     private readonly GamblingConfig _config;
 
-    private readonly object stopLock = new();
+    private readonly object _stopLock = new();
 
-    private readonly object potLock = new();
+    private readonly object _potLock = new();
 
     public ReactionEvent(
         DiscordSocketClient client,
@@ -58,9 +58,7 @@ public class ReactionEvent : ICurrencyEvent
     }
 
     private void EventTimeout(object state)
-    {
-        var _ = StopEvent();
-    }
+        => _= StopEvent();
 
     private async void OnTimerTick(object state)
     {
@@ -76,20 +74,20 @@ public class ReactionEvent : ICurrencyEvent
             await _cs.AddBulkAsync(toAward, toAward.Select(_ => "Reaction Event"), toAward.Select(_ => _amount), true);
 
             if (_isPotLimited)
-                await _msg.ModifyAsync(m =>
+                await msg.ModifyAsync(m =>
                     {
                         m.Embed = GetEmbed(PotSize).Build();
                     },
                     new() { RetryMode = RetryMode.AlwaysRetry });
 
-            Log.Information("Awarded {0} users {1} currency.{2}",
+            Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
                 _amount,
                 _isPotLimited ? $" {PotSize} left." : "");
 
             if (potEmpty)
             {
-                var _ = StopEvent();
+                _= StopEvent();
             }
         }
         catch (Exception ex)
@@ -100,12 +98,12 @@ public class ReactionEvent : ICurrencyEvent
 
     public async Task StartEvent()
     {
-        if (Emote.TryParse(_config.Currency.Sign, out var emote))
-            _emote = emote;
+        if (Emote.TryParse(_config.Currency.Sign, out var parsedEmote))
+            this.emote = parsedEmote;
         else
-            _emote = new Emoji(_config.Currency.Sign);
-        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
-        await _msg.AddReactionAsync(_emote);
+            this.emote = new Emoji(_config.Currency.Sign);
+        msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        await msg.AddReactionAsync(this.emote);
         _client.MessageDeleted += OnMessageDeleted;
         _client.ReactionAdded += HandleReaction;
         _t.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
@@ -114,15 +112,15 @@ public class ReactionEvent : ICurrencyEvent
     private IEmbedBuilder GetEmbed(long pot)
         => _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
 
-    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
+    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (msg.Id == _msg.Id) await StopEvent();
+        if (message.Id == this.msg.Id) await StopEvent();
     }
 
     public async Task StopEvent()
     {
         await Task.Yield();
-        lock (stopLock)
+        lock (_stopLock)
         {
             if (Stopped)
                 return;
@@ -133,27 +131,27 @@ public class ReactionEvent : ICurrencyEvent
             _timeout?.Change(Timeout.Infinite, Timeout.Infinite);
             try
             {
-                var _ = _msg.DeleteAsync();
+                _= msg.DeleteAsync();
             }
             catch { }
 
-            var os = OnEnded(_guild.Id);
+            _ = OnEnded?.Invoke(_guild.Id);
         }
     }
 
     private Task HandleReaction(
-        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IUserMessage, ulong> message,
         Cacheable<IMessageChannel, ulong> cacheable,
         SocketReaction r)
     {
-        var _ = Task.Run(() =>
+        _= Task.Run(() =>
         {
-            if (_emote.Name != r.Emote.Name)
+            if (emote.Name != r.Emote.Name)
                 return;
             if ((r.User.IsSpecified
                     ? r.User.Value
                     : null) is not IGuildUser gu // no unknown users, as they could be bots, or alts
-                || msg.Id != _msg.Id // same message
+                || message.Id != this.msg.Id // same message
                 || gu.IsBot // no bots
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5 // no recently created accounts
                 || (_noRecentlyJoinedServer
@@ -177,7 +175,7 @@ public class ReactionEvent : ICurrencyEvent
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
-            lock (potLock)
+            lock (_potLock)
             {
                 if (PotSize < _amount)
                     return false;

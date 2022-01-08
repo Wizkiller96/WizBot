@@ -31,7 +31,7 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         var uow = _db.GetDbContext();
         _enabledOn = uow.ImageOnlyChannels.ToList()
                         .GroupBy(x => x.GuildId)
-                        .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(x => x.ChannelId)))
+                        .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
                         .ToConcurrent();
 
         _ = Task.Run(DeleteQueueRunner);

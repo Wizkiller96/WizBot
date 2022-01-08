@@ -26,53 +26,53 @@ public class EmbedBuilderService : IEmbedBuilderService, INService
 public sealed class DiscordEmbedBuilderWrapper : IEmbedBuilder
 {
     private readonly BotConfig _botConfig;
-    private EmbedBuilder _embed;
+    private EmbedBuilder embed;
 
     public DiscordEmbedBuilderWrapper(in BotConfig botConfig, EmbedBuilder embed = null)
     {
         _botConfig = botConfig;
-        _embed = embed ?? new EmbedBuilder();
+        this.embed = embed ?? new EmbedBuilder();
     }
 
     public IEmbedBuilder WithDescription(string desc)
-        => Wrap(_embed.WithDescription(desc));
+        => Wrap(embed.WithDescription(desc));
 
     public IEmbedBuilder WithTitle(string title)
-        => Wrap(_embed.WithTitle(title));
+        => Wrap(embed.WithTitle(title));
 
     public IEmbedBuilder AddField(string title, object value, bool isInline = false)
-        => Wrap(_embed.AddField(title, value, isInline));
+        => Wrap(embed.AddField(title, value, isInline));
 
     public IEmbedBuilder WithFooter(string text, string iconUrl = null)
-        => Wrap(_embed.WithFooter(text, iconUrl));
+        => Wrap(embed.WithFooter(text, iconUrl));
 
     public IEmbedBuilder WithAuthor(string name, string iconUrl = null, string url = null)
-        => Wrap(_embed.WithAuthor(name, iconUrl, url));
+        => Wrap(embed.WithAuthor(name, iconUrl, url));
 
     public IEmbedBuilder WithUrl(string url)
-        => Wrap(_embed.WithUrl(url));
+        => Wrap(embed.WithUrl(url));
 
     public IEmbedBuilder WithImageUrl(string url)
-        => Wrap(_embed.WithImageUrl(url));
+        => Wrap(embed.WithImageUrl(url));
 
     public IEmbedBuilder WithThumbnailUrl(string url)
-        => Wrap(_embed.WithThumbnailUrl(url));
+        => Wrap(embed.WithThumbnailUrl(url));
 
     public IEmbedBuilder WithColor(EmbedColor color)
         => color switch
         {
-            EmbedColor.Ok => Wrap(_embed.WithColor(_botConfig.Color.Ok.ToDiscordColor())),
-            EmbedColor.Pending => Wrap(_embed.WithColor(_botConfig.Color.Pending.ToDiscordColor())),
-            EmbedColor.Error => Wrap(_embed.WithColor(_botConfig.Color.Error.ToDiscordColor())),
+            EmbedColor.Ok => Wrap(embed.WithColor(_botConfig.Color.Ok.ToDiscordColor())),
+            EmbedColor.Pending => Wrap(embed.WithColor(_botConfig.Color.Pending.ToDiscordColor())),
+            EmbedColor.Error => Wrap(embed.WithColor(_botConfig.Color.Error.ToDiscordColor())),
             _ => throw new ArgumentOutOfRangeException(nameof(color), "Unsupported EmbedColor type")
         };
 
     public Embed Build()
-        => _embed.Build();
+        => embed.Build();
 
     private IEmbedBuilder Wrap(EmbedBuilder eb)
     {
-        _embed = eb;
+        embed = eb;
         return this;
     }
 }

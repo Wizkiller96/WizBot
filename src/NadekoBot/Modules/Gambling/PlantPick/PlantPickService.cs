@@ -26,8 +26,8 @@ public class PlantPickService : INService
     private readonly DiscordSocketClient _client;
     private readonly GamblingConfigService _gss;
 
-    public readonly ConcurrentHashSet<ulong> _generationChannels = new();
-    private readonly SemaphoreSlim pickLock = new(1, 1);
+    private readonly ConcurrentHashSet<ulong> _generationChannels;
+    private readonly SemaphoreSlim _pickLock = new(1, 1);
 
     public PlantPickService(
         DbService db,
@@ -101,6 +101,7 @@ public class PlantPickService : INService
     ///     Get a random currency image stream, with an optional password sticked onto it.
     /// </summary>
     /// <param name="pass">Optional password to add to top left corner.</param>
+    /// <param name="extension">Extension of the file, defaults to png</param>
     /// <returns>Stream of the currency image</returns>
     public Stream GetRandomCurrencyImage(string pass, out string extension)
     {
@@ -140,7 +141,7 @@ public class PlantPickService : INService
         pass = pass.TrimTo(10, true).ToLowerInvariant();
         using var img = Image.Load<Rgba32>(curImg, out var format);
         // choose font size based on the image height, so that it's visible
-        var font = _fonts.NotoSans.CreateFont(img.Height / 12, FontStyle.Bold);
+        var font = _fonts.NotoSans.CreateFont(img.Height / 12.0f, FontStyle.Bold);
         img.Mutate(x =>
         {
             // measure the size of the text to be drawing
@@ -171,7 +172,7 @@ public class PlantPickService : INService
         if (!_generationChannels.Contains(channel.Id))
             return Task.CompletedTask;
 
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -245,7 +246,7 @@ public class PlantPickService : INService
         ulong uid,
         string pass)
     {
-        await pickLock.WaitAsync();
+        await _pickLock.WaitAsync();
         try
         {
             long amount;
@@ -276,7 +277,7 @@ public class PlantPickService : INService
             try
             {
                 // delete all of the plant messages which have just been picked
-                var _ = ch.DeleteMessagesAsync(ids);
+                _= ch.DeleteMessagesAsync(ids);
             }
             catch { }
 
@@ -285,7 +286,7 @@ public class PlantPickService : INService
         }
         finally
         {
-            pickLock.Release();
+            _pickLock.Release();
         }
     }
 

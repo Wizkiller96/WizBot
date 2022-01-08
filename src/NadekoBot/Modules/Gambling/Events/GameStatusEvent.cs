@@ -11,7 +11,7 @@ public class GameStatusEvent : ICurrencyEvent
     public bool PotEmptied { get; private set; }
     private readonly DiscordSocketClient _client;
     private readonly IGuild _guild;
-    private IUserMessage _msg;
+    private IUserMessage msg;
     private readonly ICurrencyService _cs;
     private readonly long _amount;
 
@@ -32,9 +32,9 @@ public class GameStatusEvent : ICurrencyEvent
                                                                .Select(x => (char)x)
                                                                .ToArray();
 
-    private readonly object stopLock = new();
+    private readonly object _stopLock = new();
 
-    private readonly object potLock = new();
+    private readonly object _potLock = new();
 
     public GameStatusEvent(
         DiscordSocketClient client,
@@ -62,9 +62,7 @@ public class GameStatusEvent : ICurrencyEvent
     }
 
     private void EventTimeout(object state)
-    {
-        var _ = StopEvent();
-    }
+        => _ = StopEvent();
 
     private async void OnTimerTick(object state)
     {
@@ -83,20 +81,20 @@ public class GameStatusEvent : ICurrencyEvent
                 true);
 
             if (_isPotLimited)
-                await _msg.ModifyAsync(m =>
+                await msg.ModifyAsync(m =>
                     {
                         m.Embed = GetEmbed(PotSize).Build();
                     },
                     new() { RetryMode = RetryMode.AlwaysRetry });
 
-            Log.Information("Awarded {0} users {1} currency.{2}",
+            Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
                 _amount,
                 _isPotLimited ? $" {PotSize} left." : "");
 
             if (potEmpty)
             {
-                var _ = StopEvent();
+                _= StopEvent();
             }
         }
         catch (Exception ex)
@@ -107,7 +105,7 @@ public class GameStatusEvent : ICurrencyEvent
 
     public async Task StartEvent()
     {
-        _msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
         await _client.SetGameAsync(_code);
         _client.MessageDeleted += OnMessageDeleted;
         _client.MessageReceived += HandleMessage;
@@ -117,55 +115,55 @@ public class GameStatusEvent : ICurrencyEvent
     private IEmbedBuilder GetEmbed(long pot)
         => _embedFunc(CurrencyEvent.Type.GameStatus, _opts, pot);
 
-    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> msg, Cacheable<IMessageChannel, ulong> cacheable)
+    private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (msg.Id == _msg.Id) await StopEvent();
+        if (message.Id == this.msg.Id) await StopEvent();
     }
 
     public async Task StopEvent()
     {
         await Task.Yield();
-        lock (stopLock)
+        lock (_stopLock)
         {
             if (Stopped)
                 return;
             Stopped = true;
             _client.MessageDeleted -= OnMessageDeleted;
             _client.MessageReceived -= HandleMessage;
-            _client.SetGameAsync(null);
             _t.Change(Timeout.Infinite, Timeout.Infinite);
             _timeout?.Change(Timeout.Infinite, Timeout.Infinite);
+            _ = _client.SetGameAsync(null);
             try
             {
-                var _ = _msg.DeleteAsync();
+                _= msg.DeleteAsync();
             }
             catch { }
 
-            var os = OnEnded(_guild.Id);
+            _ = OnEnded?.Invoke(_guild.Id);
         }
     }
 
-    private Task HandleMessage(SocketMessage msg)
+    private Task HandleMessage(SocketMessage message)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
-            if (msg.Author is not IGuildUser gu // no unknown users, as they could be bots, or alts
+            if (message.Author is not IGuildUser gu // no unknown users, as they could be bots, or alts
                 || gu.IsBot // no bots
-                || msg.Content != _code // code has to be the same
+                || message.Content != _code // code has to be the same
                 || (DateTime.UtcNow - gu.CreatedAt).TotalDays <= 5) // no recently created accounts
                 return;
             // there has to be money left in the pot
             // and the user wasn't rewarded
-            if (_awardedUsers.Add(msg.Author.Id) && TryTakeFromPot())
+            if (_awardedUsers.Add(message.Author.Id) && TryTakeFromPot())
             {
-                _toAward.Enqueue(msg.Author.Id);
+                _toAward.Enqueue(message.Author.Id);
                 if (_isPotLimited && PotSize < _amount)
                     PotEmptied = true;
             }
 
             try
             {
-                await msg.DeleteAsync(new() { RetryMode = RetryMode.AlwaysFail });
+                await message.DeleteAsync(new() { RetryMode = RetryMode.AlwaysFail });
             }
             catch { }
         });
@@ -175,7 +173,7 @@ public class GameStatusEvent : ICurrencyEvent
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
-            lock (potLock)
+            lock (_potLock)
             {
                 if (PotSize < _amount)
                     return false;

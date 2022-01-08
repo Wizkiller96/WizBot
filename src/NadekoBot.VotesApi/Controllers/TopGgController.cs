@@ -26,7 +26,7 @@ namespace NadekoBot.VotesApi.Controllers
         {
             var votes = await _cache.GetNewTopGgVotesAsync();
             if(votes.Count > 0)
-                _logger.LogInformation("Sending {NewTopggVotes} new topgg votes.", votes.Count);
+                _logger.LogInformation("Sending {NewTopggVotes} new topgg votes", votes.Count);
             
             return votes;
         }

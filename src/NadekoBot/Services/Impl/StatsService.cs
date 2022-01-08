@@ -58,7 +58,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.ChannelCreated += c =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 if (c is ITextChannel)
                     Interlocked.Increment(ref textChannels);
@@ -71,7 +71,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.ChannelDestroyed += c =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 if (c is ITextChannel)
                     Interlocked.Decrement(ref textChannels);
@@ -84,7 +84,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.GuildAvailable += g =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -96,7 +96,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.JoinedGuild += g =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -108,7 +108,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.GuildUnavailable += g =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -121,7 +121,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.LeftGuild += g =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;

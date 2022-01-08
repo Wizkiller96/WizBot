@@ -7,59 +7,59 @@ namespace NadekoBot.Common.Yml;
 
 public class CommentGatheringTypeInspector : TypeInspectorSkeleton
 {
-    private readonly ITypeInspector innerTypeDescriptor;
+    private readonly ITypeInspector _innerTypeDescriptor;
 
     public CommentGatheringTypeInspector(ITypeInspector innerTypeDescriptor)
-        => this.innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
+        => this._innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
 
     public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
-        => innerTypeDescriptor.GetProperties(type, container).Select(d => new CommentsPropertyDescriptor(d));
+        => _innerTypeDescriptor.GetProperties(type, container).Select(d => new CommentsPropertyDescriptor(d));
 
     private sealed class CommentsPropertyDescriptor : IPropertyDescriptor
     {
         public string Name { get; }
 
         public Type Type
-            => baseDescriptor.Type;
+            => _baseDescriptor.Type;
 
         public Type TypeOverride
         {
-            get => baseDescriptor.TypeOverride;
-            set => baseDescriptor.TypeOverride = value;
+            get => _baseDescriptor.TypeOverride;
+            set => _baseDescriptor.TypeOverride = value;
         }
 
         public int Order { get; set; }
 
         public ScalarStyle ScalarStyle
         {
-            get => baseDescriptor.ScalarStyle;
-            set => baseDescriptor.ScalarStyle = value;
+            get => _baseDescriptor.ScalarStyle;
+            set => _baseDescriptor.ScalarStyle = value;
         }
 
         public bool CanWrite
-            => baseDescriptor.CanWrite;
+            => _baseDescriptor.CanWrite;
 
-        private readonly IPropertyDescriptor baseDescriptor;
+        private readonly IPropertyDescriptor _baseDescriptor;
 
         public CommentsPropertyDescriptor(IPropertyDescriptor baseDescriptor)
         {
-            this.baseDescriptor = baseDescriptor;
+            this._baseDescriptor = baseDescriptor;
             Name = baseDescriptor.Name;
         }
 
         public void Write(object target, object value)
-            => baseDescriptor.Write(target, value);
+            => _baseDescriptor.Write(target, value);
 
         public T GetCustomAttribute<T>()
             where T : Attribute
-            => baseDescriptor.GetCustomAttribute<T>();
+            => _baseDescriptor.GetCustomAttribute<T>();
 
         public IObjectDescriptor Read(object target)
         {
-            var comment = baseDescriptor.GetCustomAttribute<CommentAttribute>();
+            var comment = _baseDescriptor.GetCustomAttribute<CommentAttribute>();
             return comment is not null
-                ? new CommentsObjectDescriptor(baseDescriptor.Read(target), comment.Comment)
-                : baseDescriptor.Read(target);
+                ? new CommentsObjectDescriptor(_baseDescriptor.Read(target), comment.Comment)
+                : _baseDescriptor.Read(target);
         }
     }
 }

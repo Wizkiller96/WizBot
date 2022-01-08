@@ -127,7 +127,7 @@ public sealed class AcrophobiaGame : IDisposable
                         || !_usersWhoVoted.Add(userId))
                         break;
                     ++submissions[toVoteFor];
-                    var _ = Task.Run(() => OnUserVoted(userName));
+                    _= Task.Run(() => OnUserVoted(userName));
                     return true;
             }
 

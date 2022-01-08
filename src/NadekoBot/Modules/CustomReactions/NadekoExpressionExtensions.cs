@@ -55,15 +55,15 @@ public static class NadekoExpressionExtensions
 
         if (wordIndex == 0)
         {
-            if (word.Length < str.Length && str.isValidWordDivider(word.Length))
+            if (word.Length < str.Length && str.IsValidWordDivider(word.Length))
                 return WordPosition.Start;
         }
         else if (wordIndex + word.Length == str.Length)
         {
-            if (str.isValidWordDivider(wordIndex - 1))
+            if (str.IsValidWordDivider(wordIndex - 1))
                 return WordPosition.End;
         }
-        else if (str.isValidWordDivider(wordIndex - 1) && str.isValidWordDivider(wordIndex + word.Length))
+        else if (str.IsValidWordDivider(wordIndex - 1) && str.IsValidWordDivider(wordIndex + word.Length))
         {
             return WordPosition.Middle;
         }
@@ -71,7 +71,7 @@ public static class NadekoExpressionExtensions
         return WordPosition.None;
     }
 
-    private static bool isValidWordDivider(this in ReadOnlySpan<char> str, int index)
+    private static bool IsValidWordDivider(this in ReadOnlySpan<char> str, int index)
     {
         var ch = str[index];
         if (ch is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= '1' and <= '9')

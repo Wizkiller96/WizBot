@@ -76,14 +76,14 @@ public class CmdAttribute : System.Attribute
         var compilationMethods = context.CompilationProvider.Combine(methods.Collect());
 
         context.RegisterSourceOutput(compilationMethods,
-            static (ctx, tuple) => RegisterAction(in ctx, tuple.Left, in tuple.Right!));
+            static (ctx, tuple) => RegisterAction(in ctx, tuple.Left, in tuple.Right));
     }
 
     private static void RegisterAction(in SourceProductionContext ctx,
         Compilation comp,
-        in ImmutableArray<MethodDeclarationSyntax> methods)
+        in ImmutableArray<MethodDeclarationSyntax?> methods)
     {
-        if (methods.IsDefaultOrEmpty)
+        if (methods is { IsDefaultOrEmpty: true })
             return;
 
         var models = GetModels(comp, methods, ctx.CancellationToken);
@@ -136,12 +136,17 @@ public class CmdAttribute : System.Attribute
     }
 
     private static IReadOnlyCollection<FileModel> GetModels(Compilation compilation,
-        in ImmutableArray<MethodDeclarationSyntax> methods,
+        in ImmutableArray<MethodDeclarationSyntax?> inputMethods,
         CancellationToken cancel)
     {
         var models = new List<FileModel>();
 
-        var methodModels = methods.Select(x => MethodDeclarationToMethodModel(compilation, x));
+        var methods = inputMethods
+            .Where(static x => x is not null)
+            .Distinct();
+        
+        var methodModels = methods
+            .Select(x => MethodDeclarationToMethodModel(compilation, x!));
 
         var groups = methodModels
             .GroupBy(static x => $"{x.Namespace}.{string.Join(".", x.Classes)}");
@@ -172,6 +177,7 @@ public class CmdAttribute : System.Attribute
         var semanticModel = comp.GetSemanticModel(decl.SyntaxTree);
         var methodModel = new MethodModel(
             @params: decl.ParameterList.Parameters
+                .Where(p => p.Type is not null)
                 .Select(p =>
                 {
                     var prefix = p.Modifiers.Any(static x => x.IsKind(SyntaxKind.ParamsKeyword))
@@ -180,8 +186,8 @@ public class CmdAttribute : System.Attribute
 
                     var type = semanticModel
                         .GetTypeInfo(p.Type!)
-                        .Type!
-                        .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        .Type
+                        ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
 
                     var name = p.Identifier.Text;

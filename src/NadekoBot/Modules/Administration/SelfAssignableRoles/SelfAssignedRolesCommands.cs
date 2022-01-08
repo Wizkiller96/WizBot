@@ -58,8 +58,6 @@ public partial class Administration
         [Priority(0)]
         public async partial Task Sargn(int group, [Leftover] string name = null)
         {
-            var guser = (IGuildUser)ctx.User;
-
             var set = await _service.SetNameAsync(ctx.Guild.Id, group, name);
 
             if (set)
@@ -106,7 +104,7 @@ public partial class Administration
 
                     foreach (var kvp in roleGroups)
                     {
-                        var groupNameText = string.Empty;
+                        string groupNameText;
                         if (!groups.TryGetValue(kvp.Key, out var name))
                             groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
                         else

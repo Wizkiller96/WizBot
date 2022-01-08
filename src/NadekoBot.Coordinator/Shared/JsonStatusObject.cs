@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NadekoBot.Coordinator
+﻿namespace NadekoBot.Coordinator
 {
     public class JsonStatusObject
     {

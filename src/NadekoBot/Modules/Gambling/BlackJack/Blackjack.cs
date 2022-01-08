@@ -35,9 +35,7 @@ public class Blackjack
     }
 
     public void Start()
-    {
-        var _ = GameLoop();
-    }
+        => _= GameLoop();
 
     public async Task GameLoop()
     {
@@ -89,13 +87,13 @@ public class Blackjack
             Log.Information("Dealer moves");
             await DealerMoves();
             await PrintState();
-            var _ = GameEnded?.Invoke(this);
+            _= GameEnded?.Invoke(this);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "REPORT THE MESSAGE BELOW IN #NadekoLog SERVER PLEASE");
             State = GameState.Ended;
-            var _ = GameEnded?.Invoke(this);
+            _= GameEnded?.Invoke(this);
         }
     }
 
@@ -127,7 +125,7 @@ public class Blackjack
             if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true)) return false;
 
             Players.Add(new(user, bet));
-            var _ = PrintState();
+            _= PrintState();
             return true;
         }
         finally

@@ -85,7 +85,7 @@ public sealed class NunchiGame : IDisposable
                 _killTimeout);
 
             CurrentPhase = Phase.Playing;
-            var _ = OnGameStarted?.Invoke(this);
+            _= OnGameStarted?.Invoke(this);
             var __ = OnRoundStarted?.Invoke(this, CurrentNumber);
             return true;
         }
@@ -122,7 +122,7 @@ public sealed class NunchiGame : IDisposable
                     {
                         _killTimer.Change(Timeout.Infinite, Timeout.Infinite);
                         CurrentPhase = Phase.Ended;
-                        var _ = OnGameEnded?.Invoke(this, userTuple.Name);
+                        _= OnGameEnded?.Invoke(this, userTuple.Name);
                     }
                     else // else just start the new round without the user who was the last
                     {
@@ -159,7 +159,7 @@ public sealed class NunchiGame : IDisposable
         {
             _killTimer.Change(Timeout.Infinite, Timeout.Infinite);
             CurrentPhase = Phase.Ended;
-            var _ = OnGameEnded?.Invoke(this, _participants.Count > 0 ? _participants.First().Name : null);
+            _= OnGameEnded?.Invoke(this, _participants.Count > 0 ? _participants.First().Name : null);
             return;
         }
 

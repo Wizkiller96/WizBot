@@ -48,7 +48,7 @@ public partial class Games
                 if (msg.Channel.Id != ctx.Channel.Id)
                     return Task.CompletedTask;
 
-                var _ = Task.Run(async () =>
+                _= Task.Run(async () =>
                 {
                     try
                     {

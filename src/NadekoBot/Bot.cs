@@ -196,7 +196,7 @@ public sealed class Bot
 
         Task SetClientReady()
         {
-            var _ = Task.Run(async () =>
+            _= Task.Run(async () =>
             {
                 clientReady.TrySetResult(true);
                 try
@@ -248,7 +248,7 @@ public sealed class Bot
     private Task Client_JoinedGuild(SocketGuild arg)
     {
         Log.Information("Joined server: {GuildName} [{GuildId}]", arg.Name, arg.Id);
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             GuildConfig gc;
             await using (var uow = _db.GetDbContext())

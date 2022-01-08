@@ -315,6 +315,9 @@ WHERE GuildId={guildId}
         if (number <= 0 || (time is not null && time.Time > TimeSpan.FromDays(49)))
             return false;
 
+        if (punish is PunishmentAction.AddRole && role is null)
+            return false;
+
         using var uow = _db.GetDbContext();
         var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
         var toDelete = ps.Where(x => x.Count == number);
@@ -326,7 +329,7 @@ WHERE GuildId={guildId}
             Count = number,
             Punishment = punish,
             Time = (int?)time?.Time.TotalMinutes ?? 0,
-            RoleId = punish == PunishmentAction.AddRole ? role.Id : default(ulong?)
+            RoleId = punish == PunishmentAction.AddRole ? role!.Id : default(ulong?)
         });
         uow.SaveChanges();
         return true;

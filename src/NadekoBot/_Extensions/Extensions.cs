@@ -112,11 +112,11 @@ public static class Extensions
         var wrap = new ReactionEventWrapper(client, msg);
         wrap.OnReactionAdded += r =>
         {
-            var _ = Task.Run(() => reactionAdded(r));
+            _= Task.Run(() => reactionAdded(r));
         };
         wrap.OnReactionRemoved += r =>
         {
-            var _ = Task.Run(() => reactionRemoved(r));
+            _= Task.Run(() => reactionRemoved(r));
         };
         return wrap;
     }

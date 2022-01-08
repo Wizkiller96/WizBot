@@ -13,7 +13,7 @@ public partial class Administration
     {
         public enum Exclude { Excl }
 
-        private IServiceProvider _services;
+        private readonly IServiceProvider _services;
 
         public RoleCommands(IServiceProvider services)
             => _services = services;
@@ -24,7 +24,7 @@ public partial class Administration
                 ? await ctx.Channel.GetMessageAsync(msgId)
                 : (await ctx.Channel.GetMessagesAsync(2).FlattenAsync()).Skip(1).FirstOrDefault();
 
-            if (input.Length % 2 != 0)
+            if (input.Length % 2 != 0 || target is null)
                 return;
 
             var all = await input.Chunk(input.Length / 2)
@@ -35,7 +35,7 @@ public partial class Administration
                                      var roleResult = await roleReader.ReadAsync(ctx, inputRoleStr, _services);
                                      if (!roleResult.IsSuccess)
                                      {
-                                         Log.Warning("Role {0} not found.", inputRoleStr);
+                                         Log.Warning("Role {Role} not found", inputRoleStr);
                                          return null;
                                      }
 
@@ -163,7 +163,6 @@ public partial class Administration
             if (index < 1 || !_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any() || rrs.Count < index)
                 return;
             index--;
-            var rr = rrs[index];
             _service.Remove(ctx.Guild.Id, index);
             await ReplyConfirmLocalizedAsync(strs.reaction_role_removed(index + 1));
         }

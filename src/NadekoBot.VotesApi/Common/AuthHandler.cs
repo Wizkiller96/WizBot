@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NadekoBot.VotesApi.Controllers;
 
 namespace NadekoBot.VotesApi
 {
@@ -24,9 +23,7 @@ namespace NadekoBot.VotesApi
             ISystemClock clock,
             IConfiguration conf)
             : base(options, logger, encoder, clock)
-        {
-            _conf = conf;
-        }
+            => _conf = conf;
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

@@ -48,7 +48,7 @@ public partial class Gambling
 
             Task _client_MessageReceived(SocketMessage arg)
             {
-                var _ = Task.Run(() =>
+                _= Task.Run(() =>
                 {
                     try
                     {

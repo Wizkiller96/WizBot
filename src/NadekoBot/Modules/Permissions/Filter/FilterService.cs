@@ -62,7 +62,7 @@ public sealed class FilterService : IEarlyBehavior
 
         client.MessageUpdated += (oldData, newMsg, channel) =>
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 var guild = (channel as ITextChannel)?.Guild;
 

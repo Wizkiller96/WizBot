@@ -55,7 +55,7 @@ public partial class Games
 
             Task _client_MessageReceived(SocketMessage arg)
             {
-                var _ = Task.Run(async () =>
+                _= Task.Run(async () =>
                 {
                     if (arg.Channel.Id != ctx.Channel.Id)
                         return;

@@ -14,9 +14,9 @@ public sealed class BlacklistService : IEarlyBehavior
     private readonly DbService _db;
     private readonly IPubSub _pubSub;
     private readonly IBotCredentials _creds;
-    private IReadOnlyList<BlacklistEntry> _blacklist;
+    private IReadOnlyList<BlacklistEntry> blacklist;
 
-    private readonly TypedKey<BlacklistEntry[]> blPubKey = new("blacklist.reload");
+    private readonly TypedKey<BlacklistEntry[]> _blPubKey = new("blacklist.reload");
 
     public BlacklistService(DbService db, IPubSub pubSub, IBotCredentials creds)
     {
@@ -25,18 +25,18 @@ public sealed class BlacklistService : IEarlyBehavior
         _creds = creds;
 
         Reload(false);
-        _pubSub.Sub(blPubKey, OnReload);
+        _pubSub.Sub(_blPubKey, OnReload);
     }
 
-    private ValueTask OnReload(BlacklistEntry[] blacklist)
+    private ValueTask OnReload(BlacklistEntry[] newBlacklist)
     {
-        _blacklist = blacklist;
+        this.blacklist = newBlacklist;
         return default;
     }
 
     public Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
     {
-        foreach (var bl in _blacklist)
+        foreach (var bl in blacklist)
         {
             if (guild is not null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
             {
@@ -68,14 +68,14 @@ public sealed class BlacklistService : IEarlyBehavior
     }
 
     public IReadOnlyList<BlacklistEntry> GetBlacklist()
-        => _blacklist;
+        => blacklist;
 
     public void Reload(bool publish = true)
     {
         using var uow = _db.GetDbContext();
         var toPublish = uow.Blacklist.AsNoTracking().ToArray();
-        _blacklist = toPublish;
-        if (publish) _pubSub.Pub(blPubKey, toPublish);
+        blacklist = toPublish;
+        if (publish) _pubSub.Pub(_blPubKey, toPublish);
     }
 
     public void Blacklist(BlacklistType type, ulong id)

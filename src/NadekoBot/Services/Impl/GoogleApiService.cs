@@ -13,10 +13,10 @@ namespace NadekoBot.Services;
 
 public class GoogleApiService : IGoogleApiService, INService
 {
-    private const string SearchEngineId = "018084019232060951019:hs5piey28-e";
+    private const string SEARCH_ENGINE_ID = "018084019232060951019:hs5piey28-e";
 
     private static readonly Regex
-        plRegex = new("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
+        _plRegex = new("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
 
     public IReadOnlyDictionary<string, string> Languages { get; } = new Dictionary<string, string>
     {
@@ -151,9 +151,9 @@ public class GoogleApiService : IGoogleApiService, INService
         { "yi", "yi" }
     };
 
-    private readonly YouTubeService yt;
-    private readonly UrlshortenerService sh;
-    private readonly CustomsearchService cs;
+    private readonly YouTubeService _yt;
+    private readonly UrlshortenerService _sh;
+    private readonly CustomsearchService _cs;
 
     //private readonly Regex YtVideoIdRegex = new Regex(@"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})", RegexOptions.Compiled);
     private readonly IBotCredentials _creds;
@@ -166,9 +166,9 @@ public class GoogleApiService : IGoogleApiService, INService
 
         var bcs = new BaseClientService.Initializer { ApplicationName = "Nadeko Bot", ApiKey = _creds.GoogleApiKey };
 
-        yt = new(bcs);
-        sh = new(bcs);
-        cs = new(bcs);
+        _yt = new(bcs);
+        _sh = new(bcs);
+        _cs = new(bcs);
     }
 
     public async Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1)
@@ -180,9 +180,9 @@ public class GoogleApiService : IGoogleApiService, INService
         if (count <= 0)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        var match = plRegex.Match(keywords);
+        var match = _plRegex.Match(keywords);
         if (match.Length > 1) return new[] { match.Groups["id"].Value };
-        var query = yt.Search.List("snippet");
+        var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.Type = "playlist";
         query.Q = keywords;
@@ -199,7 +199,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         if (count <= 0)
             throw new ArgumentOutOfRangeException(nameof(count));
-        var query = yt.Search.List("snippet");
+        var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.RelatedToVideoId = id;
         query.Type = "video";
@@ -215,7 +215,7 @@ public class GoogleApiService : IGoogleApiService, INService
         if (count <= 0)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        var query = yt.Search.List("snippet");
+        var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.Q = keywords;
         query.Type = "video";
@@ -234,7 +234,7 @@ public class GoogleApiService : IGoogleApiService, INService
         if (count <= 0)
             throw new ArgumentOutOfRangeException(nameof(count));
 
-        var query = yt.Search.List("snippet");
+        var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.Q = keywords;
         query.Type = "video";
@@ -256,7 +256,7 @@ public class GoogleApiService : IGoogleApiService, INService
 
         try
         {
-            var response = await sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync();
+            var response = await _sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync();
             return response.Id;
         }
         catch (GoogleApiException ex) when (ex.HttpStatusCode == HttpStatusCode.Forbidden)
@@ -288,7 +288,7 @@ public class GoogleApiService : IGoogleApiService, INService
             var toGet = count > 50 ? 50 : count;
             count -= toGet;
 
-            var query = yt.PlaylistItems.List("contentDetails");
+            var query = _yt.PlaylistItems.List("contentDetails");
             query.MaxResults = toGet;
             query.PlaylistId = playlistId;
             query.PageToken = nextPageToken;
@@ -318,7 +318,7 @@ public class GoogleApiService : IGoogleApiService, INService
             var toGet = remaining > 50 ? 50 : remaining;
             remaining -= toGet;
 
-            var q = yt.Videos.List("contentDetails");
+            var q = _yt.Videos.List("contentDetails");
             q.Id = string.Join(",", videoIdsList.Take(toGet));
             videoIdsList = videoIdsList.Skip(toGet).ToList();
             var items = (await q.ExecuteAsync()).Items;
@@ -334,9 +334,9 @@ public class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(query))
             throw new ArgumentNullException(nameof(query));
 
-        var req = cs.Cse.List();
+        var req = _cs.Cse.List();
         req.Q = query;
-        req.Cx = SearchEngineId;
+        req.Cx = SEARCH_ENGINE_ID;
         req.Num = 1;
         req.Fields = "items(image(contextLink,thumbnailLink),link)";
         req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;

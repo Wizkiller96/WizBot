@@ -1,5 +1,3 @@
-using System;
-
 namespace NadekoBot.VotesApi
 {
     public class Vote

@@ -9,10 +9,8 @@ namespace NadekoBot.Tests
     {
         [SetUp]
         public void Setup()
-        {
-            Console.OutputEncoding = Encoding.UTF8;
-        }
-        
+            => Console.OutputEncoding = Encoding.UTF8;
+
         [Test]
         public void Utf8CodepointsToEmoji()
         {

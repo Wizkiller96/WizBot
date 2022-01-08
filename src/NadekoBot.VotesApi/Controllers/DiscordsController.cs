@@ -11,10 +11,10 @@ namespace NadekoBot.VotesApi.Controllers
     [Route("[controller]")]
     public class DiscordsController : ControllerBase
     {
-        private readonly ILogger<TopGgController> _logger;
+        private readonly ILogger<DiscordsController> _logger;
         private readonly IVotesCache _cache;
 
-        public DiscordsController(ILogger<TopGgController> logger, IVotesCache cache)
+        public DiscordsController(ILogger<DiscordsController> logger, IVotesCache cache)
         {
             _logger = logger;
             _cache = cache;
@@ -26,7 +26,7 @@ namespace NadekoBot.VotesApi.Controllers
         {
             var votes = await _cache.GetNewDiscordsVotesAsync();
             if(votes.Count > 0)
-                _logger.LogInformation("Sending {NewDiscordsVotes} new discords votes.", votes.Count);
+                _logger.LogInformation("Sending {NewDiscordsVotes} new discords votes", votes.Count);
             return votes;
         }
     }

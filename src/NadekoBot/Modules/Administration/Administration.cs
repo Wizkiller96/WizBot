@@ -87,8 +87,8 @@ public partial class Administration : NadekoModule<AdministrationService>
             channels.Select(x =>
             {
                 var ch = guild.GetChannel(x.ChannelId)?.ToString() ?? x.ChannelId.ToString();
-                var prefix = x.State ? "✅ " : "❌ ";
-                return prefix + ch;
+                var prefixSign = x.State ? "✅ " : "❌ ";
+                return prefixSign + ch;
             }));
 
         if (string.IsNullOrWhiteSpace(str))
@@ -319,7 +319,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         }
         else if (time.Time <= TimeSpan.FromDays(7))
         {
-            var _ = Task.Run(async () =>
+            _= Task.Run(async () =>
             {
                 await Task.Delay(time.Time);
                 await msg.DeleteAsync();

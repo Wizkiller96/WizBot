@@ -182,7 +182,7 @@ public class TicTacToe
 
     private Task Client_MessageReceived(SocketMessage msg)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             await _moveLock.WaitAsync();
             try

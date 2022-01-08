@@ -20,36 +20,36 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public partial Task Prefix(Set _, [Leftover] string prefix)
-            => Prefix(prefix);
+        public partial Task Prefix(Set _, [Leftover] string newPrefix)
+            => Prefix(newPrefix);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public async partial Task Prefix([Leftover] string prefix)
+        public async partial Task Prefix([Leftover] string toSet)
         {
             if (string.IsNullOrWhiteSpace(prefix))
                 return;
 
-            var oldPrefix = base.prefix;
-            var newPrefix = CmdHandler.SetPrefix(ctx.Guild, prefix);
+            var oldPrefix = prefix;
+            var newPrefix = CmdHandler.SetPrefix(ctx.Guild, toSet);
 
             await ReplyConfirmLocalizedAsync(strs.prefix_new(Format.Code(oldPrefix), Format.Code(newPrefix)));
         }
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task DefPrefix([Leftover] string prefix = null)
+        public async partial Task DefPrefix([Leftover] string toSet = null)
         {
-            if (string.IsNullOrWhiteSpace(prefix))
+            if (string.IsNullOrWhiteSpace(toSet))
             {
                 await ReplyConfirmLocalizedAsync(strs.defprefix_current(CmdHandler.GetPrefix()));
                 return;
             }
 
             var oldPrefix = CmdHandler.GetPrefix();
-            var newPrefix = CmdHandler.SetDefaultPrefix(prefix);
+            var newPrefix = CmdHandler.SetDefaultPrefix(toSet);
 
             await ReplyConfirmLocalizedAsync(strs.defprefix_new(Format.Code(oldPrefix), Format.Code(newPrefix)));
         }

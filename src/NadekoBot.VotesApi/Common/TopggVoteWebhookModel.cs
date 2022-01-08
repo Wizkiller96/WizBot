@@ -23,7 +23,7 @@
         public bool Weekend { get; set; }
         
         /// <summary>
-        /// Query string params found on the /bot/:ID/vote page. Example: ?a=1&b=2.
+        /// Query string params found on the /bot/:ID/vote page. Example: ?a=1&amp;b=2.
         /// </summary>
         public string Query { get; set; }
     }

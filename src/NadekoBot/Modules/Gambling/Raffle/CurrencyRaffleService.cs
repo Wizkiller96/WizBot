@@ -13,14 +13,10 @@ public class CurrencyRaffleService : INService
 
     public Dictionary<ulong, CurrencyRaffleGame> Games { get; } = new();
     private readonly SemaphoreSlim _locker = new(1, 1);
-    private readonly DbService _db;
     private readonly ICurrencyService _cs;
 
-    public CurrencyRaffleService(DbService db, ICurrencyService cs)
-    {
-        _db = db;
-        _cs = cs;
-    }
+    public CurrencyRaffleService(ICurrencyService cs)
+        => _cs = cs;
 
     public async Task<(CurrencyRaffleGame, JoinErrorType?)> JoinOrCreateGame(
         ulong channelId,
@@ -57,7 +53,7 @@ public class CurrencyRaffleService : INService
 
             if (newGame)
             {
-                var _t = Task.Run(async () =>
+                _ = Task.Run(async () =>
                 {
                     await Task.Delay(60000);
                     await _locker.WaitAsync();
@@ -68,7 +64,7 @@ public class CurrencyRaffleService : INService
 
                         await _cs.AddAsync(winner.DiscordUser.Id, "Currency Raffle Win", won);
                         Games.Remove(channelId, out _);
-                        var oe = onEnded(winner.DiscordUser, won);
+                        _ = onEnded(winner.DiscordUser, won);
                     }
                     catch { }
                     finally { _locker.Release(); }

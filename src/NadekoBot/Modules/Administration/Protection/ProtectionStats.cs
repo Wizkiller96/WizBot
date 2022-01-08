@@ -38,15 +38,15 @@ public class AntiAltStats
         => _setting.MinAge;
 
     public int Counter
-        => _counter;
+        => counter;
 
     private readonly AntiAltSetting _setting;
 
-    private int _counter;
+    private int counter;
 
     public AntiAltStats(AntiAltSetting setting)
         => _setting = setting;
 
     public void Increment()
-        => Interlocked.Increment(ref _counter);
+        => Interlocked.Increment(ref counter);
 }

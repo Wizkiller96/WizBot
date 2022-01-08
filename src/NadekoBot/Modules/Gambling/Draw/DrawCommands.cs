@@ -68,10 +68,10 @@ public partial class Gambling
             if (num > 10)
                 num = 10;
 
-            var (ImageStream, ToSend) = await InternalDraw(num, ctx.Guild.Id);
-            await using (ImageStream)
+            var (imageStream, toSend) = await InternalDraw(num, ctx.Guild.Id);
+            await using (imageStream)
             {
-                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend);
+                await ctx.Channel.SendFileAsync(imageStream, num + " cards.jpg", toSend);
             }
         }
 
@@ -83,10 +83,10 @@ public partial class Gambling
             if (num > 10)
                 num = 10;
 
-            var (ImageStream, ToSend) = await InternalDraw(num);
-            await using (ImageStream)
+            var (imageStream, toSend) = await InternalDraw(num);
+            await using (imageStream)
             {
-                await ctx.Channel.SendFileAsync(ImageStream, num + " cards.jpg", ToSend);
+                await ctx.Channel.SendFileAsync(imageStream, num + " cards.jpg", toSend);
             }
         }
 

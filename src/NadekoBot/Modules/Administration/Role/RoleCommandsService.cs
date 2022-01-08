@@ -90,7 +90,7 @@ public class RoleCommandsService : INService
                 await dl.RemoveReactionAsync(reaction.Emote,
                     dl.Author,
                     new() { RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502 });
-                Log.Warning("User {0} is adding unrelated reactions to the reaction roles message.", dl.Author);
+                Log.Warning("User {Author} is adding unrelated reactions to the reaction roles message", dl.Author);
             }
         });
 

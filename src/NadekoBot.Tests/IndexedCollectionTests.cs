@@ -115,7 +115,7 @@ namespace NadekoBot.Tests
         [Test]
         public void ContainsTest()
         {
-            var subCol = new ShopEntry[]
+            var subCol = new[]
             {
                 new ShopEntry() { Id = 111 },
                 new ShopEntry() { Id = 222 },

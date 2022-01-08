@@ -21,9 +21,9 @@ public class TriviaQuestion
     public string Answer { get; set; }
 
     public string CleanAnswer
-        => _cleanAnswer ?? (_cleanAnswer = Clean(Answer));
+        => cleanAnswer ?? (cleanAnswer = Clean(Answer));
 
-    private string _cleanAnswer;
+    private string cleanAnswer;
 
     public TriviaQuestion(
         string q,

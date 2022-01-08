@@ -158,7 +158,7 @@ public class SelfAssignedRolesService : INService
         return success;
     }
 
-    public (bool AutoDelete, bool Exclusive, IEnumerable<SelfAssignedRole>) GetAdAndRoles(ulong guildId)
+    public (bool AutoDelete, bool Exclusive, IReadOnlyCollection<SelfAssignedRole>) GetAdAndRoles(ulong guildId)
     {
         using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set);
@@ -198,12 +198,12 @@ public class SelfAssignedRolesService : INService
         return areExclusive;
     }
 
-    public (bool Exclusive, IEnumerable<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string> GroupNames
+    public (bool Exclusive, IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string> GroupNames
         ) GetRoles(IGuild guild)
     {
         var exclusive = false;
 
-        IEnumerable<(SelfAssignedRole Model, IRole Role)> roles;
+        IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> roles;
         IDictionary<int, string> groupNames;
         using (var uow = _db.GetDbContext())
         {
@@ -211,11 +211,12 @@ public class SelfAssignedRolesService : INService
             exclusive = gc.ExclusiveSelfAssignedRoles;
             groupNames = gc.SelfAssignableRoleGroupNames.ToDictionary(x => x.Number, x => x.Name);
             var roleModels = uow.SelfAssignableRoles.GetFromGuild(guild.Id);
-            roles = roleModels.Select(x => (Model: x, Role: guild.GetRole(x.RoleId)));
+            roles = roleModels.Select(x => (Model: x, Role: guild.GetRole(x.RoleId)))
+                              .ToList();
             uow.SelfAssignableRoles.RemoveRange(roles.Where(x => x.Role is null).Select(x => x.Model).ToArray());
             uow.SaveChanges();
         }
 
-        return (exclusive, roles.Where(x => x.Role is not null), groupNames);
+        return (exclusive, roles.Where(x => x.Role is not null).ToList(), groupNames);
     }
 }

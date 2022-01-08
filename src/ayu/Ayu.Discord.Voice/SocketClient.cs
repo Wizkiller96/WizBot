@@ -9,7 +9,7 @@ namespace Ayu.Discord.Gateway
 {
     public class SocketClient : IDisposable
     {
-        private ClientWebSocket? _ws = null;
+        private ClientWebSocket? _ws;
 
         public event Func<byte[], Task>? PayloadReceived = delegate { return Task.CompletedTask; };
         public event Func<string, Task>? WebsocketClosed = delegate { return Task.CompletedTask; };

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NadekoBot.VotesApi.Services;
 
@@ -13,13 +11,11 @@ namespace NadekoBot.VotesApi.Controllers
     {
         private readonly ILogger<WebhookController> _logger;
         private readonly IVotesCache _votesCache;
-        private readonly IConfiguration _conf;
 
-        public WebhookController(ILogger<WebhookController> logger, IVotesCache votesCache, IConfiguration conf)
+        public WebhookController(ILogger<WebhookController> logger, IVotesCache votesCache)
         {
             _logger = logger;
             _votesCache = votesCache;
-            _conf = conf;
         }
         
         [HttpPost("/discordswebhook")]

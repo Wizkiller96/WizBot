@@ -12,7 +12,7 @@ public partial class Utility
     [Group]
     public partial class QuoteCommands : NadekoSubmodule
     {
-        private const string _prependExport =
+        private const string PREPEND_EXPORT =
             @"# Keys are keywords, Each key has a LIST of quotes in the following format:
 # - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
 #   an: Author name 
@@ -279,7 +279,7 @@ public partial class Utility
             var exprsDict = quotes.GroupBy(x => x.Keyword)
                                 .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
 
-            var text = _prependExport + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
+            var text = PREPEND_EXPORT + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
 
             await using var stream = await text.ToStream();
             await ctx.Channel.SendFileAsync(stream, "quote-export.yml");

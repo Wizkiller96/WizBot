@@ -183,7 +183,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserUpdated(SocketUser before, SocketUser uAfter)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -292,7 +292,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 case LogType.VoicePresence:
                     channelId = logSetting.LogVoicePresenceId = logSetting.LogVoicePresenceId is null ? cid : default;
                     break;
-                case LogType.VoicePresenceTTS:
+                case LogType.VoicePresenceTts:
                     channelId = logSetting.LogVoicePresenceTTSId =
                         logSetting.LogVoicePresenceTTSId is null ? cid : default;
                     break;
@@ -306,7 +306,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserVoiceStateUpdated_TTS(SocketUser iusr, SocketVoiceState before, SocketVoiceState after)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -324,7 +324,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     return;
 
                 ITextChannel? logChannel;
-                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTTS)) is null)
+                if ((logChannel = await TryGetLogChannel(usr.Guild, logSetting, LogType.VoicePresenceTts)) is null)
                     return;
 
                 var str = string.Empty;
@@ -351,8 +351,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         IUser mod,
         MuteType muteType,
         string reason)
-    {
-        var _ = Task.Run(async () =>
+        => _= Task.Run(async () =>
         {
             try
             {
@@ -391,15 +390,13 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 // ignored
             }
         });
-    }
 
     private void MuteCommands_UserUnmuted(
         IGuildUser usr,
         IUser mod,
         MuteType muteType,
         string reason)
-    {
-        var _ = Task.Run(async () =>
+        => _= Task.Run(async () =>
         {
             try
             {
@@ -443,11 +440,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 // ignored
             }
         });
-    }
 
     public Task TriggeredAntiProtection(PunishmentAction action, ProtectionType protection, params IGuildUser[] users)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -517,7 +513,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_GuildUserUpdated(Cacheable<SocketGuildUser, ulong> optBefore, SocketGuildUser after)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -620,7 +616,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelUpdated(IChannel cbefore, IChannel cafter)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -668,7 +664,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelDestroyed(IChannel ich)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -706,7 +702,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelCreated(IChannel ich)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -742,7 +738,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserVoiceStateUpdated(SocketUser iusr, SocketVoiceState before, SocketVoiceState after)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -805,7 +801,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserLeft(SocketGuild guild, SocketUser usr)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -840,7 +836,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserJoined(IGuildUser usr)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -879,7 +875,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserUnbanned(IUser usr, IGuild guild)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -914,7 +910,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserBanned(IUser usr, IGuild guild)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -951,7 +947,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_MessageDeleted(Cacheable<IMessage, ulong> optMsg, Cacheable<IMessageChannel, ulong> optCh)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -1005,7 +1001,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         SocketMessage imsg2,
         ISocketMessageChannel ch)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -1104,7 +1100,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             case LogType.VoicePresence:
                 id = logSetting.LogVoicePresenceId;
                 break;
-            case LogType.VoicePresenceTTS:
+            case LogType.VoicePresenceTts:
                 id = logSetting.LogVoicePresenceTTSId;
                 break;
             case LogType.UserMuted:
@@ -1177,7 +1173,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             case LogType.VoicePresence:
                 newLogSetting.LogVoicePresenceId = null;
                 break;
-            case LogType.VoicePresenceTTS:
+            case LogType.VoicePresenceTts:
                 newLogSetting.LogVoicePresenceTTSId = null;
                 break;
         }

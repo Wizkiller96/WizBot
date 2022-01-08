@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Nsfw.Common;
 
 public class SearchImageCacher : INService
 {
-    private static readonly ISet<string> defaultTagBlacklist = new HashSet<string>
+    private static readonly ISet<string> _defaultTagBlacklist = new HashSet<string>
     {
         "loli",
         "lolicon",
@@ -21,7 +21,7 @@ public class SearchImageCacher : INService
     private readonly Dictionary<Booru, HashSet<string>> _usedTags = new();
     private readonly IMemoryCache _cache;
 
-    private readonly ConcurrentDictionary<(Booru, string), int> maxPages = new();
+    private readonly ConcurrentDictionary<(Booru, string), int> _maxPages = new();
 
     public SearchImageCacher(IHttpClientFactory httpFactory, IMemoryCache cache)
     {
@@ -59,7 +59,7 @@ public class SearchImageCacher : INService
             // Log.Warning("Got no images for {0}, tags: {1}", type, string.Join(", ", tags));
             return false;
 
-        Log.Information("Updating {0}...", type);
+        Log.Information("Updating {Type}...", type);
         lock (_typeLocks[type])
         {
             var typeUsedTags = _usedTags[type];
@@ -75,7 +75,7 @@ public class SearchImageCacher : INService
             {
                 // if any of the tags is a tag banned by discord
                 // do not put that image in the cache
-                if (defaultTagBlacklist.Overlaps(img.Tags))
+                if (_defaultTagBlacklist.Overlaps(img.Tags))
                     continue;
 
                 // if image doesn't have a proper absolute uri, skip it
@@ -190,7 +190,7 @@ public class SearchImageCacher : INService
             tags = tags[..2];
 
         // use both tags banned by discord and tags banned on the server 
-        if (blacklistedTags.Overlaps(tags) || defaultTagBlacklist.Overlaps(tags))
+        if (blacklistedTags.Overlaps(tags) || _defaultTagBlacklist.Overlaps(tags))
             return default;
 
         // query for an image
@@ -223,16 +223,16 @@ public class SearchImageCacher : INService
         CancellationToken cancel)
     {
         var tagStr = string.Join(' ', tags.OrderByDescending(x => x));
-        var page = 0;
 
         var attempt = 0;
         while (attempt++ <= 10)
         {
-            if (maxPages.TryGetValue((type, tagStr), out var maxPage))
+            int page;
+            if (_maxPages.TryGetValue((type, tagStr), out var maxPage))
             {
                 if (maxPage == 0)
                 {
-                    Log.Information("Tag {0} yields no result on {1}, skipping.", tagStr, type);
+                    Log.Information("Tag {Tags} yields no result on {Type}, skipping", tagStr, type);
                     return new();
                 }
 
@@ -247,7 +247,7 @@ public class SearchImageCacher : INService
 
             if (result is null or { Count: 0 })
             {
-                Log.Information("Tag {0}, page {1} has no result on {2}.",
+                Log.Information("Tag {Tags}, page {Page} has no result on {Type}",
                     string.Join(", ", tags),
                     page,
                     type.ToString());
@@ -284,7 +284,7 @@ public class SearchImageCacher : INService
     {
         try
         {
-            Log.Information("Downloading from {0} (page {1})...", type, page);
+            Log.Information("Downloading from {Type} (page {Page})...", type, page);
 
             using var http = _httpFactory.CreateClient();
             var downloader = GetImageDownloader(type, http);
@@ -293,7 +293,7 @@ public class SearchImageCacher : INService
             if (images.Count == 0)
             {
                 var tagStr = string.Join(' ', tags.OrderByDescending(x => x));
-                maxPages[(type, tagStr)] = page;
+                _maxPages[(type, tagStr)] = page;
             }
 
             return images;
@@ -305,7 +305,7 @@ public class SearchImageCacher : INService
         catch (Exception ex)
         {
             Log.Error(ex,
-                "Error downloading an image:\nTags: {0}\nType: {1}\nPage: {2}\nMessage: {3}",
+                "Error downloading an image:\nTags: {Tags}\nType: {Type}\nPage: {Page}\nMessage: {Message}",
                 string.Join(", ", tags),
                 type,
                 page,

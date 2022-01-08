@@ -63,7 +63,7 @@ namespace NadekoBot.Modules.Administration
             [Cmd]
             [OwnerOnly]
             public partial Task DeleteWaifus()
-                => SqlExec(DangerousCommandsService.WaifusDeleteSql);
+                => SqlExec(DangerousCommandsService.WAIFUS_DELETE_SQL);
 
             [Cmd]
             [OwnerOnly]
@@ -73,22 +73,22 @@ namespace NadekoBot.Modules.Administration
             [Cmd]
             [OwnerOnly]
             public partial Task DeleteWaifu(ulong userId)
-                => InternalExecSql(DangerousCommandsService.WaifuDeleteSql, userId);
+                => InternalExecSql(DangerousCommandsService.WAIFU_DELETE_SQL, userId);
 
             [Cmd]
             [OwnerOnly]
             public partial Task DeleteCurrency()
-                => SqlExec(DangerousCommandsService.CurrencyDeleteSql);
+                => SqlExec(DangerousCommandsService.CURRENCY_DELETE_SQL);
 
             [Cmd]
             [OwnerOnly]
             public partial Task DeletePlaylists()
-                => SqlExec(DangerousCommandsService.MusicPlaylistDeleteSql);
+                => SqlExec(DangerousCommandsService.MUSIC_PLAYLIST_DELETE_SQL);
 
             [Cmd]
             [OwnerOnly]
             public partial Task DeleteXp()
-                => SqlExec(DangerousCommandsService.XpDeleteSql);
+                => SqlExec(DangerousCommandsService.XP_DELETE_SQL);
 
             [Cmd]
             [OwnerOnly]

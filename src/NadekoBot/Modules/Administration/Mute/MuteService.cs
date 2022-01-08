@@ -126,7 +126,7 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        var _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+        _= Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
                                                                .WithDescription(
                                                                    $"You've been muted in {user.Guild} server")
                                                                .AddField("Mute Type", type.ToString())
@@ -144,7 +144,7 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        var _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+        _= Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
                                                                .WithDescription(
                                                                    $"You've been unmuted in {user.Guild} server")
                                                                .AddField("Unmute Type", type.ToString())
@@ -161,7 +161,7 @@ public class MuteService : INService
 
             if (muted is null || !muted.Contains(usr.Id))
                 return Task.CompletedTask;
-            var _ = Task.Run(() => MuteUser(usr, _client.CurrentUser, reason: "Sticky mute"));
+            _= Task.Run(() => MuteUser(usr, _client.CurrentUser, reason: "Sticky mute"));
         }
         catch (Exception ex)
         {
@@ -417,6 +417,9 @@ public class MuteService : INService
                 {
                     try
                     {
+                        if (roleId is null)
+                            return;
+                        
                         RemoveTimerFromDb(guildId, userId, type);
                         StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId);

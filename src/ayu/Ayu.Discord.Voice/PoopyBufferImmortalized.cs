@@ -8,7 +8,6 @@ namespace Ayu.Discord.Voice
 {
     public sealed class PoopyBufferImmortalized : ISongBuffer
     {
-        private readonly int _frameSize;
         private readonly byte[] _buffer;
         private readonly byte[] _outputArray;
         private CancellationToken _cancellationToken;
@@ -27,7 +26,6 @@ namespace Ayu.Discord.Voice
 
         public PoopyBufferImmortalized(int frameSize)
         {
-            _frameSize = frameSize;
             _buffer = ArrayPool<byte>.Shared.Rent(1_000_000);
             _outputArray = new byte[frameSize];
 
@@ -36,9 +34,7 @@ namespace Ayu.Discord.Voice
         }
 
         public void Stop()
-        {
-            _isStopped = true;
-        }
+            => _isStopped = true;
 
         // this method needs a rewrite
         public Task<bool> BufferAsync(ITrackDataSource source, CancellationToken cancellationToken)
@@ -129,9 +125,7 @@ namespace Ayu.Discord.Voice
         }
 
         public void Dispose()
-        {
-            ArrayPool<byte>.Shared.Return(_buffer);
-        }
+            => ArrayPool<byte>.Shared.Return(_buffer);
 
         public void Reset()
         {

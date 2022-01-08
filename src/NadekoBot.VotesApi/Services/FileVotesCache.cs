@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -10,37 +9,33 @@ namespace NadekoBot.VotesApi.Services
 {
     public class FileVotesCache : IVotesCache
     {
-        private const string statsFile = "store/stats.json";
-        private const string topggFile = "store/topgg.json";
-        private const string discordsFile = "store/discords.json";
+        // private const string STATS_FILE = "store/stats.json";
+        private const string TOPGG_FILE = "store/topgg.json";
+        private const string DISCORDS_FILE = "store/discords.json";
 
-        private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _locker = new SemaphoreSlim(1, 1);
 
         public FileVotesCache()
         {
             if (!Directory.Exists("store"))
                 Directory.CreateDirectory("store");
             
-            if(!File.Exists(topggFile))
-                File.WriteAllText(topggFile, "[]");
+            if(!File.Exists(TOPGG_FILE))
+                File.WriteAllText(TOPGG_FILE, "[]");
             
-            if(!File.Exists(discordsFile))
-                File.WriteAllText(discordsFile, "[]");
+            if(!File.Exists(DISCORDS_FILE))
+                File.WriteAllText(DISCORDS_FILE, "[]");
         }
 
         public ITask AddNewTopggVote(string userId)
-        {
-            return AddNewVote(topggFile, userId);
-        }
-        
+            => AddNewVote(TOPGG_FILE, userId);
+
         public ITask AddNewDiscordsVote(string userId)
-        {
-            return AddNewVote(discordsFile, userId);
-        }
+            => AddNewVote(DISCORDS_FILE, userId);
 
         private async ITask AddNewVote(string file, string userId)
         {
-            await locker.WaitAsync();
+            await _locker.WaitAsync();
             try
             {
                 var votes = await GetVotesAsync(file);
@@ -49,7 +44,7 @@ namespace NadekoBot.VotesApi.Services
             }
             finally
             {
-                locker.Release();
+                _locker.Release();
             }
         }
 
@@ -66,14 +61,14 @@ namespace NadekoBot.VotesApi.Services
         }
 
         private ITask<List<Vote>> EvictTopggVotes()
-            => EvictVotes(topggFile);
+            => EvictVotes(TOPGG_FILE);
 
         private ITask<List<Vote>> EvictDiscordsVotes()
-            => EvictVotes(discordsFile);
+            => EvictVotes(DISCORDS_FILE);
 
         private async ITask<List<Vote>> EvictVotes(string file)
         {
-            await locker.WaitAsync();
+            await _locker.WaitAsync();
             try
             {
 
@@ -91,7 +86,7 @@ namespace NadekoBot.VotesApi.Services
             }
             finally
             {
-                locker.Release();
+                _locker.Release();
             }
         }
 

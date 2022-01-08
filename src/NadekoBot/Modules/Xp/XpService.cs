@@ -422,7 +422,7 @@ public class XpService : INService
         if (socketUser is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        var _ = Task.Run(() =>
+        _= Task.Run(() =>
         {
             if (before.VoiceChannel is not null) ScanChannelForVoiceXp(before.VoiceChannel);
 
@@ -514,7 +514,7 @@ public class XpService : INService
         if (arg.Author is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        var _ = Task.Run(() =>
+        _= Task.Run(() =>
         {
             if (!ShouldTrackXp(user, arg.Channel.Id))
                 return;

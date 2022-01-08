@@ -86,7 +86,7 @@ public abstract class NadekoModule : ModuleBase
         }
         finally
         {
-            var _ = Task.Run(() => msg.DeleteAsync());
+            _= Task.Run(() => msg.DeleteAsync());
         }
     }
 
@@ -111,7 +111,7 @@ public abstract class NadekoModule : ModuleBase
 
         Task MessageReceived(SocketMessage arg)
         {
-            var _ = Task.Run(() =>
+            _= Task.Run(() =>
             {
                 if (arg is not SocketUserMessage userMsg
                     || userMsg.Channel is not ITextChannel

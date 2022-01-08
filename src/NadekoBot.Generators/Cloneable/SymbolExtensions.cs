@@ -18,9 +18,7 @@ namespace Cloneable
         }
 
         public static bool HasAttribute(this ISymbol symbol, INamedTypeSymbol attributeType)
-        {
-            return symbol.GetAttributes()
+            => symbol.GetAttributes()
                 .Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeType));
-        }
     }
 }

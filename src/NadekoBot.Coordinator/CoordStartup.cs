@@ -12,9 +12,7 @@ namespace NadekoBot.Coordinator
         public IConfiguration Configuration { get; }
         
         public CoordStartup(IConfiguration config)
-        {
-            Configuration = config;
-        }
+            => Configuration = config;
 
         public void ConfigureServices(IServiceCollection services)
         {

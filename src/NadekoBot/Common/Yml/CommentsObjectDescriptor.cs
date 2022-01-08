@@ -9,22 +9,22 @@ public sealed class CommentsObjectDescriptor : IObjectDescriptor
     public string Comment { get; }
 
     public object Value
-        => innerDescriptor.Value;
+        => _innerDescriptor.Value;
 
     public Type Type
-        => innerDescriptor.Type;
+        => _innerDescriptor.Type;
 
     public Type StaticType
-        => innerDescriptor.StaticType;
+        => _innerDescriptor.StaticType;
 
     public ScalarStyle ScalarStyle
-        => innerDescriptor.ScalarStyle;
+        => _innerDescriptor.ScalarStyle;
 
-    private readonly IObjectDescriptor innerDescriptor;
+    private readonly IObjectDescriptor _innerDescriptor;
 
     public CommentsObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
     {
-        this.innerDescriptor = innerDescriptor;
+        this._innerDescriptor = innerDescriptor;
         Comment = comment;
     }
 }

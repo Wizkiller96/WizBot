@@ -28,8 +28,8 @@ public sealed class Connect4Game : IDisposable
         OtherPlayerWon
     }
 
-    public const int NumberOfColumns = 7;
-    public const int NumberOfRows = 6;
+    public const int NUMBER_OF_COLUMNS = 7;
+    public const int NUMBER_OF_ROWS = 6;
 
     //public event Func<Connect4Game, Task> OnGameStarted;
     public event Func<Connect4Game, Task> OnGameStateUpdated;
@@ -51,7 +51,7 @@ public sealed class Connect4Game : IDisposable
         => CurrentPhase == Phase.P2Move ? _players[0].Value : _players[1].Value;
 
     //state is bottom to top, left to right
-    private readonly Field[] _gameState = new Field[NumberOfRows * NumberOfColumns];
+    private readonly Field[] _gameState = new Field[NUMBER_OF_ROWS * NUMBER_OF_COLUMNS];
     private readonly (ulong UserId, string Username)?[] _players = new (ulong, string)?[2];
 
     private readonly SemaphoreSlim _locker = new(1, 1);
@@ -81,14 +81,14 @@ public sealed class Connect4Game : IDisposable
         _cs = cs;
 
         _rng = new();
-        for (var i = 0; i < NumberOfColumns * NumberOfRows; i++) _gameState[i] = Field.Empty;
+        for (var i = 0; i < NUMBER_OF_COLUMNS * NUMBER_OF_ROWS; i++) _gameState[i] = Field.Empty;
     }
 
     public void Initialize()
     {
         if (CurrentPhase != Phase.Joining)
             return;
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             await Task.Delay(15000);
             await _locker.WaitAsync();
@@ -165,14 +165,14 @@ public sealed class Connect4Game : IDisposable
                   || (_players[1].Value.UserId == userId && CurrentPhase == Phase.P2Move)))
                 return false;
 
-            if (inputCol is < 0 or > NumberOfColumns) //invalid input
+            if (inputCol is < 0 or > NUMBER_OF_COLUMNS) //invalid input
                 return false;
 
             if (IsColumnFull(inputCol)) //can't play there event?
                 return false;
 
-            var start = NumberOfRows * inputCol;
-            for (var i = start; i < start + NumberOfRows; i++)
+            var start = NUMBER_OF_ROWS * inputCol;
+            for (var i = start; i < start + NUMBER_OF_ROWS; i++)
                 if (_gameState[i] == Field.Empty)
                 {
                     _gameState[i] = GetPlayerPiece(userId);
@@ -182,21 +182,21 @@ public sealed class Connect4Game : IDisposable
             //check winnning condition
             // ok, i'll go from [0-2] in rows (and through all columns) and check upward if 4 are connected
 
-            for (var i = 0; i < NumberOfRows - 3; i++)
+            for (var i = 0; i < NUMBER_OF_ROWS - 3; i++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (var j = 0; j < NumberOfColumns; j++)
+                for (var j = 0; j < NUMBER_OF_COLUMNS; j++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[i + (j * NumberOfRows)];
+                    var first = _gameState[i + (j * NUMBER_OF_ROWS)];
                     if (first != Field.Empty)
                         for (var k = 1; k < 4; k++)
                         {
-                            var next = _gameState[i + k + (j * NumberOfRows)];
+                            var next = _gameState[i + k + (j * NUMBER_OF_ROWS)];
                             if (next == first)
                             {
                                 if (k == 3)
@@ -213,21 +213,21 @@ public sealed class Connect4Game : IDisposable
             }
 
             // i'll go [0-1] in columns (and through all rows) and check to the right if 4 are connected
-            for (var i = 0; i < NumberOfColumns - 3; i++)
+            for (var i = 0; i < NUMBER_OF_COLUMNS - 3; i++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (var j = 0; j < NumberOfRows; j++)
+                for (var j = 0; j < NUMBER_OF_ROWS; j++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[j + (i * NumberOfRows)];
+                    var first = _gameState[j + (i * NUMBER_OF_ROWS)];
                     if (first != Field.Empty)
                         for (var k = 1; k < 4; k++)
                         {
-                            var next = _gameState[j + ((i + k) * NumberOfRows)];
+                            var next = _gameState[j + ((i + k) * NUMBER_OF_ROWS)];
                             if (next == first)
                                 if (k == 3)
                                     EndGame(Result.CurrentPlayerWon, CurrentPlayer.UserId);
@@ -239,17 +239,17 @@ public sealed class Connect4Game : IDisposable
             }
 
             //need to check diagonal now
-            for (var col = 0; col < NumberOfColumns; col++)
+            for (var col = 0; col < NUMBER_OF_COLUMNS; col++)
             {
                 if (CurrentPhase == Phase.Ended)
                     break;
 
-                for (var row = 0; row < NumberOfRows; row++)
+                for (var row = 0; row < NUMBER_OF_ROWS; row++)
                 {
                     if (CurrentPhase == Phase.Ended)
                         break;
 
-                    var first = _gameState[row + (col * NumberOfRows)];
+                    var first = _gameState[row + (col * NUMBER_OF_ROWS)];
 
                     if (first != Field.Empty)
                     {
@@ -263,12 +263,12 @@ public sealed class Connect4Game : IDisposable
                             var curCol = col - i;
 
                             //check if current values are in range
-                            if (curRow is >= NumberOfRows or < 0)
+                            if (curRow is >= NUMBER_OF_ROWS or < 0)
                                 break;
-                            if (curCol is < 0 or >= NumberOfColumns)
+                            if (curCol is < 0 or >= NUMBER_OF_COLUMNS)
                                 break;
 
-                            var cur = _gameState[curRow + (curCol * NumberOfRows)];
+                            var cur = _gameState[curRow + (curCol * NUMBER_OF_ROWS)];
                             if (cur == first)
                                 same++;
                             else break;
@@ -290,12 +290,12 @@ public sealed class Connect4Game : IDisposable
                             var curCol = col + i;
 
                             //check if current values are in range
-                            if (curRow is >= NumberOfRows or < 0)
+                            if (curRow is >= NUMBER_OF_ROWS or < 0)
                                 break;
-                            if (curCol is < 0 or >= NumberOfColumns)
+                            if (curCol is < 0 or >= NUMBER_OF_COLUMNS)
                                 break;
 
-                            var cur = _gameState[curRow + (curCol * NumberOfRows)];
+                            var cur = _gameState[curRow + (curCol * NUMBER_OF_ROWS)];
                             if (cur == first)
                                 same++;
                             else break;
@@ -323,7 +323,7 @@ public sealed class Connect4Game : IDisposable
                 ResetTimer();
             }
 
-            var _ = OnGameStateUpdated?.Invoke(this);
+            _= OnGameStateUpdated?.Invoke(this);
             return true;
         }
         finally { _locker.Release(); }
@@ -337,7 +337,7 @@ public sealed class Connect4Game : IDisposable
     {
         if (CurrentPhase == Phase.Ended)
             return;
-        var _ = OnGameEnded?.Invoke(this, result);
+        _= OnGameEnded?.Invoke(this, result);
         CurrentPhase = Phase.Ended;
 
         if (result == Result.Draw)
@@ -357,8 +357,8 @@ public sealed class Connect4Game : IDisposable
     //column is full if there are no empty fields
     private bool IsColumnFull(int column)
     {
-        var start = NumberOfRows * column;
-        for (var i = start; i < start + NumberOfRows; i++)
+        var start = NUMBER_OF_ROWS * column;
+        for (var i = start; i < start + NUMBER_OF_ROWS; i++)
             if (_gameState[i] == Field.Empty)
                 return false;
         return true;

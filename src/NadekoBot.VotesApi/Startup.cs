@@ -11,19 +11,18 @@ namespace NadekoBot.VotesApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public IConfiguration Configuration { get; }
+        
+        public Startup(IConfiguration configuration)
+            => Configuration = configuration;
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddSingleton<IVotesCache, FileVotesCache>();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(static c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NadekoBot.VotesApi", Version = "v1" });
             });
@@ -36,13 +35,13 @@ namespace NadekoBot.VotesApi
                 });
             
             services
-                .AddAuthorization(opts =>
+                .AddAuthorization(static opts =>
                 {
                     opts.DefaultPolicy = new AuthorizationPolicyBuilder(AuthHandler.SchemeName)
-                        .RequireAssertion(x => false)
+                        .RequireAssertion(static _ => false)
                         .Build();
-                    opts.AddPolicy(Policies.DiscordsAuth, policy => policy.RequireClaim(AuthHandler.DiscordsClaim));
-                    opts.AddPolicy(Policies.TopggAuth, policy => policy.RequireClaim(AuthHandler.TopggClaim));
+                    opts.AddPolicy(Policies.DiscordsAuth, static policy => policy.RequireClaim(AuthHandler.DiscordsClaim));
+                    opts.AddPolicy(Policies.TopggAuth, static policy => policy.RequireClaim(AuthHandler.TopggClaim));
                 });
         }
 
@@ -53,7 +52,7 @@ namespace NadekoBot.VotesApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NadekoBot.VotesApi v1"));
+                app.UseSwaggerUI(static c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NadekoBot.VotesApi v1"));
             }
 
             app.UseHttpsRedirection();
@@ -63,7 +62,7 @@ namespace NadekoBot.VotesApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(static endpoints => { endpoints.MapControllers(); });
         }
     }
 }

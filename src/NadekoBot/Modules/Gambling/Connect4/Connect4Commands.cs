@@ -88,7 +88,7 @@ public partial class Gambling
                 if (ctx.Channel.Id != arg.Channel.Id)
                     return Task.CompletedTask;
 
-                var _ = Task.Run(async () =>
+                _= Task.Run(async () =>
                 {
                     var success = false;
                     if (int.TryParse(arg.Content, out var col)) success = await game.Input(arg.Author.Id, col);
@@ -168,11 +168,11 @@ public partial class Gambling
             if (game.CurrentPhase is Connect4Game.Phase.P1Move or Connect4Game.Phase.P2Move)
                 sb.AppendLine(GetText(strs.connect4_player_to_move(Format.Bold(game.CurrentPlayer.Username))));
 
-            for (var i = Connect4Game.NumberOfRows; i > 0; i--)
+            for (var i = Connect4Game.NUMBER_OF_ROWS; i > 0; i--)
             {
-                for (var j = 0; j < Connect4Game.NumberOfColumns; j++)
+                for (var j = 0; j < Connect4Game.NUMBER_OF_COLUMNS; j++)
                 {
-                    var cur = game.GameState[i + (j * Connect4Game.NumberOfRows) - 1];
+                    var cur = game.GameState[i + (j * Connect4Game.NUMBER_OF_ROWS) - 1];
 
                     if (cur == Connect4Game.Field.Empty)
                         sb.Append("⚫"); //black circle
@@ -185,7 +185,7 @@ public partial class Gambling
                 sb.AppendLine();
             }
 
-            for (var i = 0; i < Connect4Game.NumberOfColumns; i++) sb.Append(numbers[i]);
+            for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++) sb.Append(numbers[i]);
             return sb.ToString();
         }
     }

@@ -107,7 +107,7 @@ public class GreetService : INService, IReadyExecutor
 
     private Task OnUserLeft(SocketGuild guild, SocketUser user)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -271,7 +271,7 @@ public class GreetService : INService, IReadyExecutor
 
     private Task OnUserJoined(IGuildUser user)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {

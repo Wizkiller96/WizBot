@@ -27,7 +27,7 @@ public class GameVoiceChannelService : INService
 
     private Task OnPresenceUpdate(SocketUser socketUser, SocketPresence before, SocketPresence after)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -83,7 +83,7 @@ public class GameVoiceChannelService : INService
 
     private Task OnUserVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState, SocketVoiceState newState)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {

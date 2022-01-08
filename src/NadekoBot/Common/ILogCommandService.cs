@@ -26,6 +26,6 @@ public enum LogType
     ChannelUpdated,
     UserPresence,
     VoicePresence,
-    VoicePresenceTTS,
+    VoicePresenceTts,
     UserMuted
 }

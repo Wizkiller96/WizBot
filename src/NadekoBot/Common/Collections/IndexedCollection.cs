@@ -5,7 +5,7 @@ using System.Collections;
 namespace NadekoBot.Common.Collections;
 
 public class IndexedCollection<T> : IList<T>
-    where T : class, IIndexed
+    where T : class, IIndexed 
 {
     public List<T> Source { get; }
 
@@ -53,6 +53,8 @@ public class IndexedCollection<T> : IList<T>
 
     public void Add(T item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+        
         lock (_locker)
         {
             item.Index = Source.Count;

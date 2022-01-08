@@ -24,10 +24,10 @@ public class TriviaGame
     private readonly ICurrencyService _cs;
     private readonly TriviaOptions _options;
 
-    private CancellationTokenSource _triviaCancelSource;
+    private CancellationTokenSource triviaCancelSource;
 
     private readonly TriviaQuestionPool _questionPool;
-    private int _timeoutCount;
+    private int timeoutCount;
     private readonly string _quitCommand;
     private readonly IEmbedBuilderService _eb;
 
@@ -66,7 +66,7 @@ public class TriviaGame
         while (!ShouldStopGame)
         {
             // reset the cancellation source    
-            _triviaCancelSource = new();
+            triviaCancelSource = new();
             showHowToQuit = !showHowToQuit;
 
             // load question
@@ -121,7 +121,7 @@ public class TriviaGame
                 try
                 {
                     //hint
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token);
+                    await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
                     if (!_options.NoHint)
                         try
                         {
@@ -136,9 +136,9 @@ public class TriviaGame
                         catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
 
                     //timeout
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, _triviaCancelSource.Token);
+                    await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
                 }
-                catch (TaskCanceledException) { _timeoutCount = 0; } //means someone guessed the answer
+                catch (TaskCanceledException) { timeoutCount = 0; } //means someone guessed the answer
             }
             finally
             {
@@ -146,7 +146,7 @@ public class TriviaGame
                 _client.MessageReceived -= PotentialGuess;
             }
 
-            if (!_triviaCancelSource.IsCancellationRequested)
+            if (!triviaCancelSource.IsCancellationRequested)
                 try
                 {
                     var embed = _eb.Create()
@@ -158,7 +158,7 @@ public class TriviaGame
 
                     await Channel.EmbedAsync(embed);
 
-                    if (_options.Timeout != 0 && ++_timeoutCount >= _options.Timeout)
+                    if (_options.Timeout != 0 && ++timeoutCount >= _options.Timeout)
                         await StopGame();
                 }
                 catch (Exception ex)
@@ -198,7 +198,7 @@ public class TriviaGame
 
     private Task PotentialGuess(SocketMessage imsg)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {
@@ -218,7 +218,7 @@ public class TriviaGame
                 {
                     if (GameActive
                         && CurrentQuestion.IsAnswerCorrect(umsg.Content)
-                        && !_triviaCancelSource.IsCancellationRequested)
+                        && !triviaCancelSource.IsCancellationRequested)
                     {
                         Users.AddOrUpdate(guildUser, 1, (_, old) => ++old);
                         guess = true;
@@ -227,7 +227,7 @@ public class TriviaGame
                 finally { _guessLock.Release(); }
 
                 if (!guess) return;
-                _triviaCancelSource.Cancel();
+                triviaCancelSource.Cancel();
 
 
                 if (_options.WinRequirement != 0 && Users[guildUser] == _options.WinRequirement)

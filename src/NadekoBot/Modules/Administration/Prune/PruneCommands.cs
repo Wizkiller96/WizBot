@@ -8,7 +8,7 @@ public partial class Administration
     [Group]
     public partial class PruneCommands : NadekoSubmodule<PruneService>
     {
-        private static readonly TimeSpan twoWeeks = TimeSpan.FromDays(14);
+        private static readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
 
         //delets her own messages, no perm required
         [Cmd]
@@ -73,11 +73,11 @@ public partial class Administration
             if (parameter is "-s" or "--safe")
                 await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
-                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks && !m.IsPinned);
+                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks && !m.IsPinned);
             else
                 await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
-                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < twoWeeks);
+                    m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks);
         }
     }
 }

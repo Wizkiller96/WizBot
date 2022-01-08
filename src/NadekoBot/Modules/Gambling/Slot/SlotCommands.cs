@@ -211,7 +211,7 @@ public partial class Gambling
             }
             finally
             {
-                var _ = Task.Run(async () =>
+                _= Task.Run(async () =>
                 {
                     await Task.Delay(1000);
                     _runningUsers.Remove(ctx.User.Id);

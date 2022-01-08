@@ -43,7 +43,7 @@ public class PollRunner
             if (!Poll.Votes.Add(voteObj))
                 return false;
 
-            var _ = OnVoted?.Invoke(msg, usr);
+            _= OnVoted?.Invoke(msg, usr);
         }
         finally { _locker.Release(); }
 

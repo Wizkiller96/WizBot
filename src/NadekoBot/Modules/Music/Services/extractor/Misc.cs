@@ -52,7 +52,7 @@ public sealed partial class YtLoader
 
     public sealed class YtTrackInfo : TrackInfo
     {
-        private const string BaseYoutubeUrl = "https://youtube.com/watch?v=";
+        private const string BASE_YOUTUBE_URL = "https://youtube.com/watch?v=";
         public override string Url { get; }
         public override string Title { get; }
         public override TimeSpan Duration { get; }
@@ -62,7 +62,7 @@ public sealed partial class YtLoader
         public YtTrackInfo(string title, string videoId, TimeSpan duration)
         {
             Title = title;
-            Url = BaseYoutubeUrl + videoId;
+            Url = BASE_YOUTUBE_URL + videoId;
             Duration = duration;
 
             _videoId = videoId;

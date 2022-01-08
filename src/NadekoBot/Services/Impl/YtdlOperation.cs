@@ -14,13 +14,13 @@ public class YtdlOperation
 
     private Process CreateProcess(string[] args)
     {
-        args = args.Map(arg => arg.Replace("\"", ""));
+        var newArgs = args.Map(arg => (object)arg.Replace("\"", ""));
         return new()
         {
             StartInfo = new()
             {
                 FileName = "youtube-dl",
-                Arguments = string.Format(_baseArgString, args),
+                Arguments = string.Format(_baseArgString, newArgs),
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,

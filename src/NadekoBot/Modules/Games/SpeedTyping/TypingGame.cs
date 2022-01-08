@@ -117,7 +117,7 @@ public class TypingGame
 
     private Task AnswerReceived(SocketMessage imsg)
     {
-        var _ = Task.Run(async () =>
+        _= Task.Run(async () =>
         {
             try
             {

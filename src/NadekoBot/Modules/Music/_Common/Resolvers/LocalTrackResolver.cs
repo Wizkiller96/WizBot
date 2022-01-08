@@ -45,7 +45,8 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
                            if (!x.Attributes.HasFlag(FileAttributes.Hidden | FileAttributes.System)
                                && _musicExtensions.Contains(x.Extension.ToUpperInvariant())) return true;
                            return false;
-                       });
+                       })
+                       .ToList();
 
         var firstFile = files.FirstOrDefault()?.FullName;
         if (firstFile is null)

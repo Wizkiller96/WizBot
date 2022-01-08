@@ -42,9 +42,9 @@ public sealed partial class MusicQueue : IMusicQueue
         {
             // just make sure the internal logic runs first
             // to make sure that some potential indermediate value is not returned
-            lock (locker)
+            lock (_locker)
             {
-                return _index;
+                return index;
             }
         }
     }
@@ -53,128 +53,128 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         get
         {
-            lock (locker)
+            lock (_locker)
             {
-                return _tracks.Count;
+                return tracks.Count;
             }
         }
     }
 
-    private LinkedList<QueuedTrackInfo> _tracks;
+    private LinkedList<QueuedTrackInfo> tracks;
 
-    private int _index;
+    private int index;
 
-    private readonly object locker = new();
+    private readonly object _locker = new();
 
     public MusicQueue()
     {
-        _index = 0;
-        _tracks = new();
+        index = 0;
+        tracks = new();
     }
 
-    public IQueuedTrackInfo Enqueue(ITrackInfo trackInfo, string queuer, out int index)
+    public IQueuedTrackInfo Enqueue(ITrackInfo trackInfo, string queuer, out int enqueuedAt)
     {
-        lock (locker)
+        lock (_locker)
         {
             var added = new QueuedTrackInfo(trackInfo, queuer);
-            index = _tracks.Count;
-            _tracks.AddLast(added);
+            enqueuedAt = tracks.Count;
+            tracks.AddLast(added);
             return added;
         }
     }
 
-    public IQueuedTrackInfo EnqueueNext(ITrackInfo trackInfo, string queuer, out int index)
+    public IQueuedTrackInfo EnqueueNext(ITrackInfo trackInfo, string queuer, out int trackIndex)
     {
-        lock (locker)
+        lock (_locker)
         {
-            if (_tracks.Count == 0) return Enqueue(trackInfo, queuer, out index);
+            if (tracks.Count == 0) return Enqueue(trackInfo, queuer, out trackIndex);
 
-            var currentNode = _tracks.First!;
+            var currentNode = tracks.First!;
             int i;
-            for (i = 1; i <= _index; i++)
+            for (i = 1; i <= this.index; i++)
                 currentNode = currentNode.Next!; // can't be null because index is always in range of the count
 
             var added = new QueuedTrackInfo(trackInfo, queuer);
-            index = i;
+            trackIndex = i;
 
-            _tracks.AddAfter(currentNode, added);
+            tracks.AddAfter(currentNode, added);
 
             return added;
         }
     }
 
-    public void EnqueueMany(IEnumerable<ITrackInfo> tracks, string queuer)
+    public void EnqueueMany(IEnumerable<ITrackInfo> toEnqueue, string queuer)
     {
-        lock (locker)
+        lock (_locker)
         {
-            foreach (var track in tracks)
+            foreach (var track in toEnqueue)
             {
                 var added = new QueuedTrackInfo(track, queuer);
-                _tracks.AddLast(added);
+                this.tracks.AddLast(added);
             }
         }
     }
 
     public IReadOnlyCollection<IQueuedTrackInfo> List()
     {
-        lock (locker)
+        lock (_locker)
         {
-            return _tracks.ToList();
+            return tracks.ToList();
         }
     }
 
-    public IQueuedTrackInfo? GetCurrent(out int index)
+    public IQueuedTrackInfo? GetCurrent(out int currentIndex)
     {
-        lock (locker)
+        lock (_locker)
         {
-            index = _index;
-            return _tracks.ElementAtOrDefault(_index);
+            currentIndex = index;
+            return tracks.ElementAtOrDefault(index);
         }
     }
 
     public void Advance()
     {
-        lock (locker)
+        lock (_locker)
         {
-            if (++_index >= _tracks.Count)
-                _index = 0;
+            if (++index >= tracks.Count)
+                index = 0;
         }
     }
 
     public void Clear()
     {
-        lock (locker)
+        lock (_locker)
         {
-            _tracks.Clear();
+            tracks.Clear();
         }
     }
 
-    public bool SetIndex(int index)
+    public bool SetIndex(int newIndex)
     {
-        lock (locker)
+        lock (_locker)
         {
-            if (index < 0 || index >= _tracks.Count)
+            if (newIndex < 0 || newIndex >= tracks.Count)
                 return false;
 
-            _index = index;
+            this.index = newIndex;
             return true;
         }
     }
 
-    private void RemoveAtInternal(int index, out IQueuedTrackInfo trackInfo)
+    private void RemoveAtInternal(int remoteAtIndex, out IQueuedTrackInfo trackInfo)
     {
-        var removedNode = _tracks.First!;
+        var removedNode = tracks.First!;
         int i;
-        for (i = 0; i < index; i++) removedNode = removedNode.Next!;
+        for (i = 0; i < remoteAtIndex; i++) removedNode = removedNode.Next!;
 
         trackInfo = removedNode.Value;
-        _tracks.Remove(removedNode);
+        tracks.Remove(removedNode);
 
-        if (i <= _index)
-            --_index;
+        if (i <= this.index)
+            --this.index;
 
-        if (_index < 0)
-            _index = Count;
+        if (this.index < 0)
+            this.index = Count;
 
         // if it was the last song in the queue
         // // wrap back to start
@@ -188,10 +188,10 @@ public sealed partial class MusicQueue : IMusicQueue
 
     public void RemoveCurrent()
     {
-        lock (locker)
+        lock (_locker)
         {
-            if (_index < _tracks.Count)
-                RemoveAtInternal(_index, out _);
+            if (index < tracks.Count)
+                RemoveAtInternal(index, out _);
         }
     }
 
@@ -204,29 +204,29 @@ public sealed partial class MusicQueue : IMusicQueue
         if (to == from)
             throw new ArgumentException($"{nameof(from)} and {nameof(to)} must be different");
 
-        lock (locker)
+        lock (_locker)
         {
             if (from >= Count || to >= Count)
                 return null;
 
             // update current track index
-            if (from == _index)
+            if (from == index)
             {
                 // if the song being moved is the current track
                 // it means that it will for sure end up on the destination
-                _index = to;
+                index = to;
             }
             else
             {
                 // moving a track from below the current track means 
                 // means it will drop down
-                if (from < _index)
-                    _index--;
+                if (from < index)
+                    index--;
 
                 // moving a track to below the current track
                 // means it will rise up
-                if (to <= _index)
-                    _index++;
+                if (to <= index)
+                    index++;
 
 
                 // if both from and to are below _index - net change is + 1 - 1 = 0
@@ -236,78 +236,76 @@ public sealed partial class MusicQueue : IMusicQueue
             }
 
             // get the node which needs to be moved
-            var fromNode = _tracks.First!;
+            var fromNode = tracks.First!;
             for (var i = 0; i < from; i++)
                 fromNode = fromNode.Next!;
 
             // remove it from the queue
-            _tracks.Remove(fromNode);
+            tracks.Remove(fromNode);
 
             // if it needs to be added as a first node,
             // add it directly and return
             if (to == 0)
             {
-                _tracks.AddFirst(fromNode);
+                tracks.AddFirst(fromNode);
                 return fromNode.Value;
             }
 
             // else find the node at the index before the specified target
-            var addAfterNode = _tracks.First!;
+            var addAfterNode = tracks.First!;
             for (var i = 1; i < to; i++)
                 addAfterNode = addAfterNode.Next!;
 
             // and add after it
-            _tracks.AddAfter(addAfterNode, fromNode);
+            tracks.AddAfter(addAfterNode, fromNode);
             return fromNode.Value;
         }
     }
 
     public void Shuffle(Random rng)
     {
-        lock (locker)
+        lock (_locker)
         {
-            var list = _tracks.ToList();
+            var list = tracks.ToList();
 
             for (var i = 0; i < list.Count; i++)
             {
                 var struck = rng.Next(i, list.Count);
-                var temp = list[struck];
-                list[struck] = list[i];
-                list[i] = temp;
+                (list[struck], list[i]) = (list[i], list[struck]);
 
                 // could preserving the index during shuffling be done better?
-                if (i == _index)
-                    _index = struck;
-                else if (struck == _index)
-                    _index = i;
+                if (i == index)
+                    index = struck;
+                else if (struck == index)
+                    index = i;
             }
 
-            _tracks = new(list);
+            tracks = new(list);
         }
     }
 
     public bool IsLast()
     {
-        lock (locker)
+        lock (_locker)
         {
-            return _index == _tracks.Count // if there are no tracks
-                   || _index == _tracks.Count - 1;
+            return index == tracks.Count // if there are no tracks
+                   || index == tracks.Count - 1;
         }
     }
 
-    public bool TryRemoveAt(int index, out IQueuedTrackInfo? trackInfo, out bool isCurrent)
+    public bool TryRemoveAt(int remoteAt, out IQueuedTrackInfo? trackInfo, out bool isCurrent)
     {
-        lock (locker)
+        lock (_locker)
         {
             isCurrent = false;
             trackInfo = null;
 
-            if (index < 0 || index >= _tracks.Count)
+            if (remoteAt < 0 || remoteAt >= tracks.Count)
                 return false;
 
-            if (index == _index) isCurrent = true;
+            if (remoteAt == this.index) isCurrent = true;
 
-            RemoveAtInternal(index, out trackInfo);
+            RemoveAtInternal(remoteAt, out trackInfo);
 
             return true;
         }

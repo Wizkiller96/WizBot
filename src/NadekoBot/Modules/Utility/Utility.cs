@@ -81,7 +81,7 @@ public partial class Utility : NadekoModule
 
         if (ctx.Guild is not SocketGuild socketGuild)
         {
-            Log.Warning("Can't cast guild to socket guild.");
+            Log.Warning("Can't cast guild to socket guild");
             return;
         }
 
@@ -154,7 +154,15 @@ public partial class Utility : NadekoModule
         var builder = new StringBuilder();
         var user = who == MeOrBot.Me ? (IGuildUser)ctx.User : ((SocketGuild)ctx.Guild).CurrentUser;
         var perms = user.GetPermissions((ITextChannel)ctx.Channel);
-        foreach (var p in perms.GetType().GetProperties().Where(p => !p.GetGetMethod().GetParameters().Any()))
+        foreach (var p in perms.GetType()
+                               .GetProperties()
+                               .Where(static p =>
+                               {
+                                   var method = p.GetGetMethod();
+                                   if (method is null)
+                                       return false;
+                                   return !method.GetParameters().Any();
+                               }))
             builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
         await SendConfirmAsync(builder.ToString());
     }
@@ -355,7 +363,10 @@ public partial class Utility : NadekoModule
         if (page < 0)
             return;
 
-        var guilds = await Task.Run(() => _client.Guilds.OrderBy(g => g.Name).Skip(page * 15).Take(15));
+        var guilds = _client.Guilds.OrderBy(g => g.Name)
+                            .Skip(page * 15)
+                            .Take(15)
+                            .ToList();
 
         if (!guilds.Any())
         {

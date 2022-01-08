@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using YamlDotNet.Serialization;
@@ -30,7 +29,7 @@ namespace NadekoBot.Coordinator
         private readonly Random _rng;
         private bool _gracefulImminent;
         
-        public CoordinatorRunner(IConfiguration configuration)
+        public CoordinatorRunner()
         {
             _serializer = new();
             _deserializer = new();
@@ -91,7 +90,7 @@ namespace NadekoBot.Coordinator
                         var shardIds = Enumerable.Range(0, 1) // shard 0 is always first
                             .Append((int)((117523346618318850 >> 22) % _config.TotalShards)) // then nadeko server shard
                             .Concat(Enumerable.Range(1, _config.TotalShards - 1)
-                                .OrderBy(x => _rng.Next())) // then all other shards in a random order
+                                .OrderBy(_ => _rng.Next())) // then all other shards in a random order
                             .Distinct()
                             .ToList();
                         
@@ -191,8 +190,7 @@ namespace NadekoBot.Coordinator
         }
 
         private Process StartShardProcess(int shardId)
-        {
-            return Process.Start(new ProcessStartInfo()
+            => Process.Start(new ProcessStartInfo()
             {
                 FileName = _config.ShardStartCommand,
                 Arguments = string.Format(_config.ShardStartArgs,
@@ -205,7 +203,6 @@ namespace NadekoBot.Coordinator
                 // CreateNoWindow = true,
                 // UseShellExecute = false,
             });
-        }
 
         public bool Heartbeat(int shardId, int guildCount, ConnState state)
         {
@@ -239,7 +236,6 @@ namespace NadekoBot.Coordinator
         {
             lock (locker)
             {
-                ref var toSave = ref _config;
                 SaveConfig(new Config(
                     totalShards,
                     _config.RecheckIntervalMs,
@@ -284,7 +280,7 @@ namespace NadekoBot.Coordinator
                 for (var shardId = 0; shardId < _shardStatuses.Length; shardId++)
                 {
                     var status = _shardStatuses[shardId];
-                    if (status.Process is Process p)
+                    if (status.Process is { } p)
                     {
                         p.Kill();
                         p.Dispose();
@@ -346,7 +342,7 @@ namespace NadekoBot.Coordinator
 
                 if (savedState.StatusObjects.Count != _config.TotalShards)
                 {
-                    Log.Error("Unable to restore old state because shard count doesn't match.");
+                    Log.Error("Unable to restore old state because shard count doesn't match");
                     File.Move(GRACEFUL_STATE_PATH, GRACEFUL_STATE_BACKUP_PATH, overwrite: true);
                     return false;
                 }
@@ -357,7 +353,7 @@ namespace NadekoBot.Coordinator
                 {
                     var statusObj = savedState.StatusObjects[shardId];
                     Process p = null;
-                    if (statusObj.Pid is int pid)
+                    if (statusObj.Pid is { } pid)
                     {
                         try
                         {
@@ -365,7 +361,7 @@ namespace NadekoBot.Coordinator
                         }
                         catch (Exception ex)
                         {
-                            Log.Warning(ex, $"Process for shard {shardId} is not runnning.");
+                            Log.Warning(ex, "Process for shard {ShardId} is not runnning", shardId);
                         }
                     }
 

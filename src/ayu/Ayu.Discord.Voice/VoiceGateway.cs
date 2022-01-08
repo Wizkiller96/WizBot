@@ -55,7 +55,7 @@ namespace Ayu.Discord.Voice
         public uint Timestamp { get; set; }
         public string MyIp { get; private set; } = string.Empty;
         public ushort MyPort { get; private set; }
-        private bool shouldResume = false;
+        private bool _shouldResume;
         
         private readonly CancellationTokenSource _stopCancellationSource;
         private readonly CancellationToken _stopCancellationToken;
@@ -123,6 +123,8 @@ namespace Ayu.Discord.Voice
         private async Task _ws_PayloadReceived(byte[] arg)
         {
             var payload = JsonConvert.DeserializeObject<VoicePayload>(Encoding.UTF8.GetString(arg));
+            if (payload is null)
+                return;
             try
             {
                 //Log.Information("Received payload with opcode {OpCode}", payload.OpCode);
@@ -138,7 +140,7 @@ namespace Ayu.Discord.Voice
                     case VoiceOpCode.Ready:
                         var ready = payload.Data.ToObject<VoiceReady>();
                         await HandleReadyAsync(ready!);
-                        shouldResume = true;
+                        _shouldResume = true;
                         break;
                     case VoiceOpCode.Heartbeat:
                         // sent, not received
@@ -161,7 +163,7 @@ namespace Ayu.Discord.Voice
                         await HandleHelloAsync(hello!);
                         break;
                     case VoiceOpCode.Resumed:
-                        shouldResume = true;
+                        _shouldResume = true;
                         break;
                     case VoiceOpCode.ClientDisconnect:
                         break;
@@ -183,7 +185,7 @@ namespace Ayu.Discord.Voice
             hbt?.Change(Timeout.Infinite, Timeout.Infinite);
             _heartbeatTimer = null;
 
-            if (!_stopCancellationToken.IsCancellationRequested && shouldResume)
+            if (!_stopCancellationToken.IsCancellationRequested && _shouldResume)
             {
                 _ = _ws.RunAndBlockAsync(_websocketUrl, _stopCancellationToken);
                 return Task.CompletedTask;
@@ -199,9 +201,7 @@ namespace Ayu.Discord.Voice
         }
 
         public void SendRtpData(byte[] rtpData, int length)
-        {
-            _udpClient.Send(rtpData, length, _udpEp);
-        }
+            => _udpClient.Send(rtpData, length, _udpEp);
 
         private Task HandleSessionDescription(VoiceSessionDescription sd)
         {
@@ -215,7 +215,7 @@ namespace Ayu.Discord.Voice
 
         private Task ResumeAsync()
         {
-            shouldResume = false;
+            _shouldResume = false;
             return SendCommandPayloadAsync(new()
             {
                 OpCode = VoiceOpCode.Resume,
@@ -270,7 +270,7 @@ namespace Ayu.Discord.Voice
                 await SendHeartbeatAsync();
             }, default, data.HeartbeatInterval, data.HeartbeatInterval);
 
-            if (shouldResume)
+            if (_shouldResume)
             {
                 return ResumeAsync();
             }
@@ -341,7 +341,7 @@ namespace Ayu.Discord.Voice
         public Task StopAsync()
         {
             Started = false;
-            shouldResume = false;
+            _shouldResume = false;
             if(!_stopCancellationSource.IsCancellationRequested)
                 try { _stopCancellationSource.Cancel(); } catch { }
             return _ws.CloseAsync("Stopped by the user.");

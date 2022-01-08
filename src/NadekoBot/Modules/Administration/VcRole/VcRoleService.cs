@@ -80,7 +80,7 @@ public class VcRoleService : INService
         using (var uow = _db.GetDbContext())
         {
             var configWithVcRole = uow.GuildConfigsForId(arg.GuildId, set => set.Include(x => x.VcRoleInfos));
-            var _ = InitializeVcRole(configWithVcRole);
+            _= InitializeVcRole(configWithVcRole);
         }
 
         return Task.CompletedTask;
@@ -166,7 +166,7 @@ public class VcRoleService : INService
 
         var oldVc = oldState.VoiceChannel;
         var newVc = newState.VoiceChannel;
-        var _ = Task.Run(() =>
+        _= Task.Run(() =>
         {
             try
             {

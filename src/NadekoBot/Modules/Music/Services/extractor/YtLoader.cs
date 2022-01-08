@@ -7,10 +7,10 @@ namespace NadekoBot.Modules.Music.Services;
 
 public sealed partial class YtLoader
 {
-    private static readonly byte[] YT_RESULT_INITIAL_DATA = Encoding.UTF8.GetBytes("var ytInitialData = ");
-    private static readonly byte[] YT_RESULT_JSON_END = Encoding.UTF8.GetBytes(";<");
+    private static readonly byte[] _ytResultInitialData = Encoding.UTF8.GetBytes("var ytInitialData = ");
+    private static readonly byte[] _ytResultJsonEnd = Encoding.UTF8.GetBytes(";<");
 
-    private static readonly string[] durationFormats =
+    private static readonly string[] _durationFormats =
     {
         @"m\:ss", @"mm\:ss", @"h\:mm\:ss", @"hh\:mm\:ss", @"hhh\:mm\:ss"
     };
@@ -98,7 +98,7 @@ public sealed partial class YtLoader
             var durationString = elem.GetProperty("lengthText").GetProperty("simpleText").GetString();
 
             if (!TimeSpan.TryParseExact(durationString,
-                    durationFormats,
+                    _durationFormats,
                     CultureInfo.InvariantCulture,
                     out var duration))
             {
@@ -117,13 +117,13 @@ public sealed partial class YtLoader
     private Memory<byte> GetScriptResponseSpan(byte[] response)
     {
         var responseSpan = response.AsSpan()[140_000..];
-        var startIndex = responseSpan.IndexOf(YT_RESULT_INITIAL_DATA);
+        var startIndex = responseSpan.IndexOf(_ytResultInitialData);
         if (startIndex == -1)
             return null; // todo future try selecting html
-        startIndex += YT_RESULT_INITIAL_DATA.Length;
+        startIndex += _ytResultInitialData.Length;
 
         var endIndex =
-            140_000 + startIndex + responseSpan[(startIndex + 20_000)..].IndexOf(YT_RESULT_JSON_END) + 20_000;
+            140_000 + startIndex + responseSpan[(startIndex + 20_000)..].IndexOf(_ytResultJsonEnd) + 20_000;
         startIndex += 140_000;
         return response.AsMemory(startIndex, endIndex - startIndex);
     }

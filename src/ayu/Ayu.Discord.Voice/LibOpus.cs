@@ -64,9 +64,7 @@ namespace Ayu.Discord.Voice
         }
 
         public int SetControl(OpusCtl ctl, int value)
-        {
-            return LibOpus.EncoderCtl(_encoderPtr, ctl, value);
-        }
+            => LibOpus.EncoderCtl(_encoderPtr, ctl, value);
 
         public int Encode(Span<byte> input, byte[] output)
         {
@@ -84,9 +82,7 @@ namespace Ayu.Discord.Voice
 
 
         public void Dispose()
-        {
-            LibOpus.DestroyEncoder(_encoderPtr);
-        }
+            => LibOpus.DestroyEncoder(_encoderPtr);
     }
 
     public enum OpusCtl

@@ -430,8 +430,8 @@ public class SearchesService : INService
     {
         var redis = _cache.Redis;
         var db = redis.GetDatabase();
-        const string STEAM_GAME_IDS_KEY = "steam_names_to_appid";
-        var exists = await db.KeyExistsAsync(STEAM_GAME_IDS_KEY);
+        const string steamGameIdsKey = "steam_names_to_appid";
+        // var exists = await db.KeyExistsAsync(steamGameIdsKey);
 
         // if we didn't get steam name to id map already, get it
         //if (!exists)
@@ -448,7 +448,7 @@ public class SearchesService : INService
         //    }
         //}
 
-        var gamesMap = await _cache.GetOrAddCachedDataAsync(STEAM_GAME_IDS_KEY,
+        var gamesMap = await _cache.GetOrAddCachedDataAsync(steamGameIdsKey,
             async _ =>
             {
                 using var http = _httpFactory.CreateClient();

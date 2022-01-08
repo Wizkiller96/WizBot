@@ -44,8 +44,7 @@ public sealed class AnimalRace : IDisposable
     }
 
     public void Initialize() //lame name
-    {
-        var _t = Task.Run(async () =>
+        => _ = Task.Run(async () =>
         {
             await Task.Delay(_options.StartTime * 1000);
 
@@ -59,7 +58,6 @@ public sealed class AnimalRace : IDisposable
             }
             finally { _locker.Release(); }
         });
-    }
 
     public async Task<AnimalRacingUser> JoinRace(ulong userId, string userName, long bet = 0)
     {
@@ -104,13 +102,13 @@ public sealed class AnimalRace : IDisposable
                 if (user.Bet > 0)
                     await _currency.AddAsync(user.UserId, "Race refund", user.Bet);
 
-            var _sf = OnStartingFailed?.Invoke(this);
+            _ = OnStartingFailed?.Invoke(this);
             CurrentPhase = Phase.Ended;
             return;
         }
 
-        var _ = OnStarted?.Invoke(this);
-        var _t = Task.Run(async () =>
+        _ = OnStarted?.Invoke(this);
+        _ = Task.Run(async () =>
         {
             var rng = new NadekoRandom();
             while (!_users.All(x => x.Progress >= 60))
@@ -126,7 +124,7 @@ public sealed class AnimalRace : IDisposable
 
                 FinishedUsers.AddRange(finished);
 
-                var _ignore = OnStateUpdate?.Invoke(this);
+                _ = OnStateUpdate?.Invoke(this);
                 await Task.Delay(2500);
             }
 
@@ -135,7 +133,7 @@ public sealed class AnimalRace : IDisposable
                     "Won a Race",
                     FinishedUsers[0].Bet * (_users.Count - 1));
 
-            var _ended = OnEnded?.Invoke(this);
+            _ = OnEnded?.Invoke(this);
         });
     }
 

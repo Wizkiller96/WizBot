@@ -8,7 +8,7 @@ public partial class Searches
     [Group]
     public partial class XkcdCommands : NadekoSubmodule
     {
-        private const string _xkcdUrl = "https://xkcd.com";
+        private const string XKCD_URL = "https://xkcd.com";
         private readonly IHttpClientFactory _httpFactory;
 
         public XkcdCommands(IHttpClientFactory factory)
@@ -23,12 +23,12 @@ public partial class Searches
                 try
                 {
                     using var http = _httpFactory.CreateClient();
-                    var res = await http.GetStringAsync($"{_xkcdUrl}/info.0.json");
+                    var res = await http.GetStringAsync($"{XKCD_URL}/info.0.json");
                     var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                     var embed = _eb.Create()
                                    .WithOkColor()
                                    .WithImageUrl(comic.ImageLink)
-                                   .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{comic.Num}")
+                                   .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{XKCD_URL}/{comic.Num}")
                                    .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
                                    .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
                     var sent = await ctx.Channel.EmbedAsync(embed);
@@ -57,13 +57,13 @@ public partial class Searches
             try
             {
                 using var http = _httpFactory.CreateClient();
-                var res = await http.GetStringAsync($"{_xkcdUrl}/{num}/info.0.json");
+                var res = await http.GetStringAsync($"{XKCD_URL}/{num}/info.0.json");
 
                 var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
                 var embed = _eb.Create()
                                .WithOkColor()
                                .WithImageUrl(comic.ImageLink)
-                               .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{_xkcdUrl}/{num}")
+                               .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{XKCD_URL}/{num}")
                                .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
                                .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
 

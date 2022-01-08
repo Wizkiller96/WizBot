@@ -18,7 +18,7 @@ public partial class Gambling
 
         private readonly ICurrencyService _cs;
         private readonly DbService _db;
-        private IUserMessage _msg;
+        private IUserMessage msg;
 
         public BlackJackCommands(ICurrencyService cs, DbService db, GamblingConfigService gamblingConf)
             : base(gamblingConf)
@@ -74,12 +74,13 @@ public partial class Gambling
         {
             try
             {
-                if (_msg is not null)
+                if (msg is not null)
                 {
-                    var _ = _msg.DeleteAsync();
+                    _= msg.DeleteAsync();
                 }
 
-                var c = bj.Dealer.Cards.Select(x => x.GetEmojiString());
+                var c = bj.Dealer.Cards.Select(x => x.GetEmojiString())
+                          .ToList();
                 var dealerIcon = "❔ ";
                 if (bj.State == Blackjack.GameState.Ended)
                 {
@@ -102,7 +103,7 @@ public partial class Gambling
 
                 foreach (var p in bj.Players)
                 {
-                    c = p.Cards.Select(x => x.GetEmojiString());
+                    c = p.Cards.Select(x => x.GetEmojiString()).ToList();
                     cStr = "-\t" + string.Concat(c.Select(x => x[..^1] + " "));
                     cStr += "\n-\t" + string.Concat(c.Select(x => x.Last() + " "));
                     var full = $"{p.DiscordUser.ToString().TrimTo(20)} | Bet: {p.Bet} | Value: {p.GetHandValue()}";
@@ -133,7 +134,7 @@ public partial class Gambling
                     embed.AddField(full, cStr);
                 }
 
-                _msg = await ctx.Channel.EmbedAsync(embed);
+                msg = await ctx.Channel.EmbedAsync(embed);
             }
             catch
             {
@@ -146,7 +147,7 @@ public partial class Gambling
                 ? Format.Strikethrough(x.DiscordUser.ToString().TrimTo(30))
                 : x.DiscordUser.ToString();
 
-            var hand = $"{string.Concat(x.Cards.Select(y => "〖" + y.GetEmojiString() + "〗"))}";
+            // var hand = $"{string.Concat(x.Cards.Select(y => "〖" + y.GetEmojiString() + "〗"))}";
 
 
             return $"{playerName} | Bet: {x.Bet}\n";

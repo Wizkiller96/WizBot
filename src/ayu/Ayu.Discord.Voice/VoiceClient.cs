@@ -163,9 +163,7 @@ namespace Ayu.Discord.Voice
         }
 
         public void Dispose()
-        {
-            Encoder.Dispose();
-        }
+            => Encoder.Dispose();
     }
 
     public enum SendPcmError

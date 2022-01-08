@@ -9,12 +9,12 @@ namespace NadekoBot.Services;
 /// </summary>
 public sealed class BotConfigService : ConfigServiceBase<BotConfig>
 {
-    private const string FilePath = "data/bot.yml";
-    private static readonly TypedKey<BotConfig> changeKey = new("config.bot.updated");
+    private const string FILE_PATH = "data/bot.yml";
+    private static readonly TypedKey<BotConfig> _changeKey = new("config.bot.updated");
     public override string Name { get; } = "bot";
 
     public BotConfigService(IConfigSeria serializer, IPubSub pubSub)
-        : base(FilePath, serializer, pubSub, changeKey)
+        : base(FILE_PATH, serializer, pubSub, _changeKey)
     {
         AddParsedProp("color.ok", bs => bs.Color.Ok, Rgba32.TryParseHex, ConfigPrinters.Color);
         AddParsedProp("color.error", bs => bs.Color.Error, Rgba32.TryParseHex, ConfigPrinters.Color);

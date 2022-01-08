@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NadekoBot.Extensions;
@@ -14,9 +12,7 @@ namespace NadekoBot.Tests
 
         [SetUp]
         public void Setup()
-        {
-            _grouper = new GreetGrouper<int>();
-        }
+            => _grouper = new GreetGrouper<int>();
 
         [Test]
         public void CreateTest()

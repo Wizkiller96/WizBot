@@ -17,7 +17,7 @@ public sealed class VoiceProxy : IVoiceProxy
     private const int DELAY_ON_ERROR_MILISECONDS = 200;
 
     public VoiceProxyState State
-        => _gateway switch
+        => gateway switch
         {
             { Started: true, Stopped: false } => VoiceProxyState.Started,
             { Stopped: false } => VoiceProxyState.Created,
@@ -25,16 +25,16 @@ public sealed class VoiceProxy : IVoiceProxy
         };
 
 
-    private VoiceGateway _gateway;
+    private VoiceGateway gateway;
 
     public VoiceProxy(VoiceGateway initial)
-        => _gateway = initial;
+        => gateway = initial;
 
     public bool SendPcmFrame(VoiceClient vc, Span<byte> data, int length)
     {
         try
         {
-            var gw = _gateway;
+            var gw = gateway;
             if (gw is null || gw.Stopped || !gw.Started) return false;
 
             vc.SendPcmFrame(gw, data, 0, length);
@@ -55,7 +55,7 @@ public sealed class VoiceProxy : IVoiceProxy
 
             try
             {
-                var gw = _gateway;
+                var gw = gateway;
                 if (gw is null || !gw.ConnectingFinished.Task.IsCompleted)
                 {
                     ++errorCount;
@@ -78,8 +78,8 @@ public sealed class VoiceProxy : IVoiceProxy
         return State != VoiceProxyState.Stopped && errorCount <= MAX_ERROR_COUNT;
     }
 
-    public void SetGateway(VoiceGateway gateway)
-        => _gateway = gateway;
+    public void SetGateway(VoiceGateway newGateway)
+        => gateway = newGateway;
 
     public Task StartSpeakingAsync()
         => RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.Microphone));
@@ -88,11 +88,11 @@ public sealed class VoiceProxy : IVoiceProxy
         => RunGatewayAction(gw => gw.SendSpeakingAsync(VoiceSpeaking.State.None));
 
     public async Task StartGateway()
-        => await _gateway.Start();
+        => await gateway.Start();
 
     public Task StopGateway()
     {
-        if (_gateway is { } gw)
+        if (gateway is { } gw)
             return gw.StopAsync();
 
         return Task.CompletedTask;

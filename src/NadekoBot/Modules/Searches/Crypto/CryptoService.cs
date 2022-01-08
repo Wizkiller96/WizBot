@@ -60,8 +60,8 @@ public class CryptoService : INService
                 {
                     try
                     {
-                        using var _http = _httpFactory.CreateClient();
-                        var strData = await _http.GetStringAsync(
+                        using var http = _httpFactory.CreateClient();
+                        var strData = await http.GetStringAsync(
                             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?"
                             + $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}"
                             + "&start=1"
