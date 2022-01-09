@@ -150,7 +150,7 @@ public class PatreonRewardsService : INService
                            + "?fields%5Bmember%5D=full_name,currently_entitled_amount_cents"
                            + "&fields%5Buser%5D=social_connections"
                            + "&include=user";
-                PatreonResponse data = null;
+                PatreonResponse data;
                 do
                 {
                     var res = await http.GetStringAsync(page);

@@ -115,7 +115,6 @@ public partial class Searches
         [Cmd]
         public async partial Task Osu5(string user, [Leftover] string mode = null)
         {
-            ;
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
             {
                 await SendErrorAsync("An osu! API key is required.");

@@ -104,7 +104,7 @@ public sealed class HangmanGame
         Phase Phase,
         string Word,
         GuessResult GuessResult,
-        List<char> missedLetters,
+        List<char> MissedLetters,
         string ImageUrl)
     {
         public bool Failed

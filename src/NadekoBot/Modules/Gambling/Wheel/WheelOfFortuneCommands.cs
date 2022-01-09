@@ -37,7 +37,7 @@ public partial class Gambling
 
             var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
 
-            var wofMultipliers = _config.WheelOfFortune.Multipliers;
+            var wofMultipliers = Config.WheelOfFortune.Multipliers;
             await SendConfirmAsync(Format.Bold($@"{ctx.User.ToString()} won: {result.Amount + CurrencySign}
 
    『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』

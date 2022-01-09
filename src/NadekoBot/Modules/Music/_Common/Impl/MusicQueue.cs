@@ -91,7 +91,7 @@ public sealed partial class MusicQueue : IMusicQueue
 
             var currentNode = tracks.First!;
             int i;
-            for (i = 1; i <= this.index; i++)
+            for (i = 1; i <= index; i++)
                 currentNode = currentNode.Next!; // can't be null because index is always in range of the count
 
             var added = new QueuedTrackInfo(trackInfo, queuer);
@@ -110,7 +110,7 @@ public sealed partial class MusicQueue : IMusicQueue
             foreach (var track in toEnqueue)
             {
                 var added = new QueuedTrackInfo(track, queuer);
-                this.tracks.AddLast(added);
+                tracks.AddLast(added);
             }
         }
     }
@@ -156,7 +156,7 @@ public sealed partial class MusicQueue : IMusicQueue
             if (newIndex < 0 || newIndex >= tracks.Count)
                 return false;
 
-            this.index = newIndex;
+            index = newIndex;
             return true;
         }
     }
@@ -170,11 +170,11 @@ public sealed partial class MusicQueue : IMusicQueue
         trackInfo = removedNode.Value;
         tracks.Remove(removedNode);
 
-        if (i <= this.index)
-            --this.index;
+        if (i <= index)
+            --index;
 
-        if (this.index < 0)
-            this.index = Count;
+        if (index < 0)
+            index = Count;
 
         // if it was the last song in the queue
         // // wrap back to start
@@ -303,7 +303,7 @@ public sealed partial class MusicQueue : IMusicQueue
             if (remoteAt < 0 || remoteAt >= tracks.Count)
                 return false;
 
-            if (remoteAt == this.index) isCurrent = true;
+            if (remoteAt == index) isCurrent = true;
 
             RemoveAtInternal(remoteAt, out trackInfo);
 

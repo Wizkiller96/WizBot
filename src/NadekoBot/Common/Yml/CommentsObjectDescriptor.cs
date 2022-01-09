@@ -24,7 +24,7 @@ public sealed class CommentsObjectDescriptor : IObjectDescriptor
 
     public CommentsObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
     {
-        this._innerDescriptor = innerDescriptor;
+        _innerDescriptor = innerDescriptor;
         Comment = comment;
     }
 }

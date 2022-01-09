@@ -28,7 +28,7 @@ public class Deck
         { 13, "King" }
     };
 
-    private static Dictionary<string, Func<List<Card>, bool>> _handValues;
+    private static Dictionary<string, Func<List<Card>, bool>> handValues;
 
     public List<Card> CardPool { get; set; }
     private readonly Random _r = new NadekoRandom();
@@ -176,7 +176,7 @@ public class Deck
             return HasStraightFlush(cards) && !IsRoyalFlush(cards);
         }
 
-        _handValues = new()
+        handValues = new()
         {
             { "Royal Flush", IsRoyalFlush },
             { "Straight Flush", IsStraightFlush },
@@ -192,9 +192,10 @@ public class Deck
 
     public static string GetHandValue(List<Card> cards)
     {
-        if (_handValues is null)
+        if (handValues is null)
             InitHandValues();
-        foreach (var kvp in _handValues.Where(x => x.Value(cards))) return kvp.Key;
+        
+        foreach (var kvp in handValues.Where(x => x.Value(cards))) return kvp.Key;
         return "High card " + (cards.FirstOrDefault(c => c.Number == 1)?.GetValueText() ?? cards.Max().GetValueText());
     }
 

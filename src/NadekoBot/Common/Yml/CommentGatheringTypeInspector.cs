@@ -10,7 +10,7 @@ public class CommentGatheringTypeInspector : TypeInspectorSkeleton
     private readonly ITypeInspector _innerTypeDescriptor;
 
     public CommentGatheringTypeInspector(ITypeInspector innerTypeDescriptor)
-        => this._innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
+        => _innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
 
     public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         => _innerTypeDescriptor.GetProperties(type, container).Select(d => new CommentsPropertyDescriptor(d));
@@ -43,7 +43,7 @@ public class CommentGatheringTypeInspector : TypeInspectorSkeleton
 
         public CommentsPropertyDescriptor(IPropertyDescriptor baseDescriptor)
         {
-            this._baseDescriptor = baseDescriptor;
+            _baseDescriptor = baseDescriptor;
             Name = baseDescriptor.Name;
         }
 

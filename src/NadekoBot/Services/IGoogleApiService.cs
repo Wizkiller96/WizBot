@@ -3,7 +3,7 @@ using Google.Apis.Customsearch.v1.Data;
 
 namespace NadekoBot.Services;
 
-public interface IGoogleApiService : INService
+public interface IGoogleApiService
 {
     IReadOnlyDictionary<string, string> Languages { get; }
 

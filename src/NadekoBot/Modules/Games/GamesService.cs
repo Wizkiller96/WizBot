@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Games.Services;
 
 public class GamesService : INService
 {
-    private const string TypingArticlesPath = "data/typing_articles3.json";
+    private const string TYPING_ARTICLES_PATH = "data/typing_articles3.json";
 
     public ConcurrentDictionary<ulong, GirlRating> GirlRatings { get; } = new();
 
@@ -54,11 +54,11 @@ public class GamesService : INService
 
         try
         {
-            TypingArticles = JsonConvert.DeserializeObject<List<TypingArticle>>(File.ReadAllText(TypingArticlesPath));
+            TypingArticles = JsonConvert.DeserializeObject<List<TypingArticle>>(File.ReadAllText(TYPING_ARTICLES_PATH));
         }
         catch (Exception ex)
         {
-            Log.Warning("Error while loading typing articles {0}", ex.ToString());
+            Log.Warning(ex, "Error while loading typing articles: {ErrorMessage}", ex.Message);
             TypingArticles = new();
         }
     }
@@ -80,7 +80,7 @@ public class GamesService : INService
             Text = text.SanitizeMentions(true)
         });
 
-        File.WriteAllText(TypingArticlesPath, JsonConvert.SerializeObject(TypingArticles));
+        File.WriteAllText(TYPING_ARTICLES_PATH, JsonConvert.SerializeObject(TypingArticles));
     }
 
     public string GetEightballResponse(ulong userId, string question)
@@ -90,7 +90,6 @@ public class GamesService : INService
                 e.Size = question.Length;
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
                 return EightBallResponses[_rng.Next(0, EightBallResponses.Count)];
-                ;
             });
 
     public TypingArticle RemoveTypingArticle(int index)
@@ -102,7 +101,7 @@ public class GamesService : INService
         var removed = articles[index];
         TypingArticles.RemoveAt(index);
 
-        File.WriteAllText(TypingArticlesPath, JsonConvert.SerializeObject(articles));
+        File.WriteAllText(TYPING_ARTICLES_PATH, JsonConvert.SerializeObject(articles));
         return removed;
     }
 

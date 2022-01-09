@@ -54,7 +54,7 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
     {
         lock (_locker)
         {
-            if (_hangmanGames.TryRemove(channelId, out var game)) return new(true);
+            if (_hangmanGames.TryRemove(channelId, out _)) return new(true);
         }
 
         return new(false);

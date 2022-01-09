@@ -100,8 +100,8 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     public async partial Task Timely()
     {
-        var val = _config.Timely.Amount;
-        var period = _config.Timely.Cooldown;
+        var val = Config.Timely.Amount;
+        var period = Config.Timely.Cooldown;
         if (val <= 0 || period <= 0)
         {
             await ReplyErrorLocalizedAsync(strs.timely_none);
@@ -473,7 +473,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var br = new Betroll(_config.BetRoll);
+        var br = new Betroll(Config.BetRoll);
 
         var result = br.Roll();
 
@@ -617,7 +617,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                  || (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors)
                  || (pick == RpsPick.Scissors && nadekoPick == RpsPick.Paper))
         {
-            amount = (long)(amount * _config.BetFlip.Multiplier);
+            amount = (long)(amount * Config.BetFlip.Multiplier);
             await _cs.AddAsync(ctx.User.Id, "Rps-win", amount, true);
             embed.WithOkColor();
             embed.AddField(GetText(strs.won), n(amount));

@@ -23,7 +23,7 @@ public sealed partial class Music
         private async Task EnsureBotInVoiceChannelAsync(ulong voiceChannelId, IGuildUser botUser = null)
         {
             botUser ??= await ctx.Guild.GetCurrentUserAsync();
-            await voiceChannelLock.WaitAsync();
+            await _voiceChannelLock.WaitAsync();
             try
             {
                 if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(ctx.Guild.Id, out _))
@@ -31,7 +31,7 @@ public sealed partial class Music
             }
             finally
             {
-                voiceChannelLock.Release();
+                _voiceChannelLock.Release();
             }
         }
 
@@ -50,7 +50,7 @@ public sealed partial class Music
             }
 
             var embed = _eb.Create(ctx)
-                           .WithAuthor(GetText(strs.playlists_page(num)), MusicIconUrl)
+                           .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
                            .WithDescription(string.Join("\n",
                                playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
                            .WithOkColor();

@@ -6,11 +6,12 @@ namespace NadekoBot.Modules.Gambling.Services;
 
 public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
 {
-    private const string FilePath = "data/gambling.yml";
-    private static readonly TypedKey<GamblingConfig> changeKey = new("config.gambling.updated");
-    public override string Name { get; } = "gambling";
+    private const string FILE_PATH = "data/gambling.yml";
+    private static readonly TypedKey<GamblingConfig> _changeKey = new("config.gambling.updated");
+    public override string Name
+        => "gambling";
 
-    private readonly IEnumerable<WaifuItemModel> antiGiftSeed = new[]
+    private readonly IEnumerable<WaifuItemModel> _antiGiftSeed = new[]
     {
         new WaifuItemModel("🥀", 100, "WiltedRose", true), new WaifuItemModel("✂️", 1000, "Haircut", true),
         new WaifuItemModel("🧻", 10000, "ToiletPaper", true)
@@ -18,7 +19,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
 
 
     public GamblingConfigService(IConfigSeria serializer, IPubSub pubSub)
-        : base(FilePath, serializer, pubSub, changeKey)
+        : base(FILE_PATH, serializer, pubSub, _changeKey)
     {
         AddParsedProp("currency.name", gs => gs.Currency.Name, ConfigParsers.String, ConfigPrinters.ToString);
         AddParsedProp("currency.sign", gs => gs.Currency.Sign, ConfigParsers.String, ConfigPrinters.ToString);
@@ -104,7 +105,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
         if (data.Version < 2)
             ModifyConfig(c =>
             {
-                c.Waifu.Items = c.Waifu.Items.Concat(antiGiftSeed).ToList();
+                c.Waifu.Items = c.Waifu.Items.Concat(_antiGiftSeed).ToList();
                 c.Version = 2;
             });
 

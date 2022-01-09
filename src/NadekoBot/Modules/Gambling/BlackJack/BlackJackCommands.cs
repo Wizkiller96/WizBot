@@ -34,7 +34,7 @@ public partial class Gambling
             if (!await CheckBetMandatory(amount))
                 return;
 
-            var newBj = new Blackjack(_cs, _db);
+            var newBj = new Blackjack(_cs);
             Blackjack bj;
             if (newBj == (bj = _service.Games.GetOrAdd(ctx.Channel.Id, newBj)))
             {

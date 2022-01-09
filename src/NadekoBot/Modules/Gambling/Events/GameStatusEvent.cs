@@ -117,7 +117,7 @@ public class GameStatusEvent : ICurrencyEvent
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (message.Id == this.msg.Id) await StopEvent();
+        if (message.Id == msg.Id) await StopEvent();
     }
 
     public async Task StopEvent()

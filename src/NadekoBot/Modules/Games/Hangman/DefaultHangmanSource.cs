@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Games.Hangman;
 
 public sealed class DefaultHangmanSource : IHangmanSource
 {
-    private IReadOnlyDictionary<string, HangmanTerm[]> _terms = new Dictionary<string, HangmanTerm[]>();
+    private IReadOnlyDictionary<string, HangmanTerm[]> termsDict = new Dictionary<string, HangmanTerm[]>();
     private readonly Random _rng;
 
     public DefaultHangmanSource()
@@ -18,7 +18,7 @@ public sealed class DefaultHangmanSource : IHangmanSource
     {
         if (!Directory.Exists("data/hangman"))
         {
-            Log.Error("Hangman game won't work. Folder 'data/hangman' is missing.");
+            Log.Error("Hangman game won't work. Folder 'data/hangman' is missing");
             return;
         }
 
@@ -31,16 +31,16 @@ public sealed class DefaultHangmanSource : IHangmanSource
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Loading {HangmanFile} failed.", file);
+                Log.Error(ex, "Loading {HangmanFile} failed", file);
             }
 
-        _terms = qs;
+        termsDict = qs;
 
-        Log.Information("Loaded {HangmanCategoryCount} hangman categories.", qs.Count);
+        Log.Information("Loaded {HangmanCategoryCount} hangman categories", qs.Count);
     }
 
     public IReadOnlyCollection<string> GetCategories()
-        => _terms.Keys.ToList();
+        => termsDict.Keys.ToList();
 
     public bool GetTerm(string? category, [NotNullWhen(true)] out HangmanTerm? term)
     {
@@ -50,7 +50,7 @@ public sealed class DefaultHangmanSource : IHangmanSource
             category = cats.ElementAt(_rng.Next(0, cats.Count));
         }
 
-        if (_terms.TryGetValue(category, out var terms))
+        if (termsDict.TryGetValue(category, out var terms))
         {
             term = terms[_rng.Next(0, terms.Length)];
             return true;

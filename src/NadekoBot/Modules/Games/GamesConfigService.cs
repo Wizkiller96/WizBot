@@ -6,12 +6,12 @@ namespace NadekoBot.Modules.Games.Services;
 
 public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
 {
-    private const string FilePath = "data/games.yml";
-    private static readonly TypedKey<GamesConfig> changeKey = new("config.games.updated");
+    private const string FILE_PATH = "data/games.yml";
+    private static readonly TypedKey<GamesConfig> _changeKey = new("config.games.updated");
     public override string Name { get; } = "games";
 
     public GamesConfigService(IConfigSeria serializer, IPubSub pubSub)
-        : base(FilePath, serializer, pubSub, changeKey)
+        : base(FILE_PATH, serializer, pubSub, _changeKey)
     {
         AddParsedProp("trivia.min_win_req",
             gs => gs.Trivia.MinimumWinReq,

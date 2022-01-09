@@ -36,7 +36,7 @@ public partial class Gambling
         [NadekoOptionsAttribute(typeof(RaceOptions))]
         public partial Task Race(params string[] args)
         {
-            var (options, success) = OptionsParser.ParseFrom(new RaceOptions(), args);
+            var (options, _) = OptionsParser.ParseFrom(new RaceOptions(), args);
 
             var ar = new AnimalRace(options, _cs, _gamesConf.Data.RaceAnimals.Shuffle());
             if (!_service.AnimalRaces.TryAdd(ctx.Guild.Id, ar))
@@ -46,7 +46,7 @@ public partial class Gambling
 
             var count = 0;
 
-            Task _client_MessageReceived(SocketMessage arg)
+            Task ClientMessageReceived(SocketMessage arg)
             {
                 _= Task.Run(() =>
                 {
@@ -61,9 +61,9 @@ public partial class Gambling
                 return Task.CompletedTask;
             }
 
-            Task Ar_OnEnded(AnimalRace race)
+            Task ArOnEnded(AnimalRace race)
             {
-                _client.MessageReceived -= _client_MessageReceived;
+                _client.MessageReceived -= ClientMessageReceived;
                 _service.AnimalRaces.TryRemove(ctx.Guild.Id, out _);
                 var winner = race.FinishedUsers[0];
                 if (race.FinishedUsers[0].Bet > 0)
@@ -77,9 +77,9 @@ public partial class Gambling
 
             ar.OnStartingFailed += Ar_OnStartingFailed;
             ar.OnStateUpdate += Ar_OnStateUpdate;
-            ar.OnEnded += Ar_OnEnded;
+            ar.OnEnded += ArOnEnded;
             ar.OnStarted += Ar_OnStarted;
-            _client.MessageReceived += _client_MessageReceived;
+            _client.MessageReceived += ClientMessageReceived;
 
             return SendConfirmAsync(GetText(strs.animal_race),
                 GetText(strs.animal_race_starting(options.StartTime)),

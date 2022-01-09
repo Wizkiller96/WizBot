@@ -5,12 +5,12 @@ namespace NadekoBot.Modules.Music;
 
 public sealed class YtdlYoutubeResolver : IYoutubeResolver
 {
-    private static readonly string[] durationFormats =
+    private static readonly string[] _durationFormats =
     {
         "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss"
     };
 
-    private static readonly Regex expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
+    private static readonly Regex _expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
 
 
     private static readonly Regex _simplePlaylistRegex = new(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
@@ -85,7 +85,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             return default;
         }
 
-        if (!TimeSpan.TryParseExact(dataArray[4], durationFormats, CultureInfo.InvariantCulture, out var time))
+        if (!TimeSpan.TryParseExact(dataArray[4], _durationFormats, CultureInfo.InvariantCulture, out var time))
             time = TimeSpan.Zero;
 
         var thumbnail = Uri.IsWellFormedUriString(dataArray[3], UriKind.Absolute) ? dataArray[3].Trim() : string.Empty;
@@ -108,7 +108,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
 
     private static TimeSpan GetExpiry(string streamUrl)
     {
-        var match = expiryRegex.Match(streamUrl);
+        var match = _expiryRegex.Match(streamUrl);
         if (match.Success && double.TryParse(match.Groups["timestamp"].ToString(), out var timestamp))
         {
             var realExpiry = timestamp.ToUnixTimestamp() - DateTime.UtcNow;

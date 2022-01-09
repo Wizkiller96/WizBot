@@ -9,11 +9,11 @@ public partial class Gambling
     [Group]
     public partial class PlantPickCommands : GamblingSubmodule<PlantPickService>
     {
-        private readonly ILogCommandService logService;
+        private readonly ILogCommandService _logService;
 
         public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss)
             : base(gss)
-            => this.logService = logService;
+            => this._logService = logService;
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -32,7 +32,7 @@ public partial class Gambling
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 try
                 {
-                    logService.AddDeleteIgnore(ctx.Message.Id);
+                    _logService.AddDeleteIgnore(ctx.Message.Id);
                     await ctx.Message.DeleteAsync();
                 }
                 catch { }
@@ -49,7 +49,7 @@ public partial class Gambling
 
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
-                logService.AddDeleteIgnore(ctx.Message.Id);
+                _logService.AddDeleteIgnore(ctx.Message.Id);
                 await ctx.Message.DeleteAsync();
             }
 
@@ -90,7 +90,7 @@ public partial class Gambling
             return ctx.SendPaginatedConfirmAsync(page,
                 _ =>
                 {
-                    var items = enabledIn.Skip(page * 9).Take(9);
+                    var items = enabledIn.Skip(page * 9).Take(9).ToList();
 
                     if (!items.Any())
                         return _eb.Create().WithErrorColor().WithDescription("-");

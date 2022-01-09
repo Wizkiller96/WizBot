@@ -59,7 +59,7 @@ public sealed class Connect4Game : IDisposable
     private readonly ICurrencyService _cs;
     private readonly NadekoRandom _rng;
 
-    private Timer _playerTimeoutTimer;
+    private Timer playerTimeoutTimer;
 
     /* [ ][ ][ ][ ][ ][ ]
      * [ ][ ][ ][ ][ ][ ]
@@ -133,7 +133,7 @@ public sealed class Connect4Game : IDisposable
             }
 
             CurrentPhase = Phase.P1Move; //start the game
-            _playerTimeoutTimer = new(async _ =>
+            playerTimeoutTimer = new(async _ =>
                 {
                     await _locker.WaitAsync();
                     try
@@ -330,7 +330,7 @@ public sealed class Connect4Game : IDisposable
     }
 
     private void ResetTimer()
-        => _playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer),
+        => playerTimeoutTimer.Change(TimeSpan.FromSeconds(_options.TurnTimer),
             TimeSpan.FromSeconds(_options.TurnTimer));
 
     private void EndGame(Result result, ulong? winId)
@@ -369,7 +369,7 @@ public sealed class Connect4Game : IDisposable
         OnGameFailedToStart = null;
         OnGameStateUpdated = null;
         OnGameEnded = null;
-        _playerTimeoutTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+        playerTimeoutTimer?.Change(Timeout.Infinite, Timeout.Infinite);
     }
 
 

@@ -23,7 +23,7 @@ public class ConverterService : INService
         _httpFactory = factory;
 
         if (client.ShardId == 0)
-            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad),
+            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad!),
                 client.ShardId == 0,
                 TimeSpan.Zero,
                 _updateInterval);
@@ -55,7 +55,9 @@ public class ConverterService : INService
                                          .ToArray();
 
                 var fileData = JsonConvert.DeserializeObject<ConvertUnit[]>(File.ReadAllText("data/units.json"))
-                                          .Where(x => x.UnitType != "currency");
+                                          ?.Where(x => x.UnitType != "currency");
+                if (fileData is null)
+                    return;
 
                 var data = JsonConvert.SerializeObject(range.Append(baseType).Concat(fileData).ToList());
                 _cache.Redis.GetDatabase().StringSet("converter_units", data);

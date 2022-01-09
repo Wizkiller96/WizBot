@@ -7,13 +7,13 @@ public class CleverbotResponse
     public string Output { get; set; }
 }
 
-public class CleverbotIOCreateResponse
+public class CleverbotIoCreateResponse
 {
     public string Status { get; set; }
     public string Nick { get; set; }
 }
 
-public class CleverbotIOAskResponse
+public class CleverbotIoAskResponse
 {
     public string Status { get; set; }
     public string Response { get; set; }

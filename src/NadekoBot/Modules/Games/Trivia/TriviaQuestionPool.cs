@@ -10,14 +10,14 @@ public class TriviaQuestionPool
         => _cache.LocalData.PokemonMap;
 
     private readonly IDataCache _cache;
-    private readonly int maxPokemonId;
+    private readonly int _maxPokemonId;
 
     private readonly NadekoRandom _rng = new();
 
     public TriviaQuestionPool(IDataCache cache)
     {
         _cache = cache;
-        maxPokemonId = 721; //xd
+        _maxPokemonId = 721; //xd
     }
 
     public TriviaQuestion GetRandomQuestion(HashSet<TriviaQuestion> exclude, bool isPokemon)
@@ -27,7 +27,7 @@ public class TriviaQuestionPool
 
         if (isPokemon)
         {
-            var num = _rng.Next(1, maxPokemonId + 1);
+            var num = _rng.Next(1, _maxPokemonId + 1);
             return new("Who's That Pokémon?",
                 Map[num].ToTitleCase(),
                 "Pokemon",
@@ -36,7 +36,15 @@ public class TriviaQuestionPool
         }
 
         TriviaQuestion randomQuestion;
-        while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)])) ;
+        while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)]))
+        { 
+            // if too many questions are excluded, clear the exclusion list and start over
+            if (exclude.Count > Pool.Length / 10 * 9)
+            {
+                exclude.Clear();
+                break;
+            }
+        }
 
         return randomQuestion;
     }

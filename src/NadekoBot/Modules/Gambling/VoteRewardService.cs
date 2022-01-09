@@ -100,7 +100,7 @@ public class VoteRewardService : INService, IReadyExecutor
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Critical error loading discords.com vote rewards.");
+                Log.Error(ex, "Critical error loading discords.com vote rewards");
             }
         }
     }

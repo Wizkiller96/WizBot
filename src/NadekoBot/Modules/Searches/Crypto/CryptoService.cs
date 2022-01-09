@@ -10,7 +10,7 @@ public class CryptoService : INService
     private readonly IHttpClientFactory _httpFactory;
     private readonly IBotCredentials _creds;
 
-    private readonly SemaphoreSlim getCryptoLock = new(1, 1);
+    private readonly SemaphoreSlim _getCryptoLock = new(1, 1);
 
     public CryptoService(IDataCache cache, IHttpClientFactory httpFactory, IBotCredentials creds)
     {
@@ -52,7 +52,7 @@ public class CryptoService : INService
 
     public async Task<List<CryptoResponseData>> CryptoData()
     {
-        await getCryptoLock.WaitAsync();
+        await _getCryptoLock.WaitAsync();
         try
         {
             var fullStrData = await _cache.GetOrAddCachedDataAsync("nadeko:crypto_data",
@@ -81,7 +81,7 @@ public class CryptoService : INService
                 "",
                 TimeSpan.FromHours(1));
 
-            return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData).Data;
+            return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData)?.Data ?? new();
         }
         catch (Exception ex)
         {
@@ -90,7 +90,7 @@ public class CryptoService : INService
         }
         finally
         {
-            getCryptoLock.Release();
+            _getCryptoLock.Release();
         }
     }
 }

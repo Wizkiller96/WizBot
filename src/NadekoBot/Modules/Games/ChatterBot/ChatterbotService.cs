@@ -48,7 +48,7 @@ public class ChatterBotService : IEarlyBehavior
     {
         if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
             return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
-        return new CleverbotIOSession("GAh3wUfzDCpDpdpT", "RStKgqn7tcO9blbrv4KbXM8NDlb7H37C", _httpFactory);
+        return new CleverbotIoSession("GAh3wUfzDCpDpdpT", "RStKgqn7tcO9blbrv4KbXM8NDlb7H37C", _httpFactory);
     }
 
     public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)

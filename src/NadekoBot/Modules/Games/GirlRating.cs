@@ -15,11 +15,8 @@ public class GirlRating
     public AsyncLazy<Stream> Stream { get; }
     private readonly IImageCache _images;
 
-    private readonly IHttpClientFactory _httpFactory;
-
     public GirlRating(
         IImageCache images,
-        IHttpClientFactory factory,
         double crazy,
         double hot,
         int roll,
@@ -30,7 +27,6 @@ public class GirlRating
         Hot = hot;
         Roll = roll;
         Advice = advice; // convenient to have it here, even though atm there are only few different ones.
-        _httpFactory = factory;
 
         Stream = new(() =>
         {

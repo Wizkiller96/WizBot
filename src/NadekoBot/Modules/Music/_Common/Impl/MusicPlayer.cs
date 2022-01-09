@@ -22,7 +22,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
     public float Volume { get; private set; } = 1.0f;
 
-    private readonly AdjustVolumeDelegate AdjustVolume;
+    private readonly AdjustVolumeDelegate _adjustVolume;
     private readonly VoiceClient _vc;
 
     private readonly IMusicQueue _queue;
@@ -30,8 +30,8 @@ public sealed class MusicPlayer : IMusicPlayer
     private readonly IVoiceProxy _proxy;
     private readonly ISongBuffer _songBuffer;
 
-    private bool _skipped;
-    private int? _forceIndex;
+    private bool skipped;
+    private int? forceIndex;
     private readonly Thread _thread;
     private readonly Random _rng;
 
@@ -48,9 +48,9 @@ public sealed class MusicPlayer : IMusicPlayer
 
         _vc = GetVoiceClient(qualityPreset);
         if (_vc.BitDepth == 16)
-            AdjustVolume = AdjustVolumeInt16;
+            _adjustVolume = AdjustVolumeInt16;
         else
-            AdjustVolume = AdjustVolumeFloat32;
+            _adjustVolume = AdjustVolumeFloat32;
 
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
@@ -95,9 +95,9 @@ public sealed class MusicPlayer : IMusicPlayer
                 continue;
             }
 
-            if (_skipped)
+            if (skipped)
             {
-                _skipped = false;
+                skipped = false;
                 _queue.Advance();
                 continue;
             }
@@ -182,9 +182,9 @@ public sealed class MusicPlayer : IMusicPlayer
                 {
                     // doing the skip this way instead of in the condition
                     // ensures that a song will for sure be skipped
-                    if (_skipped)
+                    if (skipped)
                     {
-                        _skipped = false;
+                        skipped = false;
                         break;
                     }
 
@@ -268,10 +268,9 @@ public sealed class MusicPlayer : IMusicPlayer
                 _ = OnCompleted?.Invoke(this, track);
 
                 HandleQueuePostTrack();
-                _skipped = false;
+                skipped = false;
 
                 _ = _proxy.StopSpeakingAsync();
-                ;
 
                 await Task.Delay(100);
             }
@@ -285,16 +284,16 @@ public sealed class MusicPlayer : IMusicPlayer
         // if nothing is read from the buffer, song is finished
         if (data.Length == 0) return null;
 
-        AdjustVolume(data, Volume);
+        _adjustVolume(data, Volume);
         return _proxy.SendPcmFrame(vc, data, length);
     }
 
     private void HandleQueuePostTrack()
     {
-        if (_forceIndex is { } forceIndex)
+        if (this.forceIndex is { } forceIndex)
         {
             _queue.SetIndex(forceIndex);
-            _forceIndex = null;
+            this.forceIndex = null;
             return;
         }
 
@@ -419,7 +418,7 @@ public sealed class MusicPlayer : IMusicPlayer
     public void Clear()
     {
         _queue.Clear();
-        _skipped = true;
+        skipped = true;
     }
 
     public IReadOnlyCollection<IQueuedTrackInfo> GetQueuedTracks()
@@ -430,7 +429,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
     public void Next()
     {
-        _skipped = true;
+        skipped = true;
         IsStopped = false;
         IsPaused = false;
     }
@@ -439,8 +438,8 @@ public sealed class MusicPlayer : IMusicPlayer
     {
         if (_queue.SetIndex(index))
         {
-            _forceIndex = index;
-            _skipped = true;
+            forceIndex = index;
+            skipped = true;
             IsStopped = false;
             IsPaused = false;
             return true;
@@ -463,7 +462,7 @@ public sealed class MusicPlayer : IMusicPlayer
         IsKilled = true;
         IsStopped = true;
         IsPaused = false;
-        _skipped = true;
+        skipped = true;
     }
 
     public bool TryRemoveTrackAt(int index, out IQueuedTrackInfo? trackInfo)
@@ -472,7 +471,7 @@ public sealed class MusicPlayer : IMusicPlayer
             return false;
 
         if (isCurrent)
-            _skipped = true;
+            skipped = true;
 
         return true;
     }

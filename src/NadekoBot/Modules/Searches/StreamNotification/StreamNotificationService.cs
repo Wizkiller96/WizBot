@@ -116,7 +116,7 @@ public sealed class StreamNotificationService : INService
                             return;
 
                         var deleteGroups = failingStreams.GroupBy(x => x.Type)
-                                                         .ToDictionary(x => x.Key, x => x.Select(x => x.Name).ToList());
+                                                         .ToDictionary(x => x.Key, x => x.Select(y => y.Name).ToList());
 
                         using var uow = _db.GetDbContext();
                         foreach (var kvp in deleteGroups)

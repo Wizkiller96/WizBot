@@ -62,7 +62,10 @@ namespace NadekoBot.Tests
             collection.Clear();
 
             Assert.IsTrue(collection.Count == 0, "Collection has not been cleared.");
-            Assert.Throws<ArgumentOutOfRangeException>(() => collection.Contains(collection[0]), "Collection has not been cleared.");
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                _ = collection[0];
+            }, "Collection has not been cleared.");
         }
 
         [Test]

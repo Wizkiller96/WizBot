@@ -1,5 +1,4 @@
 ﻿#nullable disable
-namespace NadekoBot.Modules.Searches.Services;
 
 // public class YtTrackService : INService
 // {

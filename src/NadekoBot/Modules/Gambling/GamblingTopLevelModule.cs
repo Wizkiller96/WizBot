@@ -5,14 +5,14 @@ namespace NadekoBot.Modules.Gambling.Common;
 
 public abstract class GamblingModule<TService> : NadekoModule<TService>
 {
-    protected GamblingConfig _config
+    protected GamblingConfig Config
         => _lazyConfig.Value;
 
     protected string CurrencySign
-        => _config.Currency.Sign;
+        => Config.Currency.Sign;
 
     protected string CurrencyName
-        => _config.Currency.Name;
+        => Config.Currency.Name;
 
     private readonly Lazy<GamblingConfig> _lazyConfig;
 
@@ -22,15 +22,15 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
     private async Task<bool> InternalCheckBet(long amount)
     {
         if (amount < 1) return false;
-        if (amount < _config.MinBet)
+        if (amount < Config.MinBet)
         {
-            await ReplyErrorLocalizedAsync(strs.min_bet_limit(Format.Bold(_config.MinBet.ToString()) + CurrencySign));
+            await ReplyErrorLocalizedAsync(strs.min_bet_limit(Format.Bold(Config.MinBet.ToString()) + CurrencySign));
             return false;
         }
 
-        if (_config.MaxBet > 0 && amount > _config.MaxBet)
+        if (Config.MaxBet > 0 && amount > Config.MaxBet)
         {
-            await ReplyErrorLocalizedAsync(strs.max_bet_limit(Format.Bold(_config.MaxBet.ToString()) + CurrencySign));
+            await ReplyErrorLocalizedAsync(strs.max_bet_limit(Format.Bold(Config.MaxBet.ToString()) + CurrencySign));
             return false;
         }
 

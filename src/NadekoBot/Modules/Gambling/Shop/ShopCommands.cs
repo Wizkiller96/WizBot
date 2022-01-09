@@ -154,7 +154,7 @@ public partial class Gambling
                 {
                     await using (var uow = _db.GetDbContext())
                     {
-                        var x = uow.Set<ShopEntryItem>().Remove(item);
+                        uow.Set<ShopEntryItem>().Remove(item);
                         uow.SaveChanges();
                     }
 

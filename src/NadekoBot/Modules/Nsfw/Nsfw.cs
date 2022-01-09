@@ -36,7 +36,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    private async Task InternalButts(IMessageChannel Channel)
+    private async Task InternalButts(IMessageChannel channel)
     {
         try
         {
@@ -47,7 +47,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                     await http.GetStringAsync($"http://api.obutts.ru/butts/{new NadekoRandom().Next(0, 4335)}"))[0];
             }
 
-            await Channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
+            await channel.SendMessageAsync($"http://media.obutts.ru/{obj["preview"]}");
         }
         catch (Exception ex)
         {

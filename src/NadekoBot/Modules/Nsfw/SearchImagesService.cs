@@ -35,7 +35,7 @@ public class SearchImagesService : ISearchImagesService, INService
     private readonly IHttpClientFactory _httpFactory;
     private readonly DbService _db;
 
-    private readonly object taglock = new();
+    private readonly object _taglock = new();
 
     public SearchImagesService(
         DbService db,
@@ -188,7 +188,7 @@ public class SearchImagesService : ISearchImagesService, INService
 
     public ValueTask<bool> ToggleBlacklistTag(ulong guildId, string tag)
     {
-        lock (taglock)
+        lock (_taglock)
         {
             tag = tag.Trim().ToLowerInvariant();
             var blacklistedTags = BlacklistedTags.GetOrAdd(guildId, new HashSet<string>());
@@ -214,7 +214,7 @@ public class SearchImagesService : ISearchImagesService, INService
 
     public ValueTask<string[]> GetBlacklistedTags(ulong guildId)
     {
-        lock (taglock)
+        lock (_taglock)
         {
             if (BlacklistedTags.TryGetValue(guildId, out var tags)) return new(tags.ToArray());
 

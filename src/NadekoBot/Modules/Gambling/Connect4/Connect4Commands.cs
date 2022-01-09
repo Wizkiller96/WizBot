@@ -11,19 +11,19 @@ public partial class Gambling
     [Group]
     public partial class Connect4Commands : GamblingSubmodule<GamblingService>
     {
-        private static readonly string[] numbers =
+        private static readonly string[] _numbers =
         {
             ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:"
         };
 
         private int RepostCounter
         {
-            get => _repostCounter;
+            get => repostCounter;
             set
             {
                 if (value is < 0 or > 7)
-                    _repostCounter = 0;
-                else _repostCounter = value;
+                    repostCounter = 0;
+                else repostCounter = value;
             }
         }
 
@@ -32,7 +32,7 @@ public partial class Gambling
 
         private IUserMessage msg;
 
-        private int _repostCounter;
+        private int repostCounter;
 
         public Connect4Commands(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService gamb)
             : base(gamb)
@@ -59,7 +59,7 @@ public partial class Gambling
 
                 newGame.Dispose();
                 //means game already exists, try to join
-                var joined = await game.Join(ctx.User.Id, ctx.User.ToString(), options.Bet);
+                await game.Join(ctx.User.Id, ctx.User.ToString(), options.Bet);
                 return;
             }
 
@@ -73,9 +73,9 @@ public partial class Gambling
                 }
 
             game.OnGameStateUpdated += Game_OnGameStateUpdated;
-            game.OnGameFailedToStart += Game_OnGameFailedToStart;
-            game.OnGameEnded += Game_OnGameEnded;
-            _client.MessageReceived += _client_MessageReceived;
+            game.OnGameFailedToStart += GameOnGameFailedToStart;
+            game.OnGameEnded += GameOnGameEnded;
+            _client.MessageReceived += ClientMessageReceived;
 
             game.Initialize();
             if (options.Bet == 0)
@@ -83,7 +83,7 @@ public partial class Gambling
             else
                 await ReplyErrorLocalizedAsync(strs.connect4_created_bet(options.Bet + CurrencySign));
 
-            Task _client_MessageReceived(SocketMessage arg)
+            Task ClientMessageReceived(SocketMessage arg)
             {
                 if (ctx.Channel.Id != arg.Channel.Id)
                     return Task.CompletedTask;
@@ -110,22 +110,22 @@ public partial class Gambling
                 return Task.CompletedTask;
             }
 
-            Task Game_OnGameFailedToStart(Connect4Game arg)
+            Task GameOnGameFailedToStart(Connect4Game arg)
             {
                 if (_service.Connect4Games.TryRemove(ctx.Channel.Id, out var toDispose))
                 {
-                    _client.MessageReceived -= _client_MessageReceived;
+                    _client.MessageReceived -= ClientMessageReceived;
                     toDispose.Dispose();
                 }
 
                 return ErrorLocalizedAsync(strs.connect4_failed_to_start);
             }
 
-            Task Game_OnGameEnded(Connect4Game arg, Connect4Game.Result result)
+            Task GameOnGameEnded(Connect4Game arg, Connect4Game.Result result)
             {
                 if (_service.Connect4Games.TryRemove(ctx.Channel.Id, out var toDispose))
                 {
-                    _client.MessageReceived -= _client_MessageReceived;
+                    _client.MessageReceived -= ClientMessageReceived;
                     toDispose.Dispose();
                 }
 
@@ -185,7 +185,7 @@ public partial class Gambling
                 sb.AppendLine();
             }
 
-            for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++) sb.Append(numbers[i]);
+            for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++) sb.Append(_numbers[i]);
             return sb.ToString();
         }
     }

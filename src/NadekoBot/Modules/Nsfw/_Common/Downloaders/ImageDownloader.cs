@@ -10,7 +10,7 @@ public abstract class ImageDownloader<T> : IImageDownloader
     public Booru Booru { get; }
     protected readonly HttpClient _http;
 
-    protected JsonSerializerOptions _serializerOptions = new()
+    protected readonly JsonSerializerOptions _serializerOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString

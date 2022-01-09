@@ -18,8 +18,8 @@ public partial class Gambling
     [Group]
     public partial class SlotCommands : GamblingSubmodule<GamblingService>
     {
-        private static long _totalBet;
-        private static long _totalPaidOut;
+        private static long totalBet;
+        private static long totalPaidOut;
 
         private static readonly HashSet<ulong> _runningUsers = new();
 
@@ -28,7 +28,7 @@ public partial class Gambling
         //thanks to judge for helping me with this
 
         private readonly IImageCache _images;
-        private FontProvider _fonts;
+        private readonly FontProvider _fonts;
         private readonly DbService _db;
 
         public SlotCommands(
@@ -51,8 +51,8 @@ public partial class Gambling
         public async partial Task SlotStats()
         {
             //i remembered to not be a moron
-            var paid = _totalPaidOut;
-            var bet = _totalBet;
+            var paid = totalPaidOut;
+            var bet = totalBet;
 
             if (bet <= 0)
                 bet = 1;
@@ -120,8 +120,8 @@ public partial class Gambling
                     return;
                 }
 
-                Interlocked.Add(ref _totalBet, amount);
-                Interlocked.Add(ref _totalPaidOut, result.Won);
+                Interlocked.Add(ref totalBet, amount);
+                Interlocked.Add(ref totalPaidOut, result.Won);
 
                 long ownedAmount;
                 await using (var uow = _db.GetDbContext())
@@ -130,12 +130,12 @@ public partial class Gambling
                                   ?? 0;
                 }
 
-                using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out var format))
+                using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out _))
                 {
                     var numbers = new int[3];
                     result.Rolls.CopyTo(numbers, 0);
 
-                    Color fontColor = _config.Slots.CurrencyFontColor;
+                    Color fontColor = Config.Slots.CurrencyFontColor;
 
                     bgImage.Mutate(x => x.DrawText(new()
                         {

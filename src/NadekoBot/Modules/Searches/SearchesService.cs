@@ -46,7 +46,7 @@ public class SearchesService : INService
     private readonly NadekoRandom _rng;
     private readonly List<string> _yomamaJokes;
 
-    private readonly object yomamaLock = new();
+    private readonly object _yomamaLock = new();
     private int yomamaJokeIndex;
 
     public SearchesService(
@@ -224,9 +224,11 @@ public class SearchesService : INService
 
             using var req = new HttpRequestMessage(HttpMethod.Get,
                 "http://api.timezonedb.com/v2.1/get-time-zone?"
-                + $"key={_creds.TimezoneDbApiKey}&format=json&"
-                + "by=position&"
-                + $"lat={geoData.Lat}&lng={geoData.Lon}");
+                + $"key={_creds.TimezoneDbApiKey}"
+                + $"&format=json"
+                + $"&by=position"
+                + $"&lat={geoData.Lat}"
+                + $"&lng={geoData.Lon}");
             using var geoRes = await http.SendAsync(req);
             var resString = await geoRes.Content.ReadAsStringAsync();
             var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(resString);
@@ -274,7 +276,7 @@ public class SearchesService : INService
     public Task<string> GetYomamaJoke()
     {
         string joke;
-        lock (yomamaLock)
+        lock (_yomamaLock)
         {
             if (yomamaJokeIndex >= _yomamaJokes.Count)
             {
@@ -428,8 +430,6 @@ public class SearchesService : INService
 
     public async Task<int> GetSteamAppIdByName(string query)
     {
-        var redis = _cache.Redis;
-        var db = redis.GetDatabase();
         const string steamGameIdsKey = "steam_names_to_appid";
         // var exists = await db.KeyExistsAsync(steamGameIdsKey);
 

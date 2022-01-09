@@ -28,19 +28,19 @@ public partial class Games
                          .WithOkColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
-                         .WithFooter(state.missedLetters.Join(' '));
+                         .WithFooter(state.MissedLetters.Join(' '));
 
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
                 return eb.Create()
                          .WithErrorColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
-                         .WithFooter(state.missedLetters.Join(' '));
+                         .WithFooter(state.MissedLetters.Join(' '));
             return eb.Create()
                      .WithOkColor()
                      .AddField("Hangman", Draw(state))
                      .AddField("Guess", Format.Code(state.Word))
-                     .WithFooter(state.missedLetters.Join(' '));
+                     .WithFooter(state.MissedLetters.Join(' '));
         }
 
         [Cmd]

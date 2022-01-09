@@ -5,12 +5,13 @@ namespace NadekoBot.Modules.Xp.Services;
 
 public sealed class XpConfigService : ConfigServiceBase<XpConfig>
 {
-    private const string FilePath = "data/xp.yml";
-    private static readonly TypedKey<XpConfig> changeKey = new("config.xp.updated");
-    public override string Name { get; } = "xp";
+    private const string FILE_PATH = "data/xp.yml";
+    private static readonly TypedKey<XpConfig> _changeKey = new("config.xp.updated");
+    public override string Name
+        => "xp";
 
     public XpConfigService(IConfigSeria serializer, IPubSub pubSub)
-        : base(FilePath, serializer, pubSub, changeKey)
+        : base(FILE_PATH, serializer, pubSub, _changeKey)
     {
         AddParsedProp("txt.cooldown",
             conf => conf.MessageXpCooldown,

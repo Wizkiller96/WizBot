@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility.Services;
 
 public class VerboseErrorsService : INService
 {
-    private readonly ConcurrentHashSet<ulong> guildsEnabled;
+    private readonly ConcurrentHashSet<ulong> _guildsEnabled;
     private readonly DbService _db;
     private readonly CommandHandler _ch;
     private readonly HelpService _hs;
@@ -23,12 +23,12 @@ public class VerboseErrorsService : INService
 
         _ch.CommandErrored += LogVerboseError;
 
-        guildsEnabled = new(bot.AllGuildConfigs.Where(x => x.VerboseErrors).Select(x => x.GuildId));
+        _guildsEnabled = new(bot.AllGuildConfigs.Where(x => x.VerboseErrors).Select(x => x.GuildId));
     }
 
     private async Task LogVerboseError(CommandInfo cmd, ITextChannel channel, string reason)
     {
-        if (channel is null || !guildsEnabled.Contains(channel.GuildId))
+        if (channel is null || !_guildsEnabled.Contains(channel.GuildId))
             return;
 
         try
@@ -60,9 +60,9 @@ public class VerboseErrorsService : INService
         }
 
         if ((bool)enabled) // This doesn't need to be duplicated inside the using block
-            guildsEnabled.Add(guildId);
+            _guildsEnabled.Add(guildId);
         else
-            guildsEnabled.TryRemove(guildId);
+            _guildsEnabled.TryRemove(guildId);
 
         return (bool)enabled;
     }

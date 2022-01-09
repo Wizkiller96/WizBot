@@ -189,7 +189,7 @@ public sealed class MusicService : IMusicService
             _ = lastFinishedMessage?.DeleteAsync();
             var embed = _eb.Create()
                            .WithOkColor()
-                           .WithAuthor(GetText(guildId, strs.finished_song), Music.MusicIconUrl)
+                           .WithAuthor(GetText(guildId, strs.finished_song), Music.MUSIC_ICON_URL)
                            .WithDescription(trackInfo.PrettyName())
                            .WithFooter(trackInfo.PrettyTotalTime());
 
@@ -205,7 +205,7 @@ public sealed class MusicService : IMusicService
             _ = lastPlayingMessage?.DeleteAsync();
             var embed = _eb.Create()
                            .WithOkColor()
-                           .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MusicIconUrl)
+                           .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MUSIC_ICON_URL)
                            .WithDescription(trackInfo.PrettyName())
                            .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 

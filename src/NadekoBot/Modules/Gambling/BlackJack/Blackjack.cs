@@ -21,16 +21,14 @@ public class Blackjack
     public GameState State { get; set; } = GameState.Starting;
     public User CurrentUser { get; private set; }
 
-    private TaskCompletionSource<bool> _currentUserMove;
+    private TaskCompletionSource<bool> currentUserMove;
     private readonly ICurrencyService _cs;
-    private readonly DbService _db;
 
     private readonly SemaphoreSlim _locker = new(1, 1);
 
-    public Blackjack(ICurrencyService cs, DbService db)
+    public Blackjack(ICurrencyService cs)
     {
         _cs = cs;
-        _db = db;
         Dealer = new();
     }
 
@@ -58,7 +56,7 @@ public class Blackjack
             if (!Players.Any())
             {
                 State = GameState.Ended;
-                var end = GameEnded?.Invoke(this);
+                _ = GameEnded?.Invoke(this);
                 return;
             }
 
@@ -101,14 +99,14 @@ public class Blackjack
     {
         var pause = Task.Delay(20000); //10 seconds to decide
         CurrentUser = usr;
-        _currentUserMove = new();
+        currentUserMove = new();
         await PrintState();
         // either wait for the user to make an action and
         // if he doesn't - stand
-        var finished = await Task.WhenAny(pause, _currentUserMove.Task);
+        var finished = await Task.WhenAny(pause, currentUserMove.Task);
         if (finished == pause) await Stand(usr);
         CurrentUser = null;
-        _currentUserMove = null;
+        currentUserMove = null;
     }
 
     public async Task<bool> Join(IUser user, long bet)
@@ -156,7 +154,7 @@ public class Blackjack
                 return false;
 
             u.State = User.UserState.Stand;
-            _currentUserMove.TrySetResult(true);
+            currentUserMove.TrySetResult(true);
             return true;
         }
         finally
@@ -252,7 +250,7 @@ public class Blackjack
             else
                 //with double you just get one card, and then you're done
                 u.State = User.UserState.Stand;
-            _currentUserMove.TrySetResult(true);
+            currentUserMove.TrySetResult(true);
 
             return true;
         }
@@ -292,7 +290,7 @@ public class Blackjack
                 // user busted
                 u.State = User.UserState.Bust;
 
-            _currentUserMove.TrySetResult(true);
+            currentUserMove.TrySetResult(true);
 
             return true;
         }

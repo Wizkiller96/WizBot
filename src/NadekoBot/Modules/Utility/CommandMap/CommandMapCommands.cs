@@ -34,8 +34,6 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async partial Task Alias(string trigger, [Leftover] string mapping = null)
         {
-            var channel = (ITextChannel)ctx.Channel;
-
             if (string.IsNullOrWhiteSpace(trigger))
                 return;
 
@@ -52,7 +50,6 @@ public partial class Utility
                 await using (var uow = _db.GetDbContext())
                 {
                     var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                    var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
                     var tr = config.CommandAliases.FirstOrDefault(x => x.Trigger == trigger);
                     if (tr is not null)
                         uow.Set<CommandAlias>().Remove(tr);
@@ -84,9 +81,9 @@ public partial class Utility
                     {
                         var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
                         var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
-                        var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger);
+                        var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger).ToArray();
                         if (toRemove.Any())
-                            uow.RemoveRange(toRemove.ToArray());
+                            uow.RemoveRange(toRemove);
                         config.CommandAliases.Add(toAdd);
                         uow.SaveChanges();
                     }
@@ -103,7 +100,6 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async partial Task AliasList(int page = 1)
         {
-            var channel = (ITextChannel)ctx.Channel;
             page -= 1;
 
             if (page < 0)

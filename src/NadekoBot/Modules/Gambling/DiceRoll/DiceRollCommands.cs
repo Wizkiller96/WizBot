@@ -11,10 +11,10 @@ public partial class Gambling
     [Group]
     public partial class DiceRollCommands : NadekoSubmodule
     {
-        private static readonly Regex dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$",
+        private static readonly Regex _dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$",
             RegexOptions.Compiled);
 
-        private static readonly Regex fudgeRegex = new(@"^(?<n1>\d+)d(?:F|f)$", RegexOptions.Compiled);
+        private static readonly Regex _fudgeRegex = new(@"^(?<n1>\d+)d(?:F|f)$", RegexOptions.Compiled);
 
         private static readonly char[] _fateRolls = { '-', ' ', '+' };
         private readonly IImageCache _images;
@@ -115,7 +115,7 @@ public partial class Gambling
         private async Task InternallDndRoll(string arg, bool ordered)
         {
             Match match;
-            if ((match = fudgeRegex.Match(arg)).Length != 0
+            if ((match = _fudgeRegex.Match(arg)).Length != 0
                 && int.TryParse(match.Groups["n1"].ToString(), out var n1)
                 && n1 is > 0 and < 500)
             {
@@ -134,7 +134,7 @@ public partial class Gambling
 
                 await ctx.Channel.EmbedAsync(embed);
             }
-            else if ((match = dndRegex.Match(arg)).Length != 0)
+            else if ((match = _dndRegex.Match(arg)).Length != 0)
             {
                 var rng = new NadekoRandom();
                 if (int.TryParse(match.Groups["n1"].ToString(), out n1)

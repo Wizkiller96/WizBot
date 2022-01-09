@@ -62,12 +62,16 @@ public partial class Utility
             }
 
             if (quotes.Any())
+            {
                 await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
                     string.Join("\n",
                         quotes.Select(q
                             => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
+            }
             else
+            {
                 await ReplyErrorLocalizedAsync(strs.quotes_page_none);
+            }
         }
 
         [Cmd]

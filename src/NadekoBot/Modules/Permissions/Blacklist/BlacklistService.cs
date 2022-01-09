@@ -30,7 +30,7 @@ public sealed class BlacklistService : IEarlyBehavior
 
     private ValueTask OnReload(BlacklistEntry[] newBlacklist)
     {
-        this.blacklist = newBlacklist;
+        blacklist = newBlacklist;
         return default;
     }
 

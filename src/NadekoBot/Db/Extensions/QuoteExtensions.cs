@@ -9,7 +9,7 @@ public static class QuoteExtensions
     public static IEnumerable<Quote> GetForGuild(this DbSet<Quote> quotes, ulong guildId)
         => quotes.AsQueryable().Where(x => x.GuildId == guildId);
 
-    public static IEnumerable<Quote> GetGroup(
+    public static IReadOnlyCollection<Quote> GetGroup(
         this DbSet<Quote> quotes,
         ulong guildId,
         int page,

@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Music.Common;
 
 public sealed class MultimediaTimer : IDisposable
 {
-    private LpTimeProcDelegate _lpTimeProc;
+    private LpTimeProcDelegate lpTimeProc;
     private readonly uint _eventId;
     private readonly Action<object> _callback;
     private readonly object _state;
@@ -18,8 +18,8 @@ public sealed class MultimediaTimer : IDisposable
         _callback = callback;
         _state = state;
 
-        _lpTimeProc = CallbackInternal;
-        _eventId = timeSetEvent((uint)period, 1, _lpTimeProc, 0, TimerMode.Periodic);
+        lpTimeProc = CallbackInternal;
+        _eventId = timeSetEvent((uint)period, 1, lpTimeProc, 0, TimerMode.Periodic);
     }
 
     /// <summary>
@@ -58,13 +58,13 @@ public sealed class MultimediaTimer : IDisposable
     /// <summary>
     ///     The timeKillEvent function cancels a specified timer event.
     /// </summary>
-    /// <param name="uTimerID">
+    /// <param name="uTimerId">
     ///     Identifier of the timer event to cancel.
     ///     This identifier was returned by the timeSetEvent function when the timer event was set up.
     /// </param>
     /// <returns>Returns TIMERR_NOERROR if successful or MMSYSERR_INVALPARAM if the specified timer event does not exist.</returns>
     [DllImport("Winmm.dll")]
-    private static extern int timeKillEvent(uint uTimerID);
+    private static extern int timeKillEvent(uint uTimerId);
 
     private void CallbackInternal(
         uint uTimerId,
@@ -76,12 +76,12 @@ public sealed class MultimediaTimer : IDisposable
 
     public void Dispose()
     {
-        _lpTimeProc = default;
+        lpTimeProc = default;
         timeKillEvent(_eventId);
     }
 
     private delegate void LpTimeProcDelegate(
-        uint uTimerID,
+        uint uTimerId,
         uint uMsg,
         int dwUser,
         int dw1,

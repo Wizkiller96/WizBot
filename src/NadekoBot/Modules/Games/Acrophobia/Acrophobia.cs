@@ -38,8 +38,8 @@ public sealed class AcrophobiaGame : IDisposable
     public ImmutableArray<char> StartingLetters { get; private set; }
     public Options Opts { get; }
 
-    private readonly Dictionary<AcrophobiaUser, int> submissions = new();
-    private readonly SemaphoreSlim locker = new(1, 1);
+    private readonly Dictionary<AcrophobiaUser, int> _submissions = new();
+    private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly NadekoRandom _rng;
 
     private readonly HashSet<ulong> _usersWhoVoted = new();
@@ -55,37 +55,37 @@ public sealed class AcrophobiaGame : IDisposable
     {
         await OnStarted(this);
         await Task.Delay(Opts.SubmissionTime * 1000);
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
-            if (submissions.Count == 0)
+            if (_submissions.Count == 0)
             {
                 CurrentPhase = Phase.Ended;
                 await OnVotingStarted(this, ImmutableArray.Create<KeyValuePair<AcrophobiaUser, int>>());
                 return;
             }
 
-            if (submissions.Count == 1)
+            if (_submissions.Count == 1)
             {
                 CurrentPhase = Phase.Ended;
-                await OnVotingStarted(this, submissions.ToArray().ToImmutableArray());
+                await OnVotingStarted(this, _submissions.ToArray().ToImmutableArray());
                 return;
             }
 
             CurrentPhase = Phase.Voting;
 
-            await OnVotingStarted(this, submissions.ToArray().ToImmutableArray());
+            await OnVotingStarted(this, _submissions.ToArray().ToImmutableArray());
         }
-        finally { locker.Release(); }
+        finally { _locker.Release(); }
 
         await Task.Delay(Opts.VoteTime * 1000);
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             CurrentPhase = Phase.Ended;
-            await OnEnded(this, submissions.ToArray().ToImmutableArray());
+            await OnEnded(this, _submissions.ToArray().ToImmutableArray());
         }
-        finally { locker.Release(); }
+        finally { _locker.Release(); }
     }
 
     private void InitializeStartingLetters()
@@ -107,26 +107,26 @@ public sealed class AcrophobiaGame : IDisposable
     {
         var user = new AcrophobiaUser(userId, userName, input.ToLowerInvariant().ToTitleCase());
 
-        await locker.WaitAsync();
+        await _locker.WaitAsync();
         try
         {
             switch (CurrentPhase)
             {
                 case Phase.Submission:
-                    if (submissions.ContainsKey(user) || !IsValidAnswer(input))
+                    if (_submissions.ContainsKey(user) || !IsValidAnswer(input))
                         break;
 
-                    submissions.Add(user, 0);
+                    _submissions.Add(user, 0);
                     return true;
                 case Phase.Voting:
                     AcrophobiaUser toVoteFor;
                     if (!int.TryParse(input, out var index)
                         || --index < 0
-                        || index >= submissions.Count
-                        || (toVoteFor = submissions.ToArray()[index].Key).UserId == user.UserId
+                        || index >= _submissions.Count
+                        || (toVoteFor = _submissions.ToArray()[index].Key).UserId == user.UserId
                         || !_usersWhoVoted.Add(userId))
                         break;
-                    ++submissions[toVoteFor];
+                    ++_submissions[toVoteFor];
                     _= Task.Run(() => OnUserVoted(userName));
                     return true;
             }
@@ -135,7 +135,7 @@ public sealed class AcrophobiaGame : IDisposable
         }
         finally
         {
-            locker.Release();
+            _locker.Release();
         }
     }
 
@@ -169,8 +169,8 @@ public sealed class AcrophobiaGame : IDisposable
         OnUserVoted = null;
         OnVotingStarted = null;
         _usersWhoVoted.Clear();
-        submissions.Clear();
-        locker.Dispose();
+        _submissions.Clear();
+        _locker.Dispose();
     }
 
     public class Options : INadekoCommandOptions

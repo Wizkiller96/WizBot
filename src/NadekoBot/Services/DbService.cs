@@ -8,8 +8,8 @@ namespace NadekoBot.Services;
 
 public class DbService
 {
-    private readonly DbContextOptions<NadekoContext> options;
-    private readonly DbContextOptions<NadekoContext> migrateOptions;
+    private readonly DbContextOptions<NadekoContext> _options;
+    private readonly DbContextOptions<NadekoContext> _migrateOptions;
 
     public DbService(IBotCredentials creds)
     {
@@ -20,19 +20,19 @@ public class DbService
 
         var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
         optionsBuilder.UseSqlite(builder.ToString());
-        options = optionsBuilder.Options;
+        _options = optionsBuilder.Options;
 
         optionsBuilder = new();
         optionsBuilder.UseSqlite(builder.ToString());
-        migrateOptions = optionsBuilder.Options;
+        _migrateOptions = optionsBuilder.Options;
     }
 
     public void Setup()
     {
-        using var context = new NadekoContext(options);
+        using var context = new NadekoContext(_options);
         if (context.Database.GetPendingMigrations().Any())
         {
-            var mContext = new NadekoContext(migrateOptions);
+            var mContext = new NadekoContext(_migrateOptions);
             mContext.Database.Migrate();
             mContext.SaveChanges();
             mContext.Dispose();
@@ -44,7 +44,7 @@ public class DbService
 
     private NadekoContext GetDbContextInternal()
     {
-        var context = new NadekoContext(options);
+        var context = new NadekoContext(_options);
         context.Database.SetCommandTimeout(60);
         var conn = context.Database.GetDbConnection();
         conn.Open();

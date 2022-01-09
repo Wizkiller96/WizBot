@@ -10,7 +10,7 @@ public partial class Searches
     [Group]
     public partial class FeedCommands : NadekoSubmodule<FeedsService>
     {
-        private static readonly Regex YtChannelRegex =
+        private static readonly Regex _ytChannelRegex =
             new(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");
 
         [Cmd]
@@ -18,7 +18,7 @@ public partial class Searches
         [UserPerm(GuildPerm.ManageMessages)]
         public partial Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
         {
-            var m = YtChannelRegex.Match(url);
+            var m = _ytChannelRegex.Match(url);
             if (!m.Success) return ReplyErrorLocalizedAsync(strs.invalid_input);
 
             var channelId = m.Groups["channelid"].Value;
@@ -38,7 +38,7 @@ public partial class Searches
                 channel ??= (ITextChannel)ctx.Channel;
                 try
                 {
-                    var feeds = await FeedReader.ReadAsync(url);
+                    await FeedReader.ReadAsync(url);
                 }
                 catch (Exception ex)
                 {

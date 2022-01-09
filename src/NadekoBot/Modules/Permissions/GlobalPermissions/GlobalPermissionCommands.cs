@@ -9,7 +9,7 @@ public partial class Permissions
     [Group]
     public partial class GlobalPermissionCommands : NadekoSubmodule
     {
-        private GlobalPermissionService _service;
+        private readonly GlobalPermissionService _service;
         private readonly DbService _db;
 
         public GlobalPermissionCommands(GlobalPermissionService service, DbService db)

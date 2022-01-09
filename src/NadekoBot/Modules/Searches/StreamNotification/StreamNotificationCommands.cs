@@ -59,7 +59,7 @@ public partial class Searches
         [UserPerm(GuildPerm.Administrator)]
         public async partial Task StreamsClear()
         {
-            var count = _service.ClearAllStreams(ctx.Guild.Id);
+            await _service.ClearAllStreams(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.streams_cleared);
         }
 

@@ -90,8 +90,8 @@ public partial class Games
 
             for (var i = 0; i < stats.Length; i++)
             {
-                var (Index, votes, Text) = stats[i];
-                sb.AppendLine(GetText(strs.poll_result(Index + 1, Format.Bold(Text), Format.Bold(votes.ToString()))));
+                var (index, votes, text) = stats[i];
+                sb.AppendLine(GetText(strs.poll_result(index + 1, Format.Bold(text), Format.Bold(votes.ToString()))));
             }
 
             return eb.WithDescription(sb.ToString())

@@ -55,7 +55,6 @@ public sealed class RunningRepeater
     /// <summary>
     ///     Calculate when is the proper time to run the repeater again based on initial time repeater ran.
     /// </summary>
-    /// <param name="repeaterter"></param>
     /// <param name="initialDateTime">Initial time repeater ran at (or should run at).</param>
     private DateTime CalculateInitialInterval(DateTime initialDateTime)
     {

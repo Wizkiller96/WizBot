@@ -361,7 +361,7 @@ WHERE GuildId={guildId}
                   .ToArray();
     }
 
-    public (IEnumerable<(string Original, ulong? Id, string Reason)> Bans, int Missing) MassKill(
+    public (IReadOnlyCollection<(string Original, ulong? Id, string Reason)> Bans, int Missing) MassKill(
         SocketGuild guild,
         string people)
     {

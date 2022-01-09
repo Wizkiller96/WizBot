@@ -16,15 +16,15 @@ public sealed partial class Music : NadekoModule<IMusicService>
         Q = 2, Queue = 2, Playlist = 2, Pl = 2
     }
 
-    public const string MusicIconUrl = "http://i.imgur.com/nhKS3PT.png";
+    public const string MUSIC_ICON_URL = "http://i.imgur.com/nhKS3PT.png";
 
     private const int LQ_ITEMS_PER_PAGE = 9;
 
-    private static readonly SemaphoreSlim voiceChannelLock = new(1, 1);
+    private static readonly SemaphoreSlim _voiceChannelLock = new(1, 1);
     private readonly ILogCommandService _logService;
 
-    public Music(ILogCommandService _logService)
-        => this._logService = _logService;
+    public Music(ILogCommandService logService)
+        => _logService = logService;
 
     private async Task<bool> ValidateAsync()
     {
@@ -50,7 +50,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     private async Task EnsureBotInVoiceChannelAsync(ulong voiceChannelId, IGuildUser botUser = null)
     {
         botUser ??= await ctx.Guild.GetCurrentUserAsync();
-        await voiceChannelLock.WaitAsync();
+        await _voiceChannelLock.WaitAsync();
         try
         {
             if (botUser.VoiceChannel?.Id is null || !_service.TryGetMusicPlayer(ctx.Guild.Id, out _))
@@ -58,7 +58,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         }
         finally
         {
-            voiceChannelLock.Release();
+            _voiceChannelLock.Release();
         }
     }
 
@@ -111,7 +111,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         {
             var embed = _eb.Create()
                            .WithOkColor()
-                           .WithAuthor(GetText(strs.queued_song) + " #" + (index + 1), MusicIconUrl)
+                           .WithAuthor(GetText(strs.queued_song) + " #" + (index + 1), MUSIC_ICON_URL)
                            .WithDescription($"{trackInfo.PrettyName()}\n{GetText(strs.queue)} ")
                            .WithFooter(trackInfo.Platform.ToString());
 
@@ -272,7 +272,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             return;
         }
 
-        IEmbedBuilder printAction(int curPage)
+        IEmbedBuilder PrintAction(int curPage)
         {
             var desc = string.Empty;
             var current = mp.GetCurrentTrack(out var currentIndex);
@@ -317,7 +317,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
             var embed = _eb.Create()
                            .WithAuthor(GetText(strs.player_queue(curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1)),
-                               MusicIconUrl)
+                               MUSIC_ICON_URL)
                            .WithDescription(desc)
                            .WithFooter($"  {mp.PrettyVolume()}  |  🎶 {tracks.Count}  |  ⌛ {mp.PrettyTotalTime()}  ")
                            .WithOkColor();
@@ -325,7 +325,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             return embed;
         }
 
-        await ctx.SendPaginatedConfirmAsync(page, printAction, tracks.Count, LQ_ITEMS_PER_PAGE, false);
+        await ctx.SendPaginatedConfirmAsync(page, PrintAction, tracks.Count, LQ_ITEMS_PER_PAGE, false);
     }
 
     // search
@@ -409,7 +409,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         }
 
         var embed = _eb.Create()
-                       .WithAuthor(GetText(strs.removed_song) + " #" + index, MusicIconUrl)
+                       .WithAuthor(GetText(strs.removed_song) + " #" + index, MUSIC_ICON_URL)
                        .WithDescription(song.PrettyName())
                        .WithFooter(song.PrettyInfo())
                        .WithErrorColor();
@@ -578,7 +578,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         var embed = _eb.Create()
                        .WithTitle(track.Title.TrimTo(65))
-                       .WithAuthor(GetText(strs.song_moved), MusicIconUrl)
+                       .WithAuthor(GetText(strs.song_moved), MUSIC_ICON_URL)
                        .AddField(GetText(strs.from_position), $"#{from + 1}", true)
                        .AddField(GetText(strs.to_position), $"#{to + 1}", true)
                        .WithOkColor();
@@ -667,7 +667,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         var embed = _eb.Create()
                        .WithOkColor()
-                       .WithAuthor(GetText(strs.now_playing), MusicIconUrl)
+                       .WithAuthor(GetText(strs.now_playing), MUSIC_ICON_URL)
                        .WithDescription(currentTrack.PrettyName())
                        .WithThumbnailUrl(currentTrack.Thumbnail)
                        .WithFooter(

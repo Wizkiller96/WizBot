@@ -6,10 +6,10 @@ namespace NadekoBot.Modules.Games.Common.Trivia;
 
 public class TriviaQuestion
 {
-    public const int maxStringLength = 22;
+    public const int MAX_STRING_LENGTH = 22;
 
     //represents the min size to judge levDistance with
-    private static readonly HashSet<Tuple<int, int>> strictness = new()
+    private static readonly HashSet<Tuple<int, int>> _strictness = new()
     {
         new(9, 0), new(14, 1), new(19, 2), new(22, 3)
     };
@@ -56,7 +56,7 @@ public class TriviaQuestion
 
     private static bool JudgeGuess(int guessLength, int answerLength, int levDistance)
     {
-        foreach (var level in strictness)
+        foreach (var level in _strictness)
             if (guessLength <= level.Item1 || answerLength <= level.Item1)
             {
                 if (levDistance <= level.Item2)
@@ -78,7 +78,7 @@ public class TriviaQuestion
         str = Regex.Replace(str, "^\\s+", "");
         str = Regex.Replace(str, "\\s+$", "");
         //Trim the really long answers
-        str = str.Length <= maxStringLength ? str : str[..maxStringLength];
+        str = str.Length <= MAX_STRING_LENGTH ? str : str[..MAX_STRING_LENGTH];
         return str;
     }
 

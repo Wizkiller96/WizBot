@@ -39,9 +39,9 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         public async partial Task WaifuClaim(int amount, [Leftover] IUser target)
         {
-            if (amount < _config.Waifu.MinPrice)
+            if (amount < Config.Waifu.MinPrice)
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_isnt_cheap(_config.Waifu.MinPrice + CurrencySign));
+                await ReplyErrorLocalizedAsync(strs.waifu_isnt_cheap(Config.Waifu.MinPrice + CurrencySign));
                 return;
             }
 
@@ -278,7 +278,7 @@ public partial class Gambling
         [Priority(1)]
         public async partial Task WaifuGift(int page = 1)
         {
-            if (--page < 0 || page > (_config.Waifu.Items.Count - 1) / 9)
+            if (--page < 0 || page > (Config.Waifu.Items.Count - 1) / 9)
                 return;
 
             var waifuItems = _service.GetWaifuItems();
@@ -294,7 +294,7 @@ public partial class Gambling
                               .ToList()
                               .ForEach(x => embed.AddField(
                                   $"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
-                                  Format.Bold(x.Price.ToString()) + _config.Currency.Sign,
+                                  Format.Bold(x.Price.ToString()) + Config.Currency.Sign,
                                   true));
 
                     return embed;
