@@ -341,6 +341,7 @@ public class GoogleApiService : IGoogleApiService, INService
         req.Fields = "items(image(contextLink,thumbnailLink),link)";
         req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;
         req.Start = new NadekoRandom().Next(0, 20);
+        req.Safe = CseResource.ListRequest.SafeEnum.Active;
 
         var search = await req.ExecuteAsync();
 
