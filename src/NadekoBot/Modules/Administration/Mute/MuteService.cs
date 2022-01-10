@@ -42,7 +42,8 @@ public class MuteService : INService
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
             var configs = uow.Set<GuildConfig>()
-                             .AsQueryable()
+                             .AsNoTracking()
+                             .AsSplitQuery()
                              .Include(x => x.MutedUsers)
                              .Include(x => x.UnbanTimer)
                              .Include(x => x.UnmuteTimers)
