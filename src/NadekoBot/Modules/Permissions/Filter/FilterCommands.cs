@@ -175,13 +175,13 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            FilterChannelId removed;
+            FilterWordsChannelId removed;
             await using (var uow = _db.GetDbContext())
             {
                 var config =
                     uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
 
-                var match = new FilterChannelId { ChannelId = channel.Id };
+                var match = new FilterWordsChannelId { ChannelId = channel.Id };
                 removed = config.FilterWordsChannelIds.FirstOrDefault(fc => fc.Equals(match));
                 if (removed is null)
                     config.FilterWordsChannelIds.Add(match);

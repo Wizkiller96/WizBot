@@ -60,7 +60,7 @@ public class GuildConfig : DbEntity
 
     public bool FilterWords { get; set; }
     public HashSet<FilteredWord> FilteredWords { get; set; } = new();
-    public HashSet<FilterChannelId> FilterWordsChannelIds { get; set; } = new();
+    public HashSet<FilterWordsChannelId> FilterWordsChannelIds { get; set; } = new();
 
     public HashSet<MutedUserId> MutedUsers { get; set; } = new();
 

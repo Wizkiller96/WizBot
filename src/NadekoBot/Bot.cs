@@ -51,7 +51,8 @@ public sealed class Bot
             AlwaysDownloadUsers = false,
             AlwaysResolveStickers = false,
             AlwaysDownloadDefaultStickers = false,
-            GatewayIntents = GatewayIntents.All
+            GatewayIntents = GatewayIntents.All,
+            LogGatewayIntentWarnings = false,
         });
 
         _commandService = new(new() { CaseSensitiveCommands = false, DefaultRunMode = RunMode.Sync });

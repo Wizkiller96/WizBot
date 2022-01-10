@@ -14,16 +14,16 @@ public class FilterChannelId : DbEntity
     public override int GetHashCode()
         => ChannelId.GetHashCode();
 }
-
-public class FilterInvitesChannelId : DbEntity
+// todo check if filterwords migration works
+public class FilterWordsChannelId : DbEntity
 {
     public ulong ChannelId { get; set; }
 
-    public bool Equals(FilterInvitesChannelId other)
+    public bool Equals(FilterWordsChannelId other)
         => ChannelId == other.ChannelId;
 
     public override bool Equals(object obj)
-        => obj is FilterInvitesChannelId fci && Equals(fci);
+        => obj is FilterWordsChannelId fci && Equals(fci);
 
     public override int GetHashCode()
         => ChannelId.GetHashCode();
