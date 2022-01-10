@@ -1,16 +1,17 @@
 ﻿#nullable disable
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Utility.Common;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Utility.Services;
 
-public class ConverterService : INService
+public class ConverterService : INService, IReadyExecutor
 {
     public ConvertUnit[] Units
         => _cache.Redis.GetDatabase().StringGet("converter_units").ToString().MapJson<ConvertUnit[]>();
 
-    private readonly Timer _currencyUpdater;
     private readonly TimeSpan _updateInterval = new(12, 0, 0);
+    private readonly DiscordSocketClient _client;
     private readonly IDataCache _cache;
     private readonly IHttpClientFactory _httpFactory;
 
@@ -19,14 +20,28 @@ public class ConverterService : INService
         IDataCache cache,
         IHttpClientFactory factory)
     {
+        _client = client;
         _cache = cache;
         _httpFactory = factory;
+    }
 
-        if (client.ShardId == 0)
-            _currencyUpdater = new(async shouldLoad => await UpdateCurrency((bool)shouldLoad!),
-                client.ShardId == 0,
-                TimeSpan.Zero,
-                _updateInterval);
+    public async Task OnReadyAsync()
+    {
+        if (_client.ShardId != 0)
+            return;
+
+        var timer = new PeriodicTimer(_updateInterval);
+        do
+        {
+            try
+            {
+                await UpdateCurrency();
+            }
+            catch
+            {
+                // ignored
+            }
+        } while (await timer.WaitForNextTickAsync());
     }
 
     private async Task<Rates> GetCurrencyRates()
@@ -36,37 +51,27 @@ public class ConverterService : INService
         return JsonConvert.DeserializeObject<Rates>(res);
     }
 
-    private async Task UpdateCurrency(bool shouldLoad)
+    private async Task UpdateCurrency()
     {
-        try
+        var unitTypeString = "currency";
+        var currencyRates = await GetCurrencyRates();
+        var baseType = new ConvertUnit
         {
-            var unitTypeString = "currency";
-            if (shouldLoad)
-            {
-                var currencyRates = await GetCurrencyRates();
-                var baseType = new ConvertUnit
-                {
-                    Triggers = new[] { currencyRates.Base }, Modifier = decimal.One, UnitType = unitTypeString
-                };
-                var range = currencyRates.ConversionRates.Select(u => new ConvertUnit
-                                         {
-                                             Triggers = new[] { u.Key }, Modifier = u.Value, UnitType = unitTypeString
-                                         })
-                                         .ToArray();
+            Triggers = new[] { currencyRates.Base }, Modifier = decimal.One, UnitType = unitTypeString
+        };
+        var range = currencyRates.ConversionRates.Select(u => new ConvertUnit
+                                 {
+                                     Triggers = new[] { u.Key }, Modifier = u.Value, UnitType = unitTypeString
+                                 })
+                                 .ToArray();
 
-                var fileData = JsonConvert.DeserializeObject<ConvertUnit[]>(File.ReadAllText("data/units.json"))
-                                          ?.Where(x => x.UnitType != "currency");
-                if (fileData is null)
-                    return;
+        var fileData = JsonConvert.DeserializeObject<ConvertUnit[]>(File.ReadAllText("data/units.json"))
+                                  ?.Where(x => x.UnitType != "currency");
+        if (fileData is null)
+            return;
 
-                var data = JsonConvert.SerializeObject(range.Append(baseType).Concat(fileData).ToList());
-                _cache.Redis.GetDatabase().StringSet("converter_units", data);
-            }
-        }
-        catch
-        {
-            // ignored
-        }
+        var data = JsonConvert.SerializeObject(range.Append(baseType).Concat(fileData).ToList());
+        _cache.Redis.GetDatabase().StringSet("converter_units", data);
     }
 }
 

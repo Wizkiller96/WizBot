@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
@@ -8,32 +9,45 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public class UserPunishService : INService
+public class UserPunishService : INService, IReadyExecutor
 {
     private readonly MuteService _mute;
     private readonly DbService _db;
     private readonly BlacklistService _blacklistService;
     private readonly BotConfigService _bcs;
-    private readonly Timer _warnExpiryTimer;
+    private readonly DiscordSocketClient _client;
 
     public UserPunishService(
         MuteService mute,
         DbService db,
         BlacklistService blacklistService,
-        BotConfigService bcs)
+        BotConfigService bcs,
+        DiscordSocketClient client)
     {
         _mute = mute;
         _db = db;
         _blacklistService = blacklistService;
         _bcs = bcs;
-
-        _warnExpiryTimer = new(async _ =>
+        _client = client;
+    }
+    
+    public async Task OnReadyAsync()
+    {
+        if (_client.ShardId != 0)
+            return;
+        
+        var expiryTimer = new PeriodicTimer(TimeSpan.FromHours(12));
+        do
+        {
+            try
             {
                 await CheckAllWarnExpiresAsync();
-            },
-            null,
-            TimeSpan.FromSeconds(0),
-            TimeSpan.FromHours(12));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Unexpected error while checking for warn expiries: {ErrorMessage}", ex.Message);
+            }
+        } while (await expiryTimer.WaitForNextTickAsync());
     }
 
     public async Task<WarningPunishment> Warn(

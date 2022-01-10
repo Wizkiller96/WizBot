@@ -349,3 +349,4 @@ resharper_csharp_wrap_before_extends_colon = true
 resharper_csharp_place_constructor_initializer_on_same_line = false
 resharper_force_attribute_style = separate
 resharper_braces_for_ifelse = required_for_multiline
+resharper_arrange_redundant_parentheses_highlighting = hint

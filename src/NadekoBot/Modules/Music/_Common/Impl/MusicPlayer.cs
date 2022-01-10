@@ -1,4 +1,5 @@
 using Ayu.Discord.Voice;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -54,7 +55,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
-        _thread = new(async () =>
+        _thread = new(async() =>
         {
             await PlayLoop();
         });

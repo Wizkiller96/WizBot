@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Utility.Common.Patreon;
 using NadekoBot.Services.Database.Models;
@@ -10,14 +11,12 @@ using System.Text.Json;
 
 namespace NadekoBot.Modules.Utility;
 
-public class PatreonRewardsService : INService
+public class PatreonRewardsService : INService, IReadyExecutor
 {
     public TimeSpan Interval { get; } = TimeSpan.FromMinutes(3);
 
     public DateTime LastUpdate { get; private set; } = DateTime.UtcNow;
-    private readonly SemaphoreSlim _getPledgesLocker = new(1, 1);
 
-    private readonly Timer _updater;
     private readonly SemaphoreSlim _claimLockJustInCase = new(1, 1);
     private readonly DbService _db;
     private readonly ICurrencyService _currency;
@@ -46,9 +45,25 @@ public class PatreonRewardsService : INService
         _httpFactory = factory;
         _eb = eb;
         _client = client;
+    }
 
-        if (client.ShardId == 0)
-            _updater = new(async _ => await RefreshPledges(_credsProvider.GetCreds()), null, TimeSpan.Zero, Interval);
+    public async Task OnReadyAsync()
+    {
+        if (_client.ShardId != 0)
+            return;
+        
+        var t = new PeriodicTimer(Interval);
+        do
+        {
+            try
+            {
+                await RefreshPledges(_credsProvider.GetCreds());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Unexpected error refreshing patreon pledges: {ErrorMessage}", ex.Message);
+            }
+        } while (await t.WaitForNextTickAsync());
     }
 
     private DateTime LastAccessTokenUpdate(IBotCredentials creds)
@@ -118,7 +133,7 @@ public class PatreonRewardsService : INService
 
         var lastUpdate = LastAccessTokenUpdate(creds);
         var now = DateTime.UtcNow;
-            
+        
         if (lastUpdate.Year != now.Year
             || lastUpdate.Month != now.Month
             || string.IsNullOrWhiteSpace(creds.Patreon.AccessToken))
@@ -135,7 +150,6 @@ public class PatreonRewardsService : INService
         }
 
         LastUpdate = DateTime.UtcNow;
-        await _getPledgesLocker.WaitAsync();
         try
         {
             var members = new List<PatreonMember>();
@@ -195,10 +209,6 @@ public class PatreonRewardsService : INService
         catch (Exception ex)
         {
             Log.Warning(ex, "Error refreshing patreon pledges");
-        }
-        finally
-        {
-            _getPledgesLocker.Release();
         }
     }
 
