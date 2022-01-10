@@ -135,7 +135,7 @@ public partial class Games : NadekoModule<GamesService>
             advice = ratings.Uni;
         }
 
-        return new(_images, _httpFactory, crazy, hot, roll, advice);
+        return new(_images, crazy, hot, roll, advice);
     }
 
     [Cmd]
