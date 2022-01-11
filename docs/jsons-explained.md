@@ -11,6 +11,9 @@ This part is completely optional, **however it's necessary for music and a few o
         - Under the `YouTube APIs` section
             - Select `YouTube Data API v3`,
             - Click enable.
+        - Search for `Custom Search API`
+            - Select `Custom Search API`,
+            - Click enable.
         - Open up the `Navigation menu` on the top right with the three lines.
         - select `APIs & Services`, then select `Credentials`,
             - Click `Create Credentials` button,
@@ -21,7 +24,7 @@ This part is completely optional, **however it's necessary for music and a few o
         - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
         ```yml
-        GoogleApiKey: "AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM"
+        GoogleApiKey: AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM
         ```
 - **MashapeKey**
     - Required for Hearthstone cards.
@@ -95,11 +98,10 @@ version: 1
 token: 'MTE5Nzc3MDIxMzE5NTc3NjEw.VlhNCw.BuqJFyzdIUAK1PRf1eK1Cu89Jew'
 # List of Ids of the users who have bot owner permissions
 # **DO NOT ADD PEOPLE YOU DON'T TRUST**
-ownerIds: [
-    105635123466156544,
-    145521851676884992,
-    341420590009417729
-]
+ownerIds: 
+    - 105635123466156544
+    - 145521851676884992
+    - 341420590009417729
 # The number of shards that the bot will running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1

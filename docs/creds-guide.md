@@ -13,8 +13,13 @@ This document aims to guide you through the process of creating a Discord accoun
 - Click on the `Add a Bot` button and confirm that you do want to add a bot to this app.
 - **Optional:** Add bot's avatar and description.
 - Copy your Token to `creds.yml` as shown above.
-- Scroll down to the `Privileged Gateway Intents` section and enable both intents.
-  These are required for a number of features to function properly, and should both be on.
+- Scroll down to the `Privileged Gateway Intents` section
+    - Enabled the following:
+        - PRESENCE INTENT
+        - SERVER MEMBERS INTENT
+        - MESSAGE CONTENT INTENT
+
+These are required for a number of features to function properly, and all should be on.
 
 ##### Getting Owner ID*(s)*:
 
@@ -32,7 +37,7 @@ For a single owner, it should look like this:
         - 105635576866156544
 ```
 
-For multiple owners, it should look like this (pay attention to the commas, the last ID should **never** have a comma next to it):
+For multiple owners, it should look like this:
 
 ```yml
     OwnerIds:

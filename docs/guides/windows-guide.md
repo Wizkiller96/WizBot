@@ -12,11 +12,11 @@
 | [Setup](#setup)                                                                                                             |
 | [Starting the Bot](#starting-the-bot)                                                                                       |
 | [Updating Nadeko](#updating-nadeko)                                                                                         |
-| [Manually Installing the Prerequisites from the Updater](#if-the-updater-fails-to-install-the-prerequisites-for-any-reason) |
+| [Manually Installing the Prerequisites from the Updater](#music-prerequisites) |
 
-*Note: If you want to make changes to Nadeko's source code, please follow the [From Source][SourceGuide] guide instead.*
+*Note: If you want to make changes to Nadeko's source code, please follow the [From Source](#windows-from-source) guide instead.*
 
-*If you have Windows 7 or a 32-bit system, please refer to the [From Source][SourceGuide] guide.*
+*If you have Windows 7 or a 32-bit system, please refer to the [From Source](#windows-from-source)) guide.*
 
 #### Prerequisites
 
@@ -38,7 +38,7 @@
 - Click on **`DOWNLOAD`** at the lower right
  ![Bot Setup](https://i.imgur.com/HqAl36p.png "Bot Setup")
 - Click on **`Install`** next to **`Redis`**.
-- **Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
+- Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
 - If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
 - When installation is finished, click on **`CREDS`** to the left of **`RUN`** at the lower right.
@@ -69,6 +69,8 @@ You can still install them manually:
 
 ### Windows From Source
 
+⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠ 
+
 ##### Prerequisites
 
 **Install these before proceeding or your bot will not work!**
@@ -83,8 +85,8 @@ Open PowerShell (press windows button on your keyboard and type powershell, it s
 1. `git clone https://gitlab.com/kwoth/nadekobot -b v3 --depth 1`
 2. `cd nadekobot`
 3. `dotnet publish -c Release -o output/ src/NadekoBot/`
-4. `cd output'
-5. 'cp creds_example.yml creds.yml`
+4. `cd output`
+5. `cp creds_example.yml creds.yml`
 6. Open `creds.yml` with your favorite text editor (Please don't use Notepad or WordPad. You can use Notepad++, VSCode, Atom, Sublime, or something similar)
 7. [Enter your bot's token](#creds-guide)
 8. Run the bot `dotnet NadekoBot.dll` 
@@ -130,8 +132,6 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 [Redis]: https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi
 [Visual C++ 2010 (x86)]: https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe
 [Visual C++ 2017 (x64)]: https://aka.ms/vs/15/release/vc_redist.x64.exe
-[SourceGuide]: ../from-source
 [ffmpeg-32bit]: https://cdn.nadeko.bot/dl/ffmpeg-32.zip
 [ffmpeg-64bit]: https://cdn.nadeko.bot/dl/ffmpeg-64.zip
 [youtube-dl]: https://yt-dl.org/downloads/latest/youtube-dl.exe
-

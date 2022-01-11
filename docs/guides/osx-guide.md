@@ -56,6 +56,8 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
 ## MacOS Manual Release installation instructions
 
+⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠ 
+
 ##### Installation Instructions
 
 1. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
