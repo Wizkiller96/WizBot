@@ -13,11 +13,11 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
 3. Download the bot (type `2` and press enter)
-4. Exit the installer in order to set up your `creds.yml` 
+4. Exit the installer (type `5` and press enter)
 5. Copy the creds.yml template `cp nadekobot/output/creds_example.yml nadekobot/output/creds.yml` 
 6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
     - `nano nadekobot/output/creds.yml`
-7. [Enter your bot's token](../../creds-guide)
+7. [Click here to follow creds guide](../../creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
        - `Y`
@@ -49,7 +49,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
     - `cp creds_example.yml creds.yml` 
 6. Open `creds.yml` with your favorite text editor. We will use nano here
     - `nano nadekobot/output/creds.yml`
-8. [Enter your bot's token](../../creds-guide)
+8. [Click here to follow creds guide](../../creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
        - `Y`
@@ -244,3 +244,34 @@ This method is similar to the one above, but requires one extra step, with the a
     
 5. Start Nadeko:
     - `sudo systemctl start nadeko.service && sudo systemctl enable nadeko.service`
+
+### Setting up Nadeko on a Linux VPS (Digital Ocean Droplet)
+
+If you want Nadeko to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (by using this link, you will get **$10 credit** and also support Nadeko)
+
+**Setting up NadekoBot**
+Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
+
+**This section is only relevant to those who want to host Nadeko on DigitalOcean. Go through this whole section before setting the bot up.**
+
+#### Prerequisites
+
+- Download [PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+- Download [WinSCP](https://winscp.net/eng/download.php) *(optional)*
+- [Create and invite the bot](../../creds-guide).
+
+#### Starting up
+
+- **Open PuTTY** and paste or enter your `IP address` and then click **Open**.  
+  If you entered your Droplets IP address correctly, it should show **login as:** in a newly opened window.
+- Now for **login as:**, type `root` and press enter.
+- It should then ask for a password. Type the `root password` you have received in your e-mail address, then press Enter.
+
+If you are running your droplet for the first time, it will most likely ask you to change your root password. To do that, copy the **password you've received by e-mail** and paste it on PuTTY.
+
+- To paste, just right-click the window (it won't show any changes on the screen), then press Enter.
+- Type a **new password** somewhere, copy and paste it on PuTTY. Press Enter then paste it again.
+
+**Save the new password somewhere safe.**
+
+After that, your droplet should be ready for use. [Follow the guide from the beginning](#linux-from-source) to set Nadeko up on your newly created VPS.
