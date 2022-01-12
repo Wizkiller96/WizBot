@@ -34,6 +34,8 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ## Linux Release
 
+⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠
+
 ##### Installation Instructions
 
 1. Download the latest release from <https://github.com/Wizkiller96/WizBot/releases>
