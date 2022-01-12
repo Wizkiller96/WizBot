@@ -4,6 +4,19 @@
 
 #### [Linux migration instructions](../migration-guide/#linux)
 
+#### Operating System Compatibility
+
+It is recommended that you use **Ubuntu 20.04**, as there have been nearly no problems with it. Also, **32-bit systems are incompatible**.
+
+##### Compatible operating systems:
+
+- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10
+- Mint: 19, 20
+- Debian: 9, 10
+- CentOS: 7
+- openSUSE
+- Fedora: 33, 34, 35
+
 ## Linux From Source 
 
 Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
