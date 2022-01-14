@@ -1,10 +1,58 @@
 # Changelog
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
+#todo .trans fix
 
 ## Unreleased
 
--
+## Changes
+
+### Fixed
+
+- Fixed an extra whitespace in usage part of command help if the command has no arguments  
+- Possible small fix for `.prune` ratelimiting  
+- `.gvc` should now properly trigger when a user is already in a gvc and changes his activity   
+- `.gvc` should now properly detect multiple activities  
+- Fixed reference to non-existent command in bot.yml
+
+### Changed
+- CustomReactions module (and customreactions db table) has been renamed to Expressions.
+  - This was done to remove confusion about how it relates to discord Reactions (it doesn't, it was created and named before discord reactions existed) 
+  - Expression command now start with ex/expr and end with the name of the action or setting. 
+  - For example `.exd` (`.dcr`) is expression delete, `.exa` (`.acr`)
+  - Permissions (`.lp`) be automatically updated with "ACTUALEXPRESSIONS", "EXPRESSIONS" instead of "ACTUALCUSTOMREACTIONS" and "CUSTOMREACTIONS"
+  - Permissions for `.ecr` (now `.exe`), `.scr` (now `.exs`), `.dcr` (now `.exd`), `.acr` (now `.exa`), `.lcr` (now `.exl`) will be automatically updated
+  - If you have custom permissions for other CustomReaction commands
+  - Some of the old aliases like `.acr` `.dcr` `.lcr` and a few others have been kept
+- Currency output format improvement (will use guild locale now for some commands)    
+- [dev] CommandStrings will now use methodname as the key, and **not** the command name (first entry in aliases.yml)
+  - In other words aliases.yml and commands.en-US.yml will use the same keys (once again)
+- [dev] Reorganized module and submodule folders  
+- [dev] Permissionv2 db table renamed to Permissions 
+- [dev] Moved FilterWordsChannelId to a separate table
+
+### Removed
+- Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
+- Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
+- Removed some obsolete commands and strings  
+
+## [3.0.13] - 14.04.2021
+
+### Fixed
+
+- Fixed `.greetdm` causing ratelimits during raids
+- Fixed `.gelbooru`
+
+## [3.0.12] - 06.01.2021
+
+### Fixed
+- `.smch` Fixed
+- `.trans` command will now work properly with capitilized language names
+- Ban message color with plain text fixed
+- Fixed some grpc coordinator bugs
+- Fixed a string in `.xpex`
+- Google version of .img will now have safe search enabled
+- Fixed a small bug in `.hangman`
 
 ## [3.0.11] - 17.12.2021
 
