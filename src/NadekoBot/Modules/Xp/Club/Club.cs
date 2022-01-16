@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using NadekoBot.Db.Models;
 using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
@@ -76,37 +77,8 @@ public partial class Xp
             await ReplyConfirmLocalizedAsync(strs.club_icon_set);
         }
 
-        [Cmd]
-        [Priority(1)]
-        public async partial Task ClubInformation(IUser user = null)
+        private async Task InternalClubInfoAsync(ClubInfo club)
         {
-            user ??= ctx.User;
-            var club = _service.GetClubByMember(user);
-            if (club is null)
-            {
-                await ErrorLocalizedAsync(strs.club_user_not_in_club(Format.Bold(user.ToString())));
-                return;
-            }
-
-            await ClubInformation(club.ToString());
-        }
-
-        [Cmd]
-        [Priority(0)]
-        public async partial Task ClubInformation([Leftover] string clubName = null)
-        {
-            if (string.IsNullOrWhiteSpace(clubName))
-            {
-                await ClubInformation(ctx.User);
-                return;
-            }
-
-            if (!_service.GetClubByName(clubName, out var club))
-            {
-                await ReplyErrorLocalizedAsync(strs.club_not_exists);
-                return;
-            }
-
             var lvl = new LevelStats(club.Xp);
             var users = club.Users.OrderByDescending(x =>
             {
@@ -151,6 +123,40 @@ public partial class Xp
                 },
                 club.Users.Count,
                 10);
+        }
+
+        [Cmd]
+        [Priority(1)]
+        public async partial Task ClubInformation(IUser user = null)
+        {
+            user ??= ctx.User;
+            var club = _service.GetClubByMember(user);
+            if (club is null)
+            {
+                await ErrorLocalizedAsync(strs.club_user_not_in_club(Format.Bold(user.ToString())));
+                return;
+            }
+
+            await InternalClubInfoAsync(club);
+        }
+
+        [Cmd]
+        [Priority(0)]
+        public async partial Task ClubInformation([Leftover] string clubName = null)
+        {
+            if (string.IsNullOrWhiteSpace(clubName))
+            {
+                await ClubInformation(ctx.User);
+                return;
+            }
+
+            if (!_service.GetClubByName(clubName, out var club))
+            {
+                await ReplyErrorLocalizedAsync(strs.club_not_exists);
+                return;
+            }
+
+            await InternalClubInfoAsync(club);
         }
 
         [Cmd]

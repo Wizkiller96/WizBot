@@ -26,10 +26,17 @@ public static class ClubExtensions
         => Include(clubs).FirstOrDefault(c => c.Users.Any(u => u.UserId == userId));
 
     public static ClubInfo GetByName(this DbSet<ClubInfo> clubs, string name, int discrim)
-        => Include(clubs).FirstOrDefault(c => c.Name.ToUpper() == name.ToUpper() && c.Discrim == discrim);
+        => Include(clubs)
+            .FirstOrDefault(c => EF.Functions.Collate(c.Name, "NOCASE") == EF.Functions.Collate(name, "NOCASE")
+                                 && c.Discrim == discrim);
 
     public static int GetNextDiscrim(this DbSet<ClubInfo> clubs, string name)
-        => Include(clubs).Where(x => x.Name.ToUpper() == name.ToUpper()).Select(x => x.Discrim).DefaultIfEmpty().Max()
+        => Include(clubs)
+           .Where(x =>
+               EF.Functions.Collate(x.Name, "NOCASE") == EF.Functions.Collate(name, "NOCASE"))
+           .Select(x => x.Discrim)
+           .DefaultIfEmpty()
+           .Max()
            + 1;
 
     public static List<ClubInfo> GetClubLeaderboardPage(this DbSet<ClubInfo> clubs, int page)
