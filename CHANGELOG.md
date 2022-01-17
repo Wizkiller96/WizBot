@@ -2,6 +2,13 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [3.0.13] - 17.01.2021
+
+### Fixed
+
+- Fixed `.greetdm` causing ratelimits during raids
+- Fixed `.gelbooru`
+
 ## [3.0.12] - 06.01.2021
 
 ### Fixed
