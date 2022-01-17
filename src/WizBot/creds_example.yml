@@ -77,8 +77,8 @@ osuApiKey:
 #     cmd: dotnet
 #     args: "WizBot.dll -- {0}"
 # Windows default
-#     cmd: WizBot.exe
-#     args: {0}
+#     cmd: "WizBot.exe"
+#     args: "{0}"
 restartCommand:
   cmd: 
   args: 
