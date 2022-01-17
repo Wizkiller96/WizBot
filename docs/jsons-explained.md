@@ -75,6 +75,7 @@ For Windows (Updater), add this to your `creds.yml`
 ```yml
 RestartCommand:
     Cmd: "WizBot.exe"
+    args: "{0}"
 ```
 
 For Windows (Source), Linux or OSX, add this to your `creds.yml`
@@ -167,8 +168,8 @@ osuApiKey: 4c8c8fdffdsfdsfsdfsfa33f3f3140a7d93320d6
 #     cmd: dotnet
 #     args: "WizBot.dll -- {0}"
 # Windows default
-#     cmd: WizBot.exe
-#     args: {0}
+#     cmd: "WizBot.exe"
+#     args: "{0}"
 restartCommand:
   cmd: 
   args: 
