@@ -1,8 +1,24 @@
-## Migration from 2.x 
+# Setting up NadekoBot on Linux
 
-##### ⚠ If you're already hosting NadekoBot, _You **MUST** update to latest version of 2.x and **run your bot at least once**_ before switching over to v3.
+## Please **READ** the [Migration] section if you are still on on Nadeko **2.x**
 
-#### [Linux migration instructions](../migration-guide/#linux)
+| Table of Contents                                   |
+| :-------------------------------------------------- |
+| [Migration]                                         |
+| [Linux From Source]                                 |
+| [Source Update Instructions]                        |
+| [Linux Release]                                     |
+| [Release Update Instructions]                       |
+| [Tmux (Preferred Method)]                           |
+| [Systemd]                                           |
+| [Systemd + Script]                                  |
+| [Setting up Nadeko on a VPS (Digital Ocean)]        |
+
+## Migration
+
+### ⚠ If you're already hosting NadekoBot, _You **MUST** update to latest version of 2.x and **run your bot at least once**_ before upgrading to v3. ⚠
+
+#### [**LINUX MIGRATION INSTRUCTIONS**](../migration-guide/#linux)
 
 #### Operating System Compatibility
 
@@ -37,9 +53,9 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
        - `Enter`
 8. Run the bot (type `3` and press enter)
 
-##### Update Instructions
+##### Source Update Instructions
 
-1. ⚠ Stop the bot
+1. ⚠ Stop the bot ⚠
 2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
@@ -47,7 +63,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ## Linux Release
 
-⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠ 
+**⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠** 
 
 ##### Installation Instructions
 
@@ -72,7 +88,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 9. Run the bot
     - `./NadekoBot`
 
-##### Update Instructions
+##### Release Update Instructions
 
 1. Stop the bot
 2. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
@@ -119,7 +135,7 @@ cd nadekobot && chmod +x NadekoBot
 
 While there are two run modes built into the installer, these options only run Nadeko within the current session. Below are 3 methods of running Nadeko as a background process.
 
-### Tmux (Preferred Method)
+### Tmux Method (Preferred)
 
 Using `tmux` is the simplest method, and is therefore recommended for most users.
 
@@ -290,3 +306,13 @@ If you are running your droplet for the first time, it will most likely ask you 
 **Save the new password somewhere safe.**
 
 After that, your droplet should be ready for use. [Follow the guide from the beginning](#linux-from-source) to set Nadeko up on your newly created VPS.
+
+[Migration]: #migration
+[Linux From Source]: #linux-from-source
+[Source Update Instructions]: #source-update-instructions
+[Linux Release]: #linux-release
+[Release Update Instructions]: #release-update-instructions
+[Tmux (Preferred Method)]: #tmux-preferred-method
+[Systemd]: #systemd
+[Systemd + Script]: #systemd-script
+[Setting up Nadeko on a VPS (Digital Ocean)]: #setting-up-nadeko-on-a-linux-vps-digital-ocean-droplet
