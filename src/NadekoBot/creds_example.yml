@@ -74,8 +74,8 @@ osuApiKey:
 #     cmd: dotnet
 #     args: "NadekoBot.dll -- {0}"
 # Windows default
-#     cmd: NadekoBot.exe
-#     args: {0}
+#     cmd: "NadekoBot.exe"
+#     args: "{0}"
 restartCommand:
   cmd: 
   args: 
