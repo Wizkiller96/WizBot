@@ -120,7 +120,7 @@ public class Blackjack
             if (Players.Count >= 5)
                 return false;
 
-            if (!await _cs.RemoveAsync(user, "BlackJack-gamble", bet, gamble: true)) return false;
+            if (!await _cs.RemoveAsync(user, bet, new("blackjack","gamble"))) return false;
 
             Players.Add(new(user, bet));
             _= PrintState();
@@ -210,7 +210,7 @@ public class Blackjack
 
         foreach (var usr in Players)
             if (usr.State is User.UserState.Won or User.UserState.Blackjack)
-                await _cs.AddAsync(usr.DiscordUser.Id, "BlackJack-win", usr.Bet * 2, true);
+                await _cs.AddAsync(usr.DiscordUser.Id, usr.Bet * 2, new("blackjack", "win"));
     }
 
     public async Task<bool> Double(IUser u)
@@ -234,7 +234,7 @@ public class Blackjack
             if (CurrentUser != u)
                 return false;
 
-            if (!await _cs.RemoveAsync(u.DiscordUser.Id, "Blackjack-double", u.Bet))
+            if (!await _cs.RemoveAsync(u.DiscordUser.Id, u.Bet, new("blackjack", "double")))
                 return false;
 
             u.Bet *= 2;

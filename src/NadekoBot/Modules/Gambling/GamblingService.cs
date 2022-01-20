@@ -83,7 +83,7 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
 
     public async Task<SlotResponse> SlotAsync(ulong userId, long amount)
     {
-        var takeRes = await _cs.RemoveAsync(userId, "Slot Machine", amount, true);
+        var takeRes = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
 
         if (!takeRes)
             return new() { Error = GamblingError.NotEnough };
@@ -96,7 +96,7 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
         {
             won = (long)(result.Multiplier * amount);
 
-            await _cs.AddAsync(userId, $"Slot Machine x{result.Multiplier}", won, true);
+            await _cs.AddAsync(userId, won, new("slot", "win", $"Slot Machine x{result.Multiplier}"));
         }
 
         var toReturn = new SlotResponse { Multiplier = result.Multiplier, Won = won };

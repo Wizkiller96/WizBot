@@ -234,7 +234,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
 
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - new", eligibleFor, true);
+                await _currency.AddAsync(userId, eligibleFor, new("patreon", "new"));
 
                 Log.Information("Sending new currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,
@@ -249,7 +249,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
 
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - recurring", eligibleFor, true);
+                await _currency.AddAsync(userId, eligibleFor, new("patreon", "recurring"));
 
                 Log.Information("Sending recurring currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,
@@ -267,7 +267,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
                 usr.AmountRewardedThisMonth = toAward;
                 await uow.SaveChangesAsync();
 
-                await _currency.AddAsync(userId, "Patreon reward - update", toAward, true);
+                await _currency.AddAsync(userId, toAward, new("patreon", "update"));
 
                 Log.Information("Sending updated currency reward to {UserId}", userId);
                 await SendMessageToUser(userId,

@@ -45,7 +45,7 @@ public class WaifuService : INService
         // if waifu likes the person, gotta pay the penalty
         if (waifu.AffinityId == ownerUser.Id)
         {
-            if (!await _cs.RemoveAsync(owner.Id, "Waifu Transfer - affinity penalty", (int)(waifu.Price * 0.6), true))
+            if (!await _cs.RemoveAsync(owner.Id, (int)(waifu.Price * 0.6), new("waifu", "affinity-penalty")))
                 // unable to pay 60% penalty
                 return false;
 
@@ -55,7 +55,7 @@ public class WaifuService : INService
         }
         else // if not, pay 10% fee
         {
-            if (!await _cs.RemoveAsync(owner.Id, "Waifu Transfer", waifu.Price / 10, true)) return false;
+            if (!await _cs.RemoveAsync(owner.Id, waifu.Price / 10, new("waifu", "transfer"))) return false;
 
             waifu.Price = (int)(waifu.Price * 0.95); // half of 10% = 5% price reduction
             if (waifu.Price < settings.Waifu.MinPrice)
@@ -97,7 +97,7 @@ public class WaifuService : INService
     {
         await using var uow = _db.GetDbContext();
         var price = GetResetPrice(user);
-        if (!await _cs.RemoveAsync(user.Id, "Waifu Reset", price, true))
+        if (!await _cs.RemoveAsync(user.Id, price, new("waifu", "reset")))
             return false;
 
         var affs = uow.WaifuUpdates.AsQueryable()
@@ -144,7 +144,7 @@ public class WaifuService : INService
             {
                 var claimer = uow.GetOrCreateUser(user);
                 var waifu = uow.GetOrCreateUser(target);
-                if (!await _cs.RemoveAsync(user.Id, "Claimed Waifu", amount, true))
+                if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
                 {
                     result = WaifuClaimResult.NotEnoughFunds;
                 }
@@ -160,7 +160,7 @@ public class WaifuService : INService
             }
             else if (isAffinity && amount > w.Price * settings.Waifu.Multipliers.CrushClaim)
             {
-                if (!await _cs.RemoveAsync(user.Id, "Claimed Waifu", amount, true))
+                if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
                 {
                     result = WaifuClaimResult.NotEnoughFunds;
                 }
@@ -179,7 +179,7 @@ public class WaifuService : INService
             }
             else if (amount >= w.Price * settings.Waifu.Multipliers.NormalClaim) // if no affinity
             {
-                if (!await _cs.RemoveAsync(user.Id, "Claimed Waifu", amount, true))
+                if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
                 {
                     result = WaifuClaimResult.NotEnoughFunds;
                 }
@@ -288,13 +288,13 @@ public class WaifuService : INService
 
                 if (w.Affinity?.UserId == user.Id)
                 {
-                    await _cs.AddAsync(w.Waifu.UserId, "Waifu Compensation", amount, true);
+                    await _cs.AddAsync(w.Waifu.UserId, amount, new("waifu", "compensation"));
                     w.Price = (int)Math.Floor(w.Price * _gss.Data.Waifu.Multipliers.DivorceNewValue);
                     result = DivorceResult.SucessWithPenalty;
                 }
                 else
                 {
-                    await _cs.AddAsync(user.Id, "Waifu Refund", amount, true);
+                    await _cs.AddAsync(user.Id, amount, new("waifu", "refund"));
 
                     result = DivorceResult.Success;
                 }
@@ -316,7 +316,7 @@ public class WaifuService : INService
 
     public async Task<bool> GiftWaifuAsync(IUser from, IUser giftedWaifu, WaifuItemModel itemObj)
     {
-        if (!await _cs.RemoveAsync(from, "Bought waifu item", itemObj.Price, gamble: true)) return false;
+        if (!await _cs.RemoveAsync(from, itemObj.Price, new("waifu", "item"))) return false;
 
         await using var uow = _db.GetDbContext();
         var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items).Include(x => x.Claimer));

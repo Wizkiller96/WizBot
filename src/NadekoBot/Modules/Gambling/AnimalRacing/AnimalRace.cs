@@ -75,7 +75,7 @@ public sealed class AnimalRace : IDisposable
             if (CurrentPhase != Phase.WaitingForPlayers)
                 throw new AlreadyStartedException();
 
-            if (!await _currency.RemoveAsync(userId, "BetRace", bet))
+            if (!await _currency.RemoveAsync(userId, bet, new("animalrace", "bet")))
                 throw new NotEnoughFundsException();
 
             if (_users.Contains(user))
@@ -100,7 +100,7 @@ public sealed class AnimalRace : IDisposable
         {
             foreach (var user in _users)
                 if (user.Bet > 0)
-                    await _currency.AddAsync(user.UserId, "Race refund", user.Bet);
+                    await _currency.AddAsync(user.UserId, user.Bet, new("animalrace", "refund"));
 
             _ = OnStartingFailed?.Invoke(this);
             CurrentPhase = Phase.Ended;
@@ -130,8 +130,8 @@ public sealed class AnimalRace : IDisposable
 
             if (FinishedUsers[0].Bet > 0)
                 await _currency.AddAsync(FinishedUsers[0].UserId,
-                    "Won a Race",
-                    FinishedUsers[0].Bet * (_users.Count - 1));
+                    FinishedUsers[0].Bet * (_users.Count - 1),
+                    new("animalrace", "win"));
 
             _ = OnEnded?.Invoke(this);
         });

@@ -96,7 +96,7 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
             }
 
             if (rew > 0)
-                await _cs.AddAsync(msg.Author, "hangman win", rew, gamble: true);
+                await _cs.AddAsync(msg.Author, rew, new("hangman", "win"));
 
             await SendState((ITextChannel)msg.Channel, msg.Author, msg.Content, state);
         }

@@ -210,7 +210,7 @@ public class XpService : INService
                                 var crew = crews.FirstOrDefault(x => x.Level == i);
                                 if (crew is not null)
                                     //give the user the reward if it exists
-                                    await _cs.AddAsync(item.Key.User.Id, "Level-up Reward", crew.Amount);
+                                    await _cs.AddAsync(item.Key.User.Id, crew.Amount, new("xp", "level-up"));
                             }
                         }
                     }

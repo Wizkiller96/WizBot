@@ -115,7 +115,7 @@ public partial class Gambling
                     return;
                 }
 
-                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price))
+                if (await _cs.RemoveAsync(ctx.User.Id, entry.Price, new("shop", "buy", entry.Type.ToString())))
                 {
                     try
                     {
@@ -124,14 +124,14 @@ public partial class Gambling
                     catch (Exception ex)
                     {
                         Log.Warning(ex, "Error adding shop role");
-                        await _cs.AddAsync(ctx.User.Id, "Shop error refund", entry.Price);
+                        await _cs.AddAsync(ctx.User.Id, entry.Price, new("shop", "error-refund"));
                         await ReplyErrorLocalizedAsync(strs.shop_role_purchase_error);
                         return;
                     }
 
                     var profit = GetProfitAmount(entry.Price);
-                    await _cs.AddAsync(entry.AuthorId, $"Shop sell item - {entry.Type}", profit);
-                    await _cs.AddAsync(ctx.Client.CurrentUser.Id, "Shop sell item - cut", entry.Price - profit);
+                    await _cs.AddAsync(entry.AuthorId, profit, new("shop", "sell", $"Shop sell item - {entry.Type}"));
+                    await _cs.AddAsync(ctx.Client.CurrentUser.Id, entry.Price - profit, new("shop", "cut"));
                     await ReplyConfirmLocalizedAsync(strs.shop_role_purchase(Format.Bold(role.Name)));
                     return;
                 }
@@ -150,7 +150,7 @@ public partial class Gambling
 
                 var item = entry.Items.ToArray()[new NadekoRandom().Next(0, entry.Items.Count)];
 
-                if (await _cs.RemoveAsync(ctx.User.Id, $"Shop purchase - {entry.Type}", entry.Price))
+                if (await _cs.RemoveAsync(ctx.User.Id, entry.Price, new("shop", "buy", entry.Type.ToString())))
                 {
                     await using (var uow = _db.GetDbContext())
                     {
@@ -168,12 +168,12 @@ public partial class Gambling
                                                      .AddField(GetText(strs.name), entry.Name, true));
 
                         await _cs.AddAsync(entry.AuthorId,
-                            $"Shop sell item - {entry.Name}",
-                            GetProfitAmount(entry.Price));
+                            GetProfitAmount(entry.Price),
+                            new("shop", "sell", entry.Name));
                     }
                     catch
                     {
-                        await _cs.AddAsync(ctx.User.Id, $"Shop error refund - {entry.Name}", entry.Price);
+                        await _cs.AddAsync(ctx.User.Id, entry.Price, new("shop", "error-refund", entry.Name));
                         await using (var uow = _db.GetDbContext())
                         {
                             var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
@@ -411,6 +411,7 @@ public partial class Gambling
             var embed = _eb.Create().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
+            {
                 return embed
                        .AddField(GetText(strs.name),
                            GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
@@ -418,10 +419,15 @@ public partial class Gambling
                            true)
                        .AddField(GetText(strs.price), entry.Price.ToString(), true)
                        .AddField(GetText(strs.type), entry.Type.ToString(), true);
+            }
+
             if (entry.Type == ShopEntryType.List)
+            {
                 return embed.AddField(GetText(strs.name), entry.Name, true)
                             .AddField(GetText(strs.price), entry.Price.ToString(), true)
                             .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
+            }
+
             //else if (entry.Type == ShopEntryType.Infinite_List)
             //    return embed.AddField(GetText(strs.name), GetText(strs.shop_role(Format.Bold(entry.RoleName)), true))
             //            .AddField(GetText(strs.price), entry.Price.ToString(), true)

@@ -76,9 +76,9 @@ public class GameStatusEvent : ICurrencyEvent
         try
         {
             await _cs.AddBulkAsync(toAward,
-                toAward.Select(_ => "GameStatus Event"),
-                toAward.Select(_ => _amount),
-                true);
+                _amount,
+                new("event", "gamestatus")
+            );
 
             if (_isPotLimited)
                 await msg.ModifyAsync(m =>

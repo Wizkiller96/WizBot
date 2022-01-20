@@ -29,7 +29,7 @@ public partial class Gambling
             if (!await CheckBetMandatory(amount))
                 return;
 
-            if (!await _cs.RemoveAsync(ctx.User.Id, "Wheel Of Fortune - bet", amount, true))
+            if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("wheel", "bet")))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;

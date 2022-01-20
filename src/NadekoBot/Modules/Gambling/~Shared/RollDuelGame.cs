@@ -86,16 +86,16 @@ public class RollDuelGame
             _locker.Release();
         }
 
-        if (!await _cs.RemoveAsync(P1, "Roll Duel", Amount))
+        if (!await _cs.RemoveAsync(P1, Amount, new("rollduel", "bet")))
         {
             await OnEnded?.Invoke(this, Reason.NoFunds);
             CurrentState = State.Ended;
             return;
         }
 
-        if (!await _cs.RemoveAsync(P2, "Roll Duel", Amount))
+        if (!await _cs.RemoveAsync(P2, Amount, new("rollduel", "bet")))
         {
-            await _cs.AddAsync(P1, "Roll Duel - refund", Amount);
+            await _cs.AddAsync(P1, Amount, new("rollduel", "refund"));
             await OnEnded?.Invoke(this, Reason.NoFunds);
             CurrentState = State.Ended;
             return;
@@ -114,9 +114,9 @@ public class RollDuelGame
                 else
                     Winner = P2;
                 var won = (long)(Amount * 2 * 0.98f);
-                await _cs.AddAsync(Winner, "Roll Duel win", won);
+                await _cs.AddAsync(Winner, won, new("rollduel", "win"));
 
-                await _cs.AddAsync(_botId, "Roll Duel fee", (Amount * 2) - won);
+                await _cs.AddAsync(_botId, (Amount * 2) - won, new("rollduel", "fee"));
             }
 
             try { await OnGameTick?.Invoke(this); }

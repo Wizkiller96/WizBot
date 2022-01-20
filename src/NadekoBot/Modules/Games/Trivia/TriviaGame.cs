@@ -251,7 +251,7 @@ public class TriviaGame
 
                     var reward = _config.Trivia.CurrencyReward;
                     if (reward > 0)
-                        await _cs.AddAsync(guildUser, "Won trivia", reward, true);
+                        await _cs.AddAsync(guildUser, reward, new("trivia", "win"));
                     return;
                 }
 

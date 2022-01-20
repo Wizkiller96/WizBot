@@ -1,3 +1,5 @@
+using NadekoBot.Services.Currency;
+
 #nullable disable
 namespace NadekoBot.Services;
 

@@ -270,7 +270,7 @@ public class PlantPickService : INService
 
                 if (amount > 0)
                     // give the picked currency to the user
-                    await _cs.AddAsync(uid, "Picked currency", amount);
+                    await _cs.AddAsync(uid, amount, new("currency", "collect"));
                 uow.SaveChanges();
             }
 
@@ -337,14 +337,14 @@ public class PlantPickService : INService
             return false;
 
         // remove currency from the user who's planting
-        if (await _cs.RemoveAsync(uid, "Planted currency", amount))
+        if (await _cs.RemoveAsync(uid, amount, new("put/collect", "put")))
         {
             // try to send the message with the currency image
             var msgId = await SendPlantMessageAsync(gid, ch, user, amount, pass);
             if (msgId is null)
             {
                 // if it fails it will return null, if it returns null, refund
-                await _cs.AddAsync(uid, "Planted currency refund", amount);
+                await _cs.AddAsync(uid, amount, new("put/collect", "refund"));
                 return false;
             }
 

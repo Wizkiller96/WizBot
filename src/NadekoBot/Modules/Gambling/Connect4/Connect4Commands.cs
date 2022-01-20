@@ -64,7 +64,7 @@ public partial class Gambling
             }
 
             if (options.Bet > 0)
-                if (!await _cs.RemoveAsync(ctx.User.Id, "Connect4-bet", options.Bet, true))
+                if (!await _cs.RemoveAsync(ctx.User.Id, options.Bet, new("connect4", "bet")))
                 {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);

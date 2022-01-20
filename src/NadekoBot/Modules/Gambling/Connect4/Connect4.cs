@@ -98,7 +98,7 @@ public sealed class Connect4Game : IDisposable
                 {
                     var __ = OnGameFailedToStart?.Invoke(this);
                     CurrentPhase = Phase.Ended;
-                    await _cs.AddAsync(_players[0].Value.UserId, "Connect4-refund", _options.Bet, true);
+                    await _cs.AddAsync(_players[0].Value.UserId, _options.Bet, new("connect4", "refund"));
                 }
             }
             finally { _locker.Release(); }
@@ -119,7 +119,7 @@ public sealed class Connect4Game : IDisposable
             if (bet != _options.Bet) // can't join if bet amount is not the same
                 return false;
 
-            if (!await _cs.RemoveAsync(userId, "Connect4-bet", bet, true)) // user doesn't have enough money to gamble
+            if (!await _cs.RemoveAsync(userId, bet, new("connect4", "bet"))) // user doesn't have enough money to gamble
                 return false;
 
             if (_rng.Next(0, 2) == 0) //rolling from 0-1, if number is 0, join as first player
@@ -342,13 +342,13 @@ public sealed class Connect4Game : IDisposable
 
         if (result == Result.Draw)
         {
-            _cs.AddAsync(CurrentPlayer.UserId, "Connect4-draw", _options.Bet, true);
-            _cs.AddAsync(OtherPlayer.UserId, "Connect4-draw", _options.Bet, true);
+            _cs.AddAsync(CurrentPlayer.UserId, _options.Bet, new("connect4", "draw"));
+            _cs.AddAsync(OtherPlayer.UserId, _options.Bet, new("connect4", "draw"));
             return;
         }
 
         if (winId is not null)
-            _cs.AddAsync(winId.Value, "Connnect4-win", (long)(_options.Bet * 1.98), true);
+            _cs.AddAsync(winId.Value, (long)(_options.Bet * 1.98), new("connect4", "win"));
     }
 
     private Field GetPlayerPiece(ulong userId)

@@ -3,12 +3,14 @@ using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Services.Currency;
 using NadekoBot.Services.Database.Models;
 using System.Globalization;
 using System.Numerics;
 
 namespace NadekoBot.Modules.Gambling;
 
+// todo leave empty servers
 public partial class Gambling : GamblingModule<GamblingService>
 {
     public enum RpsPick
@@ -67,10 +69,11 @@ public partial class Gambling : GamblingModule<GamblingService>
         return cur.ToString("C0", flowersCi);
     }
 
-    public string GetCurrency(ulong id)
+    public async Task<string> GetBalanceStringAsync(ulong userId)
     {
-        using var uow = _db.GetDbContext();
-        return n(uow.DiscordUser.GetUserCurrency(id));
+        var wallet = await _cs.GetWalletAsync(userId);
+        var bal = await wallet.GetBalance();
+        return n(bal);
     }
 
     [Cmd]
@@ -78,9 +81,11 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var ec = _service.GetEconomy();
         decimal onePercent = 0;
+        
+        // This stops the top 1% from owning more than 100% of the money
         if (ec.Cash > 0)
-            onePercent =
-                ec.OnePercent / (ec.Cash - ec.Bot); // This stops the top 1% from owning more than 100% of the money
+            onePercent = ec.OnePercent / (ec.Cash - ec.Bot);
+        
         // [21:03] Bob Page: Kinda remids me of US economy
         var embed = _eb.Create()
                        .WithTitle(GetText(strs.economy_state))
@@ -93,6 +98,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                        .AddField(GetText(strs.total),
                            ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", Culture) + CurrencySign)
                        .WithOkColor();
+        
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
         await ctx.Channel.EmbedAsync(embed);
     }
@@ -114,7 +120,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        await _cs.AddAsync(ctx.User.Id, "Timely claim", val);
+        await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
         await ReplyConfirmLocalizedAsync(strs.timely(n(val), period));
     }
@@ -225,14 +231,18 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [Priority(0)]
     public async partial Task Cash(ulong userId)
-        => await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), $"{GetCurrency(userId)}"));
+    {
+        var cur = await GetBalanceStringAsync(userId);
+        await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), cur));
+    }
 
     [Cmd]
     [Priority(1)]
     public async partial Task Cash([Leftover] IUser user = null)
     {
         user ??= ctx.User;
-        await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), $"{GetCurrency(user.Id)}"));
+        var cur = await GetBalanceStringAsync(user.Id);
+        await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), cur));
     }
 
     [Cmd]
@@ -242,15 +252,13 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         if (amount <= 0 || ctx.User.Id == receiver.Id || receiver.IsBot)
             return;
-        var success =
-            await _cs.RemoveAsync((IGuildUser)ctx.User, $"Gift to {receiver.Username} ({receiver.Id}).", amount);
-        if (!success)
+        
+        if (!await _cs.TransferAsync(ctx.User.Id, receiver.Id, amount, msg))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
         }
 
-        await _cs.AddAsync(receiver, $"Gift from {ctx.User.Username} ({ctx.User.Id}) - {msg}.", amount, true);
         await ReplyConfirmLocalizedAsync(strs.gifted(n(amount), Format.Bold(receiver.ToString())));
     }
 
@@ -290,10 +298,10 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        await _cs.AddAsync(usr,
-            $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {msg ?? ""}",
+        await _cs.AddAsync(usr.Id,
             amount,
-            gamble: ctx.Client.CurrentUser.Id != usrId);
+            new Extra("owner", "award", $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {msg ?? ""}")
+        );
         await ReplyConfirmLocalizedAsync(strs.awarded(n(amount), $"<@{usrId}>"));
     }
 
@@ -305,10 +313,11 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var users = (await ctx.Guild.GetUsersAsync()).Where(u => u.GetRoles().Contains(role)).ToList();
 
-        await _cs.AddBulkAsync(users.Select(x => x.Id),
-            users.Select(_ => $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-            users.Select(_ => amount),
-            true);
+        await _cs.AddBulkAsync(users.Select(x => x.Id).ToList(),
+            amount,
+            new("owner",
+                "award",
+                $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"));
 
         await ReplyConfirmLocalizedAsync(strs.mass_award(n(amount),
             Format.Bold(users.Count.ToString()),
@@ -323,10 +332,9 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var users = (await role.GetMembersAsync()).ToList();
 
-        await _cs.RemoveBulkAsync(users.Select(x => x.Id),
-            users.Select(_ => $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"),
-            users.Select(_ => amount),
-            true);
+        await _cs.RemoveBulkAsync(users.Select(x => x.Id).ToList(),
+            amount,
+            new("owner", "take", $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"));
 
         await ReplyConfirmLocalizedAsync(strs.mass_take(n(amount),
             Format.Bold(users.Count.ToString()),
@@ -342,10 +350,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (amount <= 0)
             return;
 
-        if (await _cs.RemoveAsync(user,
-                $"Taken by bot owner.({ctx.User.Username}/{ctx.User.Id})",
+        if (await _cs.RemoveAsync(user.Id,
                 amount,
-                gamble: ctx.Client.CurrentUser.Id != user.Id))
+                new("owner", "take", $"Taken by bot owner. ({ctx.User.Username}/{ctx.User.Id})")))
             await ReplyConfirmLocalizedAsync(strs.take(n(amount), Format.Bold(user.ToString())));
         else
             await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Bold(user.ToString()), CurrencySign));
@@ -360,9 +367,8 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
 
         if (await _cs.RemoveAsync(usrId,
-                $"Taken by bot owner.({ctx.User.Username}/{ctx.User.Id})",
                 amount,
-                ctx.Client.CurrentUser.Id != usrId))
+                new("owner", "take", $"Taken by bot owner. ({ctx.User.Username}/{ctx.User.Id})")))
             await ReplyConfirmLocalizedAsync(strs.take(n(amount), $"<@{usrId}>"));
         else
             await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Code(usrId.ToString()), CurrencySign));
@@ -467,7 +473,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (!await CheckBetMandatory(amount))
             return;
 
-        if (!await _cs.RemoveAsync(ctx.User, "Betroll Gamble", amount, false, true))
+        if (!await _cs.RemoveAsync(ctx.User, amount, new("betroll", "bet")))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
@@ -483,7 +489,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             var win = (long)(amount * result.Multiplier);
             str += GetText(strs.br_win(n(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
-            await _cs.AddAsync(ctx.User, "Betroll Gamble", win, false, true);
+            await _cs.AddAsync(ctx.User, win, new("betroll", "win"));
         }
         else
         {
@@ -600,16 +606,20 @@ public partial class Gambling : GamblingModule<GamblingService>
         var nadekoPick = (RpsPick)new NadekoRandom().Next(0, 3);
 
         if (amount > 0)
-            if (!await _cs.RemoveAsync(ctx.User.Id, "Rps-bet", amount, true))
+        {
+            if (!await _cs.RemoveAsync(ctx.User.Id,
+                    amount,
+                    new("rps", "bet", "")))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
+        }
 
         string msg;
         if (pick == nadekoPick)
         {
-            await _cs.AddAsync(ctx.User.Id, "Rps-draw", amount, true);
+            await _cs.AddAsync(ctx.User.Id, amount, new("rps", "draw"));
             embed.WithOkColor();
             msg = GetText(strs.rps_draw(GetRpsPick(pick)));
         }
@@ -618,7 +628,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                  || (pick == RpsPick.Scissors && nadekoPick == RpsPick.Paper))
         {
             amount = (long)(amount * Config.BetFlip.Multiplier);
-            await _cs.AddAsync(ctx.User.Id, "Rps-win", amount, true);
+            await _cs.AddAsync(ctx.User.Id, amount, new("rps", "win"));
             embed.WithOkColor();
             embed.AddField(GetText(strs.won), n(amount));
             msg = GetText(strs.rps_win(ctx.User.Mention, GetRpsPick(pick), GetRpsPick(nadekoPick)));

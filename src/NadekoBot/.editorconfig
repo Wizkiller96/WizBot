@@ -342,6 +342,7 @@ resharper_place_simple_embedded_statement_on_same_line = false
 resharper_wrap_chained_binary_expressions = chop_if_long
 resharper_wrap_chained_binary_patterns = chop_if_long
 resharper_wrap_chained_method_calls = chop_if_long
+resharper_wrap_object_and_collection_initializer_style = chop_always
 
 resharper_csharp_wrap_before_first_type_parameter_constraint = true
 resharper_csharp_place_type_constraints_on_same_line = false

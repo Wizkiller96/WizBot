@@ -80,7 +80,7 @@ public partial class Gambling
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;
 
-            var removed = await _cs.RemoveAsync(ctx.User, "Betflip Gamble", amount, false, true);
+            var removed = await _cs.RemoveAsync(ctx.User, amount, new("betflip", "bet"));
             if (!removed)
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -106,7 +106,7 @@ public partial class Gambling
             {
                 var toWin = (long)(amount * Config.BetFlip.Multiplier);
                 str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess(toWin + CurrencySign));
-                await _cs.AddAsync(ctx.User, "Betflip Gamble", toWin, false, true);
+                await _cs.AddAsync(ctx.User, toWin, new("betflip", "win"));
             }
             else
             {

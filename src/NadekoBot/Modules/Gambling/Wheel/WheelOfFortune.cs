@@ -29,7 +29,7 @@ public class WheelOfFortuneGame
         var amount = (long)(_bet * _config.WheelOfFortune.Multipliers[result]);
 
         if (amount > 0)
-            await _cs.AddAsync(_userId, "Wheel Of Fortune - won", amount, true);
+            await _cs.AddAsync(_userId, amount, new("wheel", "win"));
 
         return new() { Index = result, Amount = amount };
     }

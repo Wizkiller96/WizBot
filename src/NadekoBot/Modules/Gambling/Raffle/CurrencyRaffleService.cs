@@ -38,7 +38,7 @@ public class CurrencyRaffleService : INService
 
             //remove money, and stop the game if this 
             // user created it and doesn't have the money
-            if (!await _cs.RemoveAsync(user.Id, "Currency Raffle Join", amount))
+            if (!await _cs.RemoveAsync(user.Id, amount, new("raffle", "join")))
             {
                 if (newGame)
                     Games.Remove(channelId);
@@ -47,7 +47,7 @@ public class CurrencyRaffleService : INService
 
             if (!crg.AddUser(user, amount))
             {
-                await _cs.AddAsync(user.Id, "Curency Raffle Refund", amount);
+                await _cs.AddAsync(user.Id, amount, new("raffle", "refund"));
                 return (null, JoinErrorType.AlreadyJoinedOrInvalidAmount);
             }
 
@@ -62,7 +62,7 @@ public class CurrencyRaffleService : INService
                         var winner = crg.GetWinner();
                         var won = crg.Users.Sum(x => x.Amount);
 
-                        await _cs.AddAsync(winner.DiscordUser.Id, "Currency Raffle Win", won);
+                        await _cs.AddAsync(winner.DiscordUser.Id, won, new("raffle", "win"));
                         Games.Remove(channelId, out _);
                         _ = onEnded(winner.DiscordUser, won);
                     }
