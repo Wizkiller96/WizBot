@@ -48,6 +48,8 @@
 
 - Either click on **`RUN`** button in the updater or run the bot via its desktop shortcut.
 
+### If you get a "No owner channels created..." message. Please follow the creds guide again [**HERE**](../../creds-guide).
+
 #### Updating Nadeko
 
 - Make sure Nadeko is closed and not running  
