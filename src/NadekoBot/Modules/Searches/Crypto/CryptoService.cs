@@ -79,7 +79,7 @@ public class CryptoService : INService
                     }
                 },
                 "",
-                TimeSpan.FromHours(1));
+                TimeSpan.FromHours(2));
 
             return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData)?.Data ?? new();
         }

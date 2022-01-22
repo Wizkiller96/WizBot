@@ -264,7 +264,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
                 var toAward = eligibleFor - usr.AmountRewardedThisMonth;
 
                 usr.LastReward = now;
-                usr.AmountRewardedThisMonth = toAward;
+                usr.AmountRewardedThisMonth = eligibleFor;
                 await uow.SaveChangesAsync();
 
                 await _currency.AddAsync(userId, toAward, new("patreon", "update"));
