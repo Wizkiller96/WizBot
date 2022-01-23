@@ -97,14 +97,23 @@ public class Blackjack
 
     private async Task PromptUserMove(User usr)
     {
-        var pause = Task.Delay(20000); //10 seconds to decide
+        using var cts = new CancellationTokenSource();
+        var pause = Task.Delay(20000, cts.Token); //10 seconds to decide
         CurrentUser = usr;
         currentUserMove = new();
         await PrintState();
         // either wait for the user to make an action and
         // if he doesn't - stand
         var finished = await Task.WhenAny(pause, currentUserMove.Task);
-        if (finished == pause) await Stand(usr);
+        if (finished == pause)
+        {
+            await Stand(usr);
+        }
+        else
+        {
+            cts.Cancel();
+        }
+        
         CurrentUser = null;
         currentUserMove = null;
     }
