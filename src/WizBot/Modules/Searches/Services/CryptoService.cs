@@ -90,7 +90,7 @@ namespace WizBot.Modules.Searches.Services
                         return default;
                     }
 
-                }, "", TimeSpan.FromHours(1));
+                }, "", TimeSpan.FromHours(2));
 
                 return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData).Data;
             }
