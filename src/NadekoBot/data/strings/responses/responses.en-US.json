@@ -966,5 +966,6 @@
   "favorites": "Favorites",
   "tags": "Tags",
   "imageonly_enable": "This channel is now image-only.",
-  "imageonly_disable": "This channel is no longer image-only."
+  "imageonly_disable": "This channel is no longer image-only.",
+  "deleted_x_servers": "Deleted {0} servers."
 }

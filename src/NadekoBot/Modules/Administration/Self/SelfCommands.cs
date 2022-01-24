@@ -295,6 +295,36 @@ public partial class Administration
         public partial Task Leave([Leftover] string guildStr)
             => _service.LeaveGuild(guildStr);
 
+        [Cmd]
+        [OwnerOnly]
+        public async partial Task DeleteEmptyServers()
+        {
+            await ctx.Channel.TriggerTypingAsync();
+
+            var toLeave = _client.Guilds
+                                 .Where(s => s.MemberCount == 1 && s.Users.Count == 1)
+                                 .ToList();
+            
+            foreach (var server in toLeave)
+            {
+                try
+                {
+                    await server.DeleteAsync();
+                    Log.Information("Deleted server {ServerName} [{ServerId}]",
+                        server.Name,
+                        server.Id);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex,
+                        "Error leaving server {ServerName} [{ServerId}]",
+                        server.Name,
+                        server.Id);
+                }
+            }
+
+            await ReplyConfirmLocalizedAsync(strs.deleted_x_servers(toLeave.Count));
+        }
 
         [Cmd]
         [OwnerOnly]

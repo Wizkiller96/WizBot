@@ -2141,3 +2141,7 @@ showembed:
   args:
     - "820022733172121600"
     - "#some-channel 820022733172121600"
+deleteemptyservers:
+  desc: "Deletes all servers in which the bot is the only member."
+  args:
+    - ""
