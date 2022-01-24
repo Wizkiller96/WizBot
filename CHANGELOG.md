@@ -7,6 +7,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Changes
 
+### Added
+- Added `.deleteemptyservers` command
+
 ### Fixed
 
 - Fixed an extra whitespace in usage part of command help if the command has no arguments  
