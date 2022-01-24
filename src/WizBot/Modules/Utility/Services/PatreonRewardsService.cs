@@ -294,7 +294,7 @@ namespace WizBot.Modules.Utility.Services
                         var toAward = eligibleFor - usr.AmountRewardedThisMonth;
 
                         usr.LastReward = now;
-                        usr.AmountRewardedThisMonth = toAward;
+                        usr.AmountRewardedThisMonth = eligibleFor;
                         await uow.SaveChangesAsync();
 
                         await _currency.AddAsync(userId, "Patreon reward - update", toAward, gamble: true);
