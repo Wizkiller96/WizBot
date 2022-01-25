@@ -10,6 +10,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 
 - Added `.deleteemptyservers` command
+- Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
 
 ### Fixed
 
@@ -29,7 +30,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Permissions for `.ecr` (now `.exe`), `.scr` (now `.exs`), `.dcr` (now `.exd`), `.acr` (now `.exa`), `.lcr` (now `.exl`) will be automatically updated
   - If you have custom permissions for other CustomReaction commands
   - Some of the old aliases like `.acr` `.dcr` `.lcr` and a few others have been kept
-- Currency output format improvement (will use guild locale now for some commands)    
+- Currency output format improvement (will use guild locale now for some commands)
+- Improved .curtrs (It will now have a lot more useful data in the database, show Tx ids, and be partially localized)
+  - [dev] Reason renamed to Note
+  - [dev] Added Type, Extra, OtherId fields to the database
 - [dev] CommandStrings will now use methodname as the key, and **not** the command name (first entry in aliases.yml)
   - In other words aliases.yml and commands.en-US.yml will use the same keys (once again)
 - [dev] Reorganized module and submodule folders  
