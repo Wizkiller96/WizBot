@@ -1,4 +1,6 @@
 #nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Common;
@@ -7,10 +9,10 @@ using NadekoBot.Services.Currency;
 using NadekoBot.Services.Database.Models;
 using System.Globalization;
 using System.Numerics;
+using System.Text;
 
 namespace NadekoBot.Modules.Gambling;
 
-// todo leave empty servers
 public partial class Gambling : GamblingModule<GamblingService>
 {
     public enum RpsPick
@@ -66,6 +68,9 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
+        flowersCi.NumberFormat.CurrencyNegativePattern = 5;
+        // if (cur < 0)
+        //     cur = -cur;
         return cur.ToString("C0", flowersCi);
     }
 
@@ -199,6 +204,8 @@ public partial class Gambling : GamblingModule<GamblingService>
     public partial Task CurrencyTransactions(IUser usr, int page)
         => InternalCurrencyTransactions(usr.Id, page);
 
+    // todo curtrs max lifetime
+    // todo waifu decay
     private async Task InternalCurrencyTransactions(ulong userId, int page)
     {
         if (--page < 0)
@@ -215,18 +222,84 @@ public partial class Gambling : GamblingModule<GamblingService>
                                                             ?? $"{userId}")))
                        .WithOkColor();
 
-        var desc = string.Empty;
+        var sb = new StringBuilder();
         foreach (var tr in trs)
         {
-            var type = tr.Amount > 0 ? "🔵" : "🔴";
-            var date = Format.Code($"〖{tr.DateAdded:HH:mm yyyy-MM-dd}〗");
-            desc += $"\\{type} {date} {Format.Bold(n(tr.Amount))}\n\t{tr.Reason?.Trim()}\n";
+            var change = tr.Amount >= 0 ? "🔵" : "🔴";
+            var kwumId = new kwum(tr.Id).ToString();
+            var date = $"#{Format.Code(kwumId)} `〖{GetFormattedCurtrDate(tr)}〗`";
+            
+            
+            sb.AppendLine($"\\{change} {date} {Format.Bold(n(tr.Amount))}");
+            var transactionString = GetHumanReadableTransaction(tr.Type, tr.Extra, tr.OtherId);
+            if(transactionString is not null)
+                sb.AppendLine(transactionString);
+            
+            if (!string.IsNullOrWhiteSpace(tr.Note))
+                sb.AppendLine($"\t`Note:` {tr.Note.TrimTo(50)}");
         }
 
-        embed.WithDescription(desc);
+        embed.WithDescription(sb.ToString());
         embed.WithFooter(GetText(strs.page(page + 1)));
         await ctx.Channel.EmbedAsync(embed);
     }
+
+    private static string GetFormattedCurtrDate(CurrencyTransaction ct)
+        => $"{ct.DateAdded:HH:mm yyyy-MM-dd}";
+
+    [Cmd]
+    public async partial Task CurrencyTransaction(kwum id)
+    {
+        int intId = id;
+        await using var uow = _db.GetDbContext();
+
+        var tr = await uow.CurrencyTransactions
+                          .ToLinqToDBTable()
+                          .Where(x => x.Id == intId && x.UserId == ctx.User.Id)
+                          .FirstOrDefaultAsync();
+
+        if (tr is null)
+        {
+            await ReplyErrorLocalizedAsync(strs.not_found);
+            return;
+        }
+
+        var eb = _eb.Create(ctx)
+           .WithOkColor();
+
+        eb.WithAuthor(ctx.User);
+        eb.WithTitle(GetText(strs.transaction));
+        eb.WithDescription(new kwum(tr.Id).ToString());
+        eb.AddField("Amount", n(tr.Amount), false);
+        eb.AddField("Type", tr.Type, true);
+        eb.AddField("Extra", tr.Extra, true);
+        
+        if (tr.OtherId is ulong other)
+            eb.AddField("From Id", other);
+        
+        if (!string.IsNullOrWhiteSpace(tr.Note))
+            eb.AddField("Note", tr.Note);
+
+
+        eb.WithFooter(GetFormattedCurtrDate(tr));
+        
+        await ctx.Channel.EmbedAsync(eb);
+    }
+
+    private string GetHumanReadableTransaction(string type, string subType, ulong? maybeUserId)
+        => (type, subType, maybeUserId) switch
+        {
+            ("gift", var name, ulong userId) => GetText(strs.curtr_gift(name, userId)),
+            ("award", var name, ulong userId) => GetText(strs.curtr_award(name, userId)),
+            ("take", var name, ulong userId) => GetText(strs.curtr_take(name, userId)),
+            ("blackjack", _, _) => $"Blackjack - {subType}",
+            ("wheel", _, _) => $"Wheel Of Fortune - {subType}",
+            ("rps", _, _) => $"Rock Paper Scissors - {subType}",
+            (null, _, _) => null,
+            (_, null, _) => null,
+            (_, _, ulong userId) => $"{type.Titleize()} - {subType.Titleize()} | [{userId}]",
+            _ => $"{type.Titleize()} - {subType.Titleize()}"
+        };
 
     [Cmd]
     [Priority(0)]
@@ -253,7 +326,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (amount <= 0 || ctx.User.Id == receiver.Id || receiver.IsBot)
             return;
         
-        if (!await _cs.TransferAsync(ctx.User.Id, receiver.Id, amount, msg))
+        if (!await _cs.TransferAsync(ctx.User.Id, receiver.Id, amount, ctx.User.ToString(), msg))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
@@ -300,7 +373,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(usr.Id,
             amount,
-            new Extra("owner", "award", $"Awarded by bot owner. ({ctx.User.Username}/{ctx.User.Id}) {msg ?? ""}")
+            new TxData("award", ctx.User.ToString()!, msg, ctx.User.Id)
         );
         await ReplyConfirmLocalizedAsync(strs.awarded(n(amount), $"<@{usrId}>"));
     }
@@ -315,9 +388,10 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddBulkAsync(users.Select(x => x.Id).ToList(),
             amount,
-            new("owner",
-                "award",
-                $"Awarded by bot owner to **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"));
+            new("award",
+                ctx.User.ToString()!,
+                role.Name,
+                ctx.User.Id));
 
         await ReplyConfirmLocalizedAsync(strs.mass_award(n(amount),
             Format.Bold(users.Count.ToString()),
@@ -334,7 +408,10 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.RemoveBulkAsync(users.Select(x => x.Id).ToList(),
             amount,
-            new("owner", "take", $"Taken by bot owner from **{role.Name}** role. ({ctx.User.Username}/{ctx.User.Id})"));
+            new("take",
+                ctx.User.ToString()!,
+                null,
+                ctx.User.Id));
 
         await ReplyConfirmLocalizedAsync(strs.mass_take(n(amount),
             Format.Bold(users.Count.ToString()),
@@ -350,9 +427,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (amount <= 0)
             return;
 
-        if (await _cs.RemoveAsync(user.Id,
-                amount,
-                new("owner", "take", $"Taken by bot owner. ({ctx.User.Username}/{ctx.User.Id})")))
+        var extra = new TxData("take",
+            ctx.User.ToString()!,
+            null,
+            ctx.User.Id);
+        
+        if (await _cs.RemoveAsync(user.Id, amount, extra))
             await ReplyConfirmLocalizedAsync(strs.take(n(amount), Format.Bold(user.ToString())));
         else
             await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Bold(user.ToString()), CurrencySign));
@@ -366,9 +446,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (amount <= 0)
             return;
 
-        if (await _cs.RemoveAsync(usrId,
-                amount,
-                new("owner", "take", $"Taken by bot owner. ({ctx.User.Username}/{ctx.User.Id})")))
+        var extra = new TxData("take",
+            ctx.User.ToString()!,
+            null,
+            ctx.User.Id);
+        
+        if (await _cs.RemoveAsync(usrId, amount, extra))
             await ReplyConfirmLocalizedAsync(strs.take(n(amount), $"<@{usrId}>"));
         else
             await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Code(usrId.ToString()), CurrencySign));
@@ -383,7 +466,8 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         //since the challenge is created by another user, we need to reverse the ids
         //if it gets removed, means challenge is accepted
-        if (_service.Duels.TryRemove((ctx.User.Id, u.Id), out var game)) await game.StartGame();
+        if (_service.Duels.TryRemove((ctx.User.Id, u.Id), out var game))
+            await game.StartGame();
     }
 
     [Cmd]

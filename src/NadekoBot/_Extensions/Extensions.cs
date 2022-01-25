@@ -11,6 +11,9 @@ public static class Extensions
     private static readonly Regex _urlRegex =
         new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
+    public static IEmbedBuilder WithAuthor(this IEmbedBuilder eb, IUser author)
+        => eb.WithAuthor(author.ToString(), author.RealAvatarUrl().ToString());
+    
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
         {

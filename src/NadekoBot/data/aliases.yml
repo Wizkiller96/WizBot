@@ -674,6 +674,8 @@ cash:
 - cur
 currencytransactions:
 - curtrs
+currencytransaction:
+  - curtr
 listperms:
 - listperms
 - lp

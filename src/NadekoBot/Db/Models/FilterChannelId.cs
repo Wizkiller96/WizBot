@@ -14,7 +14,7 @@ public class FilterChannelId : DbEntity
     public override int GetHashCode()
         => ChannelId.GetHashCode();
 }
-// todo check if filterwords migration works
+
 public class FilterWordsChannelId : DbEntity
 {
     public ulong ChannelId { get; set; }

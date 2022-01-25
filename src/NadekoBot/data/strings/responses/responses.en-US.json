@@ -242,6 +242,7 @@
   "take": "successfully took {0} from {1}",
   "take_fail": "was unable to take {0} from {1} because the user doesn't have that much {2}!",
   "transactions": "Transactions of user {0}",
+  "transaction": "Currency Transaction",
   "commandlist_regen": "Commandlist regenerated.",
   "commands_instr": "Type `{0}h CommandName` to see the help for that specified command. e.g. `{0}h {0}8ball`",
   "command_not_found": "I can't find that command. Please verify that the command exists before trying again.",
@@ -967,5 +968,8 @@
   "tags": "Tags",
   "imageonly_enable": "This channel is now image-only.",
   "imageonly_disable": "This channel is no longer image-only.",
-  "deleted_x_servers": "Deleted {0} servers."
+  "deleted_x_servers": "Deleted {0} servers.",
+  "curtr_gift": "Gift from {0} [{1}]",
+  "curtr_award": "Awarded by bot owner {0} [{1}]",  
+  "curtr_take": "Taken by bot owner {0} [{1}]"  
 }

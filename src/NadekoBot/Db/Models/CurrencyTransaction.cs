@@ -4,9 +4,9 @@ namespace NadekoBot.Services.Database.Models;
 public class CurrencyTransaction : DbEntity
 {
     public long Amount { get; set; }
-    public string Reason { get; set; }
+    public string Note { get; set; }
     public ulong UserId { get; set; }
-
-    public CurrencyTransaction Clone()
-        => new() { Amount = Amount, Reason = Reason, UserId = UserId };
+    public string Type { get; set; }
+    public string Extra { get; set; }
+    public ulong? OtherId { get; set; }
 }

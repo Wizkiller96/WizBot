@@ -24,7 +24,7 @@ public class DefaultWallet : IWallet
                .Select(x => x.CurrencyAmount)
                .FirstOrDefaultAsync();
 
-    public async Task<bool> Take(long amount, Extra extra)
+    public async Task<bool> Take(long amount, TxData txData)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount to take must be non negative.");
@@ -39,20 +39,21 @@ public class DefaultWallet : IWallet
         if (changed == 0)
             return false;
 
-        // todo type, subtype
-        // todo from? by?
         await _ctx.CreateLinqToDbContext()
                   .InsertAsync(new CurrencyTransaction()
                   {
                       Amount = -amount,
-                      Reason = extra.Note,
+                      Note = txData.Note,
                       UserId = UserId,
+                      Type = txData.Type,
+                      Extra = txData.Extra,
+                      OtherId = txData.OtherId
                   });
 
         return true;
     }
 
-    public async Task Add(long amount, Extra extra)
+    public async Task Add(long amount, TxData txData)
     {
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
@@ -60,6 +61,7 @@ public class DefaultWallet : IWallet
         await using (var tran = await _ctx.Database.BeginTransactionAsync())
         {
             var changed = await _ctx.DiscordUser
+                                    .Where(x => x.UserId == UserId)
                                     .UpdateAsync(x => new()
                                     {
                                         CurrencyAmount = x.CurrencyAmount + amount
@@ -82,8 +84,11 @@ public class DefaultWallet : IWallet
         var ct = new CurrencyTransaction()
         {
             Amount = amount,
-            Reason = extra.Note,
             UserId = UserId,
+            Note = txData.Note,
+            Type = txData.Type,
+            Extra = txData.Extra,
+            OtherId = txData.OtherId,
         };
 
         await _ctx.CreateLinqToDbContext()

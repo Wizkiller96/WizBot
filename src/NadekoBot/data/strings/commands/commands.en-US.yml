@@ -1168,6 +1168,10 @@ currencytransactions:
   args:
     - "2"
     - "@SomeUser 2"
+currencytransaction:
+  desc: "Shows full details about a currency transaction with the specified ID. You can only check your own transactions."
+  args:
+    - "3yvd"
 listperms:
   desc: "Lists whole permission chain with their indexes. You can specify an optional page number if there are a lot of permissions."
   args:

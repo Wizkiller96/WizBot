@@ -25,7 +25,7 @@ public class CurrencyService : ICurrencyService, INService
     public async Task AddBulkAsync(
         IReadOnlyCollection<ulong> userIds,
         long amount,
-        Extra extra,
+        TxData txData,
         CurrencyType type = CurrencyType.Default)
     {
         if (type == CurrencyType.Default)
@@ -34,7 +34,7 @@ public class CurrencyService : ICurrencyService, INService
             foreach (var userId in userIds)
             {
                 var wallet = new DefaultWallet(userId, ctx);
-                await wallet.Add(amount, extra);
+                await wallet.Add(amount, txData);
             }
 
             await ctx.SaveChangesAsync();
@@ -47,7 +47,7 @@ public class CurrencyService : ICurrencyService, INService
     public async Task RemoveBulkAsync(
         IReadOnlyCollection<ulong> userIds,
         long amount,
-        Extra extra,
+        TxData txData,
         CurrencyType type = CurrencyType.Default)
     {
         if (type == CurrencyType.Default)
@@ -68,54 +68,55 @@ public class CurrencyService : ICurrencyService, INService
     }
 
     private CurrencyTransaction GetCurrencyTransaction(ulong userId, string reason, long amount)
-        => new() { Amount = amount, UserId = userId, Reason = reason ?? "-" };
+        => new() { Amount = amount, UserId = userId, Note = reason ?? "-" };
 
     public async Task AddAsync(
         ulong userId,
         long amount,
-        Extra extra)
+        TxData txData)
     {
         await using var wallet = await GetWalletAsync(userId);
-        await wallet.Add(amount, extra);
+        await wallet.Add(amount, txData);
     }
 
     public async Task AddAsync(
         IUser user,
         long amount,
-        Extra extra)
+        TxData txData)
     {
         await using var wallet = await GetWalletAsync(user.Id);
-        await wallet.Add(amount, extra);
+        await wallet.Add(amount, txData);
     }
 
     public async Task<bool> RemoveAsync(
         ulong userId,
         long amount,
-        Extra extra)
+        TxData txData)
     {
         await using var wallet = await GetWalletAsync(userId);
-        return await wallet.Take(amount, extra);
+        return await wallet.Take(amount, txData);
     }
 
     public async Task<bool> RemoveAsync(
         IUser user,
         long amount,
-        Extra extra)
+        TxData txData)
     {
         await using var wallet = await GetWalletAsync(user.Id);
-        return await wallet.Take(amount, extra);
+        return await wallet.Take(amount, txData);
     }
 
     public async Task<bool> TransferAsync(
-        ulong from,
-        ulong to,
+        ulong fromId,
+        ulong toId,
         long amount,
+        string fromName,
         string note)
     {
-        await using var fromWallet = await GetWalletAsync(@from);
-        await using var toWallet = await GetWalletAsync(to);
+        await using var fromWallet = await GetWalletAsync(fromId);
+        await using var toWallet = await GetWalletAsync(toId);
         
-        var extra = new Extra("transfer", "gift", note);
+        var extra = new TxData("gift", fromName, note, fromId);
         
         return await fromWallet.Transfer(amount, toWallet, extra);
     }

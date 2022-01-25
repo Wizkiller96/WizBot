@@ -146,13 +146,23 @@ public class NadekoContext : DbContext
 
         modelBuilder.Entity<DiscordUser>(du =>
         {
-            du.Property(x => x.IsClubAdmin).HasDefaultValue(false);
+            du.Property(x => x.IsClubAdmin)
+              .HasDefaultValue(false);
 
-            du.Property(x => x.NotifyOnLevelUp).HasDefaultValue(XpNotificationLocation.None);
+            du.Property(x => x.NotifyOnLevelUp)
+              .HasDefaultValue(XpNotificationLocation.None);
 
-            du.Property(x => x.LastXpGain).HasDefaultValueSql("datetime('now', '-1 years')");
+            du.Property(x => x.LastXpGain)
+              .HasDefaultValueSql("datetime('now', '-1 years')");
 
-            du.Property(x => x.LastLevelUp).HasDefaultValueSql("datetime('now')");
+            du.Property(x => x.LastLevelUp)
+              .HasDefaultValueSql("datetime('now')");
+
+            du.Property(x => x.TotalXp)
+              .HasDefaultValue(0);
+            
+            du.Property(x => x.CurrencyAmount)
+              .HasDefaultValue(0);
 
             du.HasAlternateKey(w => w.UserId);
             du.HasOne(x => x.Club).WithMany(x => x.Users).IsRequired(false);
@@ -244,7 +254,22 @@ public class NadekoContext : DbContext
 
         #region CurrencyTransactions
 
-        modelBuilder.Entity<CurrencyTransaction>().HasIndex(x => x.UserId).IsUnique(false);
+        modelBuilder.Entity<CurrencyTransaction>(e =>
+        {
+            e.HasIndex(x => x.UserId)
+             .IsUnique(false);
+
+            e.Property(x => x.OtherId)
+             .HasDefaultValueSql("NULL");
+
+            e.Property(x => x.Type)
+             .IsRequired();
+            
+            e.Property(x => x.Extra)
+             .IsRequired();
+
+        });
+                    
 
         #endregion
 
@@ -321,6 +346,7 @@ public class NadekoContext : DbContext
         atch.HasMany(x => x.Users).WithOne(x => x.Channel).OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<AutoTranslateUser>(atu => atu.HasAlternateKey(x => new { x.ChannelId, x.UserId }));
+        
     }
 
 #if DEBUG

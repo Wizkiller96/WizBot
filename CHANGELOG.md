@@ -8,6 +8,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ## Changes
 
 ### Added
+
 - Added `.deleteemptyservers` command
 
 ### Fixed
@@ -19,6 +20,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed reference to non-existent command in bot.yml
 
 ### Changed
+
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
   - This was done to remove confusion about how it relates to discord Reactions (it doesn't, it was created and named before discord reactions existed) 
   - Expression command now start with ex/expr and end with the name of the action or setting. 
@@ -35,6 +37,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - [dev] Moved FilterWordsChannelId to a separate table
 
 ### Removed
+
 - Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
 - Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
 - Removed some obsolete commands and strings  

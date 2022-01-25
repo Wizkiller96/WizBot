@@ -10,38 +10,39 @@ public interface ICurrencyService
     Task AddBulkAsync(
         IReadOnlyCollection<ulong> userIds,
         long amount,
-        Extra extra,
+        TxData txData,
         CurrencyType type = CurrencyType.Default);
 
     Task RemoveBulkAsync(
         IReadOnlyCollection<ulong> userIds,
         long amount,
-        Extra extra,
+        TxData txData,
         CurrencyType type = CurrencyType.Default);
 
     Task AddAsync(
         ulong userId,
         long amount,
-        Extra extra);
+        TxData txData);
 
     Task AddAsync(
         IUser user,
         long amount,
-        Extra extra);
+        TxData txData);
 
     Task<bool> RemoveAsync(
         ulong userId,
         long amount,
-        Extra extra);
+        TxData txData);
 
     Task<bool> RemoveAsync(
         IUser user,
         long amount,
-        Extra extra);
+        TxData txData);
 
     Task<bool> TransferAsync(
         ulong from,
         ulong to,
         long amount,
+        string fromName,
         string note);
 }
