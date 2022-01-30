@@ -7,7 +7,7 @@ public sealed class OwnerOnlyAttribute : PreconditionAttribute
 {
     public override Task<PreconditionResult> CheckPermissionsAsync(
         ICommandContext context,
-        CommandInfo executingCommand,
+        CommandInfo command,
         IServiceProvider services)
     {
         var creds = services.GetRequiredService<IBotCredsProvider>().GetCreds();

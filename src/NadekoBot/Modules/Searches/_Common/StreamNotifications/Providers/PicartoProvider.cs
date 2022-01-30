@@ -46,10 +46,10 @@ public class PicartoProvider : Provider
         return data.FirstOrDefault();
     }
 
-    public override async Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
+    public override async Task<IReadOnlyCollection<StreamData>> GetStreamDataAsync(List<string> logins)
     {
         if (logins.Count == 0)
-            return new();
+            return new List<StreamData>();
 
         using var http = _httpClientFactory.CreateClient();
         var toReturn = new List<StreamData>();

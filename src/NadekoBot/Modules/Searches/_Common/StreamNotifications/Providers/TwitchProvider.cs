@@ -12,10 +12,16 @@ public class TwitchProvider : Provider
     public override FollowedStream.FType Platform
         => FollowedStream.FType.Twitch;
 
+    public override IReadOnlyDictionary<string, DateTime> FailingStreams
+        => _failingStreams;
+
     private readonly IHttpClientFactory _httpClientFactory;
 
     public TwitchProvider(IHttpClientFactory httpClientFactory)
         => _httpClientFactory = httpClientFactory;
+
+    public override void ClearErrorsFor(string login)
+        => _failingStreams.TryRemove(login, out _);
 
     public override Task<bool> IsValidUrl(string url)
     {
@@ -41,15 +47,18 @@ public class TwitchProvider : Provider
 
     public override async Task<StreamData?> GetStreamDataAsync(string id)
     {
-        var data = await GetStreamDataAsync(new List<string> { id });
+        var data = await GetStreamDataAsync(new List<string>
+        {
+            id
+        });
 
         return data.FirstOrDefault();
     }
 
-    public override async Task<List<StreamData>> GetStreamDataAsync(List<string> logins)
+    public override async Task<IReadOnlyCollection<StreamData>> GetStreamDataAsync(List<string> logins)
     {
         if (logins.Count == 0)
-            return new();
+            return new List<StreamData>();
 
         using var http = _httpClientFactory.CreateClient();
         http.DefaultRequestHeaders.Add("Client-Id", "67w6z9i09xv2uoojdm9l0wsyph4hxo6");
@@ -70,7 +79,11 @@ public class TwitchProvider : Provider
 
                 // get stream data
                 var str = await http.GetStringAsync($"https://api.twitch.tv/kraken/streams/{user.Id}");
-                var resObj = JsonConvert.DeserializeAnonymousType(str, new { Stream = new TwitchResponseV5.Stream() });
+                var resObj = JsonConvert.DeserializeAnonymousType(str,
+                    new
+                    {
+                        Stream = new TwitchResponseV5.Stream()
+                    });
 
                 // if stream is null, user is not streaming
                 if (resObj?.Stream is null)

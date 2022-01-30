@@ -20,6 +20,7 @@ public interface IBotCredentials
     string LocationIqApiKey { get; }
     string TimezoneDbApiKey { get; }
     string CoinmarketcapApiKey { get; }
+    string TrovoClientId { get; }
     string CoordinatorUrl { get; set; }
 }
 

@@ -39,7 +39,7 @@ public sealed class StreamNotificationService : INService
         DiscordSocketClient client,
         IBotStrings strings,
         ConnectionMultiplexer redis,
-        IBotCredentials creds,
+        IBotCredsProvider creds,
         IHttpClientFactory httpFactory,
         Bot bot,
         IPubSub pubSub,
@@ -50,7 +50,7 @@ public sealed class StreamNotificationService : INService
         _strings = strings;
         _pubSub = pubSub;
         _eb = eb;
-        _streamTracker = new(httpFactory, redis, creds.RedisKey(), client.ShardId == 0);
+        _streamTracker = new(httpFactory, creds, redis, creds.GetCreds().RedisKey(), client.ShardId == 0);
 
         _streamsOnlineKey = new("streams.online");
         _streamsOfflineKey = new("streams.offline");

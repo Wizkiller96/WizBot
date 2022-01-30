@@ -15,9 +15,10 @@ public abstract class Provider
     /// <summary>
     ///     Gets the stream usernames which fail to execute due to an error, and when they started throwing errors.
     ///     This can happen if stream name is invalid, or if the stream doesn't exist anymore.
+    ///     Override to provide a custom implementation
     /// </summary>
-    public IEnumerable<(string Login, DateTime ErroringSince)> FailingStreams
-        => _failingStreams.Select(entry => (entry.Key, entry.Value)).ToList();
+    public virtual IReadOnlyDictionary<string, DateTime> FailingStreams
+        => _failingStreams;
 
     /// <summary>
     ///     When was the first time the stream continually had errors while being retrieved
@@ -50,8 +51,13 @@ public abstract class Provider
     /// </summary>
     /// <param name="usernames">List of ids/usernames</param>
     /// <returns><see cref="StreamData" /> of all users, in the same order. Null for every id/user not found.</returns>
-    public abstract Task<List<StreamData>> GetStreamDataAsync(List<string> usernames);
+    public abstract Task<IReadOnlyCollection<StreamData>> GetStreamDataAsync(List<string> usernames);
 
-    public void ClearErrorsFor(string login)
-        => _failingStreams.TryRemove(login, out _);
+    /// <summary>
+    /// Unmark the stream as errored. You should override this method
+    /// if you've overridden the <see cref="FailingStreams"/> property.
+    /// </summary>
+    /// <param name="login"></param>
+    public virtual void ClearErrorsFor(string login)
+        => _failingStreams.Clear();
 }

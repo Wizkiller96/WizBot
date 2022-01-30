@@ -119,6 +119,12 @@ public sealed class BotCredsProvider : IBotCredsProvider
             var jsonCredentialsFileText = File.ReadAllText(OldCredsJsonPath);
             var oldCreds = JsonConvert.DeserializeObject<Creds.Old>(jsonCredentialsFileText);
 
+            if (oldCreds is null)
+            {
+                Log.Error("Error while reading old credentials file. Make sure that the file is formatted correctly");
+                return;
+            }
+
             var creds = new Creds
             {
                 Version = 1,

@@ -42,8 +42,8 @@ public class IndexedCollection<T> : IList<T>
         }
     }
 
-    public int IndexOf([NotNull] T item)
-        => item.Index;
+    public int IndexOf(T item)
+        => item?.Index ?? -1;
 
     public IEnumerator<T> GetEnumerator()
         => Source.GetEnumerator();

@@ -66,6 +66,10 @@ Used for cryptocurrency related commands.")]
 
     [Comment(@"Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api")]
     public string OsuApiKey { get; set; }
+    
+    [Comment(@"Optional Trovo client id.
+You should only use this if Trovo notifications stopped working or you're getting ratelimit errors.")]
+    public string TrovoClientId { get; set; }
 
     [Comment(@"Command and args which will be used to restart the bot.
 Only used if bot is executed directly (NOT through the coordinator)
@@ -188,11 +192,11 @@ This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsett
         public int TotalShards { get; set; } = 1;
         public string PatreonAccessToken { get; set; } = string.Empty;
         public string PatreonCampaignId { get; set; } = "334038";
-        public RestartConfig RestartCommand { get; set; } = null;
+        public RestartConfig RestartCommand { get; set; }
 
         public string ShardRunCommand { get; set; } = string.Empty;
         public string ShardRunArguments { get; set; } = string.Empty;
-        public int? ShardRunPort { get; set; } = null;
+        public int? ShardRunPort { get; set; }
         public string MiningProxyUrl { get; set; } = string.Empty;
         public string MiningProxyCreds { get; set; } = string.Empty;
 

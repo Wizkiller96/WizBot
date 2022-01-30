@@ -6,7 +6,8 @@ public static class CommandNameLoadHelper
 {
     private static readonly IDeserializer _deserializer = new Deserializer();
 
-    public static Lazy<Dictionary<string, string[]>> LazyCommandAliases = new(() => LoadAliases());
+    private static readonly Lazy<Dictionary<string, string[]>> _lazyCommandAliases 
+        = new(() => LoadAliases());
 
     public static Dictionary<string, string[]> LoadAliases(string aliasesFilePath = "data/aliases.yml")
     {
@@ -15,14 +16,14 @@ public static class CommandNameLoadHelper
     }
 
     public static string[] GetAliasesFor(string methodName)
-        => LazyCommandAliases.Value.TryGetValue(methodName.ToLowerInvariant(), out var aliases) && aliases.Length > 1
+        => _lazyCommandAliases.Value.TryGetValue(methodName.ToLowerInvariant(), out var aliases) && aliases.Length > 1
             ? aliases.Skip(1).ToArray()
             : Array.Empty<string>();
 
     public static string GetCommandNameFor(string methodName)
     {
         methodName = methodName.ToLowerInvariant();
-        var toReturn = LazyCommandAliases.Value.TryGetValue(methodName, out var aliases) && aliases.Length > 0
+        var toReturn = _lazyCommandAliases.Value.TryGetValue(methodName, out var aliases) && aliases.Length > 0
             ? aliases[0]
             : methodName;
         return toReturn;

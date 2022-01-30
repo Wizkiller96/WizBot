@@ -11,7 +11,8 @@ public class FollowedStream : DbEntity
         Twitch = 0,
         Picarto = 3,
         Youtube = 4,
-        Facebook = 5
+        Facebook = 5,
+        Trovo = 6
     }
 
     public ulong GuildId { get; set; }
