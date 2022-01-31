@@ -37,7 +37,7 @@ public abstract record SmartText
             var smartEmbedText = JsonConvert.DeserializeObject<SmartEmbedText>(input);
 
             if (smartEmbedText is null)
-                throw new();
+                throw new FormatException();
 
             smartEmbedText.NormalizeFields();
 

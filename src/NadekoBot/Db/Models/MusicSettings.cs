@@ -21,7 +21,7 @@ public class MusicPlayerSettings
     /// <summary>
     ///     Channel id the bot will always try to send track related messages to
     /// </summary>
-    public ulong? MusicChannelId { get; set; } = null;
+    public ulong? MusicChannelId { get; set; }
 
     /// <summary>
     ///     Default volume player will be created with
@@ -32,7 +32,7 @@ public class MusicPlayerSettings
     ///     Whether the bot should auto disconnect from the voice channel once the queue is done
     ///     This only has effect if
     /// </summary>
-    public bool AutoDisconnect { get; set; } = false;
+    public bool AutoDisconnect { get; set; }
 
     /// <summary>
     ///     Selected quality preset for the music player

@@ -341,38 +341,6 @@ public class GreetService : INService, IReadyExecutor
         return settings;
     }
 
-    public async Task<bool> SetSettings(ulong guildId, GreetSettings settings)
-    {
-        if (settings.AutoDeleteByeMessagesTimer is > 600 or < 0
-            || settings.AutoDeleteGreetMessagesTimer is > 600 or < 0)
-            return false;
-
-        await using var uow = _db.GetDbContext();
-        var conf = uow.GuildConfigsForId(guildId, set => set);
-        conf.DmGreetMessageText = settings.DmGreetMessageText?.SanitizeMentions();
-        conf.ChannelGreetMessageText = settings.ChannelGreetMessageText?.SanitizeMentions();
-        conf.ChannelByeMessageText = settings.ChannelByeMessageText?.SanitizeMentions();
-
-        conf.AutoDeleteGreetMessagesTimer = settings.AutoDeleteGreetMessagesTimer;
-        conf.AutoDeleteGreetMessages = settings.AutoDeleteGreetMessagesTimer > 0;
-
-        conf.AutoDeleteByeMessagesTimer = settings.AutoDeleteByeMessagesTimer;
-        conf.AutoDeleteByeMessages = settings.AutoDeleteByeMessagesTimer > 0;
-
-        conf.GreetMessageChannelId = settings.GreetMessageChannelId;
-        conf.ByeMessageChannelId = settings.ByeMessageChannelId;
-
-        conf.SendChannelGreetMessage = settings.SendChannelGreetMessage;
-        conf.SendChannelByeMessage = settings.SendChannelByeMessage;
-
-        await uow.SaveChangesAsync();
-
-        var toAdd = GreetSettings.Create(conf);
-        _guildConfigsCache[guildId] = toAdd;
-
-        return true;
-    }
-
     public async Task<bool> SetGreet(ulong guildId, ulong channelId, bool? value = null)
     {
         await using var uow = _db.GetDbContext();

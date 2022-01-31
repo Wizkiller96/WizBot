@@ -56,13 +56,13 @@ public partial class Administration
                 CultureInfo ci;
                 if (name.Trim().ToLowerInvariant() == "default")
                 {
-                    Localization.RemoveGuildCulture(ctx.Guild);
-                    ci = Localization.DefaultCultureInfo;
+                    _localization.RemoveGuildCulture(ctx.Guild);
+                    ci = _localization.DefaultCultureInfo;
                 }
                 else
                 {
                     ci = new(name);
-                    Localization.SetGuildCulture(ctx.Guild, ci);
+                    _localization.SetGuildCulture(ctx.Guild, ci);
                 }
 
                 await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)));
@@ -76,7 +76,7 @@ public partial class Administration
         [Cmd]
         public async partial Task LanguageSetDefault()
         {
-            var cul = Localization.DefaultCultureInfo;
+            var cul = _localization.DefaultCultureInfo;
             await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
         }
 
@@ -89,13 +89,13 @@ public partial class Administration
                 CultureInfo ci;
                 if (name.Trim().ToLowerInvariant() == "default")
                 {
-                    Localization.ResetDefaultCulture();
-                    ci = Localization.DefaultCultureInfo;
+                    _localization.ResetDefaultCulture();
+                    ci = _localization.DefaultCultureInfo;
                 }
                 else
                 {
                     ci = new(name);
-                    Localization.SetDefaultCulture(ci);
+                    _localization.SetDefaultCulture(ci);
                 }
 
                 await ReplyConfirmLocalizedAsync(strs.lang_set_bot(Format.Bold(ci.ToString()),

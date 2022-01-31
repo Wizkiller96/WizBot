@@ -22,6 +22,7 @@ global using GuildPerm = Discord.GuildPermission;
 global using ChannelPerm = Discord.ChannelPermission;
 global using BotPermAttribute = Discord.Commands.RequireBotPermissionAttribute;
 global using LeftoverAttribute = Discord.Commands.RemainderAttribute;
+global using TypeReaderResult = NadekoBot.Common.TypeReaders.TypeReaderResult;
 
 // non-essential
 global using JetBrains.Annotations;

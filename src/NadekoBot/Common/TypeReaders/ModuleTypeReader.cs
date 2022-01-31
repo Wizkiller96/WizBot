@@ -8,16 +8,16 @@ public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     public ModuleTypeReader(CommandService cmds)
         => _cmds = cmds;
 
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<ModuleInfo>> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
                           .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
                           ?.Key;
         if (module is null)
-            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
+            return new(TypeReaderResult.FromError<ModuleInfo>(CommandError.ParseFailed, "No such module found."));
 
-        return Task.FromResult(TypeReaderResult.FromSuccess(module));
+        return new(TypeReaderResult.FromSuccess(module));
     }
 }
 
@@ -28,16 +28,16 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
     public ModuleOrCrTypeReader(CommandService cmds)
         => _cmds = cmds;
 
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<ModuleOrCrInfo>> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
                           .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
                           ?.Key;
         if (module is null && input != "ACTUALEXPRESSIONS")
-            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "No such module found."));
+            return new(TypeReaderResult.FromError<ModuleOrCrInfo>(CommandError.ParseFailed, "No such module found."));
 
-        return Task.FromResult(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input }));
+        return new(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input }));
     }
 }
 

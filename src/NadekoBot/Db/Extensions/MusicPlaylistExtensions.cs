@@ -9,7 +9,7 @@ public static class MusicPlaylistExtensions
     public static List<MusicPlaylist> GetPlaylistsOnPage(this DbSet<MusicPlaylist> playlists, int num)
     {
         if (num < 1)
-            throw new IndexOutOfRangeException();
+            throw new ArgumentOutOfRangeException(nameof(num));
 
         return playlists.AsQueryable().Skip((num - 1) * 20).Take(20).Include(pl => pl.Songs).ToList();
     }

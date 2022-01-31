@@ -130,7 +130,7 @@ public partial class Utility
             var startCount = page * activityPerPage;
 
             var str = new StringBuilder();
-            foreach (var kvp in CmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value)
+            foreach (var kvp in _cmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value)
                                           .Skip(page * activityPerPage)
                                           .Take(activityPerPage))
                 str.AppendLine(GetText(strs.activity_line(++startCount,
@@ -142,7 +142,7 @@ public partial class Utility
                                             .WithTitle(GetText(strs.activity_page(page + 1)))
                                             .WithOkColor()
                                             .WithFooter(GetText(
-                                                strs.activity_users_total(CmdHandler.UserMessagesSent.Count)))
+                                                strs.activity_users_total(_cmdHandler.UserMessagesSent.Count)))
                                             .WithDescription(str.ToString()));
         }
     }

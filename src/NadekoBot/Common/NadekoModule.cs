@@ -11,19 +11,21 @@ namespace NadekoBot.Modules;
 public abstract class NadekoModule : ModuleBase
 {
     protected CultureInfo Culture { get; set; }
+    
+    // Injected by Discord.net
     public IBotStrings Strings { get; set; }
-    public CommandHandler CmdHandler { get; set; }
-    public ILocalization Localization { get; set; }
+    public CommandHandler _cmdHandler { get; set; }
+    public ILocalization _localization { get; set; }
     public IEmbedBuilderService _eb { get; set; }
 
     protected string prefix
-        => CmdHandler.GetPrefix(ctx.Guild);
+        => _cmdHandler.GetPrefix(ctx.Guild);
 
     protected ICommandContext ctx
         => Context;
 
-    protected override void BeforeExecute(CommandInfo cmd)
-        => Culture = Localization.GetCultureInfo(ctx.Guild?.Id);
+    protected override void BeforeExecute(CommandInfo command)
+        => Culture = _localization.GetCultureInfo(ctx.Guild?.Id);
 
     protected string GetText(in LocStr data)
         => Strings.GetText(data, Culture);

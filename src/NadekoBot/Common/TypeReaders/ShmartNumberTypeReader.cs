@@ -18,12 +18,10 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         _gambling = gambling;
     }
 
-    public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<ShmartNumber>> ReadAsync(ICommandContext context, string input)
     {
-        await Task.Yield();
-
         if (string.IsNullOrWhiteSpace(input))
-            return TypeReaderResult.FromError(CommandError.ParseFailed, "Input is empty.");
+            return new(TypeReaderResult.FromError<ShmartNumber>(CommandError.ParseFailed, "Input is empty."));
 
         var i = input.Trim().ToUpperInvariant();
 
@@ -32,17 +30,17 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         //can't add m because it will conflict with max atm
 
         if (TryHandlePercentage(context, i, out var num))
-            return TypeReaderResult.FromSuccess(new ShmartNumber(num, i));
+            return new(TypeReaderResult.FromSuccess(new ShmartNumber(num, i)));
         try
         {
             var expr = new Expression(i, EvaluateOptions.IgnoreCase);
             expr.EvaluateParameter += (str, ev) => EvaluateParam(str, ev, context);
             var lon = (long)decimal.Parse(expr.Evaluate().ToString());
-            return TypeReaderResult.FromSuccess(new ShmartNumber(lon, input));
+            return new(TypeReaderResult.FromSuccess(new ShmartNumber(lon, input)));
         }
         catch (Exception)
         {
-            return TypeReaderResult.FromError(CommandError.ParseFailed, $"Invalid input: {input}");
+            return ValueTask.FromResult(TypeReaderResult.FromError<Common.ShmartNumber>(CommandError.ParseFailed, $"Invalid input: {input}"));
         }
     }
 

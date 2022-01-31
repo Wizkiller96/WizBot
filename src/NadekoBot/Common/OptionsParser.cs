@@ -17,8 +17,8 @@ public static class OptionsParser
             x.HelpWriter = null;
         });
         var res = p.ParseArguments<T>(args);
-        options = res.MapResult(x => x, _ => options);
-        options.NormalizeOptions();
-        return (options, res.Tag == ParserResultType.Parsed);
+        var output = res.MapResult(x => x, _ => options);
+        output.NormalizeOptions();
+        return (output, res.Tag == ParserResultType.Parsed);
     }
 }

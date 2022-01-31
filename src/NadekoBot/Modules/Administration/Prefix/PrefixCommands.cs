@@ -14,7 +14,7 @@ public partial class Administration
         [Cmd]
         [Priority(1)]
         public async partial Task Prefix()
-            => await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(CmdHandler.GetPrefix(ctx.Guild))));
+            => await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(_cmdHandler.GetPrefix(ctx.Guild))));
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -33,7 +33,7 @@ public partial class Administration
                 return;
 
             var oldPrefix = prefix;
-            var newPrefix = CmdHandler.SetPrefix(ctx.Guild, toSet);
+            var newPrefix = _cmdHandler.SetPrefix(ctx.Guild, toSet);
 
             await ReplyConfirmLocalizedAsync(strs.prefix_new(Format.Code(oldPrefix), Format.Code(newPrefix)));
         }
@@ -44,12 +44,12 @@ public partial class Administration
         {
             if (string.IsNullOrWhiteSpace(toSet))
             {
-                await ReplyConfirmLocalizedAsync(strs.defprefix_current(CmdHandler.GetPrefix()));
+                await ReplyConfirmLocalizedAsync(strs.defprefix_current(_cmdHandler.GetPrefix()));
                 return;
             }
 
-            var oldPrefix = CmdHandler.GetPrefix();
-            var newPrefix = CmdHandler.SetDefaultPrefix(toSet);
+            var oldPrefix = _cmdHandler.GetPrefix();
+            var newPrefix = _cmdHandler.SetDefaultPrefix(toSet);
 
             await ReplyConfirmLocalizedAsync(strs.defprefix_new(Format.Code(oldPrefix), Format.Code(newPrefix)));
         }

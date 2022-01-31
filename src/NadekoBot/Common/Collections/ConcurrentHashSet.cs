@@ -1,6 +1,5 @@
 ﻿#nullable disable
 #pragma warning disable
-#pragma warning disable *
 // License MIT
 // Source: https://github.com/i3arnon/ConcurrentHashSet
 

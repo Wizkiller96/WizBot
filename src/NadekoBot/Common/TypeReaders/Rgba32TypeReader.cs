@@ -5,7 +5,7 @@ namespace NadekoBot.Common.TypeReaders;
 
 public sealed class Rgba32TypeReader : NadekoTypeReader<Color>
 {
-    public override async Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override async ValueTask<TypeReaderResult<Color>> ReadAsync(ICommandContext context, string input)
     {
         await Task.Yield();
 
@@ -16,7 +16,7 @@ public sealed class Rgba32TypeReader : NadekoTypeReader<Color>
         }
         catch
         {
-            return TypeReaderResult.FromError(CommandError.ParseFailed, "Parameter is not a valid color hex.");
+            return TypeReaderResult.FromError<Color>(CommandError.ParseFailed, "Parameter is not a valid color hex.");
         }
     }
 }

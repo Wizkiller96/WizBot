@@ -8,7 +8,7 @@ namespace NadekoBot.Common.TypeReaders;
 /// </summary>
 public sealed class PermissionActionTypeReader : NadekoTypeReader<PermissionAction>
 {
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<PermissionAction>> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
         switch (input)
@@ -21,7 +21,7 @@ public sealed class PermissionActionTypeReader : NadekoTypeReader<PermissionActi
             case "ALLOW":
             case "PERMIT":
             case "UNBAN":
-                return Task.FromResult(TypeReaderResult.FromSuccess(PermissionAction.Enable));
+                return new(TypeReaderResult.FromSuccess(PermissionAction.Enable));
             case "0":
             case "F":
             case "FALSE":
@@ -30,9 +30,9 @@ public sealed class PermissionActionTypeReader : NadekoTypeReader<PermissionActi
             case "DISABLED":
             case "DISALLOW":
             case "BAN":
-                return Task.FromResult(TypeReaderResult.FromSuccess(PermissionAction.Disable));
+                return new(TypeReaderResult.FromSuccess(PermissionAction.Disable));
             default:
-                return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed,
+                return new(TypeReaderResult.FromError<PermissionAction>(CommandError.ParseFailed,
                     "Did not receive a valid boolean value"));
         }
     }

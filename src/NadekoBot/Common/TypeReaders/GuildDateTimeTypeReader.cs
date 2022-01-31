@@ -10,14 +10,14 @@ public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
     public GuildDateTimeTypeReader(GuildTimezoneService gts)
         => _gts = gts;
 
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<GuildDateTime>> ReadAsync(ICommandContext context, string input)
     {
         var gdt = Parse(context.Guild.Id, input);
         if (gdt is null)
-            return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed,
+            return new(TypeReaderResult.FromError<GuildDateTime>(CommandError.ParseFailed,
                 "Input string is in an incorrect format."));
 
-        return Task.FromResult(TypeReaderResult.FromSuccess(gdt));
+        return new(TypeReaderResult.FromSuccess(gdt));
     }
 
     private GuildDateTime Parse(ulong guildId, string input)

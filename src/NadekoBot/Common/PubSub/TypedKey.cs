@@ -2,7 +2,7 @@ namespace NadekoBot.Common;
 
 public readonly struct TypedKey<TData>
 {
-    public readonly string Key;
+    public string Key { get; }
 
     public TypedKey(in string key)
         => Key = key;

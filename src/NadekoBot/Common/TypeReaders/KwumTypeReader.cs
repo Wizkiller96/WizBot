@@ -3,17 +3,17 @@ namespace NadekoBot.Common.TypeReaders;
 
 public sealed class KwumTypeReader : NadekoTypeReader<kwum>
 {
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<kwum>> ReadAsync(ICommandContext context, string input)
     {
         if (kwum.TryParse(input, out var val))
-            return Task.FromResult(TypeReaderResult.FromSuccess(val));
+            return new(TypeReaderResult.FromSuccess(val));
 
-        return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Input is not a valid kwum"));
+        return new(TypeReaderResult.FromError<kwum>(CommandError.ParseFailed, "Input is not a valid kwum"));
     }
 }
 
 public sealed class SmartTextTypeReader : NadekoTypeReader<SmartText>
 {
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext ctx, string input)
-        => Task.FromResult(TypeReaderResult.FromSuccess(SmartText.CreateFrom(input)));
+    public override ValueTask<TypeReaderResult<SmartText>> ReadAsync(ICommandContext ctx, string input)
+        => new(TypeReaderResult.FromSuccess(SmartText.CreateFrom(input)));
 }

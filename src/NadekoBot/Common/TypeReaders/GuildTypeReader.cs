@@ -8,18 +8,17 @@ public sealed class GuildTypeReader : NadekoTypeReader<IGuild>
     public GuildTypeReader(DiscordSocketClient client)
         => _client = client;
 
-    public override Task<TypeReaderResult> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<IGuild>> ReadAsync(ICommandContext context, string input)
     {
         input = input.Trim().ToUpperInvariant();
         var guilds = _client.Guilds;
-        var guild = guilds.FirstOrDefault(g => g.Id.ToString().Trim().ToUpperInvariant() == input)
-                    ?? //by id
-                    guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == input); //by name
+        IGuild guild = guilds.FirstOrDefault(g => g.Id.ToString().Trim().ToUpperInvariant() == input) //by id
+                       ?? guilds.FirstOrDefault(g => g.Name.Trim().ToUpperInvariant() == input); //by name
 
         if (guild is not null)
-            return Task.FromResult(TypeReaderResult.FromSuccess(guild));
+            return new(TypeReaderResult.FromSuccess(guild));
 
-        return Task.FromResult(
-            TypeReaderResult.FromError(CommandError.ParseFailed, "No guild by that name or Id found"));
+        return new(
+            TypeReaderResult.FromError<IGuild>(CommandError.ParseFailed, "No guild by that name or Id found"));
     }
 }
