@@ -1,6 +1,8 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Searches.Common;
-using Newtonsoft.Json;
+using System.Net.Http.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using StringExtensions = NadekoBot.Extensions.StringExtensions;
 
 namespace NadekoBot.Modules.Searches.Services;
 
@@ -19,38 +21,36 @@ public class CryptoService : INService
         _creds = creds;
     }
 
-    public async Task<(CryptoResponseData Data, CryptoResponseData Nearest)> GetCryptoData(string name)
+    public async Task<(CmcResponseData Data, CmcResponseData Nearest)> GetCryptoData(string name)
     {
-        if (string.IsNullOrWhiteSpace(name)) return (null, null);
+        if (string.IsNullOrWhiteSpace(name))
+            return (null, null);
 
         name = name.ToUpperInvariant();
-        var cryptos = await CryptoData();
+        var cryptos = await GetCryptoDataInternal();
 
         if (cryptos is null)
             return (null, null);
 
         var crypto = cryptos?.FirstOrDefault(x
-            => x.Id.ToUpperInvariant() == name
+            => x.Slug.ToUpperInvariant() == name
                || x.Name.ToUpperInvariant() == name
                || x.Symbol.ToUpperInvariant() == name);
 
-        (CryptoResponseData Elem, int Distance)? nearest = null;
-        if (crypto is null)
-        {
-            nearest = cryptos.Select(x => (x, Distance: x.Name.ToUpperInvariant().LevenshteinDistance(name)))
-                             .OrderBy(x => x.Distance)
-                             .Where(x => x.Distance <= 2)
-                             .FirstOrDefault();
+        if (crypto is not null)
+            return (crypto, null);
 
-            crypto = nearest?.Elem;
-        }
 
-        if (nearest is not null) return (null, crypto);
+        var nearest = cryptos
+                      .Select(elem => (Elem: elem,
+                          Distance: StringExtensions.LevenshteinDistance(elem.Name.ToUpperInvariant(), name)))
+                      .OrderBy(x => x.Distance)
+                      .FirstOrDefault(x => x.Distance <= 2);
 
-        return (crypto, null);
+        return (null, nearest.Elem);
     }
 
-    public async Task<List<CryptoResponseData>> CryptoData()
+    public async Task<List<CmcResponseData>> GetCryptoDataInternal()
     {
         await _getCryptoLock.WaitAsync();
         try
@@ -61,16 +61,14 @@ public class CryptoService : INService
                     try
                     {
                         using var http = _httpFactory.CreateClient();
-                        var strData = await http.GetStringAsync(
+                        var strData = await http.GetFromJsonAsync<CryptoResponse>(
                             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?"
                             + $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}"
                             + "&start=1"
                             + "&limit=5000"
                             + "&convert=USD");
-
-                        JsonConvert.DeserializeObject<CryptoResponse>(strData); // just to see if its' valid
-
-                        return strData;
+                        
+                        return JsonSerializer.Serialize(strData);
                     }
                     catch (Exception ex)
                     {
@@ -81,7 +79,7 @@ public class CryptoService : INService
                 "",
                 TimeSpan.FromHours(2));
 
-            return JsonConvert.DeserializeObject<CryptoResponse>(fullStrData)?.Data ?? new();
+            return JsonSerializer.Deserialize<CryptoResponse>(fullStrData)?.Data ?? new();
         }
         catch (Exception ex)
         {

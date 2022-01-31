@@ -33,27 +33,29 @@ public partial class Searches
                 return;
             }
 
-            var sevenDay = decimal.TryParse(crypto.Quote.Usd.Percent_Change_7d, out var sd)
-                ? sd.ToString("F2")
-                : crypto.Quote.Usd.Percent_Change_7d;
+            var usd = crypto.Quote["USD"];
 
-            var lastDay = decimal.TryParse(crypto.Quote.Usd.Percent_Change_24h, out var ld)
-                ? ld.ToString("F2")
-                : crypto.Quote.Usd.Percent_Change_24h;
+            var sevenDay = usd.PercentChange7d.ToString("F2", Culture);
+            var lastDay = usd.PercentChange24h.ToString("F2", Culture);
+            var price = usd.Price < 0.01
+                ? usd.Price.ToString(Culture)
+                : usd.Price.ToString("F2", Culture);
 
+            var volume = usd.Volume24h.ToString("n0", Culture);
+            var marketCap = usd.MarketCap.ToString("n0", Culture);
+            
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
+                                            .WithAuthor($"#{crypto.CmcRank}")
                                             .WithTitle($"{crypto.Name} ({crypto.Symbol})")
                                             .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
                                             .WithThumbnailUrl(
                                                 $"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
                                             .AddField(GetText(strs.market_cap),
-                                                $"${crypto.Quote.Usd.Market_Cap:n0}",
+                                                $"${marketCap}",
                                                 true)
-                                            .AddField(GetText(strs.price), $"${crypto.Quote.Usd.Price}", true)
-                                            .AddField(GetText(strs.volume_24h),
-                                                $"${crypto.Quote.Usd.Volume_24h:n0}",
-                                                true)
+                                            .AddField(GetText(strs.price), $"${price}", true)
+                                            .AddField(GetText(strs.volume_24h), $"${volume}", true)
                                             .AddField(GetText(strs.change_7d_24h), $"{sevenDay}% / {lastDay}%", true)
                                             .WithImageUrl(
                                                 $"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png"));
