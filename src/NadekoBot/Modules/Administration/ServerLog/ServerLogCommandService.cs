@@ -507,7 +507,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private bool IsRoleDeleted(ulong roleId)
     {
-        var isDeleted = _memoryCache.TryGetValue(GetRoleDeletedKey(roleId), out var _);
+        var isDeleted = _memoryCache.TryGetValue(GetRoleDeletedKey(roleId), out _);
         return isDeleted;
     }
 

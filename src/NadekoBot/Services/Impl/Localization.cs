@@ -69,7 +69,7 @@ public class Localization : ILocalization, INService
 
     public void RemoveGuildCulture(ulong guildId)
     {
-        if (GuildCultureInfos.TryRemove(guildId, out var _))
+        if (GuildCultureInfos.TryRemove(guildId, out _))
         {
             using var uow = _db.GetDbContext();
             var gc = uow.GuildConfigsForId(guildId, set => set);

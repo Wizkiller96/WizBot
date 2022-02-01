@@ -86,7 +86,7 @@ public sealed class NunchiGame : IDisposable
 
             CurrentPhase = Phase.Playing;
             _= OnGameStarted?.Invoke(this);
-            var __ = OnRoundStarted?.Invoke(this, CurrentNumber);
+            _ = OnRoundStarted?.Invoke(this, CurrentNumber);
             return true;
         }
         finally { _locker.Release(); }

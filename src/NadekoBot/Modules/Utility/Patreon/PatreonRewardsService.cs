@@ -117,10 +117,10 @@ public class PatreonRewardsService : INService, IReadyExecutor
 
     private bool HasPatreonCreds(IBotCredentials creds)
     {
-        var _1 = creds.Patreon.ClientId;
-        var _2 = creds.Patreon.ClientSecret;
-        var _4 = creds.Patreon.RefreshToken;
-        return !(string.IsNullOrWhiteSpace(_1) || string.IsNullOrWhiteSpace(_2) || string.IsNullOrWhiteSpace(_4));
+        var cid = creds.Patreon.ClientId;
+        var cs = creds.Patreon.ClientSecret;
+        var rt = creds.Patreon.RefreshToken;
+        return !(string.IsNullOrWhiteSpace(cid) || string.IsNullOrWhiteSpace(cs) || string.IsNullOrWhiteSpace(rt));
     }
 
     public async Task RefreshPledges(IBotCredentials creds)

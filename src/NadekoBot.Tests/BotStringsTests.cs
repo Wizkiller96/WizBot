@@ -62,7 +62,7 @@ namespace NadekoBot.Tests
             var isSuccess = true;
             foreach (var methodName in methodNames)
             {
-                if (!allAliases.TryGetValue(methodName, out var _))
+                if (!allAliases.TryGetValue(methodName, out _))
                 {
                     TestContext.Error.WriteLine($"{methodName} is missing an alias.");
                     isSuccess = false;

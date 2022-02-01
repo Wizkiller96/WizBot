@@ -96,7 +96,7 @@ public sealed class Connect4Game : IDisposable
             {
                 if (_players[1] is null)
                 {
-                    var __ = OnGameFailedToStart?.Invoke(this);
+                    _ = OnGameFailedToStart?.Invoke(this);
                     CurrentPhase = Phase.Ended;
                     await _cs.AddAsync(_players[0].Value.UserId, _options.Bet, new("connect4", "refund"));
                 }
@@ -145,7 +145,7 @@ public sealed class Connect4Game : IDisposable
                 null,
                 TimeSpan.FromSeconds(_options.TurnTimer),
                 TimeSpan.FromSeconds(_options.TurnTimer));
-            var __ = OnGameStateUpdated?.Invoke(this);
+            _ = OnGameStateUpdated?.Invoke(this);
 
             return true;
         }

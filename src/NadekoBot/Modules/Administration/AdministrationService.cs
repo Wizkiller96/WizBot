@@ -117,7 +117,7 @@ public class AdministrationService : INService
         }
         else
         {
-            DeleteMessagesOnCommandChannels.TryRemove(chId, out var _);
+            DeleteMessagesOnCommandChannels.TryRemove(chId, out _);
         }
     }
 
