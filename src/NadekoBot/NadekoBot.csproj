@@ -15,7 +15,7 @@
     <!-- Analysis/Warnings -->
 <!--    <AnalysisMode>Recommended</AnalysisMode>-->
 <!--    <AnalysisModeGlobalization>None</AnalysisModeGlobalization>-->
-<!--    <AnalysisModeNaming>None</AnalysisModeNaming>    -->
+    <AnalysisModeNaming>None</AnalysisModeNaming>    
     <NoWarn>CS1066</NoWarn>
   </PropertyGroup>
   

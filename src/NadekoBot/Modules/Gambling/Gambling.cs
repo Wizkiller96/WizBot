@@ -64,7 +64,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _configService = configService;
     }
 
-    private string n(long cur)
+    private string N(long cur)
     {
         var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
@@ -78,7 +78,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var wallet = await _cs.GetWalletAsync(userId);
         var bal = await wallet.GetBalance();
-        return n(bal);
+        return N(bal);
     }
 
     [Cmd]
@@ -99,7 +99,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                        .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
                        .AddField(GetText(strs.currency_planted), (BigInteger)ec.Planted)
                        .AddField(GetText(strs.owned_waifus_total), (BigInteger)ec.Waifus + CurrencySign)
-                       .AddField(GetText(strs.bot_currency), n(ec.Bot))
+                       .AddField(GetText(strs.bot_currency), N(ec.Bot))
                        .AddField(GetText(strs.total),
                            ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", Culture) + CurrencySign)
                        .WithOkColor();
@@ -127,7 +127,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        await ReplyConfirmLocalizedAsync(strs.timely(n(val), period));
+        await ReplyConfirmLocalizedAsync(strs.timely(N(val), period));
     }
 
     [Cmd]
@@ -154,7 +154,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (amount == 0)
             await ReplyConfirmLocalizedAsync(strs.timely_set_none);
         else
-            await ReplyConfirmLocalizedAsync(strs.timely_set(Format.Bold(n(amount)), Format.Bold(period.ToString())));
+            await ReplyConfirmLocalizedAsync(strs.timely_set(Format.Bold(N(amount)), Format.Bold(period.ToString())));
     }
 
     [Cmd]
@@ -230,7 +230,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             var date = $"#{Format.Code(kwumId)} `〖{GetFormattedCurtrDate(tr)}〗`";
             
             
-            sb.AppendLine($"\\{change} {date} {Format.Bold(n(tr.Amount))}");
+            sb.AppendLine($"\\{change} {date} {Format.Bold(N(tr.Amount))}");
             var transactionString = GetHumanReadableTransaction(tr.Type, tr.Extra, tr.OtherId);
             if(transactionString is not null)
                 sb.AppendLine(transactionString);
@@ -270,7 +270,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         eb.WithAuthor(ctx.User);
         eb.WithTitle(GetText(strs.transaction));
         eb.WithDescription(new kwum(tr.Id).ToString());
-        eb.AddField("Amount", n(tr.Amount), false);
+        eb.AddField("Amount", N(tr.Amount));
         eb.AddField("Type", tr.Type, true);
         eb.AddField("Extra", tr.Extra, true);
         
@@ -332,7 +332,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        await ReplyConfirmLocalizedAsync(strs.gifted(n(amount), Format.Bold(receiver.ToString())));
+        await ReplyConfirmLocalizedAsync(strs.gifted(N(amount), Format.Bold(receiver.ToString())));
     }
 
     [Cmd]
@@ -375,7 +375,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             amount,
             new TxData("award", ctx.User.ToString()!, msg, ctx.User.Id)
         );
-        await ReplyConfirmLocalizedAsync(strs.awarded(n(amount), $"<@{usrId}>"));
+        await ReplyConfirmLocalizedAsync(strs.awarded(N(amount), $"<@{usrId}>"));
     }
 
     [Cmd]
@@ -393,7 +393,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 role.Name,
                 ctx.User.Id));
 
-        await ReplyConfirmLocalizedAsync(strs.mass_award(n(amount),
+        await ReplyConfirmLocalizedAsync(strs.mass_award(N(amount),
             Format.Bold(users.Count.ToString()),
             Format.Bold(role.Name)));
     }
@@ -413,7 +413,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 null,
                 ctx.User.Id));
 
-        await ReplyConfirmLocalizedAsync(strs.mass_take(n(amount),
+        await ReplyConfirmLocalizedAsync(strs.mass_take(N(amount),
             Format.Bold(users.Count.ToString()),
             Format.Bold(role.Name)));
     }
@@ -433,9 +433,9 @@ public partial class Gambling : GamblingModule<GamblingService>
             ctx.User.Id);
         
         if (await _cs.RemoveAsync(user.Id, amount, extra))
-            await ReplyConfirmLocalizedAsync(strs.take(n(amount), Format.Bold(user.ToString())));
+            await ReplyConfirmLocalizedAsync(strs.take(N(amount), Format.Bold(user.ToString())));
         else
-            await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Bold(user.ToString()), CurrencySign));
+            await ReplyErrorLocalizedAsync(strs.take_fail(N(amount), Format.Bold(user.ToString()), CurrencySign));
     }
 
 
@@ -452,9 +452,9 @@ public partial class Gambling : GamblingModule<GamblingService>
             ctx.User.Id);
         
         if (await _cs.RemoveAsync(usrId, amount, extra))
-            await ReplyConfirmLocalizedAsync(strs.take(n(amount), $"<@{usrId}>"));
+            await ReplyConfirmLocalizedAsync(strs.take(N(amount), $"<@{usrId}>"));
         else
-            await ReplyErrorLocalizedAsync(strs.take_fail(n(amount), Format.Code(usrId.ToString()), CurrencySign));
+            await ReplyErrorLocalizedAsync(strs.take_fail(N(amount), Format.Code(usrId.ToString()), CurrencySign));
     }
 
     [Cmd]
@@ -502,7 +502,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
             await ReplyConfirmLocalizedAsync(strs.roll_duel_challenge(Format.Bold(ctx.User.ToString()),
                 Format.Bold(u.ToString()),
-                Format.Bold(n(amount))));
+                Format.Bold(N(amount))));
         }
 
         async Task GameOnGameTick(RollDuelGame arg)
@@ -530,7 +530,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 if (reason == RollDuelGame.Reason.Normal)
                 {
                     var winner = rdGame.Winner == rdGame.P1 ? ctx.User : u;
-                    description += $"\n**{winner}** Won {n((long)(rdGame.Amount * 2 * 0.98))}";
+                    description += $"\n**{winner}** Won {N((long)(rdGame.Amount * 2 * 0.98))}";
 
                     embed = embed.WithDescription(description);
 
@@ -572,7 +572,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (result.Multiplier > 0)
         {
             var win = (long)(amount * result.Multiplier);
-            str += GetText(strs.br_win(n(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
+            str += GetText(strs.br_win(N(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
             await _cs.AddAsync(ctx.User, win, new("betroll", "win"));
         }
         else
@@ -655,7 +655,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                     var usrStr = x.ToString().TrimTo(20, true);
 
                     var j = i;
-                    embed.AddField("#" + ((9 * curPage) + j + 1) + " " + usrStr, n(x.CurrencyAmount), true);
+                    embed.AddField("#" + ((9 * curPage) + j + 1) + " " + usrStr, N(x.CurrencyAmount), true);
                 }
 
                 return embed;
@@ -668,7 +668,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     public async partial Task Rps(RpsPick pick, ShmartNumber amount = default)
     {
-        long oldAmount = amount;
         if (!await CheckBetOptional(amount) || amount == 1)
             return;
 
@@ -714,13 +713,12 @@ public partial class Gambling : GamblingModule<GamblingService>
             amount = (long)(amount * Config.BetFlip.Multiplier);
             await _cs.AddAsync(ctx.User.Id, amount, new("rps", "win"));
             embed.WithOkColor();
-            embed.AddField(GetText(strs.won), n(amount));
+            embed.AddField(GetText(strs.won), N(amount));
             msg = GetText(strs.rps_win(ctx.User.Mention, GetRpsPick(pick), GetRpsPick(nadekoPick)));
         }
         else
         {
             embed.WithErrorColor();
-            amount = 0;
             msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, GetRpsPick(nadekoPick), GetRpsPick(pick)));
         }
 

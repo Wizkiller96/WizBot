@@ -154,21 +154,21 @@ public sealed class NunchiGame : IDisposable
         if (failure is not null)
             participants.Remove(failure.Value); // remove the dude who failed from the list of players
 
-        var __ = OnRoundEnded?.Invoke(this, failure);
+        _ = OnRoundEnded?.Invoke(this, failure);
         if (participants.Count <= 1) // means we have a winner or everyone was booted out
         {
             killTimer.Change(Timeout.Infinite, Timeout.Infinite);
             CurrentPhase = Phase.Ended;
-            _= OnGameEnded?.Invoke(this, participants.Count > 0 ? participants.First().Name : null);
+            _ = OnGameEnded?.Invoke(this, participants.Count > 0 ? participants.First().Name : null);
             return;
         }
 
         CurrentPhase = Phase.WaitingForNextRound;
-        var throwawayDelay = Task.Run(async () =>
+        Task.Run(async () =>
         {
             await Task.Delay(NEXT_ROUND_TIMEOUT);
             CurrentPhase = Phase.Playing;
-            var ___ = OnRoundStarted?.Invoke(this, CurrentNumber);
+            _ = OnRoundStarted?.Invoke(this, CurrentNumber);
         });
     }
 

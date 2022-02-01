@@ -282,8 +282,11 @@ public partial class Gambling
                                                                   .ShopEntries);
                 entry = entries.ElementAtOrDefault(index);
                 if (entry is not null && (rightType = entry.Type == ShopEntryType.List))
-                    if (added = entry.Items.Add(item))
+                    if (entry.Items.Add(item))
+                    {
+                        added = true;
                         uow.SaveChanges();
+                    }
             }
 
             if (entry is null)

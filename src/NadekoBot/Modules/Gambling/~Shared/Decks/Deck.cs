@@ -130,7 +130,7 @@ public class Deck
             var toReturn = cards.Max(card => card.Number) - cards.Min(card => card.Number) == 4;
             if (toReturn || cards.All(c => c.Number != 1)) return toReturn;
 
-            var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c);
+            var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c).ToArray();
             return newCards.Max(card => card.Number) - newCards.Min(card => card.Number) == 4;
         }
 

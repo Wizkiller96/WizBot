@@ -1,7 +1,6 @@
 #nullable disable
 using LinqToDB;
 using NadekoBot.Services.Currency;
-using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Services;
 
@@ -66,9 +65,6 @@ public class CurrencyService : ICurrencyService, INService
 
         throw new ArgumentOutOfRangeException(nameof(type));
     }
-
-    private CurrencyTransaction GetCurrencyTransaction(ulong userId, string reason, long amount)
-        => new() { Amount = amount, UserId = userId, Note = reason ?? "-" };
 
     public async Task AddAsync(
         ulong userId,

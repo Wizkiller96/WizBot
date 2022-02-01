@@ -38,7 +38,7 @@ public partial class Searches
 
             var rawJson = await res.Content.ReadAsStringAsync();
 
-            var data = JsonConvert.DeserializeObject<List<MemegenTemplate>>(rawJson);
+            var data = JsonConvert.DeserializeObject<List<MemegenTemplate>>(rawJson)!;
 
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage =>

@@ -107,7 +107,6 @@ public class SearchImageCacher : INService
 
     private ImageData QueryLocal(
         string[] tags,
-        bool forceExplicit,
         Booru type,
         HashSet<string> blacklistedTags)
     {
@@ -194,7 +193,7 @@ public class SearchImageCacher : INService
             return default;
 
         // query for an image
-        var image = QueryLocal(tags, forceExplicit, type, blacklistedTags);
+        var image = QueryLocal(tags, type, blacklistedTags);
         if (image is not null)
             return image;
 
@@ -211,7 +210,7 @@ public class SearchImageCacher : INService
         if (!success)
             return default;
 
-        image = QueryLocal(tags, forceExplicit, type, blacklistedTags);
+        image = QueryLocal(tags, type, blacklistedTags);
 
         return image;
     }

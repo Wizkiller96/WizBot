@@ -1,5 +1,4 @@
 using Ayu.Discord.Voice;
-using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -291,10 +290,10 @@ public sealed class MusicPlayer : IMusicPlayer
 
     private void HandleQueuePostTrack()
     {
-        if (this.forceIndex is { } forceIndex)
+        if (forceIndex is { } index)
         {
-            _queue.SetIndex(forceIndex);
-            this.forceIndex = null;
+            _queue.SetIndex(index);
+            forceIndex = null;
             return;
         }
 

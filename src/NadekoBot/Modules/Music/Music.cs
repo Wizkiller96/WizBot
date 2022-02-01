@@ -337,7 +337,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         var videos = await _service.SearchVideosAsync(query);
 
-        if (videos is null || videos.Count == 0)
+        if (videos.Count == 0)
         {
             await ReplyErrorLocalizedAsync(strs.song_not_found);
             return;

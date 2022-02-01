@@ -48,15 +48,6 @@ public class GirlRating
                 var imgStream = new MemoryStream();
                 img.SaveAsPng(imgStream);
                 return imgStream;
-                //using (var byteContent = new ByteArrayContent(imgStream.ToArray()))
-                //{
-                //    http.AddFakeHeaders();
-
-                //    using (var reponse = await http.PutAsync("https://transfer.sh/img.png", byteContent))
-                //    {
-                //        url = await reponse.Content.ReadAsStringAsync();
-                //    }
-                //}
             }
             catch (Exception ex)
             {

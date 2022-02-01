@@ -189,9 +189,9 @@ public partial class Gambling
             if (page > 100)
                 page = 100;
 
-            var waifus = _service.GetTopWaifusAtPage(page);
+            var waifus = _service.GetTopWaifusAtPage(page).ToList();
 
-            if (waifus.Count() == 0)
+            if (waifus.Count == 0)
             {
                 await ReplyConfirmLocalizedAsync(strs.waifus_none);
                 return;

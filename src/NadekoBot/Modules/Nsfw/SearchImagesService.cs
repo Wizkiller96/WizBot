@@ -53,7 +53,7 @@ public class SearchImagesService : ISearchImagesService, INService
         using var uow = db.GetDbContext();
         BlacklistedTags = new(uow.NsfwBlacklistedTags.AsEnumerable()
                                  .GroupBy(x => x.GuildId)
-                                 .ToDictionary(x => x.Key, x => new HashSet<string>(x.Select(x => x.Tag))));
+                                 .ToDictionary(x => x.Key, x => new HashSet<string>(x.Select(y => y.Tag))));
     }
 
     private Task<UrlReply> GetNsfwImageAsync(

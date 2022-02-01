@@ -59,8 +59,6 @@ public partial class Games
         [RequireContext(ContextType.Guild)]
         public async partial Task Pollend()
         {
-            var channel = (ITextChannel)ctx.Channel;
-
             Poll p;
             if ((p = _service.StopPoll(ctx.Guild.Id)) is null)
                 return;

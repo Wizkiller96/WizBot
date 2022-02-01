@@ -520,16 +520,16 @@ public partial class Searches : NadekoModule<SearchesService>
             await ctx.SendPaginatedConfirmAsync(0,
                 page =>
                 {
-                    var data = col.Skip(page).First();
+                    var model = col.Skip(page).First();
                     var embed = _eb.Create()
                                    .WithDescription(ctx.User.Mention)
-                                   .AddField(GetText(strs.word), data.Word, true)
-                                   .AddField(GetText(strs._class), data.WordType, true)
-                                   .AddField(GetText(strs.definition), data.Definition)
+                                   .AddField(GetText(strs.word), model.Word, true)
+                                   .AddField(GetText(strs._class), model.WordType, true)
+                                   .AddField(GetText(strs.definition), model.Definition)
                                    .WithOkColor();
 
-                    if (!string.IsNullOrWhiteSpace(data.Example))
-                        embed.AddField(GetText(strs.example), data.Example);
+                    if (!string.IsNullOrWhiteSpace(model.Example))
+                        embed.AddField(GetText(strs.example), model.Example);
 
                     return embed;
                 },

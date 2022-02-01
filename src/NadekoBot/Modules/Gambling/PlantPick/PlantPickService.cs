@@ -112,7 +112,7 @@ public class PlantPickService : INService
         if (string.IsNullOrWhiteSpace(pass))
         {
             // determine the extension
-            using (var img = Image.Load(curImg, out var format))
+            using (_ = Image.Load(curImg, out var format))
             {
                 extension = format.FileExtensions.FirstOrDefault() ?? "png";
             }

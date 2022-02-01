@@ -229,6 +229,7 @@ public class SearchesService : INService
                 + $"&by=position"
                 + $"&lat={geoData.Lat}"
                 + $"&lng={geoData.Lon}");
+
             using var geoRes = await http.SendAsync(req);
             var resString = await geoRes.Content.ReadAsStringAsync();
             var timeObj = JsonConvert.DeserializeObject<TimeZoneResult>(resString);
