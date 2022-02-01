@@ -8,12 +8,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ## Changes
 
 ### Added
-
 - Added `.deleteemptyservers` command
 - Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
+- Added trovo.live support for stream notifications (`.stadd`) 
 
 ### Fixed
-
 - Fixed an extra whitespace in usage part of command help if the command has no arguments  
 - Possible small fix for `.prune` ratelimiting  
 - `.gvc` should now properly trigger when a user is already in a gvc and changes his activity   
@@ -21,7 +20,6 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed reference to non-existent command in bot.yml
 
 ### Changed
-
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
   - This was done to remove confusion about how it relates to discord Reactions (it doesn't, it was created and named before discord reactions existed) 
   - Expression command now start with ex/expr and end with the name of the action or setting. 
@@ -31,6 +29,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - If you have custom permissions for other CustomReaction commands
   - Some of the old aliases like `.acr` `.dcr` `.lcr` and a few others have been kept
 - Currency output format improvement (will use guild locale now for some commands)
+- `.crypto` will now also show CoinMarketCap rank
 - Improved .curtrs (It will now have a lot more useful data in the database, show Tx ids, and be partially localized)
   - [dev] Reason renamed to Note
   - [dev] Added Type, Extra, OtherId fields to the database
@@ -41,7 +40,6 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - [dev] Moved FilterWordsChannelId to a separate table
 
 ### Removed
-
 - Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
 - Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
 - Removed some obsolete commands and strings  

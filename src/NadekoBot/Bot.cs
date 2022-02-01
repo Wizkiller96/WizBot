@@ -23,6 +23,8 @@ public sealed class Bot
 
     public string Mention { get; private set; }
     public bool IsReady { get; private set; }
+    public int ShardId { get; set; }
+    
     private readonly IBotCredentials _creds;
     private readonly CommandService _commandService;
     private readonly DbService _db;
@@ -34,6 +36,7 @@ public sealed class Bot
         if (shardId < 0)
             throw new ArgumentOutOfRangeException(nameof(shardId));
 
+        ShardId = shardId;
         _credsProvider = new BotCredsProvider(totalShards);
         _creds = _credsProvider.GetCreds();
 
@@ -63,6 +66,7 @@ public sealed class Bot
         Client.Log += Client_Log;
 #endif
     }
+
 
     public List<ulong> GetCurrentGuildIds()
         => Client.Guilds.Select(x => x.Id).ToList();

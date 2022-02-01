@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -62,6 +63,9 @@ public class CmdAttribute : System.Attribute
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+// #if DEBUG
+//         SpinWait.SpinUntil(() => Debugger.IsAttached);
+// #endif
         context.RegisterPostInitializationOutput(static ctx => ctx.AddSource(
             "CmdAttribute.g.cs",
             SourceText.From(ATTRIBUTE, Encoding.UTF8)));
@@ -90,9 +94,17 @@ public class CmdAttribute : System.Attribute
 
         foreach (var model in models)
         {
-            var source = GetSourceText(model);
-            ctx.AddSource($"{model.Namespace}.{string.Join(".", model.ClassHierarchy)}.g.cs",
-                SourceText.From(source, Encoding.UTF8));
+            var name = $"{model.Namespace}.{string.Join(".", model.ClassHierarchy)}.g.cs";
+            try
+            {
+                Debug.WriteLine($"Writing {name}");
+                var source = GetSourceText(model);
+                ctx.AddSource(name, SourceText.From(source, Encoding.UTF8));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error writing source file {name}\n" + ex);
+            }
         }
     }
 
@@ -226,25 +238,6 @@ public class CmdAttribute : System.Attribute
         return methodModel;
     }
 
-    // private static IEnumerable<string> GetParams(Compilation compilation, MethodDeclarationSyntax method)
-    // {
-    //     var semModel = compilation.GetSemanticModel(method.SyntaxTree);
-    //     return method.ParameterList.Parameters.Select(p =>
-    //     {
-    //         var prefix = string.Empty;
-    //
-    //         var typeSymbol = semModel.GetTypeInfo(p).Type;
-    //         
-    //         if (p.Modifiers.Any(static x => x.IsKind(SyntaxKind.ParamsKeyword)))
-    //             prefix += "params ";
-    //         return prefix + $"{typeSymbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {p.Identifier.ToString()}";
-    //     });
-    //     // foreach (var param in method.ParameterList.Parameters)
-    //     // {
-    //     //     yield return param.ToString();
-    //     // }
-    // }
-
     //https://github.com/andrewlock/NetEscapades.EnumGenerators/blob/main/src/NetEscapades.EnumGenerators/EnumGenerator.cs
     static string? GetNamespace(MethodDeclarationSyntax declarationSyntax)
     {
@@ -308,7 +301,7 @@ public class CmdAttribute : System.Attribute
                 if (cancel.IsCancellationRequested)
                     return default;
                 
-                var symbol = ModelExtensions.GetSymbolInfo(ctx.SemanticModel, attSyntax).Symbol;
+                var symbol = ctx.SemanticModel.GetSymbolInfo(attSyntax).Symbol;
                 if (symbol is not IMethodSymbol attSymbol)
                     continue;
 

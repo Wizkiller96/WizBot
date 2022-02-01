@@ -310,7 +310,7 @@ namespace NadekoBot.Coordinator
                     })
                     .ToList()
             };
-            var jsonState = JsonSerializer.Serialize(coordState, new ()
+            var jsonState = JsonSerializer.Serialize(coordState, new JsonSerializerOptions()
             {
                 WriteIndented = true,
             });
