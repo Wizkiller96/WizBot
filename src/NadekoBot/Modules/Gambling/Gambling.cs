@@ -206,7 +206,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     public partial Task CurrencyTransactions(IUser usr, int page)
         => InternalCurrencyTransactions(usr.Id, page);
 
-    // todo curtrs max lifetime
     private async Task InternalCurrencyTransactions(ulong userId, int page)
     {
         if (--page < 0)

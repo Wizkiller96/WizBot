@@ -10,7 +10,6 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
-// todo waifu price int
 public class WaifuService : INService, IReadyExecutor
 {
     private readonly DbService _db;

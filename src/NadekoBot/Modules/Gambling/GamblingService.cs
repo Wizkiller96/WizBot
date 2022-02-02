@@ -1,4 +1,5 @@
 #nullable disable
+using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -37,7 +38,40 @@ public class GamblingService : INService, IReadyExecutor
         _gss = gss;
     }
 
-    public async Task OnReadyAsync()
+    public Task OnReadyAsync()
+        => Task.WhenAll(CurrencyDecayLoopAsync(), TransactionClearLoopAsync());
+
+    private async Task TransactionClearLoopAsync()
+    {
+        if (_bot.Client.ShardId != 0)
+            return;
+
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
+        while (await timer.WaitForNextTickAsync())
+        {
+            try
+            {
+                var lifetime = _gss.Data.Currency.TransactionsLifetime;
+                if (lifetime <= 0)
+                    continue;
+
+                var now = DateTime.UtcNow;
+                var days = TimeSpan.FromDays(lifetime);
+                await using var uow = _db.GetDbContext();
+                await uow.CurrencyTransactions
+                         .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
+                await uow.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex,
+                    "An unexpected error occurred in transactions cleanup loop: {ErrorMessage}",
+                    ex.Message);
+            }
+        }
+    }
+    
+    private async Task CurrencyDecayLoopAsync()
     {
         if (_bot.Client.ShardId != 0)
             return;
@@ -45,28 +79,30 @@ public class GamblingService : INService, IReadyExecutor
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
         while (await timer.WaitForNextTickAsync())
         {
-            var config = _gss.Data;
-            var maxDecay = config.Decay.MaxDecay;
-            if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
-                continue;
+            try
+            {
+                var config = _gss.Data;
+                var maxDecay = config.Decay.MaxDecay;
+                if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
+                    continue;
 
-            await using var uow = _db.GetDbContext();
-            var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
+                await using var uow = _db.GetDbContext();
+                var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
 
-            if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
-                continue;
+                if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
+                    continue;
 
-            Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
+                Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
                                     | max: {MaxDecay} 
                                     | threshold: {DecayMinTreshold}",
-                config.Decay.Percent * 100,
-                maxDecay,
-                config.Decay.MinThreshold);
+                    config.Decay.Percent * 100,
+                    maxDecay,
+                    config.Decay.MinThreshold);
 
-            if (maxDecay == 0)
-                maxDecay = int.MaxValue;
+                if (maxDecay == 0)
+                    maxDecay = int.MaxValue;
 
-            await uow.Database.ExecuteSqlInterpolatedAsync($@"
+                await uow.Database.ExecuteSqlInterpolatedAsync($@"
 UPDATE DiscordUser
 SET CurrencyAmount=
     CASE WHEN
@@ -78,11 +114,18 @@ SET CurrencyAmount=
     END
 WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentUser.Id};");
 
-            _cache.SetLastCurrencyDecay();
-            await uow.SaveChangesAsync();
+                _cache.SetLastCurrencyDecay();
+                await uow.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex,
+                    "An unexpected error occurred in currency decay loop: {ErrorMessage}",
+                    ex.Message);
+            }
         }
     }
-
+    
     public async Task<SlotResponse> SlotAsync(ulong userId, long amount)
     {
         var takeRes = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));

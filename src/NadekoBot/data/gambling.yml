@@ -6,6 +6,9 @@ currency:
   sign: "🌸"
   # What is the name of the currency
   name: Nadeko Flower
+  # For how long will the transactions be kept in the database (curtrs)
+  # Set 0 to disable cleanup (keep transactions forever)
+  transactionsLifetime: 0
 # Minimum amount users can bet (>=0)
 minBet: 0
 # Maximum amount users can bet

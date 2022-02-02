@@ -16,6 +16,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
     - waifu.decay.percent - How much % to subtract from unclaimed waifu
     - waifu.decay.hourInterval - How often to decay the price 
     - waifu.decay.minPrice - Unclaimed waifus with price lower than the one specified here will not be affected by the decay
+- Added `currency.transactionsLifetime` to `data/gambling.yml` Any transaction older than the number of days specified will be automatically deleted
 
 ### Fixed
 - Fixed an extra whitespace in usage part of command help if the command has no arguments  
