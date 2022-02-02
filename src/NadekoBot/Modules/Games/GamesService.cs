@@ -38,7 +38,10 @@ public class GamesService : INService
     {
         _gamesConfig = gamesConfig;
         _httpFactory = httpFactory;
-        _8BallCache = new MemoryCache(new MemoryCacheOptions { SizeLimit = 500_000 });
+        _8BallCache = new MemoryCache(new MemoryCacheOptions
+        {
+            SizeLimit = 500_000
+        });
 
         Ratings = new(GetRatingTexts);
         _rng = new NadekoRandom();

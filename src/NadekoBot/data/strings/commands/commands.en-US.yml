@@ -44,7 +44,7 @@ bye:
   args:
     - ""
 byemsg:
-  desc: |- 
+  desc: |-
     Sets a new leave announcement message. 
     Type `%user.mention%` if you want to show the name the user who left. 
     Full list of placeholders can be found here <https://nadekobot.readthedocs.io/en/latest/placeholders/>  
@@ -197,7 +197,7 @@ expradd:
   args:
     - "\"hello\" Hi there %user.mention%"
 exprlist:
-  desc: |- 
+  desc: |-
     Lists global or server custom reactions (20 commands per page).
     Running the command in DM will list global custom reactions, while running it in a server will list server custom reactions.
     Shows enabled settings, followed by id, followed by the trigger.
@@ -1828,8 +1828,8 @@ xprewsreset:
     - ""
 xprolereward:
   desc: |-
-   Add or remove a role from the user who reaches the specified level.
-   Provide no action and role name in order to remove the role reward.
+    Add or remove a role from the user who reaches the specified level.
+    Provide no action and role name in order to remove the role reward.
   args:
     - "1 rm Newbie"
     - "3 add Social"
@@ -2131,7 +2131,7 @@ purgeuser:
   args:
     - "@Oblivion"
 imageonlychannel:
-  desc: |- 
+  desc: |-
     Toggles whether the channel only allows images.
     Users who send more than a few non-image messages will be banned from using the channel. 
   args:
@@ -2139,7 +2139,7 @@ imageonlychannel:
 coordreload:
   desc: "Reloads coordinator config"
   args:
-    - "" 
+    - ""
 showembed:
   desc: "Prints the json equivalent of the embed of the message specified by its Id."
   args:

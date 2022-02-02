@@ -11,10 +11,17 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
     public int Version { get; set; }
 
     [Comment("Hangman related settings (.hangman command)")]
-    public HangmanConfig Hangman { get; set; } = new() { CurrencyReward = 0 };
+    public HangmanConfig Hangman { get; set; } = new()
+    {
+        CurrencyReward = 0
+    };
 
     [Comment("Trivia related settings (.t command)")]
-    public TriviaConfig Trivia { get; set; } = new() { CurrencyReward = 0, MinimumWinReq = 1 };
+    public TriviaConfig Trivia { get; set; } = new()
+    {
+        CurrencyReward = 0,
+        MinimumWinReq = 1
+    };
 
     [Comment("List of responses for the .8ball command. A random one will be selected every time")]
     public List<string> EightBallResponses { get; set; } = new()
@@ -47,14 +54,46 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
     [Comment("List of animals which will be used for the animal race game (.race)")]
     public List<RaceAnimal> RaceAnimals { get; set; } = new()
     {
-        new() { Icon = "🐼", Name = "Panda" },
-        new() { Icon = "🐻", Name = "Bear" },
-        new() { Icon = "🐧", Name = "Pengu" },
-        new() { Icon = "🐨", Name = "Koala" },
-        new() { Icon = "🐬", Name = "Dolphin" },
-        new() { Icon = "🐞", Name = "Ladybird" },
-        new() { Icon = "🦀", Name = "Crab" },
-        new() { Icon = "🦄", Name = "Unicorn" }
+        new()
+        {
+            Icon = "🐼",
+            Name = "Panda"
+        },
+        new()
+        {
+            Icon = "🐻",
+            Name = "Bear"
+        },
+        new()
+        {
+            Icon = "🐧",
+            Name = "Pengu"
+        },
+        new()
+        {
+            Icon = "🐨",
+            Name = "Koala"
+        },
+        new()
+        {
+            Icon = "🐬",
+            Name = "Dolphin"
+        },
+        new()
+        {
+            Icon = "🐞",
+            Name = "Ladybird"
+        },
+        new()
+        {
+            Icon = "🦀",
+            Name = "Crab"
+        },
+        new()
+        {
+            Icon = "🦄",
+            Name = "Unicorn"
+        }
     };
 }
 

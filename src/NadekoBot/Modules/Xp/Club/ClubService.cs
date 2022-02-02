@@ -28,7 +28,12 @@ public class ClubService : INService
         if (xp.Level >= 5 && du.Club is null)
         {
             du.IsClubAdmin = true;
-            du.Club = new() { Name = clubName, Discrim = uow.Clubs.GetNextDiscrim(clubName), Owner = du };
+            du.Club = new()
+            {
+                Name = clubName,
+                Discrim = uow.Clubs.GetNextDiscrim(clubName),
+                Owner = du
+            };
             uow.Clubs.Add(du.Club);
             uow.SaveChanges();
         }
@@ -142,7 +147,11 @@ public class ClubService : INService
             // or doesn't min minumum level requirement, can't apply
             return false;
 
-        var app = new ClubApplicants { ClubId = club.Id, UserId = du.Id };
+        var app = new ClubApplicants
+        {
+            ClubId = club.Id,
+            UserId = du.Id
+        };
 
         uow.Set<ClubApplicants>().Add(app);
 
@@ -254,7 +263,11 @@ public class ClubService : INService
             || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
             return false;
 
-        club.Bans.Add(new() { Club = club, User = usr });
+        club.Bans.Add(new()
+        {
+            Club = club,
+            User = usr
+        });
         club.Users.Remove(usr);
 
         var app = club.Applicants.FirstOrDefault(x => x.UserId == usr.Id);

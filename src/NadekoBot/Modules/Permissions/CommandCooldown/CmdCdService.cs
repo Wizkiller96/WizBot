@@ -28,9 +28,13 @@ public class CmdCdService : ILateBlocker, INService
             if (activeCdsForGuild.FirstOrDefault(ac => ac.UserId == user.Id && ac.Command == commandName) is not null)
                 return Task.FromResult(true);
 
-            activeCdsForGuild.Add(new() { UserId = user.Id, Command = commandName });
+            activeCdsForGuild.Add(new()
+            {
+                UserId = user.Id,
+                Command = commandName
+            });
 
-            _= Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 try
                 {

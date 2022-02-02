@@ -2,5 +2,5 @@
 
 public enum CurrencyType
 {
-    Default,
+    Default
 }

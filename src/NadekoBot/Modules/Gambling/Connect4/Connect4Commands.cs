@@ -23,7 +23,8 @@ public partial class Gambling
             {
                 if (value is < 0 or > 7)
                     repostCounter = 0;
-                else repostCounter = value;
+                else
+                    repostCounter = value;
             }
         }
 
@@ -88,10 +89,11 @@ public partial class Gambling
                 if (ctx.Channel.Id != arg.Channel.Id)
                     return Task.CompletedTask;
 
-                _= Task.Run(async () =>
+                _ = Task.Run(async () =>
                 {
                     var success = false;
-                    if (int.TryParse(arg.Content, out var col)) success = await game.Input(arg.Author.Id, col);
+                    if (int.TryParse(arg.Content, out var col))
+                        success = await game.Input(arg.Author.Id, col);
 
                     if (success)
                     {
@@ -100,7 +102,8 @@ public partial class Gambling
                     }
                     else
                     {
-                        if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended) return;
+                        if (game.CurrentPhase is Connect4Game.Phase.Joining or Connect4Game.Phase.Ended)
+                            return;
                         RepostCounter++;
                         if (RepostCounter == 0)
                             try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); }
@@ -185,7 +188,8 @@ public partial class Gambling
                 sb.AppendLine();
             }
 
-            for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++) sb.Append(_numbers[i]);
+            for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++)
+                sb.Append(_numbers[i]);
             return sb.ToString();
         }
     }

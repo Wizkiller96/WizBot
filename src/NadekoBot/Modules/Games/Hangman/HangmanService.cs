@@ -54,7 +54,8 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
     {
         lock (_locker)
         {
-            if (_hangmanGames.TryRemove(channelId, out _)) return new(true);
+            if (_hangmanGames.TryRemove(channelId, out _))
+                return new(true);
         }
 
         return new(false);
@@ -88,7 +89,10 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
                 if (state.GuessResult is HangmanGame.GuessResult.Incorrect or HangmanGame.GuessResult.AlreadyTried)
                     _cdCache.Set(msg.Author.Id,
                         string.Empty,
-                        new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3) });
+                        new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3)
+                        });
 
                 if (state.Phase == HangmanGame.Phase.Ended)
                     if (_hangmanGames.TryRemove(msg.Channel.Id, out _))

@@ -113,14 +113,14 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                                   .ToListAsync();
 
         newGuildReactions = guildItems.GroupBy(k => k.GuildId!.Value)
-                                       .ToDictionary(g => g.Key,
-                                           g => g.Select(x =>
-                                                 {
-                                                     x.Trigger = x.Trigger.Replace(MENTION_PH, _bot.Mention);
-                                                     return x;
-                                                 })
-                                                 .ToArray())
-                                       .ToConcurrent();
+                                      .ToDictionary(g => g.Key,
+                                          g => g.Select(x =>
+                                                {
+                                                    x.Trigger = x.Trigger.Replace(MENTION_PH, _bot.Mention);
+                                                    return x;
+                                                })
+                                                .ToArray())
+                                      .ToConcurrent();
 
         lock (_gexprWriteLock)
         {
@@ -180,7 +180,8 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                     var wp = content.GetWordPosition(trigger);
 
                     // if it is, then that's valid
-                    if (wp != WordPosition.None) result.Add(expr);
+                    if (wp != WordPosition.None)
+                        result.Add(expr);
 
                     // if it's not, then it cant' work under any circumstance,
                     // because content is greater than the trigger length
@@ -204,7 +205,8 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
             {
                 // if input length is the same as trigger length
                 // reaction can only trigger if the strings are equal
-                if (content.SequenceEqual(expr.Trigger)) result.Add(expr);
+                if (content.SequenceEqual(expr.Trigger))
+                    result.Add(expr);
             }
         }
 
@@ -345,8 +347,11 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                 {
                     var newArray = old.ToArray();
                     for (var i = 0; i < newArray.Length; i++)
+                    {
                         if (newArray[i].Id == expr.Id)
                             newArray[i] = expr;
+                    }
+
                     return newArray;
                 });
         else
@@ -354,8 +359,10 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
             {
                 var exprs = globalReactions;
                 for (var i = 0; i < exprs.Length; i++)
+                {
                     if (exprs[i].Id == expr.Id)
                         exprs[i] = expr;
+                }
             }
     }
 
@@ -386,7 +393,8 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         lock (_gexprWriteLock)
         {
             var expr = Array.Find(globalReactions, item => item.Id == id);
-            if (expr is not null) return _pubSub.Pub(_gexprDeletedkey, expr.Id);
+            if (expr is not null)
+                return _pubSub.Pub(_gexprDeletedkey, expr.Id);
         }
 
         return Task.CompletedTask;
@@ -516,17 +524,17 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         {
             var trigger = entry.Key;
             await uow.Expressions.AddRangeAsync(entry.Value.Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
-                                                         .Select(expr => new NadekoExpression
-                                                         {
-                                                             GuildId = guildId,
-                                                             Response = expr.Res,
-                                                             Reactions = expr.React?.Join("@@@"),
-                                                             Trigger = trigger,
-                                                             AllowTarget = expr.At,
-                                                             ContainsAnywhere = expr.Ca,
-                                                             DmResponse = expr.Dm,
-                                                             AutoDeleteTrigger = expr.Ad
-                                                         }));
+                                                     .Select(expr => new NadekoExpression
+                                                     {
+                                                         GuildId = guildId,
+                                                         Response = expr.Res,
+                                                         Reactions = expr.React?.Join("@@@"),
+                                                         Trigger = trigger,
+                                                         AllowTarget = expr.At,
+                                                         ContainsAnywhere = expr.Ca,
+                                                         DmResponse = expr.Dm,
+                                                         AutoDeleteTrigger = expr.Ad
+                                                     }));
         }
 
         await uow.SaveChangesAsync();
@@ -560,11 +568,13 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         lock (_gexprWriteLock)
         {
             for (var i = 0; i < globalReactions.Length; i++)
+            {
                 if (globalReactions[i].Id == c.Id)
                 {
                     globalReactions[i] = c;
                     return default;
                 }
+            }
 
             // if edited expr is not found?!
             // add it
@@ -614,7 +624,12 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     public async Task<NadekoExpression> AddAsync(ulong? guildId, string key, string message)
     {
         key = key.ToLowerInvariant();
-        var expr = new NadekoExpression { GuildId = guildId, Trigger = key, Response = message };
+        var expr = new NadekoExpression
+        {
+            GuildId = guildId,
+            Trigger = key,
+            Response = message
+        };
 
         if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
             expr.AllowTarget = true;

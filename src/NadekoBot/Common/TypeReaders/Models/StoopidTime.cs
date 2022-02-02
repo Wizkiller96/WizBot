@@ -18,20 +18,23 @@ public class StoopidTime
     {
         var m = _regex.Match(input);
 
-        if (m.Length == 0) throw new ArgumentException("Invalid string input format.");
+        if (m.Length == 0)
+            throw new ArgumentException("Invalid string input format.");
 
         var namesAndValues = new Dictionary<string, int>();
 
         foreach (var groupName in _regex.GetGroupNames())
         {
-            if (groupName == "0") continue;
+            if (groupName == "0")
+                continue;
             if (!int.TryParse(m.Groups[groupName].Value, out var value))
             {
                 namesAndValues[groupName] = 0;
                 continue;
             }
 
-            if (value < 1) throw new ArgumentException($"Invalid {groupName} value.");
+            if (value < 1)
+                throw new ArgumentException($"Invalid {groupName} value.");
 
             namesAndValues[groupName] = value;
         }
@@ -40,8 +43,13 @@ public class StoopidTime
             namesAndValues["hours"],
             namesAndValues["minutes"],
             namesAndValues["seconds"]);
-        if (ts > TimeSpan.FromDays(90)) throw new ArgumentException("Time is too long.");
+        if (ts > TimeSpan.FromDays(90))
+            throw new ArgumentException("Time is too long.");
 
-        return new() { Input = input, Time = ts };
+        return new()
+        {
+            Input = input,
+            Time = ts
+        };
     }
 }

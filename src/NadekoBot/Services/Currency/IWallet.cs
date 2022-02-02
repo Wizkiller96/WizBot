@@ -3,11 +3,11 @@ namespace NadekoBot.Services.Currency;
 public interface IWallet : IDisposable, IAsyncDisposable
 {
     public ulong UserId { get; }
-    
+
     public Task<long> GetBalance();
     public Task<bool> Take(long amount, TxData txData);
     public Task Add(long amount, TxData txData);
-    
+
     public async Task<bool> Transfer(
         long amount,
         IWallet to,

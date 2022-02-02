@@ -7,6 +7,7 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
 {
     private const string FILE_PATH = "data/xp.yml";
     private static readonly TypedKey<XpConfig> _changeKey = new("config.xp.updated");
+
     public override string Name
         => "xp";
 

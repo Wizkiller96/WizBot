@@ -19,7 +19,9 @@ public sealed class AutoAssignRoleService : INService
     private readonly Channel<SocketGuildUser> _assignQueue = Channel.CreateBounded<SocketGuildUser>(
         new BoundedChannelOptions(100)
         {
-            FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, SingleWriter = false
+            FullMode = BoundedChannelFullMode.DropOldest,
+            SingleReader = true,
+            SingleWriter = false
         });
 
     public AutoAssignRoleService(DiscordSocketClient client, Bot bot, DbService db)
@@ -118,7 +120,10 @@ public sealed class AutoAssignRoleService : INService
 
         await uow.GuildConfigs.AsNoTracking()
                  .Where(x => x.GuildId == guildId)
-                 .UpdateAsync(_ => new() { AutoAssignRoleIds = null });
+                 .UpdateAsync(_ => new()
+                 {
+                     AutoAssignRoleIds = null
+                 });
 
         _autoAssignableRoles.TryRemove(guildId, out _);
 

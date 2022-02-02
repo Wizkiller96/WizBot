@@ -74,10 +74,13 @@ public class CommandMapService : IInputTransformer, INService
                     try
                     {
                         var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
-                        _= Task.Run(async () =>
+                        _ = Task.Run(async () =>
                         {
                             await Task.Delay(1500);
-                            await toDelete.DeleteAsync(new() { RetryMode = RetryMode.AlwaysRetry });
+                            await toDelete.DeleteAsync(new()
+                            {
+                                RetryMode = RetryMode.AlwaysRetry
+                            });
                         });
                     }
                     catch { }

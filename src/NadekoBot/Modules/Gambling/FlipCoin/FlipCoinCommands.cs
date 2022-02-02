@@ -63,7 +63,8 @@ public partial class Gambling
 
             using var img = imgs.Merge(out var format);
             await using var stream = img.ToStream(format);
-            foreach (var i in imgs) i.Dispose();
+            foreach (var i in imgs)
+                i.Dispose();
             var msg = count != 1
                 ? Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_results(count, headCount, tailCount))
                 : Format.Bold(ctx.User.ToString())

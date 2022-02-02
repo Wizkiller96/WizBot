@@ -56,7 +56,13 @@ public class DiscordPermOverrideService : INService, ILateBlocker
                             .FirstOrDefaultAsync(x => x.GuildId == guildId && commandName == x.Command);
 
         if (over is null)
-            uow.Set<DiscordPermOverride>().Add(over = new() { Command = commandName, Perm = perm, GuildId = guildId });
+            uow.Set<DiscordPermOverride>()
+               .Add(over = new()
+               {
+                   Command = commandName,
+                   Perm = perm,
+                   GuildId = guildId
+               });
         else
             over.Perm = perm;
 
@@ -77,7 +83,8 @@ public class DiscordPermOverrideService : INService, ILateBlocker
         uow.RemoveRange(overrides);
         await uow.SaveChangesAsync();
 
-        foreach (var over in overrides) _overrides.TryRemove((guildId, over.Command), out _);
+        foreach (var over in overrides)
+            _overrides.TryRemove((guildId, over.Command), out _);
     }
 
     public async Task RemoveOverride(ulong guildId, string commandName)

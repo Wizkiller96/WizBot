@@ -52,7 +52,6 @@ public class CurrencyRaffleService : INService
             }
 
             if (newGame)
-            {
                 _ = Task.Run(async () =>
                 {
                     await Task.Delay(60000);
@@ -69,7 +68,6 @@ public class CurrencyRaffleService : INService
                     catch { }
                     finally { _locker.Release(); }
                 });
-            }
 
             return (crg, null);
         }

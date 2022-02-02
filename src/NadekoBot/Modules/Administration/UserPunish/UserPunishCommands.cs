@@ -89,7 +89,8 @@ public partial class Administration
                 Log.Warning(ex, "Exception occured while warning a user");
                 var errorEmbed = _eb.Create().WithErrorColor().WithDescription(GetText(strs.cant_apply_punishment));
 
-                if (dmFailed) errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+                if (dmFailed)
+                    errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
                 await ctx.Channel.EmbedAsync(errorEmbed);
                 return;
@@ -102,7 +103,8 @@ public partial class Administration
                 embed.WithDescription(GetText(strs.user_warned_and_punished(Format.Bold(user.ToString()),
                     Format.Bold(punishment.Punishment.ToString()))));
 
-            if (dmFailed) embed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+            if (dmFailed)
+                embed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
             await ctx.Channel.EmbedAsync(embed);
         }
@@ -359,7 +361,8 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         public async partial Task WarnPunish(int number)
         {
-            if (!_service.WarnPunishRemove(ctx.Guild.Id, number)) return;
+            if (!_service.WarnPunishRemove(ctx.Guild.Id, number))
+                return;
 
             await ReplyConfirmLocalizedAsync(strs.warn_punish_rem(Format.Bold(number.ToString())));
         }
@@ -402,7 +405,8 @@ public partial class Administration
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
                     var embed = _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
-                    if (embed is not null) await guildUser.SendAsync(embed);
+                    if (embed is not null)
+                        await guildUser.SendAsync(embed);
                 }
                 catch
                 {
@@ -419,7 +423,8 @@ public partial class Administration
                                 time.Time.Humanize(3, minUnit: TimeUnit.Minute, culture: Culture),
                                 true);
 
-            if (dmFailed) toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+            if (dmFailed)
+                toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
             await ctx.Channel.EmbedAsync(toSend);
         }
@@ -463,7 +468,8 @@ public partial class Administration
             {
                 var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
                 var embed = _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
-                if (embed is not null) await ctx.User.SendAsync(embed);
+                if (embed is not null)
+                    await ctx.User.SendAsync(embed);
             }
             catch
             {
@@ -478,7 +484,8 @@ public partial class Administration
                             .AddField(GetText(strs.username), user.ToString(), true)
                             .AddField("ID", user.Id.ToString(), true);
 
-            if (dmFailed) toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+            if (dmFailed)
+                toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
             await ctx.Channel.EmbedAsync(toSend);
         }
@@ -648,7 +655,8 @@ public partial class Administration
                             .AddField(GetText(strs.username), user.ToString(), true)
                             .AddField("ID", user.Id.ToString(), true);
 
-            if (dmFailed) toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+            if (dmFailed)
+                toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
             await ctx.Channel.EmbedAsync(toSend);
         }
@@ -699,7 +707,8 @@ public partial class Administration
                             .AddField(GetText(strs.username), user.ToString(), true)
                             .AddField("ID", user.Id.ToString(), true);
 
-            if (dmFailed) toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+            if (dmFailed)
+                toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
             await ctx.Channel.EmbedAsync(toSend);
         }
@@ -719,6 +728,7 @@ public partial class Administration
 
             await ctx.Channel.TriggerTypingAsync();
             foreach (var userStr in userStrings)
+            {
                 if (ulong.TryParse(userStr, out var userId))
                 {
                     IUser user = await ctx.Guild.GetUserAsync(userId)
@@ -739,7 +749,8 @@ public partial class Administration
                     }
 
                     //Hierachy checks only if the user is in the guild
-                    if (user is IGuildUser gu && !await CheckRoleHierarchy(gu)) return;
+                    if (user is IGuildUser gu && !await CheckRoleHierarchy(gu))
+                        return;
 
                     banning.Add(user);
                 }
@@ -747,6 +758,7 @@ public partial class Administration
                 {
                     missing.Add(userStr);
                 }
+            }
 
             var missStr = string.Join("\n", missing);
             if (string.IsNullOrWhiteSpace(missStr))
@@ -760,6 +772,7 @@ public partial class Administration
             var banningMessage = await ctx.Channel.EmbedAsync(toSend);
 
             foreach (var toBan in banning)
+            {
                 try
                 {
                     await ctx.Guild.AddBanAsync(toBan.Id, 7, $"{ctx.User} | Massban");
@@ -768,6 +781,7 @@ public partial class Administration
                 {
                     Log.Warning(ex, "Error banning {User} user in {GuildId} server", toBan.Id, ctx.Guild.Id);
                 }
+            }
 
             await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
                                                                .WithDescription(
@@ -805,7 +819,10 @@ public partial class Administration
                                    .Select(x => ctx.Guild.AddBanAsync(x.Id.Value,
                                        7,
                                        x.Reason,
-                                       new() { RetryMode = RetryMode.AlwaysRetry })));
+                                       new()
+                                       {
+                                           RetryMode = RetryMode.AlwaysRetry
+                                       })));
 
             //wait for the message and edit it
             var banningMessage = await banningMessageTask;

@@ -25,7 +25,8 @@ public static class ProcessExtensions
         {
             var children = new HashSet<int>();
             GetAllChildIdsUnix(process.Id, children, timeout);
-            foreach (var childId in children) KillProcessUnix(childId, timeout);
+            foreach (var childId in children)
+                KillProcessUnix(childId, timeout);
 
             KillProcessUnix(process.Id, timeout);
         }
@@ -41,7 +42,8 @@ public static class ProcessExtensions
             while (true)
             {
                 var text = reader.ReadLine();
-                if (text is null) return;
+                if (text is null)
+                    return;
 
                 if (int.TryParse(text, out var id))
                 {
@@ -66,7 +68,10 @@ public static class ProcessExtensions
 
         var startInfo = new ProcessStartInfo
         {
-            FileName = fileName, Arguments = arguments, RedirectStandardOutput = true, UseShellExecute = false
+            FileName = fileName,
+            Arguments = arguments,
+            RedirectStandardOutput = true,
+            UseShellExecute = false
         };
 
         var process = Process.Start(startInfo);

@@ -18,9 +18,18 @@ public class Betroll
 
         var pair = _thresholdPairs.FirstOrDefault(x => x.WhenAbove < roll);
         if (pair is null)
-            return new() { Multiplier = 0, Roll = roll };
+            return new()
+            {
+                Multiplier = 0,
+                Roll = roll
+            };
 
-        return new() { Multiplier = pair.MultiplyBy, Roll = roll, Threshold = pair.WhenAbove };
+        return new()
+        {
+            Multiplier = pair.MultiplyBy,
+            Roll = roll,
+            Threshold = pair.WhenAbove
+        };
     }
 
     public class Result

@@ -18,7 +18,8 @@ public partial class Utility
                 return;
 
             var success = await _service.TriggerExternal(ctx.Guild.Id, index);
-            if (!success) await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
+            if (!success)
+                await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
         }
 
         [Cmd]

@@ -25,7 +25,8 @@ public class WaifuInfo : DbEntity
         var waifuUsername = Waifu.Username.TrimTo(20);
         var claimerUsername = Claimer?.Username.TrimTo(20);
 
-        if (ClaimerId is not null) claimer = $"{claimerUsername}#{Claimer.Discriminator}";
+        if (ClaimerId is not null)
+            claimer = $"{claimerUsername}#{Claimer.Discriminator}";
         if (AffinityId is null)
             status = $"... but {waifuUsername}'s heart is empty";
         else if (AffinityId == ClaimerId)
@@ -58,7 +59,8 @@ public class WaifuLbResult
         var waifuUsername = Username.TrimTo(20);
         var claimerUsername = Claimer?.TrimTo(20);
 
-        if (Claimer is not null) claimer = $"{claimerUsername}#{ClaimerDiscrim}";
+        if (Claimer is not null)
+            claimer = $"{claimerUsername}#{ClaimerDiscrim}";
         if (Affinity is null)
             status = $"... but {waifuUsername}'s heart is empty";
         else if (Affinity + AffinityDiscrim == Claimer + ClaimerDiscrim)

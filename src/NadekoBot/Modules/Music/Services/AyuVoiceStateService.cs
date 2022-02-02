@@ -133,7 +133,8 @@ public sealed class AyuVoiceStateService : INService
 
         Task OnVoiceServerUpdated(SocketVoiceServer data)
         {
-            if (data.Guild.Id == guildId) voiceServerUpdatedSource.TrySetResult(data);
+            if (data.Guild.Id == guildId)
+                voiceServerUpdatedSource.TrySetResult(data);
 
             return Task.CompletedTask;
         }
@@ -157,14 +158,10 @@ public sealed class AyuVoiceStateService : INService
             // wait for both to end (max 1s) and check if either of them is a delay task
             var results = await Task.WhenAll(maybeUpdateTask, maybeServerTask);
             if (results[0] == delayTask || results[1] == delayTask)
-            {
                 // if either is delay, return null - connection unsuccessful
                 return null;
-            }
             else
-            {
                 cts.Cancel();
-            }
 
             // if both are succesful, that means we can safely get
             // the values from  completion sources

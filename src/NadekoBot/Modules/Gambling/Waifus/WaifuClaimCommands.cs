@@ -112,7 +112,8 @@ public partial class Gambling
         public partial Task Divorce([Leftover] string target)
         {
             var waifuUserId = _service.GetWaifuUserId(ctx.User.Id, target);
-            if (waifuUserId == default) return ReplyErrorLocalizedAsync(strs.waifu_not_yours);
+            if (waifuUserId == default)
+                return ReplyErrorLocalizedAsync(strs.waifu_not_yours);
 
             return Divorce(waifuUserId);
         }

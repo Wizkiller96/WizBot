@@ -71,7 +71,10 @@ public class PlantPickService : INService
         using var uow = _db.GetDbContext();
         var guildConfig = uow.GuildConfigsForId(gid, set => set.Include(gc => gc.GenerateCurrencyChannelIds));
 
-        var toAdd = new GCChannelId { ChannelId = cid };
+        var toAdd = new GCChannelId
+        {
+            ChannelId = cid
+        };
         if (!guildConfig.GenerateCurrencyChannelIds.Contains(toAdd))
         {
             guildConfig.GenerateCurrencyChannelIds.Add(toAdd);
@@ -81,7 +84,8 @@ public class PlantPickService : INService
         else
         {
             var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
-            if (toDelete is not null) uow.Remove(toDelete);
+            if (toDelete is not null)
+                uow.Remove(toDelete);
             _generationChannels.TryRemove(cid);
             enabled = false;
         }
@@ -172,7 +176,7 @@ public class PlantPickService : INService
         if (!_generationChannels.Contains(channel.Id))
             return Task.CompletedTask;
 
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -277,7 +281,7 @@ public class PlantPickService : INService
             try
             {
                 // delete all of the plant messages which have just been picked
-                _= ch.DeleteMessagesAsync(ids);
+                _ = ch.DeleteMessagesAsync(ids);
             }
             catch { }
 

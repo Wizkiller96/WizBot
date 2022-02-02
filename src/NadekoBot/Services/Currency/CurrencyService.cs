@@ -14,9 +14,7 @@ public class CurrencyService : ICurrencyService, INService
     public Task<IWallet> GetWalletAsync(ulong userId, CurrencyType type = CurrencyType.Default)
     {
         if (type == CurrencyType.Default)
-        {
             return Task.FromResult<IWallet>(new DefaultWallet(userId, _db.GetDbContext()));
-        }
 
         throw new ArgumentOutOfRangeException(nameof(type));
     }
@@ -111,10 +109,9 @@ public class CurrencyService : ICurrencyService, INService
     {
         await using var fromWallet = await GetWalletAsync(fromId);
         await using var toWallet = await GetWalletAsync(toId);
-        
+
         var extra = new TxData("gift", fromName, note, fromId);
-        
+
         return await fromWallet.Transfer(amount, toWallet, extra);
     }
-    
 }

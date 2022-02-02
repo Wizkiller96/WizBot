@@ -164,9 +164,11 @@ public partial class Xp : NadekoModule<XpService>
 
     private string GetNotifLocationString(XpNotificationLocation loc)
     {
-        if (loc == XpNotificationLocation.Channel) return GetText(strs.xpn_notif_channel);
+        if (loc == XpNotificationLocation.Channel)
+            return GetText(strs.xpn_notif_channel);
 
-        if (loc == XpNotificationLocation.Dm) return GetText(strs.xpn_notif_dm);
+        if (loc == XpNotificationLocation.Dm)
+            return GetText(strs.xpn_notif_dm);
 
         return GetText(strs.xpn_notif_disabled);
     }
@@ -323,7 +325,8 @@ public partial class Xp : NadekoModule<XpService>
                 else
                     users = _service.GetUserXps(ctx.Guild.Id, curPage);
 
-                if (!users.Any()) return embed.WithDescription("-");
+                if (!users.Any())
+                    return embed.WithDescription("-");
 
                 for (var i = 0; i < users.Count; i++)
                 {

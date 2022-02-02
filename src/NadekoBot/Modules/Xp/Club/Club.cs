@@ -337,7 +337,8 @@ public partial class Xp
             var embed = _eb.Create().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
 
             var i = page * 9;
-            foreach (var club in clubs) embed.AddField($"#{++i} " + club, club.Xp + " xp");
+            foreach (var club in clubs)
+                embed.AddField($"#{++i} " + club, club.Xp + " xp");
 
             return ctx.Channel.EmbedAsync(embed);
         }

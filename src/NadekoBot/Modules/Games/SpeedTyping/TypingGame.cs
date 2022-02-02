@@ -41,7 +41,8 @@ public class TypingGame
 
     public async Task<bool> Stop()
     {
-        if (!IsActive) return false;
+        if (!IsActive)
+            return false;
         _client.MessageReceived -= AnswerReceived;
         _finishedUserIds.Clear();
         IsActive = false;
@@ -60,7 +61,8 @@ public class TypingGame
 
     public async Task Start()
     {
-        if (IsActive) return; // can't start running game
+        if (IsActive)
+            return; // can't start running game
         IsActive = true;
         CurrentSentence = GetRandomSentence();
         var i = (int)(CurrentSentence.Length / WORD_VALUE * 1.7f);
@@ -73,7 +75,10 @@ public class TypingGame
             var time = _options.StartTime;
 
             var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...",
-                options: new() { RetryMode = RetryMode.AlwaysRetry });
+                options: new()
+                {
+                    RetryMode = RetryMode.AlwaysRetry
+                });
 
             do
             {
@@ -117,7 +122,7 @@ public class TypingGame
 
     private Task AnswerReceived(SocketMessage imsg)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -126,7 +131,8 @@ public class TypingGame
                 if (imsg is not SocketUserMessage msg)
                     return;
 
-                if (Channel is null || Channel.Id != msg.Channel.Id) return;
+                if (Channel is null || Channel.Id != msg.Channel.Id)
+                    return;
 
                 var guess = msg.Content;
 

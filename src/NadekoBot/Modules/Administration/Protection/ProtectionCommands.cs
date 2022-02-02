@@ -27,7 +27,10 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] StoopidTime punishTime = null)
+        public async partial Task AntiAlt(
+            StoopidTime minAge,
+            PunishmentAction action,
+            [Leftover] StoopidTime punishTime = null)
         {
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
             var punishTimeMinutes = (int?)punishTime?.Time.TotalMinutes ?? 0;
@@ -120,7 +123,8 @@ public partial class Administration
 
             var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds, action, time);
 
-            if (stats is null) return;
+            if (stats is null)
+                return;
 
             await SendConfirmAsync(GetText(strs.prot_enable("Anti-Raid")),
                 $"{ctx.User.Mention} {GetAntiRaidString(stats)}");
@@ -244,7 +248,8 @@ public partial class Administration
                 ignoredString = "none";
 
             var add = string.Empty;
-            if (settings.MuteTime > 0) add = $" ({TimeSpan.FromMinutes(settings.MuteTime):hh\\hmm\\m})";
+            if (settings.MuteTime > 0)
+                add = $" ({TimeSpan.FromMinutes(settings.MuteTime):hh\\hmm\\m})";
 
             return GetText(strs.spam_stats(Format.Bold(settings.MessageThreshold.ToString()),
                 Format.Bold(settings.Action + add),

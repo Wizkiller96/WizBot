@@ -142,7 +142,8 @@ public partial class Searches
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(league)) characters.RemoveAll(c => c.League != league);
+            if (!string.IsNullOrWhiteSpace(league))
+                characters.RemoveAll(c => c.League != league);
 
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
@@ -155,7 +156,8 @@ public partial class Searches
 
                     var tempList = characters.Skip(curPage * 9).Take(9).ToList();
 
-                    if (characters.Count == 0) return embed.WithDescription("This account has no characters.");
+                    if (characters.Count == 0)
+                        return embed.WithDescription("This account has no characters.");
 
                     var sb = new StringBuilder();
                     sb.AppendLine($"```{"#",-5}{"Character Name",-23}{"League",-10}{"Class",-13}{"Level",-3}");
@@ -218,7 +220,10 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task PathOfExileCurrency(string leagueName, string currencyName, string convertName = "Chaos Orb")
+        public async partial Task PathOfExileCurrency(
+            string leagueName,
+            string currencyName,
+            string convertName = "Chaos Orb")
         {
             if (string.IsNullOrWhiteSpace(leagueName))
             {
@@ -293,7 +298,8 @@ public partial class Searches
 
         private string ShortCurrencyName(string str)
         {
-            if (currencyDictionary.ContainsValue(str)) return str;
+            if (currencyDictionary.ContainsValue(str))
+                return str;
 
             var currency = currencyDictionary[str];
 

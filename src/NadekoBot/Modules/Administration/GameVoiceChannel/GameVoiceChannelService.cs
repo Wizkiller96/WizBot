@@ -26,7 +26,7 @@ public class GameVoiceChannelService : INService
 
     private Task OnPresenceUpdate(SocketUser socketUser, SocketPresence before, SocketPresence after)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -34,20 +34,18 @@ public class GameVoiceChannelService : INService
                     return;
                 // if the user is in the voice channel and that voice channel is gvc
 
-                if (newUser.VoiceChannel is not { } vc 
+                if (newUser.VoiceChannel is not { } vc
                     || !GameVoiceChannels.Contains(vc.Id))
                     return;
-                
-                     //if the activity has changed, and is a playi1ng activity
-                     foreach (var activity in after.Activities)
-                     {
-                         if (activity is { Type: ActivityType.Playing })
-                         {
-                             //trigger gvc
-                             if (await TriggerGvc(newUser, activity.Name))
-                                 return;
-                         }
-                     }
+
+                //if the activity has changed, and is a playi1ng activity
+                foreach (var activity in after.Activities)
+                {
+                    if (activity is { Type: ActivityType.Playing })
+                        //trigger gvc
+                        if (await TriggerGvc(newUser, activity.Name))
+                            return;
+                }
             }
             catch (Exception ex)
             {
@@ -82,7 +80,7 @@ public class GameVoiceChannelService : INService
 
     private Task OnUserVoiceStateUpdated(SocketUser usr, SocketVoiceState oldState, SocketVoiceState newState)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -94,7 +92,7 @@ public class GameVoiceChannelService : INService
 
                 if (!GameVoiceChannels.Contains(newState.VoiceChannel.Id))
                     return;
-                
+
                 foreach (var game in gUser.Activities.Select(x => x.Name))
                 {
                     if (await TriggerGvc(gUser, game))

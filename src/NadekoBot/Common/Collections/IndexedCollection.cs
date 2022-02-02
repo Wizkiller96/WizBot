@@ -5,7 +5,7 @@ using System.Collections;
 namespace NadekoBot.Common.Collections;
 
 public class IndexedCollection<T> : IList<T>
-    where T : class, IIndexed 
+    where T : class, IIndexed
 {
     public List<T> Source { get; }
 
@@ -54,7 +54,7 @@ public class IndexedCollection<T> : IList<T>
     public void Add(T item)
     {
         ArgumentNullException.ThrowIfNull(item);
-        
+
         lock (_locker)
         {
             item.Index = Source.Count;
@@ -93,8 +93,10 @@ public class IndexedCollection<T> : IList<T>
             if (Source.Remove(item))
             {
                 for (var i = 0; i < Source.Count; i++)
+                {
                     if (Source[i].Index != i)
                         Source[i].Index = i;
+                }
 
                 return true;
             }
@@ -108,7 +110,8 @@ public class IndexedCollection<T> : IList<T>
         lock (_locker)
         {
             Source.Insert(index, item);
-            for (var i = index; i < Source.Count; i++) Source[i].Index = i;
+            for (var i = index; i < Source.Count; i++)
+                Source[i].Index = i;
         }
     }
 
@@ -117,7 +120,8 @@ public class IndexedCollection<T> : IList<T>
         lock (_locker)
         {
             Source.RemoveAt(index);
-            for (var i = index; i < Source.Count; i++) Source[i].Index = i;
+            for (var i = index; i < Source.Count; i++)
+                Source[i].Index = i;
         }
     }
 
@@ -126,8 +130,10 @@ public class IndexedCollection<T> : IList<T>
         lock (_locker)
         {
             for (var i = 0; i < Source.Count; i++)
+            {
                 if (Source[i].Index != i)
                     Source[i].Index = i;
+            }
         }
     }
 

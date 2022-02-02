@@ -225,7 +225,10 @@ public partial class Gambling
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                                                                       set => set.Include(x => x.ShopEntries)
                                                                           .ThenInclude(x => x.Items))
-                                                                  .ShopEntries) { entry };
+                                                                  .ShopEntries)
+                {
+                    entry
+                };
                 uow.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                 uow.SaveChanges();
             }
@@ -254,7 +257,10 @@ public partial class Gambling
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
                                                                       set => set.Include(x => x.ShopEntries)
                                                                           .ThenInclude(x => x.Items))
-                                                                  .ShopEntries) { entry };
+                                                                  .ShopEntries)
+                {
+                    entry
+                };
                 uow.GuildConfigsForId(ctx.Guild.Id, set => set).ShopEntries = entries;
                 uow.SaveChanges();
             }
@@ -270,7 +276,10 @@ public partial class Gambling
             index -= 1;
             if (index < 0)
                 return;
-            var item = new ShopEntryItem { Text = itemText };
+            var item = new ShopEntryItem
+            {
+                Text = itemText
+            };
             ShopEntry entry;
             var rightType = false;
             var added = false;
@@ -414,7 +423,6 @@ public partial class Gambling
             var embed = _eb.Create().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
-            {
                 return embed
                        .AddField(GetText(strs.name),
                            GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
@@ -422,14 +430,11 @@ public partial class Gambling
                            true)
                        .AddField(GetText(strs.price), entry.Price.ToString(), true)
                        .AddField(GetText(strs.type), entry.Type.ToString(), true);
-            }
 
             if (entry.Type == ShopEntryType.List)
-            {
                 return embed.AddField(GetText(strs.name), entry.Name, true)
                             .AddField(GetText(strs.price), entry.Price.ToString(), true)
                             .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
-            }
 
             //else if (entry.Type == ShopEntryType.Infinite_List)
             //    return embed.AddField(GetText(strs.name), GetText(strs.shop_role(Format.Bold(entry.RoleName)), true))

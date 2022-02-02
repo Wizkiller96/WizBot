@@ -218,6 +218,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var oterms = query?.Trim();
         if (!await ValidateQuery(query))
             return;
+
         query = WebUtility.UrlEncode(oterms)?.Replace(' ', '+');
         try
         {
@@ -287,7 +288,10 @@ public partial class Searches : NadekoModule<SearchesService>
             {
                 using var http = _httpFactory.CreateClient();
                 using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
-                var formData = new MultipartFormDataContent { { new StringContent(query), "url" } };
+                var formData = new MultipartFormDataContent
+                {
+                    { new StringContent(query), "url" }
+                };
                 req.Content = formData;
 
                 using var res = await http.SendAsync(req);
@@ -486,7 +490,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 {
                     e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
                     return http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword="
-                                                + WebUtility.UrlEncode(word));
+                                               + WebUtility.UrlEncode(word));
                 });
 
             var data = JsonConvert.DeserializeObject<DefineModel>(res);
@@ -572,6 +576,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (string.IsNullOrWhiteSpace(imageLink))
             return;
+
         await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}");
     }
 
@@ -621,12 +626,6 @@ public partial class Searches : NadekoModule<SearchesService>
             usr = (IGuildUser)ctx.User;
 
         var avatarUrl = usr.RealAvatarUrl(2048);
-
-        if (avatarUrl is null)
-        {
-            await ReplyErrorLocalizedAsync(strs.avatar_none(usr.ToString()));
-            return;
-        }
 
         await ctx.Channel.EmbedAsync(
             _eb.Create()
@@ -737,7 +736,8 @@ public partial class Searches : NadekoModule<SearchesService>
 
     private async Task<bool> ValidateQuery(string query)
     {
-        if (!string.IsNullOrWhiteSpace(query)) return true;
+        if (!string.IsNullOrWhiteSpace(query))
+            return true;
 
         await ErrorLocalizedAsync(strs.specify_search_params);
         return false;

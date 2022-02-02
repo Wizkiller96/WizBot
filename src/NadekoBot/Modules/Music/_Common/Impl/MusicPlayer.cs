@@ -54,7 +54,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
-        _thread = new(async() =>
+        _thread = new(async () =>
         {
             await PlayLoop();
         });
@@ -282,7 +282,8 @@ public sealed class MusicPlayer : IMusicPlayer
         var data = sb.Read(vc.InputLength, out var length);
 
         // if nothing is read from the buffer, song is finished
-        if (data.Length == 0) return null;
+        if (data.Length == 0)
+            return null;
 
         _adjustVolume(data, Volume);
         return _proxy.SendPcmFrame(vc, data, length);
@@ -325,7 +326,8 @@ public sealed class MusicPlayer : IMusicPlayer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AdjustVolumeInt16(Span<byte> audioSamples, float volume)
     {
-        if (Math.Abs(volume - 1f) < 0.0001f) return;
+        if (Math.Abs(volume - 1f) < 0.0001f)
+            return;
 
         var samples = MemoryMarshal.Cast<byte, short>(audioSamples);
 
@@ -339,7 +341,8 @@ public sealed class MusicPlayer : IMusicPlayer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void AdjustVolumeFloat32(Span<byte> audioSamples, float volume)
     {
-        if (Math.Abs(volume - 1f) < 0.0001f) return;
+        if (Math.Abs(volume - 1f) < 0.0001f)
+            return;
 
         var samples = MemoryMarshal.Cast<byte, float>(audioSamples);
 

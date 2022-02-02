@@ -39,11 +39,15 @@ public class PollRunner
             if (usr is null)
                 return false;
 
-            voteObj = new() { UserId = msg.Author.Id, VoteIndex = vote };
+            voteObj = new()
+            {
+                UserId = msg.Author.Id,
+                VoteIndex = vote
+            };
             if (!Poll.Votes.Add(voteObj))
                 return false;
 
-            _= OnVoted?.Invoke(msg, usr);
+            _ = OnVoted?.Invoke(msg, usr);
         }
         finally { _locker.Release(); }
 

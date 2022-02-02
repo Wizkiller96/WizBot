@@ -24,9 +24,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         _selfService = selfService;
 
         if (client.ShardId == 0)
-        {
             _rep = new ReplacementBuilder().WithClient(client).WithProviders(phProviders).Build();
-        }
     }
 
     public async Task OnReadyAsync()
@@ -37,7 +35,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         {
             try
             {
-                if (!_bss.Data.RotateStatuses) 
+                if (!_bss.Data.RotateStatuses)
                     continue;
 
                 IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
@@ -82,7 +80,11 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
     public async Task AddPlaying(ActivityType t, string status)
     {
         await using var uow = _db.GetDbContext();
-        var toAdd = new RotatingPlayingStatus { Status = status, Type = t };
+        var toAdd = new RotatingPlayingStatus
+        {
+            Status = status,
+            Type = t
+        };
         uow.Add(toAdd);
         await uow.SaveChangesAsync();
     }

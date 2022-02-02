@@ -103,7 +103,12 @@ public class Localization : ILocalization, INService
         _commandData.TryGetValue(key, out var toReturn);
 
         if (toReturn is null)
-            return new() { Cmd = key, Desc = key, Usage = new[] { key } };
+            return new()
+            {
+                Cmd = key,
+                Desc = key,
+                Usage = new[] { key }
+            };
 
         return toReturn;
     }

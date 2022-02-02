@@ -38,9 +38,9 @@ public partial class Searches
         //     await ctx.Channel.EmbedAsync(embed);
         // }
 
-        [NadekoCommand, Aliases]
+        [Cmd]
         [Priority(0)]
-        public async Task Mal([Leftover] string name)
+        public async partial Task Mal([Leftover] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return;

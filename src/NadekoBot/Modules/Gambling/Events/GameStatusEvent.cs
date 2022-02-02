@@ -68,7 +68,8 @@ public class GameStatusEvent : ICurrencyEvent
     {
         var potEmpty = PotEmptied;
         var toAward = new List<ulong>();
-        while (_toAward.TryDequeue(out var x)) toAward.Add(x);
+        while (_toAward.TryDequeue(out var x))
+            toAward.Add(x);
 
         if (!toAward.Any())
             return;
@@ -85,7 +86,10 @@ public class GameStatusEvent : ICurrencyEvent
                     {
                         m.Embed = GetEmbed(PotSize).Build();
                     },
-                    new() { RetryMode = RetryMode.AlwaysRetry });
+                    new()
+                    {
+                        RetryMode = RetryMode.AlwaysRetry
+                    });
 
             Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
@@ -93,9 +97,7 @@ public class GameStatusEvent : ICurrencyEvent
                 _isPotLimited ? $" {PotSize} left." : "");
 
             if (potEmpty)
-            {
-                _= StopEvent();
-            }
+                _ = StopEvent();
         }
         catch (Exception ex)
         {
@@ -117,7 +119,8 @@ public class GameStatusEvent : ICurrencyEvent
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (message.Id == msg.Id) await StopEvent();
+        if (message.Id == msg.Id)
+            await StopEvent();
     }
 
     public async Task StopEvent()
@@ -135,7 +138,7 @@ public class GameStatusEvent : ICurrencyEvent
             _ = _client.SetGameAsync(null);
             try
             {
-                _= msg.DeleteAsync();
+                _ = msg.DeleteAsync();
             }
             catch { }
 
@@ -145,7 +148,7 @@ public class GameStatusEvent : ICurrencyEvent
 
     private Task HandleMessage(SocketMessage message)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             if (message.Author is not IGuildUser gu // no unknown users, as they could be bots, or alts
                 || gu.IsBot // no bots
@@ -163,7 +166,10 @@ public class GameStatusEvent : ICurrencyEvent
 
             try
             {
-                await message.DeleteAsync(new() { RetryMode = RetryMode.AlwaysFail });
+                await message.DeleteAsync(new()
+                {
+                    RetryMode = RetryMode.AlwaysFail
+                });
             }
             catch { }
         });

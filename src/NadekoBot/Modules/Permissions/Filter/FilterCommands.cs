@@ -62,7 +62,10 @@ public partial class Permissions
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id,
                     set => set.Include(gc => gc.FilterInvitesChannelIds));
-                var match = new FilterChannelId { ChannelId = channel.Id };
+                var match = new FilterChannelId
+                {
+                    ChannelId = channel.Id
+                };
                 removed = config.FilterInvitesChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
                 if (removed is null)
@@ -121,7 +124,10 @@ public partial class Permissions
             {
                 var config =
                     uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
-                var match = new FilterLinksChannelId { ChannelId = channel.Id };
+                var match = new FilterLinksChannelId
+                {
+                    ChannelId = channel.Id
+                };
                 removed = config.FilterLinksChannelIds.FirstOrDefault(fc => fc.Equals(match));
 
                 if (removed is null)
@@ -181,7 +187,10 @@ public partial class Permissions
                 var config =
                     uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
 
-                var match = new FilterWordsChannelId { ChannelId = channel.Id };
+                var match = new FilterWordsChannelId
+                {
+                    ChannelId = channel.Id
+                };
                 removed = config.FilterWordsChannelIds.FirstOrDefault(fc => fc.Equals(match));
                 if (removed is null)
                     config.FilterWordsChannelIds.Add(match);
@@ -221,7 +230,10 @@ public partial class Permissions
                 removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
 
                 if (removed is null)
-                    config.FilteredWords.Add(new() { Word = word });
+                    config.FilteredWords.Add(new()
+                    {
+                        Word = word
+                    });
                 else
                     uow.Remove(removed);
 

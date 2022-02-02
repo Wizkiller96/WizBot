@@ -20,10 +20,13 @@ public class Replacer
             return input;
 
         foreach (var (key, text) in _replacements)
+        {
             if (input.Contains(key))
                 input = input.Replace(key, text(), StringComparison.InvariantCulture);
+        }
 
-        foreach (var item in _regex) input = item.Regex.Replace(input, m => item.Replacement(m));
+        foreach (var item in _regex)
+            input = item.Regex.Replace(input, m => item.Replacement(m));
 
         return input;
     }
@@ -53,7 +56,8 @@ public class Replacer
         if (embedData.Author is not null)
             newEmbedData.Author = new()
             {
-                Name = Replace(embedData.Author.Name), IconUrl = Replace(embedData.Author.IconUrl)
+                Name = Replace(embedData.Author.Name),
+                IconUrl = Replace(embedData.Author.IconUrl)
             };
 
         if (embedData.Fields is not null)
@@ -63,7 +67,9 @@ public class Replacer
             {
                 var newF = new SmartTextEmbedField
                 {
-                    Name = Replace(f.Name), Value = Replace(f.Value), Inline = f.Inline
+                    Name = Replace(f.Name),
+                    Value = Replace(f.Value),
+                    Inline = f.Inline
                 };
                 fields.Add(newF);
             }
@@ -74,7 +80,8 @@ public class Replacer
         if (embedData.Footer is not null)
             newEmbedData.Footer = new()
             {
-                Text = Replace(embedData.Footer.Text), IconUrl = Replace(embedData.Footer.IconUrl)
+                Text = Replace(embedData.Footer.Text),
+                IconUrl = Replace(embedData.Footer.IconUrl)
             };
 
         newEmbedData.Color = embedData.Color;

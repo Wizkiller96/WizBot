@@ -13,7 +13,7 @@ public static class Extensions
 
     public static IEmbedBuilder WithAuthor(this IEmbedBuilder eb, IUser author)
         => eb.WithAuthor(author.ToString(), author.RealAvatarUrl().ToString());
-    
+
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
         {
@@ -58,7 +58,6 @@ public static class Extensions
     public static IEmote ToIEmote(this string emojiStr)
         => Emote.TryParse(emojiStr, out var maybeEmote) ? maybeEmote : new Emoji(emojiStr);
 
-    
 
     /// <summary>
     ///     First 10 characters of teh bot token.
@@ -115,11 +114,11 @@ public static class Extensions
         var wrap = new ReactionEventWrapper(client, msg);
         wrap.OnReactionAdded += r =>
         {
-            _= Task.Run(() => reactionAdded(r));
+            _ = Task.Run(() => reactionAdded(r));
         };
         wrap.OnReactionRemoved += r =>
         {
-            _= Task.Run(() => reactionRemoved(r));
+            _ = Task.Run(() => reactionRemoved(r));
         };
         return wrap;
     }
@@ -143,7 +142,8 @@ public static class Extensions
         Task.Run(async () =>
         {
             await Task.Delay(seconds * 1000);
-            if (logService is not null) logService.AddDeleteIgnore(msg.Id);
+            if (logService is not null)
+                logService.AddDeleteIgnore(msg.Id);
 
             try { await msg.DeleteAsync(); }
             catch { }
@@ -153,7 +153,8 @@ public static class Extensions
 
     public static ModuleInfo GetTopLevelModule(this ModuleInfo module)
     {
-        while (module.Parent is not null) module = module.Parent;
+        while (module.Parent is not null)
+            module = module.Parent;
 
         return module;
     }
@@ -183,14 +184,16 @@ public static class Extensions
     public static bool IsImage(this HttpResponseMessage msg, out string? mimeType)
     {
         mimeType = msg.Content.Headers.ContentType?.MediaType;
-        if (mimeType is "image/png" or "image/jpeg" or "image/gif") return true;
+        if (mimeType is "image/png" or "image/jpeg" or "image/gif")
+            return true;
 
         return false;
     }
 
     public static long? GetImageSize(this HttpResponseMessage msg)
     {
-        if (msg.Content.Headers.ContentLength is null) return null;
+        if (msg.Content.Headers.ContentLength is null)
+            return null;
 
         return msg.Content.Headers.ContentLength.Value / 1.Mb();
     }

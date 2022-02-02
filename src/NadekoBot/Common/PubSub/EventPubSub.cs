@@ -6,7 +6,7 @@ public class EventPubSub : IPubSub
     private readonly object _locker = new();
 
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
-        where TData: notnull
+        where TData : notnull
     {
         Func<object, ValueTask> localAction = obj => action((TData)obj);
         lock (_locker)
@@ -30,7 +30,7 @@ public class EventPubSub : IPubSub
     }
 
     public Task Pub<TData>(in TypedKey<TData> key, TData data)
-        where TData: notnull
+        where TData : notnull
     {
         lock (_locker)
         {
@@ -67,7 +67,8 @@ public class EventPubSub : IPubSub
                         // if our dictionary has no more elements after 
                         // removing the entry
                         // it's safe to remove it from the key's subscriptions
-                        if (actions.Count == 0) _actions.Remove(key.Key);
+                        if (actions.Count == 0)
+                            _actions.Remove(key.Key);
                     }
                 }
 

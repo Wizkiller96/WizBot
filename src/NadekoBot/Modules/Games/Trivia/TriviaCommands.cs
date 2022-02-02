@@ -40,7 +40,8 @@ public partial class Games
             var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);
 
             var config = _gamesConfig.Data;
-            if (config.Trivia.MinimumWinReq > 0 && config.Trivia.MinimumWinReq > opts.WinRequirement) return;
+            if (config.Trivia.MinimumWinReq > 0 && config.Trivia.MinimumWinReq > opts.WinRequirement)
+                return;
 
             var trivia = new TriviaGame(Strings,
                 _client,

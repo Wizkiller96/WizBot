@@ -99,8 +99,10 @@ public sealed class AnimalRace : IDisposable
         if (_users.Count <= 1)
         {
             foreach (var user in _users)
+            {
                 if (user.Bet > 0)
                     await _currency.AddAsync(user.UserId, user.Bet, new("animalrace", "refund"));
+            }
 
             _ = OnStartingFailed?.Invoke(this);
             CurrentPhase = Phase.Ended;

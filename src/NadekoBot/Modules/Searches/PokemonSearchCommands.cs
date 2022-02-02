@@ -28,6 +28,7 @@ public partial class Searches
                 return;
 
             foreach (var kvp in Pokemons)
+            {
                 if (kvp.Key.ToUpperInvariant() == pokemon.ToUpperInvariant())
                 {
                     var p = kvp.Value;
@@ -46,6 +47,7 @@ public partial class Searches
                                                         true));
                     return;
                 }
+            }
 
             await ReplyErrorLocalizedAsync(strs.pokemon_none);
         }
@@ -57,6 +59,7 @@ public partial class Searches
             if (string.IsNullOrWhiteSpace(ability))
                 return;
             foreach (var kvp in PokemonAbilities)
+            {
                 if (kvp.Key.ToUpperInvariant() == ability)
                 {
                     await ctx.Channel.EmbedAsync(_eb.Create()
@@ -70,6 +73,7 @@ public partial class Searches
                                                         true));
                     return;
                 }
+            }
 
             await ReplyErrorLocalizedAsync(strs.pokemon_ability_none);
         }

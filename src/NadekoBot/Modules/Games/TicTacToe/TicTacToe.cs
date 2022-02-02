@@ -175,14 +175,17 @@ public class TicTacToe
     {
         for (var i = 0; i < 3; i++)
         for (var j = 0; j < 3; j++)
+        {
             if (_state[i, j] is null)
                 return false;
+        }
+
         return true;
     }
 
     private Task Client_MessageReceived(SocketMessage msg)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             await _moveLock.WaitAsync();
             try
@@ -266,7 +269,8 @@ public class TicTacToe
 
                         try
                         {
-                            if (del2 is not null) await del2;
+                            if (del2 is not null)
+                                await del2;
                         }
                         catch { }
                     });

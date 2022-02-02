@@ -21,12 +21,12 @@ public partial class Utility
         [OwnerOnly]
         public partial Task ServerInfo([Leftover] string guildName)
             => InternalServerInfo(guildName);
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public partial Task ServerInfo()
             => InternalServerInfo();
-        
+
         private async Task InternalServerInfo(string guildName = null)
         {
             var channel = (ITextChannel)ctx.Channel;
@@ -101,7 +101,8 @@ public partial class Utility
                 return;
 
             var embed = _eb.Create().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
-            if (!string.IsNullOrWhiteSpace(user.Nickname)) embed.AddField(GetText(strs.nickname), user.Nickname, true);
+            if (!string.IsNullOrWhiteSpace(user.Nickname))
+                embed.AddField(GetText(strs.nickname), user.Nickname, true);
             embed.AddField(GetText(strs.id), user.Id.ToString(), true)
                  .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                  .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
@@ -131,12 +132,14 @@ public partial class Utility
 
             var str = new StringBuilder();
             foreach (var kvp in _cmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value)
-                                          .Skip(page * activityPerPage)
-                                          .Take(activityPerPage))
+                                           .Skip(page * activityPerPage)
+                                           .Take(activityPerPage))
+            {
                 str.AppendLine(GetText(strs.activity_line(++startCount,
                     Format.Bold(kvp.Key.ToString()),
                     kvp.Value / _stats.GetUptime().TotalSeconds,
                     kvp.Value)));
+            }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithTitle(GetText(strs.activity_page(page + 1)))

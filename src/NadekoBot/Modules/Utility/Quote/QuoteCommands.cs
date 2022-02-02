@@ -62,16 +62,12 @@ public partial class Utility
             }
 
             if (quotes.Any())
-            {
                 await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
                     string.Join("\n",
                         quotes.Select(q
                             => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
-            }
             else
-            {
                 await ReplyErrorLocalizedAsync(strs.quotes_page_none);
-            }
         }
 
         [Cmd]
@@ -281,7 +277,7 @@ public partial class Utility
             }
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
-                                .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
+                                  .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
 
             var text = PREPEND_EXPORT + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
 
@@ -374,7 +370,10 @@ public partial class Utility
             public static ExportedQuote FromModel(Quote quote)
                 => new()
                 {
-                    Id = ((kwum)quote.Id).ToString(), An = quote.AuthorName, Aid = quote.AuthorId, Txt = quote.Text
+                    Id = ((kwum)quote.Id).ToString(),
+                    An = quote.AuthorName,
+                    Aid = quote.AuthorId,
+                    Txt = quote.Text
                 };
         }
     }

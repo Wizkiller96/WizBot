@@ -66,7 +66,7 @@ Used for cryptocurrency related commands.")]
 
     [Comment(@"Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api")]
     public string OsuApiKey { get; set; }
-    
+
     [Comment(@"Optional Trovo client id.
 You should only use this if Trovo notifications stopped working or you're getting ratelimit errors.")]
     public string TrovoClientId { get; set; }
@@ -96,7 +96,11 @@ Windows default
         BotListToken = string.Empty;
         CleverbotApiKey = string.Empty;
         RedisOptions = "localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=";
-        Db = new() { Type = "sqlite", ConnectionString = "Data Source=data/NadekoBot.db" };
+        Db = new()
+        {
+            Type = "sqlite",
+            ConnectionString = "Data Source=data/NadekoBot.db"
+        };
 
         CoordinatorUrl = "http://localhost:3442";
 

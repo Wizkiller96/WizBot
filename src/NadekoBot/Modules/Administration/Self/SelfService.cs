@@ -59,7 +59,8 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
         HandleStatusChanges();
 
-        if (_client.ShardId == 0) _pubSub.Sub(_imagesReloadKey, async _ => await _imgs.Reload());
+        if (_client.ShardId == 0)
+            _pubSub.Sub(_imagesReloadKey, async _ => await _imgs.Reload());
 
         _pubSub.Sub(_guildLeaveKey,
             async input =>
@@ -70,7 +71,8 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
 
                 var server = _client.Guilds.FirstOrDefault(g => g.Id.ToString() == guildStr
                                                                 || g.Name.Trim().ToUpperInvariant() == guildStr);
-                if (server is null) return;
+                if (server is null)
+                    return;
 
                 if (server.OwnerId != _client.CurrentUser.Id)
                 {
@@ -90,15 +92,16 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         await using var uow = _db.GetDbContext();
 
         autoCommands = uow.AutoCommands.AsNoTracking()
-                           .Where(x => x.Interval >= 5)
-                           .AsEnumerable()
-                           .GroupBy(x => x.GuildId)
-                           .ToDictionary(x => x.Key,
-                               y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
-                           .ToConcurrent();
+                          .Where(x => x.Interval >= 5)
+                          .AsEnumerable()
+                          .GroupBy(x => x.GuildId)
+                          .ToDictionary(x => x.Key,
+                              y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
+                          .ToConcurrent();
 
         var startupCommands = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
         foreach (var cmd in startupCommands)
+        {
             try
             {
                 await ExecuteCommand(cmd);
@@ -106,8 +109,10 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             catch
             {
             }
+        }
 
-        if (_client.ShardId == 0) await LoadOwnerChannels();
+        if (_client.ShardId == 0)
+            await LoadOwnerChannels();
     }
 
     private Timer TimerFromAutoCommand(AutoCommand x)
@@ -171,13 +176,14 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
     private async Task LoadOwnerChannels()
     {
         var channels = await _creds.OwnerIds.Select(id =>
-        {
-            var user = _client.GetUser(id);
-            if (user is null)
-                return Task.FromResult<IDMChannel>(null);
+                                   {
+                                       var user = _client.GetUser(id);
+                                       if (user is null)
+                                           return Task.FromResult<IDMChannel>(null);
 
-            return user.CreateDMChannelAsync();
-        }).WhenAll();
+                                       return user.CreateDMChannelAsync();
+                                   })
+                                   .WhenAll();
 
         ownerChannels = channels.Where(x => x is not null)
                                 .ToDictionary(x => x.Recipient.Id, x => x)
@@ -187,7 +193,9 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             Log.Warning(
                 "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server");
         else
-            Log.Information("Created {OwnerChannelCount} out of {TotalOwnerChannelCount} owner message channels", ownerChannels.Count, _creds.OwnerIds.Count);
+            Log.Information("Created {OwnerChannelCount} out of {TotalOwnerChannelCount} owner message channels",
+                ownerChannels.Count,
+                _creds.OwnerIds.Count);
     }
 
     public Task LeaveGuild(string guildStr)
@@ -214,6 +222,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                 var allOwnerChannels = ownerChannels.Values;
 
                 foreach (var ownerCh in allOwnerChannels.Where(ch => ch.Recipient.Id != msg.Author.Id))
+                {
                     try
                     {
                         await ownerCh.SendConfirmAsync(_eb, title, toSend);
@@ -222,6 +231,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                     {
                         Log.Warning("Can't contact owner with id {OwnerId}", ownerCh.Recipient.Id);
                     }
+                }
             }
             else
             {
@@ -337,10 +347,22 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             });
 
     public Task SetGameAsync(string game, ActivityType type)
-        => _pubSub.Pub(_activitySetKey, new() { Name = game, Link = null, Type = type });
+        => _pubSub.Pub(_activitySetKey,
+            new()
+            {
+                Name = game,
+                Link = null,
+                Type = type
+            });
 
     public Task SetStreamAsync(string name, string link)
-        => _pubSub.Pub(_activitySetKey, new() { Name = name, Link = link, Type = ActivityType.Streaming });
+        => _pubSub.Pub(_activitySetKey,
+            new()
+            {
+                Name = name,
+                Link = link,
+                Type = ActivityType.Streaming
+            });
 
     private sealed class ActivityPubData
     {

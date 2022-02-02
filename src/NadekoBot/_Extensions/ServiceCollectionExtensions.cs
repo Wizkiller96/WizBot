@@ -23,11 +23,13 @@ public static class ServiceCollectionExtensions
         var baseType = typeof(ConfigServiceBase<>);
 
         foreach (var type in Assembly.GetCallingAssembly().ExportedTypes.Where(x => x.IsSealed))
+        {
             if (type.BaseType?.IsGenericType == true && type.BaseType.GetGenericTypeDefinition() == baseType)
             {
                 services.AddSingleton(type);
                 services.AddSingleton(x => (IConfigService)x.GetRequiredService(type));
             }
+        }
 
         return services;
     }
@@ -53,7 +55,8 @@ public static class ServiceCollectionExtensions
         var subTypes = Assembly.GetCallingAssembly()
                                .ExportedTypes.Where(type => type.IsSealed && baseType.IsAssignableFrom(type));
 
-        foreach (var subType in subTypes) services.AddSingleton(baseType, subType);
+        foreach (var subType in subTypes)
+            services.AddSingleton(baseType, subType);
 
         return services;
     }

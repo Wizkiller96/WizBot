@@ -24,10 +24,11 @@ public sealed class Bot
     public string Mention { get; private set; }
     public bool IsReady { get; private set; }
     public int ShardId { get; set; }
-    
+
     private readonly IBotCredentials _creds;
     private readonly CommandService _commandService;
     private readonly DbService _db;
+
     private readonly IBotCredsProvider _credsProvider;
     // private readonly InteractionService _interactionService;
 
@@ -42,7 +43,8 @@ public sealed class Bot
 
         _db = new(_creds);
 
-        if (shardId == 0) _db.Setup();
+        if (shardId == 0)
+            _db.Setup();
 
         Client = new(new()
         {
@@ -55,10 +57,14 @@ public sealed class Bot
             AlwaysResolveStickers = false,
             AlwaysDownloadDefaultStickers = false,
             GatewayIntents = GatewayIntents.All,
-            LogGatewayIntentWarnings = false,
+            LogGatewayIntentWarnings = false
         });
 
-        _commandService = new(new() { CaseSensitiveCommands = false, DefaultRunMode = RunMode.Sync });
+        _commandService = new(new()
+        {
+            CaseSensitiveCommands = false,
+            DefaultRunMode = RunMode.Sync
+        });
 
         // _interactionService = new(Client.Rest);
 
@@ -100,7 +106,7 @@ public sealed class Bot
                                           .AddMemoryCache()
                                           // music
                                           .AddMusic();
-                                          // admin
+        // admin
 #if GLOBAL_NADEKO
         svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
 #else
@@ -109,7 +115,10 @@ public sealed class Bot
 
         svcs.AddHttpClient();
         svcs.AddHttpClient("memelist")
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
 
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
             svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
@@ -147,7 +156,8 @@ public sealed class Bot
         var exec = Services.GetRequiredService<IBehaviourExecutor>();
         exec.Initialize();
 
-        if (Client.ShardId == 0) ApplyConfigMigrations();
+        if (Client.ShardId == 0)
+            ApplyConfigMigrations();
 
         _ = LoadTypeReaders(typeof(Bot).Assembly);
 
@@ -201,12 +211,13 @@ public sealed class Bot
 
         Task SetClientReady()
         {
-            _= Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 clientReady.TrySetResult(true);
                 try
                 {
-                    foreach (var chan in await Client.GetDMChannelsAsync()) await chan.CloseAsync();
+                    foreach (var chan in await Client.GetDMChannelsAsync())
+                        await chan.CloseAsync();
                 }
                 catch
                 {
@@ -253,7 +264,7 @@ public sealed class Bot
     private Task Client_JoinedGuild(SocketGuild arg)
     {
         Log.Information("Joined server: {GuildName} [{GuildId}]", arg.Name, arg.Id);
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             GuildConfig gc;
             await using (var uow = _db.GetDbContext())

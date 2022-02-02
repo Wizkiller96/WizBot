@@ -24,6 +24,7 @@ public sealed class DefaultHangmanSource : IHangmanSource
 
         var qs = new Dictionary<string, HangmanTerm[]>();
         foreach (var file in Directory.EnumerateFiles("data/hangman/", "*.yml"))
+        {
             try
             {
                 var data = Yaml.Deserializer.Deserialize<HangmanTerm[]>(File.ReadAllText(file));
@@ -33,6 +34,7 @@ public sealed class DefaultHangmanSource : IHangmanSource
             {
                 Log.Error(ex, "Loading {HangmanFile} failed", file);
             }
+        }
 
         termsDict = qs;
 

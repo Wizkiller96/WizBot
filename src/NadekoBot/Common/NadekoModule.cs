@@ -11,7 +11,7 @@ namespace NadekoBot.Modules;
 public abstract class NadekoModule : ModuleBase
 {
     protected CultureInfo Culture { get; set; }
-    
+
     // Injected by Discord.net
     public IBotStrings Strings { get; set; }
     public CommandHandler _cmdHandler { get; set; }
@@ -88,7 +88,7 @@ public abstract class NadekoModule : ModuleBase
         }
         finally
         {
-            _= Task.Run(() => msg.DeleteAsync());
+            _ = Task.Run(() => msg.DeleteAsync());
         }
     }
 
@@ -113,7 +113,7 @@ public abstract class NadekoModule : ModuleBase
 
         Task MessageReceived(SocketMessage arg)
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 if (arg is not SocketUserMessage userMsg
                     || userMsg.Channel is not ITextChannel
@@ -121,7 +121,8 @@ public abstract class NadekoModule : ModuleBase
                     || userMsg.Channel.Id != channelId)
                     return Task.CompletedTask;
 
-                if (userInputTask.TrySetResult(arg.Content)) userMsg.DeleteAfter(1);
+                if (userInputTask.TrySetResult(arg.Content))
+                    userMsg.DeleteAfter(1);
 
                 return Task.CompletedTask;
             });

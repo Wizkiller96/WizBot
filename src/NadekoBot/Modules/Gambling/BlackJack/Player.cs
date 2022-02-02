@@ -13,7 +13,8 @@ public abstract class Player
         // reduce the value by 10 until it drops below 22
         // (emulating the fact that ace is either a 1 or a 11)
         var i = Cards.Count(x => x.Number == 1);
-        while (val > 21 && i-- > 0) val -= 10;
+        while (val > 21 && i-- > 0)
+            val -= 10;
         return val;
     }
 

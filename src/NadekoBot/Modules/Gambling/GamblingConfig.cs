@@ -109,8 +109,21 @@ Doesn't have to be ordered.")]
     public BetRollConfig()
         => Pairs = new BetRollPair[]
         {
-            new() { WhenAbove = 99, MultiplyBy = 10 }, new() { WhenAbove = 90, MultiplyBy = 4 },
-            new() { WhenAbove = 66, MultiplyBy = 2 }
+            new()
+            {
+                WhenAbove = 99,
+                MultiplyBy = 10
+            },
+            new()
+            {
+                WhenAbove = 90,
+                MultiplyBy = 4
+            },
+            new()
+            {
+                WhenAbove = 66,
+                MultiplyBy = 2
+            }
         };
 }
 

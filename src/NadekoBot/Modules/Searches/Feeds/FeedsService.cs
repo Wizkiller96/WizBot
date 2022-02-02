@@ -40,7 +40,7 @@ public class FeedsService : INService
         _client = client;
         _eb = eb;
 
-        _= Task.Run(TrackFeeds);
+        _ = Task.Run(TrackFeeds);
     }
 
     public async Task<EmbedBuilder> TrackFeeds()
@@ -74,7 +74,8 @@ public class FeedsService : INService
 
                     foreach (var (feedItem, itemUpdateDate) in items)
                     {
-                        if (itemUpdateDate <= lastFeedUpdate) continue;
+                        if (itemUpdateDate <= lastFeedUpdate)
+                            continue;
 
                         var embed = _eb.Create().WithFooter(rssUrl);
 
@@ -159,26 +160,36 @@ public class FeedsService : INService
     {
         ArgumentNullException.ThrowIfNull(rssFeed, nameof(rssFeed));
 
-        var fs = new FeedSub { ChannelId = channelId, Url = rssFeed.Trim() };
+        var fs = new FeedSub
+        {
+            ChannelId = channelId,
+            Url = rssFeed.Trim()
+        };
 
         using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs).ThenInclude(x => x.GuildConfig));
 
         if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
             return false;
-        if (gc.FeedSubs.Count >= 10) return false;
+        if (gc.FeedSubs.Count >= 10)
+            return false;
 
         gc.FeedSubs.Add(fs);
         uow.SaveChanges();
         //adding all, in case bot wasn't on this guild when it started
         foreach (var feed in gc.FeedSubs)
+        {
             _subs.AddOrUpdate(feed.Url.ToLower(),
-                new HashSet<FeedSub> { feed },
+                new HashSet<FeedSub>
+                {
+                    feed
+                },
                 (_, old) =>
                 {
                     old.Add(feed);
                     return old;
                 });
+        }
 
         return true;
     }

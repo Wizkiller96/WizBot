@@ -41,7 +41,7 @@ public class AdministrationService : INService
 
     private Task DelMsgOnCmd_Handler(IUserMessage msg, CommandInfo cmd)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             if (msg.Channel is not SocketTextChannel channel)
                 return;
@@ -97,7 +97,10 @@ public class AdministrationService : INService
             {
                 if (old is null)
                 {
-                    old = new() { ChannelId = chId };
+                    old = new()
+                    {
+                        ChannelId = chId
+                    };
                     conf.DelMsgOnCmdChannels.Add(old);
                 }
 
@@ -126,6 +129,7 @@ public class AdministrationService : INService
         if (!users.Any())
             return;
         foreach (var u in users)
+        {
             try
             {
                 await u.ModifyAsync(usr => usr.Deaf = value);
@@ -134,6 +138,7 @@ public class AdministrationService : INService
             {
                 // ignored
             }
+        }
     }
 
     public async Task EditMessage(

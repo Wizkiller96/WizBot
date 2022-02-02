@@ -87,6 +87,7 @@ public class SearchImageCacher : INService
                 // both 'kiss' (real tag returned by the image) and 'kissing' will be populated with
                 // retreived images
                 foreach (var tag in img.Tags.Concat(tags).Distinct())
+                {
                     if (typeUsedTags.Contains(tag))
                     {
                         var set = _cache.GetOrCreate<HashSet<ImageData>>(Key(type, tag),
@@ -99,6 +100,7 @@ public class SearchImageCacher : INService
                         if (set.Count < 100)
                             set.Add(img);
                     }
+                }
             }
         }
 
@@ -127,10 +129,12 @@ public class SearchImageCacher : INService
 
             foreach (var tag in tags)
                 // if any tag is missing from cache, that means there is no result
+            {
                 if (_cache.TryGetValue<HashSet<ImageData>>(Key(type, tag), out var set))
                     setList.Add(set);
                 else
                     return null;
+            }
 
             if (setList.Count == 0)
                 return null;
@@ -169,8 +173,11 @@ public class SearchImageCacher : INService
 
             // remove from cache
             foreach (var tag in tags)
+            {
                 if (_cache.TryGetValue<HashSet<ImageData>>(Key(type, tag), out var items))
                     items.Remove(toReturn);
+            }
+
             return toReturn;
         }
     }

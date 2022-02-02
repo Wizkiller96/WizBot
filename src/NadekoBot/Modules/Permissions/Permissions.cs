@@ -24,7 +24,8 @@ public partial class Permissions : NadekoModule<PermissionService>
         await using (var uow = _db.GetDbContext())
         {
             var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
-            if (action is null) action = new(!config.VerbosePermissions); // New behaviour, can toggle.
+            if (action is null)
+                action = new(!config.VerbosePermissions); // New behaviour, can toggle.
             config.VerbosePermissions = action.Value;
             await uow.SaveChangesAsync();
             _service.UpdateCache(config);

@@ -63,7 +63,8 @@ public sealed class MusicService : IMusicService
     private void RemoveMusicPlayer(ulong guildId)
     {
         _outputChannels.TryRemove(guildId, out _);
-        if (_players.TryRemove(guildId, out var mp)) DisposeMusicPlayer(mp);
+        if (_players.TryRemove(guildId, out var mp))
+            DisposeMusicPlayer(mp);
     }
 
     private Task ClientOnLeftGuild(SocketGuild guild)
@@ -139,7 +140,8 @@ public sealed class MusicService : IMusicService
         var queue = new MusicQueue();
         var resolver = _trackResolveProvider;
 
-        if (!_voiceStateService.TryGetProxy(guildId, out var proxy)) return null;
+        if (!_voiceStateService.TryGetProxy(guildId, out var proxy))
+            return null;
 
         var settings = await GetSettingsInternalAsync(guildId);
 
@@ -226,7 +228,8 @@ public sealed class MusicService : IMusicService
     // this has to be done because dragging bot to another vc isn't supported yet
     public async Task<bool> PlayAsync(ulong guildId, ulong voiceChannelId)
     {
-        if (!TryGetMusicPlayer(guildId, out var mp)) return false;
+        if (!TryGetMusicPlayer(guildId, out var mp))
+            return false;
 
         if (mp.IsStopped)
             if (!_voiceStateService.TryGetProxy(guildId, out var proxy)
@@ -254,7 +257,8 @@ public sealed class MusicService : IMusicService
         try
         {
             IList<(string, string)> videos = await SearchYtLoaderVideosAsync(query);
-            if (videos.Count > 0) return videos;
+            if (videos.Count > 0)
+                return videos;
         }
         catch (Exception ex)
         {

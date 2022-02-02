@@ -67,7 +67,7 @@ public class CryptoService : INService
                             + "&start=1"
                             + "&limit=5000"
                             + "&convert=USD");
-                        
+
                         return JsonSerializer.Serialize(strData);
                     }
                     catch (Exception ex)

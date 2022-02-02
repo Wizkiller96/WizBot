@@ -29,7 +29,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
         var uow = _db.GetDbContext();
         var shardRepeaters = uow.Set<Repeater>()
-                                .Where(x => ((int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards)
+                                .Where(x => (int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards
                                             == _client.ShardId)
                                 .AsNoTracking()
                                 .ToList();
@@ -80,10 +80,12 @@ public sealed class RepeaterService : IReadyExecutor, INService
                 }
 
                 // execute
-                foreach (var chunk in toExecute.Chunk(5)) await chunk.Select(Trigger).WhenAll();
+                foreach (var chunk in toExecute.Chunk(5))
+                    await chunk.Select(Trigger).WhenAll();
 
                 // reinsert
-                foreach (var rep in toExecute) await HandlePostExecute(rep);
+                foreach (var rep in toExecute)
+                    await HandlePostExecute(rep);
             }
             catch (Exception ex)
             {
@@ -227,7 +229,8 @@ public sealed class RepeaterService : IReadyExecutor, INService
             try
             {
                 var oldMsg = await channel.GetMessageAsync(lastMessageId);
-                if (oldMsg is not null) await oldMsg.DeleteAsync();
+                if (oldMsg is not null)
+                    await oldMsg.DeleteAsync();
             }
             catch (Exception ex)
             {
@@ -289,7 +292,10 @@ public sealed class RepeaterService : IReadyExecutor, INService
         await using var uow = _db.GetDbContext();
         await uow.Repeaters.AsQueryable()
                  .Where(x => x.Id == repeaterId)
-                 .UpdateAsync(rep => new() { LastMessageId = lastMsgId });
+                 .UpdateAsync(rep => new()
+                 {
+                     LastMessageId = lastMsgId
+                 });
     }
 
     public async Task<RunningRepeater?> AddRepeaterAsync(

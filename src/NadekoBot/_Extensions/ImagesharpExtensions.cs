@@ -20,7 +20,8 @@ public static class ImagesharpExtensions
     /// <returns>The same <see cref="TextOptions" /> to allow chaining</returns>
     public static TextOptions WithFallbackFonts(this TextOptions opts, List<FontFamily> fallback)
     {
-        foreach (var ff in fallback) opts.FallbackFonts.Add(ff);
+        foreach (var ff in fallback)
+            opts.FallbackFonts.Add(ff);
 
         return opts;
     }
@@ -36,7 +37,7 @@ public static class ImagesharpExtensions
         opts.TextOptions.WithFallbackFonts(fallback);
         return opts;
     }
-    
+
     // https://github.com/SixLabors/Samples/blob/master/ImageSharp/AvatarWithRoundedCorner/Program.cs
     public static IImageProcessingContext ApplyRoundedCorners(this IImageProcessingContext ctx, float cornerRadius)
     {
@@ -50,7 +51,8 @@ public static class ImagesharpExtensions
             AlphaCompositionMode = PixelAlphaCompositionMode.DestOut
         });
 
-        foreach (var c in corners) ctx = ctx.Fill(SixLabors.ImageSharp.Color.Red, c);
+        foreach (var c in corners)
+            ctx = ctx.Fill(SixLabors.ImageSharp.Color.Red, c);
 
         return ctx;
     }
@@ -76,7 +78,7 @@ public static class ImagesharpExtensions
 
         return new PathCollection(cornerTopLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
     }
-    
+
     public static Color ToDiscordColor(this Rgba32 color)
         => new(color.R, color.G, color.B);
 
@@ -89,7 +91,8 @@ public static class ImagesharpExtensions
             img.SaveAsPng(imageStream,
                 new()
                 {
-                    ColorType = PngColorType.RgbWithAlpha, CompressionLevel = PngCompressionLevel.BestCompression
+                    ColorType = PngColorType.RgbWithAlpha,
+                    CompressionLevel = PngCompressionLevel.BestCompression
                 });
 
         imageStream.Position = 0;

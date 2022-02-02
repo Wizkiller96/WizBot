@@ -110,7 +110,12 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
 
         if (old is null)
         {
-            ctx.AutoTranslateChannels.Add(new() { GuildId = guildId, ChannelId = channelId, AutoDelete = autoDelete });
+            ctx.AutoTranslateChannels.Add(new()
+            {
+                GuildId = guildId,
+                ChannelId = channelId,
+                AutoDelete = autoDelete
+            });
 
             await ctx.SaveChangesAsync();
 
@@ -169,7 +174,12 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
 
         if (user is null)
         {
-            ch.Users.Add(user = new() { Source = from, Target = to, UserId = userId });
+            ch.Users.Add(user = new()
+            {
+                Source = from,
+                Target = to,
+                UserId = userId
+            });
 
             await ctx.SaveChangesAsync();
 

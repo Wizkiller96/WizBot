@@ -35,7 +35,8 @@ public sealed class VoiceProxy : IVoiceProxy
         try
         {
             var gw = gateway;
-            if (gw is null || gw.Stopped || !gw.Started) return false;
+            if (gw is null || gw.Stopped || !gw.Started)
+                return false;
 
             vc.SendPcmFrame(gw, data, 0, length);
             return true;
@@ -51,7 +52,8 @@ public sealed class VoiceProxy : IVoiceProxy
         var errorCount = 0;
         do
         {
-            if (State == VoiceProxyState.Stopped) break;
+            if (State == VoiceProxyState.Stopped)
+                break;
 
             try
             {

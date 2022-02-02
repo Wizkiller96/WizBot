@@ -81,14 +81,15 @@ public sealed class Connect4Game : IDisposable
         _cs = cs;
 
         _rng = new();
-        for (var i = 0; i < NUMBER_OF_COLUMNS * NUMBER_OF_ROWS; i++) _gameState[i] = Field.Empty;
+        for (var i = 0; i < NUMBER_OF_COLUMNS * NUMBER_OF_ROWS; i++)
+            _gameState[i] = Field.Empty;
     }
 
     public void Initialize()
     {
         if (CurrentPhase != Phase.Joining)
             return;
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             await Task.Delay(15000);
             await _locker.WaitAsync();
@@ -173,11 +174,13 @@ public sealed class Connect4Game : IDisposable
 
             var start = NUMBER_OF_ROWS * inputCol;
             for (var i = start; i < start + NUMBER_OF_ROWS; i++)
+            {
                 if (_gameState[i] == Field.Empty)
                 {
                     _gameState[i] = GetPlayerPiece(userId);
                     break;
                 }
+            }
 
             //check winnning condition
             // ok, i'll go from [0-2] in rows (and through all columns) and check upward if 4 are connected
@@ -233,7 +236,8 @@ public sealed class Connect4Game : IDisposable
                                     EndGame(Result.CurrentPlayerWon, CurrentPlayer.UserId);
                                 else
                                     continue;
-                            else break;
+                            else
+                                break;
                         }
                 }
             }
@@ -271,7 +275,8 @@ public sealed class Connect4Game : IDisposable
                             var cur = _gameState[curRow + (curCol * NUMBER_OF_ROWS)];
                             if (cur == first)
                                 same++;
-                            else break;
+                            else
+                                break;
                         }
 
                         if (same == 4)
@@ -298,7 +303,8 @@ public sealed class Connect4Game : IDisposable
                             var cur = _gameState[curRow + (curCol * NUMBER_OF_ROWS)];
                             if (cur == first)
                                 same++;
-                            else break;
+                            else
+                                break;
                         }
 
                         if (same == 4)
@@ -311,7 +317,8 @@ public sealed class Connect4Game : IDisposable
             }
 
             //check draw? if it's even possible
-            if (_gameState.All(x => x != Field.Empty)) EndGame(Result.Draw, null);
+            if (_gameState.All(x => x != Field.Empty))
+                EndGame(Result.Draw, null);
 
             if (CurrentPhase != Phase.Ended)
             {
@@ -323,7 +330,7 @@ public sealed class Connect4Game : IDisposable
                 ResetTimer();
             }
 
-            _= OnGameStateUpdated?.Invoke(this);
+            _ = OnGameStateUpdated?.Invoke(this);
             return true;
         }
         finally { _locker.Release(); }
@@ -337,7 +344,7 @@ public sealed class Connect4Game : IDisposable
     {
         if (CurrentPhase == Phase.Ended)
             return;
-        _= OnGameEnded?.Invoke(this, result);
+        _ = OnGameEnded?.Invoke(this, result);
         CurrentPhase = Phase.Ended;
 
         if (result == Result.Draw)
@@ -359,8 +366,11 @@ public sealed class Connect4Game : IDisposable
     {
         var start = NUMBER_OF_ROWS * column;
         for (var i = start; i < start + NUMBER_OF_ROWS; i++)
+        {
             if (_gameState[i] == Field.Empty)
                 return false;
+        }
+
         return true;
     }
 

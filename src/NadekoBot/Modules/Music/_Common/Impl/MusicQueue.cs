@@ -87,7 +87,8 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         lock (_locker)
         {
-            if (tracks.Count == 0) return Enqueue(trackInfo, queuer, out trackIndex);
+            if (tracks.Count == 0)
+                return Enqueue(trackInfo, queuer, out trackIndex);
 
             var currentNode = tracks.First!;
             int i;
@@ -165,7 +166,8 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         var removedNode = tracks.First!;
         int i;
-        for (i = 0; i < remoteAtIndex; i++) removedNode = removedNode.Next!;
+        for (i = 0; i < remoteAtIndex; i++)
+            removedNode = removedNode.Next!;
 
         trackInfo = removedNode.Value;
         tracks.Remove(removedNode);
@@ -303,7 +305,8 @@ public sealed partial class MusicQueue : IMusicQueue
             if (remoteAt < 0 || remoteAt >= tracks.Count)
                 return false;
 
-            if (remoteAt == index) isCurrent = true;
+            if (remoteAt == index)
+                isCurrent = true;
 
             RemoveAtInternal(remoteAt, out trackInfo);
 

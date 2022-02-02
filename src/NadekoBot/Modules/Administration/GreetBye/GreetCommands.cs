@@ -190,7 +190,8 @@ public partial class Administration
 
             await _service.ByeTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetByeEnabled(ctx.Guild.Id);
-            if (!enabled) await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
+            if (!enabled)
+                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
         }
 
         [Cmd]
@@ -203,7 +204,8 @@ public partial class Administration
 
             await _service.GreetTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
-            if (!enabled) await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
+            if (!enabled)
+                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
         }
 
         [Cmd]

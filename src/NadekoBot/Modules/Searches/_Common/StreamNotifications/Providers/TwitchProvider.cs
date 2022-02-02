@@ -66,6 +66,7 @@ public class TwitchProvider : Provider
 
         var toReturn = new List<StreamData>();
         foreach (var login in logins)
+        {
             try
             {
                 // get id based on the username
@@ -117,6 +118,7 @@ public class TwitchProvider : Provider
                     ex.Message);
                 _failingStreams.TryAdd(login, DateTime.UtcNow);
             }
+        }
 
         return toReturn;
     }

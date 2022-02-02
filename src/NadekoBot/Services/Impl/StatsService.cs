@@ -58,7 +58,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.ChannelCreated += c =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 if (c is ITextChannel)
                     Interlocked.Increment(ref textChannels);
@@ -71,7 +71,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.ChannelDestroyed += c =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 if (c is ITextChannel)
                     Interlocked.Decrement(ref textChannels);
@@ -84,7 +84,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.GuildAvailable += g =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -96,7 +96,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.JoinedGuild += g =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -108,7 +108,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.GuildUnavailable += g =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -121,7 +121,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
 
         _client.LeftGuild += g =>
         {
-            _= Task.Run(() =>
+            _ = Task.Run(() =>
             {
                 var tc = g.Channels.Count(cx => cx is ITextChannel);
                 var vc = g.Channels.Count - tc;
@@ -138,7 +138,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
         var guilds = _client.Guilds;
         textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
         voiceChannels = guilds.Sum(g => g.Channels.Count(cx => cx is IVoiceChannel));
-        
+
         var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         do
         {
@@ -167,7 +167,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
                 Log.Error(ex, "Error in botlist post");
             }
         } while (await timer.WaitForNextTickAsync());
-    } 
+    }
 
     public TimeSpan GetUptime()
         => DateTime.UtcNow - _started;

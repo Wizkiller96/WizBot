@@ -50,7 +50,8 @@ public partial class Utility
             if (!await RemindInternal(target,
                     meorhere == MeOrHere.Me || ctx.Guild is null,
                     remindData.Time,
-                    remindData.What)) await ReplyErrorLocalizedAsync(strs.remind_too_long);
+                    remindData.What))
+                await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
         [Cmd]
@@ -184,7 +185,8 @@ public partial class Utility
             if (ctx.Guild is not null)
             {
                 var perms = ((IGuildUser)ctx.User).GetPermissions((IGuildChannel)ctx.Channel);
-                if (!perms.MentionEveryone) message = message.SanitizeAllMentions();
+                if (!perms.MentionEveryone)
+                    message = message.SanitizeAllMentions();
             }
 
             var rem = new Reminder

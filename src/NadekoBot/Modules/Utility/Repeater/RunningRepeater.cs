@@ -60,7 +60,8 @@ public sealed class RunningRepeater
     {
         // if the initial time is greater than now, that means the repeater didn't still execute a single time.
         // just schedule it
-        if (initialDateTime > DateTime.UtcNow) return initialDateTime;
+        if (initialDateTime > DateTime.UtcNow)
+            return initialDateTime;
 
         // else calculate based on minutes difference
 

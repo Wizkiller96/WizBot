@@ -139,7 +139,10 @@ public sealed partial class Music
             {
                 playlist = new()
                 {
-                    Name = name, Author = ctx.User.Username, AuthorId = ctx.User.Id, Songs = songs.ToList()
+                    Name = name,
+                    Author = ctx.User.Username,
+                    AuthorId = ctx.User.Id,
+                    Songs = songs.ToList()
                 };
                 uow.MusicPlaylists.Add(playlist);
                 await uow.SaveChangesAsync();
@@ -212,7 +215,8 @@ public sealed partial class Music
                 await mp.EnqueueManyAsync(mpl.Songs.Select(x => (x.Query, (MusicPlatform)x.ProviderType)),
                     ctx.User.ToString());
 
-                if (msg is not null) await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
+                if (msg is not null)
+                    await msg.ModifyAsync(m => m.Content = GetText(strs.playlist_queue_complete));
             }
             finally
             {

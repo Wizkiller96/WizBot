@@ -28,11 +28,17 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
     }
 
     public void Die(bool graceful)
-        => _coordClient.Die(new() { Graceful = graceful });
+        => _coordClient.Die(new()
+        {
+            Graceful = graceful
+        });
 
     public bool RestartShard(int shardId)
     {
-        _coordClient.RestartShard(new() { ShardId = shardId });
+        _coordClient.RestartShard(new()
+        {
+            ShardId = shardId
+        });
 
         return true;
     }

@@ -198,7 +198,7 @@ public class TriviaGame
 
     private Task PotentialGuess(SocketMessage imsg)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -226,7 +226,8 @@ public class TriviaGame
                 }
                 finally { _guessLock.Release(); }
 
-                if (!guess) return;
+                if (!guess)
+                    return;
                 triviaCancelSource.Cancel();
 
 

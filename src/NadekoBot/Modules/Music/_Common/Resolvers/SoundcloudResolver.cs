@@ -27,14 +27,16 @@ public sealed class SoundcloudResolver : ISoundcloudResolver
         using var http = _httpFactory.CreateClient();
         var responseString = await http.GetStringAsync($"https://scapi.nadeko.bot/resolve?url={playlist}");
         var scvids = JObject.Parse(responseString)["tracks"]?.ToObject<SoundCloudVideo[]>();
-        if (scvids is null) yield break;
+        if (scvids is null)
+            yield break;
 
         foreach (var videosChunk in scvids.Where(x => x.Streamable is true).Chunk(5))
         {
             var cachableTracks = videosChunk.Select(VideoModelToCachedData).ToList();
 
             await cachableTracks.Select(_trackCacher.CacheTrackDataAsync).WhenAll();
-            foreach (var info in cachableTracks.Select(CachableDataToTrackInfo)) yield return info;
+            foreach (var info in cachableTracks.Select(CachableDataToTrackInfo))
+                yield return info;
         }
     }
 

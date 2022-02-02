@@ -19,12 +19,12 @@ public class StreamRoleService : INService
         _client = client;
 
         _guildSettings = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.StreamRole)
-                           .Where(x => x.Value is { Enabled: true })
-                           .ToConcurrent();
+                            .Where(x => x.Value is { Enabled: true })
+                            .ToConcurrent();
 
         _client.GuildMemberUpdated += Client_GuildMemberUpdated;
 
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -39,10 +39,11 @@ public class StreamRoleService : INService
 
     private Task Client_GuildMemberUpdated(Cacheable<SocketGuildUser, ulong> cacheable, SocketGuildUser after)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             //if user wasn't streaming or didn't have a game status at all
-            if (_guildSettings.TryGetValue(after.Guild.Id, out var setting)) await RescanUser(after, setting);
+            if (_guildSettings.TryGetValue(after.Guild.Id, out var setting))
+                await RescanUser(after, setting);
         });
 
         return Task.CompletedTask;
@@ -73,7 +74,11 @@ public class StreamRoleService : INService
 
             if (listType == StreamRoleListType.Whitelist)
             {
-                var userObj = new StreamRoleWhitelistedUser { UserId = userId, Username = userName };
+                var userObj = new StreamRoleWhitelistedUser
+                {
+                    UserId = userId,
+                    Username = userName
+                };
 
                 if (action == AddRemove.Rem)
                 {
@@ -91,15 +96,17 @@ public class StreamRoleService : INService
             }
             else
             {
-                var userObj = new StreamRoleBlacklistedUser { UserId = userId, Username = userName };
+                var userObj = new StreamRoleBlacklistedUser
+                {
+                    UserId = userId,
+                    Username = userName
+                };
 
                 if (action == AddRemove.Rem)
                 {
                     var toRemove = streamRoleSettings.Blacklist.FirstOrDefault(x => x.Equals(userObj));
                     if (toRemove is not null)
-                    {
                         success = streamRoleSettings.Blacklist.Remove(toRemove);
-                    }
                 }
                 else
                 {
@@ -111,7 +118,8 @@ public class StreamRoleService : INService
             UpdateCache(guild.Id, streamRoleSettings);
         }
 
-        if (success) await RescanUsers(guild);
+        if (success)
+            await RescanUsers(guild);
         return success;
     }
 
@@ -186,8 +194,10 @@ public class StreamRoleService : INService
         UpdateCache(fromRole.Guild.Id, setting);
 
         foreach (var usr in await fromRole.GetMembersAsync())
+        {
             if (usr is { } x)
                 await RescanUser(x, setting, addRole);
+        }
     }
 
     /// <summary>
@@ -294,8 +304,10 @@ public class StreamRoleService : INService
             var users = await guild.GetUsersAsync(CacheMode.CacheOnly);
             foreach (var usr in users.Where(x
                          => x.RoleIds.Contains(setting.FromRoleId) || x.RoleIds.Contains(addRole.Id)))
+            {
                 if (usr is { } x)
                     await RescanUser(x, setting, addRole);
+            }
         }
     }
 

@@ -66,9 +66,8 @@ public class DefaultWallet : IWallet
                                     {
                                         CurrencyAmount = x.CurrencyAmount + amount
                                     });
-            
+
             if (changed == 0)
-            {
                 await _ctx.DiscordUser
                           .ToLinqToDBTable()
                           .Value(x => x.UserId, UserId)
@@ -76,7 +75,6 @@ public class DefaultWallet : IWallet
                           .Value(x => x.Discriminator, "????")
                           .Value(x => x.CurrencyAmount, amount)
                           .InsertAsync();
-            }
 
             await tran.CommitAsync();
         }
@@ -88,7 +86,7 @@ public class DefaultWallet : IWallet
             Note = txData.Note,
             Type = txData.Type,
             Extra = txData.Extra,
-            OtherId = txData.OtherId,
+            OtherId = txData.OtherId
         };
 
         await _ctx.CreateLinqToDbContext()
@@ -100,7 +98,7 @@ public class DefaultWallet : IWallet
         _ctx.SaveChanges();
         _ctx.Dispose();
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         await _ctx.SaveChangesAsync();

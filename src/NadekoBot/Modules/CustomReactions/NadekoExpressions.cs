@@ -92,16 +92,16 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             curPage =>
             {
                 var desc = expressions.OrderBy(ex => ex.Trigger)
-                                          .Skip(curPage * 20)
-                                          .Take(20)
-                                          .Select(ex => $"{(ex.ContainsAnywhere ? "🗯" : "◾")}"
-                                                        + $"{(ex.DmResponse ? "✉" : "◾")}"
-                                                        + $"{(ex.AutoDeleteTrigger ? "❌" : "◾")}"
-                                                        + $"`{(kwum)ex.Id}` {ex.Trigger}"
-                                                        + (string.IsNullOrWhiteSpace(ex.Reactions)
-                                                            ? string.Empty
-                                                            : " // " + string.Join(" ", ex.GetReactions())))
-                                          .Join('\n');
+                                      .Skip(curPage * 20)
+                                      .Take(20)
+                                      .Select(ex => $"{(ex.ContainsAnywhere ? "🗯" : "◾")}"
+                                                    + $"{(ex.DmResponse ? "✉" : "◾")}"
+                                                    + $"{(ex.AutoDeleteTrigger ? "❌" : "◾")}"
+                                                    + $"`{(kwum)ex.Id}` {ex.Trigger}"
+                                                    + (string.IsNullOrWhiteSpace(ex.Reactions)
+                                                        ? string.Empty
+                                                        : " // " + string.Join(" ", ex.GetReactions())))
+                                      .Join('\n');
 
                 return _eb.Create().WithOkColor().WithTitle(GetText(strs.custom_reactions)).WithDescription(desc);
             },

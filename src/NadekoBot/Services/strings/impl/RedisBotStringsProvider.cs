@@ -47,7 +47,11 @@ public class RedisBotStringsProvider : IBotStringsProvider
             return null;
 
         var args = Array.ConvertAll(argsStr.Split('&'), HttpUtility.UrlDecode);
-        return new() { Args = args, Desc = descStr };
+        return new()
+        {
+            Args = args,
+            Desc = descStr
+        };
     }
 
     public void Reload()

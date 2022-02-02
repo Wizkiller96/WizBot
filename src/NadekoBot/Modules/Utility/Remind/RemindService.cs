@@ -65,8 +65,8 @@ public class RemindService : INService
     {
         await using var uow = _db.GetDbContext();
         await uow.Reminders
-           .ToLinqToDBTable()
-           .DeleteAsync(x => reminders.Contains(x.Id));
+                 .ToLinqToDBTable()
+                 .DeleteAsync(x => reminders.Contains(x.Id));
 
         await uow.SaveChangesAsync();
     }
@@ -76,7 +76,7 @@ public class RemindService : INService
         using var uow = _db.GetDbContext();
         return uow.Reminders
                   .ToLinqToDBTable()
-                  .Where(x => (x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId)
+                  .Where(x => x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId
                               && x.When < now)
                   // .FromSqlInterpolated(
                   //     $"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
@@ -88,7 +88,8 @@ public class RemindService : INService
         var m = _regex.Match(input);
 
         obj = default;
-        if (m.Length == 0) return false;
+        if (m.Length == 0)
+            return false;
 
         var values = new Dictionary<string, int>();
 
@@ -102,7 +103,8 @@ public class RemindService : INService
 
         foreach (var groupName in _regex.GetGroupNames())
         {
-            if (groupName is "0" or "what") continue;
+            if (groupName is "0" or "what")
+                continue;
             if (string.IsNullOrWhiteSpace(m.Groups[groupName].Value))
             {
                 values[groupName] = 0;
@@ -126,7 +128,11 @@ public class RemindService : INService
 
         var ts = new TimeSpan((30 * values["mo"]) + (7 * values["w"]) + values["d"], values["h"], values["m"], 0);
 
-        obj = new() { Time = ts, What = what };
+        obj = new()
+        {
+            Time = ts,
+            What = what
+        };
 
         return true;
     }

@@ -55,7 +55,8 @@ public class WaifuService : INService
         }
         else // if not, pay 10% fee
         {
-            if (!await _cs.RemoveAsync(owner.Id, waifu.Price / 10, new("waifu", "transfer"))) return false;
+            if (!await _cs.RemoveAsync(owner.Id, waifu.Price / 10, new("waifu", "transfer")))
+                return false;
 
             waifu.Price = (int)(waifu.Price * 0.95); // half of 10% = 5% price reduction
             if (waifu.Price < settings.Waifu.MinPrice)
@@ -150,10 +151,19 @@ public class WaifuService : INService
                 }
                 else
                 {
-                    uow.WaifuInfo.Add(w = new() { Waifu = waifu, Claimer = claimer, Affinity = null, Price = amount });
+                    uow.WaifuInfo.Add(w = new()
+                    {
+                        Waifu = waifu,
+                        Claimer = claimer,
+                        Affinity = null,
+                        Price = amount
+                    });
                     uow.WaifuUpdates.Add(new()
                     {
-                        User = waifu, Old = null, New = claimer, UpdateType = WaifuUpdateType.Claimed
+                        User = waifu,
+                        Old = null,
+                        New = claimer,
+                        UpdateType = WaifuUpdateType.Claimed
                     });
                     result = WaifuClaimResult.Success;
                 }
@@ -173,7 +183,10 @@ public class WaifuService : INService
 
                     uow.WaifuUpdates.Add(new()
                     {
-                        User = w.Waifu, Old = oldClaimer, New = w.Claimer, UpdateType = WaifuUpdateType.Claimed
+                        User = w.Waifu,
+                        Old = oldClaimer,
+                        New = w.Claimer,
+                        UpdateType = WaifuUpdateType.Claimed
                     });
                 }
             }
@@ -192,7 +205,10 @@ public class WaifuService : INService
 
                     uow.WaifuUpdates.Add(new()
                     {
-                        User = w.Waifu, Old = oldClaimer, New = w.Claimer, UpdateType = WaifuUpdateType.Claimed
+                        User = w.Waifu,
+                        Old = oldClaimer,
+                        New = w.Claimer,
+                        UpdateType = WaifuUpdateType.Claimed
                     });
                 }
             }
@@ -226,12 +242,21 @@ public class WaifuService : INService
             else if (w is null)
             {
                 var thisUser = uow.GetOrCreateUser(user);
-                uow.WaifuInfo.Add(new() { Affinity = newAff, Waifu = thisUser, Price = 1, Claimer = null });
+                uow.WaifuInfo.Add(new()
+                {
+                    Affinity = newAff,
+                    Waifu = thisUser,
+                    Price = 1,
+                    Claimer = null
+                });
                 success = true;
 
                 uow.WaifuUpdates.Add(new()
                 {
-                    User = thisUser, Old = null, New = newAff, UpdateType = WaifuUpdateType.AffinityChanged
+                    User = thisUser,
+                    Old = null,
+                    New = newAff,
+                    UpdateType = WaifuUpdateType.AffinityChanged
                 });
             }
             else
@@ -243,7 +268,10 @@ public class WaifuService : INService
 
                 uow.WaifuUpdates.Add(new()
                 {
-                    User = w.Waifu, Old = oldAff, New = newAff, UpdateType = WaifuUpdateType.AffinityChanged
+                    User = w.Waifu,
+                    Old = oldAff,
+                    New = newAff,
+                    UpdateType = WaifuUpdateType.AffinityChanged
                 });
             }
 
@@ -304,7 +332,10 @@ public class WaifuService : INService
 
                 uow.WaifuUpdates.Add(new()
                 {
-                    User = w.Waifu, Old = oldClaimer, New = null, UpdateType = WaifuUpdateType.Claimed
+                    User = w.Waifu,
+                    Old = oldClaimer,
+                    New = null,
+                    UpdateType = WaifuUpdateType.Claimed
                 });
             }
 
@@ -316,19 +347,27 @@ public class WaifuService : INService
 
     public async Task<bool> GiftWaifuAsync(IUser from, IUser giftedWaifu, WaifuItemModel itemObj)
     {
-        if (!await _cs.RemoveAsync(from, itemObj.Price, new("waifu", "item"))) return false;
+        if (!await _cs.RemoveAsync(from, itemObj.Price, new("waifu", "item")))
+            return false;
 
         await using var uow = _db.GetDbContext();
         var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items).Include(x => x.Claimer));
         if (w is null)
             uow.WaifuInfo.Add(w = new()
             {
-                Affinity = null, Claimer = null, Price = 1, Waifu = uow.GetOrCreateUser(giftedWaifu)
+                Affinity = null,
+                Claimer = null,
+                Price = 1,
+                Waifu = uow.GetOrCreateUser(giftedWaifu)
             });
 
         if (!itemObj.Negative)
         {
-            w.Items.Add(new() { Name = itemObj.Name.ToLowerInvariant(), ItemEmoji = itemObj.ItemEmoji });
+            w.Items.Add(new()
+            {
+                Name = itemObj.Name.ToLowerInvariant(),
+                ItemEmoji = itemObj.ItemEmoji
+            });
 
             if (w.Claimer?.UserId == from.Id)
                 w.Price += (int)(itemObj.Price * _gss.Data.Waifu.Multipliers.GiftEffect);

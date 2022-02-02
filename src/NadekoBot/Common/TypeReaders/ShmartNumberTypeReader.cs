@@ -40,7 +40,8 @@ public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
         }
         catch (Exception)
         {
-            return ValueTask.FromResult(TypeReaderResult.FromError<ShmartNumber>(CommandError.ParseFailed, $"Invalid input: {input}"));
+            return ValueTask.FromResult(
+                TypeReaderResult.FromError<ShmartNumber>(CommandError.ParseFailed, $"Invalid input: {input}"));
         }
     }
 

@@ -211,7 +211,7 @@ public partial class Gambling
             }
             finally
             {
-                _= Task.Run(async () =>
+                _ = Task.Run(async () =>
                 {
                     await Task.Delay(1000);
                     _runningUsers.Remove(ctx.User.Id);
@@ -238,7 +238,8 @@ public partial class Gambling
             public static SlotResult Pull()
             {
                 var numbers = new int[3];
-                for (var i = 0; i < numbers.Length; i++) numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
+                for (var i = 0; i < numbers.Length; i++)
+                    numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
                 var multi = 0;
                 foreach (var t in _winningCombos)
                 {

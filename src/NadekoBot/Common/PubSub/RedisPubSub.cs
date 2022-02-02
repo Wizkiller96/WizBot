@@ -33,7 +33,7 @@ public sealed class RedisPubSub : IPubSub
             try
             {
                 var dataObj = _serializer.Deserialize<TData>(data);
-                if(dataObj is not null)
+                if (dataObj is not null)
                     await action(dataObj);
                 else
                     Log.Warning("Publishing event {EventName} with a null value. This is not allowed",

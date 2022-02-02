@@ -50,7 +50,7 @@ public class GreetService : INService, IReadyExecutor
             await Task.Delay(2000);
         }
     }
-    
+
     private Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> optOldUser, SocketGuildUser newUser)
     {
         // if user is a new booster
@@ -61,7 +61,8 @@ public class GreetService : INService, IReadyExecutor
                 && newDate > oldDate))
         {
             var conf = GetOrAddSettingsForGuild(newUser.Guild.Id);
-            if (!conf.SendBoostMessage) return Task.CompletedTask;
+            if (!conf.SendBoostMessage)
+                return Task.CompletedTask;
 
             _ = Task.Run(TriggerBoostMessage(conf, newUser));
         }
@@ -85,7 +86,8 @@ public class GreetService : INService, IReadyExecutor
             try
             {
                 var toDelete = await channel.SendAsync(rep.Replace(toSend));
-                if (conf.BoostMessageDeleteAfter > 0) toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
+                if (conf.BoostMessageDeleteAfter > 0)
+                    toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
             }
             catch (Exception ex)
             {
@@ -107,13 +109,14 @@ public class GreetService : INService, IReadyExecutor
 
     private Task OnUserLeft(SocketGuild guild, SocketUser user)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
                 var conf = GetOrAddSettingsForGuild(guild.Id);
 
-                if (!conf.SendChannelByeMessage) return;
+                if (!conf.SendChannelByeMessage)
+                    return;
                 var channel = guild.TextChannels.FirstOrDefault(c => c.Id == conf.ByeMessageChannelId);
 
                 if (channel is null) //maybe warn the server owner that the channel is missing
@@ -187,7 +190,8 @@ public class GreetService : INService, IReadyExecutor
         try
         {
             var toDelete = await channel.SendAsync(text);
-            if (conf.AutoDeleteByeMessagesTimer > 0) toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
+            if (conf.AutoDeleteByeMessagesTimer > 0)
+                toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
         catch (Exception ex)
         {
@@ -214,7 +218,8 @@ public class GreetService : INService, IReadyExecutor
         try
         {
             var toDelete = await channel.SendAsync(text);
-            if (conf.AutoDeleteGreetMessagesTimer > 0) toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
+            if (conf.AutoDeleteGreetMessagesTimer > 0)
+                toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
         catch (Exception ex)
         {
@@ -229,14 +234,14 @@ public class GreetService : INService, IReadyExecutor
             // probably the best thing to do is to drop newest (raiding) users
             FullMode = BoundedChannelFullMode.DropNewest
         });
-    
+
     private async Task<bool> GreetDmUser(GreetSettings conf, IGuildUser user)
     {
         var completionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
         await _greetDmQueue.Writer.WriteAsync((conf, user, completionSource));
         return await completionSource.Task;
     }
-    
+
     private async Task<bool> GreetDmUserInternal(GreetSettings conf, IGuildUser user)
     {
         try
@@ -248,15 +253,17 @@ public class GreetService : INService, IReadyExecutor
 
             var text = SmartText.CreateFrom(conf.DmGreetMessageText);
             text = rep.Replace(text);
-            
+
             if (text is SmartPlainText pt)
-            {
-                text = new SmartEmbedText() { PlainText = pt.Text };
-            }
+                text = new SmartEmbedText()
+                {
+                    PlainText = pt.Text
+                };
 
             ((SmartEmbedText)text).Footer = new()
             {
-                Text = $"This message was sent from {user.Guild} server.", IconUrl = user.Guild.IconUrl
+                Text = $"This message was sent from {user.Guild} server.",
+                IconUrl = user.Guild.IconUrl
             };
 
             await user.SendAsync(text);
@@ -271,7 +278,7 @@ public class GreetService : INService, IReadyExecutor
 
     private Task OnUserJoined(IGuildUser user)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -308,9 +315,7 @@ public class GreetService : INService, IReadyExecutor
                 }
 
                 if (conf.SendDmGreetMessage)
-                {
                     await GreetDmUser(conf, user);
-                }
             }
             catch
             {

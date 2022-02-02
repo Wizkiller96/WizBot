@@ -47,7 +47,8 @@ public partial class Gambling
             }
 
             using var img = images.Merge();
-            foreach (var i in images) i.Dispose();
+            foreach (var i in images)
+                i.Dispose();
 
             var toSend = $"{Format.Bold(ctx.User.ToString())}";
             if (cardObjects.Count == 5)

@@ -62,7 +62,7 @@ public class NadekoContext : DbContext
     public DbSet<NsfwBlacklistedTag> NsfwBlacklistedTags { get; set; }
     public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
-    
+
     public DbSet<Permissionv2> Permissions { get; set; }
 
     public NadekoContext(DbContextOptions<NadekoContext> options)
@@ -95,7 +95,12 @@ public class NadekoContext : DbContext
                     .HasForeignKey<AntiAltSetting>(x => x.GuildConfigId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<FeedSub>().HasAlternateKey(x => new { x.GuildConfigId, x.Url });
+        modelBuilder.Entity<FeedSub>()
+                    .HasAlternateKey(x => new
+                    {
+                        x.GuildConfigId,
+                        x.Url
+                    });
 
         modelBuilder.Entity<PlantedCurrency>().HasIndex(x => x.MessageId).IsUnique();
 
@@ -115,7 +120,12 @@ public class NadekoContext : DbContext
 
         var selfassignableRolesEntity = modelBuilder.Entity<SelfAssignedRole>();
 
-        selfassignableRolesEntity.HasIndex(s => new { s.GuildId, s.RoleId }).IsUnique();
+        selfassignableRolesEntity.HasIndex(s => new
+                                 {
+                                     s.GuildId,
+                                     s.RoleId
+                                 })
+                                 .IsUnique();
 
         selfassignableRolesEntity.Property(x => x.Group).HasDefaultValue(0);
 
@@ -160,7 +170,7 @@ public class NadekoContext : DbContext
 
             du.Property(x => x.TotalXp)
               .HasDefaultValue(0);
-            
+
             du.Property(x => x.CurrencyAmount)
               .HasDefaultValue(0);
 
@@ -196,7 +206,12 @@ public class NadekoContext : DbContext
         #region XpStats
 
         var xps = modelBuilder.Entity<UserXpStats>();
-        xps.HasIndex(x => new { x.UserId, x.GuildId }).IsUnique();
+        xps.HasIndex(x => new
+           {
+               x.UserId,
+               x.GuildId
+           })
+           .IsUnique();
 
         xps.Property(x => x.LastLevelUp)
            .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 307, DateTimeKind.Local));
@@ -216,7 +231,13 @@ public class NadekoContext : DbContext
 
         #region XpRoleReward
 
-        modelBuilder.Entity<XpRoleReward>().HasIndex(x => new { x.XpSettingsId, x.Level }).IsUnique();
+        modelBuilder.Entity<XpRoleReward>()
+                    .HasIndex(x => new
+                    {
+                        x.XpSettingsId,
+                        x.Level
+                    })
+                    .IsUnique();
 
         #endregion
 
@@ -226,19 +247,33 @@ public class NadekoContext : DbContext
         ci.HasOne(x => x.Owner).WithOne().HasForeignKey<ClubInfo>(x => x.OwnerId);
 
 
-        ci.HasAlternateKey(x => new { x.Name, x.Discrim });
+        ci.HasAlternateKey(x => new
+        {
+            x.Name,
+            x.Discrim
+        });
 
         #endregion
 
         #region ClubManytoMany
 
-        modelBuilder.Entity<ClubApplicants>().HasKey(t => new { t.ClubId, t.UserId });
+        modelBuilder.Entity<ClubApplicants>()
+                    .HasKey(t => new
+                    {
+                        t.ClubId,
+                        t.UserId
+                    });
 
         modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.User).WithMany();
 
         modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.Club).WithMany(x => x.Applicants);
 
-        modelBuilder.Entity<ClubBans>().HasKey(t => new { t.ClubId, t.UserId });
+        modelBuilder.Entity<ClubBans>()
+                    .HasKey(t => new
+                    {
+                        t.ClubId,
+                        t.UserId
+                    });
 
         modelBuilder.Entity<ClubBans>().HasOne(pt => pt.User).WithMany();
 
@@ -264,12 +299,10 @@ public class NadekoContext : DbContext
 
             e.Property(x => x.Type)
              .IsRequired();
-            
+
             e.Property(x => x.Extra)
              .IsRequired();
-
         });
-                    
 
         #endregion
 
@@ -281,7 +314,13 @@ public class NadekoContext : DbContext
 
         #region GroupName
 
-        modelBuilder.Entity<GroupName>().HasIndex(x => new { x.GuildConfigId, x.Number }).IsUnique();
+        modelBuilder.Entity<GroupName>()
+                    .HasIndex(x => new
+                    {
+                        x.GuildConfigId,
+                        x.Number
+                    })
+                    .IsUnique();
 
         modelBuilder.Entity<GroupName>()
                     .HasOne(x => x.GuildConfig)
@@ -298,7 +337,13 @@ public class NadekoContext : DbContext
 
         #region Perm Override
 
-        modelBuilder.Entity<DiscordPermOverride>().HasIndex(x => new { x.GuildId, x.Command }).IsUnique();
+        modelBuilder.Entity<DiscordPermOverride>()
+                    .HasIndex(x => new
+                    {
+                        x.GuildId,
+                        x.Command
+                    })
+                    .IsUnique();
 
         #endregion
 
@@ -329,7 +374,12 @@ public class NadekoContext : DbContext
                                               .OnDelete(DeleteBehavior.Cascade));
 
         modelBuilder.Entity<IgnoredLogItem>(ili => ili
-                                                   .HasIndex(x => new { x.LogSettingId, x.LogItemId, x.ItemType })
+                                                   .HasIndex(x => new
+                                                   {
+                                                       x.LogSettingId,
+                                                       x.LogItemId,
+                                                       x.ItemType
+                                                   })
                                                    .IsUnique());
 
         #endregion
@@ -345,8 +395,11 @@ public class NadekoContext : DbContext
 
         atch.HasMany(x => x.Users).WithOne(x => x.Channel).OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<AutoTranslateUser>(atu => atu.HasAlternateKey(x => new { x.ChannelId, x.UserId }));
-        
+        modelBuilder.Entity<AutoTranslateUser>(atu => atu.HasAlternateKey(x => new
+        {
+            x.ChannelId,
+            x.UserId
+        }));
     }
 
 #if DEBUG

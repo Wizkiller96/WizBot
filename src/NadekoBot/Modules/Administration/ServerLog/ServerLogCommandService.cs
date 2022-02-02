@@ -138,7 +138,11 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
         if (removed == 0)
         {
-            var toAdd = new IgnoredLogItem { LogItemId = itemId, ItemType = itemType };
+            var toAdd = new IgnoredLogItem
+            {
+                LogItemId = itemId,
+                ItemType = itemType
+            };
             logSetting.LogIgnores.Add(toAdd);
         }
 
@@ -183,7 +187,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserUpdated(SocketUser before, SocketUser uAfter)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -306,7 +310,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserVoiceStateUpdated_TTS(SocketUser iusr, SocketVoiceState before, SocketVoiceState after)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -351,7 +355,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         IUser mod,
         MuteType muteType,
         string reason)
-        => _= Task.Run(async () =>
+        => _ = Task.Run(async () =>
         {
             try
             {
@@ -396,7 +400,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         IUser mod,
         MuteType muteType,
         string reason)
-        => _= Task.Run(async () =>
+        => _ = Task.Run(async () =>
         {
             try
             {
@@ -443,7 +447,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     public Task TriggeredAntiProtection(PunishmentAction action, ProtectionType protection, params IGuildUser[] users)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -453,7 +457,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if (!GuildLogSettings.TryGetValue(users.First().Guild.Id, out var logSetting)
                     || logSetting.LogOtherId is null)
                     return;
-                
+
                 ITextChannel? logChannel;
                 if ((logChannel = await TryGetLogChannel(users.First().Guild, logSetting, LogType.Other)) is null)
                     return;
@@ -513,7 +517,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_GuildUserUpdated(Cacheable<SocketGuildUser, ulong> optBefore, SocketGuildUser after)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -575,7 +579,8 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 if (!before.IsBot
                     && logSetting.LogUserPresenceId is not null
-                    && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)) is not null)
+                    && (logChannel =
+                        await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)) is not null)
                 {
                     if (before.Status != after.Status)
                     {
@@ -585,7 +590,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                                       strs.user_status_change("👤" + Format.Bold(after.Username),
                                           Format.Bold(after.Status.ToString())));
                         PresenceUpdates.AddOrUpdate(logChannel,
-                            new List<string> { str },
+                            new List<string>
+                            {
+                                str
+                            },
                             (_, list) =>
                             {
                                 list.Add(str);
@@ -597,7 +605,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                         var str =
                             $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activities.FirstOrDefault()?.Name ?? "-"}**.";
                         PresenceUpdates.AddOrUpdate(logChannel,
-                            new List<string> { str },
+                            new List<string>
+                            {
+                                str
+                            },
                             (_, list) =>
                             {
                                 list.Add(str);
@@ -616,7 +627,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelUpdated(IChannel cbefore, IChannel cafter)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -664,7 +675,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelDestroyed(IChannel ich)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -702,7 +713,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_ChannelCreated(IChannel ich)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -738,7 +749,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserVoiceStateUpdated(SocketUser iusr, SocketVoiceState before, SocketVoiceState after)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -784,7 +795,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 if (!string.IsNullOrWhiteSpace(str))
                     PresenceUpdates.AddOrUpdate(logChannel,
-                        new List<string> { str },
+                        new List<string>
+                        {
+                            str
+                        },
                         (_, list) =>
                         {
                             list.Add(str);
@@ -801,7 +815,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserLeft(SocketGuild guild, SocketUser usr)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -836,7 +850,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserJoined(IGuildUser usr)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -875,7 +889,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserUnbanned(IUser usr, IGuild guild)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -910,7 +924,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_UserBanned(IUser usr, IGuild guild)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -947,7 +961,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private Task _client_MessageDeleted(Cacheable<IMessage, ulong> optMsg, Cacheable<IMessageChannel, ulong> optCh)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
@@ -1001,7 +1015,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         SocketMessage imsg2,
         ISocketMessageChannel ch)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {

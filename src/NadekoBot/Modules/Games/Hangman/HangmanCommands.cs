@@ -62,7 +62,8 @@ public partial class Games
         [RequireContext(ContextType.Guild)]
         public async partial Task HangmanStop()
         {
-            if (await _service.StopHangman(ctx.Channel.Id)) await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
+            if (await _service.StopHangman(ctx.Channel.Id))
+                await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
         }
     }
 }

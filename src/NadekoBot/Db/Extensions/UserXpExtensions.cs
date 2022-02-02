@@ -15,7 +15,10 @@ public static class UserXpExtensions
         if (usr is null)
             ctx.Add(usr = new()
             {
-                Xp = 0, UserId = userId, NotifyOnLevelUp = XpNotificationLocation.None, GuildId = guildId
+                Xp = 0,
+                UserId = userId,
+                NotifyOnLevelUp = XpNotificationLocation.None,
+                GuildId = guildId
             });
 
         return usr;

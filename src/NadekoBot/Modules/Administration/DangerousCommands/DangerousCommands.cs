@@ -97,7 +97,8 @@ namespace NadekoBot.Modules.Administration
                 var embed = _eb.Create()
                                .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
 
-                if (!await PromptUserConfirmAsync(embed)) return;
+                if (!await PromptUserConfirmAsync(embed))
+                    return;
 
                 await _service.PurgeUserAsync(userId);
                 await ctx.OkAsync();

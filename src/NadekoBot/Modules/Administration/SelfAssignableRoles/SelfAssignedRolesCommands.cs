@@ -112,6 +112,7 @@ public partial class Administration
 
                         rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
                         foreach (var (model, role) in kvp.AsEnumerable())
+                        {
                             if (role is null)
                             {
                             }
@@ -123,6 +124,7 @@ public partial class Administration
                                 else
                                     rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
                             }
+                        }
 
                         rolesStr.AppendLine();
                     }

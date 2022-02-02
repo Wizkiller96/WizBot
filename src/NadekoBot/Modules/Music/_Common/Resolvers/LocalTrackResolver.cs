@@ -43,7 +43,8 @@ public sealed class LocalTrackResolver : ILocalTrackResolver
                        .Where(x =>
                        {
                            if (!x.Attributes.HasFlag(FileAttributes.Hidden | FileAttributes.System)
-                               && _musicExtensions.Contains(x.Extension.ToUpperInvariant())) return true;
+                               && _musicExtensions.Contains(x.Extension.ToUpperInvariant()))
+                               return true;
                            return false;
                        })
                        .ToList();

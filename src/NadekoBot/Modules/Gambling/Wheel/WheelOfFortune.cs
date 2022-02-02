@@ -31,7 +31,11 @@ public class WheelOfFortuneGame
         if (amount > 0)
             await _cs.AddAsync(_userId, amount, new("wheel", "win"));
 
-        return new() { Index = result, Amount = amount };
+        return new()
+        {
+            Index = result,
+            Amount = amount
+        };
     }
 
     public class Result

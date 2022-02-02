@@ -20,7 +20,8 @@ public static class PermissionExtensions
 
             var result = perm.CheckPermission(message, commandName, moduleName);
 
-            if (result is null) continue;
+            if (result is null)
+                continue;
             permIndex = i;
             return result.Value;
         }

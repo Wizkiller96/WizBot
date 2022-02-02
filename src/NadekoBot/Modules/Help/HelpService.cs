@@ -130,7 +130,7 @@ public class HelpService : ILateExecutor, INService
         {
             if (userPerm.ChannelPermission is { } cPerm)
                 userPermString = GetPreconditionString(cPerm);
-            
+
             if (userPerm.GuildPermission is { } gPerm)
                 userPermString = GetPreconditionString(gPerm);
         }

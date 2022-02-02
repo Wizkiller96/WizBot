@@ -67,7 +67,8 @@ public partial class Searches
         [RequireContext(ContextType.Guild)]
         public async partial Task StreamList(int page = 1)
         {
-            if (page-- < 1) return;
+            if (page-- < 1)
+                return;
 
             var streams = new List<FollowedStream>();
             await using (var uow = _db.GetDbContext())

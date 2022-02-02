@@ -36,16 +36,31 @@ public sealed record SmartEmbedText : SmartText
             Url = eb.Url,
             Thumbnail = eb.Thumbnail?.Url,
             Image = eb.Image?.Url,
-            Author = eb.Author is { } ea ? new() { Name = ea.Name, Url = ea.Url, IconUrl = ea.IconUrl } : null,
-            Footer = eb.Footer is { } ef ? new() { Text = ef.Text, IconUrl = ef.IconUrl } : null
+            Author = eb.Author is { } ea
+                ? new()
+                {
+                    Name = ea.Name,
+                    Url = ea.Url,
+                    IconUrl = ea.IconUrl
+                }
+                : null,
+            Footer = eb.Footer is { } ef
+                ? new()
+                {
+                    Text = ef.Text,
+                    IconUrl = ef.IconUrl
+                }
+                : null
         };
 
         if (eb.Fields.Length > 0)
             set.Fields = eb.Fields.Select(field
                                => new SmartTextEmbedField
-                                   {
-                                       Inline = field.Inline, Name = field.Name, Value = field.Value
-                                   })
+                               {
+                                   Inline = field.Inline,
+                                   Name = field.Name,
+                                   Value = field.Value
+                               })
                            .ToArray();
 
         set.Color = eb.Color?.RawValue ?? 0;
@@ -91,8 +106,10 @@ public sealed record SmartEmbedText : SmartText
 
         if (Fields is not null)
             foreach (var f in Fields)
+            {
                 if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
                     embed.AddField(f.Name, f.Value, f.Inline);
+            }
 
         return embed;
     }

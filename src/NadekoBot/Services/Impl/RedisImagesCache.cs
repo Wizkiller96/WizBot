@@ -127,9 +127,14 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                     Rategirl =
                         new()
                         {
-                            Dot = oldData.Rategirl.Dot.ToNewCdn(), Matrix = oldData.Rategirl.Matrix.ToNewCdn()
+                            Dot = oldData.Rategirl.Dot.ToNewCdn(),
+                            Matrix = oldData.Rategirl.Matrix.ToNewCdn()
                         },
-                    Rip = new() { Bg = oldData.Rip.Bg.ToNewCdn(), Overlay = oldData.Rip.Overlay.ToNewCdn() },
+                    Rip = new()
+                    {
+                        Bg = oldData.Rip.Bg.ToNewCdn(),
+                        Overlay = oldData.Rip.Overlay.ToNewCdn()
+                    },
                     Slots = new()
                     {
                         Bg = new("https://cdn.nadeko.bot/slots/slots_bg.png"),
@@ -140,7 +145,10 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                             "https://cdn.nadeko.bot/slots/4.png", "https://cdn.nadeko.bot/slots/5.png"
                         }.Map(x => new Uri(x))
                     },
-                    Xp = new() { Bg = oldData.Xp.Bg.ToNewCdn() },
+                    Xp = new()
+                    {
+                        Bg = oldData.Xp.Bg.ToNewCdn()
+                    },
                     Version = 2
                 };
 
@@ -162,6 +170,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
     {
         ImageUrls = Yaml.Deserializer.Deserialize<ImageUrls>(await File.ReadAllTextAsync(_imagesPath));
         foreach (var key in GetAllKeys())
+        {
             switch (key)
             {
                 case ImageKeys.CoinHeads:
@@ -200,6 +209,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
     }
 
     private async Task Load(ImageKeys key, Uri uri)

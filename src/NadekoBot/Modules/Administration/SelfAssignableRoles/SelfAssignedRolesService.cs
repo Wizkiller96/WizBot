@@ -34,9 +34,15 @@ public class SelfAssignedRolesService : INService
     {
         using var uow = _db.GetDbContext();
         var roles = uow.SelfAssignableRoles.GetFromGuild(guildId);
-        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id)) return false;
+        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
+            return false;
 
-        uow.SelfAssignableRoles.Add(new() { Group = group, RoleId = role.Id, GuildId = role.Guild.Id });
+        uow.SelfAssignableRoles.Add(new()
+        {
+            Group = group,
+            RoleId = role.Id,
+            GuildId = role.Guild.Id
+        });
         uow.SaveChanges();
         return true;
     }
@@ -67,7 +73,8 @@ public class SelfAssignedRolesService : INService
             return (AssignResult.ErrNotAssignable, autoDelete, null);
         if (theRoleYouWant.LevelRequirement > userLevelData.Level)
             return (AssignResult.ErrLvlReq, autoDelete, theRoleYouWant.LevelRequirement);
-        if (guildUser.RoleIds.Contains(role.Id)) return (AssignResult.ErrAlreadyHave, autoDelete, null);
+        if (guildUser.RoleIds.Contains(role.Id))
+            return (AssignResult.ErrAlreadyHave, autoDelete, null);
 
         var roleIds = roles.Where(x => x.Group == theRoleYouWant.Group).Select(x => x.RoleId).ToArray();
         if (exclusive)
@@ -116,7 +123,11 @@ public class SelfAssignedRolesService : INService
         }
         else if (toUpdate is null)
         {
-            gc.SelfAssignableRoleGroupNames.Add(new() { Name = name, Number = group });
+            gc.SelfAssignableRoleGroupNames.Add(new()
+            {
+                Name = name,
+                Number = group
+            });
             set = true;
         }
         else
@@ -136,7 +147,8 @@ public class SelfAssignedRolesService : INService
 
         if (roles.FirstOrDefault(r => r.RoleId == role.Id) is null)
             return (RemoveResult.ErrNotAssignable, autoDelete);
-        if (!guildUser.RoleIds.Contains(role.Id)) return (RemoveResult.ErrNotHave, autoDelete);
+        if (!guildUser.RoleIds.Contains(role.Id))
+            return (RemoveResult.ErrNotHave, autoDelete);
         try
         {
             await guildUser.RemoveRoleAsync(role);
@@ -198,7 +210,8 @@ public class SelfAssignedRolesService : INService
         return areExclusive;
     }
 
-    public (bool Exclusive, IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string> GroupNames
+    public (bool Exclusive, IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string>
+        GroupNames
         ) GetRoles(IGuild guild)
     {
         var exclusive = false;

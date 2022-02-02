@@ -65,7 +65,8 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         if (interval == 0)
         {
-            if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t)) return;
+            if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t))
+                return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
             await ReplyConfirmLocalizedAsync(strs.stopped);
@@ -120,7 +121,8 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         if (interval == 0)
         {
-            if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t)) return;
+            if (!_service.AutoBoobTimers.TryRemove(ctx.Channel.Id, out t))
+                return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite);
             await ReplyConfirmLocalizedAsync(strs.stopped);
@@ -166,7 +168,8 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
 
         if (interval == 0)
         {
-            if (!_service.AutoButtTimers.TryRemove(ctx.Channel.Id, out t)) return;
+            if (!_service.AutoButtTimers.TryRemove(ctx.Channel.Id, out t))
+                return;
 
             t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
             await ReplyConfirmLocalizedAsync(strs.stopped);

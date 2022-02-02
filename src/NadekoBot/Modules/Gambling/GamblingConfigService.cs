@@ -8,6 +8,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
 {
     private const string FILE_PATH = "data/gambling.yml";
     private static readonly TypedKey<GamblingConfig> _changeKey = new("config.gambling.updated");
+
     public override string Name
         => "gambling";
 

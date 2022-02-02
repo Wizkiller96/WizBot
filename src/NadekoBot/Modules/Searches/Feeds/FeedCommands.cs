@@ -19,7 +19,8 @@ public partial class Searches
         public partial Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
         {
             var m = _ytChannelRegex.Match(url);
-            if (!m.Success) return ReplyErrorLocalizedAsync(strs.invalid_input);
+            if (!m.Success)
+                return ReplyErrorLocalizedAsync(strs.invalid_input);
 
             var channelId = m.Groups["channelid"].Value;
 

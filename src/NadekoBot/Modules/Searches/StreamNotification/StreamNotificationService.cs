@@ -74,7 +74,11 @@ public sealed class StreamNotificationService : INService
 
             var followedStreams = guildConfigs.SelectMany(x => x.FollowedStreams).ToList();
 
-            _shardTrackedStreams = followedStreams.GroupBy(x => new { x.Type, Name = x.Username.ToLower() })
+            _shardTrackedStreams = followedStreams.GroupBy(x => new
+                                                  {
+                                                      x.Type,
+                                                      Name = x.Username.ToLower()
+                                                  })
                                                   .ToList()
                                                   .ToDictionary(
                                                       x => new StreamDataKey(x.Key.Type, x.Key.Name.ToLower()),
@@ -87,9 +91,14 @@ public sealed class StreamNotificationService : INService
             {
                 var allFollowedStreams = uow.Set<FollowedStream>().AsQueryable().ToList();
 
-                foreach (var fs in allFollowedStreams) _streamTracker.CacheAddData(fs.CreateKey(), null, false);
+                foreach (var fs in allFollowedStreams)
+                    _streamTracker.CacheAddData(fs.CreateKey(), null, false);
 
-                _trackCounter = allFollowedStreams.GroupBy(x => new { x.Type, Name = x.Username.ToLower() })
+                _trackCounter = allFollowedStreams.GroupBy(x => new
+                                                  {
+                                                      x.Type,
+                                                      Name = x.Username.ToLower()
+                                                  })
                                                   .ToDictionary(x => new StreamDataKey(x.Key.Type, x.Key.Name),
                                                       x => x.Select(fs => fs.GuildId).ToHashSet());
             }
@@ -171,7 +180,10 @@ public sealed class StreamNotificationService : INService
             if (_trackCounter.ContainsKey(key))
                 _trackCounter[key].Add(info.GuildId);
             else
-                _trackCounter[key] = new() { info.GuildId };
+                _trackCounter[key] = new()
+                {
+                    info.GuildId
+                };
         }
 
         return default;
@@ -351,10 +363,20 @@ public sealed class StreamNotificationService : INService
     }
 
     private void PublishFollowStream(FollowedStream fs)
-        => _pubSub.Pub(_streamFollowKey, new() { Key = fs.CreateKey(), GuildId = fs.GuildId });
+        => _pubSub.Pub(_streamFollowKey,
+            new()
+            {
+                Key = fs.CreateKey(),
+                GuildId = fs.GuildId
+            });
 
     private Task PublishUnfollowStream(FollowedStream fs)
-        => _pubSub.Pub(_streamUnfollowKey, new() { Key = fs.CreateKey(), GuildId = fs.GuildId });
+        => _pubSub.Pub(_streamUnfollowKey,
+            new()
+            {
+                Key = fs.CreateKey(),
+                GuildId = fs.GuildId
+            });
 
     public async Task<StreamData> FollowStream(ulong guildId, ulong channelId, string url)
     {
@@ -370,7 +392,13 @@ public sealed class StreamNotificationService : INService
             var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FollowedStreams));
 
             // add it to the database
-            fs = new() { Type = data.StreamType, Username = data.UniqueName, ChannelId = channelId, GuildId = guildId };
+            fs = new()
+            {
+                Type = data.StreamType,
+                Username = data.UniqueName,
+                ChannelId = channelId,
+                GuildId = guildId
+            };
 
             if (gc.FollowedStreams.Count >= 10)
                 return null;
@@ -454,7 +482,10 @@ public sealed class StreamNotificationService : INService
             return map[guildId] = new();
         }
 
-        _shardTrackedStreams[key] = new() { { guildId, new() } };
+        _shardTrackedStreams[key] = new()
+        {
+            { guildId, new() }
+        };
         return _shardTrackedStreams[key][guildId];
     }
 

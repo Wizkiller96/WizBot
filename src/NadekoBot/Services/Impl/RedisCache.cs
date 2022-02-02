@@ -157,7 +157,8 @@ public class RedisCache : IDataCache
     {
         var db = Redis.GetDatabase();
         data = db.StringGet($"{_redisKey}_economy");
-        if (data is not null) return true;
+        if (data is not null)
+            return true;
 
         return false;
     }

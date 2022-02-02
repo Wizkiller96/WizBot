@@ -10,7 +10,7 @@ public sealed class UserSpamStats
             lock (_applyLock)
             {
                 Cleanup();
-                Log.Information("{Count}",_messageTracker.Count.ToString());
+                Log.Information("{Count}", _messageTracker.Count.ToString());
                 return _messageTracker.Count;
             }
         }

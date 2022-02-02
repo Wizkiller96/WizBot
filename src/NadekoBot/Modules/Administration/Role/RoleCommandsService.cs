@@ -89,7 +89,10 @@ public class RoleCommandsService : INService
                 var dl = await msg.GetOrDownloadAsync();
                 await dl.RemoveReactionAsync(reaction.Emote,
                     dl.Author,
-                    new() { RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502 });
+                    new()
+                    {
+                        RetryMode = RetryMode.RetryRatelimit | RetryMode.Retry502
+                    });
                 Log.Warning("User {Author} is adding unrelated reactions to the reaction roles message", dl.Author);
             }
         });

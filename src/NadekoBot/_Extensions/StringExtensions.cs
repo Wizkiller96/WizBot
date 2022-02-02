@@ -55,9 +55,11 @@ public static class StringExtensions
         var d = new int[n + 1, m + 1];
 
         // Step 1
-        if (n == 0) return m;
+        if (n == 0)
+            return m;
 
-        if (m == 0) return n;
+        if (m == 0)
+            return n;
 
         // Step 2
         for (var i = 0; i <= n; d[i, 0] = i++)

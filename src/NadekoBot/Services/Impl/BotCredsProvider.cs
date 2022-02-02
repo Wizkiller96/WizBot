@@ -42,7 +42,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
     public BotCredsProvider(int? totalShards = null)
     {
         _totalShards = totalShards;
-        if (!File.Exists(CredsExamplePath)) File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
+        if (!File.Exists(CredsExamplePath))
+            File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
 
         MigrateCredentials();
 
@@ -79,9 +80,17 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 || string.IsNullOrWhiteSpace(_creds.RestartCommand?.Args))
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
-                    _creds.RestartCommand = new() { Args = "dotnet", Cmd = "NadekoBot.dll -- {0}" };
+                    _creds.RestartCommand = new()
+                    {
+                        Args = "dotnet",
+                        Cmd = "NadekoBot.dll -- {0}"
+                    };
                 else
-                    _creds.RestartCommand = new() { Args = "NadekoBot.exe", Cmd = "{0}" };
+                    _creds.RestartCommand = new()
+                    {
+                        Args = "NadekoBot.exe",
+                        Cmd = "{0}"
+                    };
             }
 
             if (string.IsNullOrWhiteSpace(_creds.RedisOptions))

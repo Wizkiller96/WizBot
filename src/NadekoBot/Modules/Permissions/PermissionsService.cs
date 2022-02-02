@@ -33,11 +33,15 @@ public class PermissionService : ILateBlocker, INService
 
         using var uow = _db.GetDbContext();
         foreach (var x in uow.GuildConfigs.PermissionsForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+        {
             Cache.TryAdd(x.GuildId,
                 new()
                 {
-                    Verbose = x.VerbosePermissions, PermRole = x.PermissionRole, Permissions = new(x.Permissions)
+                    Verbose = x.VerbosePermissions,
+                    PermRole = x.PermissionRole,
+                    Permissions = new(x.Permissions)
                 });
+        }
     }
 
     public PermissionCache GetCacheFor(ulong guildId)
@@ -99,7 +103,8 @@ public class PermissionService : ILateBlocker, INService
         var commandName = command.Name.ToLowerInvariant();
 
         await Task.Yield();
-        if (guild is null) return false;
+        if (guild is null)
+            return false;
 
         var resetCommand = commandName == "resetperms";
 

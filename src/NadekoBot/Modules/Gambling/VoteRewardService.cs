@@ -37,7 +37,8 @@ public class VoteRewardService : INService, IReadyExecutor
 
         var http = new HttpClient(new HttpClientHandler
         {
-            AllowAutoRedirect = false, ServerCertificateCustomValidationCallback = delegate { return true; }
+            AllowAutoRedirect = false,
+            ServerCertificateCustomValidationCallback = delegate { return true; }
         });
 
         while (true)

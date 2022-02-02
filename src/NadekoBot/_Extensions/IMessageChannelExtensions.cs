@@ -6,7 +6,12 @@ public static class MessageChannelExtensions
     private static readonly IEmote _arrowRight = new Emoji("➡");
 
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
-        => ch.SendMessageAsync(msg, embed: embed.Build(), options: new() { RetryMode = RetryMode.AlwaysRetry });
+        => ch.SendMessageAsync(msg,
+            embed: embed.Build(),
+            options: new()
+            {
+                RetryMode = RetryMode.AlwaysRetry
+            });
 
     public static Task<IUserMessage> SendAsync(
         this IMessageChannel channel,

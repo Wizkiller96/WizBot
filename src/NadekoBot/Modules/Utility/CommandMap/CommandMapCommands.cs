@@ -66,7 +66,11 @@ public partial class Utility
                     using (var uow = _db.GetDbContext())
                     {
                         var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                        config.CommandAliases.Add(new() { Mapping = mapping, Trigger = trigger });
+                        config.CommandAliases.Add(new()
+                        {
+                            Mapping = mapping,
+                            Trigger = trigger
+                        });
                         uow.SaveChanges();
                     }
 
@@ -80,7 +84,11 @@ public partial class Utility
                     using (var uow = _db.GetDbContext())
                     {
                         var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
-                        var toAdd = new CommandAlias { Mapping = mapping, Trigger = trigger };
+                        var toAdd = new CommandAlias
+                        {
+                            Mapping = mapping,
+                            Trigger = trigger
+                        };
                         var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger).ToArray();
                         if (toRemove.Any())
                             uow.RemoveRange(toRemove);

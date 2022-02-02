@@ -51,7 +51,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
     {
         if (_client.ShardId != 0)
             return;
-        
+
         var t = new PeriodicTimer(Interval);
         do
         {
@@ -133,7 +133,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
 
         var lastUpdate = LastAccessTokenUpdate(creds);
         var now = DateTime.UtcNow;
-        
+
         if (lastUpdate.Year != now.Year
             || lastUpdate.Month != now.Month
             || string.IsNullOrWhiteSpace(creds.Patreon.AccessToken))
@@ -143,7 +143,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
             // -> update access token
             if (!HasPatreonCreds(creds))
                 return;
-            
+
             var success = await UpdateAccessToken(creds);
             if (!success)
                 return;
@@ -198,7 +198,8 @@ public class PatreonRewardsService : INService, IReadyExecutor
                                   })
                                   .ToList();
 
-            foreach (var pledge in userData) await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
+            foreach (var pledge in userData)
+                await ClaimReward(pledge.UserId, pledge.PatreonUserId, pledge.EntitledTo);
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
@@ -229,7 +230,9 @@ public class PatreonRewardsService : INService, IReadyExecutor
             {
                 users.Add(new()
                 {
-                    PatreonUserId = patreonUserId, LastReward = now, AmountRewardedThisMonth = eligibleFor
+                    PatreonUserId = patreonUserId,
+                    LastReward = now,
+                    AmountRewardedThisMonth = eligibleFor
                 });
 
                 await uow.SaveChangesAsync();

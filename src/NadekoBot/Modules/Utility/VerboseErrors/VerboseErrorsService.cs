@@ -54,7 +54,8 @@ public class VerboseErrorsService : INService
 
             if (enabled == null)
                 enabled = gc.VerboseErrors = !gc.VerboseErrors; // Old behaviour, now behind a condition
-            else gc.VerboseErrors = (bool)enabled; // New behaviour, just set it.
+            else
+                gc.VerboseErrors = (bool)enabled; // New behaviour, just set it.
 
             uow.SaveChanges();
         }

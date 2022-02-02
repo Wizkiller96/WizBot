@@ -7,7 +7,11 @@ public class JsonSeria : ISeria
 {
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
-        Converters = { new Rgba32Converter(), new CultureInfoConverter() }
+        Converters =
+        {
+            new Rgba32Converter(),
+            new CultureInfoConverter()
+        }
     };
 
     public byte[] Serialize<T>(T data)

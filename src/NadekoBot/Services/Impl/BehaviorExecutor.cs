@@ -26,8 +26,10 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
     public async Task<bool> RunEarlyBehavioursAsync(SocketGuild guild, IUserMessage usrMsg)
     {
         foreach (var beh in earlyBehaviors)
+        {
             if (await beh.RunBehavior(guild, usrMsg))
                 return true;
+        }
 
         return false;
     }
@@ -52,6 +54,7 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
     public async Task<bool> RunLateBlockersAsync(ICommandContext ctx, CommandInfo cmd)
     {
         foreach (var exec in lateBlockers)
+        {
             if (await exec.TryBlockLate(ctx, cmd.Module.GetTopLevelModule().Name, cmd))
             {
                 Log.Information("Late blocking User [{User}] Command: [{Command}] in [{Module}]",
@@ -60,6 +63,7 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
                     exec.GetType().Name);
                 return true;
             }
+        }
 
         return false;
     }
@@ -67,6 +71,7 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
     public async Task RunLateExecutorsAsync(SocketGuild guild, IUserMessage usrMsg)
     {
         foreach (var exec in lateExecutors)
+        {
             try
             {
                 await exec.LateExecute(guild, usrMsg);
@@ -75,5 +80,6 @@ public sealed class BehaviorExecutor : IBehaviourExecutor, INService
             {
                 Log.Error(ex, "Error in {TypeName} late executor: {ErrorMessage}", exec.GetType().Name, ex.Message);
             }
+        }
     }
 }

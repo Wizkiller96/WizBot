@@ -86,7 +86,10 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
         var takeRes = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
 
         if (!takeRes)
-            return new() { Error = GamblingError.NotEnough };
+            return new()
+            {
+                Error = GamblingError.NotEnough
+            };
 
         var game = new SlotGame();
         var result = game.Spin();
@@ -99,7 +102,11 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
             await _cs.AddAsync(userId, won, new("slot", "win", $"Slot Machine x{result.Multiplier}"));
         }
 
-        var toReturn = new SlotResponse { Multiplier = result.Multiplier, Won = won };
+        var toReturn = new SlotResponse
+        {
+            Multiplier = result.Multiplier,
+            Won = won
+        };
 
         toReturn.Rolls.AddRange(result.Rolls);
 

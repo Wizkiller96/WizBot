@@ -127,13 +127,13 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _= Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
-                                                               .WithDescription(
-                                                                   $"You've been muted in {user.Guild} server")
-                                                               .AddField("Mute Type", type.ToString())
-                                                               .AddField("Moderator", mod.ToString())
-                                                               .AddField("Reason", reason)
-                                                               .Build()));
+        _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+                                                           .WithDescription(
+                                                               $"You've been muted in {user.Guild} server")
+                                                           .AddField("Mute Type", type.ToString())
+                                                           .AddField("Moderator", mod.ToString())
+                                                           .AddField("Reason", reason)
+                                                           .Build()));
     }
 
     private void OnUserUnmuted(
@@ -145,13 +145,13 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _= Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
-                                                               .WithDescription(
-                                                                   $"You've been unmuted in {user.Guild} server")
-                                                               .AddField("Unmute Type", type.ToString())
-                                                               .AddField("Moderator", mod.ToString())
-                                                               .AddField("Reason", reason)
-                                                               .Build()));
+        _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+                                                           .WithDescription(
+                                                               $"You've been unmuted in {user.Guild} server")
+                                                           .AddField("Unmute Type", type.ToString())
+                                                           .AddField("Moderator", mod.ToString())
+                                                           .AddField("Reason", reason)
+                                                           .Build()));
     }
 
     private Task Client_UserJoined(IGuildUser usr)
@@ -162,7 +162,7 @@ public class MuteService : INService
 
             if (muted is null || !muted.Contains(usr.Id))
                 return Task.CompletedTask;
-            _= Task.Run(() => MuteUser(usr, _client.CurrentUser, reason: "Sticky mute"));
+            _ = Task.Run(() => MuteUser(usr, _client.CurrentUser, reason: "Sticky mute"));
         }
         catch (Exception ex)
         {
@@ -200,7 +200,10 @@ public class MuteService : INService
             {
                 var config = uow.GuildConfigsForId(usr.Guild.Id,
                     set => set.Include(gc => gc.MutedUsers).Include(gc => gc.UnmuteTimers));
-                config.MutedUsers.Add(new() { UserId = usr.Id });
+                config.MutedUsers.Add(new()
+                {
+                    UserId = usr.Id
+                });
                 if (MutedUsers.TryGetValue(usr.Guild.Id, out var muted))
                     muted.Add(usr.Id);
 
@@ -242,9 +245,13 @@ public class MuteService : INService
             {
                 var config = uow.GuildConfigsForId(guildId,
                     set => set.Include(gc => gc.MutedUsers).Include(gc => gc.UnmuteTimers));
-                var match = new MutedUserId { UserId = usrId };
+                var match = new MutedUserId
+                {
+                    UserId = usrId
+                };
                 var toRemove = config.MutedUsers.FirstOrDefault(x => x.Equals(match));
-                if (toRemove is not null) uow.Remove(toRemove);
+                if (toRemove is not null)
+                    uow.Remove(toRemove);
                 if (MutedUsers.TryGetValue(guildId, out var muted))
                     muted.TryRemove(usrId);
 
@@ -308,6 +315,7 @@ public class MuteService : INService
             }
 
         foreach (var toOverwrite in await guild.GetTextChannelsAsync())
+        {
             try
             {
                 if (!toOverwrite.PermissionOverwrites.Any(x => x.TargetId == muteRole.Id
@@ -322,6 +330,7 @@ public class MuteService : INService
             {
                 // ignored
             }
+        }
 
         return muteRole;
     }
@@ -339,7 +348,8 @@ public class MuteService : INService
             var config = uow.GuildConfigsForId(user.GuildId, set => set.Include(x => x.UnmuteTimers));
             config.UnmuteTimers.Add(new()
             {
-                UserId = user.Id, UnmuteAt = DateTime.UtcNow + after
+                UserId = user.Id,
+                UnmuteAt = DateTime.UtcNow + after
             }); // add teh unmute timer to the database
             uow.SaveChanges();
         }
@@ -359,7 +369,8 @@ public class MuteService : INService
             var config = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.UnbanTimer));
             config.UnbanTimer.Add(new()
             {
-                UserId = user.Id, UnbanAt = DateTime.UtcNow + after
+                UserId = user.Id,
+                UnbanAt = DateTime.UtcNow + after
             }); // add teh unmute timer to the database
             uow.SaveChanges();
         }
@@ -379,7 +390,9 @@ public class MuteService : INService
             var config = uow.GuildConfigsForId(user.GuildId, set => set.Include(x => x.UnroleTimer));
             config.UnroleTimer.Add(new()
             {
-                UserId = user.Id, UnbanAt = DateTime.UtcNow + after, RoleId = role.Id
+                UserId = user.Id,
+                UnbanAt = DateTime.UtcNow + after,
+                RoleId = role.Id
             }); // add teh unmute timer to the database
             uow.SaveChanges();
         }
@@ -401,26 +414,24 @@ public class MuteService : INService
         var toAdd = new Timer(async _ =>
             {
                 if (type == TimerType.Ban)
-                {
                     try
                     {
                         RemoveTimerFromDb(guildId, userId, type);
                         StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId); // load the guild
-                        if (guild is not null) await guild.RemoveBanAsync(userId);
+                        if (guild is not null)
+                            await guild.RemoveBanAsync(userId);
                     }
                     catch (Exception ex)
                     {
                         Log.Warning(ex, "Couldn't unban user {UserId} in guild {GuildId}", userId, guildId);
                     }
-                }
                 else if (type == TimerType.AddRole)
-                {
                     try
                     {
                         if (roleId is null)
                             return;
-                        
+
                         RemoveTimerFromDb(guildId, userId, type);
                         StopTimer(guildId, userId, type);
                         var guild = _client.GetGuild(guildId);
@@ -433,9 +444,7 @@ public class MuteService : INService
                     {
                         Log.Warning(ex, "Couldn't remove role from user {UserId} in guild {GuildId}", userId, guildId);
                     }
-                }
                 else
-                {
                     try
                     {
                         // unmute the user, this will also remove the timer from the db
@@ -446,7 +455,6 @@ public class MuteService : INService
                         RemoveTimerFromDb(guildId, userId, type); // if unmute errored, just remove unmute from db
                         Log.Warning(ex, "Couldn't unmute user {UserId} in guild {GuildId}", userId, guildId);
                     }
-                }
             },
             null,
             after,
@@ -467,7 +475,8 @@ public class MuteService : INService
         if (!UnTimers.TryGetValue(guildId, out var userTimer))
             return;
 
-        if (userTimer.TryRemove((userId, type), out var removed)) removed.Change(Timeout.Infinite, Timeout.Infinite);
+        if (userTimer.TryRemove((userId, type), out var removed))
+            removed.Change(Timeout.Infinite, Timeout.Infinite);
     }
 
     private void RemoveTimerFromDb(ulong guildId, ulong userId, TimerType type)
@@ -485,7 +494,8 @@ public class MuteService : INService
             toDelete = config.UnbanTimer.FirstOrDefault(x => x.UserId == userId);
         }
 
-        if (toDelete is not null) uow.Remove(toDelete);
+        if (toDelete is not null)
+            uow.Remove(toDelete);
         uow.SaveChanges();
     }
 }

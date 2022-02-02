@@ -164,7 +164,11 @@ public class GoogleApiService : IGoogleApiService, INService
         _creds = creds;
         _httpFactory = factory;
 
-        var bcs = new BaseClientService.Initializer { ApplicationName = "Nadeko Bot", ApiKey = _creds.GoogleApiKey };
+        var bcs = new BaseClientService.Initializer
+        {
+            ApplicationName = "Nadeko Bot",
+            ApiKey = _creds.GoogleApiKey
+        };
 
         _yt = new(bcs);
         _sh = new(bcs);
@@ -181,7 +185,8 @@ public class GoogleApiService : IGoogleApiService, INService
             throw new ArgumentOutOfRangeException(nameof(count));
 
         var match = _plRegex.Match(keywords);
-        if (match.Length > 1) return new[] { match.Groups["id"].Value };
+        if (match.Length > 1)
+            return new[] { match.Groups["id"].Value };
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.Type = "playlist";
@@ -256,7 +261,11 @@ public class GoogleApiService : IGoogleApiService, INService
 
         try
         {
-            var response = await _sh.Url.Insert(new() { LongUrl = url }).ExecuteAsync();
+            var response = await _sh.Url.Insert(new()
+                                    {
+                                        LongUrl = url
+                                    })
+                                    .ExecuteAsync();
             return response.Id;
         }
         catch (GoogleApiException ex) when (ex.HttpStatusCode == HttpStatusCode.Forbidden)
@@ -322,7 +331,8 @@ public class GoogleApiService : IGoogleApiService, INService
             q.Id = string.Join(",", videoIdsList.Take(toGet));
             videoIdsList = videoIdsList.Skip(toGet).ToList();
             var items = (await q.ExecuteAsync()).Items;
-            foreach (var i in items) toReturn.Add(i.Id, XmlConvert.ToTimeSpan(i.ContentDetails.Duration));
+            foreach (var i in items)
+                toReturn.Add(i.Id, XmlConvert.ToTimeSpan(i.ContentDetails.Duration));
         } while (remaining > 0);
 
         return toReturn;

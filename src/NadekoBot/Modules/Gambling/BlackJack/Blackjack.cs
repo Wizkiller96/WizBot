@@ -33,7 +33,7 @@ public class Blackjack
     }
 
     public void Start()
-        => _= GameLoop();
+        => _ = GameLoop();
 
     public async Task GameLoop()
     {
@@ -73,11 +73,13 @@ public class Blackjack
 
             //go through all users and ask them what they want to do
             foreach (var usr in Players.Where(x => !x.Done))
+            {
                 while (!usr.Done)
                 {
                     Log.Information("Waiting for {DiscordUser}'s move", usr.DiscordUser);
                     await PromptUserMove(usr);
                 }
+            }
 
             await PrintState();
             State = GameState.Ended;
@@ -85,13 +87,13 @@ public class Blackjack
             Log.Information("Dealer moves");
             await DealerMoves();
             await PrintState();
-            _= GameEnded?.Invoke(this);
+            _ = GameEnded?.Invoke(this);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "REPORT THE MESSAGE BELOW IN #NadekoLog SERVER PLEASE");
             State = GameState.Ended;
-            _= GameEnded?.Invoke(this);
+            _ = GameEnded?.Invoke(this);
         }
     }
 
@@ -106,14 +108,10 @@ public class Blackjack
         // if he doesn't - stand
         var finished = await Task.WhenAny(pause, currentUserMove.Task);
         if (finished == pause)
-        {
             await Stand(usr);
-        }
         else
-        {
             cts.Cancel();
-        }
-        
+
         CurrentUser = null;
         currentUserMove = null;
     }
@@ -129,10 +127,11 @@ public class Blackjack
             if (Players.Count >= 5)
                 return false;
 
-            if (!await _cs.RemoveAsync(user, bet, new("blackjack","gamble"))) return false;
+            if (!await _cs.RemoveAsync(user, bet, new("blackjack", "gamble")))
+                return false;
 
             Players.Add(new(user, bet));
-            _= PrintState();
+            _ = PrintState();
             return true;
         }
         finally
@@ -204,22 +203,28 @@ public class Blackjack
 
         if (hw > 21)
             foreach (var usr in Players)
+            {
                 if (usr.State is User.UserState.Stand or User.UserState.Blackjack)
                     usr.State = User.UserState.Won;
                 else
                     usr.State = User.UserState.Lost;
+            }
         else
             foreach (var usr in Players)
+            {
                 if (usr.State == User.UserState.Blackjack)
                     usr.State = User.UserState.Won;
                 else if (usr.State == User.UserState.Stand)
                     usr.State = hw < usr.GetHandValue() ? User.UserState.Won : User.UserState.Lost;
                 else
                     usr.State = User.UserState.Lost;
+            }
 
         foreach (var usr in Players)
+        {
             if (usr.State is User.UserState.Won or User.UserState.Blackjack)
                 await _cs.AddAsync(usr.DiscordUser.Id, usr.Bet * 2, new("blackjack", "win"));
+        }
     }
 
     public async Task<bool> Double(IUser u)

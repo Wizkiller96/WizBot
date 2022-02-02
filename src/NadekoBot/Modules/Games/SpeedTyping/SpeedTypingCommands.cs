@@ -89,7 +89,8 @@ public partial class Games
         {
             var removed = _service.RemoveTypingArticle(--index);
 
-            if (removed is null) return;
+            if (removed is null)
+                return;
 
             var embed = _eb.Create()
                            .WithTitle($"Removed typing article #{index + 1}")

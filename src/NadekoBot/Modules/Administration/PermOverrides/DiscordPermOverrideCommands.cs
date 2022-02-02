@@ -41,7 +41,7 @@ public partial class Administration
 
             if (!result)
                 return;
-            
+
             await _service.ClearAllOverrides(ctx.Guild.Id);
 
             await ReplyConfirmLocalizedAsync(strs.perm_override_all);

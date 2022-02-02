@@ -21,7 +21,8 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
 
     private async Task<bool> InternalCheckBet(long amount)
     {
-        if (amount < 1) return false;
+        if (amount < 1)
+            return false;
         if (amount < Config.MinBet)
         {
             await ReplyErrorLocalizedAsync(strs.min_bet_limit(Format.Bold(Config.MinBet.ToString()) + CurrencySign));
@@ -39,13 +40,15 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
 
     protected Task<bool> CheckBetMandatory(long amount)
     {
-        if (amount < 1) return Task.FromResult(false);
+        if (amount < 1)
+            return Task.FromResult(false);
         return InternalCheckBet(amount);
     }
 
     protected Task<bool> CheckBetOptional(long amount)
     {
-        if (amount == 0) return Task.FromResult(true);
+        if (amount == 0)
+            return Task.FromResult(true);
         return InternalCheckBet(amount);
     }
 }

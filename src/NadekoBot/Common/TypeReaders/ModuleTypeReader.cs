@@ -37,7 +37,10 @@ public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
         if (module is null && input != "ACTUALEXPRESSIONS")
             return new(TypeReaderResult.FromError<ModuleOrCrInfo>(CommandError.ParseFailed, "No such module found."));
 
-        return new(TypeReaderResult.FromSuccess(new ModuleOrCrInfo { Name = input }));
+        return new(TypeReaderResult.FromSuccess(new ModuleOrCrInfo
+        {
+            Name = input
+        }));
     }
 }
 

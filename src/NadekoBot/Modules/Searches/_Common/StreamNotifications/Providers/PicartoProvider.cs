@@ -41,7 +41,10 @@ public class PicartoProvider : Provider
 
     public override async Task<StreamData?> GetStreamDataAsync(string id)
     {
-        var data = await GetStreamDataAsync(new List<string> { id });
+        var data = await GetStreamDataAsync(new List<string>
+        {
+            id
+        });
 
         return data.FirstOrDefault();
     }
@@ -54,6 +57,7 @@ public class PicartoProvider : Provider
         using var http = _httpClientFactory.CreateClient();
         var toReturn = new List<StreamData>();
         foreach (var login in logins)
+        {
             try
             {
                 http.DefaultRequestHeaders.Accept.Add(new("application/json"));
@@ -77,6 +81,7 @@ public class PicartoProvider : Provider
                     ex.Message);
                 _failingStreams.TryAdd(login, DateTime.UtcNow);
             }
+        }
 
         return toReturn;
     }

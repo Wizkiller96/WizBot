@@ -13,13 +13,14 @@ public partial class Gambling
 
         public PlantPickCommands(ILogCommandService logService, GamblingConfigService gss)
             : base(gss)
-            => this._logService = logService;
+            => _logService = logService;
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async partial Task Pick(string pass = null)
         {
-            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric()) return;
+            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
+                return;
 
             var picked = await _service.PickAsync(ctx.Guild.Id, (ITextChannel)ctx.Channel, ctx.User.Id, pass);
 
@@ -45,7 +46,8 @@ public partial class Gambling
             if (amount < 1)
                 return;
 
-            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric()) return;
+            if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
+                return;
 
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
             {
@@ -59,7 +61,8 @@ public partial class Gambling
                 ctx.User.ToString(),
                 amount,
                 pass);
-            if (!success) await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+            if (!success)
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }
 
         [Cmd]

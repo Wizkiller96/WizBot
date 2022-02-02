@@ -98,7 +98,8 @@ public class Deck
     /// </summary>
     private void Shuffle()
     {
-        if (CardPool.Count <= 1) return;
+        if (CardPool.Count <= 1)
+            return;
         var orderedPool = CardPool.Shuffle();
         CardPool ??= orderedPool.ToList();
     }
@@ -128,7 +129,8 @@ public class Deck
             if (cards.GroupBy(card => card.Number).Count() != cards.Count())
                 return false;
             var toReturn = cards.Max(card => card.Number) - cards.Min(card => card.Number) == 4;
-            if (toReturn || cards.All(c => c.Number != 1)) return toReturn;
+            if (toReturn || cards.All(c => c.Number != 1))
+                return toReturn;
 
             var newCards = cards.Select(c => c.Number == 1 ? new(c.Suit, 14) : c).ToArray();
             return newCards.Max(card => card.Number) - newCards.Min(card => card.Number) == 4;
@@ -194,8 +196,9 @@ public class Deck
     {
         if (handValues is null)
             InitHandValues();
-        
-        foreach (var kvp in handValues.Where(x => x.Value(cards))) return kvp.Key;
+
+        foreach (var kvp in handValues.Where(x => x.Value(cards)))
+            return kvp.Key;
         return "High card " + (cards.FirstOrDefault(c => c.Number == 1)?.GetValueText() ?? cards.Max().GetValueText());
     }
 
@@ -203,7 +206,10 @@ public class Deck
     {
         private static readonly IReadOnlyDictionary<CardSuit, string> _suitToSuitChar = new Dictionary<CardSuit, string>
         {
-            { CardSuit.Diamonds, "♦" }, { CardSuit.Clubs, "♣" }, { CardSuit.Spades, "♠" }, { CardSuit.Hearts, "♥" }
+            { CardSuit.Diamonds, "♦" },
+            { CardSuit.Clubs, "♣" },
+            { CardSuit.Spades, "♠" },
+            { CardSuit.Hearts, "♥" }
         };
 
         private static readonly IReadOnlyDictionary<string, CardSuit> _suitCharToSuit = new Dictionary<string, CardSuit>
@@ -272,7 +278,8 @@ public class Deck
 
         public int CompareTo(object obj)
         {
-            if (obj is not Card card) return 0;
+            if (obj is not Card card)
+                return 0;
             return Number - card.Number;
         }
 

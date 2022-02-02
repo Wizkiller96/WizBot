@@ -137,7 +137,7 @@ Message: {Content}",
                     usrMsg.Author,
                     usrMsg.Author.Id,
                     usrMsg.Content);
-                
+
                 return true;
             }
         }

@@ -25,7 +25,11 @@ public class ProtectionService : INService
     private readonly UserPunishService _punishService;
 
     private readonly Channel<PunishQueueItem> _punishUserQueue =
-        Channel.CreateUnbounded<PunishQueueItem>(new() { SingleReader = true, SingleWriter = false });
+        Channel.CreateUnbounded<PunishQueueItem>(new()
+        {
+            SingleReader = true,
+            SingleWriter = false
+        });
 
     public ProtectionService(
         DiscordSocketClient client,
@@ -51,7 +55,8 @@ public class ProtectionService : INService
                              .Where(x => ids.Contains(x.GuildId))
                              .ToList();
 
-            foreach (var gc in configs) Initialize(gc);
+            foreach (var gc in configs)
+                Initialize(gc);
         }
 
         _client.MessageReceived += HandleAntiSpam;
@@ -94,7 +99,7 @@ public class ProtectionService : INService
 
     private Task _client_LeftGuild(SocketGuild guild)
     {
-        _= Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             TryStopAntiRaid(guild.Id);
             TryStopAntiSpam(guild.Id);
@@ -123,12 +128,18 @@ public class ProtectionService : INService
 
         if (raid is not null)
         {
-            var raidStats = new AntiRaidStats { AntiRaidSettings = raid };
+            var raidStats = new AntiRaidStats
+            {
+                AntiRaidSettings = raid
+            };
             _antiRaidGuilds[gc.GuildId] = raidStats;
         }
 
         if (spam is not null)
-            _antiSpamGuilds[gc.GuildId] = new() { AntiSpamSettings = spam };
+            _antiSpamGuilds[gc.GuildId] = new()
+            {
+                AntiSpamSettings = spam
+            };
 
         var alt = gc.AntiAltSetting;
         if (alt is not null)
@@ -202,12 +213,16 @@ public class ProtectionService : INService
 
         if (msg.Channel is not ITextChannel channel)
             return Task.CompletedTask;
-        _= Task.Run(async () =>
+
+        _ = Task.Run(async () =>
         {
             try
             {
                 if (!_antiSpamGuilds.TryGetValue(channel.Guild.Id, out var spamSettings)
-                    || spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new() { ChannelId = channel.Id }))
+                    || spamSettings.AntiSpamSettings.IgnoredChannels.Contains(new()
+                    {
+                        ChannelId = channel.Id
+                    }))
                     return;
 
                 var stats = spamSettings.UserStats.AddOrUpdate(msg.Author.Id,
@@ -251,6 +266,7 @@ public class ProtectionService : INService
             gus[0].Guild.Name);
 
         foreach (var gu in gus)
+        {
             await _punishUserQueue.Writer.WriteAsync(new()
             {
                 Action = action,
@@ -259,6 +275,7 @@ public class ProtectionService : INService
                 MuteTime = muteTime,
                 RoleId = roleId
             });
+        }
 
         _ = OnAntiProtectionTriggered(action, pt, gus);
     }
@@ -385,18 +402,23 @@ public class ProtectionService : INService
 
     public async Task<bool?> AntiSpamIgnoreAsync(ulong guildId, ulong channelId)
     {
-        var obj = new AntiSpamIgnore { ChannelId = channelId };
+        var obj = new AntiSpamIgnore
+        {
+            ChannelId = channelId
+        };
         bool added;
         await using var uow = _db.GetDbContext();
         var gc = uow.GuildConfigsForId(guildId,
             set => set.Include(x => x.AntiSpamSetting).ThenInclude(x => x.IgnoredChannels));
         var spam = gc.AntiSpamSetting;
-        if (spam is null) return null;
+        if (spam is null)
+            return null;
 
         if (spam.IgnoredChannels.Add(obj)) // if adding to db is successful
         {
             if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
                 temp.AntiSpamSettings.IgnoredChannels.Add(obj); // add to local cache
+
             added = true;
         }
         else
@@ -405,6 +427,7 @@ public class ProtectionService : INService
             uow.Set<AntiSpamIgnore>().Remove(toRemove); // remove from db
             if (_antiSpamGuilds.TryGetValue(guildId, out var temp))
                 temp.AntiSpamSettings.IgnoredChannels.Remove(toRemove); // remove from local cache
+
             added = false;
         }
 

@@ -11,8 +11,16 @@ public static class GuildConfigExtensions
     private static List<WarningPunishment> DefaultWarnPunishments
         => new()
         {
-            new() { Count = 3, Punishment = PunishmentAction.Kick },
-            new() { Count = 5, Punishment = PunishmentAction.Ban }
+            new()
+            {
+                Count = 3,
+                Punishment = PunishmentAction.Kick
+            },
+            new()
+            {
+                Count = 5,
+                Punishment = PunishmentAction.Ban
+            }
         };
 
     /// <summary>
@@ -105,7 +113,10 @@ public static class GuildConfigExtensions
 
         if (logSetting is null)
         {
-            ctx.LogSettings.Add(logSetting = new() { GuildId = guildId });
+            ctx.LogSettings.Add(logSetting = new()
+            {
+                GuildId = guildId
+            });
             ctx.SaveChanges();
         }
 
@@ -128,7 +139,11 @@ public static class GuildConfigExtensions
 
         if (config is null) // if there is no guildconfig, create new one
         {
-            ctx.GuildConfigs.Add(config = new() { GuildId = guildId, Permissions = Permissionv2.GetDefaultPermlist });
+            ctx.GuildConfigs.Add(config = new()
+            {
+                GuildId = guildId,
+                Permissions = Permissionv2.GetDefaultPermlist
+            });
             ctx.SaveChanges();
         }
         else if (config.Permissions is null || !config.Permissions.Any()) // if no perms, add default ones
@@ -181,7 +196,11 @@ public static class GuildConfigExtensions
                   .Include(x => x.GenerateCurrencyChannelIds)
                   .Where(x => x.GenerateCurrencyChannelIds.Any())
                   .SelectMany(x => x.GenerateCurrencyChannelIds)
-                  .Select(x => new GeneratingChannel { ChannelId = x.ChannelId, GuildId = x.GuildConfig.GuildId })
+                  .Select(x => new GeneratingChannel
+                  {
+                      ChannelId = x.ChannelId,
+                      GuildId = x.GuildConfig.GuildId
+                  })
                   .ToArray();
 
     public class GeneratingChannel

@@ -11,8 +11,7 @@ public class TrovoProvider : Provider
     public override FollowedStream.FType Platform
         => FollowedStream.FType.Trovo;
 
-    private readonly Regex _urlRegex
-        = new Regex(@"trovo.live\/(?<channel>[\w\d\-_]+)/?", RegexOptions.Compiled);
+    private readonly Regex _urlRegex = new(@"trovo.live\/(?<channel>[\w\d\-_]+)/?", RegexOptions.Compiled);
 
     private readonly IBotCredsProvider _creds;
 
@@ -40,12 +39,12 @@ public class TrovoProvider : Provider
 
         if (string.IsNullOrWhiteSpace(trovoClientId))
             trovoClientId = "waiting for key";
-            
-        
+
+
         http.DefaultRequestHeaders.Clear();
         http.DefaultRequestHeaders.Add("Accept", "application/json");
         http.DefaultRequestHeaders.Add("Client-ID", trovoClientId);
-        
+
         // trovo ratelimit is very generous (1200 per minute)
         // so there is no need for ratelimit checks atm
         try
@@ -60,7 +59,7 @@ public class TrovoProvider : Provider
             res.EnsureSuccessStatusCode();
 
             var data = await res.Content.ReadFromJsonAsync<TrovoGetUsersResponse>();
-            
+
             if (data is null)
             {
                 Log.Warning("An empty response received while retrieving stream data for trovo.live/{TrovoId}", id);
@@ -79,7 +78,7 @@ public class TrovoProvider : Provider
                 StreamType = FollowedStream.FType.Picarto,
                 StreamUrl = data.ChannelUrl,
                 UniqueName = data.Username,
-                Preview = data.Thumbnail,
+                Preview = data.Thumbnail
             };
         }
         catch (Exception ex)

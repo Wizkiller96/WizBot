@@ -107,7 +107,8 @@ public partial class Utility
                 if (string.IsNullOrWhiteSpace(value))
                     value = "-";
 
-                if (prop != "currency.sign") value = Format.Code(Format.Sanitize(value.TrimTo(1000)), "json");
+                if (prop != "currency.sign")
+                    value = Format.Code(Format.Sanitize(value.TrimTo(1000)), "json");
 
                 var embed = _eb.Create()
                                .WithOkColor()
@@ -137,12 +138,13 @@ public partial class Utility
         private string GetPropsAndValuesString(IConfigService config, IReadOnlyCollection<string> names)
         {
             var propValues = names.Select(pr =>
-            {
-                var val = config.GetSetting(pr);
-                if (pr != "currency.sign")
-                    val = val?.TrimTo(28);
-                return val?.Replace("\n", "") ?? "-";
-            }).ToList();
+                                  {
+                                      var val = config.GetSetting(pr);
+                                      if (pr != "currency.sign")
+                                          val = val?.TrimTo(28);
+                                      return val?.Replace("\n", "") ?? "-";
+                                  })
+                                  .ToList();
 
             var strings = names.Zip(propValues, (name, value) => $"{name,-25} = {value}\n");
 

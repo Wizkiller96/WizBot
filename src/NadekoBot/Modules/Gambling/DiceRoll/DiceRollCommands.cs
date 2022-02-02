@@ -83,11 +83,13 @@ public partial class Gambling
                         toInsert = 0;
                     else if (randomNumber != 1)
                         for (var j = 0; j < dice.Count; j++)
+                        {
                             if (values[j] < randomNumber)
                             {
                                 toInsert = j;
                                 break;
                             }
+                        }
                 }
                 else
                 {
@@ -100,7 +102,8 @@ public partial class Gambling
 
             using var bitmap = dice.Merge(out var format);
             await using var ms = bitmap.ToStream(format);
-            foreach (var d in dice) d.Dispose();
+            foreach (var d in dice)
+                d.Dispose();
 
             await ctx.Channel.SendFileAsync(ms,
                 $"dice.{format.FileExtensions.First()}",
@@ -123,7 +126,8 @@ public partial class Gambling
 
                 var rolls = new List<char>();
 
-                for (var i = 0; i < n1; i++) rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
+                for (var i = 0; i < n1; i++)
+                    rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
                 var embed = _eb.Create()
                                .WithOkColor()
                                .WithDescription(ctx.User.Mention
@@ -150,7 +154,8 @@ public partial class Gambling
                         sub = 0;
 
                     var arr = new int[n1];
-                    for (var i = 0; i < n1; i++) arr[i] = rng.Next(1, n2 + 1);
+                    for (var i = 0; i < n1; i++)
+                        arr[i] = rng.Next(1, n2 + 1);
 
                     var sum = arr.Sum();
                     var embed = _eb.Create()

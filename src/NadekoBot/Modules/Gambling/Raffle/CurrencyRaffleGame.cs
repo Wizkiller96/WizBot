@@ -26,7 +26,11 @@ public class CurrencyRaffleGame
         if (GameType == Type.Normal && _users.Count > 0 && _users.First().Amount != amount)
             return false;
 
-        if (!_users.Add(new() { DiscordUser = usr, Amount = amount }))
+        if (!_users.Add(new()
+            {
+                DiscordUser = usr,
+                Amount = amount
+            }))
             return false;
 
         return true;

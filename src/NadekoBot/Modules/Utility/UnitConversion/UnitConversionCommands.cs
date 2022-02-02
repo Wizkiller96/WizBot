@@ -9,7 +9,7 @@ public partial class Utility
     public partial class UnitConverterCommands : NadekoSubmodule<ConverterService>
     {
         [Cmd]
-        public async partial  Task ConvertList()
+        public async partial Task ConvertList()
         {
             var units = _service.Units;
 
@@ -17,8 +17,10 @@ public partial class Utility
 
 
             foreach (var g in units.GroupBy(x => x.UnitType))
+            {
                 embed.AddField(g.Key.ToTitleCase(),
                     string.Join(", ", g.Select(x => x.Triggers.FirstOrDefault()).OrderBy(x => x)));
+            }
 
             await ctx.Channel.EmbedAsync(embed);
         }

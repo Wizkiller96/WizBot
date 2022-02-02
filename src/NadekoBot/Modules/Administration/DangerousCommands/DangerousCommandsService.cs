@@ -52,7 +52,11 @@ DELETE FROM Clubs;";
 
     public SelectResult SelectSql(string sql)
     {
-        var result = new SelectResult { ColumnNames = new(), Results = new() };
+        var result = new SelectResult
+        {
+            ColumnNames = new(),
+            Results = new()
+        };
 
         using var uow = _db.GetDbContext();
         var conn = uow.Database.GetDbConnection();
@@ -61,7 +65,8 @@ DELETE FROM Clubs;";
         using var reader = cmd.ExecuteReader();
         if (reader.HasRows)
         {
-            for (var i = 0; i < reader.FieldCount; i++) result.ColumnNames.Add(reader.GetName(i));
+            for (var i = 0; i < reader.FieldCount; i++)
+                result.ColumnNames.Add(reader.GetName(i));
             while (reader.Read())
             {
                 var obj = new object[reader.FieldCount];
@@ -93,13 +98,19 @@ DELETE FROM Clubs;";
             await uow.Set<WaifuInfo>()
                      .AsQueryable()
                      .Where(x => x.Claimer.UserId == userId)
-                     .UpdateAsync(x => new() { ClaimerId = null });
+                     .UpdateAsync(x => new()
+                     {
+                         ClaimerId = null
+                     });
 
             // all affinities set to this waifu are reset
             await uow.Set<WaifuInfo>()
                      .AsQueryable()
                      .Where(x => x.Affinity.UserId == userId)
-                     .UpdateAsync(x => new() { AffinityId = null });
+                     .UpdateAsync(x => new()
+                     {
+                         AffinityId = null
+                     });
         }
 
         // delete guild xp

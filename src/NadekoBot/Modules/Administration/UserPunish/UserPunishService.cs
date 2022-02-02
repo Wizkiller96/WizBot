@@ -30,12 +30,12 @@ public class UserPunishService : INService, IReadyExecutor
         _bcs = bcs;
         _client = client;
     }
-    
+
     public async Task OnReadyAsync()
     {
         if (_client.ShardId != 0)
             return;
-        
+
         var expiryTimer = new PeriodicTimer(TimeSpan.FromHours(12));
         do
         {
@@ -429,7 +429,11 @@ WHERE GuildId={guildId}
         }
         else if (template is null)
         {
-            uow.BanTemplates.Add(new() { GuildId = guildId, Text = text });
+            uow.BanTemplates.Add(new()
+            {
+                GuildId = guildId,
+                Text = text
+            });
         }
         else
         {
@@ -485,7 +489,8 @@ WHERE GuildId={guildId}
         if (string.IsNullOrWhiteSpace(template))
             template = JsonConvert.SerializeObject(new
             {
-                color = _bcs.Data.Color.Error.PackedValue >> 8, description = defaultMessage
+                color = _bcs.Data.Color.Error.PackedValue >> 8,
+                description = defaultMessage
             });
         // if template is set to "-" do not dm the user
         else if (template == "-")
@@ -495,7 +500,8 @@ WHERE GuildId={guildId}
         else if (!SmartText.CreateFrom(template).IsEmbed)
             template = JsonConvert.SerializeObject(new
             {
-                color = _bcs.Data.Color.Error.PackedValue >> 8, description = template
+                color = _bcs.Data.Color.Error.PackedValue >> 8,
+                description = template
             });
 
         var output = SmartText.CreateFrom(template);

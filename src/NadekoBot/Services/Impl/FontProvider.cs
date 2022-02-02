@@ -45,9 +45,12 @@ public class FontProvider : INService
         // any fonts present in data/fonts should be added as fallback fonts
         // this will allow support for special characters when drawing text
         foreach (var font in Directory.GetFiles(@"data/fonts"))
+        {
             if (font.EndsWith(".ttf"))
                 FallBackFonts.Add(_fonts.Install(font));
-            else if (font.EndsWith(".ttc")) FallBackFonts.AddRange(_fonts.InstallCollection(font));
+            else if (font.EndsWith(".ttc"))
+                FallBackFonts.AddRange(_fonts.InstallCollection(font));
+        }
 
         RipFont = NotoSans.CreateFont(20, FontStyle.Bold);
         DottyFont = FallBackFonts.First(x => x.Name == "dotty");

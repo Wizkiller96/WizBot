@@ -304,7 +304,7 @@ public partial class Administration
             var toLeave = _client.Guilds
                                  .Where(s => s.MemberCount == 1 && s.Users.Count == 1)
                                  .ToList();
-            
+
             foreach (var server in toLeave)
             {
                 try
@@ -425,7 +425,8 @@ public partial class Administration
         {
             var success = await _service.SetAvatar(img);
 
-            if (success) await ReplyConfirmLocalizedAsync(strs.set_avatar);
+            if (success)
+                await ReplyConfirmLocalizedAsync(strs.set_avatar);
         }
 
         [Cmd]

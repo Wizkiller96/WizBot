@@ -19,8 +19,10 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
 
         // if any of the tags is not valid, the query is not valid
         foreach (var result in results)
+        {
             if (!result)
                 return false;
+        }
 
         return true;
     }

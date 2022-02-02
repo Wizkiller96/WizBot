@@ -18,7 +18,9 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
     private readonly Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(
         new BoundedChannelOptions(100)
         {
-            FullMode = BoundedChannelFullMode.DropOldest, SingleReader = true, SingleWriter = false
+            FullMode = BoundedChannelFullMode.DropOldest,
+            SingleReader = true,
+            SingleWriter = false
         });
 
 
@@ -78,7 +80,11 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         }
         else
         {
-            uow.ImageOnlyChannels.Add(new() { GuildId = guildId, ChannelId = channelId });
+            uow.ImageOnlyChannels.Add(new()
+            {
+                GuildId = guildId,
+                ChannelId = channelId
+            });
 
             channels = _enabledOn.GetOrAdd(guildId, new ConcurrentHashSet<ulong>());
             channels.Add(channelId);

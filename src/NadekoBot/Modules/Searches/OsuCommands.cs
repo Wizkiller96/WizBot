@@ -129,7 +129,8 @@ public partial class Searches
 
             using var http = _httpFactory.CreateClient();
             var m = 0;
-            if (!string.IsNullOrWhiteSpace(mode)) m = ResolveGameMode(mode);
+            if (!string.IsNullOrWhiteSpace(mode))
+                m = ResolveGameMode(mode);
 
             var reqString = "https://osu.ppy.sh/api/get_user_best"
                             + $"?k={_creds.OsuApiKey}"
@@ -159,7 +160,8 @@ public partial class Searches
                 var desc = $@"[/b/{item.BeatmapId}](https://osu.ppy.sh/b/{item.BeatmapId})
 {pp + "pp",-7} | {acc + "%",-7}
 ";
-                if (mods != "+") desc += Format.Bold(mods);
+                if (mods != "+")
+                    desc += Format.Bold(mods);
 
                 return (title, desc);
             });
@@ -167,7 +169,8 @@ public partial class Searches
             var eb = _eb.Create().WithOkColor().WithTitle($"Top 5 plays for {user}");
 
             var mapData = await mapTasks.WhenAll();
-            foreach (var (title, desc) in mapData.Where(x => x != default)) eb.AddField(title, desc);
+            foreach (var (title, desc) in mapData.Where(x => x != default))
+                eb.AddField(title, desc);
 
             await ctx.Channel.EmbedAsync(eb);
         }

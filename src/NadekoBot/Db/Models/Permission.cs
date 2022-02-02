@@ -38,7 +38,10 @@ public class Permissionv2 : DbEntity, IIndexed
         };
 
     public static List<Permissionv2> GetDefaultPermlist
-        => new() { AllowAllPerm };
+        => new()
+        {
+            AllowAllPerm
+        };
 }
 
 public enum PrimaryPermissionType

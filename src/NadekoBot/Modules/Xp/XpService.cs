@@ -116,7 +116,8 @@ public class XpService : INService
 
         // Scan guilds on startup.
         _client.GuildAvailable += Client_OnGuildAvailable;
-        foreach (var guild in _client.Guilds) Client_OnGuildAvailable(guild);
+        foreach (var guild in _client.Guilds)
+            Client_OnGuildAvailable(guild);
 #endif
         _updateXpTask = Task.Run(UpdateLoop);
     }
@@ -135,10 +136,12 @@ public class XpService : INService
                 var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
 
                 var toAddTo = new List<UserCacheItem>();
-                while (_addMessageXp.TryDequeue(out var usr)) toAddTo.Add(usr);
+                while (_addMessageXp.TryDequeue(out var usr))
+                    toAddTo.Add(usr);
 
                 var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
-                if (toAddTo.Count == 0) continue;
+                if (toAddTo.Count == 0)
+                    continue;
 
                 await using (var uow = _db.GetDbContext())
                 {
@@ -156,7 +159,8 @@ public class XpService : INService
                         var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
                         usr.Xp += xp;
                         du.TotalXp += xp;
-                        if (du.Club is not null) du.Club.Xp += xp;
+                        if (du.Club is not null)
+                            du.Club.Xp += xp;
                         var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
 
                         if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
@@ -302,7 +306,11 @@ public class XpService : INService
             if (rew is not null)
                 rew.Amount = amount;
             else
-                settings.CurrencyRewards.Add(new() { Level = level, Amount = amount });
+                settings.CurrencyRewards.Add(new()
+                {
+                    Level = level,
+                    Amount = amount
+                });
         }
 
         uow.SaveChanges();
@@ -354,7 +362,12 @@ public class XpService : INService
         }
         else
         {
-            settings.RoleRewards.Add(new() { Level = level, RoleId = roleId, Remove = remove });
+            settings.RoleRewards.Add(new()
+            {
+                Level = level,
+                RoleId = roleId,
+                Remove = remove
+            });
         }
 
         uow.SaveChanges();
@@ -411,7 +424,8 @@ public class XpService : INService
     {
         Task.Run(() =>
         {
-            foreach (var channel in guild.VoiceChannels) ScanChannelForVoiceXp(channel);
+            foreach (var channel in guild.VoiceChannels)
+                ScanChannelForVoiceXp(channel);
         });
 
         return Task.CompletedTask;
@@ -422,9 +436,10 @@ public class XpService : INService
         if (socketUser is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        _= Task.Run(() =>
+        _ = Task.Run(() =>
         {
-            if (before.VoiceChannel is not null) ScanChannelForVoiceXp(before.VoiceChannel);
+            if (before.VoiceChannel is not null)
+                ScanChannelForVoiceXp(before.VoiceChannel);
 
             if (after.VoiceChannel is not null && after.VoiceChannel != before.VoiceChannel)
                 ScanChannelForVoiceXp(after.VoiceChannel);
@@ -482,7 +497,8 @@ public class XpService : INService
         _cache.Redis.GetDatabase().KeyDelete(key);
 
         // Allow for if this function gets called multiple times when a user leaves a channel.
-        if (value.IsNull) return;
+        if (value.IsNull)
+            return;
 
         if (!value.TryParse(out long startUnixTime))
             return;
@@ -494,14 +510,21 @@ public class XpService : INService
         var actualXp = (int)Math.Floor(xp);
 
         if (actualXp > 0)
-            _addMessageXp.Enqueue(new() { Guild = channel.Guild, User = user, XpAmount = actualXp });
+            _addMessageXp.Enqueue(new()
+            {
+                Guild = channel.Guild,
+                User = user,
+                XpAmount = actualXp
+            });
     }
 
     private bool ShouldTrackXp(SocketGuildUser user, ulong channelId)
     {
-        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) && chans.Contains(channelId)) return false;
+        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) && chans.Contains(channelId))
+            return false;
 
-        if (_excludedServers.Contains(user.Guild.Id)) return false;
+        if (_excludedServers.Contains(user.Guild.Id))
+            return false;
 
         if (_excludedRoles.TryGetValue(user.Guild.Id, out var roles) && user.Roles.Any(x => roles.Contains(x.Id)))
             return false;
@@ -514,16 +537,18 @@ public class XpService : INService
         if (arg.Author is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        _= Task.Run(() =>
+        _ = Task.Run(() =>
         {
             if (!ShouldTrackXp(user, arg.Channel.Id))
                 return;
 
             var xpConf = _xpConfig.Data;
             var xp = 0;
-            if (arg.Attachments.Any(a => a.Height >= 128 && a.Width >= 128)) xp = xpConf.XpFromImage;
+            if (arg.Attachments.Any(a => a.Height >= 128 && a.Width >= 128))
+                xp = xpConf.XpFromImage;
 
-            if (arg.Content.Contains(' ') || arg.Content.Length >= 5) xp = Math.Max(xp, xpConf.XpPerMessage);
+            if (arg.Content.Contains(' ') || arg.Content.Length >= 5)
+                xp = Math.Max(xp, xpConf.XpPerMessage);
 
             if (xp <= 0)
                 return;
@@ -531,16 +556,29 @@ public class XpService : INService
             if (!SetUserRewarded(user.Id))
                 return;
 
-            _addMessageXp.Enqueue(new() { Guild = user.Guild, Channel = arg.Channel, User = user, XpAmount = xp });
+            _addMessageXp.Enqueue(new()
+            {
+                Guild = user.Guild,
+                Channel = arg.Channel,
+                User = user,
+                XpAmount = xp
+            });
         });
         return Task.CompletedTask;
     }
 
     public void AddXpDirectly(IGuildUser user, IMessageChannel channel, int amount)
     {
-        if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
+        if (amount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
 
-        _addMessageXp.Enqueue(new() { Guild = user.Guild, Channel = channel, User = user, XpAmount = amount });
+        _addMessageXp.Enqueue(new()
+        {
+            Guild = user.Guild,
+            Channel = channel,
+            User = user,
+            XpAmount = amount
+        });
     }
 
     public void AddXp(ulong userId, ulong guildId, int amount)
@@ -622,11 +660,16 @@ public class XpService : INService
         var roles = _excludedRoles.GetOrAdd(guildId, _ => new());
         using var uow = _db.GetDbContext();
         var xpSetting = uow.XpSettingsFor(guildId);
-        var excludeObj = new ExcludedItem { ItemId = rId, ItemType = ExcludedItemType.Role };
+        var excludeObj = new ExcludedItem
+        {
+            ItemId = rId,
+            ItemType = ExcludedItemType.Role
+        };
 
         if (roles.Add(rId))
         {
-            if (xpSetting.ExclusionList.Add(excludeObj)) uow.SaveChanges();
+            if (xpSetting.ExclusionList.Add(excludeObj))
+                uow.SaveChanges();
 
             return true;
         }
@@ -648,18 +691,24 @@ public class XpService : INService
         var channels = _excludedChannels.GetOrAdd(guildId, _ => new());
         using var uow = _db.GetDbContext();
         var xpSetting = uow.XpSettingsFor(guildId);
-        var excludeObj = new ExcludedItem { ItemId = chId, ItemType = ExcludedItemType.Channel };
+        var excludeObj = new ExcludedItem
+        {
+            ItemId = chId,
+            ItemType = ExcludedItemType.Channel
+        };
 
         if (channels.Add(chId))
         {
-            if (xpSetting.ExclusionList.Add(excludeObj)) uow.SaveChanges();
+            if (xpSetting.ExclusionList.Add(excludeObj))
+                uow.SaveChanges();
 
             return true;
         }
 
         channels.TryRemove(chId);
 
-        if (xpSetting.ExclusionList.Remove(excludeObj)) uow.SaveChanges();
+        if (xpSetting.ExclusionList.Remove(excludeObj))
+            uow.SaveChanges();
 
         return false;
     }
@@ -678,7 +727,8 @@ public class XpService : INService
             {
                 TextOptions = new()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center
                 }
             }.WithFallbackFonts(_fonts.FallBackFonts);
 
@@ -686,7 +736,8 @@ public class XpService : INService
             {
                 TextOptions = new()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Top
                 }
             }.WithFallbackFonts(_fonts.FallBackFonts);
 
@@ -864,7 +915,8 @@ public class XpService : INService
                 }
 
             //club image
-            if (template.Club.Icon.Show) await DrawClubImage(img, stats);
+            if (template.Club.Icon.Show)
+                await DrawClubImage(img, stats);
 
             img.Mutate(x => x.Resize(template.OutputSize.X, template.OutputSize.Y));
             return ((Stream)img.ToStream(imageFormat), imageFormat);

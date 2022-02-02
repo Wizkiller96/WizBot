@@ -50,7 +50,11 @@ public partial class Permissions
                 localSet.RemoveWhere(cc => cc.CommandName == name);
                 if (secs != 0)
                 {
-                    var cc = new CommandCooldown { CommandName = name, Seconds = secs };
+                    var cc = new CommandCooldown
+                    {
+                        CommandName = name,
+                        Seconds = secs
+                    };
                     config.CommandCooldowns.Add(cc);
                     localSet.Add(cc);
                 }

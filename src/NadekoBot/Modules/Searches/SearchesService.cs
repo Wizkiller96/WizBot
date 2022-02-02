@@ -128,7 +128,8 @@ public class SearchesService : INService
             {
                 TextOptions = new TextOptions
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center, WrapTextWidth = 190
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    WrapTextWidth = 190
                 }.WithFallbackFonts(_fonts.FallBackFonts)
             },
             text,
@@ -189,7 +190,8 @@ public class SearchesService : INService
     {
         query = query.Trim();
 
-        if (string.IsNullOrEmpty(query)) return (default, TimeErrors.InvalidInput);
+        if (string.IsNullOrEmpty(query))
+            return (default, TimeErrors.InvalidInput);
 
         if (string.IsNullOrWhiteSpace(_creds.LocationIqApiKey) || string.IsNullOrWhiteSpace(_creds.TimezoneDbApiKey))
             return (default, TimeErrors.ApiKeyMissing);
@@ -303,7 +305,12 @@ public class SearchesService : INService
     {
         using var http = _httpFactory.CreateClient();
         var res = await http.GetStringAsync("https://official-joke-api.appspot.com/random_joke");
-        var resObj = JsonConvert.DeserializeAnonymousType(res, new { setup = "", punchline = "" });
+        var resObj = JsonConvert.DeserializeAnonymousType(res,
+            new
+            {
+                setup = "",
+                punchline = ""
+            });
         return (resObj.setup, resObj.punchline);
     }
 
@@ -395,7 +402,8 @@ public class SearchesService : INService
                        ?? objs.FirstOrDefault(x => !string.IsNullOrEmpty(x.PlayerClass)) ?? objs.FirstOrDefault();
             if (data is null)
                 return null;
-            if (!string.IsNullOrWhiteSpace(data.Img)) data.Img = await _google.ShortenUrl(data.Img);
+            if (!string.IsNullOrWhiteSpace(data.Img))
+                data.Img = await _google.ShortenUrl(data.Img);
             if (!string.IsNullOrWhiteSpace(data.Text))
             {
                 var converter = new Converter();
@@ -456,7 +464,14 @@ public class SearchesService : INService
                 // https://api.steampowered.com/ISteamApps/GetAppList/v2/
                 var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
                 var apps = JsonConvert
-                           .DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } })
+                           .DeserializeAnonymousType(gamesStr,
+                               new
+                               {
+                                   applist = new
+                                   {
+                                       apps = new List<SteamGameId>()
+                                   }
+                               })
                            .applist.apps;
 
                 return apps.OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase)

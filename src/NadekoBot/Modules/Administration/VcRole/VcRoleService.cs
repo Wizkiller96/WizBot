@@ -49,11 +49,13 @@ public class VcRoleService : INService
                             {
                                 if (add)
                                 {
-                                    if (!user.RoleIds.Contains(role.Id)) await user.AddRoleAsync(role);
+                                    if (!user.RoleIds.Contains(role.Id))
+                                        await user.AddRoleAsync(role);
                                 }
                                 else
                                 {
-                                    if (user.RoleIds.Contains(role.Id)) await user.RemoveRoleAsync(role);
+                                    if (user.RoleIds.Contains(role.Id))
+                                        await user.RemoveRoleAsync(role);
                                 }
                             }
                             catch
@@ -80,7 +82,7 @@ public class VcRoleService : INService
         using (var uow = _db.GetDbContext())
         {
             var configWithVcRole = uow.GuildConfigsForId(arg.GuildId, set => set.Include(x => x.VcRoleInfos));
-            _= InitializeVcRole(configWithVcRole);
+            _ = InitializeVcRole(configWithVcRole);
         }
 
         return Task.CompletedTask;
@@ -137,8 +139,13 @@ public class VcRoleService : INService
         using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set.Include(x => x.VcRoleInfos));
         var toDelete = conf.VcRoleInfos.FirstOrDefault(x => x.VoiceChannelId == vcId); // remove old one
-        if (toDelete is not null) uow.Remove(toDelete);
-        conf.VcRoleInfos.Add(new() { VoiceChannelId = vcId, RoleId = role.Id }); // add new one
+        if (toDelete is not null)
+            uow.Remove(toDelete);
+        conf.VcRoleInfos.Add(new()
+        {
+            VoiceChannelId = vcId,
+            RoleId = role.Id
+        }); // add new one
         uow.SaveChanges();
     }
 
@@ -166,7 +173,7 @@ public class VcRoleService : INService
 
         var oldVc = oldState.VoiceChannel;
         var newVc = newState.VoiceChannel;
-        _= Task.Run(() =>
+        _ = Task.Run(() =>
         {
             try
             {
@@ -181,7 +188,8 @@ public class VcRoleService : INService
                         if (oldVc is not null && guildVcRoles.TryGetValue(oldVc.Id, out var role))
                             Assign(false, gusr, role);
                         //add new
-                        if (newVc is not null && guildVcRoles.TryGetValue(newVc.Id, out role)) Assign(true, gusr, role);
+                        if (newVc is not null && guildVcRoles.TryGetValue(newVc.Id, out role))
+                            Assign(true, gusr, role);
                     }
                 }
             }

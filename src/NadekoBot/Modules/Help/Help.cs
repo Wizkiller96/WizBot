@@ -14,7 +14,7 @@ public partial class Help : NadekoModule<HelpService>
 {
     public const string PATREON_URL = "https://patreon.com/nadekobot";
     public const string PAYPAL_URL = "https://paypal.me/Kwoth";
-    
+
     private readonly CommandService _cmds;
     private readonly BotConfigService _bss;
     private readonly GlobalPermissionService _perms;
@@ -317,7 +317,8 @@ public partial class Help : NadekoModule<HelpService>
                                          var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(static x
                                                  => x is NadekoOptionsAttribute))
                                              ?.OptionType;
-                                         if (opt is not null) optHelpStr = HelpService.GetCommandOptionHelpList(opt);
+                                         if (opt is not null)
+                                             optHelpStr = HelpService.GetCommandOptionHelpList(opt);
 
                                          return new CommandJsonObject
                                          {
@@ -346,12 +347,16 @@ public partial class Help : NadekoModule<HelpService>
         // if all env vars are set, upload the unindented file (to save space) there
         if (!(serviceUrl is null || accessKey is null || secretAcccessKey is null))
         {
-            var config = new AmazonS3Config { ServiceURL = serviceUrl };
+            var config = new AmazonS3Config
+            {
+                ServiceURL = serviceUrl
+            };
 
             using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
             var oldVersionObject = await dlClient.GetObjectAsync(new()
             {
-                BucketName = "nadeko-pictures", Key = "cmds/versions.json"
+                BucketName = "nadeko-pictures",
+                Key = "cmds/versions.json"
             });
 
             using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
@@ -377,7 +382,10 @@ public partial class Help : NadekoModule<HelpService>
                 // save the file with new version added
                 // versionList.Add(StatsService.BotVersion);
                 versionListString = JsonSerializer.Serialize(versionList.Prepend(StatsService.BOT_VERSION),
-                    new JsonSerializerOptions { WriteIndented = true });
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
 
                 // upload the updated version list
                 using var client = new AmazonS3Client(accessKey, secretAcccessKey, config);

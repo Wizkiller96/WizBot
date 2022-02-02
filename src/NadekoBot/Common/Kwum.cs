@@ -45,8 +45,10 @@ public readonly struct kwum : IEquatable<kwum>
     {
         value = default;
         foreach (var c in input)
+        {
             if (!IsValidChar(c))
                 return false;
+        }
 
         value = new(input);
         return true;

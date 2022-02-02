@@ -37,7 +37,7 @@ public class TriviaQuestionPool
 
         TriviaQuestion randomQuestion;
         while (exclude.Contains(randomQuestion = Pool[_rng.Next(0, Pool.Length)]))
-        { 
+        {
             // if too many questions are excluded, clear the exclusion list and start over
             if (exclude.Count > Pool.Length / 10 * 9)
             {

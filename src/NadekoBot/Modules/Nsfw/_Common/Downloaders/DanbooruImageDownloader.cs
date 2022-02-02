@@ -26,7 +26,8 @@ public sealed class DanbooruImageDownloader : DapiImageDownloader
             _baseUrl + "/tags.json" + $"?search[name_or_alias_matches]={tag}",
             _serializerOptions,
             cancel);
-        if (tags is { Length: > 0 }) return _existentTags[tag] = true;
+        if (tags is { Length: > 0 })
+            return _existentTags[tag] = true;
 
         return _nonexistentTags[tag] = false;
     }

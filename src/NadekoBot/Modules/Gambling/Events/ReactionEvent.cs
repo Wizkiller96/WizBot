@@ -58,13 +58,14 @@ public class ReactionEvent : ICurrencyEvent
     }
 
     private void EventTimeout(object state)
-        => _= StopEvent();
+        => _ = StopEvent();
 
     private async void OnTimerTick(object state)
     {
         var potEmpty = PotEmptied;
         var toAward = new List<ulong>();
-        while (_toAward.TryDequeue(out var x)) toAward.Add(x);
+        while (_toAward.TryDequeue(out var x))
+            toAward.Add(x);
 
         if (!toAward.Any())
             return;
@@ -78,7 +79,10 @@ public class ReactionEvent : ICurrencyEvent
                     {
                         m.Embed = GetEmbed(PotSize).Build();
                     },
-                    new() { RetryMode = RetryMode.AlwaysRetry });
+                    new()
+                    {
+                        RetryMode = RetryMode.AlwaysRetry
+                    });
 
             Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
@@ -86,9 +90,7 @@ public class ReactionEvent : ICurrencyEvent
                 _isPotLimited ? $" {PotSize} left." : "");
 
             if (potEmpty)
-            {
-                _= StopEvent();
-            }
+                _ = StopEvent();
         }
         catch (Exception ex)
         {
@@ -114,7 +116,8 @@ public class ReactionEvent : ICurrencyEvent
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)
     {
-        if (message.Id == msg.Id) await StopEvent();
+        if (message.Id == msg.Id)
+            await StopEvent();
     }
 
     public async Task StopEvent()
@@ -131,7 +134,7 @@ public class ReactionEvent : ICurrencyEvent
             _timeout?.Change(Timeout.Infinite, Timeout.Infinite);
             try
             {
-                _= msg.DeleteAsync();
+                _ = msg.DeleteAsync();
             }
             catch { }
 
@@ -144,7 +147,7 @@ public class ReactionEvent : ICurrencyEvent
         Cacheable<IMessageChannel, ulong> cacheable,
         SocketReaction r)
     {
-        _= Task.Run(() =>
+        _ = Task.Run(() =>
         {
             if (emote.Name != r.Emote.Name)
                 return;

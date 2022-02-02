@@ -239,7 +239,8 @@ public sealed partial class Music : NadekoModule<IMusicService>
             return;
 
         var success = await _service.PlayAsync(ctx.Guild.Id, ((IGuildUser)ctx.User).VoiceChannel.Id);
-        if (!success) await ReplyErrorLocalizedAsync(strs.no_player);
+        if (!success)
+            await ReplyErrorLocalizedAsync(strs.no_player);
     }
 
     // list queue, relevant page
@@ -276,7 +277,8 @@ public sealed partial class Music : NadekoModule<IMusicService>
         {
             var desc = string.Empty;
             var current = mp.GetCurrentTrack(out var currentIndex);
-            if (current is not null) desc = $"`🔊` {current.PrettyFullName()}\n\n" + desc;
+            if (current is not null)
+                desc = $"`🔊` {current.PrettyFullName()}\n\n" + desc;
 
             var repeatType = mp.Repeat;
             var add = string.Empty;

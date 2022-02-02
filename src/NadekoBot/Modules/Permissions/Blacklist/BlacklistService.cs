@@ -75,7 +75,8 @@ public sealed class BlacklistService : IEarlyBehavior
         using var uow = _db.GetDbContext();
         var toPublish = uow.Blacklist.AsNoTracking().ToArray();
         blacklist = toPublish;
-        if (publish) _pubSub.Pub(_blPubKey, toPublish);
+        if (publish)
+            _pubSub.Pub(_blPubKey, toPublish);
     }
 
     public void Blacklist(BlacklistType type, ulong id)
@@ -84,7 +85,11 @@ public sealed class BlacklistService : IEarlyBehavior
             return;
 
         using var uow = _db.GetDbContext();
-        var item = new BlacklistEntry { ItemId = id, Type = type };
+        var item = new BlacklistEntry
+        {
+            ItemId = id,
+            Type = type
+        };
         uow.Blacklist.Add(item);
         uow.SaveChanges();
 
@@ -110,7 +115,11 @@ public sealed class BlacklistService : IEarlyBehavior
         {
             var bc = uow.Blacklist;
             //blacklist the users
-            bc.AddRange(toBlacklist.Select(x => new BlacklistEntry { ItemId = x, Type = BlacklistType.User }));
+            bc.AddRange(toBlacklist.Select(x => new BlacklistEntry
+            {
+                ItemId = x,
+                Type = BlacklistType.User
+            }));
 
             //clear their currencies
             uow.DiscordUser.RemoveFromMany(toBlacklist);

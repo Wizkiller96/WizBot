@@ -24,7 +24,8 @@ public partial class Searches
                                .WithDescription(
                                    GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
 
-                if (await PromptUserConfirmAsync(embed)) crypto = nearest;
+                if (await PromptUserConfirmAsync(embed))
+                    crypto = nearest;
             }
 
             if (crypto is null)
@@ -43,7 +44,7 @@ public partial class Searches
 
             var volume = usd.Volume24h.ToString("n0", Culture);
             var marketCap = usd.MarketCap.ToString("n0", Culture);
-            
+
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithAuthor($"#{crypto.CmcRank}")

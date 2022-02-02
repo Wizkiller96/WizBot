@@ -11,7 +11,10 @@ public class TriviaQuestion
     //represents the min size to judge levDistance with
     private static readonly HashSet<Tuple<int, int>> _strictness = new()
     {
-        new(9, 0), new(14, 1), new(19, 2), new(22, 3)
+        new(9, 0),
+        new(14, 1),
+        new(19, 2),
+        new(22, 3)
     };
 
     public string Category { get; set; }
@@ -44,9 +47,11 @@ public class TriviaQuestion
 
     public bool IsAnswerCorrect(string guess)
     {
-        if (Answer.Equals(guess, StringComparison.InvariantCulture)) return true;
+        if (Answer.Equals(guess, StringComparison.InvariantCulture))
+            return true;
         var cleanGuess = Clean(guess);
-        if (CleanAnswer.Equals(cleanGuess, StringComparison.InvariantCulture)) return true;
+        if (CleanAnswer.Equals(cleanGuess, StringComparison.InvariantCulture))
+            return true;
 
         var levDistanceClean = CleanAnswer.LevenshteinDistance(cleanGuess);
         var levDistanceNormal = Answer.LevenshteinDistance(guess);
@@ -57,12 +62,14 @@ public class TriviaQuestion
     private static bool JudgeGuess(int guessLength, int answerLength, int levDistance)
     {
         foreach (var level in _strictness)
+        {
             if (guessLength <= level.Item1 || answerLength <= level.Item1)
             {
                 if (levDistance <= level.Item2)
                     return true;
                 return false;
             }
+        }
 
         return false;
     }

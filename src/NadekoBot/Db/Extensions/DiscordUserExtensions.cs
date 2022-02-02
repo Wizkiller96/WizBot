@@ -26,8 +26,16 @@ public static class DiscordUserExtensions
                       TotalXp = 0,
                       CurrencyAmount = 0
                   },
-                  old => new() { Username = username, Discriminator = discrim, AvatarId = avatarId },
-                  () => new() { UserId = userId });
+                  old => new()
+                  {
+                      Username = username,
+                      Discriminator = discrim,
+                      AvatarId = avatarId
+                  },
+                  () => new()
+                  {
+                      UserId = userId
+                  });
 
     //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
     public static DiscordUser GetOrCreateUser(
@@ -72,7 +80,8 @@ public static class DiscordUserExtensions
     public static void RemoveFromMany(this DbSet<DiscordUser> users, IEnumerable<ulong> ids)
     {
         var items = users.AsQueryable().Where(x => ids.Contains(x.UserId));
-        foreach (var item in items) item.CurrencyAmount = 0;
+        foreach (var item in items)
+            item.CurrencyAmount = 0;
     }
 
     public static bool TryUpdateCurrencyState(

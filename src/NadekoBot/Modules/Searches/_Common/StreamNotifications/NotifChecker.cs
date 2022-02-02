@@ -31,7 +31,8 @@ public class NotifChecker
             { FollowedStream.FType.Trovo, new TrovoProvider(httpClientFactory, credsProvider) }
         };
         _offlineBuffer = new();
-        if (isMaster) CacheClearAllData();
+        if (isMaster)
+            CacheClearAllData();
     }
 
     // gets all streams which have been failing for more than the provided timespan
@@ -45,12 +46,8 @@ public class NotifChecker
                        .ToList();
 
         if (remove)
-        {
             foreach (var toBeRemoved in toReturn)
-            {
                 _streamProviders[toBeRemoved.Type].ClearErrorsFor(toBeRemoved.Name);
-            }
-        }
 
         return toReturn;
     }
@@ -137,9 +134,11 @@ public class NotifChecker
                         Task.Delay(30_000)
                     };
 
-                    if (newlyOnline.Count > 0) tasks.Add(OnStreamsOnline(newlyOnline));
+                    if (newlyOnline.Count > 0)
+                        tasks.Add(OnStreamsOnline(newlyOnline));
 
-                    if (newlyOffline.Count > 0) tasks.Add(OnStreamsOffline(newlyOffline));
+                    if (newlyOffline.Count > 0)
+                        tasks.Add(OnStreamsOffline(newlyOffline));
 
                     await Task.WhenAll(tasks);
                 }
@@ -174,7 +173,8 @@ public class NotifChecker
     public Dictionary<StreamDataKey, StreamData?> CacheGetAllData()
     {
         var db = _multi.GetDatabase();
-        if (!db.KeyExists(_key)) return new();
+        if (!db.KeyExists(_key))
+            return new();
 
         return db.HashGetAll(_key)
                  .ToDictionary(entry => JsonConvert.DeserializeObject<StreamDataKey>(entry.Name),

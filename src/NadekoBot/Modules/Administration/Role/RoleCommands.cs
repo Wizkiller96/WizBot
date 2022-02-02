@@ -40,13 +40,18 @@ public partial class Administration
                                      }
 
                                      var role = (IRole)roleResult.BestMatch;
-                                     if (role.Position > ((IGuildUser)ctx.User).GetRoles()
-                                                                               .Select(r => r.Position)
-                                                                               .Max()
+                                     if (role.Position
+                                         > ((IGuildUser)ctx.User).GetRoles()
+                                                                 .Select(r => r.Position)
+                                                                 .Max()
                                          && ctx.User.Id != ctx.Guild.OwnerId)
                                          return null;
                                      var emote = x.Last().ToIEmote();
-                                     return new { role, emote };
+                                     return new
+                                     {
+                                         role,
+                                         emote
+                                     };
                                  })
                                  .Where(x => x is not null)
                                  .WhenAll();
@@ -59,7 +64,10 @@ public partial class Administration
                 try
                 {
                     await target.AddReactionAsync(x.emote,
-                        new() { RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit });
+                        new()
+                        {
+                            RetryMode = RetryMode.Retry502 | RetryMode.RetryRatelimit
+                        });
                 }
                 catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.BadRequest)
                 {
@@ -79,9 +87,10 @@ public partial class Administration
                         ReactionRoles = all.Select(x =>
                                            {
                                                return new ReactionRole
-                                                   {
-                                                       EmoteName = x.emote.ToString(), RoleId = x.role.Id
-                                                   };
+                                               {
+                                                   EmoteName = x.emote.ToString(),
+                                                   RoleId = x.role.Id
+                                               };
                                            })
                                            .ToList()
                     }))
@@ -144,7 +153,8 @@ public partial class Administration
                 {
                     var ch = g.GetTextChannel(rr.ChannelId);
                     IUserMessage msg = null;
-                    if (ch is not null) msg = await ch.GetMessageAsync(rr.MessageId) as IUserMessage;
+                    if (ch is not null)
+                        msg = await ch.GetMessageAsync(rr.MessageId) as IUserMessage;
                     var content = msg?.Content.TrimTo(30) ?? "DELETED!";
                     embed.AddField($"**{rr.Index + 1}.** {ch?.Name ?? "DELETED!"}",
                         GetText(strs.reaction_roles_message(rr.ReactionRoles?.Count ?? 0, content)));
