@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Common.Nunchi;
@@ -8,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Services;
 
-public class GamesService : INService
+public class GamesService : INService, IReadyExecutor
 {
     private const string TYPING_ARTICLES_PATH = "data/typing_articles3.json";
 
@@ -29,7 +30,6 @@ public class GamesService : INService
     public AsyncLazy<RatingTexts> Ratings { get; }
     private readonly GamesConfigService _gamesConfig;
 
-    private readonly Timer _t;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IMemoryCache _8BallCache;
     private readonly Random _rng;
@@ -46,15 +46,6 @@ public class GamesService : INService
         Ratings = new(GetRatingTexts);
         _rng = new NadekoRandom();
 
-        //girl ratings
-        _t = new(_ =>
-            {
-                GirlRatings.Clear();
-            },
-            null,
-            TimeSpan.FromDays(1),
-            TimeSpan.FromDays(1));
-
         try
         {
             TypingArticles = JsonConvert.DeserializeObject<List<TypingArticle>>(File.ReadAllText(TYPING_ARTICLES_PATH));
@@ -63,6 +54,16 @@ public class GamesService : INService
         {
             Log.Warning(ex, "Error while loading typing articles: {ErrorMessage}", ex.Message);
             TypingArticles = new();
+        }
+    }
+
+    public async Task OnReadyAsync()
+    {
+        // reset rating once a day
+        using var timer = new PeriodicTimer(TimeSpan.FromDays(1));
+        while (await timer.WaitForNextTickAsync())
+        {
+            GirlRatings.Clear();
         }
     }
 

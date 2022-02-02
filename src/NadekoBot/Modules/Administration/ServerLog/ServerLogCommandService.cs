@@ -21,8 +21,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
     private readonly GuildTimezoneService _tz;
     private readonly IEmbedBuilderService _eb;
     private readonly IMemoryCache _memoryCache;
-
-    private readonly Timer _clearTimer;
+    
     private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new();
 
     public LogCommandService(
@@ -80,21 +79,25 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
 
-        _clearTimer = new(_ =>
-            {
-                _ignoreMessageIds.Clear();
-            },
-            null,
-            TimeSpan.FromHours(1),
-            TimeSpan.FromHours(1));
-
 #endif
     }
 
-    public async Task OnReadyAsync()
+    public Task OnReadyAsync()
+        => Task.WhenAll(PresenceUpdateTask(), IgnoreMessageIdsClearTask());
+
+    private async Task IgnoreMessageIdsClearTask()
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
+        while (await timer.WaitForNextTickAsync())
+        {
+            _ignoreMessageIds.Clear();
+        }
+    }
+
+    private async Task PresenceUpdateTask()
     {
 #if !GLOBAL_NADEKO
-        var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
         while (await timer.WaitForNextTickAsync())
         {
             try
@@ -105,6 +108,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                           {
                               if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
                                   return Task.CompletedTask;
+                              
                               if (PresenceUpdates.TryRemove(key, out var msgs))
                               {
                                   var title = GetText(key.Guild, strs.presence_updates);

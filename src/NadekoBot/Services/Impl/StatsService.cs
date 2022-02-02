@@ -139,7 +139,7 @@ public class StatsService : IStatsService, IReadyExecutor, INService, IDisposabl
         textChannels = guilds.Sum(g => g.Channels.Count(cx => cx is ITextChannel));
         voiceChannels = guilds.Sum(g => g.Channels.Count(cx => cx is IVoiceChannel));
 
-        var timer = new PeriodicTimer(TimeSpan.FromHours(1));
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         do
         {
             if (string.IsNullOrWhiteSpace(_creds.BotListToken))

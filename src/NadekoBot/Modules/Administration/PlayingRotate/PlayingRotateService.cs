@@ -29,7 +29,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
 
     public async Task OnReadyAsync()
     {
-        var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
         var index = 0;
         while (await timer.WaitForNextTickAsync())
         {

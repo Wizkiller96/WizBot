@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Connect4;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
-public class GamblingService : INService
+public class GamblingService : INService, IReadyExecutor
 {
     public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new();
     public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new();
@@ -19,8 +20,6 @@ public class GamblingService : INService
     private readonly DiscordSocketClient _client;
     private readonly IDataCache _cache;
     private readonly GamblingConfigService _gss;
-
-    private readonly Timer _decayTimer;
 
     public GamblingService(
         DbService db,
@@ -36,32 +35,38 @@ public class GamblingService : INService
         _client = client;
         _cache = cache;
         _gss = gss;
+    }
 
-        if (_bot.Client.ShardId == 0)
-            _decayTimer = new(_ =>
-                {
-                    var config = _gss.Data;
-                    var maxDecay = config.Decay.MaxDecay;
-                    if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
-                        return;
+    public async Task OnReadyAsync()
+    {
+        if (_bot.Client.ShardId != 0)
+            return;
+        
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
+        while (await timer.WaitForNextTickAsync())
+        {
+            var config = _gss.Data;
+            var maxDecay = config.Decay.MaxDecay;
+            if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
+                continue;
 
-                    using var uow = _db.GetDbContext();
-                    var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
+            await using var uow = _db.GetDbContext();
+            var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
 
-                    if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
-                        return;
+            if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
+                continue;
 
-                    Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
+            Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
                                     | max: {MaxDecay} 
                                     | threshold: {DecayMinTreshold}",
-                        config.Decay.Percent * 100,
-                        maxDecay,
-                        config.Decay.MinThreshold);
+                config.Decay.Percent * 100,
+                maxDecay,
+                config.Decay.MinThreshold);
 
-                    if (maxDecay == 0)
-                        maxDecay = int.MaxValue;
+            if (maxDecay == 0)
+                maxDecay = int.MaxValue;
 
-                    uow.Database.ExecuteSqlInterpolated($@"
+            await uow.Database.ExecuteSqlInterpolatedAsync($@"
 UPDATE DiscordUser
 SET CurrencyAmount=
     CASE WHEN
@@ -73,12 +78,9 @@ SET CurrencyAmount=
     END
 WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentUser.Id};");
 
-                    _cache.SetLastCurrencyDecay();
-                    uow.SaveChanges();
-                },
-                null,
-                TimeSpan.FromMinutes(5),
-                TimeSpan.FromMinutes(5));
+            _cache.SetLastCurrencyDecay();
+            await uow.SaveChangesAsync();
+        }
     }
 
     public async Task<SlotResponse> SlotAsync(ulong userId, long amount)

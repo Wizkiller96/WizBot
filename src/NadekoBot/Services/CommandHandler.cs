@@ -1,5 +1,6 @@
 #nullable disable
 using NadekoBot.Common.Configs;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using System.Collections.Immutable;
 using ExecuteResult = Discord.Commands.ExecuteResult;
@@ -7,7 +8,7 @@ using PreconditionResult = Discord.Commands.PreconditionResult;
 
 namespace NadekoBot.Services;
 
-public class CommandHandler : INService
+public class CommandHandler : INService, IReadyExecutor
 {
     private const int GLOBAL_COMMANDS_COOLDOWN = 750;
 
@@ -30,7 +31,6 @@ public class CommandHandler : INService
     private readonly IServiceProvider _services;
 
     private readonly ConcurrentDictionary<ulong, string> _prefixes;
-    private readonly Timer _clearUsersOnShortCooldown;
     private readonly DbService _db;
     // private readonly InteractionService _interactions;
 
@@ -53,17 +53,19 @@ public class CommandHandler : INService
         _services = services;
         // _interactions = interactions;
 
-        _clearUsersOnShortCooldown = new(_ =>
-            {
-                UsersOnShortCooldown.Clear();
-            },
-            null,
-            GLOBAL_COMMANDS_COOLDOWN,
-            GLOBAL_COMMANDS_COOLDOWN);
-
         _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix is not null)
                        .ToDictionary(x => x.GuildId, x => x.Prefix)
                        .ToConcurrent();
+    }
+
+    public async Task OnReadyAsync()
+    {
+        // clear users on short cooldown every GLOBAL_COMMANDS_COOLDOWN miliseconds
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(GLOBAL_COMMANDS_COOLDOWN));
+        while (await timer.WaitForNextTickAsync())
+        {
+            UsersOnShortCooldown.Clear();
+        }
     }
 
     public string GetPrefix(IGuild guild)

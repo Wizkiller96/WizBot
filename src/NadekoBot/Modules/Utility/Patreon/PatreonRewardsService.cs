@@ -52,7 +52,7 @@ public class PatreonRewardsService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
 
-        var t = new PeriodicTimer(Interval);
+        using var t = new PeriodicTimer(Interval);
         do
         {
             try

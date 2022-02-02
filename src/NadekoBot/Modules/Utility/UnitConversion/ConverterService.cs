@@ -30,7 +30,7 @@ public class ConverterService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
 
-        var timer = new PeriodicTimer(_updateInterval);
+        using var timer = new PeriodicTimer(_updateInterval);
         do
         {
             try

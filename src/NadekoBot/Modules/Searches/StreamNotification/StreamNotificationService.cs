@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Searches.Common;
@@ -9,7 +10,7 @@ using StackExchange.Redis;
 
 namespace NadekoBot.Modules.Searches.Services;
 
-public sealed class StreamNotificationService : INService
+public sealed class StreamNotificationService : INService, IReadyExecutor
 {
     private readonly DbService _db;
     private readonly IBotStrings _strings;
@@ -26,7 +27,6 @@ public sealed class StreamNotificationService : INService
 
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
-    private readonly Timer _notifCleanupTimer;
 
     private readonly TypedKey<List<StreamData>> _streamsOnlineKey;
     private readonly TypedKey<List<StreamData>> _streamsOfflineKey;
@@ -114,49 +114,6 @@ public sealed class StreamNotificationService : INService
             _streamTracker.OnStreamsOffline += OnStreamsOffline;
             _streamTracker.OnStreamsOnline += OnStreamsOnline;
             _ = _streamTracker.RunAsync();
-            _notifCleanupTimer = new(_ =>
-                {
-                    try
-                    {
-                        var errorLimit = TimeSpan.FromHours(12);
-                        var failingStreams = _streamTracker.GetFailingStreams(errorLimit, true).ToList();
-
-                        if (!failingStreams.Any())
-                            return;
-
-                        var deleteGroups = failingStreams.GroupBy(x => x.Type)
-                                                         .ToDictionary(x => x.Key, x => x.Select(y => y.Name).ToList());
-
-                        using var uow = _db.GetDbContext();
-                        foreach (var kvp in deleteGroups)
-                        {
-                            Log.Information(
-                                "Deleting {StreamCount} {Platform} streams because they've been erroring for more than {ErrorLimit}: {RemovedList}",
-                                kvp.Value.Count,
-                                kvp.Key,
-                                errorLimit,
-                                string.Join(", ", kvp.Value));
-
-                            var toDelete = uow.Set<FollowedStream>()
-                                              .AsQueryable()
-                                              .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
-                                              .ToList();
-
-                            uow.RemoveRange(toDelete);
-                            uow.SaveChanges();
-
-                            foreach (var loginToDelete in kvp.Value)
-                                _streamTracker.UntrackStreamByKey(new(kvp.Key, loginToDelete));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Error cleaning up FollowedStreams");
-                    }
-                },
-                null,
-                TimeSpan.FromMinutes(30),
-                TimeSpan.FromMinutes(30));
 
             _pubSub.Sub(_streamFollowKey, HandleFollowStream);
             _pubSub.Sub(_streamUnfollowKey, HandleUnfollowStream);
@@ -164,6 +121,54 @@ public sealed class StreamNotificationService : INService
 
         bot.JoinedGuild += ClientOnJoinedGuild;
         client.LeftGuild += ClientOnLeftGuild;
+    }
+
+    public async Task OnReadyAsync()
+    {
+        if (_client.ShardId != 0)
+            return;
+            
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(30));
+        while (await timer.WaitForNextTickAsync())
+        {
+            try
+            {
+                var errorLimit = TimeSpan.FromHours(12);
+                var failingStreams = _streamTracker.GetFailingStreams(errorLimit, true).ToList();
+
+                if (!failingStreams.Any())
+                    continue;
+
+                var deleteGroups = failingStreams.GroupBy(x => x.Type)
+                                                 .ToDictionary(x => x.Key, x => x.Select(y => y.Name).ToList());
+
+                await using var uow = _db.GetDbContext();
+                foreach (var kvp in deleteGroups)
+                {
+                    Log.Information(
+                        "Deleting {StreamCount} {Platform} streams because they've been erroring for more than {ErrorLimit}: {RemovedList}",
+                        kvp.Value.Count,
+                        kvp.Key,
+                        errorLimit,
+                        string.Join(", ", kvp.Value));
+
+                    var toDelete = uow.Set<FollowedStream>()
+                                      .AsQueryable()
+                                      .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
+                                      .ToList();
+
+                    uow.RemoveRange(toDelete);
+                    await uow.SaveChangesAsync();
+
+                    foreach (var loginToDelete in kvp.Value)
+                        _streamTracker.UntrackStreamByKey(new(kvp.Key, loginToDelete));
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error cleaning up FollowedStreams");
+            }
+        }
     }
 
     /// <summary>

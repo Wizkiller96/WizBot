@@ -36,7 +36,7 @@ public class UserPunishService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
 
-        var expiryTimer = new PeriodicTimer(TimeSpan.FromHours(12));
+        using var expiryTimer = new PeriodicTimer(TimeSpan.FromHours(12));
         do
         {
             try
