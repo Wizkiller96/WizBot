@@ -3,7 +3,6 @@ using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-// todo timers
 public class GameVoiceChannelService : INService
 {
     public ConcurrentHashSet<ulong> GameVoiceChannels { get; }

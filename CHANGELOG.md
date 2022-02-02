@@ -11,6 +11,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.deleteemptyservers` command
 - Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
 - Added trovo.live support for stream notifications (`.stadd`) 
+- Added unclaimed waifu decay functionality
+  - Added 3 new settings to `data/gambling.yml` to control it:
+    - waifu.decay.percent - How much % to subtract from unclaimed waifu
+    - waifu.decay.hourInterval - How often to decay the price 
+    - waifu.decay.minPrice - Unclaimed waifus with price lower than the one specified here will not be affected by the decay
 
 ### Fixed
 - Fixed an extra whitespace in usage part of command help if the command has no arguments  
@@ -18,6 +23,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.gvc` should now properly trigger when a user is already in a gvc and changes his activity   
 - `.gvc` should now properly detect multiple activities  
 - Fixed reference to non-existent command in bot.yml
+- Comment indentation in .yml files should now make more sense
 
 ### Changed
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
@@ -30,6 +36,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Some of the old aliases like `.acr` `.dcr` `.lcr` and a few others have been kept
 - Currency output format improvement (will use guild locale now for some commands)
 - `.crypto` will now also show CoinMarketCap rank
+- Waifus can now be claimed for much higher prices (int -> long)
 - Improved .curtrs (It will now have a lot more useful data in the database, show Tx ids, and be partially localized)
   - [dev] Reason renamed to Note
   - [dev] Added Type, Extra, OtherId fields to the database

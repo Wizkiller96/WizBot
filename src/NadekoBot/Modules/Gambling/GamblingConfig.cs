@@ -182,9 +182,13 @@ public partial class WheelOfFortuneSettings
 public sealed partial class WaifuConfig
 {
     [Comment(@"Minimum price a waifu can have")]
-    public int MinPrice { get; set; } = 50;
+    public long MinPrice { get; set; } = 50;
 
     public MultipliersData Multipliers { get; set; } = new();
+
+    [Comment(@"Settings for periodic waifu price decay.
+Waifu price decays only if the waifu has no claimer.")]
+    public WaifuDecayConfig Decay { get; set; } = new();
 
     [Comment(@"List of items available for gifting.
 If negative is true, gift will instead reduce waifu value.")]
@@ -230,6 +234,21 @@ If negative is true, gift will instead reduce waifu value.")]
             new("🚀", 30000, "Spaceship"),
             new("🌕", 50000, "Moon")
         };
+
+    public class WaifuDecayConfig
+    {
+        [Comment(@"Percentage (0 - 100) of the waifu value to reduce.
+Set 0 to disable
+For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)")]
+        public int Percent { get; set; } = 0;
+
+        [Comment(@"How often to decay waifu values, in hours")]
+        public int HourInterval { get; set; } = 24;
+
+        [Comment(@"Minimum waifu price required for the decay to be applied.
+For example if this value is set to 300, any waifu with the price 300 or less will not experience decay.")]
+        public long MinPrice { get; set; } = 300;
+    }
 }
 
 [Cloneable]
@@ -283,7 +302,7 @@ public sealed class SlotsConfig
 public sealed partial class WaifuItemModel
 {
     public string ItemEmoji { get; set; }
-    public int Price { get; set; }
+    public long Price { get; set; }
     public string Name { get; set; }
 
     [YamlMember(DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
@@ -295,7 +314,7 @@ public sealed partial class WaifuItemModel
 
     public WaifuItemModel(
         string itemEmoji,
-        int price,
+        long price,
         string name,
         bool negative = false)
     {

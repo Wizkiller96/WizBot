@@ -9,7 +9,7 @@ namespace NadekoBot.Db;
 public class WaifuInfoStats
 {
     public string FullName { get; init; }
-    public int Price { get; init; }
+    public long Price { get; init; }
     public string ClaimerName { get; init; }
     public string AffinityName { get; init; }
     public int AffinityCount { get; init; }

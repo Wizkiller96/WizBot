@@ -207,7 +207,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         => InternalCurrencyTransactions(usr.Id, page);
 
     // todo curtrs max lifetime
-    // todo waifu decay
     private async Task InternalCurrencyTransactions(ulong userId, int page)
     {
         if (--page < 0)

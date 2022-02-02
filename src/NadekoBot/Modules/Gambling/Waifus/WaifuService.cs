@@ -1,5 +1,7 @@
 #nullable disable
+using LinqToDB;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Common;
@@ -8,23 +10,30 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
-public class WaifuService : INService
+// todo waifu price int
+public class WaifuService : INService, IReadyExecutor
 {
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
     private readonly IDataCache _cache;
     private readonly GamblingConfigService _gss;
+    private readonly IBotCredentials _creds;
+    private readonly DiscordSocketClient _client;
 
     public WaifuService(
         DbService db,
         ICurrencyService cs,
         IDataCache cache,
-        GamblingConfigService gss)
+        GamblingConfigService gss,
+        IBotCredentials creds,
+        DiscordSocketClient client)
     {
         _db = db;
         _cs = cs;
         _cache = cache;
         _gss = gss;
+        _creds = creds;
+        _client = client;
     }
 
     public async Task<bool> WaifuTransfer(IUser owner, ulong waifuId, IUser newOwner)
@@ -45,11 +54,11 @@ public class WaifuService : INService
         // if waifu likes the person, gotta pay the penalty
         if (waifu.AffinityId == ownerUser.Id)
         {
-            if (!await _cs.RemoveAsync(owner.Id, (int)(waifu.Price * 0.6), new("waifu", "affinity-penalty")))
+            if (!await _cs.RemoveAsync(owner.Id, (long)(waifu.Price * 0.6), new("waifu", "affinity-penalty")))
                 // unable to pay 60% penalty
                 return false;
 
-            waifu.Price = (int)(waifu.Price * 0.7); // half of 60% = 30% price reduction
+            waifu.Price = (long)(waifu.Price * 0.7); // half of 60% = 30% price reduction
             if (waifu.Price < settings.Waifu.MinPrice)
                 waifu.Price = settings.Waifu.MinPrice;
         }
@@ -58,7 +67,7 @@ public class WaifuService : INService
             if (!await _cs.RemoveAsync(owner.Id, waifu.Price / 10, new("waifu", "transfer")))
                 return false;
 
-            waifu.Price = (int)(waifu.Price * 0.95); // half of 10% = 5% price reduction
+            waifu.Price = (long)(waifu.Price * 0.95); // half of 10% = 5% price reduction
             if (waifu.Price < settings.Waifu.MinPrice)
                 waifu.Price = settings.Waifu.MinPrice;
         }
@@ -72,7 +81,7 @@ public class WaifuService : INService
         return true;
     }
 
-    public int GetResetPrice(IUser user)
+    public long GetResetPrice(IUser user)
     {
         var settings = _gss.Data;
         using var uow = _db.GetDbContext();
@@ -91,7 +100,7 @@ public class WaifuService : INService
                       .GroupBy(x => x.New)
                       .Count();
 
-        return (int)Math.Ceiling(waifu.Price * 1.25f) + ((divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset);
+        return (long)Math.Ceiling(waifu.Price * 1.25f) + ((divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset);
     }
 
     public async Task<bool> TryReset(IUser user)
@@ -131,7 +140,7 @@ public class WaifuService : INService
         return true;
     }
 
-    public async Task<(WaifuInfo, bool, WaifuClaimResult)> ClaimWaifuAsync(IUser user, IUser target, int amount)
+    public async Task<(WaifuInfo, bool, WaifuClaimResult)> ClaimWaifuAsync(IUser user, IUser target, long amount)
     {
         var settings = _gss.Data;
         WaifuClaimResult result;
@@ -317,7 +326,7 @@ public class WaifuService : INService
                 if (w.Affinity?.UserId == user.Id)
                 {
                     await _cs.AddAsync(w.Waifu.UserId, amount, new("waifu", "compensation"));
-                    w.Price = (int)Math.Floor(w.Price * _gss.Data.Waifu.Multipliers.DivorceNewValue);
+                    w.Price = (long)Math.Floor(w.Price * _gss.Data.Waifu.Multipliers.DivorceNewValue);
                     result = DivorceResult.SucessWithPenalty;
                 }
                 else
@@ -370,13 +379,13 @@ public class WaifuService : INService
             });
 
             if (w.Claimer?.UserId == from.Id)
-                w.Price += (int)(itemObj.Price * _gss.Data.Waifu.Multipliers.GiftEffect);
+                w.Price += (long)(itemObj.Price * _gss.Data.Waifu.Multipliers.GiftEffect);
             else
                 w.Price += itemObj.Price / 2;
         }
         else
         {
-            w.Price -= (int)(itemObj.Price * _gss.Data.Waifu.Multipliers.NegativeGiftEffect);
+            w.Price -= (long)(itemObj.Price * _gss.Data.Waifu.Multipliers.NegativeGiftEffect);
             if (w.Price < 1)
                 w.Price = 1;
         }
@@ -479,16 +488,65 @@ public class WaifuService : INService
         var conf = _gss.Data;
         return conf.Waifu.Items.Select(x
                        => new WaifuItemModel(x.ItemEmoji,
-                           (int)(x.Price * conf.Waifu.Multipliers.AllGiftPrices),
+                           (long)(x.Price * conf.Waifu.Multipliers.AllGiftPrices),
                            x.Name,
                            x.Negative))
                    .ToList();
     }
 
-    public class FullWaifuInfo
+    public async Task OnReadyAsync()
     {
-        public WaifuInfo Waifu { get; set; }
-        public IEnumerable<string> Claims { get; set; }
-        public int Divorces { get; set; }
+        // only decay waifu values from shard 0
+        if (_client.ShardId != 0)
+            return;
+        
+        var redisKey = $"{_creds.RedisKey()}_last_waifu_decay";
+        while (true)
+        {
+            try
+            {
+                var multi = _gss.Data.Waifu.Decay.Percent / 100f;
+                var minPrice = _gss.Data.Waifu.Decay.MinPrice;
+                var decayInterval = _gss.Data.Waifu.Decay.HourInterval;
+
+                if (multi is < 0f or > 1f || decayInterval < 0)
+                {
+                    continue;
+                }
+
+                var val = await _cache.Redis.GetDatabase().StringGetAsync(redisKey);
+                if (val != default)
+                {
+                    var lastDecay = DateTime.FromBinary((long)val);
+                    var toWait = decayInterval.Hours() - (DateTime.UtcNow - lastDecay);
+
+                    if (toWait > 0.Hours())
+                    {
+                        continue;
+                    }
+                }
+
+                await _cache.Redis.GetDatabase().StringSetAsync(redisKey, DateTime.UtcNow.ToBinary());
+
+                await using var uow = _db.GetDbContext();
+
+                await uow.WaifuInfo
+                         .Where(x => x.Price > minPrice && x.ClaimerId == null)
+                         .UpdateAsync(old => new()
+                         {
+                             Price = (long)(old.Price * multi)
+                         });
+
+                await uow.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Unexpected error occured in waifu decay loop: {ErrorMessage}", ex.Message);
+            }
+            finally
+            {
+                await Task.Delay(1.Hours());
+            }
+        }
     }
 }

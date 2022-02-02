@@ -14,7 +14,7 @@ public class WaifuInfo : DbEntity
     public int? AffinityId { get; set; }
     public DiscordUser Affinity { get; set; }
 
-    public int Price { get; set; }
+    public long Price { get; set; }
     public List<WaifuItem> Items { get; set; } = new();
 
     public override string ToString()
@@ -49,7 +49,7 @@ public class WaifuLbResult
     public string Affinity { get; set; }
     public string AffinityDiscrim { get; set; }
 
-    public int Price { get; set; }
+    public long Price { get; set; }
 
     public override string ToString()
     {
