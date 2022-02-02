@@ -75,7 +75,7 @@ public class CmdAttribute : System.Attribute
                 static (node, _) => node is MethodDeclarationSyntax { AttributeLists.Count: > 0 },
                 static (ctx, cancel) => Transform(ctx, cancel))
             .Where(static m => m is not null)
-            .Where(static m => m!.ChildTokens().Any(static x => x.IsKind(SyntaxKind.PublicKeyword)));
+            .Where(static m => m?.ChildTokens().Any(static x => x.IsKind(SyntaxKind.PublicKeyword)) ?? false);
 
         var compilationMethods = context.CompilationProvider.Combine(methods.Collect());
 
@@ -167,8 +167,14 @@ public class CmdAttribute : System.Attribute
         {
             if (cancel.IsCancellationRequested)
                 return new Collection<FileModel>();
+
+            if (group is null)
+                continue;
             
             var elems = group.ToList();
+            if (elems.Count is 0)
+                continue;
+
             var model = new FileModel(
                 methods: elems,
                 ns: elems[0].Namespace,
@@ -292,15 +298,17 @@ public class CmdAttribute : System.Attribute
 
     private static MethodDeclarationSyntax? Transform(GeneratorSyntaxContext ctx, CancellationToken cancel)
     {
-        var methodDecl = (MethodDeclarationSyntax)ctx.Node;
-        
+        var methodDecl = ctx.Node as MethodDeclarationSyntax;
+        if (methodDecl is null)
+            return default;
+
         foreach (var attListSyntax in methodDecl.AttributeLists)
         {
             foreach (var attSyntax in attListSyntax.Attributes)
             {
                 if (cancel.IsCancellationRequested)
                     return default;
-                
+
                 var symbol = ctx.SemanticModel.GetSymbolInfo(attSyntax).Symbol;
                 if (symbol is not IMethodSymbol attSymbol)
                     continue;

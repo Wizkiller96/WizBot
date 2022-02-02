@@ -62,6 +62,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         var ex = await _service.EditAsync(ctx.Guild?.Id, id, message);
         if (ex is not null)
+        {
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.edited_cust_react))
@@ -69,6 +70,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
                                             .AddField(GetText(strs.trigger), ex.Trigger)
                                             .AddField(GetText(strs.response),
                                                 message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
+        }
         else
             await ReplyErrorLocalizedAsync(strs.edit_fail);
     }
@@ -140,12 +142,14 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         var ex = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
         if (ex is not null)
+        {
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.deleted))
                                             .WithDescription($"#{id}")
                                             .AddField(GetText(strs.trigger), ex.Trigger.TrimTo(1024))
                                             .AddField(GetText(strs.response), ex.Response.TrimTo(1024)));
+        }
         else
             await ReplyErrorLocalizedAsync(strs.no_found_id);
     }
