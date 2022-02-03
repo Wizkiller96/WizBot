@@ -26,7 +26,7 @@ public partial class Gambling
 
             if (picked > 0)
             {
-                var msg = await ReplyConfirmLocalizedAsync(strs.picked(picked + CurrencySign));
+                var msg = await ReplyConfirmLocalizedAsync(strs.picked(N(picked)));
                 msg.DeleteAfter(10);
             }
 
@@ -61,6 +61,7 @@ public partial class Gambling
                 ctx.User.ToString(),
                 amount,
                 pass);
+            
             if (!success)
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }

@@ -41,7 +41,7 @@ public partial class Gambling
             if (res.Item1 is not null)
             {
                 await SendConfirmAsync(GetText(strs.rafflecur(res.Item1.GameType.ToString())),
-                    string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({x.Amount})")),
+                    string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({N(x.Amount)})")),
                     footer: GetText(strs.rafflecur_joined(ctx.User.ToString())));
             }
             else

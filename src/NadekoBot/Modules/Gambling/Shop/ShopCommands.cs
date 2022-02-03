@@ -54,7 +54,7 @@ public partial class Gambling
                     for (var i = 0; i < theseEntries.Length; i++)
                     {
                         var entry = theseEntries[i];
-                        embed.AddField($"#{(curPage * 9) + i + 1} - {entry.Price}{CurrencySign}",
+                        embed.AddField($"#{(curPage * 9) + i + 1} - {N(entry.Price)}",
                             EntryToString(entry),
                             true);
                     }
@@ -428,12 +428,12 @@ public partial class Gambling
                            GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
                                                               ?? "MISSING_ROLE"))),
                            true)
-                       .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                       .AddField(GetText(strs.price), N(entry.Price), true)
                        .AddField(GetText(strs.type), entry.Type.ToString(), true);
 
             if (entry.Type == ShopEntryType.List)
                 return embed.AddField(GetText(strs.name), entry.Name, true)
-                            .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                            .AddField(GetText(strs.price), N(entry.Price), true)
                             .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
 
             //else if (entry.Type == ShopEntryType.Infinite_List)
@@ -449,10 +449,6 @@ public partial class Gambling
                 return GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")));
             if (entry.Type == ShopEntryType.List)
                 return GetText(strs.unique_items_left(entry.Items.Count)) + "\n" + entry.Name;
-            //else if (entry.Type == ShopEntryType.Infinite_List)
-            //{
-
-            //}
             return "";
         }
     }

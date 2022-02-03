@@ -105,7 +105,7 @@ public partial class Gambling
                     c = p.Cards.Select(x => x.GetEmojiString()).ToList();
                     cStr = "-\t" + string.Concat(c.Select(x => x[..^1] + " "));
                     cStr += "\n-\t" + string.Concat(c.Select(x => x.Last() + " "));
-                    var full = $"{p.DiscordUser.ToString().TrimTo(20)} | Bet: {p.Bet} | Value: {p.GetHandValue()}";
+                    var full = $"{p.DiscordUser.ToString().TrimTo(20)} | Bet: {N(p.Bet)} | Value: {p.GetHandValue()}";
                     if (bj.State == Blackjack.GameState.Ended)
                     {
                         if (p.State == User.UserState.Lost)

@@ -2,7 +2,6 @@
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using System.Collections.Immutable;
-using Wof = NadekoBot.Modules.Gambling.Common.WheelOfFortune.WheelOfFortuneGame;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -38,7 +37,7 @@ public partial class Gambling
             var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
 
             var wofMultipliers = Config.WheelOfFortune.Multipliers;
-            await SendConfirmAsync(Format.Bold($@"{ctx.User.ToString()} won: {result.Amount + CurrencySign}
+            await SendConfirmAsync(Format.Bold($@"{ctx.User} won: {N(result.Amount)}
 
    『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
 

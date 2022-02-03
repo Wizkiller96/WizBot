@@ -64,16 +64,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         _configService = configService;
     }
 
-    private string N(long cur)
-    {
-        var flowersCi = (CultureInfo)Culture.Clone();
-        flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
-        flowersCi.NumberFormat.CurrencyNegativePattern = 5;
-        // if (cur < 0)
-        //     cur = -cur;
-        return cur.ToString("C0", flowersCi);
-    }
-
     public async Task<string> GetBalanceStringAsync(ulong userId)
     {
         var wallet = await _cs.GetWalletAsync(userId);
@@ -95,13 +85,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         var embed = _eb.Create()
                        .WithTitle(GetText(strs.economy_state))
                        .AddField(GetText(strs.currency_owned),
-                           ((BigInteger)(ec.Cash - ec.Bot)).ToString("N", Culture) + CurrencySign)
+                           N((ec.Cash - ec.Bot)))
                        .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
-                       .AddField(GetText(strs.currency_planted), (BigInteger)ec.Planted)
-                       .AddField(GetText(strs.owned_waifus_total), (BigInteger)ec.Waifus + CurrencySign)
+                       .AddField(GetText(strs.currency_planted), N(ec.Planted))
+                       .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
                        .AddField(GetText(strs.bot_currency), N(ec.Bot))
-                       .AddField(GetText(strs.total),
-                           ((BigInteger)(ec.Cash + ec.Planted + ec.Waifus)).ToString("N", Culture) + CurrencySign)
+                       .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus))
                        .WithOkColor();
 
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
@@ -332,7 +321,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        await ReplyConfirmLocalizedAsync(strs.gifted(N(amount), Format.Bold(receiver.ToString())));
+        await ReplyConfirmLocalizedAsync(strs.gifted(N(amount.Value), Format.Bold(receiver.ToString())));
     }
 
     [Cmd]
@@ -502,7 +491,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
             await ReplyConfirmLocalizedAsync(strs.roll_duel_challenge(Format.Bold(ctx.User.ToString()),
                 Format.Bold(u.ToString()),
-                Format.Bold(N(amount))));
+                Format.Bold(N(amount.Value))));
         }
 
         async Task GameOnGameTick(RollDuelGame arg)
@@ -711,7 +700,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             amount = (long)(amount * Config.BetFlip.Multiplier);
             await _cs.AddAsync(ctx.User.Id, amount, new("rps", "win"));
             embed.WithOkColor();
-            embed.AddField(GetText(strs.won), N(amount));
+            embed.AddField(GetText(strs.won), N(amount.Value));
             msg = GetText(strs.rps_win(ctx.User.Mention, GetRpsPick(pick), GetRpsPick(nadekoPick)));
         }
         else

@@ -100,7 +100,7 @@ csharp_prefer_static_local_function = true
 csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async
 
 # Code-block preferences
-csharp_prefer_braces = when_multiline:error
+csharp_prefer_braces = when_multiline:warning
 csharp_prefer_simple_using_statement = true
 
 # Expression-level preferences
@@ -354,3 +354,6 @@ resharper_csharp_braces_for_foreach = required_for_multiline
 resharper_csharp_braces_for_while = required_for_multiline
 resharper_csharp_braces_for_for = required_for_multiline
 resharper_arrange_redundant_parentheses_highlighting = hint
+
+# IDE0011: Add braces
+dotnet_diagnostic.IDE0011.severity = warning

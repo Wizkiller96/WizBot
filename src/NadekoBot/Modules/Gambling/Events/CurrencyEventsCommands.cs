@@ -45,16 +45,16 @@ public partial class Gambling
 
         private string GetReactionDescription(long amount, long potSize)
         {
-            var potSizeStr = Format.Bold(potSize == 0 ? "∞" + CurrencySign : potSize + CurrencySign);
+            var potSizeStr = Format.Bold(potSize == 0 ? "∞" + CurrencySign : N(potSize));
 
-            return GetText(strs.new_reaction_event(CurrencySign, Format.Bold(amount + CurrencySign), potSizeStr));
+            return GetText(strs.new_reaction_event(CurrencySign, Format.Bold(N(amount)), potSizeStr));
         }
 
         private string GetGameStatusDescription(long amount, long potSize)
         {
             var potSizeStr = Format.Bold(potSize == 0 ? "∞" + CurrencySign : potSize + CurrencySign);
 
-            return GetText(strs.new_gamestatus_event(CurrencySign, Format.Bold(amount + CurrencySign), potSizeStr));
+            return GetText(strs.new_gamestatus_event(CurrencySign, Format.Bold(N(amount)), potSizeStr));
         }
     }
 }

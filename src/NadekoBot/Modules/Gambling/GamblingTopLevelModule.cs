@@ -1,5 +1,7 @@
 #nullable disable
 using NadekoBot.Modules.Gambling.Services;
+using System.Globalization;
+using System.Runtime;
 
 namespace NadekoBot.Modules.Gambling.Common;
 
@@ -36,6 +38,14 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         }
 
         return true;
+    }
+    
+    protected string N<T>(T cur) where T : INumber<T>
+    {
+        var flowersCi = (CultureInfo)Culture.Clone();
+        flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
+        flowersCi.NumberFormat.CurrencyNegativePattern = 5;
+        return cur.ToString("C0", flowersCi);
     }
 
     protected Task<bool> CheckBetMandatory(long amount)

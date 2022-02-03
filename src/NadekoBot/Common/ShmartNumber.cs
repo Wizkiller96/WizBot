@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using System;
+
 namespace NadekoBot.Common;
 
 public struct ShmartNumber : IEquatable<ShmartNumber>

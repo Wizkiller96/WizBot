@@ -82,7 +82,7 @@ public partial class Gambling
             if (options.Bet == 0)
                 await ReplyConfirmLocalizedAsync(strs.connect4_created);
             else
-                await ReplyErrorLocalizedAsync(strs.connect4_created_bet(options.Bet + CurrencySign));
+                await ReplyErrorLocalizedAsync(strs.connect4_created_bet(N(options.Bet)));
 
             Task ClientMessageReceived(SocketMessage arg)
             {
