@@ -24,18 +24,23 @@ public partial class Games
         public static IEmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
         {
             if (state.Phase == HangmanGame.Phase.Running)
+            {
                 return eb.Create()
                          .WithOkColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
                          .WithFooter(state.MissedLetters.Join(' '));
+            }
 
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
+            {
                 return eb.Create()
                          .WithErrorColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
                          .WithFooter(state.MissedLetters.Join(' '));
+            }
+
             return eb.Create()
                      .WithOkColor()
                      .AddField("Hangman", Draw(state))

@@ -33,6 +33,7 @@ public class FontProvider : INService
 
         // try loading some emoji and jap fonts on windows as fallback fonts
         if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+        {
             try
             {
                 var fontsfolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
@@ -41,6 +42,7 @@ public class FontProvider : INService
                 FallBackFonts.AddRange(_fonts.InstallCollection(Path.Combine(fontsfolder, "segoe.ttc")));
             }
             catch { }
+        }
 
         // any fonts present in data/fonts should be added as fallback fonts
         // this will allow support for special characters when drawing text

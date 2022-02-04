@@ -71,13 +71,17 @@ public partial class Administration
                 count = 1000;
 
             if (parameter is "-s" or "--safe")
+            {
                 await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks && !m.IsPinned);
+            }
             else
+            {
                 await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks);
+            }
         }
     }
 }

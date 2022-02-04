@@ -75,7 +75,7 @@ public partial class Gambling
                   + GetText(strs.flipped(headCount > 0
                       ? Format.Bold(GetText(strs.heads))
                       : Format.Bold(GetText(strs.tails))));
-            
+
             await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
         }
 
@@ -114,9 +114,7 @@ public partial class Gambling
                 await _cs.AddAsync(ctx.User, toWin, new("betflip", "win"));
             }
             else
-            {
                 str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.better_luck);
-            }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithDescription(str)

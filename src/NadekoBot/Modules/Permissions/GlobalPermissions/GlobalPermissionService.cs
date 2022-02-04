@@ -43,9 +43,7 @@ public class GlobalPermissionService : ILateBlocker, INService
         _bss.ModifyConfig(bs =>
         {
             if (bs.Blocked.Modules.Add(moduleName))
-            {
                 added = true;
-            }
             else
             {
                 bs.Blocked.Modules.Remove(moduleName);
@@ -67,9 +65,7 @@ public class GlobalPermissionService : ILateBlocker, INService
         _bss.ModifyConfig(bs =>
         {
             if (bs.Blocked.Commands.Add(commandName))
-            {
                 added = true;
-            }
             else
             {
                 bs.Blocked.Commands.Remove(commandName);

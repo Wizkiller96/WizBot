@@ -129,11 +129,15 @@ public partial class Permissions
                 _service.UnBlacklist(type, id);
 
             if (action == AddRemove.Add)
+            {
                 await ReplyConfirmLocalizedAsync(strs.blacklisted(Format.Code(type.ToString()),
                     Format.Code(id.ToString())));
+            }
             else
+            {
                 await ReplyConfirmLocalizedAsync(strs.unblacklisted(Format.Code(type.ToString()),
                     Format.Code(id.ToString())));
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Searches.Services;
+using System.Globalization;
 
 namespace NadekoBot.Modules.Searches;
 
@@ -36,30 +37,50 @@ public partial class Searches
 
             var usd = crypto.Quote["USD"];
 
-            var sevenDay = usd.PercentChange7d.ToString("F2", Culture);
-            var lastDay = usd.PercentChange24h.ToString("F2", Culture);
+            var localCulture = (CultureInfo)Culture.Clone();
+            localCulture.NumberFormat.CurrencySymbol = "$";
+            
+            var sevenDay = (usd.PercentChange7d / 100).ToString("P2", localCulture);
+            var lastDay = (usd.PercentChange24h / 100).ToString("P2", localCulture);
             var price = usd.Price < 0.01
-                ? usd.Price.ToString(Culture)
-                : usd.Price.ToString("F2", Culture);
+                ? usd.Price.ToString(localCulture)
+                : usd.Price.ToString("C2", localCulture);
 
-            var volume = usd.Volume24h.ToString("n0", Culture);
-            var marketCap = usd.MarketCap.ToString("n0", Culture);
+            var volume = usd.Volume24h.ToString("C0", localCulture);
+            var marketCap = usd.MarketCap.ToString("C0", localCulture);
+            var dominance = (usd.MarketCapDominance / 100).ToString("P2", localCulture);
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
-                                            .WithOkColor()
-                                            .WithAuthor($"#{crypto.CmcRank}")
-                                            .WithTitle($"{crypto.Name} ({crypto.Symbol})")
-                                            .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
-                                            .WithThumbnailUrl(
-                                                $"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
-                                            .AddField(GetText(strs.market_cap),
-                                                $"${marketCap}",
-                                                true)
-                                            .AddField(GetText(strs.price), $"${price}", true)
-                                            .AddField(GetText(strs.volume_24h), $"${volume}", true)
-                                            .AddField(GetText(strs.change_7d_24h), $"{sevenDay}% / {lastDay}%", true)
-                                            .WithImageUrl(
-                                                $"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png"));
+            var toSend = _eb.Create()
+                            .WithOkColor()
+                            .WithAuthor($"#{crypto.CmcRank}")
+                            .WithTitle($"{crypto.Name} ({crypto.Symbol})")
+                            .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
+                            .WithThumbnailUrl( $"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
+                            .AddField(GetText(strs.market_cap), marketCap, true)
+                            .AddField(GetText(strs.price), price, true)
+                            .AddField(GetText(strs.volume_24h), volume, true)
+                            .AddField(GetText(strs.change_7d_24h), $"{sevenDay} / {lastDay}", true)
+                            .AddField(GetText(strs.market_cap_dominance), dominance, true)
+                            .WithImageUrl($"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png");
+
+            if (crypto.CirculatingSupply is double cs)
+            {
+                var csStr = cs.ToString("N0", localCulture);
+                
+                if (crypto.MaxSupply is double ms)
+                {
+                    var perc = (cs / ms).ToString("P1", localCulture);
+                    
+                    toSend.AddField(GetText(strs.circulating_supply), $"{csStr} ({perc})", true);
+                }
+                else
+                {
+                    toSend.AddField(GetText(strs.circulating_supply), csStr, true);
+                }
+            }
+            
+            
+            await ctx.Channel.EmbedAsync(toSend);
         }
     }
 }

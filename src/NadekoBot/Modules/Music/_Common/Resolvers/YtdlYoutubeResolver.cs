@@ -205,9 +205,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                 yield return info;
             }
             else
-            {
                 data += Environment.NewLine;
-            }
         }
 
         await _trackCacher.CachePlaylistTrackIdsAsync(playlistId, MusicPlatform.Youtube, trackIds);

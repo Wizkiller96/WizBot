@@ -76,9 +76,7 @@ public class SearchesService : INService
             Log.Warning("data/magicitems.json is missing. Magic items are not loaded");
 
         if (File.Exists("data/yomama.txt"))
-        {
             _yomamaJokes = File.ReadAllLines("data/yomama.txt").Shuffle().ToList();
-        }
         else
         {
             _yomamaJokes = new();

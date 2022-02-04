@@ -129,9 +129,7 @@ public sealed class Connect4Game : IDisposable
                 _players[0] = (userId, userName);
             }
             else //else join as a second player
-            {
                 _players[1] = (userId, userName);
-            }
 
             CurrentPhase = Phase.P1Move; //start the game
             playerTimeoutTimer = new(async _ =>
@@ -197,6 +195,7 @@ public sealed class Connect4Game : IDisposable
 
                     var first = _gameState[i + (j * NUMBER_OF_ROWS)];
                     if (first != Field.Empty)
+                    {
                         for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[i + k + (j * NUMBER_OF_ROWS)];
@@ -208,10 +207,9 @@ public sealed class Connect4Game : IDisposable
                                     continue;
                             }
                             else
-                            {
                                 break;
-                            }
                         }
+                    }
                 }
             }
 
@@ -228,17 +226,21 @@ public sealed class Connect4Game : IDisposable
 
                     var first = _gameState[j + (i * NUMBER_OF_ROWS)];
                     if (first != Field.Empty)
+                    {
                         for (var k = 1; k < 4; k++)
                         {
                             var next = _gameState[j + ((i + k) * NUMBER_OF_ROWS)];
                             if (next == first)
+                            {
                                 if (k == 3)
                                     EndGame(Result.CurrentPlayerWon, CurrentPlayer.UserId);
                                 else
                                     continue;
+                            }
                             else
                                 break;
                         }
+                    }
                 }
             }
 

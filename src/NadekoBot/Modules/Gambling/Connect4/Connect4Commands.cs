@@ -65,6 +65,7 @@ public partial class Gambling
             }
 
             if (options.Bet > 0)
+            {
                 if (!await _cs.RemoveAsync(ctx.User.Id, options.Bet, new("connect4", "bet")))
                 {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -72,6 +73,7 @@ public partial class Gambling
                     game.Dispose();
                     return;
                 }
+            }
 
             game.OnGameStateUpdated += Game_OnGameStateUpdated;
             game.OnGameFailedToStart += GameOnGameFailedToStart;
@@ -106,8 +108,10 @@ public partial class Gambling
                             return;
                         RepostCounter++;
                         if (RepostCounter == 0)
+                        {
                             try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); }
                             catch { }
+                        }
                     }
                 });
                 return Task.CompletedTask;
@@ -134,11 +138,15 @@ public partial class Gambling
 
                 string title;
                 if (result == Connect4Game.Result.CurrentPlayerWon)
+                {
                     title = GetText(strs.connect4_won(Format.Bold(arg.CurrentPlayer.Username),
                         Format.Bold(arg.OtherPlayer.Username)));
+                }
                 else if (result == Connect4Game.Result.OtherPlayerWon)
+                {
                     title = GetText(strs.connect4_won(Format.Bold(arg.OtherPlayer.Username),
                         Format.Bold(arg.CurrentPlayer.Username)));
+                }
                 else
                     title = GetText(strs.connect4_draw);
 

@@ -230,17 +230,20 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         await Db.ListRightPushAsync(GetRedisKey(key), vals);
 
         if (uris.Length != vals.Length)
+        {
             Log.Information(
                 "{Loaded}/{Max} URIs for the key '{ImageKey}' have been loaded.\n"
                 + "Some of the supplied URIs are either unavailable or invalid",
                 vals.Length,
                 uris.Length,
                 key);
+        }
     }
 
     private async Task<byte[]> GetImageData(Uri uri)
     {
         if (uri.IsFile)
+        {
             try
             {
                 var bytes = await File.ReadAllBytesAsync(uri.LocalPath);
@@ -251,6 +254,7 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                 Log.Warning(ex, "Failed reading image bytes from uri: {Uri}", uri.ToString());
                 return null;
             }
+        }
 
         try
         {

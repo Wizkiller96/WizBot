@@ -136,10 +136,12 @@ public class ProtectionService : INService
         }
 
         if (spam is not null)
+        {
             _antiSpamGuilds[gc.GuildId] = new()
             {
                 AntiSpamSettings = spam
             };
+        }
 
         var alt = gc.AntiAltSetting;
         if (alt is not null)
@@ -160,6 +162,7 @@ public class ProtectionService : INService
         _ = Task.Run(async () =>
         {
             if (maybeAlts is { } alts)
+            {
                 if (user.CreatedAt != default)
                 {
                     var diff = DateTime.UtcNow - user.CreatedAt.UtcDateTime;
@@ -176,6 +179,7 @@ public class ProtectionService : INService
                         return;
                     }
                 }
+            }
 
             try
             {
@@ -234,6 +238,7 @@ public class ProtectionService : INService
                     });
 
                 if (stats.Count >= spamSettings.AntiSpamSettings.MessageThreshold)
+                {
                     if (spamSettings.UserStats.TryRemove(msg.Author.Id, out stats))
                     {
                         var settings = spamSettings.AntiSpamSettings;
@@ -243,6 +248,7 @@ public class ProtectionService : INService
                             settings.RoleId,
                             (IGuildUser)msg.Author);
                     }
+                }
             }
             catch
             {
@@ -392,9 +398,7 @@ public class ProtectionService : INService
             gc.AntiSpamSetting.RoleId = stats.AntiSpamSettings.RoleId;
         }
         else
-        {
             gc.AntiSpamSetting = stats.AntiSpamSettings;
-        }
 
         await uow.SaveChangesAsync();
         return stats;

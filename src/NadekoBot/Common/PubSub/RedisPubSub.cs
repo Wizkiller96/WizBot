@@ -36,8 +36,10 @@ public sealed class RedisPubSub : IPubSub
                 if (dataObj is not null)
                     await action(dataObj);
                 else
+                {
                     Log.Warning("Publishing event {EventName} with a null value. This is not allowed",
                         eventName);
+                }
             }
             catch (Exception ex)
             {

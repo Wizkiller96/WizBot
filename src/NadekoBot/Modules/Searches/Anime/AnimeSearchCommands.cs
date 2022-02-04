@@ -65,6 +65,7 @@ public partial class Searches
 
             var favAnime = GetText(strs.anime_no_fav);
             if (favorites.Length > 0 && favorites[0].QuerySelector("p") is null)
+            {
                 favAnime = string.Join("\n",
                     favorites[0]
                         .QuerySelectorAll("ul > li > div.di-tc.va-t > a")
@@ -75,6 +76,7 @@ public partial class Searches
                             var elem = (IHtmlAnchorElement)x;
                             return $"[{elem.InnerHtml}]({elem.Href})";
                         }));
+            }
 
             var info = document.QuerySelectorAll("ul.user-status:nth-child(3) > li.clearfix")
                                .Select(x => Tuple.Create(x.Children[0].InnerHtml, x.Children[1].InnerHtml))

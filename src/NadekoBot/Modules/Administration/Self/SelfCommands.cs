@@ -101,9 +101,7 @@ public partial class Administration
             var scmds = _service.GetStartupCommands().Skip(page * 5).Take(5).ToList();
 
             if (scmds.Count == 0)
-            {
                 await ReplyErrorLocalizedAsync(strs.startcmdlist_none);
-            }
             else
             {
                 var i = 0;
@@ -128,9 +126,7 @@ public partial class Administration
 
             var scmds = _service.GetAutoCommands().Skip(page * 5).Take(5).ToList();
             if (!scmds.Any())
-            {
                 await ReplyErrorLocalizedAsync(strs.autocmdlist_none);
-            }
             else
             {
                 var i = 0;

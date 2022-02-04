@@ -32,8 +32,11 @@ public class WaifuInfo : DbEntity
         else if (AffinityId == ClaimerId)
             status = $"... and {waifuUsername} likes {claimerUsername} too <3";
         else
+        {
             status =
                 $"... but {waifuUsername}'s heart belongs to {Affinity.Username.TrimTo(20)}#{Affinity.Discriminator}";
+        }
+
         return $"**{waifuUsername}#{Waifu.Discriminator}** - claimed by **{claimer}**\n\t{status}";
     }
 }

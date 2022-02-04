@@ -57,10 +57,12 @@ public partial class Utility
                 user.ToString());
 
             if (action == AddRemove.Add)
+            {
                 if (success)
                     await ReplyConfirmLocalizedAsync(strs.stream_role_bl_add(Format.Bold(user.ToString())));
                 else
                     await ReplyConfirmLocalizedAsync(strs.stream_role_bl_add_fail(Format.Bold(user.ToString())));
+            }
             else if (success)
                 await ReplyConfirmLocalizedAsync(strs.stream_role_bl_rem(Format.Bold(user.ToString())));
             else
@@ -80,10 +82,12 @@ public partial class Utility
                 user.ToString());
 
             if (action == AddRemove.Add)
+            {
                 if (success)
                     await ReplyConfirmLocalizedAsync(strs.stream_role_wl_add(Format.Bold(user.ToString())));
                 else
                     await ReplyConfirmLocalizedAsync(strs.stream_role_wl_add_fail(Format.Bold(user.ToString())));
+            }
             else if (success)
                 await ReplyConfirmLocalizedAsync(strs.stream_role_wl_rem(Format.Bold(user.ToString())));
             else

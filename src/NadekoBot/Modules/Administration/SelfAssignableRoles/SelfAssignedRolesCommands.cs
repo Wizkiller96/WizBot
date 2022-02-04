@@ -45,8 +45,10 @@ public partial class Administration
             var succ = _service.AddNew(ctx.Guild.Id, role, group);
 
             if (succ)
+            {
                 await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name),
-                    Format.Bold(group.ToString())));
+                    Format.Bold(@group.ToString())));
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name)));
         }
@@ -61,8 +63,10 @@ public partial class Administration
             var set = await _service.SetNameAsync(ctx.Guild.Id, group, name);
 
             if (set)
+            {
                 await ReplyConfirmLocalizedAsync(
-                    strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name)));
+                    strs.group_name_added(Format.Bold(@group.ToString()), Format.Bold(name)));
+            }
             else
                 await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString())));
         }

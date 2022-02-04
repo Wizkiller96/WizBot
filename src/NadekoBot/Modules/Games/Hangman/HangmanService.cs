@@ -87,16 +87,20 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
                     return;
 
                 if (state.GuessResult is HangmanGame.GuessResult.Incorrect or HangmanGame.GuessResult.AlreadyTried)
+                {
                     _cdCache.Set(msg.Author.Id,
                         string.Empty,
                         new MemoryCacheEntryOptions
                         {
                             AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3)
                         });
+                }
 
                 if (state.Phase == HangmanGame.Phase.Ended)
+                {
                     if (_hangmanGames.TryRemove(msg.Channel.Id, out _))
                         rew = _gcs.Data.Hangman.CurrencyReward;
+                }
             }
 
             if (rew > 0)

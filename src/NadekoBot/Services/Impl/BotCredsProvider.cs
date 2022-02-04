@@ -48,10 +48,12 @@ public sealed class BotCredsProvider : IBotCredsProvider
         MigrateCredentials();
 
         if (!File.Exists(CredsPath))
+        {
             Log.Warning(
                 "{CredsPath} is missing. Attempting to load creds from environment variables prefixed with 'NadekoBot_'. Example is in {CredsExamplePath}",
                 CredsPath,
                 CredsExamplePath);
+        }
 
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("NadekoBot_")
@@ -80,17 +82,21 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 || string.IsNullOrWhiteSpace(_creds.RestartCommand?.Args))
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
+                {
                     _creds.RestartCommand = new()
                     {
                         Args = "dotnet",
                         Cmd = "NadekoBot.dll -- {0}"
                     };
+                }
                 else
+                {
                     _creds.RestartCommand = new()
                     {
                         Args = "NadekoBot.exe",
                         Cmd = "{0}"
                     };
+                }
             }
 
             if (string.IsNullOrWhiteSpace(_creds.RedisOptions))

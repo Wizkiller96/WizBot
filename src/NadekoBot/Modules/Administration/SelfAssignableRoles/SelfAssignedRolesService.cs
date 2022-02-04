@@ -85,6 +85,7 @@ public class SelfAssignedRolesService : INService
             {
                 var sameRole = guildUser.Guild.GetRole(roleId);
                 if (sameRole is not null)
+                {
                     try
                     {
                         await guildUser.RemoveRoleAsync(sameRole);
@@ -94,6 +95,7 @@ public class SelfAssignedRolesService : INService
                     {
                         // ignored
                     }
+                }
             }
         }
 
@@ -192,9 +194,7 @@ public class SelfAssignedRolesService : INService
             uow.SaveChanges();
         }
         else
-        {
             return false;
-        }
 
         return true;
     }

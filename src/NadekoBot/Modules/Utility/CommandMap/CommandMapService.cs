@@ -57,6 +57,7 @@ public class CommandMapService : IInputTransformer, INService
             return input;
 
         if (guild is not null)
+        {
             if (AliasMaps.TryGetValue(guild.Id, out var maps))
             {
                 var keys = maps.Keys.OrderByDescending(x => x.Length);
@@ -88,6 +89,7 @@ public class CommandMapService : IInputTransformer, INService
                     return newInput;
                 }
             }
+        }
 
         return input;
     }

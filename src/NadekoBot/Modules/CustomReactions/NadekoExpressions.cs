@@ -249,11 +249,15 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         }
 
         if (newVal)
+        {
             await ReplyConfirmLocalizedAsync(strs.option_enabled(Format.Code(option.ToString()),
                 Format.Code(id.ToString())));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.option_disabled(Format.Code(option.ToString()),
                 Format.Code(id.ToString())));
+        }
     }
 
     [Cmd]

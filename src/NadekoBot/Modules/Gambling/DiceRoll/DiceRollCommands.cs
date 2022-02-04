@@ -82,6 +82,7 @@ public partial class Gambling
                     if (randomNumber == 6 || dice.Count == 0)
                         toInsert = 0;
                     else if (randomNumber != 1)
+                    {
                         for (var j = 0; j < dice.Count; j++)
                         {
                             if (values[j] < randomNumber)
@@ -90,11 +91,10 @@ public partial class Gambling
                                 break;
                             }
                         }
+                    }
                 }
                 else
-                {
                     toInsert = dice.Count;
-                }
 
                 dice.Insert(toInsert, GetDice(randomNumber));
                 values.Insert(toInsert, randomNumber);
@@ -190,9 +190,7 @@ public partial class Gambling
                 rolled = new NadekoRandom().Next(arr[0], arr[1] + 1);
             }
             else
-            {
                 rolled = new NadekoRandom().Next(0, int.Parse(range) + 1);
-            }
 
             await ReplyConfirmLocalizedAsync(strs.dice_rolled(Format.Bold(rolled.ToString())));
         }

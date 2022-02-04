@@ -25,9 +25,7 @@ public partial class Administration
             var id = _service.ToggleGameVoiceChannel(ctx.Guild.Id, vch.Id);
 
             if (id is null)
-            {
                 await ReplyConfirmLocalizedAsync(strs.gvc_disabled);
-            }
             else
             {
                 _service.GameVoiceChannels.Add(vch.Id);

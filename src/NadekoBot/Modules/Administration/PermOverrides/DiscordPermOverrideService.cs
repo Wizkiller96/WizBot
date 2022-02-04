@@ -56,6 +56,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
                             .FirstOrDefaultAsync(x => x.GuildId == guildId && commandName == x.Command);
 
         if (over is null)
+        {
             uow.Set<DiscordPermOverride>()
                .Add(over = new()
                {
@@ -63,6 +64,7 @@ public class DiscordPermOverrideService : INService, ILateBlocker
                    Perm = perm,
                    GuildId = guildId
                });
+        }
         else
             over.Perm = perm;
 

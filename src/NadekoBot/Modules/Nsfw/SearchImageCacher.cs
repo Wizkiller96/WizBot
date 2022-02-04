@@ -245,9 +245,7 @@ public class SearchImageCacher : INService
                 page = _rng.Next(0, maxPage);
             }
             else
-            {
                 page = _rng.Next(0, 11);
-            }
 
             var result = await DownloadImagesAsync(tags, isExplicit, type, page, cancel);
 

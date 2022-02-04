@@ -233,9 +233,11 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
 
         if (cleared > 0 || deleted > 0)
+        {
             Log.Information("Cleared {ClearedWarnings} warnings and deleted {DeletedWarnings} warnings due to expiry",
                 cleared,
                 deleted);
+        }
     }
 
     public async Task CheckWarnExpiresAsync(ulong guildId)
@@ -248,16 +250,20 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
 
         var hours = $"{-config.WarnExpireHours} hours";
         if (config.WarnExpireAction == WarnExpireAction.Clear)
+        {
             await uow.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
 SET Forgiven = 1,
     ForgivenBy = 'Expiry'
 WHERE GuildId={guildId}
     AND Forgiven = 0
     AND DateAdded < datetime('now', {hours})");
+        }
         else if (config.WarnExpireAction == WarnExpireAction.Delete)
+        {
             await uow.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
 WHERE GuildId={guildId}
     AND DateAdded < datetime('now', {hours})");
+        }
 
         await uow.SaveChangesAsync();
     }
@@ -436,9 +442,7 @@ WHERE GuildId={guildId}
             });
         }
         else
-        {
             template.Text = text;
-        }
 
         uow.SaveChanges();
     }
@@ -487,22 +491,26 @@ WHERE GuildId={guildId}
 
         // if template isn't set, use the old message style
         if (string.IsNullOrWhiteSpace(template))
+        {
             template = JsonConvert.SerializeObject(new
             {
                 color = _bcs.Data.Color.Error.PackedValue >> 8,
                 description = defaultMessage
             });
+        }
         // if template is set to "-" do not dm the user
         else if (template == "-")
             return default;
         // if template is an embed, send that embed with replacements
         // otherwise, treat template as a regular string with replacements
         else if (!SmartText.CreateFrom(template).IsEmbed)
+        {
             template = JsonConvert.SerializeObject(new
             {
                 color = _bcs.Data.Color.Error.PackedValue >> 8,
                 description = template
             });
+        }
 
         var output = SmartText.CreateFrom(template);
         return replacer.Replace(output);

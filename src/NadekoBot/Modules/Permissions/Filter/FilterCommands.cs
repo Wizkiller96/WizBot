@@ -230,10 +230,12 @@ public partial class Permissions
                 removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
 
                 if (removed is null)
+                {
                     config.FilteredWords.Add(new()
                     {
                         Word = word
                     });
+                }
                 else
                     uow.Remove(removed);
 

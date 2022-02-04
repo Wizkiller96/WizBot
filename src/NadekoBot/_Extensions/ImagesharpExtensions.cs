@@ -88,12 +88,14 @@ public static class ImagesharpExtensions
         if (format?.Name == "GIF")
             img.SaveAsGif(imageStream);
         else
+        {
             img.SaveAsPng(imageStream,
                 new()
                 {
                     ColorType = PngColorType.RgbWithAlpha,
                     CompressionLevel = PngCompressionLevel.BestCompression
                 });
+        }
 
         imageStream.Position = 0;
         return imageStream;

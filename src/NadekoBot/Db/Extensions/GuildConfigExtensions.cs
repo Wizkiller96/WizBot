@@ -74,9 +74,7 @@ public static class GuildConfigExtensions
         GuildConfig config;
 
         if (includes is null)
-        {
             config = ctx.GuildConfigs.IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
-        }
         else
         {
             var set = includes(ctx.GuildConfigs);

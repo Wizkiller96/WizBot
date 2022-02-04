@@ -67,8 +67,10 @@ public partial class Administration
                     if (thisPageOverrides.Count == 0)
                         eb.WithDescription(GetText(strs.perm_override_page_none));
                     else
+                    {
                         eb.WithDescription(thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")
                                                             .Join("\n"));
+                    }
 
                     return eb;
                 },

@@ -58,11 +58,15 @@ public partial class Administration
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.Channel);
 
             if (!removed)
+            {
                 await ReplyConfirmLocalizedAsync(
                     strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+            }
             else
+            {
                 await ReplyConfirmLocalizedAsync(
                     strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+            }
         }
 
         [Cmd]
@@ -74,11 +78,15 @@ public partial class Administration
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
 
             if (!removed)
+            {
                 await ReplyConfirmLocalizedAsync(
                     strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+            }
             else
+            {
                 await ReplyConfirmLocalizedAsync(
                     strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+            }
         }
 
         [Cmd]

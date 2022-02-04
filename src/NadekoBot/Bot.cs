@@ -123,9 +123,11 @@ public sealed class Bot
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
             svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
         else
+        {
             svcs.AddSingleton<RemoteGrpcCoordinator>()
                 .AddSingleton<ICoordinator>(x => x.GetRequiredService<RemoteGrpcCoordinator>())
                 .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
+        }
 
         svcs.AddSingleton<RedisLocalDataCache>()
             .AddSingleton<ILocalDataCache>(x => x.GetRequiredService<RedisLocalDataCache>())

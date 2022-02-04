@@ -123,6 +123,7 @@ public class TriviaGame
                     //hint
                     await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
                     if (!_options.NoHint)
+                    {
                         try
                         {
                             await questionMessage.ModifyAsync(m
@@ -134,6 +135,7 @@ public class TriviaGame
                             break;
                         }
                         catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
+                    }
 
                     //timeout
                     await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
@@ -147,6 +149,7 @@ public class TriviaGame
             }
 
             if (!triviaCancelSource.IsCancellationRequested)
+            {
                 try
                 {
                     var embed = _eb.Create()
@@ -165,6 +168,7 @@ public class TriviaGame
                 {
                     Log.Warning(ex, "Error sending trivia time's up message");
                 }
+            }
 
             await Task.Delay(5000);
         }
@@ -186,6 +190,7 @@ public class TriviaGame
         var old = ShouldStopGame;
         ShouldStopGame = true;
         if (!old)
+        {
             try
             {
                 await Channel.SendConfirmAsync(_eb, GetText(strs.trivia_game), GetText(strs.trivia_stopping));
@@ -194,6 +199,7 @@ public class TriviaGame
             {
                 Log.Warning(ex, "Error sending trivia stopping message");
             }
+        }
     }
 
     private Task PotentialGuess(SocketMessage imsg)

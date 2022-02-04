@@ -53,6 +53,7 @@ public class EventPubSub : IPubSub
                 // get subscriptions which have the same action hash code
                 // note: having this as a list allows for multiple subscriptions of
                 //       the same insance's/static method
+            {
                 if (actions.TryGetValue(action, out var sameActions))
                 {
                     // remove last subscription
@@ -71,6 +72,7 @@ public class EventPubSub : IPubSub
                             _actions.Remove(key.Key);
                     }
                 }
+            }
 
             return Task.CompletedTask;
         }

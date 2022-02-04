@@ -53,8 +53,10 @@ public partial class Gambling
                     try
                     {
                         if (arg.Channel.Id == ctx.Channel.Id)
+                        {
                             if (ar.CurrentPhase == AnimalRace.Phase.Running && ++count % 9 == 0)
                                 raceMessage = null;
+                        }
                     }
                     catch { }
                 });
@@ -67,10 +69,13 @@ public partial class Gambling
                 _service.AnimalRaces.TryRemove(ctx.Guild.Id, out _);
                 var winner = race.FinishedUsers[0];
                 if (race.FinishedUsers[0].Bet > 0)
+                {
                     return SendConfirmAsync(GetText(strs.animal_race),
                         GetText(strs.animal_race_won_money(Format.Bold(winner.Username),
                             winner.Animal.Icon,
                             (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
+                }
+
                 return SendConfirmAsync(GetText(strs.animal_race),
                     GetText(strs.animal_race_won(Format.Bold(winner.Username), winner.Animal.Icon)));
             }
@@ -110,11 +115,13 @@ public partial class Gambling
             if (msg is null)
                 raceMessage = await SendConfirmAsync(text);
             else
+            {
                 await msg.ModifyAsync(x => x.Embed = _eb.Create()
                                                         .WithTitle(GetText(strs.animal_race))
                                                         .WithDescription(text)
                                                         .WithOkColor()
                                                         .Build());
+            }
         }
 
         private Task Ar_OnStartingFailed(AnimalRace race)
@@ -140,9 +147,11 @@ public partial class Gambling
             {
                 var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount);
                 if (amount > 0)
+                {
                     await SendConfirmAsync(GetText(strs.animal_race_join_bet(ctx.User.Mention,
                         user.Animal.Icon,
                         amount + CurrencySign)));
+                }
                 else
                     await SendConfirmAsync(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)));
             }

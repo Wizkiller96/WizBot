@@ -46,8 +46,10 @@ public class NotifChecker
                        .ToList();
 
         if (remove)
+        {
             foreach (var toBeRemoved in toReturn)
                 _streamProviders[toBeRemoved.Type].ClearErrorsFor(toBeRemoved.Name);
+        }
 
         return toReturn;
     }
@@ -74,9 +76,11 @@ public class NotifChecker
                                                   // get all stream data for the streams of this type
                                                   if (_streamProviders.TryGetValue(x.Key,
                                                           out var provider))
+                                                  {
                                                       return provider.GetStreamDataAsync(x.Value
                                                           .Select(entry => entry.Key)
                                                           .ToList());
+                                                  }
 
                                                   // this means there's no provider for this stream data, (and there was before?)
                                                   return Task.FromResult<IReadOnlyCollection<StreamData>>(
@@ -111,9 +115,7 @@ public class NotifChecker
                         //       before it sends an offline notification to the subscribers.
                         var streamId = (key.Type, key.Name);
                         if (!newData.IsLive && _offlineBuffer.Remove(streamId))
-                        {
                             newlyOffline.Add(newData);
-                        }
                         else if (newData.IsLive != oldData.IsLive)
                         {
                             if (newData.IsLive)

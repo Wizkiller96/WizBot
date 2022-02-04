@@ -116,11 +116,13 @@ public class PollService : IEarlyBehavior
             var voted = await poll.TryVote(msg);
 
             if (voted)
+            {
                 Log.Information("User {UserName} [{UserId}] voted in a poll on {GuildName} [{GuildId}] server",
                     msg.Author.ToString(),
                     msg.Author.Id,
                     guild.Name,
                     guild.Id);
+            }
 
             return voted;
         }

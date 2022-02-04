@@ -89,9 +89,7 @@ public class TicTacToe
                 embed.WithFooter(GetText(strs.ttt_users_move(_users[curUserIndex])));
         }
         else
-        {
             embed.WithFooter(GetText(strs.ttt_has_won(winner)));
-        }
 
         return embed;
     }

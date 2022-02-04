@@ -54,6 +54,7 @@ public sealed record SmartEmbedText : SmartText
         };
 
         if (eb.Fields.Length > 0)
+        {
             set.Fields = eb.Fields.Select(field
                                => new SmartTextEmbedField
                                {
@@ -62,6 +63,7 @@ public sealed record SmartEmbedText : SmartText
                                    Value = field.Value
                                })
                            .ToArray();
+        }
 
         set.Color = eb.Color?.RawValue ?? 0;
         return set;
@@ -81,12 +83,14 @@ public sealed record SmartEmbedText : SmartText
             embed.WithUrl(Url);
 
         if (Footer is not null)
+        {
             embed.WithFooter(efb =>
             {
                 efb.WithText(Footer.Text);
                 if (Uri.IsWellFormedUriString(Footer.IconUrl, UriKind.Absolute))
                     efb.WithIconUrl(Footer.IconUrl);
             });
+        }
 
         if (Thumbnail is not null && Uri.IsWellFormedUriString(Thumbnail, UriKind.Absolute))
             embed.WithThumbnailUrl(Thumbnail);
@@ -105,11 +109,13 @@ public sealed record SmartEmbedText : SmartText
         }
 
         if (Fields is not null)
+        {
             foreach (var f in Fields)
             {
                 if (!string.IsNullOrWhiteSpace(f.Name) && !string.IsNullOrWhiteSpace(f.Value))
                     embed.AddField(f.Name, f.Value, f.Inline);
             }
+        }
 
         return embed;
     }
@@ -117,10 +123,12 @@ public sealed record SmartEmbedText : SmartText
     public void NormalizeFields()
     {
         if (Fields is { Length: > 0 })
+        {
             foreach (var f in Fields)
             {
                 f.Name = f.Name.TrimTo(256);
                 f.Value = f.Value.TrimTo(1024);
             }
+        }
     }
 }

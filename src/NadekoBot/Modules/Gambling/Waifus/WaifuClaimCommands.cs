@@ -135,16 +135,20 @@ public partial class Gambling
             var (w, result, amount, remaining) = await _service.DivorceWaifuAsync(ctx.User, targetId);
 
             if (result == DivorceResult.SucessWithPenalty)
+            {
                 await ReplyConfirmLocalizedAsync(strs.waifu_divorced_like(Format.Bold(w.Waifu.ToString()),
                     N(amount)));
+            }
             else if (result == DivorceResult.Success)
                 await ReplyConfirmLocalizedAsync(strs.waifu_divorced_notlike(N(amount)));
             else if (result == DivorceResult.NotYourWife)
                 await ReplyErrorLocalizedAsync(strs.waifu_not_yours);
             else
+            {
                 await ReplyErrorLocalizedAsync(strs.waifu_recent_divorce(
                     Format.Bold(((int)remaining?.TotalHours).ToString()),
                     Format.Bold(remaining?.Minutes.ToString())));
+            }
         }
 
         [Cmd]
@@ -161,11 +165,14 @@ public partial class Gambling
             if (!sucess)
             {
                 if (remaining is not null)
+                {
                     await ReplyErrorLocalizedAsync(strs.waifu_affinity_cooldown(
                         Format.Bold(((int)remaining?.TotalHours).ToString()),
                         Format.Bold(remaining?.Minutes.ToString())));
+                }
                 else
                     await ReplyErrorLocalizedAsync(strs.waifu_affinity_already);
+
                 return;
             }
 
@@ -174,8 +181,10 @@ public partial class Gambling
             else if (oldAff is null)
                 await ReplyConfirmLocalizedAsync(strs.waifu_affinity_set(Format.Bold(user.ToString())));
             else
+            {
                 await ReplyConfirmLocalizedAsync(strs.waifu_affinity_changed(Format.Bold(oldAff.ToString()),
                     Format.Bold(user.ToString())));
+            }
         }
 
         [Cmd]
@@ -323,8 +332,10 @@ public partial class Gambling
             var sucess = await _service.GiftWaifuAsync(ctx.User, waifu, item);
 
             if (sucess)
+            {
                 await ReplyConfirmLocalizedAsync(strs.waifu_gift(Format.Bold(item + " " + item.ItemEmoji),
                     Format.Bold(waifu.ToString())));
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }

@@ -127,7 +127,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     {
         if (_client.ShardId != 0)
             return;
-            
+
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(30));
         while (await timer.WaitForNextTickAsync())
         {
@@ -185,10 +185,12 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
             if (_trackCounter.ContainsKey(key))
                 _trackCounter[key].Add(info.GuildId);
             else
+            {
                 _trackCounter[key] = new()
                 {
                     info.GuildId
                 };
+            }
         }
 
         return default;
@@ -230,6 +232,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         {
             var key = stream.CreateKey();
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
+            {
                 await fss
                       // send offline stream notifications only to guilds which enable it with .stoff
                       .SelectMany(x => x.Value)
@@ -238,6 +241,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                                            ?.GetTextChannel(fs.ChannelId)
                                            ?.EmbedAsync(GetEmbed(fs.GuildId, stream)))
                       .WhenAll();
+            }
         }
     }
 
@@ -247,6 +251,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         {
             var key = stream.CreateKey();
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
+            {
                 await fss.SelectMany(x => x.Value)
                          .Select(fs =>
                          {
@@ -264,6 +269,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                              return textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream), message);
                          })
                          .WhenAll();
+            }
         }
     }
 

@@ -51,16 +51,20 @@ public class RedisLocalDataCache : ILocalDataCache
             if (!File.Exists(POKEMON_LIST_FILE))
                 Log.Warning($"{POKEMON_LIST_FILE} is missing. Pokemon abilities not loaded");
             else
+            {
                 Pokemons =
                     JsonConvert.DeserializeObject<Dictionary<string, SearchPokemon>>(
                         File.ReadAllText(POKEMON_LIST_FILE));
+            }
 
             if (!File.Exists(POKEMON_ABILITIES_FILE))
                 Log.Warning($"{POKEMON_ABILITIES_FILE} is missing. Pokemon abilities not loaded.");
             else
+            {
                 PokemonAbilities =
                     JsonConvert.DeserializeObject<Dictionary<string, SearchPokemonAbility>>(
                         File.ReadAllText(POKEMON_ABILITIES_FILE));
+            }
 
             try
             {

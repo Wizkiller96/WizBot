@@ -62,9 +62,7 @@ public class GamesService : INService, IReadyExecutor
         // reset rating once a day
         using var timer = new PeriodicTimer(TimeSpan.FromDays(1));
         while (await timer.WaitForNextTickAsync())
-        {
             GirlRatings.Clear();
-        }
     }
 
     private async Task<RatingTexts> GetRatingTexts()

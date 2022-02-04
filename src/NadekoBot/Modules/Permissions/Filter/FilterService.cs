@@ -132,6 +132,7 @@ public sealed class FilterService : IEarlyBehavior
         var filteredServerWords = FilteredWordsForServer(guild.Id) ?? new ConcurrentHashSet<string>();
         var wordsInMessage = usrMsg.Content.ToLowerInvariant().Split(' ');
         if (filteredChannelWords.Count != 0 || filteredServerWords.Count != 0)
+        {
             foreach (var word in wordsInMessage)
             {
                 if (filteredChannelWords.Contains(word) || filteredServerWords.Contains(word))
@@ -155,6 +156,7 @@ public sealed class FilterService : IEarlyBehavior
                     return true;
                 }
             }
+        }
 
         return false;
     }

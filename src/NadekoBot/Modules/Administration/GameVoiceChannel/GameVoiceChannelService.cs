@@ -42,8 +42,10 @@ public class GameVoiceChannelService : INService
                 {
                     if (activity is { Type: ActivityType.Playing })
                         //trigger gvc
+                    {
                         if (await TriggerGvc(newUser, activity.Name))
                             return;
+                    }
                 }
             }
             catch (Exception ex)

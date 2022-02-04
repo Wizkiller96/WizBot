@@ -52,10 +52,12 @@ public class PruneService : INService
                 //100 messages, Maybe this needs to be reduced by msgs.Length instead of 100
                 amount -= 50;
                 if (amount > 0)
+                {
                     msgs = (await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync())
                            .Where(predicate)
                            .Take(amount)
                            .ToArray();
+                }
             }
         }
         catch

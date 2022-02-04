@@ -31,6 +31,7 @@ public class CommandHandler : INService, IReadyExecutor
     private readonly IServiceProvider _services;
 
     private readonly ConcurrentDictionary<ulong, string> _prefixes;
+
     private readonly DbService _db;
     // private readonly InteractionService _interactions;
 
@@ -63,9 +64,7 @@ public class CommandHandler : INService, IReadyExecutor
         // clear users on short cooldown every GLOBAL_COMMANDS_COOLDOWN miliseconds
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(GLOBAL_COMMANDS_COOLDOWN));
         while (await timer.WaitForNextTickAsync())
-        {
             UsersOnShortCooldown.Clear();
-        }
     }
 
     public string GetPrefix(IGuild guild)
@@ -149,6 +148,7 @@ public class CommandHandler : INService, IReadyExecutor
     private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
+        {
             Log.Information(@"Command Executed after {ExecTime}s
 	User: {User}
 	Server: {Server}
@@ -159,12 +159,16 @@ public class CommandHandler : INService, IReadyExecutor
                 channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
                 channel is null ? "PRIVATE" : channel.Name + " [" + channel.Id + "]",
                 usrMsg.Content);
+        }
         else
+        {
             Log.Information("Succ | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}",
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
                 usrMsg.Author.Id,
                 usrMsg.Content.TrimTo(10));
+        }
+
         return Task.CompletedTask;
     }
 
@@ -175,6 +179,7 @@ public class CommandHandler : INService, IReadyExecutor
         params int[] execPoints)
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
+        {
             Log.Warning(@"Command Errored after {ExecTime}s
 	User: {User}
 	Server: {Guild}
@@ -187,7 +192,9 @@ public class CommandHandler : INService, IReadyExecutor
                 channel is null ? "DM" : channel.Name + " [" + channel.Id + "]",
                 usrMsg.Content,
                 errorMessage);
+        }
         else
+        {
             Log.Warning(@"Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
 	Err: {ErrorMessage}",
                 channel?.Guild.Id.ToString() ?? "-",
@@ -195,6 +202,7 @@ public class CommandHandler : INService, IReadyExecutor
                 usrMsg.Author.Id,
                 usrMsg.Content.TrimTo(10),
                 errorMessage);
+        }
     }
 
     private Task MessageReceivedHandler(SocketMessage msg)
@@ -270,9 +278,7 @@ public class CommandHandler : INService, IReadyExecutor
             }
         }
         else
-        {
             await OnMessageNoTrigger(usrMsg);
-        }
 
         await _behaviourExecutor.RunLateExecutorsAsync(guild, usrMsg);
     }

@@ -190,12 +190,16 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                                 .ToImmutableDictionary();
 
         if (!ownerChannels.Any())
+        {
             Log.Warning(
                 "No owner channels created! Make sure you've specified the correct OwnerId in the creds.yml file and invited the bot to a Discord server");
+        }
         else
+        {
             Log.Information("Created {OwnerChannelCount} out of {TotalOwnerChannelCount} owner message channels",
                 ownerChannels.Count,
                 _creds.OwnerIds.Count);
+        }
     }
 
     public Task LeaveGuild(string guildStr)
@@ -214,8 +218,10 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             var toSend = msg.Content;
 
             if (msg.Attachments.Count > 0)
+            {
                 toSend += $"\n\n{Format.Code(attachamentsTxt)}:\n"
                           + string.Join("\n", msg.Attachments.Select(a => a.ProxyUrl));
+            }
 
             if (bs.ForwardToAllOwners)
             {
@@ -237,6 +243,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
             {
                 var firstOwnerChannel = ownerChannels.Values.First();
                 if (firstOwnerChannel.Recipient.Id != msg.Author.Id)
+                {
                     try
                     {
                         await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend);
@@ -245,6 +252,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
                     {
                         // ignored
                     }
+                }
             }
         }
     }
@@ -273,8 +281,11 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         {
             uow.Remove(cmd);
             if (autoCommands.TryGetValue(cmd.GuildId, out var autos))
+            {
                 if (autos.TryRemove(cmd.Id, out var timer))
                     timer.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+
             uow.SaveChanges();
             return true;
         }

@@ -90,9 +90,7 @@ public class StreamRoleService : INService
                     }
                 }
                 else
-                {
                     success = streamRoleSettings.Whitelist.Add(userObj);
-                }
             }
             else
             {
@@ -109,9 +107,7 @@ public class StreamRoleService : INService
                         success = streamRoleSettings.Blacklist.Remove(toRemove);
                 }
                 else
-                {
                     success = streamRoleSettings.Blacklist.Add(userObj);
-                }
             }
 
             await uow.SaveChangesAsync();
@@ -270,6 +266,7 @@ public class StreamRoleService : INService
         {
             //check if user is in the addrole
             if (user.RoleIds.Contains(setting.AddRoleId))
+            {
                 try
                 {
                     addRole ??= user.Guild.GetRole(setting.AddRoleId);
@@ -287,6 +284,7 @@ public class StreamRoleService : INService
                     Log.Warning(ex, "Error removing stream role(s). Forcibly disabling stream role feature");
                     throw new StreamRolePermissionException();
                 }
+            }
         }
     }
 

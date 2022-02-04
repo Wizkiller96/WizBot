@@ -34,6 +34,7 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
             ModifyConfig(c => c.Version = 2);
 
         if (data.Version < 3)
+        {
             ModifyConfig(c =>
             {
                 c.Version = 3;
@@ -46,5 +47,6 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
                                      .Distinct()
                                      .ToHashSet();
             });
+        }
     }
 }

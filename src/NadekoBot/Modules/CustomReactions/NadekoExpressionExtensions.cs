@@ -64,9 +64,7 @@ public static class NadekoExpressionExtensions
                 return WordPosition.End;
         }
         else if (str.IsValidWordDivider(wordIndex - 1) && str.IsValidWordDivider(wordIndex + word.Length))
-        {
             return WordPosition.Middle;
-        }
 
         return WordPosition.None;
     }

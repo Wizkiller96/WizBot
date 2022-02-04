@@ -18,9 +18,7 @@ public static class ProcessExtensions
     public static void KillTree(this Process process, TimeSpan timeout)
     {
         if (_isWindows)
-        {
             RunProcessAndWaitForExit("taskkill", $"/T /F /PID {process.Id}", timeout, out _);
-        }
         else
         {
             var children = new HashSet<int>();

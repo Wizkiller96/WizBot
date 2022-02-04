@@ -38,9 +38,7 @@ public class ClubService : INService
             uow.SaveChanges();
         }
         else
-        {
             return false;
-        }
 
         uow.Set<ClubApplicants>().RemoveRange(uow.Set<ClubApplicants>().AsQueryable().Where(x => x.UserId == du.Id));
         club = du.Club;

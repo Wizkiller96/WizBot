@@ -150,9 +150,7 @@ public class RemindService : INService
                 ch = await user.CreateDMChannelAsync();
             }
             else
-            {
                 ch = _client.GetGuild(r.ServerId)?.GetTextChannel(r.ChannelId);
-            }
 
             if (ch is null)
                 return;

@@ -112,6 +112,7 @@ public class PermissionService : ILateBlocker, INService
         if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out var index))
         {
             if (pc.Verbose)
+            {
                 try
                 {
                     await channel.SendErrorAsync(_eb,
@@ -123,6 +124,7 @@ public class PermissionService : ILateBlocker, INService
                 catch
                 {
                 }
+            }
 
             return true;
         }
@@ -145,8 +147,10 @@ public class PermissionService : ILateBlocker, INService
             {
                 returnMsg = "You need Admin permissions in order to use permission commands.";
                 if (pc.Verbose)
+                {
                     try { await channel.SendErrorAsync(_eb, returnMsg); }
                     catch { }
+                }
 
                 return true;
             }
@@ -155,8 +159,10 @@ public class PermissionService : ILateBlocker, INService
             {
                 returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
                 if (pc.Verbose)
+                {
                     try { await channel.SendErrorAsync(_eb, returnMsg); }
                     catch { }
+                }
 
                 return true;
             }

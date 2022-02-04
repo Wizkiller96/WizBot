@@ -114,8 +114,10 @@ public partial class Administration
             }
 
             if (punishTime is not null)
+            {
                 if (!_service.IsDurationAllowed(action))
                     await ReplyErrorLocalizedAsync(strs.prot_cant_use_time);
+            }
 
             var time = (int?)punishTime?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
@@ -176,8 +178,10 @@ public partial class Administration
                 return;
 
             if (timeData is not null)
+            {
                 if (!_service.IsDurationAllowed(action))
                     await ReplyErrorLocalizedAsync(strs.prot_cant_use_time);
+            }
 
             var time = (int?)timeData?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)

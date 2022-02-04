@@ -35,6 +35,7 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
     private void Migrate()
     {
         if (data.Version < 1)
+        {
             ModifyConfig(c =>
             {
                 c.Version = 1;
@@ -43,5 +44,6 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
                     CurrencyReward = 0
                 };
             });
+        }
     }
 }

@@ -53,8 +53,10 @@ public sealed class CommandOrCrTypeReader : NadekoTypeReader<CommandOrCrInfo>
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(ctx, input);
         if (cmd.IsSuccess)
+        {
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name,
                 CommandOrCrInfo.Type.Normal));
+        }
 
         return TypeReaderResult.FromError<CommandOrCrInfo>(CommandError.ParseFailed, "No such command or cr found.");
     }

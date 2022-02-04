@@ -69,9 +69,7 @@ public partial class Permissions
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_cleared(Format.Bold(name)));
             }
             else
-            {
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString())));
-            }
         }
 
         [Cmd]
@@ -84,10 +82,12 @@ public partial class Permissions
             if (!localSet.Any())
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_none);
             else
+            {
                 await channel.SendTableAsync("",
                     localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)),
                     s => $"{s,-30}",
                     2);
+            }
         }
     }
 }

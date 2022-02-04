@@ -124,9 +124,7 @@ public partial class Utility
                 }
             }
             else
-            {
                 embed.WithDescription(GetText(strs.reminders_none));
-            }
 
             embed.AddPaginatedFooter(page + 1, null);
             await ctx.Channel.EmbedAsync(embed);

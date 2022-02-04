@@ -56,9 +56,11 @@ public partial class Gambling
                 if (await bj.Join(ctx.User, amount))
                     await ReplyConfirmLocalizedAsync(strs.bj_joined);
                 else
+                {
                     Log.Information("{User} can't join a blackjack game as it's in {BlackjackState} state already",
                         ctx.User,
                         bj.State);
+                }
             }
 
             await ctx.Message.DeleteAsync();
@@ -114,21 +116,13 @@ public partial class Gambling
                             full = "✅ " + full;
                     }
                     else if (p == bj.CurrentUser)
-                    {
                         full = "▶ " + full;
-                    }
                     else if (p.State == User.UserState.Stand)
-                    {
                         full = "⏹ " + full;
-                    }
                     else if (p.State == User.UserState.Bust)
-                    {
                         full = "💥 " + full;
-                    }
                     else if (p.State == User.UserState.Blackjack)
-                    {
                         full = "💰 " + full;
-                    }
 
                     embed.AddField(full, cStr);
                 }
@@ -177,8 +171,10 @@ public partial class Gambling
             else if (a == BjAction.Stand)
                 await bj.Stand(ctx.User);
             else if (a == BjAction.Double)
+            {
                 if (!await bj.Double(ctx.User))
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+            }
 
             await ctx.Message.DeleteAsync();
         }

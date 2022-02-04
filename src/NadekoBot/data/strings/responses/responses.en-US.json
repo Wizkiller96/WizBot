@@ -883,6 +883,8 @@
   "timely_reset": "All users will be able to claim timely currency again.",
   "price": "Price",
   "market_cap": "Market Cap",
+  "market_cap_dominance": "Dominance",
+  "circulating_supply": "Circulating Supply",
   "volume_24h": "Volume (24h)",
   "change_7d_24h": "Change (7d / 24h)",
   "crypto_not_found": "CryptoCurrency with that name was not found.",

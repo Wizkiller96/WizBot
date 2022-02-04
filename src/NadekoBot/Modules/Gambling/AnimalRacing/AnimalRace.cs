@@ -131,9 +131,11 @@ public sealed class AnimalRace : IDisposable
             }
 
             if (FinishedUsers[0].Bet > 0)
+            {
                 await _currency.AddAsync(FinishedUsers[0].UserId,
                     FinishedUsers[0].Bet * (_users.Count - 1),
                     new("animalrace", "win"));
+            }
 
             _ = OnEnded?.Invoke(this);
         });

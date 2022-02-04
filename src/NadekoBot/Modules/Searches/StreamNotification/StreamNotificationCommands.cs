@@ -172,8 +172,10 @@ public partial class Searches
                 }
 
                 if (data.IsLive)
+                {
                     await ReplyConfirmLocalizedAsync(strs.streamer_online(Format.Bold(data.Name),
                         Format.Bold(data.Viewers.ToString())));
+                }
                 else
                     await ReplyConfirmLocalizedAsync(strs.streamer_offline(data.Name));
             }

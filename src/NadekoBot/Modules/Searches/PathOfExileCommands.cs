@@ -251,9 +251,7 @@ public partial class Searches
 
                 //	poe.ninja API does not include a "chaosEquivalent" property for Chaos Orbs.
                 if (cleanCurrency == "Chaos Orb")
-                {
                     chaosEquivalent = 1.0F;
-                }
                 else
                 {
                     var currencyInput = obj["lines"]
@@ -265,9 +263,7 @@ public partial class Searches
                 }
 
                 if (cleanConvert == "Chaos Orb")
-                {
                     conversionEquivalent = 1.0F;
-                }
                 else
                 {
                     var currencyOutput = obj["lines"]

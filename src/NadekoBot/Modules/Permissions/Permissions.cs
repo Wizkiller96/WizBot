@@ -155,6 +155,7 @@ public partial class Permissions : NadekoModule<PermissionService>
         from -= 1;
         to -= 1;
         if (!(from == to || from < 0 || to < 0))
+        {
             try
             {
                 Permissionv2 fromPerm;
@@ -163,12 +164,12 @@ public partial class Permissions : NadekoModule<PermissionService>
                     var config = uow.GcWithPermissionsFor(ctx.Guild.Id);
                     var permsCol = new PermissionsCollection<Permissionv2>(config.Permissions);
 
-                    var fromFound = from < permsCol.Count;
+                    var fromFound = @from < permsCol.Count;
                     var toFound = to < permsCol.Count;
 
                     if (!fromFound)
                     {
-                        await ReplyErrorLocalizedAsync(strs.perm_not_found(++from));
+                        await ReplyErrorLocalizedAsync(strs.perm_not_found(++@from));
                         return;
                     }
 
@@ -178,9 +179,9 @@ public partial class Permissions : NadekoModule<PermissionService>
                         return;
                     }
 
-                    fromPerm = permsCol[from];
+                    fromPerm = permsCol[@from];
 
-                    permsCol.RemoveAt(from);
+                    permsCol.RemoveAt(@from);
                     permsCol.Insert(to, fromPerm);
                     await uow.SaveChangesAsync();
                     _service.UpdateCache(config);
@@ -188,7 +189,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
                 await ReplyConfirmLocalizedAsync(strs.moved_permission(
                     Format.Code(fromPerm.GetCommand(prefix, (SocketGuild)ctx.Guild)),
-                    ++from,
+                    ++@from,
                     ++to));
 
                 return;
@@ -196,6 +197,7 @@ public partial class Permissions : NadekoModule<PermissionService>
             catch (Exception e) when (e is ArgumentOutOfRangeException or IndexOutOfRangeException)
             {
             }
+        }
 
         await ReplyConfirmLocalizedAsync(strs.perm_out_of_range);
     }
@@ -257,13 +259,17 @@ public partial class Permissions : NadekoModule<PermissionService>
             });
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.ux_enable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(user.ToString())));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.ux_disable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(user.ToString())));
+        }
     }
 
     [Cmd]
@@ -281,13 +287,17 @@ public partial class Permissions : NadekoModule<PermissionService>
             });
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.ux_enable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(user.ToString())));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.ux_disable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(user.ToString())));
+        }
     }
 
     [Cmd]
@@ -309,13 +319,17 @@ public partial class Permissions : NadekoModule<PermissionService>
             });
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.rx_enable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(role.Name)));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.rx_disable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(role.Name)));
+        }
     }
 
     [Cmd]
@@ -337,13 +351,17 @@ public partial class Permissions : NadekoModule<PermissionService>
 
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.rx_enable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(role.Name)));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.rx_disable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(role.Name)));
+        }
     }
 
     [Cmd]
@@ -362,13 +380,17 @@ public partial class Permissions : NadekoModule<PermissionService>
             });
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.cx_enable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(chnl.Name)));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.cx_disable(Format.Code(command.Name),
                 GetText(strs.of_command),
                 Format.Code(chnl.Name)));
+        }
     }
 
     [Cmd]
@@ -386,13 +408,17 @@ public partial class Permissions : NadekoModule<PermissionService>
             });
 
         if (action.Value)
+        {
             await ReplyConfirmLocalizedAsync(strs.cx_enable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(chnl.Name)));
+        }
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.cx_disable(Format.Code(module.Name),
                 GetText(strs.of_module),
                 Format.Code(chnl.Name)));
+        }
     }
 
     [Cmd]

@@ -182,8 +182,10 @@ public partial class Gambling
                                                                               .ShopEntries);
                             entry = entries.ElementAtOrDefault(index);
                             if (entry is not null)
+                            {
                                 if (entry.Items.Add(item))
                                     uow.SaveChanges();
+                            }
                         }
 
                         await ReplyErrorLocalizedAsync(strs.shop_buy_error);
@@ -193,9 +195,7 @@ public partial class Gambling
                     await ReplyConfirmLocalizedAsync(strs.shop_item_purchase);
                 }
                 else
-                {
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                }
             }
         }
 
@@ -291,11 +291,13 @@ public partial class Gambling
                                                                   .ShopEntries);
                 entry = entries.ElementAtOrDefault(index);
                 if (entry is not null && (rightType = entry.Type == ShopEntryType.List))
+                {
                     if (entry.Items.Add(item))
                     {
                         added = true;
                         uow.SaveChanges();
                     }
+                }
             }
 
             if (entry is null)
@@ -353,9 +355,7 @@ public partial class Gambling
                 await ctx.OkAsync();
             }
             else
-            {
                 await ctx.ErrorAsync();
-            }
         }
 
         [Cmd]
@@ -373,9 +373,7 @@ public partial class Gambling
                 await ctx.OkAsync();
             }
             else
-            {
                 await ctx.ErrorAsync();
-            }
         }
 
         [Cmd]
@@ -393,9 +391,7 @@ public partial class Gambling
                 await ctx.OkAsync();
             }
             else
-            {
                 await ctx.ErrorAsync();
-            }
         }
 
         [Cmd]
@@ -413,9 +409,7 @@ public partial class Gambling
                 await ctx.OkAsync();
             }
             else
-            {
                 await ctx.ErrorAsync();
-            }
         }
 
         public IEmbedBuilder EntryToEmbed(ShopEntry entry)
@@ -423,6 +417,7 @@ public partial class Gambling
             var embed = _eb.Create().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
+            {
                 return embed
                        .AddField(GetText(strs.name),
                            GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
@@ -430,11 +425,14 @@ public partial class Gambling
                            true)
                        .AddField(GetText(strs.price), N(entry.Price), true)
                        .AddField(GetText(strs.type), entry.Type.ToString(), true);
+            }
 
             if (entry.Type == ShopEntryType.List)
+            {
                 return embed.AddField(GetText(strs.name), entry.Name, true)
                             .AddField(GetText(strs.price), N(entry.Price), true)
                             .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
+            }
 
             //else if (entry.Type == ShopEntryType.Infinite_List)
             //    return embed.AddField(GetText(strs.name), GetText(strs.shop_role(Format.Bold(entry.RoleName)), true))

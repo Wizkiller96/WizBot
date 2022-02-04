@@ -196,9 +196,11 @@ public static class MessageChannelExtensions
             if (msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
                 await msg.RemoveAllReactionsAsync();
             else
+            {
                 await msg.Reactions.Where(x => x.Value.IsMe)
                          .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
                          .WhenAll();
+            }
         }
         catch
         {

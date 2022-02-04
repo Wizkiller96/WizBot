@@ -100,8 +100,10 @@ public partial class Administration
             if (punishment is null)
                 embed.WithDescription(GetText(strs.user_warned(Format.Bold(user.ToString()))));
             else
+            {
                 embed.WithDescription(GetText(strs.user_warned_and_punished(Format.Bold(user.ToString()),
                     Format.Bold(punishment.Punishment.ToString()))));
+            }
 
             if (dmFailed)
                 embed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -204,9 +206,7 @@ public partial class Administration
                     var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.warnlog_for(user)));
 
                     if (!warnings.Any())
-                    {
                         embed.WithDescription(GetText(strs.warnings_none));
-                    }
                     else
                     {
                         var descText = GetText(strs.warn_count(
@@ -288,9 +288,7 @@ public partial class Administration
             var success = await _service.WarnClearAsync(ctx.Guild.Id, userId, index, ctx.User.ToString());
             var userStr = Format.Bold((ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString());
             if (index == 0)
-            {
                 await ReplyErrorLocalizedAsync(strs.warnings_cleared(userStr));
-            }
             else
             {
                 if (success)
@@ -325,12 +323,16 @@ public partial class Administration
                 return;
 
             if (time is null)
+            {
                 await ReplyConfirmLocalizedAsync(strs.warn_punish_set(Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString())));
+            }
             else
+            {
                 await ReplyConfirmLocalizedAsync(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString()),
                     Format.Bold(time.Input)));
+            }
         }
 
         [Cmd]
@@ -348,12 +350,16 @@ public partial class Administration
                 return;
 
             if (time is null)
+            {
                 await ReplyConfirmLocalizedAsync(strs.warn_punish_set(Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString())));
+            }
             else
+            {
                 await ReplyConfirmLocalizedAsync(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
                     Format.Bold(number.ToString()),
                     Format.Bold(time.Input)));
+            }
         }
 
         [Cmd]
@@ -375,11 +381,14 @@ public partial class Administration
 
             string list;
             if (ps.Any())
+            {
                 list = string.Join("\n",
                     ps.Select(x
                         => $"{x.Count} -> {x.Punishment} {(x.Punishment == PunishmentAction.AddRole ? $"<@&{x.RoleId}>" : "")} {(x.Time <= 0 ? "" : x.Time + "m")} "));
+            }
             else
                 list = GetText(strs.warnpl_none);
+
             await SendConfirmAsync(GetText(strs.warn_punish_list), list);
         }
 
@@ -401,6 +410,7 @@ public partial class Administration
             var dmFailed = false;
 
             if (guildUser is not null)
+            {
                 try
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
@@ -412,6 +422,7 @@ public partial class Administration
                 {
                     dmFailed = true;
                 }
+            }
 
             await _mute.TimedBan(ctx.Guild, user, time.Time, (ctx.User + " | " + msg).TrimTo(512));
             var toSend = _eb.Create()
@@ -447,9 +458,7 @@ public partial class Administration
                                                 .AddField("ID", userId.ToString(), true));
             }
             else
-            {
                 await Ban(user, msg);
-            }
         }
 
         [Cmd]
@@ -545,9 +554,7 @@ public partial class Administration
             var embed = _service.GetBanUserDmEmbed(Context, (IGuildUser)ctx.User, defaultMessage, reason, duration);
 
             if (embed is null)
-            {
                 await ConfirmLocalizedAsync(strs.banmsg_disabled);
-            }
             else
             {
                 try
@@ -755,9 +762,7 @@ public partial class Administration
                     banning.Add(user);
                 }
                 else
-                {
                     missing.Add(userStr);
-                }
             }
 
             var missStr = string.Join("\n", missing);

@@ -31,12 +31,14 @@ public partial class Gambling
             }
 
             if (((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
+            {
                 try
                 {
                     _logService.AddDeleteIgnore(ctx.Message.Id);
                     await ctx.Message.DeleteAsync();
                 }
                 catch { }
+            }
         }
 
         [Cmd]
@@ -61,7 +63,7 @@ public partial class Gambling
                 ctx.User.ToString(),
                 amount,
                 pass);
-            
+
             if (!success)
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
         }

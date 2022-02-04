@@ -69,12 +69,14 @@ public sealed partial class Music
                 var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
 
                 if (pl is not null)
+                {
                     if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                     {
                         uow.MusicPlaylists.Remove(pl);
                         await uow.SaveChangesAsync();
                         success = true;
                     }
+                }
             }
             catch (Exception ex)
             {

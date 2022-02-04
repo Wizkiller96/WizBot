@@ -219,8 +219,10 @@ public sealed class MusicService : IMusicService
         => _ =>
         {
             if (_settings.TryGetValue(guildId, out var settings))
+            {
                 if (settings.AutoDisconnect)
                     return LeaveVoiceChannelAsync(guildId);
+            }
 
             return Task.CompletedTask;
         };
@@ -232,9 +234,11 @@ public sealed class MusicService : IMusicService
             return false;
 
         if (mp.IsStopped)
+        {
             if (!_voiceStateService.TryGetProxy(guildId, out var proxy)
                 || proxy.State == VoiceProxy.VoiceProxyState.Stopped)
                 await JoinVoiceChannelAsync(guildId, voiceChannelId);
+        }
 
         mp.Next();
         return true;

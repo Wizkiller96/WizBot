@@ -69,8 +69,10 @@ public class FeedsService : INService
                                 .ToList();
 
                     if (!_lastPosts.TryGetValue(kvp.Key, out var lastFeedUpdate))
+                    {
                         lastFeedUpdate = _lastPosts[kvp.Key] =
                             items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;
+                    }
 
                     foreach (var (feedItem, itemUpdateDate) in items)
                     {
@@ -106,8 +108,10 @@ public class FeedsService : INService
                                                     .FirstOrDefault(x => x.Name.LocalName == "preview");
 
                             if (previewElement is null)
+                            {
                                 previewElement = afi.Element.Elements()
                                                     .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
+                            }
 
                             if (previewElement is not null)
                             {

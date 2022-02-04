@@ -151,9 +151,11 @@ public class TypingGame
                                                 .AddField("Errors", distance.ToString(), true));
 
                     if (_finishedUserIds.Count % 4 == 0)
+                    {
                         await Channel.SendConfirmAsync(_eb,
                             ":exclamation: A lot of people finished, here is the text for those still typing:"
                             + $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**");
+                    }
                 }
             }
             catch (Exception ex)

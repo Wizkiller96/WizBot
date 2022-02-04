@@ -193,8 +193,10 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
         var channel = _client.GetChannel(repeater.ChannelId) as ITextChannel;
         if (channel is null)
+        {
             try { channel = await _client.Rest.GetChannelAsync(repeater.ChannelId) as ITextChannel; }
             catch { }
+        }
 
         if (channel is null)
         {
@@ -210,6 +212,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
         }
 
         if (_noRedundant.Contains(repeater.Id))
+        {
             try
             {
                 var lastMsgInChannel = await channel.GetMessagesAsync(2).Flatten().FirstAsync();
@@ -224,8 +227,10 @@ public sealed class RepeaterService : IReadyExecutor, INService
                     guild.Id,
                     channel.Id);
             }
+        }
 
         if (repeater.LastMessageId is { } lastMessageId)
+        {
             try
             {
                 var oldMsg = await channel.GetMessageAsync(lastMessageId);
@@ -239,6 +244,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
                     guild.Id,
                     channel.Id);
             }
+        }
 
         var rep = new ReplacementBuilder().WithDefault(guild.CurrentUser, channel, guild, _client).Build();
 

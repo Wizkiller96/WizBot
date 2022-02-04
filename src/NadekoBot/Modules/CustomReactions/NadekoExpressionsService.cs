@@ -290,6 +290,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
             }
 
             if (expr.AutoDeleteTrigger)
+            {
                 try
                 {
                     await msg.DeleteAsync();
@@ -297,6 +298,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                 catch
                 {
                 }
+            }
 
             Log.Information("s: {GuildId} c: {ChannelId} u: {UserId} | {UserName} executed expression {Expr}",
                 guild.Id,
@@ -341,6 +343,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
     private void UpdateInternal(ulong? maybeGuildId, NadekoExpression expr)
     {
         if (maybeGuildId is { } guildId)
+        {
             newGuildReactions.AddOrUpdate(guildId,
                 new[] { expr },
                 (_, old) =>
@@ -354,7 +357,9 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
 
                     return newArray;
                 });
+        }
         else
+        {
             lock (_gexprWriteLock)
             {
                 var exprs = globalReactions;
@@ -364,6 +369,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
                         exprs[i] = expr;
                 }
             }
+        }
     }
 
     private Task AddInternalAsync(ulong? maybeGuildId, NadekoExpression expr)

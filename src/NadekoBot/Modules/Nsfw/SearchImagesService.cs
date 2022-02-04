@@ -75,11 +75,13 @@ public class SearchImagesService : ISearchImagesService, INService
         CancellationToken cancel)
     {
         if (!tags.All(x => IsValidTag(x)))
+        {
             return new()
             {
                 Error = "One or more tags are invalid.",
                 Url = ""
             };
+        }
 
         Log.Information("Getting {V} image for Guild: {GuildId}...", dapi.ToString(), guildId);
         try
@@ -87,27 +89,33 @@ public class SearchImagesService : ISearchImagesService, INService
             BlacklistedTags.TryGetValue(guildId, out var blTags);
 
             if (dapi == Booru.E621)
+            {
                 for (var i = 0; i < tags.Length; ++i)
                 {
                     if (tags[i] == "yuri")
                         tags[i] = "female/female";
                 }
+            }
 
             if (dapi == Booru.Derpibooru)
+            {
                 for (var i = 0; i < tags.Length; ++i)
                 {
                     if (tags[i] == "yuri")
                         tags[i] = "lesbian";
                 }
+            }
 
             var result = await _cache.GetImageNew(tags, forceExplicit, dapi, blTags ?? new HashSet<string>(), cancel);
 
             if (result is null)
+            {
                 return new()
                 {
                     Error = "Image not found.",
                     Url = ""
                 };
+            }
 
             var reply = new UrlReply
             {

@@ -44,6 +44,7 @@ public class RadioResolver : IRadioResolver
         if (query.Contains(".pls"))
             //File1=http://armitunes.com:8000/
             //Regex.Match(query)
+        {
             try
             {
                 var m = _plsRegex.Match(file);
@@ -55,6 +56,7 @@ public class RadioResolver : IRadioResolver
                 Log.Warning("Failed reading .pls:\n{PlsFile}", file);
                 return null;
             }
+        }
 
         if (query.Contains(".m3u"))
             /* 
@@ -62,6 +64,7 @@ public class RadioResolver : IRadioResolver
                    C:\xxx4xx\xxxxxx3x\xx2xxxx\xx.mp3
                    C:\xxx5xx\x6xxxxxx\x7xxxxx\xx.mp3
                 */
+        {
             try
             {
                 var m = _m3URegex.Match(file);
@@ -73,9 +76,11 @@ public class RadioResolver : IRadioResolver
                 Log.Warning("Failed reading .m3u:\n{M3uFile}", file);
                 return null;
             }
+        }
 
         if (query.Contains(".asx"))
             //<ref href="http://armitunes.com:8000"/>
+        {
             try
             {
                 var m = _asxRegex.Match(file);
@@ -87,6 +92,7 @@ public class RadioResolver : IRadioResolver
                 Log.Warning("Failed reading .asx:\n{AsxFile}", file);
                 return null;
             }
+        }
 
         if (query.Contains(".xspf"))
             /*
@@ -95,6 +101,7 @@ public class RadioResolver : IRadioResolver
                         <trackList>
                             <track><location>file:///mp3s/song_1.mp3</location></track>
                 */
+        {
             try
             {
                 var m = _xspfRegex.Match(file);
@@ -106,6 +113,7 @@ public class RadioResolver : IRadioResolver
                 Log.Warning("Failed reading .xspf:\n{XspfFile}", file);
                 return null;
             }
+        }
 
         return query;
     }

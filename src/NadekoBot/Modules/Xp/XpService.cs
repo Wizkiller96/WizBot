@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
@@ -17,7 +18,7 @@ using Image = SixLabors.ImageSharp.Image;
 namespace NadekoBot.Modules.Xp.Services;
 
 // todo improve xp with linqtodb
-public class XpService : INService
+public class XpService : INService, IReadyExecutor
 {
     public const int XP_REQUIRED_LVL_1 = 36;
 
@@ -29,7 +30,6 @@ public class XpService : INService
     private readonly FontProvider _fonts;
     private readonly IBotCredentials _creds;
     private readonly ICurrencyService _cs;
-    private readonly Task _updateXpTask;
     private readonly IHttpClientFactory _httpFactory;
     private readonly XpConfigService _xpConfig;
     private readonly IPubSub _pubSub;
@@ -82,12 +82,14 @@ public class XpService : INService
         InternalReloadXpTemplate();
 
         if (client.ShardId == 0)
+        {
             _pubSub.Sub(_xpTemplateReloadKey,
                 _ =>
                 {
                     InternalReloadXpTemplate();
                     return default;
                 });
+        }
 
         //load settings
         var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings is not null).ToList();
@@ -119,14 +121,16 @@ public class XpService : INService
         foreach (var guild in _client.Guilds)
             Client_OnGuildAvailable(guild);
 #endif
-        _updateXpTask = Task.Run(UpdateLoop);
     }
+
+    public Task OnReadyAsync()
+        => UpdateLoop();
 
     private async Task UpdateLoop()
     {
-        while (true)
+        using var timer = new PeriodicTimer(5.Seconds());
+        while (await timer.WaitForNextTickAsync())
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
             try
             {
                 var toNotify =
@@ -168,8 +172,10 @@ public class XpService : INService
                             du.LastLevelUp = DateTime.UtcNow;
                             var first = item.First();
                             if (du.NotifyOnLevelUp != XpNotificationLocation.None)
+                            {
                                 toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
                                     du.NotifyOnLevelUp, NotifOf.Global));
+                            }
                         }
 
                         if (oldGuildLevelData.Level < newGuildLevelData.Level)
@@ -178,8 +184,10 @@ public class XpService : INService
                             //send level up notification
                             var first = item.First();
                             if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
+                            {
                                 toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
                                     usr.NotifyOnLevelUp, NotifOf.Server));
+                            }
 
                             //give role
                             if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
@@ -227,16 +235,20 @@ public class XpService : INService
                                   if (x.NotifOf == NotifOf.Server)
                                   {
                                       if (x.NotifyType == XpNotificationLocation.Dm)
+                                      {
                                           await x.User.SendConfirmAsync(_eb,
                                               _strings.GetText(strs.level_up_dm(x.User.Mention,
                                                       Format.Bold(x.Level.ToString()),
                                                       Format.Bold(x.Guild.ToString() ?? "-")),
                                                   x.Guild.Id));
+                                      }
                                       else if (x.MessageChannel is not null) // channel
+                                      {
                                           await x.MessageChannel.SendConfirmAsync(_eb,
                                               _strings.GetText(strs.level_up_channel(x.User.Mention,
                                                       Format.Bold(x.Level.ToString())),
                                                   x.Guild.Id));
+                                      }
                                   }
                                   else
                                   {
@@ -306,11 +318,13 @@ public class XpService : INService
             if (rew is not null)
                 rew.Amount = amount;
             else
+            {
                 settings.CurrencyRewards.Add(new()
                 {
                     Level = level,
                     Amount = amount
                 });
+            }
         }
 
         uow.SaveChanges();
@@ -455,11 +469,15 @@ public class XpService : INService
     private void ScanChannelForVoiceXp(SocketVoiceChannel channel)
     {
         if (ShouldTrackVoiceChannel(channel))
+        {
             foreach (var user in channel.Users)
                 ScanUserForVoiceXp(user, channel);
+        }
         else
+        {
             foreach (var user in channel.Users)
                 UserLeftVoiceChannel(user, channel);
+        }
     }
 
     /// <summary>
@@ -510,12 +528,14 @@ public class XpService : INService
         var actualXp = (int)Math.Floor(xp);
 
         if (actualXp > 0)
+        {
             _addMessageXp.Enqueue(new()
             {
                 Guild = channel.Guild,
                 User = user,
                 XpAmount = actualXp
             });
+        }
     }
 
     private bool ShouldTrackXp(SocketGuildUser user, ulong channelId)
@@ -779,6 +799,7 @@ public class XpService : INService
             }
 
             if (template.User.GlobalLevel.Show)
+            {
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Global.Level.ToString(),
@@ -786,8 +807,10 @@ public class XpService : INService
                         template.User.GlobalLevel.Color,
                         new(template.User.GlobalLevel.Pos.X, template.User.GlobalLevel.Pos.Y)); //level
                 });
+            }
 
             if (template.User.GuildLevel.Show)
+            {
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Guild.Level.ToString(),
@@ -795,6 +818,7 @@ public class XpService : INService
                         template.User.GuildLevel.Color,
                         new(template.User.GuildLevel.Pos.X, template.User.GuildLevel.Pos.Y));
                 });
+            }
 
 
             var pen = new Pen(Color.Black, 1);
@@ -812,18 +836,22 @@ public class XpService : INService
             }
 
             if (template.User.Xp.Global.Show)
+            {
                 img.Mutate(x => x.DrawText($"{global.LevelXp}/{global.RequiredXp}",
                     _fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Global.Color),
                     pen,
                     new(template.User.Xp.Global.Pos.X, template.User.Xp.Global.Pos.Y)));
+            }
 
             if (template.User.Xp.Guild.Show)
+            {
                 img.Mutate(x => x.DrawText($"{guild.LevelXp}/{guild.RequiredXp}",
                     _fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Guild.Color),
                     pen,
                     new(template.User.Xp.Guild.Pos.X, template.User.Xp.Guild.Pos.Y)));
+            }
 
             if (stats.FullGuildStats.AwardedXp != 0 && template.User.Xp.Awarded.Show)
             {
@@ -840,16 +868,20 @@ public class XpService : INService
 
             //ranking
             if (template.User.GlobalRank.Show)
+            {
                 img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
                     _fonts.UniSans.CreateFont(template.User.GlobalRank.FontSize, FontStyle.Bold),
                     template.User.GlobalRank.Color,
                     new(template.User.GlobalRank.Pos.X, template.User.GlobalRank.Pos.Y)));
+            }
 
             if (template.User.GuildRank.Show)
+            {
                 img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
                     _fonts.UniSans.CreateFont(template.User.GuildRank.FontSize, FontStyle.Bold),
                     template.User.GuildRank.Color,
                     new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)));
+            }
 
             //time on this level
 
@@ -860,20 +892,25 @@ public class XpService : INService
             }
 
             if (template.User.TimeOnLevel.Global.Show)
+            {
                 img.Mutate(x => x.DrawText(GetTimeSpent(stats.User.LastLevelUp, template.User.TimeOnLevel.Format),
                     _fonts.NotoSans.CreateFont(template.User.TimeOnLevel.Global.FontSize, FontStyle.Bold),
                     template.User.TimeOnLevel.Global.Color,
                     new(template.User.TimeOnLevel.Global.Pos.X, template.User.TimeOnLevel.Global.Pos.Y)));
+            }
 
             if (template.User.TimeOnLevel.Guild.Show)
+            {
                 img.Mutate(x
                     => x.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp, template.User.TimeOnLevel.Format),
                         _fonts.NotoSans.CreateFont(template.User.TimeOnLevel.Guild.FontSize, FontStyle.Bold),
                         template.User.TimeOnLevel.Guild.Color,
                         new(template.User.TimeOnLevel.Guild.Pos.X, template.User.TimeOnLevel.Guild.Pos.Y)));
+            }
             //avatar
 
             if (stats.User.AvatarId is not null && template.User.Icon.Show)
+            {
                 try
                 {
                     var avatarUrl = stats.User.RealAvatarUrl();
@@ -913,6 +950,7 @@ public class XpService : INService
                 {
                     Log.Warning(ex, "Error drawing avatar image");
                 }
+            }
 
             //club image
             if (template.Club.Icon.Show)
@@ -973,6 +1011,7 @@ public class XpService : INService
     private async Task DrawClubImage(Image<Rgba32> img, FullUserStats stats)
     {
         if (!string.IsNullOrWhiteSpace(stats.User.Club?.ImageUrl))
+        {
             try
             {
                 var imgUrl = new Uri(stats.User.Club.ImageUrl);
@@ -1015,6 +1054,7 @@ public class XpService : INService
             {
                 Log.Warning(ex, "Error drawing club image");
             }
+        }
     }
 
     public void XpReset(ulong guildId, ulong userId)

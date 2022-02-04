@@ -98,11 +98,13 @@ public partial class Utility : NadekoModule
         if (arr.Length == 0)
             await ReplyErrorLocalizedAsync(strs.nobody_playing_game);
         else
+        {
             await SendConfirmAsync("```css\n"
                                    + string.Join("\n",
                                        arr.GroupBy(_ => i++ / 2)
                                           .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}"))))
                                    + "\n```");
+        }
     }
 
     [Cmd]
@@ -215,8 +217,10 @@ public partial class Utility : NadekoModule
             if (!roles.Any())
                 await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
             else
+            {
                 await SendConfirmAsync(GetText(strs.roles_page(page, Format.Bold(target.ToString()))),
                     "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
+            }
         }
         else
         {
@@ -228,8 +232,10 @@ public partial class Utility : NadekoModule
             if (!roles.Any())
                 await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
             else
+            {
                 await SendConfirmAsync(GetText(strs.roles_all_page(page)),
                     "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
+            }
         }
     }
 
@@ -436,18 +442,20 @@ public partial class Utility : NadekoModule
                                                if (string.IsNullOrWhiteSpace(s.ToString()))
                                                {
                                                    if (s.Attachments.Any())
+                                                   {
                                                        msg += "FILES_UPLOADED: "
                                                               + string.Join("\n", s.Attachments.Select(x => x.Url));
+                                                   }
                                                    else if (s.Embeds.Any())
+                                                   {
                                                        msg += "EMBEDS: "
                                                               + string.Join("\n--------\n",
                                                                   s.Embeds.Select(x
                                                                       => $"Description: {x.Description}"));
+                                                   }
                                                }
                                                else
-                                               {
                                                    msg += s.ToString();
-                                               }
 
                                                return msg;
                                            })

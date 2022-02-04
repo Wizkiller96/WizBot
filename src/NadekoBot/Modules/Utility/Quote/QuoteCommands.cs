@@ -62,10 +62,12 @@ public partial class Utility
             }
 
             if (quotes.Any())
+            {
                 await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
                     string.Join("\n",
                         quotes.Select(q
                             => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.quotes_page_none);
         }
@@ -227,9 +229,7 @@ public partial class Utility
                 var q = uow.Quotes.GetById(id);
 
                 if (q?.GuildId != ctx.Guild.Id || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
-                {
                     response = GetText(strs.quotes_remove_none);
-                }
                 else
                 {
                     uow.Quotes.Remove(q);

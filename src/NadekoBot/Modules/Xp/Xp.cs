@@ -76,9 +76,7 @@ public partial class Xp : NadekoModule<XpService>
                                      var str = ctx.Guild.GetRole(x.RoleId)?.ToString();
 
                                      if (str is null)
-                                     {
                                          str = GetText(strs.role_not_found(Format.Code(x.RoleId.ToString())));
-                                     }
                                      else
                                      {
                                          if (!x.Remove)
@@ -141,8 +139,10 @@ public partial class Xp : NadekoModule<XpService>
         if (action == AddRemove.Add)
             await ReplyConfirmLocalizedAsync(strs.xp_role_reward_add_role(level, Format.Bold(role.ToString())));
         else
+        {
             await ReplyConfirmLocalizedAsync(strs.xp_role_reward_remove_role(Format.Bold(level.ToString()),
                 Format.Bold(role.ToString())));
+        }
     }
 
     [Cmd]
@@ -365,12 +365,14 @@ public partial class Xp : NadekoModule<XpService>
         if (!users.Any())
             embed.WithDescription("-");
         else
+        {
             for (var i = 0; i < users.Length; i++)
             {
                 var user = users[i];
                 embed.AddField($"#{i + 1 + (page * 9)} {user.ToString()}",
                     $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
             }
+        }
 
         await ctx.Channel.EmbedAsync(embed);
     }

@@ -14,8 +14,10 @@ public sealed class GuildDateTimeTypeReader : NadekoTypeReader<GuildDateTime>
     {
         var gdt = Parse(context.Guild.Id, input);
         if (gdt is null)
+        {
             return new(TypeReaderResult.FromError<GuildDateTime>(CommandError.ParseFailed,
                 "Input string is in an incorrect format."));
+        }
 
         return new(TypeReaderResult.FromSuccess(gdt));
     }

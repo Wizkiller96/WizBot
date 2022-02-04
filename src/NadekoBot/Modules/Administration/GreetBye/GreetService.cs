@@ -141,9 +141,7 @@ public class GreetService : INService, IReadyExecutor
                     }
                 }
                 else
-                {
                     await ByeUsers(conf, channel, new[] { user });
-                }
             }
             catch
             {
@@ -255,10 +253,12 @@ public class GreetService : INService, IReadyExecutor
             text = rep.Replace(text);
 
             if (text is SmartPlainText pt)
+            {
                 text = new SmartEmbedText()
                 {
                     PlainText = pt.Text
                 };
+            }
 
             ((SmartEmbedText)text).Footer = new()
             {
@@ -308,9 +308,7 @@ public class GreetService : INService, IReadyExecutor
                             }
                         }
                         else
-                        {
                             await GreetUsers(conf, channel, new[] { user });
-                        }
                     }
                 }
 

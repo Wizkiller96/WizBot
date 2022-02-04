@@ -81,9 +81,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                 try
                 {
                     if (tags is null || tags.Length == 0)
-                    {
                         await InternalDapiCommand(null, true, _service.Hentai);
-                    }
                     else
                     {
                         var groups = tags.Split('|');

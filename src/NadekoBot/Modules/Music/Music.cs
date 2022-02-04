@@ -288,9 +288,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             // if (mps > 0)
             //     add += Format.Bold(GetText(strs.song_skips_after(TimeSpan.FromSeconds(mps).ToString("HH\\:mm\\:ss")))) + "\n";
             if (repeatType == PlayerRepeatType.Track)
-            {
                 add += "🔂 " + GetText(strs.repeating_track) + "\n";
-            }
             else
             {
                 // if (mp.Autoplay)

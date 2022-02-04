@@ -21,7 +21,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
     private readonly GuildTimezoneService _tz;
     private readonly IEmbedBuilderService _eb;
     private readonly IMemoryCache _memoryCache;
-    
+
     private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new();
 
     public LogCommandService(
@@ -89,9 +89,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
     {
         using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         while (await timer.WaitForNextTickAsync())
-        {
             _ignoreMessageIds.Clear();
-        }
     }
 
     private async Task PresenceUpdateTask()
@@ -108,7 +106,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                           {
                               if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
                                   return Task.CompletedTask;
-                              
+
                               if (PresenceUpdates.TryRemove(key, out var msgs))
                               {
                                   var title = GetText(key.Guild, strs.presence_updates);
@@ -234,9 +232,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                         embed.WithImageUrl(aav.ToString());
                 }
                 else
-                {
                     return;
-                }
 
                 await logChannel.EmbedAsync(embed);
             }
@@ -656,14 +652,18 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var afterTextChannel = cafter as ITextChannel;
 
                 if (before.Name != after.Name)
+                {
                     embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_name_change))
                          .WithDescription($"{after} | {after.Id}")
                          .AddField(GetText(logChannel.Guild, strs.ch_old_name), before.Name);
+                }
                 else if (beforeTextChannel?.Topic != afterTextChannel?.Topic)
+                {
                     embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_topic_change))
                          .WithDescription($"{after} | {after.Id}")
                          .AddField(GetText(logChannel.Guild, strs.old_topic), beforeTextChannel?.Topic ?? "-")
                          .AddField(GetText(logChannel.Guild, strs.new_topic), afterTextChannel?.Topic ?? "-");
+                }
                 else
                     return;
 
@@ -778,26 +778,33 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 var str = string.Empty;
                 if (beforeVch?.Guild == afterVch?.Guild)
+                {
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
                               strs.user_vmoved("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
                                   Format.Bold(beforeVch?.Name ?? ""),
                                   Format.Bold(afterVch?.Name ?? "")));
+                }
                 else if (beforeVch is null)
+                {
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
                               strs.user_vjoined("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
                                   Format.Bold(afterVch?.Name ?? "")));
+                }
                 else if (afterVch is null)
+                {
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
                               strs.user_vleft("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
                                   Format.Bold(beforeVch.Name ?? "")));
+                }
 
                 if (!string.IsNullOrWhiteSpace(str))
+                {
                     PresenceUpdates.AddOrUpdate(logChannel,
                         new List<string>
                         {
@@ -808,6 +815,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                             list.Add(str);
                             return list;
                         });
+                }
             }
             catch
             {
@@ -1001,8 +1009,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                                .AddField("Id", msg.Id.ToString())
                                .WithFooter(CurrentTime(channel.Guild));
                 if (msg.Attachments.Any())
+                {
                     embed.AddField(GetText(logChannel.Guild, strs.attachments),
                         string.Join(", ", msg.Attachments.Select(a => a.Url)));
+                }
 
                 await logChannel.EmbedAsync(embed);
             }

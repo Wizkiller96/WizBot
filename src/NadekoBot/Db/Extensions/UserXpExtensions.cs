@@ -13,6 +13,7 @@ public static class UserXpExtensions
         var usr = ctx.UserXpStats.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
 
         if (usr is null)
+        {
             ctx.Add(usr = new()
             {
                 Xp = 0,
@@ -20,6 +21,7 @@ public static class UserXpExtensions
                 NotifyOnLevelUp = XpNotificationLocation.None,
                 GuildId = guildId
             });
+        }
 
         return usr;
     }
@@ -42,12 +44,6 @@ public static class UserXpExtensions
               .ToList();
 
     public static int GetUserGuildRanking(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
-        //            @"SELECT COUNT(*) + 1
-        //FROM UserXpStats
-        //WHERE GuildId = @p1 AND ((Xp + AwardedXp) > (SELECT Xp + AwardedXp
-        //	FROM UserXpStats
-        //	WHERE UserId = @p2 AND GuildId = @p1
-        //	LIMIT 1));";
         => xps.AsQueryable()
               .AsNoTracking()
               .Where(x => x.GuildId == guildId

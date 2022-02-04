@@ -20,8 +20,10 @@ public partial class Xp
             var club = _service.TransferClub(ctx.User, newOwner);
 
             if (club is not null)
+            {
                 await ReplyConfirmLocalizedAsync(strs.club_transfered(Format.Bold(club.Name),
                     Format.Bold(newOwner.ToString())));
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
         }
@@ -264,8 +266,11 @@ public partial class Xp
         public partial Task ClubKick([Leftover] string userName)
         {
             if (_service.Kick(ctx.User.Id, userName, out var club))
+            {
                 return ReplyConfirmLocalizedAsync(strs.club_user_kick(Format.Bold(userName),
                     Format.Bold(club.ToString())));
+            }
+
             return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
         }
 
@@ -279,8 +284,11 @@ public partial class Xp
         public partial Task ClubBan([Leftover] string userName)
         {
             if (_service.Ban(ctx.User.Id, userName, out var club))
+            {
                 return ReplyConfirmLocalizedAsync(strs.club_user_banned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
+            }
+
             return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
         }
 
@@ -294,8 +302,11 @@ public partial class Xp
         public partial Task ClubUnBan([Leftover] string userName)
         {
             if (_service.UnBan(ctx.User.Id, userName, out var club))
+            {
                 return ReplyConfirmLocalizedAsync(strs.club_user_unbanned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
+            }
+
             return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
         }
 

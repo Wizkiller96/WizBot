@@ -66,9 +66,7 @@ public class MuteService : INService
                 {
                     TimeSpan after;
                     if (x.UnmuteAt - TimeSpan.FromMinutes(2) <= DateTime.UtcNow)
-                    {
                         after = TimeSpan.FromMinutes(2);
-                    }
                     else
                     {
                         var unmute = x.UnmuteAt - DateTime.UtcNow;
@@ -82,9 +80,7 @@ public class MuteService : INService
                 {
                     TimeSpan after;
                     if (x.UnbanAt - TimeSpan.FromMinutes(2) <= DateTime.UtcNow)
-                    {
                         after = TimeSpan.FromMinutes(2);
-                    }
                     else
                     {
                         var unban = x.UnbanAt - DateTime.UtcNow;
@@ -98,9 +94,7 @@ public class MuteService : INService
                 {
                     TimeSpan after;
                     if (x.UnbanAt - TimeSpan.FromMinutes(2) <= DateTime.UtcNow)
-                    {
                         after = TimeSpan.FromMinutes(2);
-                    }
                     else
                     {
                         var unban = x.UnbanAt - DateTime.UtcNow;
@@ -306,6 +300,7 @@ public class MuteService : INService
         var muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName);
         if (muteRole is null)
             //if it doesn't exist, create it
+        {
             try { muteRole = await guild.CreateRoleAsync(muteRoleName, isMentionable: false); }
             catch
             {
@@ -313,6 +308,7 @@ public class MuteService : INService
                 muteRole = guild.Roles.FirstOrDefault(r => r.Name == muteRoleName)
                            ?? await guild.CreateRoleAsync(defaultMuteRoleName, isMentionable: false);
             }
+        }
 
         foreach (var toOverwrite in await guild.GetTextChannelsAsync())
         {
@@ -414,6 +410,7 @@ public class MuteService : INService
         var toAdd = new Timer(async _ =>
             {
                 if (type == TimerType.Ban)
+                {
                     try
                     {
                         RemoveTimerFromDb(guildId, userId, type);
@@ -426,7 +423,9 @@ public class MuteService : INService
                     {
                         Log.Warning(ex, "Couldn't unban user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
                 else if (type == TimerType.AddRole)
+                {
                     try
                     {
                         if (roleId is null)
@@ -444,7 +443,9 @@ public class MuteService : INService
                     {
                         Log.Warning(ex, "Couldn't remove role from user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
                 else
+                {
                     try
                     {
                         // unmute the user, this will also remove the timer from the db
@@ -455,6 +456,7 @@ public class MuteService : INService
                         RemoveTimerFromDb(guildId, userId, type); // if unmute errored, just remove unmute from db
                         Log.Warning(ex, "Couldn't unmute user {UserId} in guild {GuildId}", userId, guildId);
                     }
+                }
             },
             null,
             after,

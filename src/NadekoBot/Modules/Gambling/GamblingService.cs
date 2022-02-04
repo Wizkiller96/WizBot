@@ -70,12 +70,12 @@ public class GamblingService : INService, IReadyExecutor
             }
         }
     }
-    
+
     private async Task CurrencyDecayLoopAsync()
     {
         if (_bot.Client.ShardId != 0)
             return;
-        
+
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
         while (await timer.WaitForNextTickAsync())
         {
@@ -125,16 +125,18 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
             }
         }
     }
-    
+
     public async Task<SlotResponse> SlotAsync(ulong userId, long amount)
     {
         var takeRes = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
 
         if (!takeRes)
+        {
             return new()
             {
                 Error = GamblingError.NotEnough
             };
+        }
 
         var game = new SlotGame();
         var result = game.Spin();
@@ -161,11 +163,13 @@ WHERE CurrencyAmount > {config.Decay.MinThreshold} AND UserId!={_client.CurrentU
     public EconomyResult GetEconomy()
     {
         if (_cache.TryGetEconomy(out var data))
+        {
             try
             {
                 return JsonConvert.DeserializeObject<EconomyResult>(data);
             }
             catch { }
+        }
 
         decimal cash;
         decimal onePercent;

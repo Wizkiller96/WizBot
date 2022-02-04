@@ -68,6 +68,7 @@ public class DefaultWallet : IWallet
                                     });
 
             if (changed == 0)
+            {
                 await _ctx.DiscordUser
                           .ToLinqToDBTable()
                           .Value(x => x.UserId, UserId)
@@ -75,6 +76,7 @@ public class DefaultWallet : IWallet
                           .Value(x => x.Discriminator, "????")
                           .Value(x => x.CurrencyAmount, amount)
                           .InsertAsync();
+            }
 
             await tran.CommitAsync();
         }

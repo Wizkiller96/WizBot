@@ -34,9 +34,7 @@ public partial class Administration
             var statuses = _service.GetRotatingStatuses();
 
             if (!statuses.Any())
-            {
                 await ReplyErrorLocalizedAsync(strs.ropl_not_set);
-            }
             else
             {
                 var i = 1;

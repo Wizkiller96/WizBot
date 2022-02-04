@@ -19,13 +19,11 @@ public class CommentsObjectGraphVisitor : ChainedObjectGraphVisitor
             && !string.IsNullOrWhiteSpace(commentsDescriptor.Comment))
         {
             var parts = commentsDescriptor.Comment.Split('\n');
-            
+
             foreach (var part in parts)
-            {
                 context.Emit(new Comment(part.Trim(), false));
-            }
         }
-        
+
         return base.EnterMapping(key, value, context);
     }
 }

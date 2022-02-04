@@ -82,6 +82,7 @@ public class GameStatusEvent : ICurrencyEvent
             );
 
             if (_isPotLimited)
+            {
                 await msg.ModifyAsync(m =>
                     {
                         m.Embed = GetEmbed(PotSize).Build();
@@ -90,6 +91,7 @@ public class GameStatusEvent : ICurrencyEvent
                     {
                         RetryMode = RetryMode.AlwaysRetry
                     });
+            }
 
             Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
@@ -179,6 +181,7 @@ public class GameStatusEvent : ICurrencyEvent
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
+        {
             lock (_potLock)
             {
                 if (PotSize < _amount)
@@ -187,6 +190,7 @@ public class GameStatusEvent : ICurrencyEvent
                 PotSize -= _amount;
                 return true;
             }
+        }
 
         return true;
     }

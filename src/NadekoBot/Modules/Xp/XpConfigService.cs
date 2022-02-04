@@ -39,10 +39,12 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
     private void Migrate()
     {
         if (data.Version < 2)
+        {
             ModifyConfig(c =>
             {
                 c.Version = 2;
                 c.XpFromImage = 0;
             });
+        }
     }
 }

@@ -67,8 +67,11 @@ public partial class Utility
                 embed.WithThumbnailUrl(guild.IconUrl);
 
             if (guild.Emotes.Any())
+            {
                 embed.AddField(GetText(strs.custom_emojis) + $"({guild.Emotes.Count})",
                     string.Join(" ", guild.Emotes.Shuffle().Take(20).Select(e => $"{e.Name} {e}")).TrimTo(1020));
+            }
+
             await ctx.Channel.EmbedAsync(embed);
         }
 

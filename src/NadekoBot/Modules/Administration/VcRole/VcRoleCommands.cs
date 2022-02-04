@@ -59,14 +59,14 @@ public partial class Administration
                 if (!roles.Any())
                     text = GetText(strs.no_vcroles);
                 else
+                {
                     text = string.Join("\n",
                         roles.Select(x
                             => $"{Format.Bold(guild.GetVoiceChannel(x.Key)?.Name ?? x.Key.ToString())} => {x.Value}"));
+                }
             }
             else
-            {
                 text = GetText(strs.no_vcroles);
-            }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()

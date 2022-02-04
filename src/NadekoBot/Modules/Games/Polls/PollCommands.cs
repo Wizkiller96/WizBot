@@ -31,6 +31,7 @@ public partial class Games
             }
 
             if (_service.StartPoll(poll))
+            {
                 await ctx.Channel.EmbedAsync(_eb.Create()
                                                 .WithOkColor()
                                                 .WithTitle(GetText(strs.poll_created(ctx.User.ToString())))
@@ -39,6 +40,7 @@ public partial class Games
                                                                  + string.Join("\n",
                                                                      poll.Answers.Select(x
                                                                          => $"`{x.Index + 1}.` {Format.Bold(x.Text)}"))));
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.poll_already_running);
         }

@@ -143,9 +143,7 @@ public partial class Administration
         {
             var embed = _eb.Create().WithOkColor();
             if (!_service.Get(ctx.Guild.Id, out var rrs) || !rrs.Any())
-            {
                 embed.WithDescription(GetText(strs.no_reaction_roles));
-            }
             else
             {
                 var g = (SocketGuild)ctx.Guild;

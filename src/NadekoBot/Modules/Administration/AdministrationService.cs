@@ -115,13 +115,9 @@ public class AdministrationService : INService
         {
         }
         else if (newState == Administration.State.Enable)
-        {
             DeleteMessagesOnCommandChannels[chId] = true;
-        }
         else
-        {
             DeleteMessagesOnCommandChannels.TryRemove(chId, out _);
-        }
     }
 
     public async Task DeafenUsers(bool value, params IGuildUser[] users)

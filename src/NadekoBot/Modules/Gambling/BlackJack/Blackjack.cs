@@ -202,6 +202,7 @@ public class Blackjack
         }
 
         if (hw > 21)
+        {
             foreach (var usr in Players)
             {
                 if (usr.State is User.UserState.Stand or User.UserState.Blackjack)
@@ -209,7 +210,9 @@ public class Blackjack
                 else
                     usr.State = User.UserState.Lost;
             }
+        }
         else
+        {
             foreach (var usr in Players)
             {
                 if (usr.State == User.UserState.Blackjack)
@@ -219,6 +222,7 @@ public class Blackjack
                 else
                     usr.State = User.UserState.Lost;
             }
+        }
 
         foreach (var usr in Players)
         {

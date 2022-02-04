@@ -75,6 +75,7 @@ public class ReactionEvent : ICurrencyEvent
             await _cs.AddBulkAsync(toAward, _amount, new("event", "reaction"));
 
             if (_isPotLimited)
+            {
                 await msg.ModifyAsync(m =>
                     {
                         m.Embed = GetEmbed(PotSize).Build();
@@ -83,6 +84,7 @@ public class ReactionEvent : ICurrencyEvent
                     {
                         RetryMode = RetryMode.AlwaysRetry
                     });
+            }
 
             Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
@@ -178,6 +180,7 @@ public class ReactionEvent : ICurrencyEvent
     private bool TryTakeFromPot()
     {
         if (_isPotLimited)
+        {
             lock (_potLock)
             {
                 if (PotSize < _amount)
@@ -186,6 +189,7 @@ public class ReactionEvent : ICurrencyEvent
                 PotSize -= _amount;
                 return true;
             }
+        }
 
         return true;
     }

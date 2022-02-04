@@ -232,13 +232,17 @@ public partial class Help : NadekoModule<HelpService>
                                    {
                                        //if cross is specified, and the command doesn't satisfy the requirements, cross it out
                                        if (opts.View == CommandsOptions.ViewType.Cross)
+                                       {
                                            return
                                                $"{(succ.Contains(x) ? "✅" : "❌")}{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                                       }
+
                                        return
                                            $"{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
                                    });
 
                 if (i == last - 1 && (i + 1) % 2 != 0)
+                {
                     transformed = transformed.Chunk(2)
                                              .Select(x =>
                                              {
@@ -246,6 +250,8 @@ public partial class Help : NadekoModule<HelpService>
                                                      return $"{x.First()}";
                                                  return string.Concat(x);
                                              });
+                }
+
                 embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
             }
         }

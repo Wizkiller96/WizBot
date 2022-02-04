@@ -25,6 +25,7 @@ public partial class Games
 
             var game = new AcrophobiaGame(options);
             if (_service.AcrophobiaGames.TryAdd(channel.Id, game))
+            {
                 try
                 {
                     game.OnStarted += Game_OnStarted;
@@ -40,6 +41,7 @@ public partial class Games
                     _service.AcrophobiaGames.TryRemove(channel.Id, out game);
                     game?.Dispose();
                 }
+            }
             else
                 await ReplyErrorLocalizedAsync(strs.acro_running);
 

@@ -48,9 +48,7 @@ public partial class Utility
 
             decimal res;
             if (originUnit.Triggers == targetUnit.Triggers)
-            {
                 res = value;
-            }
             else if (originUnit.UnitType == "temperature")
             {
                 //don't really care too much about efficiency, so just convert to Kelvin, then to target

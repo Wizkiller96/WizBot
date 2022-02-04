@@ -314,9 +314,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         }
 
         if (time is null)
-        {
             await msg.DeleteAsync();
-        }
         else if (time.Time <= TimeSpan.FromDays(7))
         {
             _ = Task.Run(async () =>

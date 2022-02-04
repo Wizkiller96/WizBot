@@ -28,11 +28,13 @@ public static class WaifuExtensions
         Func<DbSet<WaifuInfo>, IQueryable<WaifuInfo>> includes = null)
     {
         if (includes is null)
+        {
             return waifus.Include(wi => wi.Waifu)
                          .Include(wi => wi.Affinity)
                          .Include(wi => wi.Claimer)
                          .Include(wi => wi.Items)
                          .FirstOrDefault(wi => wi.Waifu.UserId == userId);
+        }
 
         return includes(waifus).AsQueryable().FirstOrDefault(wi => wi.Waifu.UserId == userId);
     }

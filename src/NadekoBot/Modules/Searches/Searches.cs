@@ -60,9 +60,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var data = await _service.GetWeatherDataAsync(query);
 
         if (data is null)
-        {
             embed.WithDescription(GetText(strs.city_not_found)).WithErrorColor();
-        }
         else
         {
             var f = StandardConversions.CelsiusToFahrenheit;
@@ -284,6 +282,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         query = query.Trim();
         if (!_cachedShortenedLinks.TryGetValue(query, out var shortLink))
+        {
             try
             {
                 using var http = _httpFactory.CreateClient();
@@ -310,6 +309,7 @@ public partial class Searches : NadekoModule<SearchesService>
                 Log.Error(ex, "Error shortening a link: {Message}", ex.Message);
                 return;
             }
+        }
 
         await ctx.Channel.EmbedAsync(_eb.Create()
                                         .WithOkColor()
@@ -693,9 +693,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
 
         if (obj.Error is not null || obj.Verses is null || obj.Verses.Length == 0)
-        {
             await SendErrorAsync(obj.Error ?? "No verse found.");
-        }
         else
         {
             var v = obj.Verses[0];

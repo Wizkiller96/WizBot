@@ -99,7 +99,8 @@ public class WaifuService : INService, IReadyExecutor
                       .GroupBy(x => x.New)
                       .Count();
 
-        return (long)Math.Ceiling(waifu.Price * 1.25f) + ((divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset);
+        return (long)Math.Ceiling(waifu.Price * 1.25f)
+               + ((divorces + affs + 2) * settings.Waifu.Multipliers.WaifuReset);
     }
 
     public async Task<bool> TryReset(IUser user)
@@ -154,9 +155,7 @@ public class WaifuService : INService, IReadyExecutor
                 var claimer = uow.GetOrCreateUser(user);
                 var waifu = uow.GetOrCreateUser(target);
                 if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
-                {
                     result = WaifuClaimResult.NotEnoughFunds;
-                }
                 else
                 {
                     uow.WaifuInfo.Add(w = new()
@@ -179,9 +178,7 @@ public class WaifuService : INService, IReadyExecutor
             else if (isAffinity && amount > w.Price * settings.Waifu.Multipliers.CrushClaim)
             {
                 if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
-                {
                     result = WaifuClaimResult.NotEnoughFunds;
-                }
                 else
                 {
                     var oldClaimer = w.Claimer;
@@ -201,9 +198,7 @@ public class WaifuService : INService, IReadyExecutor
             else if (amount >= w.Price * settings.Waifu.Multipliers.NormalClaim) // if no affinity
             {
                 if (!await _cs.RemoveAsync(user.Id, amount, new("waifu", "claim")))
-                {
                     result = WaifuClaimResult.NotEnoughFunds;
-                }
                 else
                 {
                     var oldClaimer = w.Claimer;
@@ -221,9 +216,7 @@ public class WaifuService : INService, IReadyExecutor
                 }
             }
             else
-            {
                 result = WaifuClaimResult.InsufficientAmount;
-            }
 
 
             await uow.SaveChangesAsync();
@@ -311,13 +304,9 @@ public class WaifuService : INService, IReadyExecutor
         {
             w = uow.WaifuInfo.ByWaifuUserId(targetId);
             if (w?.Claimer is null || w.Claimer.UserId != user.Id)
-            {
                 result = DivorceResult.NotYourWife;
-            }
             else if (!_cache.TryAddDivorceCooldown(user.Id, out remaining))
-            {
                 result = DivorceResult.Cooldown;
-            }
             else
             {
                 amount = w.Price / 2;
@@ -361,6 +350,7 @@ public class WaifuService : INService, IReadyExecutor
         await using var uow = _db.GetDbContext();
         var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items).Include(x => x.Claimer));
         if (w is null)
+        {
             uow.WaifuInfo.Add(w = new()
             {
                 Affinity = null,
@@ -368,6 +358,7 @@ public class WaifuService : INService, IReadyExecutor
                 Price = 1,
                 Waifu = uow.GetOrCreateUser(giftedWaifu)
             });
+        }
 
         if (!itemObj.Negative)
         {
@@ -399,6 +390,7 @@ public class WaifuService : INService, IReadyExecutor
         using var uow = _db.GetDbContext();
         var wi = uow.GetWaifuInfo(targetId);
         if (wi is null)
+        {
             wi = new()
             {
                 AffinityCount = 0,
@@ -412,6 +404,7 @@ public class WaifuService : INService, IReadyExecutor
                 Items = new(),
                 Price = 1
             };
+        }
 
         return wi;
     }
@@ -498,7 +491,7 @@ public class WaifuService : INService, IReadyExecutor
         // only decay waifu values from shard 0
         if (_client.ShardId != 0)
             return;
-        
+
         var redisKey = $"{_creds.RedisKey()}_last_waifu_decay";
         while (true)
         {
@@ -509,9 +502,7 @@ public class WaifuService : INService, IReadyExecutor
                 var decayInterval = _gss.Data.Waifu.Decay.HourInterval;
 
                 if (multi is < 0f or > 1f || decayInterval < 0)
-                {
                     continue;
-                }
 
                 var val = await _cache.Redis.GetDatabase().StringGetAsync(redisKey);
                 if (val != default)
@@ -520,9 +511,7 @@ public class WaifuService : INService, IReadyExecutor
                     var toWait = decayInterval.Hours() - (DateTime.UtcNow - lastDecay);
 
                     if (toWait > 0.Hours())
-                    {
                         continue;
-                    }
                 }
 
                 await _cache.Redis.GetDatabase().StringSetAsync(redisKey, DateTime.UtcNow.ToBinary());
