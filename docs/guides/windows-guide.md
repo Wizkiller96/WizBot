@@ -70,7 +70,7 @@ You can still install them manually:
 ##### Prerequisites
 
 **Install these before proceeding or your bot will not work!**
-- [.net 5](https://dotnet.microsoft.com/download/dotnet/5.0)  - needed to compile and run the bot
+- [.net 6](https://dotnet.microsoft.com/download/dotnet/6.0)  - needed to compile and run the bot
 - [git](https://git-scm.com/downloads) - needed to clone the repository (you can also download the zip manually and extract it, but this guide assumes you're using git)
 - [redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) - to cache things needed by some features and persist through restarts
 

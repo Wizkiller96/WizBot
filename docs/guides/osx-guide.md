@@ -12,7 +12,7 @@ Open Terminal (if you don't know how to, click on the magnifying glass on the to
     - `brew install wget`  
     
 ###### Dotnet
-- Download [.net5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+- Download [.net6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 - Open the `.pkg` file you've downloaded and install it.
 - Run this command in Terminal. There might be output. If there is, disregard it. (copy-paste the entire block)
 ```bash
