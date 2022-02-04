@@ -51,6 +51,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
 - Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
 - Removed some obsolete commands and strings  
+- Removed code which migrated 2.x to v3 credentials, settings, etc...
 
 ## [3.0.13] - 14.04.2021
 

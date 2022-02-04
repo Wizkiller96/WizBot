@@ -8,7 +8,7 @@ src/NadekoBot/creds.yml
 src/NadekoBot/Command Errors*.txt
 
 src/NadekoBot/creds.yml
-# credentials file before and after migrations
+# credentials file before and after v3
 src/NadekoBot/credentials.json 
 src/NadekoBot/old_credentials.json 
 src/NadekoBot/credentials.json.bak
@@ -256,7 +256,7 @@ PublishScripts/
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
-# NuGet v3's project.json files produces more ignoreable files
+# NuGet v4's project.json files produces more ignoreable files
 *.nuget.props
 *.nuget.targets
 

@@ -2,8 +2,6 @@
 
 # DO NOT USE YET - WORK IN PROGRESS
 
-Upgrade from 2.x to v3 does not work because the file is mount readonly
-
 ### Docker Compose 
 ```yml
 version: "3.7"

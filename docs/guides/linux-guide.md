@@ -1,10 +1,7 @@
 # Setting up NadekoBot on Linux
 
-## Please **READ** the [Migration] section if you are still on on Nadeko **2.x**
-
 | Table of Contents                                   |
 | :-------------------------------------------------- |
-| [Migration]                                         |
 | [Linux From Source]                                 |
 | [Source Update Instructions]                        |
 | [Linux Release]                                     |
@@ -13,12 +10,6 @@
 | [Systemd]                                           |
 | [Systemd + Script]                                  |
 | [Setting up Nadeko on a VPS (Digital Ocean)]        |
-
-## Migration
-
-### ⚠ If you're already hosting NadekoBot, _You **MUST** update to latest version of 2.x and **run your bot at least once**_ before upgrading to v3. ⚠
-
-#### [**LINUX MIGRATION INSTRUCTIONS**](../migration-guide/#linux)
 
 #### Operating System Compatibility
 
@@ -307,7 +298,6 @@ If you are running your droplet for the first time, it will most likely ask you 
 
 After that, your droplet should be ready for use. [Follow the guide from the beginning](#linux-from-source) to set Nadeko up on your newly created VPS.
 
-[Migration]: #migration
 [Linux From Source]: #linux-from-source
 [Source Update Instructions]: #source-update-instructions
 [Linux Release]: #linux-release
