@@ -1265,3 +1265,5 @@ exprsexport:
   - exexport
 deleteemptyservers:
   - deleteemptyservers
+stock:
+  - stock
