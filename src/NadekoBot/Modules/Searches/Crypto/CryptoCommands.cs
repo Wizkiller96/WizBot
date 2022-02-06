@@ -8,6 +8,110 @@ public partial class Searches
 {
     public partial class CryptoCommands : NadekoSubmodule<CryptoService>
     {
+        private readonly IStockDataService _stocksService;
+
+        public CryptoCommands(IStockDataService stocksService)
+        {
+            _stocksService = stocksService;
+        }
+        
+        [Cmd]
+        public async partial Task Stock([Leftover]string query)
+        {
+            if (!query.IsAlphaNumeric())
+                return;
+
+            using var typing = ctx.Channel.EnterTypingState();
+            
+            var stocks = await _stocksService.GetStockDataAsync(query);
+
+            if (stocks.Count == 0)
+            {
+                var symbols = await _stocksService.SearchSymbolAsync(query);
+
+                if (symbols.Count == 0)
+                {
+                    await ReplyErrorLocalizedAsync(strs.not_found);
+                    return;
+                }
+
+                var symbol = symbols.First();
+                var promptEmbed = _eb.Create()
+                                     .WithDescription(symbol.Description)
+                                     .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
+                
+                if (!await PromptUserConfirmAsync(promptEmbed))
+                    return;
+
+                query = symbol.Symbol;
+                stocks = await _stocksService.GetStockDataAsync(query);
+
+                if (stocks.Count == 0)
+                {
+                    await ReplyErrorLocalizedAsync(strs.not_found);
+                    return;
+                }
+
+            }
+            
+            // try to find a ticker match
+            var stock = stocks.Count == 1
+                ? stocks.FirstOrDefault()
+                : stocks.FirstOrDefault(x => x.Ticker == query.ToUpperInvariant());
+            
+            if (stock is null)
+            {
+                var ebImprecise = _eb.Create()
+                                     .WithOkColor()
+                                     .WithTitle(GetText(strs.stocks_multiple_results))
+                                     .WithDescription(stocks.Take(20)
+                                                            .Select(s => $"{Format.Code(s.Ticker)} {s.Name.TrimTo(50)}")
+                                                            .Join('\n'));
+
+                await ctx.Channel.EmbedAsync(ebImprecise);
+                return;
+            }
+
+            var localCulture = (CultureInfo)Culture.Clone();
+            localCulture.NumberFormat.CurrencySymbol = "$";
+
+            var sign = stock.Price >= stock.Close
+                ? "\\🔼"
+                : "\\🔻";
+
+            var change = (stock.Price - stock.Close).ToString("N2", Culture);
+            var changePercent = (1 - (stock.Close / stock.Price)).ToString("P1", Culture);
+            
+            var sign50 = stock.Change50d >= 0
+                ? "\\🔼"
+                : "\\🔻";
+
+            var change50 = (stock.Change50d / 100).ToString("P1", Culture);
+            
+            var sign200 = stock.Change200d >= 0
+                ? "\\🔼"
+                : "\\🔻";
+            
+            var change200 = (stock.Change200d / 100).ToString("P1", Culture);
+            
+            var price = stock.Price.ToString("C2", localCulture);
+
+            var eb = _eb.Create()
+                        .WithOkColor()
+                        .WithAuthor(stock.Ticker)
+                        .WithTitle(stock.Name)
+                        .AddField(GetText(strs.price), $"{sign} **{price}**", true)
+                        .AddField(GetText(strs.market_cap), stock.MarketCap.ToString("C0", localCulture), true)
+                        .AddField(GetText(strs.volume_24h), stock.DailyVolume.ToString("C0", localCulture), true)
+                        .AddField("Change", $"{change} ({changePercent})", true)
+                        .AddField("Change 50d", $"{sign50}{change50}", true)
+                        .AddField("Change 200d", $"{sign200}{change200}", true)
+                        .WithFooter(stock.Exchange);
+            
+            await ctx.Channel.EmbedAsync(eb);
+        }
+        
+
         [Cmd]
         public async partial Task Crypto(string name)
         {

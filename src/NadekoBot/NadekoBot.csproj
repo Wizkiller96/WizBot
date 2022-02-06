@@ -19,61 +19,64 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AngleSharp" Version="0.16.1"/>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.7.10"/>
-        <PackageReference Include="CodeHollow.FeedReader" Version="1.2.2"/>
-        <PackageReference Include="CommandLineParser" Version="2.8.0"/>
-        <PackageReference Include="Discord.Net" Version="3.1.0"/>
-        <PackageReference Include="CoreCLR-NCalc" Version="2.2.92"/>
-        <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138"/>
-        <PackageReference Include="Google.Apis.YouTube.v3" Version="1.55.0.2449"/>
-        <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.49.0.2084"/>
-        <PackageReference Include="Google.Protobuf" Version="3.19.2"/>
-        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.41.0"/>
+        <PackageReference Include="AngleSharp" Version="0.16.1" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.7.10" />
+        <PackageReference Include="CodeHollow.FeedReader" Version="1.2.2" />
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
+        <PackageReference Include="Discord.Net" Version="3.1.0" />
+        <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
+        <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
+        <PackageReference Include="Google.Apis.YouTube.v3" Version="1.55.0.2449" />
+        <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.49.0.2084" />
+        <PackageReference Include="Google.Protobuf" Version="3.19.2" />
+        <PackageReference Include="Grpc.Net.ClientFactory" Version="2.41.0" />
         <PackageReference Include="Grpc.Tools" Version="2.43.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Html2Markdown" Version="5.0.1.524"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1"/>
+        <PackageReference Include="Html2Markdown" Version="5.0.1.524" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0"/>
-        <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="Scrutor" Version="3.3.0"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
-        <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4"/>
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010"/>
-        <PackageReference Include="StackExchange.Redis" Version="2.2.88"/>
-        <PackageReference Include="YamlDotNet" Version="11.2.1"/>
-        <PackageReference Include="linq2db.EntityFrameworkCore" Version="6.6.1"/>
-        <PackageReference Include="Humanizer" Version="2.13.14"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+        <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+        <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Scrutor" Version="3.3.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+        <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta0010" />
+        <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+        <PackageReference Include="YamlDotNet" Version="11.2.1" />
+        <PackageReference Include="linq2db.EntityFrameworkCore" Version="6.6.1" />
+        <PackageReference Include="Humanizer" Version="2.13.14" />
+        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
         
 		<!-- Remove this when static abstract interface members support is released -->
         <PackageReference Include="System.Runtime.Experimental" Version="6.0.0" />
+        
+        <!-- Used by .crypto command -->
+        <PackageReference Include="YahooFinanceApi" Version="2.1.2" />        
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj"/>
-        <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
+        <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="data\strings\responses\responses.en-US.json"/>
+        <AdditionalFiles Include="data\strings\responses\responses.en-US.json" />
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="..\NadekoBot.Coordinator\Protos\coordinator.proto" GrpcServices="Client">
@@ -102,13 +105,9 @@
     </PropertyGroup>
 
 	<!-- TODO: Remove this when the conflict issue is fixed -->
-	<Target Name="RemoveSystemRuntimeFromRefPack"
-		 BeforeTargets="_HandlePackageFileConflicts"
-		 Condition="'@(Reference -> WithMetadataValue('NugetPackageId', 'System.Runtime.Experimental'))' != ''">
+	<Target Name="RemoveSystemRuntimeFromRefPack" BeforeTargets="_HandlePackageFileConflicts" Condition="'@(Reference -&gt; WithMetadataValue('NugetPackageId', 'System.Runtime.Experimental'))' != ''">
 		<ItemGroup>
-			<Reference Remove="@(Reference)"
-					   Condition="$([System.String]::Copy(%(Reference.Identity)).Contains('System.Runtime.dll')) and
-                            '%(Reference.NuGetPackageId)' == 'Microsoft.NETCore.App.Ref'" />
+			<Reference Remove="@(Reference)" Condition="$([System.String]::Copy(%(Reference.Identity)).Contains('System.Runtime.dll')) and&#xD;&#xA;                            '%(Reference.NuGetPackageId)' == 'Microsoft.NETCore.App.Ref'" />
 		</ItemGroup>
 	</Target>
 </Project>

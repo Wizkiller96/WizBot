@@ -1,3 +1,5 @@
+using System.Buffers;
+
 namespace NadekoBot.Extensions;
 
 // made for expressions because they almost never get added
@@ -29,4 +31,15 @@ public static class ArrayExtensions
     /// <returns>New array with updated elements</returns>
     public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
         => Array.ConvertAll(arr, x => f(x));
+
+    public static IReadOnlyCollection<TOut> Map<TIn, TOut>(this IReadOnlyCollection<TIn> col, Func<TIn, TOut> f)
+    {
+        var toReturn = new TOut[col.Count];
+        
+        var i = 0;
+        foreach (var item in col)
+            toReturn[i++] = f(item);
+
+        return toReturn;
+    }
 }

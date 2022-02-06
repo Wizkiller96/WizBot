@@ -63,6 +63,10 @@ Used only for .time command")]
     [Comment(@"https://pro.coinmarketcap.com/account/ api key. There is a free plan for personal use.
 Used for cryptocurrency related commands.")]
     public string CoinmarketcapApiKey { get; set; }
+    
+//     [Comment(@"https://polygon.io/dashboard/api-keys api key. Free plan allows for 5 queries per minute.
+// Used for stocks related commands.")]
+//     public string PolygonIoApiKey { get; set; }
 
     [Comment(@"Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api")]
     public string OsuApiKey { get; set; }
