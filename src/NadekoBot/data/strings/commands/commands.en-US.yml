@@ -2034,9 +2034,10 @@ crypto:
     - "btc"
     - "bitcoin"
 stock:
-  desc: "Shows basic information about a stock. Only symbols are supported. Full company names are not supported atm."
+  desc: "Shows basic information about a stock. You can use a symbol or company name"
   args:
     - "tsla"
+    - "advanced micro devices"
     - "amd"
 rolelevelreq:
   desc: "Set a level requirement on a self-assignable role."

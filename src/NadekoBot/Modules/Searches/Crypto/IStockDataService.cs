@@ -2,6 +2,7 @@
 
 public interface IStockDataService
 {
-    public Task<IReadOnlyCollection<StockData>> GetStockDataAsync(string query);
+    public Task<StockData?> GetStockDataAsync(string symbol);
     Task<IReadOnlyCollection<SymbolData>> SearchSymbolAsync(string query);
+    Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query);
 }

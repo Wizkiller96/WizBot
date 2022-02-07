@@ -8,13 +8,15 @@ namespace NadekoBot.Modules.Searches;
 // todo autoplay/fairplay
 public partial class Searches
 {
-    public partial class CryptoCommands : NadekoSubmodule<CryptoService>
+    public partial class FinanceCommands : NadekoSubmodule<CryptoService>
     {
         private readonly IStockDataService _stocksService;
+        private readonly IStockChartDrawingService _stockDrawingService;
 
-        public CryptoCommands(IStockDataService stocksService)
+        public FinanceCommands(IStockDataService stocksService, IStockChartDrawingService stockDrawingService)
         {
             _stocksService = stocksService;
+            _stockDrawingService = stockDrawingService;
         }
         
         [Cmd]
@@ -22,9 +24,9 @@ public partial class Searches
         {
             using var typing = ctx.Channel.EnterTypingState();
             
-            var stocks = await _stocksService.GetStockDataAsync(query);
+            var stock = await _stocksService.GetStockDataAsync(query);
 
-            if (stocks.Count == 0)
+            if (stock is null)
             {
                 var symbols = await _stocksService.SearchSymbolAsync(query);
 
@@ -43,34 +45,18 @@ public partial class Searches
                     return;
 
                 query = symbol.Symbol;
-                stocks = await _stocksService.GetStockDataAsync(query);
+                stock = await _stocksService.GetStockDataAsync(query);
 
-                if (stocks.Count == 0)
+                if (stock is null)
                 {
                     await ReplyErrorLocalizedAsync(strs.not_found);
                     return;
                 }
-
-            }
-            
-            // try to find a ticker match
-            var stock = stocks.Count == 1
-                ? stocks.FirstOrDefault()
-                : stocks.FirstOrDefault(x => x.Ticker == query.ToUpperInvariant());
-            
-            if (stock is null)
-            {
-                var ebImprecise = _eb.Create()
-                                     .WithOkColor()
-                                     .WithTitle(GetText(strs.stocks_multiple_results))
-                                     .WithDescription(stocks.Take(20)
-                                                            .Select(s => $"{Format.Code(s.Ticker)} {s.Name.TrimTo(50)}")
-                                                            .Join('\n'));
-
-                await ctx.Channel.EmbedAsync(ebImprecise);
-                return;
             }
 
+            var candles = await _stocksService.GetCandleDataAsync(query);
+            var stockImageTask = _stockDrawingService.GenerateCombinedChartAsync(candles);
+            
             var localCulture = (CultureInfo)Culture.Clone();
             localCulture.NumberFormat.CurrencySymbol = "$";
 
@@ -85,19 +71,20 @@ public partial class Searches
                 ? "\\🔼"
                 : "\\🔻";
 
-            var change50 = (stock.Change50d / 100).ToString("P1", Culture);
+            var change50 = (stock.Change50d).ToString("P1", Culture);
             
             var sign200 = stock.Change200d >= 0
                 ? "\\🔼"
                 : "\\🔻";
             
-            var change200 = (stock.Change200d / 100).ToString("P1", Culture);
+            var change200 = (stock.Change200d).ToString("P1", Culture);
             
             var price = stock.Price.ToString("C2", localCulture);
 
             var eb = _eb.Create()
                         .WithOkColor()
-                        .WithAuthor(stock.Ticker)
+                        .WithAuthor(stock.Symbol)
+                        .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
                         .WithTitle(stock.Name)
                         .AddField(GetText(strs.price), $"{sign} **{price}**", true)
                         .AddField(GetText(strs.market_cap), stock.MarketCap.ToString("C0", localCulture), true)
@@ -107,7 +94,25 @@ public partial class Searches
                         .AddField("Change 200d", $"{sign200}{change200}", true)
                         .WithFooter(stock.Exchange);
             
-            await ctx.Channel.EmbedAsync(eb);
+            var message = await ctx.Channel.EmbedAsync(eb);
+            await using var imageData = await stockImageTask;
+            if (imageData is null)
+                return;
+
+            var fileName = $"{query}-sparkline.{imageData.Extension}";
+            await message.ModifyAsync(mp =>
+            {
+                mp.Attachments =
+                    new(new[]
+                    {
+                        new FileAttachment(
+                            imageData.FileData,
+                            fileName
+                        )
+                    });
+
+                mp.Embed = eb.WithImageUrl($"attachment://{fileName}").Build();
+            });
         }
         
 

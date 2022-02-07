@@ -97,7 +97,6 @@ public class VcRoleService : INService
 
     private async Task InitializeVcRole(GuildConfig gconf)
     {
-        await Task.Yield();
         var g = _client.GetGuild(gconf.GuildId);
         if (g is null)
             return;
@@ -120,11 +119,12 @@ public class VcRoleService : INService
         if (missingRoles.Any())
         {
             await using var uow = _db.GetDbContext();
-            Log.Warning("Removing {MissingRoleCount} missing roles from {ServiceName}",
-                missingRoles.Count,
-                nameof(VcRoleService));
             uow.RemoveRange(missingRoles);
             await uow.SaveChangesAsync();
+            
+            Log.Warning("Removed {MissingRoleCount} missing roles from {ServiceName}",
+                missingRoles.Count,
+                nameof(VcRoleService));
         }
     }
 

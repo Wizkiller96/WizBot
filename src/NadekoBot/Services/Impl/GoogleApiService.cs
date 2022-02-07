@@ -177,7 +177,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 

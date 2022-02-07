@@ -51,43 +51,38 @@ public class CommandMapService : IInputTransformer, INService
         IUser user,
         string input)
     {
-        await Task.Yield();
-
         if (guild is null || string.IsNullOrWhiteSpace(input))
             return input;
 
-        if (guild is not null)
+        if (AliasMaps.TryGetValue(guild.Id, out var maps))
         {
-            if (AliasMaps.TryGetValue(guild.Id, out var maps))
+            var keys = maps.Keys.OrderByDescending(x => x.Length);
+
+            foreach (var k in keys)
             {
-                var keys = maps.Keys.OrderByDescending(x => x.Length);
+                string newInput;
+                if (input.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase))
+                    newInput = maps[k] + input.Substring(k.Length, input.Length - k.Length);
+                else if (input.Equals(k, StringComparison.InvariantCultureIgnoreCase))
+                    newInput = maps[k];
+                else
+                    continue;
 
-                foreach (var k in keys)
+                try
                 {
-                    string newInput;
-                    if (input.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase))
-                        newInput = maps[k] + input.Substring(k.Length, input.Length - k.Length);
-                    else if (input.Equals(k, StringComparison.InvariantCultureIgnoreCase))
-                        newInput = maps[k];
-                    else
-                        continue;
-
-                    try
+                    var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
+                    _ = Task.Run(async () =>
                     {
-                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
-                        _ = Task.Run(async () =>
+                        await Task.Delay(1500);
+                        await toDelete.DeleteAsync(new()
                         {
-                            await Task.Delay(1500);
-                            await toDelete.DeleteAsync(new()
-                            {
-                                RetryMode = RetryMode.AlwaysRetry
-                            });
+                            RetryMode = RetryMode.AlwaysRetry
                         });
-                    }
-                    catch { }
-
-                    return newInput;
+                    });
                 }
+                catch { }
+
+                return newInput;
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 using YahooFinanceApi;
 
 namespace NadekoBot.Modules.Searches;
@@ -9,16 +8,14 @@ public sealed class DefaultStockDataService : IStockDataService, INService
     private readonly IHttpClientFactory _httpClientFactory;
 
     public DefaultStockDataService(IHttpClientFactory httpClientFactory)
-    {
-        _httpClientFactory = httpClientFactory;
-    }
-    
-    public async Task<IReadOnlyCollection<StockData>> GetStockDataAsync(string query)
+        => _httpClientFactory = httpClientFactory;
+
+    public async Task<StockData?> GetStockDataAsync(string query)
     {
         try
         {
             if (!query.IsAlphaNumeric())
-                return Array.Empty<StockData>();
+                return default;
 
             var symbols = await Yahoo.Symbols(query)
                                      .Fields(Field.LongName,
@@ -31,28 +28,30 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                                          Field.AverageDailyVolume10Day,
                                          Field.FullExchangeName)
                                      .QueryAsync();
+
+            var symbol = symbols.Values.FirstOrDefault();
+
+            if (symbol is null)
+                return default;
             
-            return symbols
-                   .Select(static x => x.Value)
-                          .Select(static x => new StockData()
-                          {
-                              Name = x.LongName,
-                              Ticker = x.Symbol,
-                              Price = x.RegularMarketPrice,
-                              Close = x.RegularMarketPreviousClose,
-                              MarketCap = x.MarketCap,
-                              Change50d = x.FiftyDayAverageChangePercent,
-                              Change200d = x.TwoHundredDayAverageChangePercent,
-                              DailyVolume = x.AverageDailyVolume10Day,
-                              Exchange = x.FullExchangeName
-                          })
-                          .ToList();
+            return new()
+            {
+                Name = symbol.LongName,
+                Symbol = symbol.Symbol,
+                Price = symbol.RegularMarketPrice,
+                Close = symbol.RegularMarketPreviousClose,
+                MarketCap = symbol.MarketCap,
+                Change50d = symbol.FiftyDayAverageChangePercent,
+                Change200d = symbol.TwoHundredDayAverageChangePercent,
+                DailyVolume = symbol.AverageDailyVolume10Day,
+                Exchange = symbol.FullExchangeName
+            };
         }
         catch (Exception ex)
         {
             // what the hell is this api exception
             Log.Warning(ex, "Error getting stock data: {ErrorMessage}", ex.Message);
-            return Array.Empty<StockData>();
+            return default;
         }
     }
 
@@ -81,10 +80,11 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                   .ToList();
     }
 
-    // public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
-    // {
-    //     
-    // }
-}
+    public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
+    {
+        var candles = await Yahoo.GetHistoricalAsync(query, DateTime.Now.Subtract(30.Days()));
 
-public record CandleData();
+        return candles
+            .Map(static x => new CandleData(x.Open, x.Close, x.High, x.Low, x.Volume));
+    }
+}
