@@ -125,13 +125,12 @@ public class GameStatusEvent : ICurrencyEvent
             await StopEvent();
     }
 
-    public async Task StopEvent()
+    public Task StopEvent()
     {
-        await Task.Yield();
         lock (_stopLock)
         {
             if (Stopped)
-                return;
+                return Task.CompletedTask;
             Stopped = true;
             _client.MessageDeleted -= OnMessageDeleted;
             _client.MessageReceived -= HandleMessage;
@@ -146,6 +145,8 @@ public class GameStatusEvent : ICurrencyEvent
 
             _ = OnEnded?.Invoke(_guild.Id);
         }
+
+        return Task.CompletedTask;
     }
 
     private Task HandleMessage(SocketMessage message)

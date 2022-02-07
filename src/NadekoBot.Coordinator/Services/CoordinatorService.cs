@@ -111,11 +111,10 @@ namespace NadekoBot.Coordinator
             return new DieReply();
         }
 
-        public override async Task<SetConfigTextReply> SetConfigText(SetConfigTextRequest request, ServerCallContext context)
+        public override Task<SetConfigTextReply> SetConfigText(SetConfigTextRequest request, ServerCallContext context)
         {
-            await Task.Yield();
-            string error = string.Empty;
-            bool success = true;
+            var error = string.Empty;
+            var success = true;
             try
             {
                 _runner.SetConfigText(request.ConfigYml);
@@ -126,11 +125,11 @@ namespace NadekoBot.Coordinator
                 success = false;
             }
 
-            return new(new()
+            return Task.FromResult<SetConfigTextReply>(new(new()
             {
                 Success = success,
                 Error = error
-            });
+            }));
         }
 
         public override Task<GetConfigTextReply> GetConfigText(GetConfigTextRequest request, ServerCallContext context)

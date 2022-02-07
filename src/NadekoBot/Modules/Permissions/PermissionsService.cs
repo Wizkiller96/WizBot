@@ -102,7 +102,6 @@ public class PermissionService : ILateBlocker, INService
         var channel = ctx.Channel;
         var commandName = command.Name.ToLowerInvariant();
 
-        await Task.Yield();
         if (guild is null)
             return false;
 

@@ -122,13 +122,13 @@ public class ReactionEvent : ICurrencyEvent
             await StopEvent();
     }
 
-    public async Task StopEvent()
+    public Task StopEvent()
     {
-        await Task.Yield();
         lock (_stopLock)
         {
             if (Stopped)
-                return;
+                return Task.CompletedTask;
+            
             Stopped = true;
             _client.MessageDeleted -= OnMessageDeleted;
             _client.ReactionAdded -= HandleReaction;
@@ -142,6 +142,8 @@ public class ReactionEvent : ICurrencyEvent
 
             _ = OnEnded?.Invoke(_guild.Id);
         }
+
+        return Task.CompletedTask;
     }
 
     private Task HandleReaction(

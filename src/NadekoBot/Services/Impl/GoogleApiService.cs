@@ -197,12 +197,12 @@ public class GoogleApiService : IGoogleApiService, INService
     // todo future add quota users
     public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentNullException(nameof(id));
 
         if (count <= 0)
             throw new ArgumentOutOfRangeException(nameof(count));
+        
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.RelatedToVideoId = id;
@@ -212,7 +212,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 
@@ -231,7 +230,6 @@ public class GoogleApiService : IGoogleApiService, INService
         string keywords,
         int count = 1)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 
@@ -251,7 +249,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<string> ShortenUrl(string url)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentNullException(nameof(url));
 
@@ -280,7 +277,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<IEnumerable<string>> GetPlaylistTracksAsync(string playlistId, int count = 50)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(playlistId))
             throw new ArgumentNullException(nameof(playlistId));
 
@@ -312,7 +308,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<IReadOnlyDictionary<string, TimeSpan>> GetVideoDurationsAsync(IEnumerable<string> videoIds)
     {
-        await Task.Yield();
         var videoIdsList = videoIds as List<string> ?? videoIds.ToList();
 
         var toReturn = new Dictionary<string, TimeSpan>();
@@ -339,7 +334,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<ImageResult> GetImageAsync(string query)
     {
-        await Task.Yield();
         if (string.IsNullOrWhiteSpace(query))
             throw new ArgumentNullException(nameof(query));
 
@@ -359,7 +353,6 @@ public class GoogleApiService : IGoogleApiService, INService
 
     public async Task<string> Translate(string sourceText, string sourceLanguage, string targetLanguage)
     {
-        await Task.Yield();
         string text;
 
         if (!Languages.ContainsKey(sourceLanguage) || !Languages.ContainsKey(targetLanguage))
