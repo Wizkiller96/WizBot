@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using YahooFinanceApi;
 
 namespace NadekoBot.Modules.Searches;
@@ -16,6 +17,9 @@ public sealed class DefaultStockDataService : IStockDataService, INService
     {
         try
         {
+            if (!query.IsAlphaNumeric())
+                return Array.Empty<StockData>();
+
             var symbols = await Yahoo.Symbols(query)
                                      .Fields(Field.LongName,
                                          Field.Symbol,
@@ -27,7 +31,7 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                                          Field.AverageDailyVolume10Day,
                                          Field.FullExchangeName)
                                      .QueryAsync();
-
+            
             return symbols
                    .Select(static x => x.Value)
                           .Select(static x => new StockData()
@@ -52,32 +56,35 @@ public sealed class DefaultStockDataService : IStockDataService, INService
         }
     }
 
-    public Task<IReadOnlyCollection<SymbolData>> SearchSymbolAsync(string query)
+    public async Task<IReadOnlyCollection<SymbolData>> SearchSymbolAsync(string query)
     {
-        return Task.FromResult<IReadOnlyCollection<SymbolData>>(Array.Empty<SymbolData>());
+        if (string.IsNullOrWhiteSpace(query))
+            throw new ArgumentNullException(nameof(query));
+
+        query = Uri.EscapeDataString(query);
         
-        // try
-        // {
-        //     query = Uri.EscapeDataString(query);
-        //     using var http = _httpClientFactory.CreateClient();
-        //     var response = await http.GetFromJsonAsync<FinnHubSearchResponse>($"https://finnhub.io/api/v1/search"
-        //                                                                       + $"?q={query}"
-        //                                                                       + $"&token=");
-        //
-        //     if (response is null)
-        //         return Array.Empty<SymbolData>();
-        //
-        //     return response.Result
-        //                    .Where(x => x.Type == "Common Stock")
-        //                    .Select(static x => new SymbolData(x.Symbol, x.Description))
-        //                    .ToList();
-        // }
-        // catch (Exception ex)
-        // {
-        //     Log.Warning(ex, "Error searching stock symbol: {ErrorMessage}", ex.Message);
-        //     return Array.Empty<SymbolData>();
-        // }
+        using var http = _httpClientFactory.CreateClient();
+        
+        var res = await http.GetStringAsync(
+            "https://finance.yahoo.com/_finance_doubledown/api/resource/searchassist"
+            + $";searchTerm={query}"
+            + "?device=console");
+
+        var data = JsonSerializer.Deserialize<YahooFinanceSearchResponse>(res);
+
+        if (data is null or { Items: null })
+            return Array.Empty<SymbolData>();
+        
+        return data.Items
+                  .Where(x => x.Type == "S")
+                  .Select(x => new SymbolData(x.Symbol, x.Name))
+                  .ToList();
     }
+
+    // public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
+    // {
+    //     
+    // }
 }
 
-public record SymbolData(string Symbol, string Description);
+public record CandleData();

@@ -4,6 +4,8 @@ using System.Globalization;
 
 namespace NadekoBot.Modules.Searches;
 
+// todo weighted warnings fix
+// todo autoplay/fairplay
 public partial class Searches
 {
     public partial class CryptoCommands : NadekoSubmodule<CryptoService>
@@ -18,9 +20,6 @@ public partial class Searches
         [Cmd]
         public async partial Task Stock([Leftover]string query)
         {
-            if (!query.IsAlphaNumeric())
-                return;
-
             using var typing = ctx.Channel.EnterTypingState();
             
             var stocks = await _stocksService.GetStockDataAsync(query);
