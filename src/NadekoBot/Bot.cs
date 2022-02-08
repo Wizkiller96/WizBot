@@ -46,9 +46,16 @@ public sealed class Bot
         if (shardId == 0)
             _db.Setup();
 
+        var messageCacheSize =
+#if GLOBAL_NADEKO
+            0;
+#else
+            50;
+#endif
+        
         Client = new(new()
         {
-            MessageCacheSize = 50,
+            MessageCacheSize = messageCacheSize,
             LogLevel = LogSeverity.Warning,
             ConnectionTimeout = int.MaxValue,
             TotalShards = _creds.TotalShards,
