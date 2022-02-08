@@ -68,13 +68,14 @@ public partial class Games : NadekoModule<GamesService>
 
         imgStream.Position = 0;
         await ctx.Channel.SendFileAsync(imgStream,
-            $"girl_{usr}.png",
+            $"rating.png",
             Format.Bold($"{ctx.User.Mention} Girl Rating For {usr}"),
             embed: _eb.Create()
                       .WithOkColor()
                       .AddField("Hot", gr.Hot.ToString("F2"), true)
                       .AddField("Crazy", gr.Crazy.ToString("F2"), true)
                       .AddField("Advice", gr.Advice)
+                      .WithImageUrl($"attachment://rating.png")
                       .Build());
     }
 
