@@ -17,7 +17,7 @@ public partial class Administration
         {
             if (await _service.TryStopAntiAlt(ctx.Guild.Id))
             {
-                await ReplyErrorLocalizedAsync(strs.prot_disable("Anti-Alt"));
+                await ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Alt"));
                 return;
             }
 

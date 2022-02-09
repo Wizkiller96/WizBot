@@ -54,7 +54,7 @@ public class UserPunishService : INService, IReadyExecutor
         IGuild guild,
         ulong userId,
         IUser mod,
-        int weight,
+        long weight,
         string reason)
     {
         if (weight <= 0)
@@ -77,25 +77,29 @@ public class UserPunishService : INService, IReadyExecutor
             Weight = weight
         };
 
-        var warnings = 1;
+        long previousCount;
         List<WarningPunishment> ps;
         await using (var uow = _db.GetDbContext())
         {
             ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
 
-            warnings += uow.Warnings.ForId(guildId, userId)
-                           .Where(w => !w.Forgiven && w.UserId == userId)
-                           .Sum(x => x.Weight);
+            previousCount = uow.Warnings.ForId(guildId, userId)
+                                .Where(w => !w.Forgiven && w.UserId == userId)
+                                .Sum(x => x.Weight);
 
             uow.Warnings.Add(warn);
 
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
         }
 
-        var p = ps.FirstOrDefault(x => x.Count == warnings);
+        var totalCount = previousCount + weight;
+        
+        var p = ps.Where(x => x.Count > previousCount && x.Count <= totalCount)
+                  .MaxBy(x => x.Count);
 
         if (p is not null)
         {
+            // todo shouldn't this try to get through api too
             var user = await guild.GetUserAsync(userId);
             if (user is null)
                 return null;
