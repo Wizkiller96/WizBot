@@ -17,6 +17,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
     - waifu.decay.hourInterval - How often to decay the price 
     - waifu.decay.minPrice - Unclaimed waifus with price lower than the one specified here will not be affected by the decay
 - Added `currency.transactionsLifetime` to `data/gambling.yml` Any transaction older than the number of days specified will be automatically deleted
+- Added `.stock` command to check stock prices and charts
 
 ### Fixed
 - Fixed an extra whitespace in usage part of command help if the command has no arguments  
