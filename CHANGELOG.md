@@ -26,6 +26,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.gvc` should now properly detect multiple activities  
 - Fixed reference to non-existent command in bot.yml
 - Comment indentation in .yml files should now make more sense
+- Fixed `.warn` punishments not being applied properly when using weighted warnings
+- Fixed embed color when disabling `.antialt`
 
 ### Changed
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
