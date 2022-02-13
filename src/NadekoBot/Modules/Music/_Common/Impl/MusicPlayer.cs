@@ -28,6 +28,7 @@ public sealed class MusicPlayer : IMusicPlayer
     private readonly IMusicQueue _queue;
     private readonly ITrackResolveProvider _trackResolveProvider;
     private readonly IVoiceProxy _proxy;
+    private readonly IGoogleApiService _googleApiService;
     private readonly ISongBuffer _songBuffer;
 
     private bool skipped;
@@ -35,15 +36,21 @@ public sealed class MusicPlayer : IMusicPlayer
     private readonly Thread _thread;
     private readonly Random _rng;
 
+    public bool AutoPlay { get; set; }
+
     public MusicPlayer(
         IMusicQueue queue,
         ITrackResolveProvider trackResolveProvider,
         IVoiceProxy proxy,
-        QualityPreset qualityPreset)
+        IGoogleApiService googleApiService,
+        QualityPreset qualityPreset,
+        bool autoPlay)
     {
         _queue = queue;
         _trackResolveProvider = trackResolveProvider;
         _proxy = proxy;
+        _googleApiService = googleApiService;
+        AutoPlay = autoPlay;
         _rng = new NadekoRandom();
 
         _vc = GetVoiceClient(qualityPreset);
@@ -265,7 +272,29 @@ public sealed class MusicPlayer : IMusicPlayer
             {
                 cancellationTokenSource.Cancel();
                 // turn off green in vc
+
                 _ = OnCompleted?.Invoke(this, track);
+                
+                // todo update when settings are changed
+                if (AutoPlay && track.Platform == MusicPlatform.Youtube)
+                {
+                    try
+                    {
+                        var relatedSongs = await _googleApiService.GetRelatedVideosAsync(track.TrackInfo.Id, 5);
+                        var related = relatedSongs.Shuffle().FirstOrDefault();
+                        if (related is not null)
+                        {
+                            var relatedTrack = await _trackResolveProvider.QuerySongAsync(related, MusicPlatform.Youtube);
+                            if (relatedTrack is not null)
+                                EnqueueTrack(relatedTrack, "Autoplay");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning(ex, "Failed queueing a related song via autoplay");
+                    }
+                }
+
 
                 HandleQueuePostTrack();
                 skipped = false;

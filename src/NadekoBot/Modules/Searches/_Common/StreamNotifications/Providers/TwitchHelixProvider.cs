@@ -1,4 +1,5 @@
-#nullable disable
+// #nullable disable
+// using NadekoBot.Db.Models;
 // using System;
 // using System.Collections.Generic;
 // using System.Linq;
@@ -10,6 +11,7 @@
 // using NadekoBot.Services.Database.Models;
 // using NadekoBot.Extensions;
 // using Serilog;
+// using TwitchLib.Api;
 // using JsonSerializer = System.Text.Json.JsonSerializer;
 //
 // namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers
@@ -25,33 +27,17 @@
 //         public override FollowedStream.FType Platform => FollowedStream.FType.Twitch;
 //
 //         private (string Token, DateTime Expiry) _token = default;
-//     
+//         private readonly TwitchAPI _api;
+//
 //         public TwitchHelixProvider(IHttpClientFactory httpClientFactory)
 //         {
 //             _httpClientFactory = httpClientFactory;
+//             _api = new TwitchAPI();
 //         }
 //
 //         private async Task EnsureTokenValidAsync()
-//         {
-//             if (_token != default && (DateTime.UtcNow - _token.Expiry) > TimeSpan.FromHours(1))
-//                 return;
+//             => await _api.Auth.GetAccessTokenAsync();
 //
-//             const string clientId = string.Empty;
-//             const string clientSecret = string.Empty;
-//             
-//             var client = _httpClientFactory.CreateClient();
-//             var res = await client.PostAsync("https://id.twitch.tv/oauth2/token" +
-//                                         $"?client_id={clientId}" +
-//                                         $"&client_secret={clientSecret}" +
-//                                         "&grant_type=client_credentials", new StringContent(""));
-//
-//             var data = JsonDocument.Parse(await res.Content.ReadAsStringAsync()).RootElement;
-//
-//             _token = (data.GetProperty("access_token").GetString(),
-//                 DateTime.UtcNow + TimeSpan.FromSeconds(data.GetProperty("expires_in").GetInt32()));
-//
-//         }
-//     
 //         public override Task<bool> IsValidUrl(string url)
 //         {
 //             var match = Regex.Match(url);

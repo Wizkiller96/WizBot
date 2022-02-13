@@ -10,6 +10,7 @@ public interface IMusicPlayer : IDisposable
     bool IsKilled { get; }
     int CurrentIndex { get; }
     public PlayerRepeatType Repeat { get; }
+    bool AutoPlay { get; set; }
 
     void Stop();
     void Clear();

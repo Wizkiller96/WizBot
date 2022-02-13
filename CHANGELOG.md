@@ -5,8 +5,6 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-## Changes
-
 ### Added
 - Added `.deleteemptyservers` command
 - Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
@@ -18,16 +16,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
     - waifu.decay.minPrice - Unclaimed waifus with price lower than the one specified here will not be affected by the decay
 - Added `currency.transactionsLifetime` to `data/gambling.yml` Any transaction older than the number of days specified will be automatically deleted
 - Added `.stock` command to check stock prices and charts
-
-### Fixed
-- Fixed an extra whitespace in usage part of command help if the command has no arguments  
-- Possible small fix for `.prune` ratelimiting  
-- `.gvc` should now properly trigger when a user is already in a gvc and changes his activity   
-- `.gvc` should now properly detect multiple activities  
-- Fixed reference to non-existent command in bot.yml
-- Comment indentation in .yml files should now make more sense
-- Fixed `.warn` punishments not being applied properly when using weighted warnings
-- Fixed embed color when disabling `.antialt`
+- Re-added `.qap / .queueautoplay` 
 
 ### Changed
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
@@ -41,6 +30,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Currency output format improvement (will use guild locale now for some commands)
 - `.crypto` will now also show CoinMarketCap rank
 - Waifus can now be claimed for much higher prices (int -> long)
+- Several strings and commands related to music have been changed
+  - Changed `.ms / .movesong` to `.tm / .trackmove` but kept old aliases
+  - Changed ~~song~~ -> `track` throughout music module strings
 - Improved .curtrs (It will now have a lot more useful data in the database, show Tx ids, and be partially localized)
   - [dev] Reason renamed to Note
   - [dev] Added Type, Extra, OtherId fields to the database
@@ -50,20 +42,30 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - [dev] Permissionv2 db table renamed to Permissions 
 - [dev] Moved FilterWordsChannelId to a separate table
 
+### Fixed
+- Fixed an extra whitespace in usage part of command help if the command has no arguments
+- Possible small fix for `.prune` ratelimiting
+- `.gvc` should now properly trigger when a user is already in a gvc and changes his activity
+- `.gvc` should now properly detect multiple activities
+- Fixed reference to non-existent command in bot.yml
+- Comment indentation in .yml files should now make more sense
+- Fixed `.warn` punishments not being applied properly when using weighted warnings
+- Fixed embed color when disabling `.antialt`
+
 ### Removed
 - Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
 - Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
 - Removed some obsolete commands and strings  
 - Removed code which migrated 2.x to v3 credentials, settings, etc...
 
-## [3.0.13] - 14.04.2021
+## [3.0.13] - 14.01.2022
 
 ### Fixed
 
 - Fixed `.greetdm` causing ratelimits during raids
 - Fixed `.gelbooru`
 
-## [3.0.12] - 06.01.2021
+## [3.0.12] - 06.01.2022
 
 ### Fixed
 - `.smch` Fixed

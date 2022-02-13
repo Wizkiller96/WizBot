@@ -94,7 +94,9 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
     }
 
     private ITrackInfo DataToInfo(in YtTrackData trackData)
-        => new RemoteTrackInfo(trackData.Title,
+        => new RemoteTrackInfo(
+            trackData.Id,
+            trackData.Title,
             $"https://youtube.com/watch?v={trackData.Id}",
             trackData.Thumbnail,
             trackData.Duration,

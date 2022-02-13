@@ -849,7 +849,7 @@ trackremove:
     - "5"
     - "all"
     - ""
-movesong:
+trackmove:
   desc: "Moves a song from one position to another."
   args:
     - "5 3"
@@ -888,7 +888,7 @@ deleteplaylist:
   desc: "Deletes a saved playlist using its id. Works only if you made it or if you are the bot owner."
   args:
     - "5"
-autoplay:
+queueautoplay:
   desc: "Toggles autoplay - When the song is finished, automatically queue a related Youtube song. (Works only for Youtube songs and when queue is empty)"
   args:
     - ""

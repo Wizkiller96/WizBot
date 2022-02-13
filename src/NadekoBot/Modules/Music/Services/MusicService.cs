@@ -156,7 +156,12 @@ public sealed class MusicService : IMusicService
 
         _outputChannels[guildId] = (defaultChannel, overrideChannel);
 
-        var mp = new MusicPlayer(queue, resolver, proxy, settings.QualityPreset);
+        var mp = new MusicPlayer(queue,
+            resolver,
+            proxy,
+            _googleApiService,
+            settings.QualityPreset,
+            settings.AutoPlay);
 
         mp.SetRepeat(settings.PlayerRepeat);
 
@@ -191,7 +196,7 @@ public sealed class MusicService : IMusicService
             _ = lastFinishedMessage?.DeleteAsync();
             var embed = _eb.Create()
                            .WithOkColor()
-                           .WithAuthor(GetText(guildId, strs.finished_song), Music.MUSIC_ICON_URL)
+                           .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
                            .WithDescription(trackInfo.PrettyName())
                            .WithFooter(trackInfo.PrettyTotalTime());
 
@@ -207,7 +212,7 @@ public sealed class MusicService : IMusicService
             _ = lastPlayingMessage?.DeleteAsync();
             var embed = _eb.Create()
                            .WithOkColor()
-                           .WithAuthor(GetText(guildId, strs.playing_song(index + 1)), Music.MUSIC_ICON_URL)
+                           .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
                            .WithDescription(trackInfo.PrettyName())
                            .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
@@ -288,7 +293,7 @@ public sealed class MusicService : IMusicService
 
     public IEnumerable<(string Name, Func<string> Func)> GetPlaceholders()
     {
-        // random song that's playing
+        // random track that's playing
         yield return ("%music.playing%", () =>
         {
             var randomPlayingTrack = _players.Select(x => x.Value.GetCurrentTrack(out _))
@@ -437,6 +442,18 @@ public sealed class MusicService : IMusicService
                 settings.QualityPreset = preset;
             },
             preset);
+
+    public async Task<bool> ToggleQueueAutoPlayAsync(ulong guildId)
+    {
+        var newValue = false;
+        await ModifySettingsInternalAsync(guildId,
+            (settings, _) => newValue = settings.AutoPlay = !settings.AutoPlay,
+            false);
+
+        if (TryGetMusicPlayer(guildId, out var mp))
+            mp.AutoPlay = newValue;
+        return newValue;
+    }
 
     #endregion
 }

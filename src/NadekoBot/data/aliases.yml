@@ -472,13 +472,19 @@ trackremove:
 - songremove
 - srm
 - trackremove
-movesong:
+- trm
+trackmove:
+- trackmove
+- tm
 - movesong
 - ms
 queuerepeat:
 - queuerepeat
 - qrp
 - rpl
+queueautoplay:
+- queueautoplay
+- qap
 save:
 - save
 streamrole:

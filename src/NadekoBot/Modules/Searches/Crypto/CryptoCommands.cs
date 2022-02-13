@@ -4,8 +4,6 @@ using System.Globalization;
 
 namespace NadekoBot.Modules.Searches;
 
-// todo weighted warnings fix
-// todo autoplay/fairplay
 public partial class Searches
 {
     public partial class FinanceCommands : NadekoSubmodule<CryptoService>

@@ -194,8 +194,7 @@ public class GoogleApiService : IGoogleApiService, INService
         return (await query.ExecuteAsync()).Items.Select(i => i.Id.PlaylistId);
     }
 
-    // todo future add quota users
-    public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1)
+    public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1, string user = null)
     {
         if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentNullException(nameof(id));
@@ -207,6 +206,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.MaxResults = count;
         query.RelatedToVideoId = id;
         query.Type = "video";
+        query.QuotaUser = user;
         return (await query.ExecuteAsync()).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
