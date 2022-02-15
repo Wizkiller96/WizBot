@@ -22,6 +22,8 @@ public interface IBotCredentials
     string CoinmarketcapApiKey { get; }
     string TrovoClientId { get; }
     string CoordinatorUrl { get; set; }
+    string TwitchClientId { get; set; }
+    string TwitchClientSecret { get; set; }
 }
 
 public class RestartConfig

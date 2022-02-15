@@ -31,7 +31,7 @@ public class TrovoProvider : Provider
         return GetStreamDataAsync(match.Groups["channel"].Value);
     }
 
-    public override async Task<StreamData?> GetStreamDataAsync(string id)
+    public override async Task<StreamData?> GetStreamDataAsync(string login)
     {
         using var http = _httpClientFactory.CreateClient();
 
@@ -53,7 +53,7 @@ public class TrovoProvider : Provider
                 $"https://open-api.trovo.live/openplatform/channels/id",
                 new TrovoRequestData()
                 {
-                    ChannelId = id
+                    ChannelId = login
                 });
 
             res.EnsureSuccessStatusCode();
@@ -62,8 +62,8 @@ public class TrovoProvider : Provider
 
             if (data is null)
             {
-                Log.Warning("An empty response received while retrieving stream data for trovo.live/{TrovoId}", id);
-                _failingStreams.TryAdd(id, DateTime.UtcNow);
+                Log.Warning("An empty response received while retrieving stream data for trovo.live/{TrovoId}", login);
+                _failingStreams.TryAdd(login, DateTime.UtcNow);
                 return null;
             }
 
@@ -83,8 +83,8 @@ public class TrovoProvider : Provider
         }
         catch (Exception ex)
         {
-            Log.Warning(ex, "Error retrieving stream data for trovo.live/{TrovoId}", id);
-            _failingStreams.TryAdd(id, DateTime.UtcNow);
+            Log.Warning(ex, "Error retrieving stream data for trovo.live/{TrovoId}", login);
+            _failingStreams.TryAdd(login, DateTime.UtcNow);
             return null;
         }
     }

@@ -72,8 +72,14 @@ Used for cryptocurrency related commands.")]
     public string OsuApiKey { get; set; }
 
     [Comment(@"Optional Trovo client id.
-You should only use this if Trovo notifications stopped working or you're getting ratelimit errors.")]
+You should use this if Trovo stream notifications stopped working or you're getting ratelimit errors.")]
     public string TrovoClientId { get; set; }
+
+    [Comment(@"Obtain by creating an application at https://dev.twitch.tv/console/apps")]
+    public string TwitchClientId { get; set; }
+
+    [Comment(@"Obtain by creating an application at https://dev.twitch.tv/console/apps")]
+    public string TwitchClientSecret { get; set; }
 
     [Comment(@"Command and args which will be used to restart the bot.
 Only used if bot is executed directly (NOT through the coordinator)

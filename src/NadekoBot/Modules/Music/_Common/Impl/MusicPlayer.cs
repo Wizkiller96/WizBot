@@ -275,7 +275,6 @@ public sealed class MusicPlayer : IMusicPlayer
 
                 _ = OnCompleted?.Invoke(this, track);
                 
-                // todo update when settings are changed
                 if (AutoPlay && track.Platform == MusicPlatform.Youtube)
                 {
                     try

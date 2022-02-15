@@ -3,7 +3,7 @@ using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Searches.Common;
 
-public class StreamData
+public record StreamData
 {
     public FollowedStream.FType StreamType { get; set; }
     public string Name { get; set; }

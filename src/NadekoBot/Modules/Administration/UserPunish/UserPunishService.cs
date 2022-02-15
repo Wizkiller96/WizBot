@@ -99,7 +99,6 @@ public class UserPunishService : INService, IReadyExecutor
 
         if (p is not null)
         {
-            // todo shouldn't this try to get through api too
             var user = await guild.GetUserAsync(userId);
             if (user is null)
                 return null;

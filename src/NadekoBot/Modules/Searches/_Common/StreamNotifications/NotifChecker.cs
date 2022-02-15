@@ -26,7 +26,7 @@ public class NotifChecker
         _key = $"{uniqueCacheKey}_followed_streams_data";
         _streamProviders = new()
         {
-            { FollowedStream.FType.Twitch, new TwitchProvider(httpClientFactory) },
+            { FollowedStream.FType.Twitch, new TwitchHelixProvider(httpClientFactory, credsProvider) },
             { FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory) },
             { FollowedStream.FType.Trovo, new TrovoProvider(httpClientFactory, credsProvider) }
         };
@@ -95,14 +95,20 @@ public class NotifChecker
                     {
                         // update cached data
                         var key = newData.CreateKey();
-                        CacheAddData(key, newData, true);
 
                         // compare old data with new data
-                        var oldData = oldStreamDataDict[key.Type][key.Name];
-
-                        // this is the first pass
-                        if (oldData is null)
+                        if (!oldStreamDataDict.TryGetValue(key.Type, out var typeDict)
+                            || !typeDict.TryGetValue(key.Name, out var oldData)
+                            || oldData is null)
+                        {
                             continue;
+                        }
+                        
+                        // fill with last known game in case it's empty
+                        if (string.IsNullOrWhiteSpace(newData.Game))
+                            newData.Game = oldData.Game;
+                        
+                        CacheAddData(key, newData, true);
 
                         // if the stream is offline, we need to check if it was
                         // marked as offline once previously

@@ -39,11 +39,11 @@ public class PicartoProvider : Provider
         return Task.FromResult<StreamData?>(null);
     }
 
-    public override async Task<StreamData?> GetStreamDataAsync(string id)
+    public override async Task<StreamData?> GetStreamDataAsync(string login)
     {
         var data = await GetStreamDataAsync(new List<string>
         {
-            id
+            login
         });
 
         return data.FirstOrDefault();

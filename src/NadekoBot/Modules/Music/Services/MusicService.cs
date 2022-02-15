@@ -452,6 +452,7 @@ public sealed class MusicService : IMusicService
 
         if (TryGetMusicPlayer(guildId, out var mp))
             mp.AutoPlay = newValue;
+        
         return newValue;
     }
 

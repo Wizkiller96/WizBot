@@ -16,9 +16,6 @@ public partial class Searches
         public StreamNotificationCommands(DbService db)
             => _db = db;
 
-        // private static readonly Regex picartoRegex = new Regex(@"picarto.tv/(?<name>.+[^/])/?",
-        //     RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
