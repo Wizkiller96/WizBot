@@ -147,10 +147,10 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         });
     }
     
-    public async Task<ImageData?> GenerateSparklineAsync(IReadOnlyCollection<CandleData> series)
+    public Task<ImageData?> GenerateSparklineAsync(IReadOnlyCollection<CandleData> series)
     {
         if (series.Count == 0)
-            return default;
+            return Task.FromResult<ImageData?>(default);
 
         using var image = CreateCanvasInternal();
 
@@ -161,13 +161,13 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
             ctx.DrawLines(_sparklineColor, 2, points);
         });
     
-        return new("png", image.ToStream());
+        return Task.FromResult<ImageData?>(new("png", image.ToStream()));
     }
 
-    public async Task<ImageData?> GenerateCombinedChartAsync(IReadOnlyCollection<CandleData> series)
+    public Task<ImageData?> GenerateCombinedChartAsync(IReadOnlyCollection<CandleData> series)
     {
         if (series.Count == 0)
-            return default;
+            return Task.FromResult<ImageData?>(default);
 
         using var image = CreateCanvasInternal();
         
@@ -182,13 +182,13 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
             ctx.DrawLines(Color.ParseHex("00FFFFAA"), 1, points);
         });
 
-        return new("png", image.ToStream());
+        return Task.FromResult<ImageData?>(new("png", image.ToStream()));
     }
     
-    public async Task<ImageData?> GenerateCandleChartAsync(IReadOnlyCollection<CandleData> series)
+    public Task<ImageData?> GenerateCandleChartAsync(IReadOnlyCollection<CandleData> series)
     {
         if (series.Count == 0)
-            return default;
+            return Task.FromResult<ImageData?>(default);
 
         using var image = CreateCanvasInternal();
 
@@ -197,6 +197,6 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         var drawData = GetChartDrawingDataInternal(series);
         DrawChartData(image, drawData);
 
-        return new("png", image.ToStream());
+        return Task.FromResult<ImageData?>(new("png", image.ToStream()));
     }
 }

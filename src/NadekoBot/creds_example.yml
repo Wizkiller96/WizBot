@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 1
+version: 3
 # Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
 token: ''
 # List of Ids of the users who have bot owner permissions
@@ -19,14 +19,14 @@ votes:
 # Example: https://votes.my.cool.bot.com
   topggServiceUrl: ''
   # Authorization header value sent to the TopGG service url with each request
-# This should be equivalent to the TopggKey in your NadekoBot.Votes api appsettings.json file
+  # This should be equivalent to the TopggKey in your NadekoBot.Votes api appsettings.json file
   topggKey: ''
   # discords.com votes service url
-# This is the url of your instance of the NadekoBot.Votes api
-# Example: https://votes.my.cool.bot.com
+  # This is the url of your instance of the NadekoBot.Votes api
+  # Example: https://votes.my.cool.bot.com
   discordsServiceUrl: ''
   # Authorization header value sent to the Discords service url with each request
-# This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsettings.json file
+  # This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsettings.json file
   discordsKey: ''
 # Patreon auto reward system settings.
 # go to https://www.patreon.com/portal -> my clients -> create client
@@ -65,17 +65,24 @@ timezoneDbApiKey:
 coinmarketcapApiKey: 
 # Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api
 osuApiKey: 
+# Optional Trovo client id.
+# You should use this if Trovo stream notifications stopped working or you're getting ratelimit errors.
+trovoClientId: 
+# Obtain by creating an application at https://dev.twitch.tv/console/apps
+twitchClientId: 
+# Obtain by creating an application at https://dev.twitch.tv/console/apps
+twitchClientSecret: 
 # Command and args which will be used to restart the bot.
 # Only used if bot is executed directly (NOT through the coordinator)
-# placeholders: 
-#     {0} -> shard id 
-#     {1} -> total shards
+# placeholders:
+# {0} -> shard id
+# {1} -> total shards
 # Linux default
-#     cmd: dotnet
-#     args: "NadekoBot.dll -- {0}"
+# cmd: dotnet
+# args: "NadekoBot.dll -- {0}"
 # Windows default
-#     cmd: "NadekoBot.exe"
-#     args: "{0}"
+# cmd: NadekoBot.exe
+# args: {0}
 restartCommand:
   cmd: 
   args: 

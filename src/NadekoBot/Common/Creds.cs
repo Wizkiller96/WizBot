@@ -96,7 +96,7 @@ Windows default
 
     public Creds()
     {
-        Version = 1;
+        Version = 3;
         Token = string.Empty;
         OwnerIds = new List<ulong>();
         TotalShards = 1;
