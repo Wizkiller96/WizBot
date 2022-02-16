@@ -38,7 +38,10 @@ public class TrovoProvider : Provider
         var trovoClientId = _creds.GetCreds().TrovoClientId;
 
         if (string.IsNullOrWhiteSpace(trovoClientId))
-            trovoClientId = "waiting for key";
+        {
+            Log.Warning("Trovo streams will be ignored until TrovoClientId is added to creds.yml");
+            return default;
+        }
 
 
         http.DefaultRequestHeaders.Clear();
@@ -53,7 +56,7 @@ public class TrovoProvider : Provider
                 $"https://open-api.trovo.live/openplatform/channels/id",
                 new TrovoRequestData()
                 {
-                    ChannelId = login
+                    Username = login
                 });
 
             res.EnsureSuccessStatusCode();
@@ -67,6 +70,7 @@ public class TrovoProvider : Provider
                 return null;
             }
 
+            _failingStreams.TryRemove(data.Username, out _);
             return new()
             {
                 IsLive = data.IsLive,
@@ -91,6 +95,14 @@ public class TrovoProvider : Provider
 
     public override async Task<IReadOnlyCollection<StreamData>> GetStreamDataAsync(List<string> usernames)
     {
+        var trovoClientId = _creds.GetCreds().TrovoClientId;
+        
+        if (string.IsNullOrWhiteSpace(trovoClientId))
+        {
+            Log.Warning("Trovo streams will be ignored until TrovoClientId is added to creds.yml");
+            return Array.Empty<StreamData>();
+        }
+        
         var results = new List<StreamData>(usernames.Count);
         foreach (var chunk in usernames.Chunk(10)
                                        .Select(x => x.Select(GetStreamDataAsync)))

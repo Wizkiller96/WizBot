@@ -440,7 +440,11 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                        .WithUrl(status.StreamUrl)
                        .WithDescription(status.StreamUrl)
                        .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true)
-                       .AddField(GetText(guildId, strs.viewers), status.IsLive ? status.Viewers.ToString() : "-", true);
+                       .AddField(GetText(guildId, strs.viewers),
+                           status.Viewers == 0 && !status.IsLive
+                               ? "-"
+                               : status.Viewers,
+                           true);
 
         if (status.IsLive)
             embed = embed.WithOkColor();

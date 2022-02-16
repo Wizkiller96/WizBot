@@ -5,6 +5,6 @@ namespace NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 public class TrovoRequestData
 {
-    [JsonPropertyName("channel_id")]
-    public string ChannelId { get; set; }
+    [JsonPropertyName("username")]
+    public string Username { get; set; }
 }
