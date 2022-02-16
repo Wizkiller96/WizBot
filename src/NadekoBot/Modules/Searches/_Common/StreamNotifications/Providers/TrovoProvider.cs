@@ -79,7 +79,7 @@ public class TrovoProvider : Provider
                 Title = data.LiveTitle,
                 Viewers = data.CurrentViewers,
                 AvatarUrl = data.ProfilePic,
-                StreamType = FollowedStream.FType.Picarto,
+                StreamType = Platform,
                 StreamUrl = data.ChannelUrl,
                 UniqueName = data.Username,
                 Preview = data.Thumbnail
