@@ -36,9 +36,7 @@ public class XpService : INService, IReadyExecutor
     private readonly IEmbedBuilderService _eb;
 
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles;
-
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
-
     private readonly ConcurrentHashSet<ulong> _excludedServers;
 
     private readonly ConcurrentQueue<UserCacheItem> _addMessageXp = new();

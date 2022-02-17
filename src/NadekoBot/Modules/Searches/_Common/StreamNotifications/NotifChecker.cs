@@ -101,6 +101,7 @@ public class NotifChecker
                             || !typeDict.TryGetValue(key.Name, out var oldData)
                             || oldData is null)
                         {
+                            CacheAddData(key, newData, true);
                             continue;
                         }
                         
