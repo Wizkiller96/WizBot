@@ -17,7 +17,16 @@ public class TrovoProvider : Provider
 
 
     public TrovoProvider(IHttpClientFactory httpClientFactory, IBotCredsProvider creds)
-        => (_httpClientFactory, _creds) = (httpClientFactory, creds);
+    {
+        (_httpClientFactory, _creds) = (httpClientFactory, creds);
+
+
+        if (string.IsNullOrWhiteSpace(creds.GetCreds().TrovoClientId))
+        {
+            Log.Warning(@"Trovo streams are using a default clientId.
+If you are experiencing ratelimits, you should create your own application at: https://developer.trovo.live/");
+        }
+    }
 
     public override Task<bool> IsValidUrl(string url)
         => Task.FromResult(_urlRegex.IsMatch(url));
@@ -39,10 +48,8 @@ public class TrovoProvider : Provider
 
         if (string.IsNullOrWhiteSpace(trovoClientId))
         {
-            Log.Warning("Trovo streams will be ignored until TrovoClientId is added to creds.yml");
-            return default;
+            trovoClientId = "8b3cc4719b7051803099661a3265e50b";
         }
-
 
         http.DefaultRequestHeaders.Clear();
         http.DefaultRequestHeaders.Add("Accept", "application/json");
