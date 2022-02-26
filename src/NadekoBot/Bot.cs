@@ -171,7 +171,7 @@ public sealed class Bot
         _ = LoadTypeReaders(typeof(Bot).Assembly);
 
         sw.Stop();
-        Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
+        Log.Information( "All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
     }
 
     private void ApplyConfigMigrations()
