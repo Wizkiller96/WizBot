@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class TranslateCommands : NadekoSubmodule<ITranslateService>
+    public partial class TranslateCommands : NadekoModule<ITranslateService>
     {
         public enum AutoDeleteAutoTranslate
         {

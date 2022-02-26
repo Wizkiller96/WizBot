@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class GameVoiceChannelCommands : NadekoSubmodule<GameVoiceChannelService>
+    public partial class GameVoiceChannelCommands : NadekoModule<GameVoiceChannelService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

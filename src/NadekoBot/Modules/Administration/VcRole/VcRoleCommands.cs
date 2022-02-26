@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class VcRoleCommands : NadekoSubmodule<VcRoleService>
+    public partial class VcRoleCommands : NadekoModule<VcRoleService>
     {
         [Cmd]
         [UserPerm(GuildPerm.ManageRoles)]

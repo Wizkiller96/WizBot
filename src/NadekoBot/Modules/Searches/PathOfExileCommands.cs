@@ -12,7 +12,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class PathOfExileCommands : NadekoSubmodule<SearchesService>
+    public partial class PathOfExileCommands : NadekoModule<SearchesService>
     {
         private const string POE_URL = "https://www.pathofexile.com/character-window/get-characters?accountName=";
         private const string PON_URL = "http://poe.ninja/api/Data/GetCurrencyOverview?league=";

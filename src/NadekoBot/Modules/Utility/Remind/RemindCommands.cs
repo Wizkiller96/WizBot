@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class RemindCommands : NadekoSubmodule<RemindService>
+    public partial class RemindCommands : NadekoModule<RemindService>
     {
         public enum MeOrHere
         {

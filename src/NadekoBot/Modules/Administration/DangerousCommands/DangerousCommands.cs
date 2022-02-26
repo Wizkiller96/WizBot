@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Administration
     {
         [Group]
         [OwnerOnly]
-        public partial class DangerousCommands : NadekoSubmodule<DangerousCommandsService>
+        public partial class DangerousCommands : NadekoModule<DangerousCommandsService>
         {
             private async Task InternalExecSql(string sql, params object[] reps)
             {

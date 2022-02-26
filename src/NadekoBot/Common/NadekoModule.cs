@@ -135,11 +135,3 @@ public abstract class NadekoModule<TService> : NadekoModule
 {
     public TService _service { get; set; }
 }
-
-public abstract class NadekoSubmodule : NadekoModule
-{
-}
-
-public abstract class NadekoSubmodule<TService> : NadekoModule<TService>
-{
-}

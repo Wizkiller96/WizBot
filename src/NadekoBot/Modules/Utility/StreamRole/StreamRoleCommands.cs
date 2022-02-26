@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {
-    public partial class StreamRoleCommands : NadekoSubmodule<StreamRoleService>
+    public partial class StreamRoleCommands : NadekoModule<StreamRoleService>
     {
         [Cmd]
         [BotPerm(GuildPerm.ManageRoles)]

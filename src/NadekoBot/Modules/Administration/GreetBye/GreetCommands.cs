@@ -3,7 +3,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class GreetCommands : NadekoSubmodule<GreetService>
+    public partial class GreetCommands : NadekoModule<GreetService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public partial class FilterCommands : NadekoSubmodule<FilterService>
+    public partial class FilterCommands : NadekoModule<FilterService>
     {
         private readonly DbService _db;
 

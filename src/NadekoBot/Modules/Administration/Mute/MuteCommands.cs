@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class MuteCommands : NadekoSubmodule<MuteService>
+    public partial class MuteCommands : NadekoModule<MuteService>
     {
         private async Task<bool> VerifyMutePermissions(IGuildUser runnerUser, IGuildUser targetUser)
         {

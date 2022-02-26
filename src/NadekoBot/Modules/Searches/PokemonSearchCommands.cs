@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class PokemonSearchCommands : NadekoSubmodule<SearchesService>
+    public partial class PokemonSearchCommands : NadekoModule<SearchesService>
     {
         public IReadOnlyDictionary<string, SearchPokemon> Pokemons
             => _cache.LocalData.Pokemons;

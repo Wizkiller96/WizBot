@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class LocalizationCommands : NadekoSubmodule
+    public partial class LocalizationCommands : NadekoModule
     {
         private static readonly IReadOnlyDictionary<string, string> _supportedLocales = new Dictionary<string, string>
         {

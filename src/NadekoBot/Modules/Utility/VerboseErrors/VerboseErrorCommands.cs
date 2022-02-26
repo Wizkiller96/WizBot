@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class VerboseErrorCommands : NadekoSubmodule<VerboseErrorsService>
+    public partial class VerboseErrorCommands : NadekoModule<VerboseErrorsService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

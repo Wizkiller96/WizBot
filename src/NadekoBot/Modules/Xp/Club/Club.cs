@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Xp;
 public partial class Xp
 {
     [Group]
-    public partial class Club : NadekoSubmodule<ClubService>
+    public partial class Club : NadekoModule<ClubService>
     {
         private readonly XpService _xps;
 

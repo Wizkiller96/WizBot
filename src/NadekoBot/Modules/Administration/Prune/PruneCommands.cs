@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class PruneCommands : NadekoSubmodule<PruneService>
+    public partial class PruneCommands : NadekoModule<PruneService>
     {
         private static readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
 

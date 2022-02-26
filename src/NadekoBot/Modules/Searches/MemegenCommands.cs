@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class MemegenCommands : NadekoSubmodule
+    public partial class MemegenCommands : NadekoModule
     {
         private static readonly ImmutableDictionary<char, string> _map = new Dictionary<char, string>
         {

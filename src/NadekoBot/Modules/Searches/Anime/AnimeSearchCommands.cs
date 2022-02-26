@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class AnimeSearchCommands : NadekoSubmodule<AnimeSearchService>
+    public partial class AnimeSearchCommands : NadekoModule<AnimeSearchService>
     {
         // [NadekoCommand, Aliases]
         // public async Task Novel([Leftover] string query)

@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Searches;
 
 public partial class Searches
 {
-    public partial class FinanceCommands : NadekoSubmodule<CryptoService>
+    public partial class FinanceCommands : NadekoModule<CryptoService>
     {
         private readonly IStockDataService _stocksService;
         private readonly IStockChartDrawingService _stockDrawingService;

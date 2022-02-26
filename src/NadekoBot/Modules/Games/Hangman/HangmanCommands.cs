@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class HangmanCommands : NadekoSubmodule<IHangmanService>
+    public partial class HangmanCommands : NadekoModule<IHangmanService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

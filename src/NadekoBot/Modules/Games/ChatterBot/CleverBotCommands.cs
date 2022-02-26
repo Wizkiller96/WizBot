@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class ChatterBotCommands : NadekoSubmodule<ChatterBotService>
+    public partial class ChatterBotCommands : NadekoModule<ChatterBotService>
     {
         private readonly DbService _db;
 

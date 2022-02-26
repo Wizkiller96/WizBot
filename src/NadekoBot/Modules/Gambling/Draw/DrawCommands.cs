@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class DrawCommands : NadekoSubmodule
+    public partial class DrawCommands : NadekoModule
     {
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;

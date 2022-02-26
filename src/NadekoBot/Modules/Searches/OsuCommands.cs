@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class OsuCommands : NadekoSubmodule
+    public partial class OsuCommands : NadekoModule
     {
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;

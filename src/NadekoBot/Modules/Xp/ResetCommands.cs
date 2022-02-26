@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Xp;
 
 public partial class Xp
 {
-    public partial class ResetCommands : NadekoSubmodule<XpService>
+    public partial class ResetCommands : NadekoModule<XpService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

@@ -11,7 +11,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class UserPunishCommands : NadekoSubmodule<UserPunishService>
+    public partial class UserPunishCommands : NadekoModule<UserPunishService>
     {
         public enum AddRole
         {

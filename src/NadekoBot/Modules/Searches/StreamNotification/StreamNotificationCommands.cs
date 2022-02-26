@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class StreamNotificationCommands : NadekoSubmodule<StreamNotificationService>
+    public partial class StreamNotificationCommands : NadekoModule<StreamNotificationService>
     {
         private readonly DbService _db;
 

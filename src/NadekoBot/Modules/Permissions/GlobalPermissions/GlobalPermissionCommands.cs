@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public partial class GlobalPermissionCommands : NadekoSubmodule
+    public partial class GlobalPermissionCommands : NadekoModule
     {
         private readonly GlobalPermissionService _service;
         private readonly DbService _db;

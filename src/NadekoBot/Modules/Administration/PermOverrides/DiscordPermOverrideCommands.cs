@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class DiscordPermOverrideCommands : NadekoSubmodule<DiscordPermOverrideService>
+    public partial class DiscordPermOverrideCommands : NadekoModule<DiscordPermOverrideService>
     {
         // override stats, it should require that the user has managessages guild permission
         // .po 'stats' add user guild managemessages

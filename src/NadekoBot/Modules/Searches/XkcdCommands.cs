@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class XkcdCommands : NadekoSubmodule
+    public partial class XkcdCommands : NadekoModule
     {
         private const string XKCD_URL = "https://xkcd.com";
         private readonly IHttpClientFactory _httpFactory;

@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public partial class CmdCdsCommands : NadekoSubmodule
+    public partial class CmdCdsCommands : NadekoModule
     {
         private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns
             => _service.CommandCooldowns;

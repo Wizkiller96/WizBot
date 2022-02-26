@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Permissions;
 public partial class Permissions
 {
     [Group]
-    public partial class BlacklistCommands : NadekoSubmodule<BlacklistService>
+    public partial class BlacklistCommands : NadekoModule<BlacklistService>
     {
         private readonly DiscordSocketClient _client;
 

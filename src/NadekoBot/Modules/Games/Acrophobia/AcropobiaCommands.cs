@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class AcropobiaCommands : NadekoSubmodule<GamesService>
+    public partial class AcropobiaCommands : NadekoModule<GamesService>
     {
         private readonly DiscordSocketClient _client;
 

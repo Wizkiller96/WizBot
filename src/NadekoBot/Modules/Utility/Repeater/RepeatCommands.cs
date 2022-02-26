@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class RepeatCommands : NadekoSubmodule<RepeaterService>
+    public partial class RepeatCommands : NadekoModule<RepeaterService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

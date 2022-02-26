@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class InfoCommands : NadekoSubmodule
+    public partial class InfoCommands : NadekoModule
     {
         private readonly DiscordSocketClient _client;
         private readonly IStatsService _stats;

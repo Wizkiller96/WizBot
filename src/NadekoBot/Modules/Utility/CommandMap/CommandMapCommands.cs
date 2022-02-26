@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class CommandMapCommands : NadekoSubmodule<CommandMapService>
+    public partial class CommandMapCommands : NadekoModule<CommandMapService>
     {
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;

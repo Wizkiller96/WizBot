@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class InviteCommands : NadekoSubmodule<InviteService>
+    public partial class InviteCommands : NadekoModule<InviteService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

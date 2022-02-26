@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class JokeCommands : NadekoSubmodule<SearchesService>
+    public partial class JokeCommands : NadekoModule<SearchesService>
     {
         [Cmd]
         public async partial Task Yomama()

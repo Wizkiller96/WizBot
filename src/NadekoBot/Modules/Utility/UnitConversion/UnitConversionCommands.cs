@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class UnitConverterCommands : NadekoSubmodule<ConverterService>
+    public partial class UnitConverterCommands : NadekoModule<ConverterService>
     {
         [Cmd]
         public async partial Task ConvertList()

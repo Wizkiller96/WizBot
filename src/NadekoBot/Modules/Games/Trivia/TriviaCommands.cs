@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class TriviaCommands : NadekoSubmodule<GamesService>
+    public partial class TriviaCommands : NadekoModule<GamesService>
     {
         private readonly IDataCache _cache;
         private readonly ICurrencyService _cs;

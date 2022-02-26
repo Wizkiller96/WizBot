@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class PrefixCommands : NadekoSubmodule
+    public partial class PrefixCommands : NadekoModule
     {
         public enum Set
         {

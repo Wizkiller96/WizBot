@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class DiceRollCommands : NadekoSubmodule
+    public partial class DiceRollCommands : NadekoModule
     {
         private static readonly Regex _dndRegex = new(@"^(?<n1>\d+)d(?<n2>\d+)(?:\+(?<add>\d+))?(?:\-(?<sub>\d+))?$",
             RegexOptions.Compiled);

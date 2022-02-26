@@ -9,7 +9,7 @@ namespace NadekoBot.Modules.Administration;
 
 public partial class Administration
 {
-    public partial class RoleCommands : NadekoSubmodule<RoleCommandsService>
+    public partial class RoleCommands : NadekoModule<RoleCommandsService>
     {
         public enum Exclude { Excl }
 

@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class PlaceCommands : NadekoSubmodule
+    public partial class PlaceCommands : NadekoModule
     {
         public enum PlaceType
         {

@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class FeedCommands : NadekoSubmodule<FeedsService>
+    public partial class FeedCommands : NadekoModule<FeedsService>
     {
         private static readonly Regex _ytChannelRegex =
             new(@"youtube\.com\/(?:c\/|channel\/|user\/)?(?<channelid>[a-zA-Z0-9\-]{1,})");

@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class SelfCommands : NadekoSubmodule<SelfService>
+    public partial class SelfCommands : NadekoModule<SelfService>
     {
         public enum SettableUserStatus
         {

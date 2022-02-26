@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class SpeedTypingCommands : NadekoSubmodule<GamesService>
+    public partial class SpeedTypingCommands : NadekoModule<GamesService>
     {
         private readonly GamesService _games;
         private readonly DiscordSocketClient _client;

@@ -10,7 +10,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class QuoteCommands : NadekoSubmodule
+    public partial class QuoteCommands : NadekoModule
     {
         private const string PREPEND_EXPORT =
             @"# Keys are keywords, Each key has a LIST of quotes in the following format:

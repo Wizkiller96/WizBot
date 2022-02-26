@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class CalcCommands : NadekoSubmodule
+    public partial class CalcCommands : NadekoModule
     {
         [Cmd]
         public async partial Task Calculate([Leftover] string expression)

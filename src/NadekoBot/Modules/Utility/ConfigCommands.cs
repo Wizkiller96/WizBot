@@ -3,7 +3,7 @@ namespace NadekoBot.Modules.Utility;
 
 public partial class Utility
 {
-    public partial class ConfigCommands : NadekoSubmodule
+    public partial class ConfigCommands : NadekoModule
     {
         private readonly IEnumerable<IConfigService> _settingServices;
 

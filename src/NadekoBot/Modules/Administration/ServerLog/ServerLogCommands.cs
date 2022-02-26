@@ -7,7 +7,7 @@ public partial class Administration
 {
     [Group]
     [NoPublicBot]
-    public partial class LogCommands : NadekoSubmodule<ILogCommandService>
+    public partial class LogCommands : NadekoModule<ILogCommandService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

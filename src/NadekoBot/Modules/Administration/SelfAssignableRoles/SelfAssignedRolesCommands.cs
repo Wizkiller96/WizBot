@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class SelfAssignedRolesCommands : NadekoSubmodule<SelfAssignedRolesService>
+    public partial class SelfAssignedRolesCommands : NadekoModule<SelfAssignedRolesService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class ProtectionCommands : NadekoSubmodule<ProtectionService>
+    public partial class ProtectionCommands : NadekoModule<ProtectionService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

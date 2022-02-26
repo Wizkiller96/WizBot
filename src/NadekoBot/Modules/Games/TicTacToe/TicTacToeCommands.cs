@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Games;
 public partial class Games
 {
     [Group]
-    public partial class TicTacToeCommands : NadekoSubmodule<GamesService>
+    public partial class TicTacToeCommands : NadekoModule<GamesService>
     {
         private readonly SemaphoreSlim _sem = new(1, 1);
         private readonly DiscordSocketClient _client;
