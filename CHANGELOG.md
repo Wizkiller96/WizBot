@@ -5,6 +5,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+- More cool stuff coming soon
+
+
+## [4.0.0] - 02.03.2022
+
 ### Added
 - Added `.deleteemptyservers` command
 - Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
