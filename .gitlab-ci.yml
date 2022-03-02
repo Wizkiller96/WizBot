@@ -91,11 +91,11 @@ upload-windows-updater-release:
    name: amazon/aws-cli
    entrypoint: [""]
  script:  
-   - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v4.json
-   - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v4.json
+   - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
+   - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
    - aws --version
    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-   - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v4.json" --acl public-read --body "releases-v4.json"
+   - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
 
 # docker-build:
 #  # Use the official docker image.
