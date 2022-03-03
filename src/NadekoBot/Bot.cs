@@ -64,7 +64,7 @@ public sealed class Bot
             AlwaysResolveStickers = false,
             AlwaysDownloadDefaultStickers = false,
             GatewayIntents = GatewayIntents.All,
-            LogGatewayIntentWarnings = false
+            LogGatewayIntentWarnings = false,
         });
 
         _commandService = new(new()
@@ -75,9 +75,7 @@ public sealed class Bot
 
         // _interactionService = new(Client.Rest);
 
-#if GLOBAL_NADEKO || DEBUG
         Client.Log += Client_Log;
-#endif
     }
 
 
@@ -236,10 +234,10 @@ public sealed class Bot
         Log.Information("Shard {ShardId} logging in ...", Client.ShardId);
         try
         {
+            Client.Ready += SetClientReady;
+
             await Client.LoginAsync(TokenType.Bot, token);
-            Log.Information("Starting...");
             await Client.StartAsync();
-            Log.Information("Started");
         }
         catch (HttpException ex)
         {
@@ -251,10 +249,10 @@ public sealed class Bot
             LoginErrorHandler.Handle(ex);
             Helpers.ReadErrorAndExit(4);
         }
-
-        Client.Ready += SetClientReady;
-        await clientReady.Task;
+        
+        await clientReady.Task.ConfigureAwait(false);
         Client.Ready -= SetClientReady;
+        
 
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
