@@ -56,6 +56,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - [dev] Moved FilterWordsChannelId to a separate table
 
 ### Fixed
+- Fixed twitch stream notifications (rewrote it to use the new api)
 - Fixed an extra whitespace in usage part of command help if the command has no arguments
 - Possible small fix for `.prune` ratelimiting
 - `.gvc` should now properly trigger when a user is already in a gvc and changes his activity
