@@ -239,6 +239,7 @@ public sealed class Bot
             await Client.LoginAsync(TokenType.Bot, token);
             Log.Information("Starting...");
             await Client.StartAsync();
+            Log.Information("Started");
         }
         catch (HttpException ex)
         {
