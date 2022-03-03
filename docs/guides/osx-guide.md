@@ -31,7 +31,7 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
 ##### Installation Instructions
 
-1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v4/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
 3. Download the bot (type `2` and press enter)
 4. Exit the installer in order to set up your `creds.yml` 
@@ -49,7 +49,7 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 ##### Update Instructions
 
 1. ⚠ Stop the bot
-2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/master/linuxAIO.sh && bash linuxAIO.sh`
+2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v4/linuxAIO.sh && bash linuxAIO.sh`
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
 5. 🎉 
