@@ -7,7 +7,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - More cool stuff coming soon
 
-## [4.0.2] - 03.0.3.2022
+## [4.0.2] - 03.03.2022
 
 - Fixed `.rero` not working due to a bug introduced in 4.0
 
