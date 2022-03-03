@@ -216,24 +216,20 @@ public sealed class Bot
 
     private async Task LoginAsync(string token)
     {
-        var clientReady = new TaskCompletionSource<bool>();
+        var clientReady = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        Task SetClientReady()
+        async Task SetClientReady()
         {
-            _ = Task.Run(async () =>
+            clientReady.TrySetResult(true);
+            try
             {
-                clientReady.TrySetResult(true);
-                try
-                {
-                    foreach (var chan in await Client.GetDMChannelsAsync())
-                        await chan.CloseAsync();
-                }
-                catch
-                {
-                    // ignored
-                }
-            });
-            return Task.CompletedTask;
+                foreach (var chan in await Client.GetDMChannelsAsync())
+                    await chan.CloseAsync();
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         //connect
@@ -241,6 +237,7 @@ public sealed class Bot
         try
         {
             await Client.LoginAsync(TokenType.Bot, token);
+            Log.Information("Starting...");
             await Client.StartAsync();
         }
         catch (HttpException ex)
