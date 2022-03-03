@@ -27,7 +27,7 @@ public partial class Administration
             if (input.Length % 2 != 0 || target is null)
                 return;
 
-            var all = await input.Chunk(input.Length / 2)
+            var all = await input.Chunk(2)
                                  .Select(async x =>
                                  {
                                      var inputRoleStr = x.First();
