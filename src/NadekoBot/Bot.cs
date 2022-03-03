@@ -53,6 +53,9 @@ public sealed class Bot
             50;
 #endif
 
+        if(!_creds.UsePrivilegedIntents)
+            Log.Warning("You are not using privileged intents. Some features will not work properly");
+        
         Client = new(new()
         {
             MessageCacheSize = messageCacheSize,
@@ -255,7 +258,6 @@ public sealed class Bot
         await clientReady.Task.ConfigureAwait(false);
         Client.Ready -= SetClientReady;
         
-
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
 
@@ -342,9 +344,9 @@ public sealed class Bot
         if (arg.Message?.Contains("unknown dispatch", StringComparison.InvariantCultureIgnoreCase) ?? false)
             return Task.CompletedTask;
 
-        if (arg.Exception is WebSocketClosedException { CloseCode: 4014 })
+        if (arg.Exception is { InnerException: WebSocketClosedException { CloseCode: 4014 } })
         {
-            Log.Warning(@"
+            Log.Error(@"
 Login failed.
 
 *** Please enable privileged intents ***
