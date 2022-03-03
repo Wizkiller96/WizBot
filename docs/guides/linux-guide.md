@@ -26,9 +26,19 @@ It is recommended that you use **Ubuntu 20.04**, as there have been nearly no pr
 
 ## Linux From Source 
 
-Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
+##### Migration from v3 -> v4
+
+Follow the following few steps only if you're migrating from v3. If not, skip to installation instructions.
+
+Use the new installer script:  `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v4/linuxAIO.sh && bash linuxAIO.sh`
+> - Install prerequisites (type `1` and press `enter`)
+> - Download (type `2` and press `enter`)
+> - Run (type `3` and press `enter`)
+> - Done
 
 ##### Installation Instructions
+
+Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
 1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v4/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
