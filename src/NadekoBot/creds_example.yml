@@ -1,10 +1,12 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 # Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
 token: ''
 # List of Ids of the users who have bot owner permissions
 # **DO NOT ADD PEOPLE YOU DON'T TRUST**
 ownerIds: []
+# Keep this on 'true' unless you're sure your bot shouldn't use privileged intents or you're waiting to be accepted
+usePrivilegedIntents: true
 # The number of shards that the bot will running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1

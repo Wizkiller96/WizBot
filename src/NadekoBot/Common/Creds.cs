@@ -14,12 +14,15 @@ public sealed class Creds : IBotCredentials
     [Comment(@"List of Ids of the users who have bot owner permissions
 **DO NOT ADD PEOPLE YOU DON'T TRUST**")]
     public ICollection<ulong> OwnerIds { get; set; }
+    
+    [Comment("Keep this on 'true' unless you're sure your bot shouldn't use privileged intents or you're waiting to be accepted")]
+    public bool UsePrivilegedIntents { get; set; }
 
     [Comment(@"The number of shards that the bot will running on.
 Leave at 1 if you don't know what you're doing.")]
     public int TotalShards { get; set; }
 
-    [Comment(
+    [Comment(   
         @"Login to https://console.cloud.google.com, create a new project, go to APIs & Services -> Library -> YouTube Data API and enable it.
 Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
 Used only for Youtube Data Api (at the moment).")]
@@ -96,8 +99,9 @@ Windows default
 
     public Creds()
     {
-        Version = 3;
+        Version = 4;
         Token = string.Empty;
+        UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
         TotalShards = 1;
         GoogleApiKey = string.Empty;

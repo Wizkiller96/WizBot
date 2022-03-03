@@ -6,6 +6,7 @@ public interface IBotCredentials
     string Token { get; }
     string GoogleApiKey { get; }
     ICollection<ulong> OwnerIds { get; }
+    bool UsePrivilegedIntents { get; }
     string RapidApiKey { get; }
 
     Creds.DbOptions Db { get; }
