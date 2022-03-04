@@ -7,11 +7,28 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - More cool stuff coming soon
 
+## [4.0.4] - 04.03.2022
+
+### Fixed
+
+- Fixed the `id` which shows up when you add a new Expression
+- Fixed some strings which were still referring to "CustomReaction(s)" instead of "Expression(s)" 
+
+## [4.0.3] - 04.03.2022
+
+### Fixed
+
+- Console should no longer spam numbers when `.antispam` is enabled
+
 ## [4.0.2] - 03.03.2022
+
+### Fixed
 
 - Fixed `.rero` not working due to a bug introduced in 4.0
 
 ## [4.0.1] - 03.03.2022
+
+### Added
 
 - Added `usePrivilegedIntents` to creds.yml if you don't have or don't want (?) to use them
 - Added a human-readable, detailed error message if logging in fails due to missing privileged intents
