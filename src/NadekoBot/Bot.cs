@@ -358,7 +358,7 @@ How to enable privileged intents:
 1. Head over to the Discord Developer Portal https://discord.com/developers/applications/
 2. Select your Application.
 3. Click on `Bot` in the left side navigation panel, and scroll down to the intents section.
-4. Enable both intents.
+4. Enable all intents.
 5. Restart your bot.
 
 Read this only if your bot is in 100 or more servers:
