@@ -27,6 +27,7 @@ namespace WizBot.Modules.Roblox
         // Code is a bit messy as this was a temp solution to fix the nulled issue.
         // This code can be redone and clean up if anyone willing to do it.
         [WizBotCommand, Aliases]
+        [Ratelimit(10)]
         public async Task RInfo([Remainder] string username = null)
         {
             if (string.IsNullOrWhiteSpace(username))
