@@ -63,7 +63,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 5. Copy the creds.yml template 
     - `cp creds_example.yml creds.yml` 
 6. Open `creds.yml` with your favorite text editor. We will use nano here
-    - `nano wizbot/output/creds.yml`
+    - `nano creds.yml`
 8. [Click here to follow creds guide](#creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
