@@ -20,7 +20,7 @@ namespace WizBot.Services
         private readonly IBotCredentials _creds;
         private readonly DateTime _started;
 
-        public const string BotVersion = "3.0.12";
+        public const string BotVersion = "3.0.13";
         public string Author => "Kwoth#2452\nWizkiller96#5074";
         public string Library => "Discord.Net";
         public double MessagesPerSecond => MessageCounter / GetUptime().TotalSeconds;
