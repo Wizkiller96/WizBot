@@ -202,9 +202,9 @@ exprlist:
     Running the command in DM will list global custom reactions, while running it in a server will list server custom reactions.
     Shows enabled settings, followed by id, followed by the trigger.
     **Settings:** 
-    • 🗯️ Triggered if trigger matches any word (`{0}h {0}crca`)
-    • ✉️ Response will be DMed (`{0}h {0}crdm`)
-    • ❌ Trigger will be deleted (`{0}h {0}crad`)
+    • 🗯️ Triggered if trigger matches any word (`{0}h {0}exca`)
+    • ✉️ Response will be DMed (`{0}h {0}exdm`)
+    • ❌ Trigger will be deleted (`{0}h {0}exad`)
   args:
     - "1"
     - "all"
