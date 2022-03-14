@@ -65,14 +65,13 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Guides:
-      - ❗ Migration Guide: guides/migration-guide.md
       - Windows Guide: guides/windows-guide.md
       - Linux Guide: guides/linux-guide.md
       - OSX Guide: guides/osx-guide.md
       - Docker Guide (unsupported): guides/docker-guide.md
   - Commands:
       - Readme: commands-readme.md
-      - Commands List: https://commands.wizbot.cc/
+      - Commands List: https://commands.wizbot.cc
   - Features Explained:
       - Basic Creds: creds-guide.md
       - Advanced Creds: jsons-explained.md
