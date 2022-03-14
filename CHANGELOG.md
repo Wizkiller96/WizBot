@@ -294,14 +294,14 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Code cleanup
   - Command attributes cleaned up
     - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed 
-  - There are 2 projects: NadekoBot and NadekoBot.Coordinator
-    - You can directly run NadekoBot as the regular bot with one shard
-    - Run NadekoBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
+  - There are 2 projects: WizBot and WizBot.Coordinator
+    - You can directly run WizBot as the regular bot with one shard
+    - Run WizBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
   - Small performance improvements
   - Db Migrations squashed
   - A lot of cleanup all around
 - Many guides reworked
-  - Guides now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
+  - Guides now instruct users to set build output to wizbot/output instead of running from wizbot/src/WizBot
 
 ### Fixed
 

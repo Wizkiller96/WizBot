@@ -14,7 +14,7 @@ do
 done
 
 # fix folder permissions
-chown -R nadeko:nadeko "$data"
+chown -R wizbot:wizbot "$data"
 
 # drop to regular user and launch command
-exec sudo -u nadeko "$@"
+exec sudo -u wizbot "$@"

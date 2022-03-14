@@ -1,92 +1,86 @@
-site_name: 'NadekoBot'
-site_url: 'https://nadeko.bot'
-repo_url: 'https://gitlab.com/kwoth/nadekobot'
-site_author: 'Kwoth'
+site_name: 'WizBot'
+site_url: 'https://wizbot.cc'
+repo_name: 'Wizkiller96/WizBot'
+repo_url: 'https://github.com/Wizkiller96/WizBot'
+site_author: 'Kwoth & Wizkiller96'
+edit_uri: 'edit/v4/docs/'
+
+copyright: © Copyright 2021 WizNet - All Rights Reserved.
 
 theme:
-    name: material
-    custom_dir: docs/overrides
-    palette:
-          - media: "(prefers-color-scheme: light)"
-            scheme: default
-            primary: blue
-            accent: light blue
-            toggle:
-                icon: material/weather-sunny
-                name: Switch to dark mode
-          - media: "(prefers-color-scheme: dark)"
-            scheme: dark
-            primary: blue
-            accent: light blue
-            toggle:
-                icon: material/weather-night
-                name: Switch to light mode
-    features:
-        - navigation.instant
-        - navigation.expand
-        - navigation.top
-    font: 
-        text: Source Sans Pro
-        code: Source Code Pro
-    logo: assets/favicon.png
-    favicon: assets/favicon.png
-    icon: 
-        repo: custom/gitlab
+  name: material
+  palette:
+    scheme: 'wizbot'
+  features:
+    - navigation.instant
+    - navigation.expand
+    - navigation.top
+  font:
+    text: Source Sans Pro
+    code: Source Code Pro
+  logo: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
+  favicon: https://wizbot.cc/assets/img/wizbot-icon-887x889.png
 
 extra:
-  homepage: https://nadeko.bot
+  homepage: https://wizbot.cc
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js
+  - javascripts/config.js
 
 extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css
   - stylesheets/styling-overrides.css
   - stylesheets/theme.css
 
 plugins:
-    - git-revision-date-localized:
-        type: date
-    - search
+  - git-revision-date-localized:
+      type: date
+  - search
 
 markdown_extensions:
-    - attr_list
-    - codehilite:
-        guess_lang: false
-    - toc:
-        permalink: true
-    - pymdownx.tasklist:
-        custom_checkbox: true
-    - pymdownx.betterem:
-        smart_enable: all
-    - admonition
-    - meta
-    - footnotes
-    - pymdownx.details
-    - pymdownx.inlinehilite
-    - pymdownx.superfences
-    - pymdownx.tabbed
-    - pymdownx.emoji:
-        emoji_index: !!python/name:materialx.emoji.twemoji
-        emoji_generator: !!python/name:materialx.emoji.to_svg
-        options:
-            custom_icons:
-                - docs/overrides/.icons
+  - attr_list
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - admonition
+  - meta
+  - footnotes
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - docs/overrides/.icons
 
 nav:
-    - Home: index.md
-    - Guides:
-        - Windows Guide: guides/windows-guide.md
-        - Linux Guide: guides/linux-guide.md
-        - OSX Guide: guides/osx-guide.md
-        - Docker Guide (unsupported): guides/docker-guide.md
-    - Commands:
-        - Readme: commands-readme.md
-        - Commands List: https://nadeko.bot/commands
-    - Features Explained:
-        - Basic Creds: creds-guide.md
-        - Advanced Creds: jsons-explained.md
-        - Permissions System: permissions-system.md
-        - Custom Reactions: custom-reactions.md
-        - Placeholders: placeholders.md
-        - Config: config-guide.md
-        - Bot Config: bce-guide.md
-    - Contribution Guide: contribution-guide.md
-    - Donate: donate.md
-    - License: license.md
+  - Home: index.md
+  - Guides:
+      - ❗ Migration Guide: guides/migration-guide.md
+      - Windows Guide: guides/windows-guide.md
+      - Linux Guide: guides/linux-guide.md
+      - OSX Guide: guides/osx-guide.md
+      - Docker Guide (unsupported): guides/docker-guide.md
+  - Commands:
+      - Readme: commands-readme.md
+      - Commands List: https://commands.wizbot.cc/
+  - Features Explained:
+      - Basic Creds: creds-guide.md
+      - Advanced Creds: jsons-explained.md
+      - Permissions System: permissions-system.md
+      - Custom Reactions: custom-reactions.md
+      - Placeholders: placeholders.md
+      - Config: config-guide.md
+      - Bot Config: bce-guide.md
+  - Contribution Guide: contribution-guide.md
+  - Donate: donate.md
+  - License: license.md
