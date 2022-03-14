@@ -478,7 +478,7 @@ public partial class Administration
                 var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
                 var embed = _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
                 if (embed is not null)
-                    await ctx.User.SendAsync(embed);
+                    await user.SendAsync(embed);
             }
             catch
             {
