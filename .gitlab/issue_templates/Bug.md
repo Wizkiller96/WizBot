@@ -2,7 +2,7 @@
 Write here a summary of the issue you're having.  
 
 ### Version  
-- Write here whether you're using public Nadeko or hosting one yourself.  
+- Write here whether you're using public WizBot or hosting one yourself.  
 - If you are hosting, write down:  
   - The bot version (run the command .stats on Discord).  
   - Your operating system and its version.  
