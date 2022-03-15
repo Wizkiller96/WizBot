@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 
 namespace WizBot.Modules.Nsfw;
 
-[NoPublicBot]
 public partial class NSFW : WizBotModule<ISearchImagesService>
 {
     private static readonly ConcurrentHashSet<ulong> _hentaiBombBlacklist = new();

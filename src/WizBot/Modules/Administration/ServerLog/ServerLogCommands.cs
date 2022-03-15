@@ -6,7 +6,6 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    [NoPublicBot]
     public partial class LogCommands : WizBotModule<ILogCommandService>
     {
         [Cmd]

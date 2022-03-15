@@ -42,8 +42,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute = mute;
         _prot = prot;
         _tz = tz;
-
-#if !GLOBAL_WIZBOT
+        
 
         using (var uow = db.GetDbContext())
         {
@@ -78,8 +77,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute.UserUnmuted += MuteCommands_UserUnmuted;
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
-
-#endif
+        
     }
 
     public Task OnReadyAsync()
@@ -94,7 +92,6 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private async Task PresenceUpdateTask()
     {
-#if !GLOBAL_WIZBOT
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
         while (await timer.WaitForNextTickAsync())
         {
@@ -120,7 +117,6 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             }
             catch { }
         }
-#endif
     }
 
     public LogSetting? GetGuildLogSettings(ulong guildId)
