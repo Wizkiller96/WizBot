@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using WizBot.Modules.Searches.Services;
 
-namespace WizBot.Modules.Roblox
-{
+namespace WizBot.Modules.Roblox;
+
     // Basic Roblox command using Roblox API.
     // Official Roblox API can be found at: http://api.roblox.com/docs
     // More Roblox API info at: https://api.roblox.com/docs?useConsolidatedPage=true
@@ -20,7 +20,7 @@ namespace WizBot.Modules.Roblox
         // This code can be redone and clean up if anyone willing to do it.
         [Cmd]
         [Ratelimit(10)]
-        public async partial Task RInfo([Remainder] string username = null)
+        public async partial Task RInfo([Remainder] string username)
         {
             if (string.IsNullOrWhiteSpace(username))
                 return;
@@ -104,4 +104,3 @@ namespace WizBot.Modules.Roblox
             }
         }
     }
-}
