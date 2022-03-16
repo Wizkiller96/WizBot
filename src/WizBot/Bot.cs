@@ -47,11 +47,7 @@ public sealed class Bot
             _db.Setup();
 
         var messageCacheSize =
-#if GLOBAL_WIZBOT
-            0;
-#else
             50;
-#endif
 
         if(!_creds.UsePrivilegedIntents)
             Log.Warning("You are not using privileged intents. Some features will not work properly");
@@ -117,7 +113,11 @@ public sealed class Bot
                                           // music
                                           .AddMusic();
         // admin
+//#if GLOBAL_WIZBOT
+        //svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
+//#else
         svcs.AddSingleton<ILogCommandService, LogCommandService>();
+//#endif
 
         svcs.AddHttpClient();
         svcs.AddHttpClient("memelist")
