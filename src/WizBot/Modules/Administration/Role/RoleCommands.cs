@@ -101,7 +101,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
@@ -110,7 +109,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
@@ -119,7 +117,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
@@ -128,7 +125,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
@@ -137,7 +133,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRolesList()
         {
@@ -164,7 +159,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRolesRemove(int index)
         {
