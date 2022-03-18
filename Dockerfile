@@ -25,7 +25,7 @@ RUN set -xe; \
     useradd -m nadeko; \
     apt-get update; \
     apt-get install -y libopus0 libsodium23 libsqlite3-0 curl ffmpeg python3 python3-pip sudo; \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1; \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1; \
     echo 'Defaults>nadeko env_keep+="ASPNETCORE_* DOTNET_* NadekoBot_* shard_id total_shards TZ"' > /etc/sudoers.d/nadeko; \
     pip3 install --upgrade youtube-dl; \
     apt-get remove -y python3-pip; \
