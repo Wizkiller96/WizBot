@@ -889,7 +889,7 @@ deleteplaylist:
   args:
     - "5"
 queueautoplay:
-  desc: "Toggles autoplay - When the song is finished, automatically queue a related Youtube song. (Works only for Youtube songs and when queue is empty)"
+  desc: "Toggles autoplay - When the song is finished, automatically queue a related Youtube song. (Works only for Youtube songs)"
   args:
     - ""
 streamadd:
