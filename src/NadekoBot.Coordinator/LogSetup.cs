@@ -15,6 +15,9 @@ namespace NadekoBot.Services
                 .MinimumLevel.Override("System", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
+                .WriteTo.File("coord.log", LogEventLevel.Information, 
+                    rollOnFileSizeLimit: true,
+                    fileSizeLimitBytes: 10_000_000)
                 .WriteTo.Console(LogEventLevel.Information,
                     theme: GetTheme(),
                     outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] | #{LogSource} | {Message:lj}{NewLine}{Exception}")
