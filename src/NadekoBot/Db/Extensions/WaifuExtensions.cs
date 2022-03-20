@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
 using NadekoBot.Services.Database;
@@ -75,11 +77,22 @@ public static class WaifuExtensions
                  .Select(x => x.Waifu.UserId)
                  .FirstOrDefault();
 
-    public static WaifuInfoStats GetWaifuInfo(this NadekoContext ctx, ulong userId)
+    public static async Task<WaifuInfoStats> GetWaifuInfoAsync(this NadekoContext ctx, ulong userId)
     {
-        ctx.Database.ExecuteSqlInterpolated($@"
-INSERT OR IGNORE INTO WaifuInfo (AffinityId, ClaimerId, Price, WaifuId)
-VALUES ({null}, {null}, {1}, (SELECT Id FROM DiscordUser WHERE UserId={userId}));");
+        await ctx.WaifuInfo
+                 .ToLinqToDBTable()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         AffinityId = null,
+                         ClaimerId = null,
+                         Price = 1,
+                         WaifuId = ctx.DiscordUser.Where(x => x.UserId == userId).Select(x => x.Id).First()
+                     },
+                     _ => new(),
+                     () => new()
+                     {
+                         WaifuId = ctx.DiscordUser.Where(x => x.UserId == userId).Select(x => x.Id).First()
+                     });
 
         var toReturn = ctx.WaifuInfo.AsQueryable()
                           .Where(w => w.WaifuId

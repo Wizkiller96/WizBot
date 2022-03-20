@@ -385,10 +385,10 @@ public class WaifuService : INService, IReadyExecutor
         return true;
     }
 
-    public WaifuInfoStats GetFullWaifuInfoAsync(ulong targetId)
+    public async Task<WaifuInfoStats> GetFullWaifuInfoAsync(ulong targetId)
     {
-        using var uow = _db.GetDbContext();
-        var wi = uow.GetWaifuInfo(targetId);
+        await using var uow = _db.GetDbContext();
+        var wi = await uow.GetWaifuInfoAsync(targetId);
         if (wi is null)
         {
             wi = new()
@@ -409,12 +409,12 @@ public class WaifuService : INService, IReadyExecutor
         return wi;
     }
 
-    public WaifuInfoStats GetFullWaifuInfoAsync(IGuildUser target)
+    public async Task<WaifuInfoStats> GetFullWaifuInfoAsync(IGuildUser target)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         _ = uow.GetOrCreateUser(target);
 
-        return GetFullWaifuInfoAsync(target.Id);
+        return await GetFullWaifuInfoAsync(target.Id);
     }
 
     public string GetClaimTitle(int count)

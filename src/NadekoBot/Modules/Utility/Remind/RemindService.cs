@@ -78,8 +78,6 @@ public class RemindService : INService
                   .ToLinqToDBTable()
                   .Where(x => x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId
                               && x.When < now)
-                  // .FromSqlInterpolated(
-                  //     $"select * from reminders where ((serverid >> 22) % {_creds.TotalShards}) == {_client.ShardId} and \"when\" < {now};")
                   .ToListAsyncLinqToDB();
     }
 

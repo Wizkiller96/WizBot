@@ -236,9 +236,9 @@ public partial class Gambling
         public partial Task WaifuInfo(ulong targetId)
             => InternalWaifuInfo(targetId);
 
-        private Task InternalWaifuInfo(ulong targetId, string name = null)
+        private async Task InternalWaifuInfo(ulong targetId, string name = null)
         {
-            var wi = _service.GetFullWaifuInfoAsync(targetId);
+            var wi = await _service.GetFullWaifuInfoAsync(targetId);
             var affInfo = _service.GetAffinityTitle(wi.AffinityCount);
 
             var waifuItems = _service.GetWaifuItems().ToDictionary(x => x.ItemEmoji, x => x);
@@ -280,7 +280,7 @@ public partial class Gambling
                                true)
                            .AddField(GetText(strs.gifts), itemsStr, true);
 
-            return ctx.Channel.EmbedAsync(embed);
+            await ctx.Channel.EmbedAsync(embed);
         }
 
         [Cmd]
