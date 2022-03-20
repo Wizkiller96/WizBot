@@ -1,4 +1,5 @@
 #nullable disable
+using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.TypeReaders.Models;
@@ -224,16 +225,34 @@ public class UserPunishService : INService, IReadyExecutor
     public async Task CheckAllWarnExpiresAsync()
     {
         await using var uow = _db.GetDbContext();
-        var cleared = await uow.Database.ExecuteSqlRawAsync(@"UPDATE Warnings
-SET Forgiven = 1,
-    ForgivenBy = 'Expiry'
-WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 0)
-	AND Forgiven = 0
-	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
+        var cleared = await uow.Warnings
+                               .Where(x => uow.GuildConfigs
+                                                 .Any(y => y.GuildId == x.GuildId
+                                                           && y.WarnExpireHours > 0
+                                                           && y.WarnExpireAction == WarnExpireAction.Clear)
+                                           && x.Forgiven == false 
+                                           && x.DateAdded
+                                           < DateTime.UtcNow.AddHours(-uow.GuildConfigs
+                                                                          .Where(y => x.GuildId == y.GuildId)
+                                                                          .Select(y => y.WarnExpireHours)
+                                                                          .First()))
+                               .UpdateAsync(_ => new()
+                               {
+                                   Forgiven = true,
+                                   ForgivenBy = "expiry"
+                               });
 
-        var deleted = await uow.Database.ExecuteSqlRawAsync(@"DELETE FROM Warnings
-WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND WarnExpireAction = 1)
-	AND DateAdded < datetime('now', (SELECT '-' || WarnExpireHours || ' hours' FROM GuildConfigs as gc WHERE gc.GuildId = Warnings.GuildId));");
+        var deleted = await uow.Warnings
+                               .Where(x => uow.GuildConfigs
+                                              .Any(y => y.GuildId == x.GuildId
+                                                        && y.WarnExpireHours > 0
+                                                        && y.WarnExpireAction == WarnExpireAction.Delete)
+                                           && x.DateAdded
+                                           < DateTime.UtcNow.AddHours(-uow.GuildConfigs
+                                                                          .Where(y => x.GuildId == y.GuildId)
+                                                                          .Select(y => y.WarnExpireHours)
+                                                                          .First()))
+                               .DeleteAsync();
 
         if (cleared > 0 || deleted > 0)
         {
@@ -241,6 +260,8 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
                 cleared,
                 deleted);
         }
+
+        await uow.SaveChangesAsync();
     }
 
     public async Task CheckWarnExpiresAsync(ulong guildId)
@@ -251,21 +272,24 @@ WHERE GuildId in (SELECT GuildId FROM GuildConfigs WHERE WarnExpireHours > 0 AND
         if (config.WarnExpireHours == 0)
             return;
 
-        var hours = $"{-config.WarnExpireHours} hours";
         if (config.WarnExpireAction == WarnExpireAction.Clear)
         {
-            await uow.Database.ExecuteSqlInterpolatedAsync($@"UPDATE warnings
-SET Forgiven = 1,
-    ForgivenBy = 'Expiry'
-WHERE GuildId={guildId}
-    AND Forgiven = 0
-    AND DateAdded < datetime('now', {hours})");
+            await uow.Warnings
+                     .Where(x => x.GuildId == guildId
+                                 && x.Forgiven == false
+                                 && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
+                     .UpdateAsync(_ => new()
+                     {
+                         Forgiven = true,
+                         ForgivenBy = "expiry"
+                     });
         }
         else if (config.WarnExpireAction == WarnExpireAction.Delete)
         {
-            await uow.Database.ExecuteSqlInterpolatedAsync($@"DELETE FROM warnings
-WHERE GuildId={guildId}
-    AND DateAdded < datetime('now', {hours})");
+            await uow.Warnings
+                     .Where(x => x.GuildId == guildId
+                                 && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
+                     .DeleteAsync();
         }
 
         await uow.SaveChangesAsync();

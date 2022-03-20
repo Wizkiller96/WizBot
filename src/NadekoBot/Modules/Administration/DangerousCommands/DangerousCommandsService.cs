@@ -2,45 +2,82 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
 public class DangerousCommandsService : INService
 {
-    public const string WAIFUS_DELETE_SQL = @"DELETE FROM WaifuUpdates;
-DELETE FROM WaifuItem;
-DELETE FROM WaifuInfo;";
-
-    public const string WAIFU_DELETE_SQL =
-        @"DELETE FROM WaifuUpdates WHERE UserId=(SELECT Id FROM DiscordUser WHERE UserId={0});
-DELETE FROM WaifuItem WHERE WaifuInfoId=(SELECT Id FROM WaifuInfo WHERE WaifuId=(SELECT Id FROM DiscordUser WHERE UserId={0}));
-UPDATE WaifuInfo SET ClaimerId=NULL WHERE ClaimerId=(SELECT Id FROM DiscordUser WHERE UserId={0});
-DELETE FROM WaifuInfo WHERE WaifuId=(SELECT Id FROM DiscordUser WHERE UserId={0});";
-
-    public const string CURRENCY_DELETE_SQL =
-        "UPDATE DiscordUser SET CurrencyAmount=0; DELETE FROM CurrencyTransactions; DELETE FROM PlantedCurrency;";
-
-    public const string MUSIC_PLAYLIST_DELETE_SQL = "DELETE FROM MusicPlaylists;";
-
-    public const string XP_DELETE_SQL = @"DELETE FROM UserXpStats;
-UPDATE DiscordUser
-SET ClubId=NULL,
-    IsClubAdmin=0,
-    TotalXp=0;
-DELETE FROM ClubApplicants;
-DELETE FROM ClubBans;
-DELETE FROM Clubs;";
-//        public const string DeleteUnusedExpressionsAndQuotes = @"DELETE FROM Expressions 
-//WHERE UseCount=0 AND (DateAdded < date('now', '-7 day') OR DateAdded is null);
-
-//DELETE FROM Quotes 
-//WHERE UseCount=0 AND (DateAdded < date('now', '-7 day') OR DateAdded is null);";
-
     private readonly DbService _db;
 
     public DangerousCommandsService(DbService db)
         => _db = db;
+
+    public async Task DeleteXp()
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.DiscordUser.UpdateAsync(_ => new DiscordUser()
+        {
+            Club = null,
+            IsClubAdmin = false,
+            TotalXp = 0
+        });
+        await ctx.ClubApplicants.DeleteAsync();
+        await ctx.ClubBans.DeleteAsync();
+        await ctx.Clubs.DeleteAsync();
+        await ctx.SaveChangesAsync();
+    }
+    
+    public async Task DeleteWaifus()
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.WaifuUpdates.DeleteAsync();
+        await ctx.WaifuItem.DeleteAsync();
+        await ctx.WaifuInfo.DeleteAsync();
+        await ctx.SaveChangesAsync();
+    }
+
+    public async Task DeleteWaifu(ulong userId)
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.WaifuUpdates
+                 .Where(x => x.User.UserId == userId)
+                 .DeleteAsync();
+        await ctx.WaifuItem
+                 .Where(x => x.WaifuInfo.Waifu.UserId == userId)
+                 .DeleteAsync();
+        await ctx.WaifuInfo
+                 .Where(x => x.Claimer.UserId == userId)
+                 .UpdateAsync(old => new WaifuInfo()
+                 {
+                     ClaimerId = null,
+                 });
+        await ctx.WaifuInfo
+                 .Where(x => x.Waifu.UserId == userId)
+                 .DeleteAsync();
+        await ctx.SaveChangesAsync();
+    }
+    
+    public async Task DeletePlaylists()
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.MusicPlaylists.DeleteAsync();
+        await ctx.SaveChangesAsync();
+    }
+
+    public async Task DeleteCurrency()
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.DiscordUser.UpdateAsync(_ => new DiscordUser()
+        {
+            CurrencyAmount = 0
+        });
+
+        await ctx.CurrencyTransactions.DeleteAsync();
+        await ctx.PlantedCurrency.DeleteAsync();
+        await ctx.SaveChangesAsync();
+    }
 
     public async Task<int> ExecuteSql(string sql)
     {
