@@ -37,9 +37,13 @@ public class NadekoContext : DbContext
     public DbSet<NadekoExpression> Expressions { get; set; }
     public DbSet<CurrencyTransaction> CurrencyTransactions { get; set; }
     public DbSet<WaifuUpdate> WaifuUpdates { get; set; }
+    public DbSet<WaifuItem> WaifuItem { get; set; }
     public DbSet<Warning> Warnings { get; set; }
     public DbSet<UserXpStats> UserXpStats { get; set; }
     public DbSet<ClubInfo> Clubs { get; set; }
+    public DbSet<ClubBans> ClubBans { get; set; }
+    public DbSet<ClubApplicants> ClubApplicants { get; set; }
+    
 
     //logging
     public DbSet<LogSetting> LogSettings { get; set; }
