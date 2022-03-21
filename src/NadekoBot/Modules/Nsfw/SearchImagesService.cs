@@ -7,12 +7,6 @@ using Newtonsoft.Json.Linq;
 
 namespace NadekoBot.Modules.Nsfw;
 
-public record TagRequest(
-    ulong GuildId,
-    bool ForceExplicit,
-    Booru SearchType,
-    params string[] Tags);
-
 public record UrlReply
 {
     public string Error { get; init; }
@@ -30,7 +24,6 @@ public class SearchImagesService : ISearchImagesService, INService
     public ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; } = new();
     public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new();
     private readonly Random _rng;
-    private readonly HttpClient _http;
     private readonly SearchImageCacher _cache;
     private readonly IHttpClientFactory _httpFactory;
     private readonly DbService _db;
@@ -39,14 +32,11 @@ public class SearchImagesService : ISearchImagesService, INService
 
     public SearchImagesService(
         DbService db,
-        IHttpClientFactory http,
         SearchImageCacher cacher,
         IHttpClientFactory httpFactory)
     {
         _db = db;
         _rng = new NadekoRandom();
-        _http = http.CreateClient();
-        _http.AddFakeHeaders();
         _cache = cacher;
         _httpFactory = httpFactory;
 
@@ -205,8 +195,10 @@ public class SearchImagesService : ISearchImagesService, INService
     {
         try
         {
+            using var http = _httpFactory.CreateClient();
+            http.AddFakeHeaders();
             JToken obj;
-            obj = JArray.Parse(await _http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}"))[0];
+            obj = JArray.Parse(await http.GetStringAsync($"http://api.oboobs.ru/boobs/{_rng.Next(0, 12000)}"))[0];
             return new()
             {
                 Error = "",
@@ -269,8 +261,10 @@ public class SearchImagesService : ISearchImagesService, INService
     {
         try
         {
+            using var http = _httpFactory.CreateClient();
+            http.AddFakeHeaders();
             JToken obj;
-            obj = JArray.Parse(await _http.GetStringAsync($"http://api.obutts.ru/butts/{_rng.Next(0, 6100)}"))[0];
+            obj = JArray.Parse(await http.GetStringAsync($"http://api.obutts.ru/butts/{_rng.Next(0, 6100)}"))[0];
             return new()
             {
                 Error = "",
