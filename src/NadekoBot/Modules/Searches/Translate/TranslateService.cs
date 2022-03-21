@@ -3,6 +3,7 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
+using NadekoBot.Services.Database.Models;
 using System.Net;
 
 namespace NadekoBot.Modules.Searches;
@@ -31,12 +32,14 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
 
     public async Task OnReadyAsync()
     {
-        var ctx = _db.GetDbContext();
-
-        var guilds = _bot.AllGuildConfigs.Select(x => x.GuildId).ToList();
-        var cs = await ctx.AutoTranslateChannels.Include(x => x.Users)
+        List<AutoTranslateChannel> cs;
+        await using (var ctx = _db.GetDbContext())
+        {
+            var guilds = _bot.AllGuildConfigs.Select(x => x.GuildId).ToList();
+            cs = await ctx.AutoTranslateChannels.Include(x => x.Users)
                           .Where(x => guilds.Contains(x.GuildId))
                           .ToListAsyncEF();
+        }
 
         foreach (var c in cs)
         {
@@ -103,7 +106,7 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
 
     public async Task<bool> ToggleAtl(ulong guildId, ulong channelId, bool autoDelete)
     {
-        var ctx = _db.GetDbContext();
+        await using var ctx = _db.GetDbContext();
 
         var old = await ctx.AutoTranslateChannels.ToLinqToDBTable()
                            .FirstOrDefaultAsyncLinqToDB(x => x.ChannelId == channelId);
@@ -164,7 +167,7 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
         if (!_google.Languages.ContainsKey(from) || !_google.Languages.ContainsKey(to))
             return null;
 
-        var ctx = _db.GetDbContext();
+        await using var ctx = _db.GetDbContext();
         var ch = await ctx.AutoTranslateChannels.GetByChannelId(channelId);
 
         if (ch is null)
@@ -206,14 +209,13 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
 
     public async Task<bool> UnregisterUser(ulong channelId, ulong userId)
     {
-        var ctx = _db.GetDbContext();
+        await using var ctx = _db.GetDbContext();
         var rows = await ctx.AutoTranslateUsers.ToLinqToDBTable()
                             .DeleteAsync(x => x.UserId == userId && x.Channel.ChannelId == channelId);
 
         if (_users.TryGetValue(channelId, out var inner))
             inner.TryRemove(userId, out _);
-
-        await ctx.SaveChangesAsync();
+        
         return rows > 0;
     }
 

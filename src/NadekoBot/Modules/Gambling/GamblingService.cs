@@ -60,7 +60,6 @@ public class GamblingService : INService, IReadyExecutor
                 await using var uow = _db.GetDbContext();
                 await uow.CurrencyTransactions
                          .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
-                await uow.SaveChangesAsync();
             }
             catch (Exception ex)
             {
