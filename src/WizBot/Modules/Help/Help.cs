@@ -517,7 +517,7 @@ public partial class Help : WizBotModule<HelpService>
 
                 await ctx.Channel.SendMessageAsync("Report sent to WizBot's Staff.").ConfigureAwait(false);
 
-
+#else
 
             await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
                 .WithTitle("Command Restricted")

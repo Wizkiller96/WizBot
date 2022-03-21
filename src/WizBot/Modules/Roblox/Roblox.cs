@@ -72,7 +72,7 @@ namespace WizBot.Modules.Roblox;
                 {
                     RInfo["isBanned"] = "No";
                 } */
-                var pastNames = string.Join("\n", RInfo["oldNames"].Take(5));
+                var pastNames = string.Join("\n", RInfo["oldNames"]!.Take(5));
                 if (string.IsNullOrEmpty(pastNames))
                 {
                     pastNames = "N/A";
@@ -94,7 +94,7 @@ namespace WizBot.Modules.Roblox;
                     .AddField("Join Date", string.IsNullOrEmpty($"{RInfo["joinDate"]}") ? none : ($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
                     .AddField("Status", string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}"), false)
                     .AddField("Blurb", string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170)), false)
-                    .AddField($"Past Names (" + RInfo["oldNames"].Count() + ")", pastNames, false))
+                    .AddField($"Past Names (" + RInfo["oldNames"]!.Count() + ")", pastNames, false))
                 .ConfigureAwait(false);
                 //}
             }
