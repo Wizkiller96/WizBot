@@ -1,18 +1,25 @@
 # Setting up WizBot with Docker
 
-# DO NOT USE YET - WORK IN PROGRESS
+# WORK IN PROGRESS
 
-### Docker Compose 
+### Installation
+
+1. Create a `/srv/wizbot` folder
+- `mkdir -p /srv/wizbot`
+2. Create a `docker-compose.yml`
+- nano `docker-compose.yml`
+- copy the following contents into it:
+##### docker-compose.yml
 ```yml
 version: "3.7"
 services:
   wizbot:
-    image: registry.gitlab.com/veovis/wizbot:v3-docker
+    image: registry.gitlab.com/wiznet/wizbot:latest
     depends_on:
       - redis
     environment:
       TZ: Europe/Paris
-      #WizBot_RedisOptions: redis,name=wizbot
+      WizBot_RedisOptions: redis,name=wizbot
       #WizBot_ShardRunCommand: dotnet
       #WizBot_ShardRunArguments: /app/WizBot.dll {0} {1}
     volumes:
@@ -27,6 +34,12 @@ services:
     volumes:
       - /srv/wizbot/redis-data:/data
 ```
+3. Save your file and run docker compose
+- `docker-compose up`
+4. Edit creds in `/srv/wizbot/conf/creds.yml`
+5. Run it again with
+- `docker-compose up`
+
 ### Updating
 - `cd /srv/wizbot`
 - `docker-compose pull`
