@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace NadekoBot.Services;
 
-public class StatsService : IStatsService, IReadyExecutor, INService, IDisposable
+public sealed class StatsService : IStatsService, IReadyExecutor, INService, IDisposable
 {
     public const string BOT_VERSION = "4.0.4";
 

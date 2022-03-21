@@ -32,10 +32,9 @@ public class DbService
         using var context = new NadekoContext(_options);
         if (context.Database.GetPendingMigrations().Any())
         {
-            var mContext = new NadekoContext(_migrateOptions);
+            using var mContext = new NadekoContext(_migrateOptions);
             mContext.Database.Migrate();
             mContext.SaveChanges();
-            mContext.Dispose();
         }
 
         context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");

@@ -32,6 +32,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
 
     private readonly object _reloadLock = new();
+    private readonly IDisposable _changeToken;
 
     public BotCredsProvider(int? totalShards = null)
     {
@@ -52,9 +53,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("NadekoBot_")
                                             .Build();
-
-        ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
-
+#if !GLOBAL_NADEKO
+        _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
+#endif
         Reload();
     }
 

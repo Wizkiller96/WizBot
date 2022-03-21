@@ -109,7 +109,8 @@ public class SearchesService : INService
             using (var avatarImg = Image.Load<Rgba32>(data))
             {
                 avatarImg.Mutate(x => x.Resize(85, 85).ApplyRoundedCorners(42));
-                data = avatarImg.ToStream().ToArray();
+                await using var avStream = avatarImg.ToStream();
+                data = avStream.ToArray();
                 DrawAvatar(bg, avatarImg);
             }
 
@@ -141,7 +142,8 @@ public class SearchesService : INService
             bg.Mutate(x => x.DrawImage(flowers, new(0, 0), new GraphicsOptions()));
         }
 
-        return bg.ToStream().ToArray();
+        await using var stream = bg.ToStream();
+        return stream.ToArray();
     }
 
     public Task<WeatherData> GetWeatherDataAsync(string query)
@@ -532,7 +534,7 @@ public class SearchesService : INService
         http.DefaultRequestHeaders.Clear();
 
         using var response = await http.SendAsync(msg);
-        var content = await response.Content.ReadAsStreamAsync();
+        await using var content = await response.Content.ReadAsStreamAsync();
 
         using var document = await _googleParser.ParseDocumentAsync(content);
         var elems = document.QuerySelectorAll("div.g > div > div");

@@ -286,7 +286,7 @@ namespace NadekoBot.Coordinator
                 for (var shardId = 0; shardId < _shardStatuses.Length; shardId++)
                 {
                     var status = _shardStatuses[shardId];
-                    if (status.Process is { } p)
+                    if (status.Process is Process p)
                     {
                         try{p.Kill();} catch {}
                         try{p.Dispose();} catch {}

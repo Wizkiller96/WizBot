@@ -59,7 +59,7 @@ If you are experiencing ratelimits, you should create your own application at: h
         // so there is no need for ratelimit checks atm
         try
         {
-            var res = await http.PostAsJsonAsync(
+            using var res = await http.PostAsJsonAsync(
                 $"https://open-api.trovo.live/openplatform/channels/id",
                 new TrovoRequestData()
                 {

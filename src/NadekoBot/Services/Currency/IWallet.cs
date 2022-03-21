@@ -1,6 +1,6 @@
 namespace NadekoBot.Services.Currency;
 
-public interface IWallet : IDisposable, IAsyncDisposable
+public interface IWallet
 {
     public ulong UserId { get; }
 

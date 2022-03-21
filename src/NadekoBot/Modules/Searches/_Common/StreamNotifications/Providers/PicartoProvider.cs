@@ -62,7 +62,7 @@ public class PicartoProvider : Provider
             {
                 http.DefaultRequestHeaders.Accept.Add(new("application/json"));
                 // get id based on the username
-                var res = await http.GetAsync($"https://api.picarto.tv/v1/channel/name/{login}");
+                using var res = await http.GetAsync($"https://api.picarto.tv/v1/channel/name/{login}");
 
                 if (!res.IsSuccessStatusCode)
                     continue;

@@ -89,7 +89,7 @@ public static class StringExtensions
     public static async Task<Stream> ToStream(this string str)
     {
         var ms = new MemoryStream();
-        var sw = new StreamWriter(ms);
+        await using var sw = new StreamWriter(ms);
         await sw.WriteAsync(str);
         await sw.FlushAsync();
         ms.Position = 0;

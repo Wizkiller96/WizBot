@@ -359,7 +359,7 @@ public partial class Help : NadekoModule<HelpService>
             };
 
             using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
-            var oldVersionObject = await dlClient.GetObjectAsync(new()
+            using var oldVersionObject = await dlClient.GetObjectAsync(new()
             {
                 BucketName = "nadeko-pictures",
                 Key = "cmds/versions.json"

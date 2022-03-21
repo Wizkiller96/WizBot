@@ -76,7 +76,7 @@ public sealed partial class YtLoader
         var mem = GetScriptResponseSpan(response);
         var root = JsonDocument.Parse(mem).RootElement;
 
-        var tracksJsonItems = root
+        using var tracksJsonItems = root
                               .GetProperty("contents")
                               .GetProperty("twoColumnSearchResultsRenderer")
                               .GetProperty("primaryContents")
