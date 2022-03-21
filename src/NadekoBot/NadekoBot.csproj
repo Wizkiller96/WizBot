@@ -107,9 +107,11 @@
         <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix).$(VersionSuffix)</Version>
         <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
     </PropertyGroup>
-
+    
     <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">
-        <DefineConstants>$(DefineConstants);GLOBAL_NADEKO</DefineConstants>
+        <!-- Define trace doesn't seem to affect the build at all so I had to remove $(DefineConstants)-->
+        <DefineTrace>false</DefineTrace>
+        <DefineConstants>GLOBAL_NADEKO</DefineConstants>
         <NoWarn>$(NoWarn);CS1573;CS1591</NoWarn>
         <Optimize>true</Optimize>
         <DebugType>portable</DebugType>
