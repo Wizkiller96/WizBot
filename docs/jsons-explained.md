@@ -24,7 +24,7 @@ This part is completely optional, **however it's necessary for music and a few o
         - Open up `creds.yml` and look for `GoogleAPIKey`, paste your API key after the `:`.
         - It should look like this:
         ```yml
-        GoogleApiKey: AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM
+        GoogleApiKey: 'AIzaSyDSci1sdlWQOWNVj1vlXxxxxxbk0oWMEzM'
         ```
 - **MashapeKey**
     - Required for Hearthstone cards.
@@ -40,16 +40,19 @@ This part is completely optional, **however it's necessary for music and a few o
     - For Patreon creators only.
 - **PatreonCampaignId**
     - For Patreon creators only. Id of your campaign.
-- **TwitchClientId**
+- **TwitchClientId and TwitchClientSecret**
     - Mandatory for following twitch streams with `.twitch` (or `.stadd` with twitch link)
-    - Go to [apps page](https://dev.twitch.tv/console/apps/create) on twitch and register your application.
+    - Go to [apps page](https://dev.twitch.tv/console) on twitch and register your application.
     - You need 2FA enabled on twitch in order to create an application
     - You can set `http://localhost` as the OAuth Redirect URL (and press Add button)
     - Select `Chat Bot` from the Category dropdown
-    - Once created, clicking on your application will show a new Client ID field
-    - Copy it to your creds.yml as shown below
+    - Once created, `click Manage`
+    - Click `New Secret` and select `OK` in the popup
+      **Note: You will need to generate a new Client Secret everytime you exit the page**
+    - Copy both to your creds.yml as shown below
     ```yml
-        TwitchClientId: "516tr61tr1qweqwe86trg3g"
+        twitchClientId: 516tr61tr1qweqwe86trg3g
+        twitchClientSecret: 16tr61tr1q86tweqwe
     ```
 - **LocationIqApiKey**
     - Optional. Used only for the `.time` command. https://locationiq.com api key (register and you will receive the token in the email). 
@@ -94,7 +97,7 @@ RestartCommand:
 
 ```yml
 # DO NOT CHANGE
-version: 1
+version: 4
 # Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
 token: 'MTE5Nzc3MDIxMzE5NTc3NjEw.VlhNCw.BuqJFyzdIUAK1PRf1eK1Cu89Jew'
 # List of Ids of the users who have bot owner permissions
@@ -153,6 +156,13 @@ timezoneDbApiKey:
 coinmarketcapApiKey: 
 # Api key used for Osu related commands. Obtain this key at https://osu.ppy.sh/p/api
 osuApiKey: 4c8c8fdffdsfdsfsdfsfa33f3f3140a7d93320d6
+# Optional Trovo client id.
+# You should use this if Trovo stream notifications stopped working or you're getting ratelimit errors.
+trovoClientId: 
+# Obtain by creating an application at https://dev.twitch.tv/console/apps
+twitchClientId: jf2w6kkyrlzfl6mp1b4k25h4jr6b2o
+# Obtain by creating an application at https://dev.twitch.tv/console/apps
+twitchClientSecret: 16tr61tr1q86tweqwe
 # Command and args which will be used to restart the bot.
 # Only used if bot is executed directly (NOT through the coordinator)
 # placeholders: 
