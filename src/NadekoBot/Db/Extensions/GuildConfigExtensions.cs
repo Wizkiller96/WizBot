@@ -73,6 +73,7 @@ public static class GuildConfigExtensions
     {
         GuildConfig config;
 
+        // todo linq2db
         if (includes is null)
             config = ctx.GuildConfigs.IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
         else
@@ -100,6 +101,26 @@ public static class GuildConfigExtensions
         }
 
         return config;
+
+        // ctx.GuildConfigs
+        //    .ToLinqToDBTable()
+        //    .InsertOrUpdate(() => new()
+        //        {
+        //            GuildId = guildId,
+        //            Permissions = Permissionv2.GetDefaultPermlist,
+        //            WarningsInitialized = true,
+        //            WarnPunishments = DefaultWarnPunishments
+        //        },
+        //        _ => new(),
+        //        () => new()
+        //        {
+        //            GuildId = guildId
+        //        });
+        //
+        // if(includes is null)
+        // return ctx.GuildConfigs
+        //    .ToLinqToDBTable()
+        //    .First(x => x.GuildId == guildId);
     }
 
     public static LogSetting LogSettingsFor(this NadekoContext ctx, ulong guildId)
