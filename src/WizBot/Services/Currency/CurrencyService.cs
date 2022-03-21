@@ -27,14 +27,12 @@ public class CurrencyService : ICurrencyService, INService
     {
         if (type == CurrencyType.Default)
         {
-            await using var ctx = _db.GetDbContext();
             foreach (var userId in userIds)
             {
-                var wallet = new DefaultWallet(userId, ctx);
+                await using var wallet = await GetWalletAsync(userId);
                 await wallet.Add(amount, txData);
             }
-
-            await ctx.SaveChangesAsync();
+            
             return;
         }
 
