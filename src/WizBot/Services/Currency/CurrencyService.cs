@@ -99,19 +99,4 @@ public class CurrencyService : ICurrencyService, INService
         await using var wallet = await GetWalletAsync(user.Id);
         return await wallet.Take(amount, txData);
     }
-
-    public async Task<bool> TransferAsync(
-        ulong fromId,
-        ulong toId,
-        long amount,
-        string fromName,
-        string note)
-    {
-        await using var fromWallet = await GetWalletAsync(fromId);
-        await using var toWallet = await GetWalletAsync(toId);
-
-        var extra = new TxData("gift", fromName, note, fromId);
-
-        return await fromWallet.Transfer(amount, toWallet, extra);
-    }
 }

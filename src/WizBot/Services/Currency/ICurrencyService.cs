@@ -38,11 +38,4 @@ public interface ICurrencyService
         IUser user,
         long amount,
         TxData txData);
-
-    Task<bool> TransferAsync(
-        ulong from,
-        ulong to,
-        long amount,
-        string fromName,
-        string note);
 }

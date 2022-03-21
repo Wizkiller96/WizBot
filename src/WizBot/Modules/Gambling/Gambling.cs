@@ -65,8 +65,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     public async Task<string> GetBalanceStringAsync(ulong userId)
     {
-        await using var wallet = await _cs.GetWalletAsync(userId);
-        var bal = await wallet.GetBalance();
+        var bal = await _cs.GetBalanceAsync(userId);
         return N(bal);
     }
 
