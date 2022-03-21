@@ -58,6 +58,7 @@ public class CurrencyService : ICurrencyService, INService
                              ? du.CurrencyAmount - amount
                              : 0
                      });
+            await ctx.SaveChangesAsync();
             return;
         }
 
