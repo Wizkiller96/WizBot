@@ -30,7 +30,7 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         _client = client;
         _db = db;
 
-        var uow = _db.GetDbContext();
+        using var uow = _db.GetDbContext();
         _enabledOn = uow.ImageOnlyChannels.ToList()
                         .GroupBy(x => x.GuildId)
                         .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
