@@ -121,153 +121,155 @@ public class XpService : INService, IReadyExecutor
 #endif
     }
 
-    public Task OnReadyAsync()
-        => UpdateLoop();
-
-    private async Task UpdateLoop()
+    public async Task OnReadyAsync()
     {
         using var timer = new PeriodicTimer(5.Seconds());
         while (await timer.WaitForNextTickAsync())
         {
-            try
+            await UpdateLoop();
+        }
+    }
+
+    private async Task UpdateLoop()
+    {
+        try
+        {
+            var toNotify =
+                new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, int Level,
+                    XpNotificationLocation NotifyType, NotifOf NotifOf)>();
+            var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
+            var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
+
+            var toAddTo = new List<UserCacheItem>();
+            while (_addMessageXp.TryDequeue(out var usr))
+                toAddTo.Add(usr);
+
+            var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
+            if (toAddTo.Count == 0)
+                return;
+
+            await using (var uow = _db.GetDbContext())
             {
-                var toNotify =
-                    new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, int Level,
-                        XpNotificationLocation NotifyType, NotifOf NotifOf)>();
-                var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
-                var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
-
-                var toAddTo = new List<UserCacheItem>();
-                while (_addMessageXp.TryDequeue(out var usr))
-                    toAddTo.Add(usr);
-
-                var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
-                if (toAddTo.Count == 0)
-                    continue;
-
-                await using (var uow = _db.GetDbContext())
+                foreach (var item in group)
                 {
-                    foreach (var item in group)
+                    var xp = item.Sum(x => x.XpAmount);
+
+                    var usr = uow.GetOrCreateUserXpStats(item.Key.GuildId, item.Key.User.Id);
+                    var du = uow.GetOrCreateUser(item.Key.User);
+
+                    var globalXp = du.TotalXp;
+                    var oldGlobalLevelData = new LevelStats(globalXp);
+                    var newGlobalLevelData = new LevelStats(globalXp + xp);
+
+                    var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+                    usr.Xp += xp;
+                    du.TotalXp += xp;
+                    if (du.Club is not null)
+                        du.Club.Xp += xp;
+                    var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+
+                    if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
                     {
-                        var xp = item.Sum(x => x.XpAmount);
-
-                        var usr = uow.GetOrCreateUserXpStats(item.Key.GuildId, item.Key.User.Id);
-                        var du = uow.GetOrCreateUser(item.Key.User);
-
-                        var globalXp = du.TotalXp;
-                        var oldGlobalLevelData = new LevelStats(globalXp);
-                        var newGlobalLevelData = new LevelStats(globalXp + xp);
-
-                        var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-                        usr.Xp += xp;
-                        du.TotalXp += xp;
-                        if (du.Club is not null)
-                            du.Club.Xp += xp;
-                        var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-
-                        if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
+                        du.LastLevelUp = DateTime.UtcNow;
+                        var first = item.First();
+                        if (du.NotifyOnLevelUp != XpNotificationLocation.None)
                         {
-                            du.LastLevelUp = DateTime.UtcNow;
-                            var first = item.First();
-                            if (du.NotifyOnLevelUp != XpNotificationLocation.None)
-                            {
-                                toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
-                                    du.NotifyOnLevelUp, NotifOf.Global));
-                            }
-                        }
-
-                        if (oldGuildLevelData.Level < newGuildLevelData.Level)
-                        {
-                            usr.LastLevelUp = DateTime.UtcNow;
-                            //send level up notification
-                            var first = item.First();
-                            if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
-                            {
-                                toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
-                                    usr.NotifyOnLevelUp, NotifOf.Server));
-                            }
-
-                            //give role
-                            if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
-                            {
-                                rrews = uow.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
-                                roleRewards.Add(usr.GuildId, rrews);
-                            }
-
-                            if (!curRewards.TryGetValue(usr.GuildId, out var crews))
-                            {
-                                crews = uow.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
-                                curRewards.Add(usr.GuildId, crews);
-                            }
-
-                            //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
-                            for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
-                            {
-                                var rrew = rrews.FirstOrDefault(x => x.Level == i);
-                                if (rrew is not null)
-                                {
-                                    var role = first.User.Guild.GetRole(rrew.RoleId);
-                                    if (role is not null)
-                                    {
-                                        if (rrew.Remove)
-                                            _ = first.User.RemoveRoleAsync(role);
-                                        else
-                                            _ = first.User.AddRoleAsync(role);
-                                    }
-                                }
-
-                                //get currency reward for this level
-                                var crew = crews.FirstOrDefault(x => x.Level == i);
-                                if (crew is not null)
-                                    //give the user the reward if it exists
-                                    await _cs.AddAsync(item.Key.User.Id, crew.Amount, new("xp", "level-up"));
-                            }
+                            toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
+                                du.NotifyOnLevelUp, NotifOf.Global));
                         }
                     }
 
-                    uow.SaveChanges();
+                    if (oldGuildLevelData.Level < newGuildLevelData.Level)
+                    {
+                        usr.LastLevelUp = DateTime.UtcNow;
+                        //send level up notification
+                        var first = item.First();
+                        if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
+                        {
+                            toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
+                                usr.NotifyOnLevelUp, NotifOf.Server));
+                        }
+
+                        //give role
+                        if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
+                        {
+                            rrews = uow.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
+                            roleRewards.Add(usr.GuildId, rrews);
+                        }
+
+                        if (!curRewards.TryGetValue(usr.GuildId, out var crews))
+                        {
+                            crews = uow.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
+                            curRewards.Add(usr.GuildId, crews);
+                        }
+
+                        //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
+                        for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
+                        {
+                            var rrew = rrews.FirstOrDefault(x => x.Level == i);
+                            if (rrew is not null)
+                            {
+                                var role = first.User.Guild.GetRole(rrew.RoleId);
+                                if (role is not null)
+                                {
+                                    if (rrew.Remove)
+                                        _ = first.User.RemoveRoleAsync(role);
+                                    else
+                                        _ = first.User.AddRoleAsync(role);
+                                }
+                            }
+
+                            //get currency reward for this level
+                            var crew = crews.FirstOrDefault(x => x.Level == i);
+                            if (crew is not null)
+                                //give the user the reward if it exists
+                                await _cs.AddAsync(item.Key.User.Id, crew.Amount, new("xp", "level-up"));
+                        }
+                    }
                 }
 
-                await toNotify.Select(async x =>
-                              {
-                                  if (x.NotifOf == NotifOf.Server)
-                                  {
-                                      if (x.NotifyType == XpNotificationLocation.Dm)
-                                      {
-                                          await x.User.SendConfirmAsync(_eb,
-                                              _strings.GetText(strs.level_up_dm(x.User.Mention,
-                                                      Format.Bold(x.Level.ToString()),
-                                                      Format.Bold(x.Guild.ToString() ?? "-")),
-                                                  x.Guild.Id));
-                                      }
-                                      else if (x.MessageChannel is not null) // channel
-                                      {
-                                          await x.MessageChannel.SendConfirmAsync(_eb,
-                                              _strings.GetText(strs.level_up_channel(x.User.Mention,
-                                                      Format.Bold(x.Level.ToString())),
-                                                  x.Guild.Id));
-                                      }
-                                  }
-                                  else
-                                  {
-                                      IMessageChannel chan;
-                                      if (x.NotifyType == XpNotificationLocation.Dm)
-                                          chan = await x.User.CreateDMChannelAsync();
-                                      else // channel
-                                          chan = x.MessageChannel;
+                uow.SaveChanges();
+            }
 
-                                      await chan.SendConfirmAsync(_eb,
-                                          _strings.GetText(strs.level_up_global(x.User.Mention,
+            await toNotify.Select(async x =>
+                          {
+                              if (x.NotifOf == NotifOf.Server)
+                              {
+                                  if (x.NotifyType == XpNotificationLocation.Dm)
+                                  {
+                                      await x.User.SendConfirmAsync(_eb,
+                                          _strings.GetText(strs.level_up_dm(x.User.Mention,
+                                                  Format.Bold(x.Level.ToString()),
+                                                  Format.Bold(x.Guild.ToString() ?? "-")),
+                                              x.Guild.Id));
+                                  }
+                                  else if (x.MessageChannel is not null) // channel
+                                  {
+                                      await x.MessageChannel.SendConfirmAsync(_eb,
+                                          _strings.GetText(strs.level_up_channel(x.User.Mention,
                                                   Format.Bold(x.Level.ToString())),
                                               x.Guild.Id));
                                   }
-                              })
-                              .WhenAll();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error In the XP update loop");
-            }
+                              }
+                              else
+                              {
+                                  IMessageChannel chan;
+                                  if (x.NotifyType == XpNotificationLocation.Dm)
+                                      chan = await x.User.CreateDMChannelAsync();
+                                  else // channel
+                                      chan = x.MessageChannel;
+
+                                  await chan.SendConfirmAsync(_eb,
+                                      _strings.GetText(strs.level_up_global(x.User.Mention,
+                                              Format.Bold(x.Level.ToString())),
+                                          x.Guild.Id));
+                              }
+                          })
+                          .WhenAll();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error In the XP update loop");
         }
     }
 
