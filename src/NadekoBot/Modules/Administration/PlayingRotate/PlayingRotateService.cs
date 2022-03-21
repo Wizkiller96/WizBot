@@ -11,6 +11,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
     private readonly SelfService _selfService;
     private readonly Replacer _rep;
     private readonly DbService _db;
+    private readonly DiscordSocketClient _client;
 
     public PlayingRotateService(
         DiscordSocketClient client,
@@ -22,6 +23,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         _db = db;
         _bss = bss;
         _selfService = selfService;
+        _client = client;
 
         if (client.ShardId == 0)
             _rep = new ReplacementBuilder().WithClient(client).WithProviders(phProviders).Build();
@@ -29,6 +31,9 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
 
     public async Task OnReadyAsync()
     {
+        if (_client.ShardId != 0)
+            return;
+        
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
         var index = 0;
         while (await timer.WaitForNextTickAsync())
