@@ -119,8 +119,6 @@ public sealed class Bot
         // admin
 #if GLOBAL_NADEKO
         svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
-#else
-        svcs.AddSingleton<ILogCommandService, LogCommandService>();
 #endif
 
         svcs.AddHttpClient();

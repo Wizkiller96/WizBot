@@ -8,6 +8,9 @@ using NadekoBot.Services.Database.Models;
 namespace NadekoBot.Modules.Administration;
 
 public sealed class LogCommandService : ILogCommandService, IReadyExecutor
+    #if !GLOBAL_NADEKO
+    , INService // don't load this service on global nadeko
+    #endif
 {
     public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
@@ -42,9 +45,6 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute = mute;
         _prot = prot;
         _tz = tz;
-
-#if !GLOBAL_NADEKO
-
         using (var uow = db.GetDbContext())
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -64,7 +64,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _client.UserUnbanned += _client_UserUnbanned;
         _client.UserJoined += _client_UserJoined;
         _client.UserLeft += _client_UserLeft;
-        //_client.UserPresenceUpdated += _client_UserPresenceUpdated;
+        // _client.PresenceUpdated += _client_UserPresenceUpdated;
         _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated;
         _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated_TTS;
         _client.GuildMemberUpdated += _client_GuildUserUpdated;
@@ -78,12 +78,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute.UserUnmuted += MuteCommands_UserUnmuted;
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
-
-#endif
     }
 
-    public Task OnReadyAsync()
-        => Task.WhenAll(PresenceUpdateTask(), IgnoreMessageIdsClearTask());
+    public async Task OnReadyAsync()
+        => await Task.WhenAll(PresenceUpdateTask(), IgnoreMessageIdsClearTask());
 
     private async Task IgnoreMessageIdsClearTask()
     {
@@ -94,7 +92,6 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
     private async Task PresenceUpdateTask()
     {
-#if !GLOBAL_NADEKO
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
         while (await timer.WaitForNextTickAsync())
         {
@@ -120,7 +117,6 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             }
             catch { }
         }
-#endif
     }
 
     public LogSetting? GetGuildLogSettings(ulong guildId)
