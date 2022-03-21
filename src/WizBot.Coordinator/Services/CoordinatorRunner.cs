@@ -115,14 +115,6 @@ namespace WizBot.Coordinator
                                 break;
                             }
 
-                            if (status.Process is null or {HasExited: true})
-                            {
-                                Log.Warning("Shard {ShardId} is starting (process)...", shardId);
-                                hadAction = true;
-                                StartShard(shardId);
-                                break;
-                            }
-                            
                             if (DateTime.UtcNow - status.LastUpdate >
                                 TimeSpan.FromSeconds(_config.UnresponsiveSec))
                             {
@@ -135,6 +127,24 @@ namespace WizBot.Coordinator
                             if (status.StateCounter > 8 && status.State != ConnState.Connected)
                             {
                                 Log.Warning("Shard {ShardId} is restarting (stuck)...", shardId);
+                                hadAction = true;
+                                StartShard(shardId);
+                                break;
+                            }
+                            
+                            try
+                            {
+                                if (status.Process is null or { HasExited: true })
+                                {
+                                    Log.Warning("Shard {ShardId} is starting (process)...", shardId);
+                                    hadAction = true;
+                                    StartShard(shardId);
+                                    break;
+                                }
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                Log.Warning("Process for shard {ShardId} is bugged... ", shardId);
                                 hadAction = true;
                                 StartShard(shardId);
                                 break;
@@ -161,17 +171,13 @@ namespace WizBot.Coordinator
             var status = _shardStatuses[shardId];
             try
             {
-                if (status.Process is { HasExited: false } p)
-                {
-                    try
-                    {
-                        p.Kill(true);
-                    }
-                    catch
-                    {
-                    }
-                }
-
+                status.Process?.Kill(true);
+            }
+            catch
+            {
+            }
+            try
+            {
                 status.Process?.Dispose();
             }
             catch
@@ -282,8 +288,8 @@ namespace WizBot.Coordinator
                     var status = _shardStatuses[shardId];
                     if (status.Process is { } p)
                     {
-                        p.Kill();
-                        p.Dispose();
+                        try{p.Kill();} catch {}
+                        try{p.Dispose();} catch {}
                         _shardStatuses[shardId] = status with
                         {
                             Process = null,
