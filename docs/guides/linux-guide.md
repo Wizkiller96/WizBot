@@ -141,10 +141,16 @@ While there are two run modes built into the installer, these options only run N
 
 Using `tmux` is the simplest method, and is therefore recommended for most users.
 
-1. Start a tmux session:
-    - `tmux`
+**Before proceeding, make sure your bot is not running by either running `.die` in your Discord server or exiting the process with `Ctrl+C`.**
+
+If you are presented with the installer main menu, exit it by choosing Option `8`.
+
+1. Create a new session: `tmux new -s nadeko`
+
+The above command will create a new session named **nadeko** *(you can replace “nadeko” with anything you prefer, it's your session name)*.
+
 2. Navigate to the project's root directory
-    - Project root directory location example: `/home/user/nadekobot/`
+    - Project root directory location example: `cd /home/user/nadekobot/`
 3. Enter the `output` directory:
     - `cd output`
 4. Run the bot using:
@@ -152,8 +158,10 @@ Using `tmux` is the simplest method, and is therefore recommended for most users
 5. Detatch the tmux session:
     - Press `Ctrl` + `B`
     - Then press `D`
+Now check your Discord server, the bot should be online. Nadeko should now be running in the background of your system. 
 
-Nadeko should now be running in the background of your system. To re-open the tmux session to either update, restart, or whatever, execute `tmux a`.
+To re-open the tmux session to either update, restart, or whatever, execute `tmux a -t nadeko`. *(Make sure to replace "nadeko" with your session name. If you didn't change it, leave it as it.)*
+
 
 ### Systemd
 
