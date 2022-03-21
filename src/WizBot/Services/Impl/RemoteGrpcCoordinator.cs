@@ -96,7 +96,8 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                         break;
                     }
 
-                    await Task.Delay(22500);
+                    Log.Information("Coordinator is restarting gracefully. Waiting...");
+                    await Task.Delay(30_000);
                 }
                 catch (Exception ex)
                 {
