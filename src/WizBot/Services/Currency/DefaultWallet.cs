@@ -43,17 +43,18 @@ public class DefaultWallet : IWallet
         if (changed == 0)
             return false;
 
-        await using var ctx2 = ctx.CreateLinqToDbContext();
-        await ctx2
-            .InsertAsync(new CurrencyTransaction()
-            {
-                Amount = -amount,
-                Note = txData.Note,
-                UserId = UserId,
-                Type = txData.Type,
-                Extra = txData.Extra,
-                OtherId = txData.OtherId
-            });
+        await ctx
+              .GetTable<CurrencyTransaction>()
+              .InsertAsync(() => new()
+              {
+                  Amount = -amount,
+                  Note = txData.Note,
+                  UserId = UserId,
+                  Type = txData.Type,
+                  Extra = txData.Extra,
+                  OtherId = txData.OtherId,
+                  DateAdded = DateTime.UtcNow
+              });
 
         return true;
     }
@@ -88,17 +89,16 @@ public class DefaultWallet : IWallet
             await tran.CommitAsync();
         }
 
-        var ct = new CurrencyTransaction()
-        {
-            Amount = amount,
-            UserId = UserId,
-            Note = txData.Note,
-            Type = txData.Type,
-            Extra = txData.Extra,
-            OtherId = txData.OtherId
-        };
-
-        await using var ctx2 = ctx.CreateLinqToDbContext();
-        await ctx2.InsertAsync(ct);
+        await ctx.GetTable<CurrencyTransaction>()
+                 .InsertAsync(() => new()
+                 {
+                     Amount = amount,
+                     UserId = UserId,
+                     Note = txData.Note,
+                     Type = txData.Type,
+                     Extra = txData.Extra,
+                     OtherId = txData.OtherId,
+                     DateAdded = DateTime.UtcNow
+                 });
     }
 }
