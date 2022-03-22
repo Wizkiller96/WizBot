@@ -39,13 +39,18 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         return true;
     }
 
-    protected string N<T>(T cur)
-        where T : INumber<T>
+    protected string N(long cur)
+        => cur.ToString("C0", GetFlowersCiInternal());
+
+    protected string N(decimal cur)
+        => cur.ToString("C0", GetFlowersCiInternal());
+
+    private IFormatProvider GetFlowersCiInternal()
     {
         var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
         flowersCi.NumberFormat.CurrencyNegativePattern = 5;
-        return cur.ToString("C0", flowersCi);
+        return flowersCi;
     }
 
     protected Task<bool> CheckBetMandatory(long amount)
