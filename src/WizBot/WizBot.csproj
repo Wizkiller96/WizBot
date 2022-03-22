@@ -36,6 +36,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Html2Markdown" Version="5.0.2.561" />
+        
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
@@ -78,6 +79,12 @@
         
         <!-- Used by stream notifications -->
         <PackageReference Include="TwitchLib.Api" Version="3.4.1" />
+
+        <!-- Uncomment to check for disposable issues -->
+        <!--        <PackageReference Include="IDisposableAnalyzers" Version="4.0.2">-->
+        <!--            <PrivateAssets>all</PrivateAssets>-->
+        <!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+        <!--        </PackageReference>-->
     </ItemGroup>
 
     <ItemGroup>

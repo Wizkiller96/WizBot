@@ -32,6 +32,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
 
     private readonly object _reloadLock = new();
+    private readonly IDisposable _changeToken;
 
     public BotCredsProvider(int? totalShards = null)
     {
@@ -53,7 +54,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
                                             .AddEnvironmentVariables("WizBot_")
                                             .Build();
 
-        ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
+#if !GLOBAL_WIZBOT
+        _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
+#endif
 
         Reload();
     }

@@ -76,6 +76,7 @@ public partial class Gambling
                             (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
                 }
 
+                ar.Dispose();
                 return SendConfirmAsync(GetText(strs.animal_race),
                     GetText(strs.animal_race_won(Format.Bold(winner.Username), winner.Animal.Icon)));
             }
@@ -127,6 +128,7 @@ public partial class Gambling
         private Task Ar_OnStartingFailed(AnimalRace race)
         {
             _service.AnimalRaces.TryRemove(ctx.Guild.Id, out _);
+            race.Dispose();
             return ReplyErrorLocalizedAsync(strs.animal_race_failed);
         }
 

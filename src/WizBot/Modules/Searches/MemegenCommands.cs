@@ -34,7 +34,7 @@ public partial class Searches
                 return;
 
             using var http = _httpFactory.CreateClient("memelist");
-            var res = await http.GetAsync("https://api.memegen.link/templates/");
+            using var res = await http.GetAsync("https://api.memegen.link/templates/");
 
             var rawJson = await res.Content.ReadAsStringAsync();
 

@@ -32,10 +32,9 @@ public class DbService
         using var context = new WizBotContext(_options);
         if (context.Database.GetPendingMigrations().Any())
         {
-            var mContext = new WizBotContext(_migrateOptions);
+            using var mContext = new WizBotContext(_migrateOptions);
             mContext.Database.Migrate();
             mContext.SaveChanges();
-            mContext.Dispose();
         }
 
         context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");

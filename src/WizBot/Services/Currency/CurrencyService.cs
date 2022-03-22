@@ -14,7 +14,7 @@ public class CurrencyService : ICurrencyService, INService
     public Task<IWallet> GetWalletAsync(ulong userId, CurrencyType type = CurrencyType.Default)
     {
         if (type == CurrencyType.Default)
-            return Task.FromResult<IWallet>(new DefaultWallet(userId, _db.GetDbContext()));
+            return Task.FromResult<IWallet>(new DefaultWallet(userId, _db));
 
         throw new ArgumentOutOfRangeException(nameof(type));
     }
@@ -29,7 +29,7 @@ public class CurrencyService : ICurrencyService, INService
         {
             foreach (var userId in userIds)
             {
-                await using var wallet = await GetWalletAsync(userId);
+                var wallet = await GetWalletAsync(userId);
                 await wallet.Add(amount, txData);
             }
             
@@ -68,7 +68,7 @@ public class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
     {
-        await using var wallet = await GetWalletAsync(userId);
+        var wallet = await GetWalletAsync(userId);
         await wallet.Add(amount, txData);
     }
 
@@ -77,7 +77,7 @@ public class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
     {
-        await using var wallet = await GetWalletAsync(user.Id);
+        var wallet = await GetWalletAsync(user.Id);
         await wallet.Add(amount, txData);
     }
 
@@ -86,7 +86,7 @@ public class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
     {
-        await using var wallet = await GetWalletAsync(userId);
+        var wallet = await GetWalletAsync(userId);
         return await wallet.Take(amount, txData);
     }
 
@@ -95,7 +95,7 @@ public class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
     {
-        await using var wallet = await GetWalletAsync(user.Id);
+        var wallet = await GetWalletAsync(user.Id);
         return await wallet.Take(amount, txData);
     }
 }

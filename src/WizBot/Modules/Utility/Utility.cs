@@ -343,7 +343,7 @@ public partial class Utility : WizBotModule
             return;
 
         using var http = _httpFactory.CreateClient();
-        var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+        using var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
         if (!res.IsImage() || res.GetImageSize() is null or > 262_144)
         {
             await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);

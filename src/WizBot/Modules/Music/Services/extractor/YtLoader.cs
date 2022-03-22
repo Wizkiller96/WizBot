@@ -76,15 +76,15 @@ public sealed partial class YtLoader
         var mem = GetScriptResponseSpan(response);
         var root = JsonDocument.Parse(mem).RootElement;
 
-        var tracksJsonItems = root
-                              .GetProperty("contents")
-                              .GetProperty("twoColumnSearchResultsRenderer")
-                              .GetProperty("primaryContents")
-                              .GetProperty("sectionListRenderer")
-                              .GetProperty("contents")[0]
-                              .GetProperty("itemSectionRenderer")
-                              .GetProperty("contents")
-                              .EnumerateArray();
+        using var tracksJsonItems = root
+                                    .GetProperty("contents")
+                                    .GetProperty("twoColumnSearchResultsRenderer")
+                                    .GetProperty("primaryContents")
+                                    .GetProperty("sectionListRenderer")
+                                    .GetProperty("contents")[0]
+                                    .GetProperty("itemSectionRenderer")
+                                    .GetProperty("contents")
+                                    .EnumerateArray();
 
         var tracks = new List<TrackInfo>();
         foreach (var track in tracksJsonItems)

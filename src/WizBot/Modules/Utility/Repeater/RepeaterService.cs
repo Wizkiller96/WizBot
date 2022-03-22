@@ -27,7 +27,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
         _creds = creds;
         _client = client;
 
-        var uow = _db.GetDbContext();
+        using var uow = _db.GetDbContext();
         var shardRepeaters = uow.Set<Repeater>()
                                 .Where(x => (int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards
                                             == _client.ShardId)

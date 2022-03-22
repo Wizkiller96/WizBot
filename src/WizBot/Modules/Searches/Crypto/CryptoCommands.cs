@@ -98,15 +98,16 @@ public partial class Searches
                 return;
 
             var fileName = $"{query}-sparkline.{imageData.Extension}";
+            using var attachment = new FileAttachment(
+                imageData.FileData,
+                fileName
+            );
             await message.ModifyAsync(mp =>
             {
                 mp.Attachments =
                     new(new[]
                     {
-                        new FileAttachment(
-                            imageData.FileData,
-                            fileName
-                        )
+                        attachment
                     });
 
                 mp.Embed = eb.WithImageUrl($"attachment://{fileName}").Build();

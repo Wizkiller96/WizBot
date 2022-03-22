@@ -363,7 +363,7 @@ public partial class Help : WizBotModule<HelpService>
             };
 
             using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
-            var oldVersionObject = await dlClient.GetObjectAsync(new()
+            using var oldVersionObject = await dlClient.GetObjectAsync(new()
             {
                 BucketName = "wizbot-pictures",
                 Key = "cmds/versions.json"
