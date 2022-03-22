@@ -235,7 +235,7 @@ public partial class Xp
         [Cmd]
         [Priority(1)]
         public partial Task ClubAccept(IUser user)
-            => ClubAccept(user.ToString());
+            => ClubAccept($"{user.Username}#{user.Discriminator}");
 
         [Cmd]
         [Priority(0)]
@@ -277,7 +277,7 @@ public partial class Xp
         [Cmd]
         [Priority(1)]
         public partial Task ClubBan([Leftover] IUser user)
-            => ClubBan(user.ToString());
+            => ClubBan($"{user.Username}#{user.Discriminator}");
 
         [Cmd]
         [Priority(0)]
@@ -295,7 +295,7 @@ public partial class Xp
         [Cmd]
         [Priority(1)]
         public partial Task ClubUnBan([Leftover] IUser user)
-            => ClubUnBan(user.ToString());
+            => ClubUnBan($"{user.Username}#{user.Discriminator}");
 
         [Cmd]
         [Priority(0)]
