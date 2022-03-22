@@ -115,8 +115,6 @@ public sealed class Bot
         // admin
 //#if GLOBAL_WIZBOT
         //svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
-//#else
-        svcs.AddSingleton<ILogCommandService, LogCommandService>();
 //#endif
 
         svcs.AddHttpClient();
