@@ -1,12 +1,13 @@
 ﻿#nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Utility.Services;
 
-public class RemindService : INService
+public class RemindService : INService, IReadyExecutor
 {
     private readonly Regex _regex =
         new(
@@ -28,36 +29,40 @@ public class RemindService : INService
         _db = db;
         _creds = creds;
         _eb = eb;
-        _ = StartReminderLoop();
     }
 
-    private async Task StartReminderLoop()
+    public async Task OnReadyAsync()
     {
-        while (true)
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        while (await timer.WaitForNextTickAsync())
         {
-            await Task.Delay(15000);
-            try
-            {
-                var now = DateTime.UtcNow;
-                var reminders = await GetRemindersBeforeAsync(now);
-                if (reminders.Count == 0)
-                    continue;
+            await OnReminderLoopTickInternalAsync();
+        }
+    }
 
-                Log.Information("Executing {ReminderCount} reminders", reminders.Count);
+    private async Task OnReminderLoopTickInternalAsync()
+    {
+        try
+        {
+            var now = DateTime.UtcNow;
+            var reminders = await GetRemindersBeforeAsync(now);
+            if (reminders.Count == 0)
+                return;
 
-                // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
-                foreach (var group in reminders.Chunk(5))
-                {
-                    var executedReminders = group.ToList();
-                    await executedReminders.Select(ReminderTimerAction).WhenAll();
-                    await RemoveReminders(executedReminders.Select(x => x.Id));
-                    await Task.Delay(1500);
-                }
-            }
-            catch (Exception ex)
+            Log.Information("Executing {ReminderCount} reminders", reminders.Count);
+
+            // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
+            foreach (var group in reminders.Chunk(5))
             {
-                Log.Warning(ex, "Error in reminder loop: {ErrorMessage}", ex.Message);
+                var executedReminders = group.ToList();
+                await executedReminders.Select(ReminderTimerAction).WhenAll();
+                await RemoveReminders(executedReminders.Select(x => x.Id));
+                await Task.Delay(1500);
             }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error in reminder loop: {ErrorMessage}", ex.Message);
         }
     }
 
@@ -71,10 +76,10 @@ public class RemindService : INService
         await uow.SaveChangesAsync();
     }
 
-    private Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
+    private async Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
     {
-        using var uow = _db.GetDbContext();
-        return uow.Reminders
+        await using var uow = _db.GetDbContext();
+        return await uow.Reminders
                   .ToLinqToDBTable()
                   .Where(x => x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId
                               && x.When < now)
