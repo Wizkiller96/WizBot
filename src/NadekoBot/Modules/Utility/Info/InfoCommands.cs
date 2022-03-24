@@ -47,7 +47,7 @@ public partial class Utility
             var channels = $@"{GetText(strs.text_channels(textchn))}
 {GetText(strs.voice_channels(voicechn))}";
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(guild.Id >> 22);
-            var features = string.Join(", ", guild.Features);
+            var features = guild.Features.Value.ToString();
             if (string.IsNullOrWhiteSpace(features))
                 features = "-";
 
