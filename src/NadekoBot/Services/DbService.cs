@@ -1,4 +1,5 @@
 #nullable disable
+using LinqToDB.Common;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ public class DbService
     public DbService(IBotCredentials creds)
     {
         LinqToDBForEFTools.Initialize();
+        Configuration.Linq.DisableQueryCache = true;
 
         var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
         builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);

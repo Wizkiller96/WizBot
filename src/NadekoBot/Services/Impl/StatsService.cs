@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace NadekoBot.Services;
 
-public sealed class StatsService : IStatsService, IReadyExecutor, INService, IDisposable
+public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
     public const string BOT_VERSION = "4.0.6";
 
@@ -187,11 +187,5 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService, IDi
     {
         _currentProcess.Refresh();
         return _currentProcess.PrivateMemorySize64 / (double)1.MiB();
-    }
-
-    public void Dispose()
-    {
-        _currentProcess.Dispose();
-        GC.SuppressFinalize(this);
     }
 }
