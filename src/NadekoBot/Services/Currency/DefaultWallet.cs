@@ -19,9 +19,10 @@ public class DefaultWallet : IWallet
     public async Task<long> GetBalance()
     {
         await using var ctx = _db.GetDbContext();
+        var userId = UserId;
         return await ctx.DiscordUser
                         .ToLinqToDBTable()
-                        .Where(x => x.UserId == UserId)
+                        .Where(x => x.UserId == userId)
                         .Select(x => x.CurrencyAmount)
                         .FirstOrDefaultAsync();
     }
@@ -33,8 +34,9 @@ public class DefaultWallet : IWallet
 
         await using var ctx = _db.GetDbContext();
 
+        var userId = UserId;
         var changed = await ctx.DiscordUser
-                               .Where(x => x.UserId == UserId && x.CurrencyAmount >= amount)
+                               .Where(x => x.UserId == userId && x.CurrencyAmount >= amount)
                                .UpdateAsync(x => new()
                                {
                                    CurrencyAmount = x.CurrencyAmount - amount
@@ -42,14 +44,14 @@ public class DefaultWallet : IWallet
 
         if (changed == 0)
             return false;
-
+        
         await ctx
               .GetTable<CurrencyTransaction>()
               .InsertAsync(() => new()
               {
                   Amount = -amount,
                   Note = txData.Note,
-                  UserId = UserId,
+                  UserId = userId,
                   Type = txData.Type,
                   Extra = txData.Extra,
                   OtherId = txData.OtherId,
@@ -65,11 +67,12 @@ public class DefaultWallet : IWallet
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
 
         await using var ctx = _db.GetDbContext();
+        var userId = UserId;
         
         await using (var tran = await ctx.Database.BeginTransactionAsync())
         {
             var changed = await ctx.DiscordUser
-                                    .Where(x => x.UserId == UserId)
+                                    .Where(x => x.UserId == userId)
                                     .UpdateAsync(x => new()
                                     {
                                         CurrencyAmount = x.CurrencyAmount + amount
@@ -79,7 +82,7 @@ public class DefaultWallet : IWallet
             {
                 await ctx.DiscordUser
                           .ToLinqToDBTable()
-                          .Value(x => x.UserId, UserId)
+                          .Value(x => x.UserId, userId)
                           .Value(x => x.Username, "Unknown")
                           .Value(x => x.Discriminator, "????")
                           .Value(x => x.CurrencyAmount, amount)
@@ -93,7 +96,7 @@ public class DefaultWallet : IWallet
                  .InsertAsync(() => new()
                  {
                      Amount = amount,
-                     UserId = UserId,
+                     UserId = userId,
                      Note = txData.Note,
                      Type = txData.Type,
                      Extra = txData.Extra,
