@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Xp;
 public partial class Xp
 {
     [Group]
-    public partial class Club : NadekoModule<ClubService>
+    public partial class Club : NadekoModule<IClubService>
     {
         private readonly XpService _xps;
 
@@ -19,35 +19,33 @@ public partial class Xp
         {
             var club = _service.TransferClub(ctx.User, newOwner);
 
-            if (club is not null)
+            if (club is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.club_transfered(Format.Bold(club.Name),
-                    Format.Bold(newOwner.ToString())));
+                await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
             }
             else
-                await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
+            {
+                await ReplyConfirmLocalizedAsync(
+                    strs.club_transfered(
+                        Format.Bold(club.Name),
+                        Format.Bold(newOwner.ToString())
+                    )
+                );
+            }
         }
 
         [Cmd]
         public async partial Task ClubAdmin([Leftover] IUser toAdmin)
         {
-            bool admin;
-            try
-            {
-                admin = _service.ToggleAdmin(ctx.User, toAdmin);
-            }
-            catch (InvalidOperationException)
-            {
+            var admin = await _service.ToggleAdminAsync(ctx.User, toAdmin);
+        
+            if (admin is null)
                 await ReplyErrorLocalizedAsync(strs.club_admin_error);
-                return;
-            }
-
-            if (admin)
+            else if (admin is true)
                 await ReplyConfirmLocalizedAsync(strs.club_admin_add(Format.Bold(toAdmin.ToString())));
             else
                 await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
         }
-
         [Cmd]
         public async partial Task ClubCreate([Leftover] string clubName)
         {
@@ -57,20 +55,28 @@ public partial class Xp
                 return;
             }
 
-            if (!_service.CreateClub(ctx.User, clubName, out var club))
+            var succ = await _service.CreateClubAsync(ctx.User, clubName);
+
+            if (succ is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.club_create_error_name);
+                return;
+            }
+            
+            if (succ is false)
             {
                 await ReplyErrorLocalizedAsync(strs.club_create_error);
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(club.ToString())));
+            await ReplyConfirmLocalizedAsync(strs.club_created(Format.Bold(clubName)));
         }
 
         [Cmd]
         public async partial Task ClubIcon([Leftover] string url = null)
         {
             if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url is not null)
-                || !await _service.SetClubIcon(ctx.User.Id, url is null ? null : new Uri(url)))
+                || !await _service.SetClubIconAsync(ctx.User.Id, url))
             {
                 await ReplyErrorLocalizedAsync(strs.club_icon_error);
                 return;
@@ -82,7 +88,7 @@ public partial class Xp
         private async Task InternalClubInfoAsync(ClubInfo club)
         {
             var lvl = new LevelStats(club.Xp);
-            var users = club.Users.OrderByDescending(x =>
+            var users = club.Members.OrderByDescending(x =>
             {
                 var l = new LevelStats(x.TotalXp).Level;
                 if (club.OwnerId == x.Id)
@@ -102,7 +108,7 @@ public partial class Xp
                                    .AddField(GetText(strs.desc),
                                        string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description)
                                    .AddField(GetText(strs.owner), club.Owner.ToString(), true)
-                                   .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
+                                   // .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
                                    .AddField(GetText(strs.members),
                                        string.Join("\n",
                                            users.Skip(page * 10)
@@ -123,7 +129,7 @@ public partial class Xp
 
                     return embed;
                 },
-                club.Users.Count,
+                club.Members.Count,
                 10);
         }
 
@@ -186,7 +192,6 @@ public partial class Xp
                 bans.Length,
                 10);
         }
-
 
         [Cmd]
         public partial Task ClubApps(int page = 1)
@@ -311,18 +316,9 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubLevelReq(int level)
-        {
-            if (_service.ChangeClubLevelReq(ctx.User.Id, level))
-                await ReplyConfirmLocalizedAsync(strs.club_level_req_changed(Format.Bold(level.ToString())));
-            else
-                await ReplyErrorLocalizedAsync(strs.club_level_req_change_error);
-        }
-
-        [Cmd]
         public async partial Task ClubDescription([Leftover] string desc = null)
         {
-            if (_service.ChangeClubDescription(ctx.User.Id, desc))
+            if (_service.SetDescription(ctx.User.Id, desc))
                 await ReplyConfirmLocalizedAsync(strs.club_desc_updated(Format.Bold(desc ?? "-")));
             else
                 await ReplyErrorLocalizedAsync(strs.club_desc_update_failed);
@@ -332,7 +328,7 @@ public partial class Xp
         public async partial Task ClubDisband()
         {
             if (_service.Disband(ctx.User.Id, out var club))
-                await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.ToString())));
+                await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.Name)));
             else
                 await ReplyErrorLocalizedAsync(strs.club_disband_error);
         }

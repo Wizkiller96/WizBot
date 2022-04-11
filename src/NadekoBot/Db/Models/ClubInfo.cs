@@ -8,24 +8,19 @@ public class ClubInfo : DbEntity
 {
     [MaxLength(20)]
     public string Name { get; set; }
-
-    public int Discrim { get; set; }
-
+    public string Description { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
-    public int MinimumLevelReq { get; set; } = 5;
+    
     public int Xp { get; set; } = 0;
-
-    public int OwnerId { get; set; }
+    public int? OwnerId { get; set; }
     public DiscordUser Owner { get; set; }
 
-    public List<DiscordUser> Users { get; set; } = new();
-
+    public List<DiscordUser> Members { get; set; } = new();
     public List<ClubApplicants> Applicants { get; set; } = new();
     public List<ClubBans> Bans { get; set; } = new();
-    public string Description { get; set; }
 
     public override string ToString()
-        => Name + "#" + Discrim;
+        => Name;
 }
 
 public class ClubApplicants

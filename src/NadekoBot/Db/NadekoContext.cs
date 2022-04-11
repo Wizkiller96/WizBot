@@ -1,5 +1,4 @@
 #nullable disable
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
@@ -10,23 +9,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Services.Database;
 
-public class NadekoContextFactory : IDesignTimeDbContextFactory<NadekoContext>
-{
-    public NadekoContext CreateDbContext(string[] args)
-    {
-        LogSetup.SetupLogger(-2);
-        var optionsBuilder = new DbContextOptionsBuilder<NadekoContext>();
-        var creds = new BotCredsProvider().GetCreds();
-        var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
-        builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
-        optionsBuilder.UseSqlite(builder.ToString());
-        var ctx = new NadekoContext(optionsBuilder.Options);
-        ctx.Database.SetCommandTimeout(60);
-        return ctx;
-    }
-}
-
-public class NadekoContext : DbContext
+public abstract class NadekoContext : DbContext
 {
     public DbSet<GuildConfig> GuildConfigs { get; set; }
 
@@ -69,11 +52,14 @@ public class NadekoContext : DbContext
 
     public DbSet<Permissionv2> Permissions { get; set; }
 
-    public NadekoContext(DbContextOptions<NadekoContext> options)
-        : base(options)
-    {
-    }
+    #region Mandatory Provider-Specific Values
 
+    protected abstract string CurrencyTransactionOtherIdDefaultValue { get; }
+    protected abstract string DiscordUserLastXpGainDefaultValue { get; }
+    protected abstract string LastLevelUpDefaultValue { get; }
+    
+    #endregion
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         #region QUOTES
@@ -167,10 +153,10 @@ public class NadekoContext : DbContext
               .HasDefaultValue(XpNotificationLocation.None);
 
             du.Property(x => x.LastXpGain)
-              .HasDefaultValueSql("datetime('now', '-1 years')");
+              .HasDefaultValueSql(DiscordUserLastXpGainDefaultValue);
 
             du.Property(x => x.LastLevelUp)
-              .HasDefaultValueSql("datetime('now')");
+              .HasDefaultValueSql(LastLevelUpDefaultValue);
 
             du.Property(x => x.TotalXp)
               .HasDefaultValue(0);
@@ -179,7 +165,10 @@ public class NadekoContext : DbContext
               .HasDefaultValue(0);
 
             du.HasAlternateKey(w => w.UserId);
-            du.HasOne(x => x.Club).WithMany(x => x.Users).IsRequired(false);
+            du.HasOne(x => x.Club)
+              .WithMany(x => x.Members)
+              .IsRequired(false)
+              .OnDelete(DeleteBehavior.NoAction);
 
             du.HasIndex(x => x.TotalXp);
             du.HasIndex(x => x.CurrencyAmount);
@@ -218,7 +207,7 @@ public class NadekoContext : DbContext
            .IsUnique();
 
         xps.Property(x => x.LastLevelUp)
-           .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 307, DateTimeKind.Local));
+           .HasDefaultValueSql(LastLevelUpDefaultValue);
 
         xps.HasIndex(x => x.UserId);
         xps.HasIndex(x => x.GuildId);
@@ -248,13 +237,14 @@ public class NadekoContext : DbContext
         #region Club
 
         var ci = modelBuilder.Entity<ClubInfo>();
-        ci.HasOne(x => x.Owner).WithOne().HasForeignKey<ClubInfo>(x => x.OwnerId);
-
+        ci.HasOne(x => x.Owner)
+          .WithOne()
+          .HasForeignKey<ClubInfo>(x => x.OwnerId)
+          .OnDelete(DeleteBehavior.SetNull);
 
         ci.HasAlternateKey(x => new
         {
-            x.Name,
-            x.Discrim
+            x.Name
         });
 
         #endregion
@@ -268,9 +258,13 @@ public class NadekoContext : DbContext
                         t.UserId
                     });
 
-        modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.User).WithMany();
+        modelBuilder.Entity<ClubApplicants>()
+                    .HasOne(pt => pt.User)
+                    .WithMany();
 
-        modelBuilder.Entity<ClubApplicants>().HasOne(pt => pt.Club).WithMany(x => x.Applicants);
+        modelBuilder.Entity<ClubApplicants>()
+                    .HasOne(pt => pt.Club)
+                    .WithMany(x => x.Applicants);
 
         modelBuilder.Entity<ClubBans>()
                     .HasKey(t => new
@@ -279,9 +273,13 @@ public class NadekoContext : DbContext
                         t.UserId
                     });
 
-        modelBuilder.Entity<ClubBans>().HasOne(pt => pt.User).WithMany();
+        modelBuilder.Entity<ClubBans>()
+                    .HasOne(pt => pt.User)
+                    .WithMany();
 
-        modelBuilder.Entity<ClubBans>().HasOne(pt => pt.Club).WithMany(x => x.Bans);
+        modelBuilder.Entity<ClubBans>()
+                    .HasOne(pt => pt.Club)
+                    .WithMany(x => x.Bans);
 
         #endregion
 
@@ -299,7 +297,7 @@ public class NadekoContext : DbContext
              .IsUnique(false);
 
             e.Property(x => x.OtherId)
-             .HasDefaultValueSql("NULL");
+             .HasDefaultValueSql(CurrencyTransactionOtherIdDefaultValue);
 
             e.Property(x => x.Type)
              .IsRequired();

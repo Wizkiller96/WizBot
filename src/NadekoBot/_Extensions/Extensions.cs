@@ -190,13 +190,10 @@ public static class Extensions
         return false;
     }
 
-    public static long? GetImageSize(this HttpResponseMessage msg)
-    {
-        if (msg.Content.Headers.ContentLength is null)
-            return null;
-
-        return msg.Content.Headers.ContentLength.Value / 1.Mb();
-    }
+    public static long GetContentLength(this HttpResponseMessage msg)
+        => msg.Content.Headers.ContentLength is long length
+            ? length
+            : long.MaxValue;
 
     public static string GetText(this IBotStrings strings, in LocStr str, ulong? guildId = null)
         => strings.GetText(str.Key, guildId, str.Params);

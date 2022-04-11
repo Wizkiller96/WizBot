@@ -183,9 +183,9 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
         return time.Humanize(3, maxUnit: TimeUnit.Day, minUnit: TimeUnit.Minute);
     }
 
-    public double GetPrivateMemory()
+    public double GetPrivateMemoryMegabytes()
     {
         _currentProcess.Refresh();
-        return _currentProcess.PrivateMemorySize64 / (double)1.MiB();
+        return _currentProcess.PrivateMemorySize64 / 1.Megabytes().Bytes;
     }
 }

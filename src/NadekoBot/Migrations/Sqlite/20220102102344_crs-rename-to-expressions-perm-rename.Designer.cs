@@ -6,17 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NadekoBot.Services.Database;
 
+#nullable disable
+
 namespace NadekoBot.Migrations
 {
-    [DbContext(typeof(NadekoContext))]
-    [Migration("20211213145407_atl-rework")]
-    partial class atlrework
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20220102102344_crs-rename-to-expressions-perm-rename")]
+    partial class crsrenametoexpressionspermrename
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
 
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
                 {
@@ -551,7 +552,7 @@ namespace NadekoBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomReactions");
+                    b.ToTable("Expressions");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.DelMsgOnCmdChannel", b =>
@@ -683,28 +684,6 @@ namespace NadekoBot.Migrations
                     b.ToTable("FilterChannelId");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("GuildConfigId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuildConfigId");
-
-                    b.ToTable("FilterLinksChannelId");
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.FilteredWord", b =>
                 {
                     b.Property<int>("Id")
@@ -725,6 +704,28 @@ namespace NadekoBot.Migrations
                     b.HasIndex("GuildConfigId");
 
                     b.ToTable("FilteredWord");
+                });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("GuildConfigId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildConfigId");
+
+                    b.ToTable("FilterLinksChannelId");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
@@ -1179,7 +1180,7 @@ namespace NadekoBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("Permissionv2");
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.PlantedCurrency", b =>
@@ -2313,17 +2314,17 @@ namespace NadekoBot.Migrations
                         .HasForeignKey("GuildConfigId1");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilterLinksChannelIds")
-                        .HasForeignKey("GuildConfigId");
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.FilteredWord", b =>
                 {
                     b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
                         .WithMany("FilteredWords")
+                        .HasForeignKey("GuildConfigId");
+                });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
+                {
+                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
+                        .WithMany("FilterLinksChannelIds")
                         .HasForeignKey("GuildConfigId");
                 });
 
@@ -2631,13 +2632,13 @@ namespace NadekoBot.Migrations
 
                     b.Navigation("FeedSubs");
 
-                    b.Navigation("FilteredWords");
-
                     b.Navigation("FilterInvitesChannelIds");
 
                     b.Navigation("FilterLinksChannelIds");
 
                     b.Navigation("FilterWordsChannelIds");
+
+                    b.Navigation("FilteredWords");
 
                     b.Navigation("FollowedStreams");
 

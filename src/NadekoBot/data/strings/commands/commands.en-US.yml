@@ -1891,10 +1891,6 @@ clubunban:
   desc: "Unbans the previously banned user from the club. You must be the club owner."
   args:
     - "user#1337"
-clublevelreq:
-  desc: "Sets the club required level to apply to join the club. You must be club owner. You can't set this number below 5."
-  args:
-    - "7"
 clubdescription:
   desc: "Sets the club description. Maximum 150 characters. Club owner only."
   args:

@@ -10,6 +10,7 @@ public class DiscordUser : DbEntity
     public string Discriminator { get; set; }
     public string AvatarId { get; set; }
 
+    public int? ClubId { get; set; }
     public ClubInfo Club { get; set; }
     public bool IsClubAdmin { get; set; }
 
