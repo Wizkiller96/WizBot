@@ -1074,8 +1074,6 @@ clubban:
 - clubban
 clubunban:
 - clubunban
-clublevelreq:
-- clublevelreq
 clubdescription:
 - clubdesc
 clubicon:

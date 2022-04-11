@@ -8,15 +8,15 @@ using NadekoBot.Services.Database;
 
 namespace NadekoBot.Migrations
 {
-    [DbContext(typeof(NadekoContext))]
-    [Migration("20210707002343_cleanup")]
-    partial class cleanup
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20210911225622_rero-cascade")]
+    partial class rerocascade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.7");
+                .HasAnnotation("ProductVersion", "5.0.8");
 
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
                 {
@@ -2309,7 +2309,8 @@ namespace NadekoBot.Migrations
                 {
                     b.HasOne("NadekoBot.Services.Database.Models.ReactionRoleMessage", null)
                         .WithMany("ReactionRoles")
-                        .HasForeignKey("ReactionRoleMessageId");
+                        .HasForeignKey("ReactionRoleMessageId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>

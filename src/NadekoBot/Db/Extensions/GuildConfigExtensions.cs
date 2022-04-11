@@ -73,7 +73,6 @@ public static class GuildConfigExtensions
     {
         GuildConfig config;
 
-        // todo linq2db
         if (includes is null)
             config = ctx.GuildConfigs.IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
         else

@@ -647,7 +647,7 @@ public class XpService : INService, IReadyExecutor
         int guildRank;
         await using (var uow = _db.GetDbContext())
         {
-            du = uow.GetOrCreateUser(user);
+            du = uow.GetOrCreateUser(user, set => set.Include(x => x.Club));
             totalXp = du.TotalXp;
             globalRank = uow.DiscordUser.GetUserGlobalRank(user.Id);
             guildRank = uow.UserXpStats.GetUserGuildRanking(user.Id, user.GuildId);
@@ -1021,8 +1021,9 @@ public class XpService : INService, IReadyExecutor
                     using (var http = _httpFactory.CreateClient())
                     using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        if (!temp.IsImage() || temp.GetImageSize() > 11)
+                        if (!temp.IsImage() || temp.GetContentLength() > 11.Megabytes().Bytes)
                             return;
+                        
                         var imgData = await temp.Content.ReadAsByteArrayAsync();
                         using (var tempDraw = Image.Load(imgData))
                         {

@@ -5,7 +5,23 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-- More cool stuff coming soon
+### Added
+
+- NadekoBot now supports mysql, postgresql and sqlite
+  - To change the db nadeko will use, simply change the `db type` in `creds.yml`
+  - There is no migration code right now, which means that if you want to switch to another system you'll either have to manually export/import your database or start fresh
+
+### Changed
+
+- Minor club rework
+  - Clubs names are now case sensitive (owo and OwO can be 2 different clubs)
+  - Removed discriminators
+    - Current discriminators which are greater than 1 are appended to clubnames to avoid duplicates, you can rename your club with `.clubrename` to remove it
+    - Most of the clubs with #1 discriminator no longer have it (For example MyClub#1 will now just be MyClub)
+
+### Removed
+
+  - Removed `.clublevelreq` command as it doesn't serve much purpose
 
 ## [4.0.6] - 21.03.2022
 
