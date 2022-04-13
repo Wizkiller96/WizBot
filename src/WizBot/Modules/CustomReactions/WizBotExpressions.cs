@@ -241,7 +241,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
             return;
         }
 
-        var (success, newVal) = await _service.ToggleExprOptionAsync(id, option);
+        var (success, newVal) = await _service.ToggleExprOptionAsync(ctx.Guild?.Id, id, option);
         if (!success)
         {
             await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
