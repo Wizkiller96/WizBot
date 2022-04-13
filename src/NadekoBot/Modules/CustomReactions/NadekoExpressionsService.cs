@@ -448,14 +448,15 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         await UpdateInternalAsync(guildId, expr);
     }
 
-    public async Task<(bool Sucess, bool NewValue)> ToggleExprOptionAsync(int id, ExprField field)
+    public async Task<(bool Sucess, bool NewValue)> ToggleExprOptionAsync(ulong? guildId, int id, ExprField field)
     {
         var newVal = false;
         NadekoExpression expr;
         await using (var uow = _db.GetDbContext())
         {
             expr = uow.Expressions.GetById(id);
-            if (expr is null)
+            
+            if (expr is null || expr.GuildId != guildId)
                 return (false, false);
             if (field == ExprField.AutoDelete)
                 newVal = expr.AutoDeleteTrigger = !expr.AutoDeleteTrigger;
@@ -469,7 +470,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
             await uow.SaveChangesAsync();
         }
 
-        await UpdateInternalAsync(expr.GuildId, expr);
+        await UpdateInternalAsync(guildId, expr);
 
         return (true, newVal);
     }
