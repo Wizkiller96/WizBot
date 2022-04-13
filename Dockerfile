@@ -37,6 +37,6 @@ COPY docker-entrypoint.sh /usr/local/sbin
 ENV shard_id=0
 ENV total_shards=1
 
-VOLUME [ "app/data" ]
+VOLUME [ "/app/data" ]
 ENTRYPOINT [ "/usr/local/sbin/docker-entrypoint.sh" ]
 CMD dotnet WizBot.dll "$shard_id" "$total_shards"
