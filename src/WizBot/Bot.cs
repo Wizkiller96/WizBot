@@ -41,10 +41,7 @@ public sealed class Bot
         _credsProvider = new BotCredsProvider(totalShards);
         _creds = _credsProvider.GetCreds();
 
-        _db = new(_creds);
-
-        if (shardId == 0)
-            _db.Setup();
+        _db = new(_credsProvider);
 
         var messageCacheSize =
             50;
@@ -282,6 +279,9 @@ public sealed class Bot
 
     public async Task RunAsync()
     {
+        if (ShardId == 0)
+            await _db.SetupAsync();
+
         var sw = Stopwatch.StartNew();
 
         await LoginAsync(_creds.Token);

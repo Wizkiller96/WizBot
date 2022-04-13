@@ -8,9 +8,9 @@ using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
-    [Migration("20210912182515_boost-messages")]
-    partial class boostmessages
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20210912200106_logsettings-independence")]
+    partial class logsettingsindependence
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -797,9 +797,6 @@ namespace WizBot.Migrations
                     b.Property<string>("Locale")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("LogSettingId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("MuteRoleName")
                         .HasColumnType("TEXT");
 
@@ -846,8 +843,6 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildId")
                         .IsUnique();
-
-                    b.HasIndex("LogSettingId");
 
                     b.HasIndex("WarnExpireHours");
 
@@ -916,6 +911,9 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong?>("LogOtherId")
                         .HasColumnType("INTEGER");
 
@@ -953,6 +951,9 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique();
 
                     b.ToTable("LogSettings");
                 });
@@ -2245,15 +2246,6 @@ namespace WizBot.Migrations
                         .IsRequired();
 
                     b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.GuildConfig", b =>
-                {
-                    b.HasOne("WizBot.Services.Database.Models.LogSetting", "LogSetting")
-                        .WithMany()
-                        .HasForeignKey("LogSettingId");
-
-                    b.Navigation("LogSetting");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.IgnoredLogChannel", b =>

@@ -52,5 +52,5 @@ public interface IStatsService
     /// <summary>
     ///     Gets total amount of private memory currently in use by the bot, in Megabytes.
     /// </summary>
-    double GetPrivateMemory();
+    double GetPrivateMemoryMegabytes();
 }

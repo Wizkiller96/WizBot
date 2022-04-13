@@ -12,7 +12,7 @@ public static class ClubExtensions
                 .ThenInclude(x => x.User)
                 .Include(x => x.Bans)
                 .ThenInclude(x => x.User)
-                .Include(x => x.Users)
+                .Include(x => x.Members)
                 .AsQueryable();
 
     public static ClubInfo GetByOwner(this DbSet<ClubInfo> clubs, ulong userId)
@@ -20,24 +20,14 @@ public static class ClubExtensions
 
     public static ClubInfo GetByOwnerOrAdmin(this DbSet<ClubInfo> clubs, ulong userId)
         => Include(clubs)
-            .FirstOrDefault(c => c.Owner.UserId == userId || c.Users.Any(u => u.UserId == userId && u.IsClubAdmin));
+            .FirstOrDefault(c => c.Owner.UserId == userId || c.Members.Any(u => u.UserId == userId && u.IsClubAdmin));
 
     public static ClubInfo GetByMember(this DbSet<ClubInfo> clubs, ulong userId)
-        => Include(clubs).FirstOrDefault(c => c.Users.Any(u => u.UserId == userId));
+        => Include(clubs).FirstOrDefault(c => c.Members.Any(u => u.UserId == userId));
 
-    public static ClubInfo GetByName(this DbSet<ClubInfo> clubs, string name, int discrim)
+    public static ClubInfo GetByName(this DbSet<ClubInfo> clubs, string name)
         => Include(clubs)
-            .FirstOrDefault(c => EF.Functions.Collate(c.Name, "NOCASE") == EF.Functions.Collate(name, "NOCASE")
-                                 && c.Discrim == discrim);
-
-    public static int GetNextDiscrim(this DbSet<ClubInfo> clubs, string name)
-        => Include(clubs)
-           .Where(x =>
-               EF.Functions.Collate(x.Name, "NOCASE") == EF.Functions.Collate(name, "NOCASE"))
-           .Select(x => x.Discrim)
-           .DefaultIfEmpty()
-           .Max()
-           + 1;
+            .FirstOrDefault(c => c.Name == name);
 
     public static List<ClubInfo> GetClubLeaderboardPage(this DbSet<ClubInfo> clubs, int page)
         => clubs.AsNoTracking().OrderByDescending(x => x.Xp).Skip(page * 9).Take(9).ToList();

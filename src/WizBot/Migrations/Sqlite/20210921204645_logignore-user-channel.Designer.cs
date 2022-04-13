@@ -8,9 +8,9 @@ using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
-    [Migration("20211121002508_weighted-warnings")]
-    partial class weightedwarnings
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20210921204645_logignore-user-channel")]
+    partial class logignoreuserchannel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1064,7 +1064,7 @@ namespace WizBot.Migrations
                     b.ToTable("MutedUserId");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.NsfwBlacklistedTag", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.NsfwBlacklitedTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1073,7 +1073,7 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<ulong>("GuildId")
+                    b.Property<int?>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
@@ -1081,9 +1081,9 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildId");
+                    b.HasIndex("GuildConfigId");
 
-                    b.ToTable("NsfwBlacklistedTags");
+                    b.ToTable("NsfwBlacklitedTag");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Permissionv2", b =>
@@ -1969,11 +1969,6 @@ namespace WizBot.Migrations
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Weight")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(1);
-
                     b.HasKey("Id");
 
                     b.HasIndex("DateAdded");
@@ -2307,6 +2302,13 @@ namespace WizBot.Migrations
                         .HasForeignKey("GuildConfigId");
                 });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.NsfwBlacklitedTag", b =>
+                {
+                    b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
+                        .WithMany("NsfwBlacklistedTags")
+                        .HasForeignKey("GuildConfigId");
+                });
+
             modelBuilder.Entity("WizBot.Services.Database.Models.Permissionv2", b =>
                 {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
@@ -2572,6 +2574,8 @@ namespace WizBot.Migrations
                     b.Navigation("GenerateCurrencyChannelIds");
 
                     b.Navigation("MutedUsers");
+
+                    b.Navigation("NsfwBlacklistedTags");
 
                     b.Navigation("Permissions");
 

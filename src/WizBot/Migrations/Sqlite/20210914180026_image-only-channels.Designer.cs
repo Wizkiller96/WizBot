@@ -8,7 +8,7 @@ using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
+    [DbContext(typeof(SqliteContext))]
     [Migration("20210914180026_image-only-channels")]
     partial class imageonlychannels
     {

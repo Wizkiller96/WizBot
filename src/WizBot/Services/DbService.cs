@@ -1,7 +1,6 @@
 #nullable disable
 using LinqToDB.Common;
 using LinqToDB.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Services.Database;
 
@@ -9,49 +8,68 @@ namespace WizBot.Services;
 
 public class DbService
 {
-    private readonly DbContextOptions<WizBotContext> _options;
-    private readonly DbContextOptions<WizBotContext> _migrateOptions;
+    private readonly IBotCredsProvider _creds;
 
-    public DbService(IBotCredentials creds)
+    // these are props because creds can change at runtime
+    private string DbType => _creds.GetCreds().Db.Type.ToLowerInvariant().Trim();
+    private string ConnString => _creds.GetCreds().Db.ConnectionString;
+    
+    public DbService(IBotCredsProvider creds)
     {
         LinqToDBForEFTools.Initialize();
         Configuration.Linq.DisableQueryCache = true;
 
-        var builder = new SqliteConnectionStringBuilder(creds.Db.ConnectionString);
-        builder.DataSource = Path.Combine(AppContext.BaseDirectory, builder.DataSource);
-
-        var optionsBuilder = new DbContextOptionsBuilder<WizBotContext>();
-        optionsBuilder.UseSqlite(builder.ToString());
-        _options = optionsBuilder.Options;
-
-        optionsBuilder = new();
-        optionsBuilder.UseSqlite(builder.ToString());
-        _migrateOptions = optionsBuilder.Options;
+        _creds = creds;
     }
 
-    public void Setup()
+    public async Task SetupAsync()
     {
-        using var context = new WizBotContext(_options);
-        if (context.Database.GetPendingMigrations().Any())
-        {
-            using var mContext = new WizBotContext(_migrateOptions);
-            mContext.Database.Migrate();
-            mContext.SaveChanges();
-        }
+        var dbType = DbType;
+        var connString = ConnString;
 
-        context.Database.ExecuteSqlRaw("PRAGMA journal_mode=WAL");
-        context.SaveChanges();
+        await using var context = CreateRawDbContext(dbType, connString);
+        
+        // make sure sqlite db is in wal journal mode
+        if (context is SqliteContext)
+        {
+            await context.Database.ExecuteSqlRawAsync("PRAGMA journal_mode=WAL");
+        }
+        
+        await context.Database.MigrateAsync();
     }
 
+    private static WizBotContext CreateRawDbContext(string dbType, string connString)
+    {
+        switch (dbType)
+        {
+            case "postgresql":
+            case "postgres":
+            case "pgsql":
+                return new PostgreSqlContext(connString);
+            case "mysql":
+                return new MysqlContext(connString);
+            case "sqlite":
+                return new SqliteContext(connString);
+            default:
+                throw new NotSupportedException($"The database provide type of '{dbType}' is not supported.");
+        }
+    }
+    
     private WizBotContext GetDbContextInternal()
     {
-        var context = new WizBotContext(_options);
-        context.Database.SetCommandTimeout(60);
-        var conn = context.Database.GetDbConnection();
-        conn.Open();
-        using var com = conn.CreateCommand();
-        com.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=OFF";
-        com.ExecuteNonQuery();
+        var dbType = DbType;
+        var connString = ConnString;
+
+        var context = CreateRawDbContext(dbType, connString);
+        if (context is SqliteContext)
+        {
+            var conn = context.Database.GetDbConnection();
+            conn.Open();
+            using var com = conn.CreateCommand();
+            com.CommandText = "PRAGMA synchronous=OFF";
+            com.ExecuteNonQuery();
+        }
+
         return context;
     }
 

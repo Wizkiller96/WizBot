@@ -8,9 +8,9 @@ using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
-    [Migration("20210911225622_rero-cascade")]
-    partial class rerocascade
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20210912182515_boost-messages")]
+    partial class boostmessages
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -743,6 +743,15 @@ namespace WizBot.Migrations
                     b.Property<bool>("AutoDeleteSelfAssignedRoleMessages")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("BoostMessage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("BoostMessageChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BoostMessageDeleteAfter")
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("ByeMessageChannelId")
                         .HasColumnType("INTEGER");
 
@@ -802,6 +811,9 @@ namespace WizBot.Migrations
 
                     b.Property<string>("Prefix")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("SendBoostMessage")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("SendChannelByeMessage")
                         .HasColumnType("INTEGER");

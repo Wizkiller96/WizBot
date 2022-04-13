@@ -2,21 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
+#nullable disable
+
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
-    [Migration("20211015232708_nsfw-blacklist-tags")]
-    partial class nsfwblacklisttags
+    [DbContext(typeof(SqliteContext))]
+    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -60,21 +59,15 @@ namespace WizBot.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Discrim")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("MinimumLevelReq")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("OwnerId")
+                    b.Property<int?>("OwnerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Xp")
@@ -82,7 +75,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name", "Discrim");
+                    b.HasAlternateKey("Name");
 
                     b.HasIndex("OwnerId")
                         .IsUnique();
@@ -103,7 +96,9 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("CurrencyAmount")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0L);
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
@@ -132,7 +127,9 @@ namespace WizBot.Migrations
                         .HasDefaultValue(0);
 
                     b.Property<int>("TotalXp")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(0);
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
@@ -342,6 +339,62 @@ namespace WizBot.Migrations
                     b.ToTable("AutoCommands");
                 });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateChannel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AutoDelete")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId")
+                        .IsUnique();
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("AutoTranslateChannels");
+                });
+
+            modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("ChannelId", "UserId");
+
+                    b.ToTable("AutoTranslateUsers");
+                });
+
             modelBuilder.Entity("WizBot.Services.Database.Models.BanTemplate", b =>
                 {
                     b.Property<int>("Id")
@@ -447,7 +500,20 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Reason")
+                    b.Property<string>("Extra")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong?>("OtherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("UserId")
@@ -458,44 +524,6 @@ namespace WizBot.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("CurrencyTransactions");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.CustomReaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("AllowTarget")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("AutoDeleteTrigger")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("ContainsAnywhere")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("DmResponse")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Reactions")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Response")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Trigger")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CustomReactions");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.DelMsgOnCmdChannel", b =>
@@ -615,16 +643,33 @@ namespace WizBot.Migrations
                     b.Property<int?>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GuildConfigId1")
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildConfigId");
+
+                    b.ToTable("FilterChannelId");
+                });
+
+            modelBuilder.Entity("WizBot.Services.Database.Models.FilteredWord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("GuildConfigId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Word")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GuildConfigId");
 
-                    b.HasIndex("GuildConfigId1");
-
-                    b.ToTable("FilterChannelId");
+                    b.ToTable("FilteredWord");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilterLinksChannelId", b =>
@@ -649,10 +694,13 @@ namespace WizBot.Migrations
                     b.ToTable("FilterLinksChannelId");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.FilteredWord", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.FilterWordsChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -661,14 +709,11 @@ namespace WizBot.Migrations
                     b.Property<int?>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Word")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FilteredWord");
+                    b.ToTable("FilterWordsChannelId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GCChannelId", b =>
@@ -728,13 +773,7 @@ namespace WizBot.Migrations
                     b.Property<string>("AutoAssignRoleIds")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("AutoDeleteByeMessages")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("AutoDeleteByeMessagesTimer")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("AutoDeleteGreetMessages")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AutoDeleteGreetMessagesTimer")
@@ -994,6 +1033,9 @@ namespace WizBot.Migrations
                     b.Property<bool>("AutoDisconnect")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("AutoPlay")
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
@@ -1064,6 +1106,44 @@ namespace WizBot.Migrations
                     b.ToTable("MutedUserId");
                 });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.WizExpression", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AllowTarget")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AutoDeleteTrigger")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ContainsAnywhere")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("DmResponse")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Reactions")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Trigger")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Expressions");
+                });
+
             modelBuilder.Entity("WizBot.Services.Database.Models.NsfwBlacklistedTag", b =>
                 {
                     b.Property<int>("Id")
@@ -1123,7 +1203,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("Permissionv2");
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.PlantedCurrency", b =>
@@ -1798,7 +1878,7 @@ namespace WizBot.Migrations
                     b.Property<DateTime>("LastLevelUp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValue(new DateTime(2017, 9, 21, 20, 53, 13, 307, DateTimeKind.Local));
+                        .HasDefaultValueSql("datetime('now')");
 
                     b.Property<int>("NotifyOnLevelUp")
                         .HasColumnType("INTEGER");
@@ -1865,7 +1945,7 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Price")
+                    b.Property<long>("Price")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("WaifuId")
@@ -1968,6 +2048,11 @@ namespace WizBot.Migrations
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<long>("Weight")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(1L);
 
                     b.HasKey("Id");
 
@@ -2131,8 +2216,7 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Db.Models.DiscordUser", "Owner")
                         .WithOne()
                         .HasForeignKey("WizBot.Db.Models.ClubInfo", "OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Owner");
                 });
@@ -2140,8 +2224,9 @@ namespace WizBot.Migrations
             modelBuilder.Entity("WizBot.Db.Models.DiscordUser", b =>
                 {
                     b.HasOne("WizBot.Db.Models.ClubInfo", "Club")
-                        .WithMany("Users")
-                        .HasForeignKey("ClubId");
+                        .WithMany("Members")
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Club");
                 });
@@ -2191,6 +2276,17 @@ namespace WizBot.Migrations
                     b.Navigation("GuildConfig");
                 });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateUser", b =>
+                {
+                    b.HasOne("WizBot.Services.Database.Models.AutoTranslateChannel", "Channel")
+                        .WithMany("Users")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Channel");
+                });
+
             modelBuilder.Entity("WizBot.Services.Database.Models.CommandAlias", b =>
                 {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
@@ -2235,10 +2331,13 @@ namespace WizBot.Migrations
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
                         .WithMany("FilterInvitesChannelIds")
                         .HasForeignKey("GuildConfigId");
+                });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.FilteredWord", b =>
+                {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilterWordsChannelIds")
-                        .HasForeignKey("GuildConfigId1");
+                        .WithMany("FilteredWords")
+                        .HasForeignKey("GuildConfigId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilterLinksChannelId", b =>
@@ -2248,10 +2347,10 @@ namespace WizBot.Migrations
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.FilteredWord", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.FilterWordsChannelId", b =>
                 {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilteredWords")
+                        .WithMany("FilterWordsChannelIds")
                         .HasForeignKey("GuildConfigId");
                 });
 
@@ -2456,9 +2555,11 @@ namespace WizBot.Migrations
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuItem", b =>
                 {
-                    b.HasOne("WizBot.Services.Database.Models.WaifuInfo", null)
+                    b.HasOne("WizBot.Services.Database.Models.WaifuInfo", "WaifuInfo")
                         .WithMany("Items")
                         .HasForeignKey("WaifuInfoId");
+
+                    b.Navigation("WaifuInfo");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuUpdate", b =>
@@ -2530,12 +2631,17 @@ namespace WizBot.Migrations
 
                     b.Navigation("Bans");
 
-                    b.Navigation("Users");
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamSetting", b =>
                 {
                     b.Navigation("IgnoredChannels");
+                });
+
+            modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateChannel", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GuildConfig", b =>
@@ -2554,13 +2660,13 @@ namespace WizBot.Migrations
 
                     b.Navigation("FeedSubs");
 
-                    b.Navigation("FilteredWords");
-
                     b.Navigation("FilterInvitesChannelIds");
 
                     b.Navigation("FilterLinksChannelIds");
 
                     b.Navigation("FilterWordsChannelIds");
+
+                    b.Navigation("FilteredWords");
 
                     b.Navigation("FollowedStreams");
 

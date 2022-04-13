@@ -103,7 +103,7 @@ Windows default
 
     public Creds()
     {
-        Version = 4;
+        Version = 5;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
@@ -129,10 +129,15 @@ Windows default
 
     public class DbOptions
     {
-        [Comment(@"Database type. Only sqlite supported atm")]
+        [Comment(@"Database type. ""sqlite"", ""mysql"" and ""postgresql"" are supported.
+Default is ""sqlite""")]
         public string Type { get; set; }
 
-        [Comment(@"Connection string. Will default to ""Data Source=data/WizBot.db""")]
+        [Comment(@"Database connection string.
+You MUST change this if you're not using ""sqlite"" type.
+Default is ""Data Source=data/WizBot.db""
+Example for mysql: ""Server=localhost;Port=3306;Uid=root;Pwd=my_super_secret_mysql_password;Database=wizbot""
+Example for postgresql: ""Server=localhost;Port=5432;User Id=postgres;Password=my_super_secret_postgres_password;Database=wizbot;""")]
         public string ConnectionString { get; set; }
     }
 

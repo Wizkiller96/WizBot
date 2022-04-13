@@ -286,7 +286,7 @@ public partial class Utility : WizBotModule
                                             $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
                                             true)
                                         .AddField(GetText(strs.memory),
-                                            FormattableString.Invariant($"{_stats.GetPrivateMemory():F2} MB"),
+                                            FormattableString.Invariant($"{_stats.GetPrivateMemoryMegabytes():F2} MB"),
                                             true)
                                         .AddField(GetText(strs.owner_ids), ownerIds, true)
                                         .AddField(GetText(strs.admin_ids), adminIds, true)
@@ -344,7 +344,7 @@ public partial class Utility : WizBotModule
 
         using var http = _httpFactory.CreateClient();
         using var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-        if (!res.IsImage() || res.GetImageSize() is null or > 262_144)
+        if (!res.IsImage() || res.GetContentLength() > 262_144)
         {
             await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);
             return;

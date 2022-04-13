@@ -72,8 +72,7 @@ public static class GuildConfigExtensions
         Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
     {
         GuildConfig config;
-
-        // todo linq2db
+        
         if (includes is null)
             config = ctx.GuildConfigs.IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
         else

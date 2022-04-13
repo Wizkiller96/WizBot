@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -9,13 +10,14 @@ using WizBot.Services.Database;
 
 namespace WizBot.Migrations
 {
-    [DbContext(typeof(WizBotContext))]
-    partial class WizBotContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqliteContext))]
+    [Migration("20220110105942_filter-settings-cleanup")]
+    partial class filtersettingscleanup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -29,7 +31,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ClubApplicants", (string)null);
+                    b.ToTable("ClubApplicants");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubBans", b =>
@@ -44,7 +46,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ClubBans", (string)null);
+                    b.ToTable("ClubBans");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubInfo", b =>
@@ -86,7 +88,7 @@ namespace WizBot.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("Clubs", (string)null);
+                    b.ToTable("Clubs");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.DiscordUser", b =>
@@ -102,9 +104,7 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("CurrencyAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(0L);
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
@@ -133,9 +133,7 @@ namespace WizBot.Migrations
                         .HasDefaultValue(0);
 
                     b.Property<int>("TotalXp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(0);
+                        .HasColumnType("INTEGER");
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
@@ -155,7 +153,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DiscordUser", (string)null);
+                    b.ToTable("DiscordUser");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.FollowedStream", b =>
@@ -189,7 +187,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FollowedStream", (string)null);
+                    b.ToTable("FollowedStream");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
@@ -218,7 +216,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId")
                         .IsUnique();
 
-                    b.ToTable("AntiAltSetting", (string)null);
+                    b.ToTable("AntiAltSetting");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiRaidSetting", b =>
@@ -250,7 +248,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId")
                         .IsUnique();
 
-                    b.ToTable("AntiRaidSetting", (string)null);
+                    b.ToTable("AntiRaidSetting");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamIgnore", b =>
@@ -272,7 +270,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("AntiSpamSettingId");
 
-                    b.ToTable("AntiSpamIgnore", (string)null);
+                    b.ToTable("AntiSpamIgnore");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiSpamSetting", b =>
@@ -304,7 +302,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId")
                         .IsUnique();
 
-                    b.ToTable("AntiSpamSetting", (string)null);
+                    b.ToTable("AntiSpamSetting");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AutoCommand", b =>
@@ -342,7 +340,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AutoCommands", (string)null);
+                    b.ToTable("AutoCommands");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateChannel", b =>
@@ -370,7 +368,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildId");
 
-                    b.ToTable("AutoTranslateChannels", (string)null);
+                    b.ToTable("AutoTranslateChannels");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AutoTranslateUser", b =>
@@ -398,7 +396,7 @@ namespace WizBot.Migrations
 
                     b.HasAlternateKey("ChannelId", "UserId");
 
-                    b.ToTable("AutoTranslateUsers", (string)null);
+                    b.ToTable("AutoTranslateUsers");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.BanTemplate", b =>
@@ -421,7 +419,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("BanTemplates", (string)null);
+                    b.ToTable("BanTemplates");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.BlacklistEntry", b =>
@@ -441,7 +439,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blacklist", (string)null);
+                    b.ToTable("Blacklist");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.CommandAlias", b =>
@@ -466,7 +464,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("CommandAlias", (string)null);
+                    b.ToTable("CommandAlias");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.CommandCooldown", b =>
@@ -491,7 +489,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("CommandCooldown", (string)null);
+                    b.ToTable("CommandCooldown");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.CurrencyTransaction", b =>
@@ -506,20 +504,7 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Extra")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("OtherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValueSql("NULL");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<string>("Reason")
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("UserId")
@@ -529,7 +514,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CurrencyTransactions", (string)null);
+                    b.ToTable("CurrencyTransactions");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.DelMsgOnCmdChannel", b =>
@@ -554,7 +539,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("DelMsgOnCmdChannel", (string)null);
+                    b.ToTable("DelMsgOnCmdChannel");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.DiscordPermOverride", b =>
@@ -580,7 +565,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId", "Command")
                         .IsUnique();
 
-                    b.ToTable("DiscordPermOverrides", (string)null);
+                    b.ToTable("DiscordPermOverrides");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ExcludedItem", b =>
@@ -605,7 +590,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("XpSettingsId");
 
-                    b.ToTable("ExcludedItem", (string)null);
+                    b.ToTable("ExcludedItem");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FeedSub", b =>
@@ -631,7 +616,7 @@ namespace WizBot.Migrations
 
                     b.HasAlternateKey("GuildConfigId", "Url");
 
-                    b.ToTable("FeedSub", (string)null);
+                    b.ToTable("FeedSub");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilterChannelId", b =>
@@ -653,7 +638,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FilterChannelId", (string)null);
+                    b.ToTable("FilterChannelId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilteredWord", b =>
@@ -675,7 +660,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FilteredWord", (string)null);
+                    b.ToTable("FilteredWord");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilterLinksChannelId", b =>
@@ -697,7 +682,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FilterLinksChannelId", (string)null);
+                    b.ToTable("FilterLinksChannelId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.FilterWordsChannelId", b =>
@@ -719,7 +704,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("FilterWordsChannelId", (string)null);
+                    b.ToTable("FilterWordsChannelId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GCChannelId", b =>
@@ -741,7 +726,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("GCChannelId", (string)null);
+                    b.ToTable("GCChannelId");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GroupName", b =>
@@ -767,7 +752,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId", "Number")
                         .IsUnique();
 
-                    b.ToTable("GroupName", (string)null);
+                    b.ToTable("GroupName");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GuildConfig", b =>
@@ -779,7 +764,13 @@ namespace WizBot.Migrations
                     b.Property<string>("AutoAssignRoleIds")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("AutoDeleteByeMessages")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("AutoDeleteByeMessagesTimer")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("AutoDeleteGreetMessages")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AutoDeleteGreetMessagesTimer")
@@ -891,7 +882,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("WarnExpireHours");
 
-                    b.ToTable("GuildConfigs", (string)null);
+                    b.ToTable("GuildConfigs");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.IgnoredLogItem", b =>
@@ -917,7 +908,7 @@ namespace WizBot.Migrations
                     b.HasIndex("LogSettingId", "LogItemId", "ItemType")
                         .IsUnique();
 
-                    b.ToTable("IgnoredLogChannels", (string)null);
+                    b.ToTable("IgnoredLogChannels");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.IgnoredVoicePresenceChannel", b =>
@@ -939,7 +930,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("LogSettingId");
 
-                    b.ToTable("IgnoredVoicePresenceCHannels", (string)null);
+                    b.ToTable("IgnoredVoicePresenceCHannels");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ImageOnlyChannel", b =>
@@ -962,7 +953,7 @@ namespace WizBot.Migrations
                     b.HasIndex("ChannelId")
                         .IsUnique();
 
-                    b.ToTable("ImageOnlyChannels", (string)null);
+                    b.ToTable("ImageOnlyChannels");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.LogSetting", b =>
@@ -1027,7 +1018,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("LogSettings", (string)null);
+                    b.ToTable("LogSettings");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.MusicPlayerSettings", b =>
@@ -1037,9 +1028,6 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("AutoDisconnect")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("AutoPlay")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("GuildId")
@@ -1064,7 +1052,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("MusicPlayerSettings", (string)null);
+                    b.ToTable("MusicPlayerSettings");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.MusicPlaylist", b =>
@@ -1087,7 +1075,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MusicPlaylists", (string)null);
+                    b.ToTable("MusicPlaylists");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.MutedUserId", b =>
@@ -1109,10 +1097,10 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("MutedUserId", (string)null);
+                    b.ToTable("MutedUserId");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.WizExpression", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.WizBotExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1147,7 +1135,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Expressions", (string)null);
+                    b.ToTable("Expressions");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.NsfwBlacklistedTag", b =>
@@ -1169,7 +1157,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildId");
 
-                    b.ToTable("NsfwBlacklistedTags", (string)null);
+                    b.ToTable("NsfwBlacklistedTags");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Permissionv2", b =>
@@ -1209,7 +1197,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.PlantedCurrency", b =>
@@ -1246,7 +1234,7 @@ namespace WizBot.Migrations
                     b.HasIndex("MessageId")
                         .IsUnique();
 
-                    b.ToTable("PlantedCurrency", (string)null);
+                    b.ToTable("PlantedCurrency");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.PlaylistSong", b =>
@@ -1280,7 +1268,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("MusicPlaylistId");
 
-                    b.ToTable("PlaylistSong", (string)null);
+                    b.ToTable("PlaylistSong");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Poll", b =>
@@ -1306,7 +1294,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("Poll", (string)null);
+                    b.ToTable("Poll");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.PollAnswer", b =>
@@ -1331,7 +1319,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("PollId");
 
-                    b.ToTable("PollAnswer", (string)null);
+                    b.ToTable("PollAnswer");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.PollVote", b =>
@@ -1356,7 +1344,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("PollId");
 
-                    b.ToTable("PollVote", (string)null);
+                    b.ToTable("PollVote");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Quote", b =>
@@ -1392,7 +1380,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("Keyword");
 
-                    b.ToTable("Quotes", (string)null);
+                    b.ToTable("Quotes");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRole", b =>
@@ -1417,7 +1405,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("ReactionRoleMessageId");
 
-                    b.ToTable("ReactionRole", (string)null);
+                    b.ToTable("ReactionRole");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
@@ -1448,7 +1436,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("ReactionRoleMessage", (string)null);
+                    b.ToTable("ReactionRoleMessage");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Reminder", b =>
@@ -1482,7 +1470,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("When");
 
-                    b.ToTable("Reminders", (string)null);
+                    b.ToTable("Reminders");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Repeater", b =>
@@ -1517,7 +1505,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Repeaters", (string)null);
+                    b.ToTable("Repeaters");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.RewardedUser", b =>
@@ -1546,7 +1534,7 @@ namespace WizBot.Migrations
                     b.HasIndex("PatreonUserId")
                         .IsUnique();
 
-                    b.ToTable("RewardedUsers", (string)null);
+                    b.ToTable("RewardedUsers");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.RotatingPlayingStatus", b =>
@@ -1566,7 +1554,7 @@ namespace WizBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RotatingStatus", (string)null);
+                    b.ToTable("RotatingStatus");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.SelfAssignedRole", b =>
@@ -1597,7 +1585,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildId", "RoleId")
                         .IsUnique();
 
-                    b.ToTable("SelfAssignableRoles", (string)null);
+                    b.ToTable("SelfAssignableRoles");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntry", b =>
@@ -1637,7 +1625,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("ShopEntry", (string)null);
+                    b.ToTable("ShopEntry");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntryItem", b =>
@@ -1659,7 +1647,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("ShopEntryId");
 
-                    b.ToTable("ShopEntryItem", (string)null);
+                    b.ToTable("ShopEntryItem");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.SlowmodeIgnoredRole", b =>
@@ -1681,7 +1669,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("SlowmodeIgnoredRole", (string)null);
+                    b.ToTable("SlowmodeIgnoredRole");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.SlowmodeIgnoredUser", b =>
@@ -1703,7 +1691,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("SlowmodeIgnoredUser", (string)null);
+                    b.ToTable("SlowmodeIgnoredUser");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.StreamRoleBlacklistedUser", b =>
@@ -1728,7 +1716,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("StreamRoleSettingsId");
 
-                    b.ToTable("StreamRoleBlacklistedUser", (string)null);
+                    b.ToTable("StreamRoleBlacklistedUser");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.StreamRoleSettings", b =>
@@ -1760,7 +1748,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId")
                         .IsUnique();
 
-                    b.ToTable("StreamRoleSettings", (string)null);
+                    b.ToTable("StreamRoleSettings");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.StreamRoleWhitelistedUser", b =>
@@ -1785,7 +1773,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("StreamRoleSettingsId");
 
-                    b.ToTable("StreamRoleWhitelistedUser", (string)null);
+                    b.ToTable("StreamRoleWhitelistedUser");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.UnbanTimer", b =>
@@ -1810,7 +1798,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("UnbanTimer", (string)null);
+                    b.ToTable("UnbanTimer");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.UnmuteTimer", b =>
@@ -1835,7 +1823,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("UnmuteTimer", (string)null);
+                    b.ToTable("UnmuteTimer");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.UnroleTimer", b =>
@@ -1863,7 +1851,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("UnroleTimer", (string)null);
+                    b.ToTable("UnroleTimer");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.UserXpStats", b =>
@@ -1908,7 +1896,7 @@ namespace WizBot.Migrations
                     b.HasIndex("UserId", "GuildId")
                         .IsUnique();
 
-                    b.ToTable("UserXpStats", (string)null);
+                    b.ToTable("UserXpStats");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.VcRoleInfo", b =>
@@ -1933,7 +1921,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("VcRoleInfo", (string)null);
+                    b.ToTable("VcRoleInfo");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuInfo", b =>
@@ -1951,7 +1939,7 @@ namespace WizBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("Price")
+                    b.Property<int>("Price")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("WaifuId")
@@ -1968,7 +1956,7 @@ namespace WizBot.Migrations
                     b.HasIndex("WaifuId")
                         .IsUnique();
 
-                    b.ToTable("WaifuInfo", (string)null);
+                    b.ToTable("WaifuInfo");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuItem", b =>
@@ -1993,7 +1981,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("WaifuInfoId");
 
-                    b.ToTable("WaifuItem", (string)null);
+                    b.ToTable("WaifuItem");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WaifuUpdate", b =>
@@ -2025,7 +2013,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WaifuUpdates", (string)null);
+                    b.ToTable("WaifuUpdates");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Warning", b =>
@@ -2055,10 +2043,10 @@ namespace WizBot.Migrations
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Weight")
+                    b.Property<int>("Weight")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasDefaultValue(1L);
+                        .HasDefaultValue(1);
 
                     b.HasKey("Id");
 
@@ -2068,7 +2056,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Warnings", (string)null);
+                    b.ToTable("Warnings");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.WarningPunishment", b =>
@@ -2099,7 +2087,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("GuildConfigId");
 
-                    b.ToTable("WarningPunishment", (string)null);
+                    b.ToTable("WarningPunishment");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.XpCurrencyReward", b =>
@@ -2124,7 +2112,7 @@ namespace WizBot.Migrations
 
                     b.HasIndex("XpSettingsId");
 
-                    b.ToTable("XpCurrencyReward", (string)null);
+                    b.ToTable("XpCurrencyReward");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.XpRoleReward", b =>
@@ -2153,7 +2141,7 @@ namespace WizBot.Migrations
                     b.HasIndex("XpSettingsId", "Level")
                         .IsUnique();
 
-                    b.ToTable("XpRoleReward", (string)null);
+                    b.ToTable("XpRoleReward");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.XpSettings", b =>
@@ -2176,7 +2164,7 @@ namespace WizBot.Migrations
                     b.HasIndex("GuildConfigId")
                         .IsUnique();
 
-                    b.ToTable("XpSettings", (string)null);
+                    b.ToTable("XpSettings");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
