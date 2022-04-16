@@ -202,7 +202,6 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             {
                 var moduleInfos = new List<ModuleInfo>();
 
-                // todo uncomment
                 LoadTypeReadersInternal(typeReaders);
 
                 foreach (var point in snekData)
