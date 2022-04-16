@@ -191,14 +191,12 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         await _lock.WaitAsync();
         try
         {
-            var success = LoadAssemblyInternal(safeName,
-                out var ctx,
-                out var snekData,
-                out var services,
-                out var strings,
-                out var typeReaders);
-
-            if (success)
+            if (LoadAssemblyInternal(safeName,
+                    out var ctx,
+                    out var snekData,
+                    out var services,
+                    out var strings,
+                    out var typeReaders))
             {
                 var moduleInfos = new List<ModuleInfo>();
 
@@ -769,7 +767,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                 var paramName = pi.Name ?? "unnamed";
                 var isContext = paramCounter == 0 && pi.ParameterType.IsAssignableTo(typeof(AnyContext));
 
-                var leftoverAttribute = pi.GetCustomAttribute<Nadeko.Snake.leftoverAttribute>(true);
+                var leftoverAttribute = pi.GetCustomAttribute<leftoverAttribute>(true);
                 var hasDefaultValue = pi.HasDefaultValue;
                 var isLeftover = leftoverAttribute != null;
                 var isParams = pi.GetCustomAttribute<ParamArrayAttribute>() is not null;
