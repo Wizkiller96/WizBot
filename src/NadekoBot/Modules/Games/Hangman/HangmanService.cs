@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NadekoBot.Modules.Games.Hangman;
 
-public sealed class HangmanService : IHangmanService, ILateExecutor
+public sealed class HangmanService : IHangmanService, IExecNoCommand
 {
     private readonly ConcurrentDictionary<ulong, HangmanGame> _hangmanGames = new();
     private readonly IHangmanSource _source;
@@ -64,7 +64,7 @@ public sealed class HangmanService : IHangmanService, ILateExecutor
     public IReadOnlyCollection<string> GetHangmanTypes()
         => _source.GetCategories();
 
-    public async Task LateExecute(IGuild guild, IUserMessage msg)
+    public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
     {
         if (_hangmanGames.ContainsKey(msg.Channel.Id))
         {

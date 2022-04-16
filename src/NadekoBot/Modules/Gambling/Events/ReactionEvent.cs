@@ -86,7 +86,7 @@ public class ReactionEvent : ICurrencyEvent
                     });
             }
 
-            Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
+            Log.Information("Reaction Event awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
                 _amount,
                 _isPotLimited ? $" {PotSize} left." : "");

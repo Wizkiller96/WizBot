@@ -7,7 +7,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
-public class PermissionService : ILateBlocker, INService
+public class PermissionService : IExecPreCommand, INService
 {
     public int Priority { get; } = 0;
 
@@ -94,7 +94,7 @@ public class PermissionService : ILateBlocker, INService
                 return old;
             });
 
-    public async Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
+    public async Task<bool> ExecPreCommandAsync(ICommandContext ctx, string moduleName, CommandInfo command)
     {
         var guild = ctx.Guild;
         var msg = ctx.Message;

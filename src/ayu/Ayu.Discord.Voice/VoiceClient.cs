@@ -58,7 +58,6 @@ namespace Ayu.Discord.Voice
             _arrayPool = ArrayPool<byte>.Shared;
         }
 
-        // todo future direct opus streams
         public int SendPcmFrame(VoiceGateway gw, Span<byte> data, int offset, int count)
         {
             var secretKey = gw.SecretKey;

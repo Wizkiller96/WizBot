@@ -1,4 +1,5 @@
 using Humanizer.Localisation;
+using Nadeko.Medusa;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -12,7 +13,7 @@ public static class Extensions
         new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
     public static IEmbedBuilder WithAuthor(this IEmbedBuilder eb, IUser author)
-        => eb.WithAuthor(author.ToString(), author.RealAvatarUrl().ToString());
+        => eb.WithAuthor(author.ToString()!, author.RealAvatarUrl().ToString());
 
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
@@ -71,17 +72,53 @@ public static class Extensions
     public static string RealSummary(
         this CommandInfo cmd,
         IBotStrings strings,
-        ulong? guildId,
+        IMedusaLoaderService medusae,
+        CultureInfo culture,
         string prefix)
-        => string.Format(strings.GetCommandStrings(cmd.Summary, guildId).Desc, prefix);
+    {
+        string description;
+        if (cmd.Remarks?.StartsWith("medusa///") ?? false)
+        {
+            // command method name is kept in Summary
+            // medusa///<medusa-name-here> is kept in remarks
+            // this way I can find the name of the medusa, and then name of the command for which
+            // the description should be loaded
+            var medusaName = cmd.Remarks.Split("///")[1];
+            description = medusae.GetCommandDescription(medusaName, cmd.Summary, culture);
+        }
+        else
+        {
+            description = strings.GetCommandStrings(cmd.Summary, culture).Desc;
+        }
+        
+        return string.Format(description, prefix);
+    }
 
     public static string[] RealRemarksArr(
         this CommandInfo cmd,
         IBotStrings strings,
-        ulong? guildId,
+        IMedusaLoaderService medusae,
+        CultureInfo culture,
         string prefix)
-        => Array.ConvertAll(strings.GetCommandStrings(cmd.Summary, guildId).Args,
+    {
+        string[] args;
+        if (cmd.Remarks?.StartsWith("medusa///") ?? false)
+        {
+            // command method name is kept in Summary
+            // medusa///<medusa-name-here> is kept in remarks
+            // this way I can find the name of the medusa,
+            // and command for which data should be loaded
+            var medusaName = cmd.Remarks.Split("///")[1];
+            args = medusae.GetCommandExampleArgs(medusaName, cmd.Summary, culture);
+        }
+        else
+        {
+            args = strings.GetCommandStrings(cmd.Summary, culture).Args;
+        }
+        
+        return Array.ConvertAll(args,
             arg => GetFullUsage(cmd.Name, arg, prefix));
+    }
 
     private static string GetFullUsage(string commandName, string args, string prefix)
         => $"{prefix}{commandName} {string.Format(args, prefix)}".TrimEnd();

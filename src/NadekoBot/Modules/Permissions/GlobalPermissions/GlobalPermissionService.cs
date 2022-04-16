@@ -3,7 +3,7 @@ using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
-public class GlobalPermissionService : ILateBlocker, INService
+public class GlobalPermissionService : IExecPreCommand, INService
 {
     public int Priority { get; } = 0;
 
@@ -19,7 +19,7 @@ public class GlobalPermissionService : ILateBlocker, INService
         => _bss = bss;
 
 
-    public Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
+    public Task<bool> ExecPreCommandAsync(ICommandContext ctx, string moduleName, CommandInfo command)
     {
         var settings = _bss.Data;
         var commandName = command.Name.ToLowerInvariant();

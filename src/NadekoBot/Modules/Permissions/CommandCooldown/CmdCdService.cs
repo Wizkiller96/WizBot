@@ -4,7 +4,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
-public class CmdCdService : ILateBlocker, INService
+public class CmdCdService : IExecPreCommand, INService
 {
     public ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns { get; }
     public ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns { get; } = new();
@@ -51,7 +51,7 @@ public class CmdCdService : ILateBlocker, INService
         return Task.FromResult(false);
     }
 
-    public Task<bool> TryBlockLate(ICommandContext ctx, string moduleName, CommandInfo command)
+    public Task<bool> ExecPreCommandAsync(ICommandContext ctx, string moduleName, CommandInfo command)
     {
         var guild = ctx.Guild;
         var user = ctx.User;

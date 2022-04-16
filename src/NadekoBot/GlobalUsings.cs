@@ -10,6 +10,7 @@ global using NadekoBot.Services;
 global using NadekoBot.Common;
 global using NadekoBot.Common.Attributes;
 global using NadekoBot.Extensions;
+global using Nadeko.Snake;
 
 // discord
 global using Discord;

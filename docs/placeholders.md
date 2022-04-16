@@ -28,6 +28,8 @@ Some features have their own specific placeholders which are noted in that featu
 - `%server.id%` - Server ID
 - `%server.name%` - Server name
 - `%server.members%` - Member count
+- `%server.boosters%` - Number of users boosting the server
+- `%server.boost_level%` - Server Boost level
 - `%server.time%` - Server time (requires `.timezone` to be set)
 
 ### Channel placeholders
@@ -79,11 +81,9 @@ Some features have their own specific placeholders which are noted in that featu
 
 ### Music placeholders
 
-!!! Note
-    These placeholders will only work in rotating playing statuses.
-
-- `%music.queued%` - Amount of songs currently queued
-- `%music.playing%` - Current song name
+- `%music.queued%` - Number of songs currently queued
+- `%music.playing%` - Current song name (random playing song if bot is playing on multiple servers)
+- `%music.servers%` - Number of servers currently listening to music
 
 ### Miscellaneous placeholders
 

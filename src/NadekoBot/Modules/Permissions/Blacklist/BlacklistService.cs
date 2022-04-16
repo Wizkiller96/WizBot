@@ -6,7 +6,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
-public sealed class BlacklistService : IEarlyBehavior
+public sealed class BlacklistService : IExecOnMessage
 {
     public int Priority
         => int.MaxValue;
@@ -34,7 +34,7 @@ public sealed class BlacklistService : IEarlyBehavior
         return default;
     }
 
-    public Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
+    public Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage usrMsg)
     {
         foreach (var bl in blacklist)
         {

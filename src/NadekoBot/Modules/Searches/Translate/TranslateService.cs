@@ -8,7 +8,7 @@ using System.Net;
 
 namespace NadekoBot.Modules.Searches;
 
-public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyExecutor, INService
+public sealed class TranslateService : ITranslateService, IExecNoCommand, IReadyExecutor, INService
 {
     private readonly IGoogleApiService _google;
     private readonly DbService _db;
@@ -50,7 +50,7 @@ public sealed class TranslateService : ITranslateService, ILateExecutor, IReadyE
     }
 
 
-    public async Task LateExecute(IGuild guild, IUserMessage msg)
+    public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
     {
         if (string.IsNullOrWhiteSpace(msg.Content))
             return;

@@ -7,7 +7,7 @@ using System.Threading.Channels;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public sealed class ImageOnlyChannelService : IEarlyBehavior
+public sealed class ImageOnlyChannelService : IExecOnMessage
 {
     public int Priority { get; } = 0;
     private readonly IMemoryCache _ticketCache;
@@ -93,7 +93,7 @@ public sealed class ImageOnlyChannelService : IEarlyBehavior
         return newState;
     }
 
-    public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
+    public async Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage msg)
     {
         if (msg.Channel is not ITextChannel tch)
             return false;

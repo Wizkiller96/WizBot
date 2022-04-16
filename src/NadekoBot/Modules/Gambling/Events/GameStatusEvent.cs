@@ -93,7 +93,7 @@ public class GameStatusEvent : ICurrencyEvent
                     });
             }
 
-            Log.Information("Awarded {Count} users {Amount} currency.{Remaining}",
+            Log.Information("Game status event awarded {Count} users {Amount} currency.{Remaining}",
                 toAward.Count,
                 _amount,
                 _isPotLimited ? $" {PotSize} left." : "");
