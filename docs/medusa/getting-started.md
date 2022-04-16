@@ -27,5 +27,5 @@ Follow the [creating a medusa guide](creating-a-medusa.md)
 
 **It is strongly recommended to run only the medusae you yourself wrote, and only on a hosted VPS or dedicated server which ONLY hosts your bot, to minimize the potential damage caused by bad actors.**
 
-No easy way at the moment, except asking in the `#dev-and-modding` chat in [#NadekoLog server][https://discord.nadeko.bot]
+No easy way at the moment, except asking in the `#dev-and-modding` chat in [#NadekoLog server](https://discord.nadeko.bot)
 
