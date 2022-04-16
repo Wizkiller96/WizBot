@@ -12,7 +12,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace NadekoBot.Modules.NadekoExpressions;
 
-public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
+public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 {
     private const string MENTION_PH = "%bot.mention%";
 
@@ -220,7 +220,7 @@ public sealed class NadekoExpressionsService : IEarlyBehavior, IReadyExecutor
         return result[_rng.Next(0, result.Count)];
     }
 
-    public async Task<bool> RunBehavior(IGuild guild, IUserMessage msg)
+    public async Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage msg)
     {
         // maybe this message is an expression
         var expr = TryGetExpression(msg);

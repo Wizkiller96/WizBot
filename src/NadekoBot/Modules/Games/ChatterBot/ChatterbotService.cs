@@ -6,7 +6,7 @@ using NadekoBot.Modules.Permissions.Services;
 
 namespace NadekoBot.Modules.Games.Services;
 
-public class ChatterBotService : IEarlyBehavior
+public class ChatterBotService : IExecOnMessage
 {
     public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
 
@@ -95,7 +95,7 @@ public class ChatterBotService : IEarlyBehavior
         return true;
     }
 
-    public async Task<bool> RunBehavior(IGuild guild, IUserMessage usrMsg)
+    public async Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage usrMsg)
     {
         if (guild is not SocketGuild sg)
             return false;

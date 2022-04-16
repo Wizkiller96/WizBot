@@ -16,7 +16,6 @@ public class CommandHandler : INService, IReadyExecutor
 
     public event Func<IUserMessage, CommandInfo, Task> CommandExecuted = delegate { return Task.CompletedTask; };
     public event Func<CommandInfo, ITextChannel, string, Task> CommandErrored = delegate { return Task.CompletedTask; };
-    public event Func<IUserMessage, Task> OnMessageNoTrigger = delegate { return Task.CompletedTask; };
 
     //userid/msg count
     public ConcurrentDictionary<ulong, uint> UserMessagesSent { get; } = new();
@@ -27,7 +26,7 @@ public class CommandHandler : INService, IReadyExecutor
     private readonly CommandService _commandService;
     private readonly BotConfigService _bss;
     private readonly Bot _bot;
-    private readonly IBehaviourExecutor _behaviourExecutor;
+    private readonly IBehaviorHandler _behaviorHandler;
     private readonly IServiceProvider _services;
 
     private readonly ConcurrentDictionary<ulong, string> _prefixes;
@@ -41,7 +40,7 @@ public class CommandHandler : INService, IReadyExecutor
         CommandService commandService,
         BotConfigService bss,
         Bot bot,
-        IBehaviourExecutor behaviourExecutor,
+        IBehaviorHandler behaviorHandler,
         // InteractionService interactions,
         IServiceProvider services)
     {
@@ -49,7 +48,7 @@ public class CommandHandler : INService, IReadyExecutor
         _commandService = commandService;
         _bss = bss;
         _bot = bot;
-        _behaviourExecutor = behaviourExecutor;
+        _behaviorHandler = behaviorHandler;
         _db = db;
         _services = services;
         // _interactions = interactions;
@@ -243,44 +242,53 @@ public class CommandHandler : INService, IReadyExecutor
     {
         var startTime = Environment.TickCount;
 
-        var blocked = await _behaviourExecutor.RunEarlyBehavioursAsync(guild, usrMsg);
+        var blocked = await _behaviorHandler.RunExecOnMessageAsync(guild, usrMsg);
         if (blocked)
             return;
 
         var blockTime = Environment.TickCount - startTime;
 
-        var messageContent = await _behaviourExecutor.RunInputTransformersAsync(guild, usrMsg);
+        var messageContent = await _behaviorHandler.RunInputTransformersAsync(guild, usrMsg);
 
         var prefix = GetPrefix(guild?.Id);
         var isPrefixCommand = messageContent.StartsWith(".prefix", StringComparison.InvariantCultureIgnoreCase);
         // execute the command and measure the time it took
         if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
         {
-            var (success, error, info) = await ExecuteCommandAsync(new(_client, usrMsg),
+            var context = new CommandContext(_client, usrMsg);
+            var (success, error, info) = await ExecuteCommandAsync(context,
                 messageContent,
                 isPrefixCommand ? 1 : prefix.Length,
                 _services,
                 MultiMatchHandling.Best);
             startTime = Environment.TickCount - startTime;
 
-            if (success)
+            // if a command is found
+            if (info is not null)
             {
-                await LogSuccessfulExecution(usrMsg, channel as ITextChannel, blockTime, startTime);
-                await CommandExecuted(usrMsg, info);
-                return;
-            }
+                // if it successfully executed
+                if (success)
+                {
+                    await LogSuccessfulExecution(usrMsg, channel as ITextChannel, blockTime, startTime);
+                    await CommandExecuted(usrMsg, info);
+                    await _behaviorHandler.RunPostCommandAsync(context, info.Module.GetTopLevelModule().Name, info);
+                    return;
+                }
 
-            if (error is not null)
-            {
-                LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
-                if (guild is not null)
-                    await CommandErrored(info, channel as ITextChannel, error);
+                // if it errored
+                if (error is not null)
+                {
+                    LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
+                    
+                    if (guild is not null)
+                        await CommandErrored(info, channel as ITextChannel, error);
+                    
+                    return;
+                }
             }
         }
-        else
-            await OnMessageNoTrigger(usrMsg);
 
-        await _behaviourExecutor.RunLateExecutorsAsync(guild, usrMsg);
+        await _behaviorHandler.RunOnNoCommandAsync(guild, usrMsg);
     }
 
     public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(
@@ -384,7 +392,7 @@ public class CommandHandler : INService, IReadyExecutor
             return (false, null, cmd);
         //return SearchResult.FromError(CommandError.Exception, "You are on a global cooldown.");
 
-        var blocked = await _behaviourExecutor.RunLateBlockersAsync(context, cmd);
+        var blocked = await _behaviorHandler.RunPreCommandAsync(context, cmd);
         if (blocked)
             return (false, null, cmd);
 

@@ -1,6 +1,8 @@
 # Ignore all files
 *
 
+# Use Nadeko.Medusa project
+!src/Nadeko.Medusa/**
 # Use NadekoBot project
 !src/NadekoBot/**
 # Use NadekoBot.Coordinator project

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;
 using SixLabors.Fonts;
@@ -12,7 +13,7 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
-public class PlantPickService : INService
+public class PlantPickService : INService, IExecNoCommand
 {
     //channelId/last generation
     public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new();
@@ -49,8 +50,7 @@ public class PlantPickService : INService
         _rng = new();
         _client = client;
         _gss = gss;
-
-        cmd.OnMessageNoTrigger += PotentialFlowerGeneration;
+        
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
         var configs = uow.Set<GuildConfig>()
@@ -61,6 +61,9 @@ public class PlantPickService : INService
 
         _generationChannels = new(configs.SelectMany(c => c.GenerateCurrencyChannelIds.Select(obj => obj.ChannelId)));
     }
+
+    public Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
+        => PotentialFlowerGeneration(msg);
 
     private string GetText(ulong gid, LocStr str)
         => _strings.GetText(str, gid);

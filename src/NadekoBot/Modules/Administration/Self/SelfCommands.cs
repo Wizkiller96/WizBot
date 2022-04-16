@@ -1,4 +1,5 @@
 #nullable disable
+using Nadeko.Medusa;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Services.Database.Models;
 
@@ -19,13 +20,19 @@ public partial class Administration
 
         private readonly DiscordSocketClient _client;
         private readonly IBotStrings _strings;
+        private readonly IMedusaLoaderService _medusaLoader;
         private readonly ICoordinator _coord;
 
-        public SelfCommands(DiscordSocketClient client, IBotStrings strings, ICoordinator coord)
+        public SelfCommands(
+            DiscordSocketClient client,
+            IBotStrings strings,
+            ICoordinator coord,
+            IMedusaLoaderService medusaLoader)
         {
             _client = client;
             _strings = strings;
             _coord = coord;
+            _medusaLoader = medusaLoader;
         }
 
         [Cmd]
@@ -506,6 +513,7 @@ public partial class Administration
         public async partial Task StringsReload()
         {
             _strings.Reload();
+            await _medusaLoader.ReloadStrings();
             await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded);
         }
 

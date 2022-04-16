@@ -913,7 +913,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var embed = _eb.Create()
                                .WithOkColor()
                                .WithTitle("♻️ " + GetText(logChannel.Guild, strs.user_unbanned))
-                               .WithDescription(usr.ToString())
+                               .WithDescription(usr.ToString()!)
                                .AddField("Id", usr.Id.ToString())
                                .WithFooter(CurrentTime(guild));
 
@@ -948,7 +948,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var embed = _eb.Create()
                                .WithOkColor()
                                .WithTitle("🚫 " + GetText(logChannel.Guild, strs.user_banned))
-                               .WithDescription(usr.ToString())
+                               .WithDescription(usr.ToString()!)
                                .AddField("Id", usr.Id.ToString())
                                .WithFooter(CurrentTime(guild));
 
@@ -999,7 +999,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                                .WithOkColor()
                                .WithTitle("🗑 "
                                           + GetText(logChannel.Guild, strs.msg_del(((ITextChannel)msg.Channel).Name)))
-                               .WithDescription(msg.Author.ToString())
+                               .WithDescription(msg.Author.ToString()!)
                                .AddField(GetText(logChannel.Guild, strs.content),
                                    string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
                                .AddField("Id", msg.Id.ToString())
@@ -1060,7 +1060,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                                .WithTitle("📝 "
                                           + GetText(logChannel.Guild,
                                               strs.msg_update(((ITextChannel)after.Channel).Name)))
-                               .WithDescription(after.Author.ToString())
+                               .WithDescription(after.Author.ToString()!)
                                .AddField(GetText(logChannel.Guild, strs.old_msg),
                                    string.IsNullOrWhiteSpace(before.Content)
                                        ? "-"

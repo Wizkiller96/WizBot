@@ -8,7 +8,7 @@ public partial class Utility
         private readonly IEnumerable<IConfigService> _settingServices;
 
         public ConfigCommands(IEnumerable<IConfigService> settingServices)
-            => _settingServices = settingServices;
+            => _settingServices = settingServices.Where(x => x.Name != "medusa");
 
         [Cmd]
         [OwnerOnly]

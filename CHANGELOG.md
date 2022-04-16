@@ -10,6 +10,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - NadekoBot now supports mysql, postgresql and sqlite
   - To change the db nadeko will use, simply change the `db type` in `creds.yml`
   - There is no migration code right now, which means that if you want to switch to another system you'll either have to manually export/import your database or start fresh
+- Medusa system
+  - A massive new feature which allows developers to create custom modules/plugins/cogs 
+  - They can be load/unloaded/updated at runtime without restarting the bot
 
 ### Changed
 
@@ -18,6 +21,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Removed discriminators
     - Current discriminators which are greater than 1 are appended to clubnames to avoid duplicates, you can rename your club with `.clubrename` to remove it
     - Most of the clubs with #1 discriminator no longer have it (For example MyClub#1 will now just be MyClub)
+- [dev] A lot of refactoring and slight functionality changes within Nadeko's behavior system and command handler which were required in order to support the medusa system
 
 ### Removed
 

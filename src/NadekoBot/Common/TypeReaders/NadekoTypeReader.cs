@@ -1,4 +1,5 @@
 ﻿#nullable disable
+
 namespace NadekoBot.Common.TypeReaders;
 
 [MeansImplicitUse(ImplicitUseTargetFlags.Default | ImplicitUseTargetFlags.WithInheritors)]
