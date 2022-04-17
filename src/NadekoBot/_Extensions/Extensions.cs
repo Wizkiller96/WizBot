@@ -23,6 +23,11 @@ public static class Extensions
                 x.Embed = set.GetEmbed().Build();
                 x.Content = set.PlainText?.SanitizeMentions() ?? "";
             }),
+            SmartEmbedTextArray set => msg.ModifyAsync(x =>
+            {
+                x.Embeds = set.GetEmbedBuilders().Map(eb => eb.Build());
+                x.Content = set.PlainText?.SanitizeMentions() ?? "";
+            }),
             SmartPlainText spt => msg.ModifyAsync(x =>
             {
                 x.Content = spt.Text.SanitizeMentions();
@@ -116,8 +121,7 @@ public static class Extensions
             args = strings.GetCommandStrings(cmd.Summary, culture).Args;
         }
         
-        return Array.ConvertAll(args,
-            arg => GetFullUsage(cmd.Name, arg, prefix));
+        return args.Map(arg => GetFullUsage(cmd.Name, arg, prefix));
     }
 
     private static string GetFullUsage(string commandName, string args, string prefix)

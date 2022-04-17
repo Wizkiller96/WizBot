@@ -46,7 +46,7 @@ public class RedisBotStringsProvider : IBotStringsProvider
         if (descStr == default)
             return null;
 
-        var args = Array.ConvertAll(argsStr.Split('&'), HttpUtility.UrlDecode);
+        var args = argsStr.Split('&').Map(HttpUtility.UrlDecode);
         return new()
         {
             Args = args,
@@ -68,7 +68,7 @@ public class RedisBotStringsProvider : IBotStringsProvider
         {
             var hashFields = localeStrings
                              .Select(x => new HashEntry($"{x.Key}::args",
-                                 string.Join('&', Array.ConvertAll(x.Value.Args, HttpUtility.UrlEncode))))
+                                 string.Join('&', x.Value.Args.Map(HttpUtility.UrlEncode))))
                              .Concat(localeStrings.Select(x => new HashEntry($"{x.Key}::desc", x.Value.Desc)))
                              .ToArray();
 

@@ -18,7 +18,7 @@ public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedu
     }
 
     public IReadOnlyCollection<string> GetLoadedMedusae()
-        => Data.Loaded.ToList();
+        => Data.Loaded?.ToList() ?? new List<string>();
 
     public void AddLoadedMedusa(string name)
     {
@@ -26,6 +26,9 @@ public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedu
         
         ModifyConfig(conf =>
         {
+            if (conf.Loaded is null)
+                conf.Loaded = new();
+            
             if(!conf.Loaded.Contains(name))
                 conf.Loaded.Add(name);
         });
@@ -37,6 +40,9 @@ public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedu
         
         ModifyConfig(conf =>
         {
+            if (conf.Loaded is null)
+                conf.Loaded = new();
+            
             conf.Loaded.Remove(name);
         });
     }
