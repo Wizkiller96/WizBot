@@ -4,6 +4,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.1.1] - 18.04.2022
+
+### Fixed
+
+- Fixed an issue with missing `.dll` files in release versions
+
 ## [4.1.0] - 18.04.2022
 
 ### Added
@@ -30,14 +36,14 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## [4.0.6] - 21.03.2022
 
-### Fixes
+### Fixed
 
 - Fixed voice presence logging
 - Fixed .clubaccept, .clubban, .clubkick and .clubunban commands
 
 ## [4.0.5] - 21.03.2022
 
-### Fixes
+### Fixed
 
 - Fixed several bugs in the currency code
 - Fixed some potential memory leaks
