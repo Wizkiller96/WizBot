@@ -2151,6 +2151,36 @@ deleteemptyservers:
   desc: "Deletes all servers in which the bot is the only member."
   args:
     - ""
+medusaload:
+  desc: |-
+    Loads a medusa with the specified name from the data/medusae/ folder.
+    Provide no name to see the list of loadable medusae.
+    Read about the medusa system [here](https://wizbot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
+  args:
+    - "mycoolmedusa"
+    - ""
+medusaunload:
+  desc: |-
+    Unloads the previously loaded medusa.
+    Provide no name to see the list of unloadable medusae. 
+    Read about the medusa system [here](https://wizbot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
+  args:
+    - "mycoolmedusa"
+    - ""
+medusainfo:
+  desc: |-
+    Shows information about the specified medusa such as the author, name, description, list of sneks, number of commands etc.
+    Provide no name to see the basic information about all loaded medusae. 
+    Read about the medusa system [here](https://wizbot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
+  args:
+    - "mycoolmedusa"
+    - ""
+medusalist:
+  desc: |-
+    Lists all loaded and unloaded medusae.
+    Read about the medusa system [here](https://wizbot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
+  args:
+    - ""
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   args:

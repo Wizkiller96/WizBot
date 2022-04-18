@@ -1,6 +1,8 @@
 # Ignore all files
 *
 
+# Use WizBot.Medusa project
+!src/WizBot.Medusa/**
 # Use WizBot project
 !src/WizBot/**
 # Use WizBot.Coordinator project

@@ -143,12 +143,14 @@ public sealed class Bot
                                       typeof(INService),
 
                                       // behaviours
-                                      typeof(IEarlyBehavior),
-                                      typeof(ILateBlocker),
+                                      typeof(IExecOnMessage),
                                       typeof(IInputTransformer),
-                                      typeof(ILateExecutor))
+                                      typeof(IExecPreCommand),
+                                      typeof(IExecPostCommand),
+                                      typeof(IExecNoCommand))
+                                                            .WithoutAttribute<DontAddToIocContainerAttribute>()
 #if GLOBAL_WIZBOT
-                    .WithoutAttribute<NoPublicBotAttribute>()
+                                                            .WithoutAttribute<NoPublicBotAttribute>()
 #endif
                               )
                               .AsSelfWithInterfaces()
@@ -156,8 +158,7 @@ public sealed class Bot
 
         //initialize Services
         Services = svcs.BuildServiceProvider();
-        var exec = Services.GetRequiredService<IBehaviourExecutor>();
-        exec.Initialize();
+        Services.GetRequiredService<IBehaviorHandler>().Initialize();
 
         if (Client.ShardId == 0)
             ApplyConfigMigrations();

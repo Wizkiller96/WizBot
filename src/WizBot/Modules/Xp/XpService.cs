@@ -18,7 +18,7 @@ using Image = SixLabors.ImageSharp.Image;
 namespace WizBot.Modules.Xp.Services;
 
 // todo improve xp with linqtodb
-public class XpService : INService, IReadyExecutor
+public class XpService : INService, IReadyExecutor, IExecNoCommand
 {
     public const int XP_REQUIRED_LVL_1 = 36;
 
@@ -108,9 +108,7 @@ public class XpService : INService, IReadyExecutor
                                         .ToConcurrent();
 
         _excludedServers = new(allGuildConfigs.Where(x => x.XpSettings.ServerExcluded).Select(x => x.GuildId));
-
-        _cmd.OnMessageNoTrigger += Cmd_OnMessageNoTrigger;
-
+        
 //#if !GLOBAL_WIZBOT
         _client.UserVoiceStateUpdated += Client_OnUserVoiceStateUpdated;
 
@@ -552,7 +550,7 @@ public class XpService : INService, IReadyExecutor
         return true;
     }
 
-    private Task Cmd_OnMessageNoTrigger(IUserMessage arg)
+    public Task ExecOnNoCommandAsync(IGuild guild, IUserMessage arg)
     {
         if (arg.Author is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;

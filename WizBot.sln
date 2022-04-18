@@ -11,6 +11,7 @@ ProjectSection(SolutionItems) = preProject
 	LICENSE.md = LICENSE.md
 	README.md = README.md
 	.gitlab-ci.yml = .gitlab-ci.yml
+	Dockerfile = Dockerfile
 EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizBot", "src\WizBot\WizBot.csproj", "{45EC1473-C678-4857-A544-07DFE0D0B478}"
@@ -26,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizBot.Generators", "src\WizBot.Generators\WizBot.Generators.csproj", "{3BC3BDF8-1A0B-45EB-AB2B-C0891D4D37B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizBot.VotesApi", "src\WizBot.VotesApi\WizBot.VotesApi.csproj", "{3BC82CFE-BEE7-451F-986B-17EDD1570C4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizBot.Medusa", "src\WizBot.Medusa\WizBot.Medusa.csproj", "{E685977E-31A4-46F4-A5D7-4E3E39E82E43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +73,12 @@ Global
 		{3BC82CFE-BEE7-451F-986B-17EDD1570C4F}.GlobalWizBot|Any CPU.Build.0 = Debug|Any CPU
 		{3BC82CFE-BEE7-451F-986B-17EDD1570C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BC82CFE-BEE7-451F-986B-17EDD1570C4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E685977E-31A4-46F4-A5D7-4E3E39E82E43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {E685977E-31A4-46F4-A5D7-4E3E39E82E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {E685977E-31A4-46F4-A5D7-4E3E39E82E43}.GlobalWizBot|Any CPU.ActiveCfg = Debug|Any CPU
+        {E685977E-31A4-46F4-A5D7-4E3E39E82E43}.GlobalWizBot|Any CPU.Build.0 = Debug|Any CPU
+        {E685977E-31A4-46F4-A5D7-4E3E39E82E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {E685977E-31A4-46F4-A5D7-4E3E39E82E43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +91,7 @@ Global
 		{AE9B7F8C-81D7-4401-83A3-643B38258374} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 		{3BC3BDF8-1A0B-45EB-AB2B-C0891D4D37B8} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 		{3BC82CFE-BEE7-451F-986B-17EDD1570C4F} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
+		{E685977E-31A4-46F4-A5D7-4E3E39E82E43} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F3F555C-855F-4BE8-B526-D062D3E8ACA4}

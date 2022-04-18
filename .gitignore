@@ -1,5 +1,11 @@
 #Manually added files
 
+# medusa stuff
+!src/WizBot/data/medusae/medusa.yml
+src/WizBot/data/medusae/**
+
+# other
+
 command_errors*.txt
 output/
 src/WizBot/output

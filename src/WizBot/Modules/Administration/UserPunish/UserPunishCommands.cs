@@ -577,7 +577,7 @@ public partial class Administration
         [BotPerm(GuildPerm.BanMembers)]
         public async partial Task Unban([Leftover] string user)
         {
-            var bans = await ctx.Guild.GetBansAsync();
+            var bans = await ctx.Guild.GetBansAsync().FlattenAsync();
 
             var bun = bans.FirstOrDefault(x => x.User.ToString()!.ToLowerInvariant() == user.ToLowerInvariant());
 
@@ -596,9 +596,7 @@ public partial class Administration
         [BotPerm(GuildPerm.BanMembers)]
         public async partial Task Unban(ulong userId)
         {
-            var bans = await ctx.Guild.GetBansAsync();
-
-            var bun = bans.FirstOrDefault(x => x.User.Id == userId);
+            var bun = await ctx.Guild.GetBanAsync(userId);
 
             if (bun is null)
             {

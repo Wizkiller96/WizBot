@@ -79,7 +79,10 @@ nav:
       - Custom Reactions: custom-reactions.md
       - Placeholders: placeholders.md
       - Config: config-guide.md
-      - Bot Config: bce-guide.md
+      - Medusa System:
+          - medusa/getting-started.md
+          - medusa/creating-a-medusa.md
+          - medusa/snek-lifecycle.md
   - Contribution Guide: contribution-guide.md
   - Donate: donate.md
   - License: license.md

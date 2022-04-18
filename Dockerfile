@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 
+COPY src/WizBot.Medusa/*.csproj src/WizBot.Medusa/
 COPY src/WizBot/*.csproj src/WizBot/
 COPY src/WizBot.Coordinator/*.csproj src/WizBot.Coordinator/
 COPY src/WizBot.Generators/*.csproj src/WizBot.Generators/

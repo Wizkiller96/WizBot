@@ -10,6 +10,7 @@ global using WizBot.Services;
 global using WizBot.Common;
 global using WizBot.Common.Attributes;
 global using WizBot.Extensions;
+global using WizBot.Snake;
 
 // discord
 global using Discord;

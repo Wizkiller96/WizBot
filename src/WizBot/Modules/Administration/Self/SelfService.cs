@@ -6,7 +6,7 @@ using System.Collections.Immutable;
 
 namespace WizBot.Modules.Administration.Services;
 
-public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
+public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
 {
     private readonly CommandHandler _cmdHandler;
     private readonly DbService _db;
@@ -237,7 +237,7 @@ public sealed class SelfService : ILateExecutor, IReadyExecutor, INService
         => _pubSub.Pub(_guildLeaveKey, guildStr);
 
     // forwards dms
-    public async Task LateExecute(IGuild guild, IUserMessage msg)
+    public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
     {
         var bs = _bss.Data;
         if (msg.Channel is IDMChannel && bs.ForwardMessages && ownerChannels.Any())

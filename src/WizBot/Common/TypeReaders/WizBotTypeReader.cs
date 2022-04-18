@@ -1,4 +1,5 @@
 ﻿#nullable disable
+
 namespace WizBot.Common.TypeReaders;
 
 [MeansImplicitUse(ImplicitUseTargetFlags.Default | ImplicitUseTargetFlags.WithInheritors)]

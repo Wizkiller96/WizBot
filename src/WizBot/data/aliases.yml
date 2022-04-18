@@ -1271,6 +1271,18 @@ deleteemptyservers:
   - deleteemptyservers
 stock:
   - stock
+medusaload:
+  - medusaload
+  - meload
+medusaunload:
+  - medusaunload
+  - meunload
+medusalist:
+  - medusalist
+  - melist
+medusainfo:
+  - medusainfo
+  - meinfo
 feedback:
   - feedback
   - fb

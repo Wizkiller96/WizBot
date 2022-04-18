@@ -4,82 +4,299 @@ using WizBot.Common.ModuleBehaviors;
 
 namespace WizBot.Services;
 
-public sealed class BehaviorExecutor : IBehaviourExecutor, INService
+// should be renamed to handler as it's not only executing
+public sealed class BehaviorHandler : IBehaviorHandler, INService
 {
     private readonly IServiceProvider _services;
-    private IEnumerable<ILateExecutor> lateExecutors;
-    private IEnumerable<ILateBlocker> lateBlockers;
-    private IEnumerable<IEarlyBehavior> earlyBehaviors;
-    private IEnumerable<IInputTransformer> transformers;
+    
+    private IReadOnlyCollection<IExecNoCommand> noCommandExecs;
+    private IReadOnlyCollection<IExecPreCommand> preCommandExecs;
+    private IReadOnlyCollection<IExecOnMessage> onMessageExecs;
+    private IReadOnlyCollection<IInputTransformer> inputTransformers;
 
-    public BehaviorExecutor(IServiceProvider services)
-        => _services = services;
+    private readonly SemaphoreSlim _customLock = new(1, 1);
+    private readonly List<ICustomBehavior> _customExecs = new();
+
+    public BehaviorHandler(IServiceProvider services)
+    {
+        _services = services;
+    }
 
     public void Initialize()
     {
-        lateExecutors = _services.GetServices<ILateExecutor>();
-        lateBlockers = _services.GetServices<ILateBlocker>();
-        earlyBehaviors = _services.GetServices<IEarlyBehavior>().OrderByDescending(x => x.Priority);
-        transformers = _services.GetServices<IInputTransformer>();
+        noCommandExecs = _services.GetServices<IExecNoCommand>().ToArray();
+        preCommandExecs = _services.GetServices<IExecPreCommand>().ToArray();
+        onMessageExecs = _services.GetServices<IExecOnMessage>().OrderByDescending(x => x.Priority).ToArray();
+        inputTransformers = _services.GetServices<IInputTransformer>().ToArray();
     }
 
-    public async Task<bool> RunEarlyBehavioursAsync(SocketGuild guild, IUserMessage usrMsg)
+    #region Add/Remove
+
+    public async Task AddRangeAsync(IEnumerable<ICustomBehavior> execs)
     {
-        foreach (var beh in earlyBehaviors)
+        await _customLock.WaitAsync();
+        try
         {
-            if (await beh.RunBehavior(guild, usrMsg))
+            foreach (var exe in execs)
+            {
+                if (_customExecs.Contains(exe))
+                    continue;
+
+                _customExecs.Add(exe);
+            }
+        }
+        finally
+        {
+            _customLock.Release();
+        }
+    }
+    
+    public async Task<bool> AddAsync(ICustomBehavior behavior)
+    {
+        await _customLock.WaitAsync();
+        try
+        {
+            if (_customExecs.Contains(behavior))
+                return false;
+
+            _customExecs.Add(behavior);
+            return true;
+        }
+        finally
+        {
+            _customLock.Release();
+        }
+    }
+    
+    public async Task<bool> RemoveAsync(ICustomBehavior behavior)
+    {
+        await _customLock.WaitAsync();
+        try
+        {
+            return _customExecs.Remove(behavior);
+        }
+        finally
+        {
+            _customLock.Release();
+        }
+    }
+    
+    public async Task RemoveRangeAsync(IEnumerable<ICustomBehavior> behs)
+    {
+        await _customLock.WaitAsync();
+        try
+        {
+            foreach(var beh in behs)
+                _customExecs.Remove(beh);
+        }
+        finally
+        {
+            _customLock.Release();
+        }
+    }
+
+    #endregion
+    
+    #region Running
+
+    public async Task<bool> RunExecOnMessageAsync(SocketGuild guild, IUserMessage usrMsg)
+    {
+        async Task<bool> Exec<T>(IReadOnlyCollection<T> execs)
+            where T : IExecOnMessage
+        {
+            foreach (var exec in execs)
+            {
+                try
+                {
+                    if (await exec.ExecOnMessageAsync(guild, usrMsg))
+                    {
+                        Log.Information("{TypeName} blocked message g:{GuildId} u:{UserId} c:{ChannelId} msg:{Message}",
+                            GetExecName(exec),
+                            guild?.Id,
+                            usrMsg.Author.Id,
+                            usrMsg.Channel.Id,
+                            usrMsg.Content?.TrimTo(10));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex,
+                        "An error occurred in {TypeName} late blocker: {ErrorMessage}",
+                        GetExecName(exec),
+                        ex.Message);
+                }
+            }
+
+            return false;
+        }
+
+        if (await Exec(onMessageExecs))
+        {
+            return true;
+        }
+
+        await _customLock.WaitAsync();
+        try
+        {
+            if (await Exec(_customExecs))
                 return true;
+        }
+        finally
+        {
+            _customLock.Release();
         }
 
         return false;
+    }
+
+    private string GetExecName(object exec)
+        => exec is BehaviorAdapter ba
+            ? ba.ToString()
+            : exec.GetType().Name;
+
+    public async Task<bool> RunPreCommandAsync(ICommandContext ctx, CommandInfo cmd)
+    {
+        async Task<bool> Exec<T>(IReadOnlyCollection<T> execs) where T: IExecPreCommand
+        {
+            foreach (var exec in execs)
+            {
+                try
+                {
+                    if (await exec.ExecPreCommandAsync(ctx, cmd.Module.GetTopLevelModule().Name, cmd))
+                    {
+                        Log.Information("{TypeName} Pre-Command blocked [{User}] Command: [{Command}]",
+                            GetExecName(exec),
+                            ctx.User,
+                            cmd.Aliases[0]);
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex,
+                        "An error occurred in {TypeName} PreCommand: {ErrorMessage}",
+                        GetExecName(exec),
+                        ex.Message);
+                }
+            }
+            
+            return false;
+        }
+
+        if (await Exec(preCommandExecs))
+            return true;
+
+        await _customLock.WaitAsync();
+        try
+        {
+            if (await Exec(_customExecs))
+                return true;
+        }
+        finally
+        {
+            _customLock.Release();
+        }
+
+        return false;
+    }
+
+    public async Task RunOnNoCommandAsync(SocketGuild guild, IUserMessage usrMsg)
+    {
+        async Task Exec<T>(IReadOnlyCollection<T> execs) where T : IExecNoCommand
+        {
+            foreach (var exec in execs)
+            {
+                try
+                {
+                    await exec.ExecOnNoCommandAsync(guild, usrMsg);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex,
+                        "An error occurred in {TypeName} OnNoCommand: {ErrorMessage}",
+                        GetExecName(exec),
+                        ex.Message);
+                }
+            }
+        }
+
+        await Exec(noCommandExecs);
+        
+        await _customLock.WaitAsync();
+        try
+        {
+            await Exec(_customExecs);
+        }
+        finally
+        {
+            _customLock.Release();
+        }
     }
 
     public async Task<string> RunInputTransformersAsync(SocketGuild guild, IUserMessage usrMsg)
     {
-        var messageContent = usrMsg.Content;
-        foreach (var exec in transformers)
+        async Task<string> Exec<T>(IReadOnlyCollection<T> execs, string content)
+            where T : IInputTransformer
         {
-            string newContent;
-            if ((newContent = await exec.TransformInput(guild, usrMsg.Channel, usrMsg.Author, messageContent))
-                != messageContent.ToLowerInvariant())
+            foreach (var exec in execs)
             {
-                messageContent = newContent;
-                break;
+                try
+                {
+                    var newContent = await exec.TransformInput(guild, usrMsg.Channel, usrMsg.Author, content);
+                    if (newContent is not null)
+                    {
+                        Log.Information("{ExecName} transformed content {OldContent} -> {NewContent}",
+                            GetExecName(exec),
+                            content,
+                            newContent);
+                        return newContent;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "An error occured during InputTransform handling: {ErrorMessage}", ex.Message);
+                }
             }
+
+            return null;
         }
 
-        return messageContent;
-    }
-
-    public async Task<bool> RunLateBlockersAsync(ICommandContext ctx, CommandInfo cmd)
-    {
-        foreach (var exec in lateBlockers)
+        var newContent = await Exec(inputTransformers, usrMsg.Content);
+        if (newContent is not null)
+            return newContent;
+        
+        await _customLock.WaitAsync();
+        try
         {
-            if (await exec.TryBlockLate(ctx, cmd.Module.GetTopLevelModule().Name, cmd))
-            {
-                Log.Information("Late blocking User [{User}] Command: [{Command}] in [{Module}]",
-                    ctx.User,
-                    cmd.Aliases[0],
-                    exec.GetType().Name);
-                return true;
-            }
+            newContent = await Exec(_customExecs, usrMsg.Content);
+            if (newContent is not null)
+                return newContent;
+        }
+        finally
+        {
+            _customLock.Release();
         }
 
-        return false;
+        return usrMsg.Content;
     }
 
-    public async Task RunLateExecutorsAsync(SocketGuild guild, IUserMessage usrMsg)
+    public async ValueTask RunPostCommandAsync(ICommandContext ctx, string moduleName, CommandInfo cmd)
     {
-        foreach (var exec in lateExecutors)
+        foreach (var exec in _customExecs)
         {
             try
             {
-                await exec.LateExecute(guild, usrMsg);
+                await exec.ExecPostCommandAsync(ctx, moduleName, cmd.Name);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error in {TypeName} late executor: {ErrorMessage}", exec.GetType().Name, ex.Message);
+                Log.Warning(ex,
+                    "An error occured during PostCommand handling in {ExecName}: {ErrorMessage}",
+                    GetExecName(exec),
+                    ex.Message);
             }
         }
     }
+    
+    #endregion
 }

@@ -52,7 +52,7 @@ public class CommandMapService : IInputTransformer, INService
         string input)
     {
         if (guild is null || string.IsNullOrWhiteSpace(input))
-            return input;
+            return null;
 
         if (AliasMaps.TryGetValue(guild.Id, out var maps))
         {
@@ -86,6 +86,6 @@ public class CommandMapService : IInputTransformer, INService
             }
         }
 
-        return input;
+        return null;
     }
 }

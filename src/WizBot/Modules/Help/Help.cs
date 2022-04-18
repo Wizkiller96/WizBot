@@ -1,5 +1,6 @@
 #nullable disable
 using Amazon.S3;
+using WizBot.Medusa;
 using WizBot.Modules.Help.Common;
 using WizBot.Modules.Help.Services;
 using WizBot.Modules.Permissions.Services;
@@ -23,6 +24,7 @@ public partial class Help : WizBotModule<HelpService>
     private readonly IBotStrings _strings;
 
     private readonly AsyncLazy<ulong> _lazyClientId;
+    private readonly IMedusaLoaderService _medusae;
 
     public Help(
         GlobalPermissionService perms,
@@ -30,7 +32,8 @@ public partial class Help : WizBotModule<HelpService>
         BotConfigService bss,
         IServiceProvider services,
         DiscordSocketClient client,
-        IBotStrings strings)
+        IBotStrings strings,
+        IMedusaLoaderService medusae)
     {
         _cmds = cmds;
         _bss = bss;
@@ -38,6 +41,7 @@ public partial class Help : WizBotModule<HelpService>
         _services = services;
         _client = client;
         _strings = strings;
+        _medusae = medusae;
 
         _lazyClientId = new(async () => (await _client.GetApplicationInfoAsync()).Id);
     }
@@ -333,8 +337,8 @@ public partial class Help : WizBotModule<HelpService>
                                          return new CommandJsonObject
                                          {
                                              Aliases = com.Aliases.Select(alias => prefix + alias).ToArray(),
-                                             Description = com.RealSummary(_strings, ctx.Guild?.Id, prefix),
-                                             Usage = com.RealRemarksArr(_strings, ctx.Guild?.Id, prefix),
+                                             Description = com.RealSummary(_strings, _medusae, Culture, prefix),
+                                             Usage = com.RealRemarksArr(_strings, _medusae, Culture, prefix),
                                              Submodule = com.Module.Name,
                                              Module = com.Module.GetTopLevelModule().Name,
                                              Options = optHelpStr,

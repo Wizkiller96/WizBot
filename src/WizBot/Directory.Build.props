@@ -1,0 +1,7 @@
+﻿<Project>
+    <ItemDefinitionGroup>
+        <ProjectReference>
+            <PrivateAssets>all</PrivateAssets>
+        </ProjectReference>
+    </ItemDefinitionGroup>
+</Project>

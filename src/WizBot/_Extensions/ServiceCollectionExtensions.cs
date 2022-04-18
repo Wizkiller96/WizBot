@@ -20,16 +20,20 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddConfigServices(this IServiceCollection services)
     {
-        var baseType = typeof(ConfigServiceBase<>);
-
-        foreach (var type in Assembly.GetCallingAssembly().ExportedTypes.Where(x => x.IsSealed))
-        {
-            if (type.BaseType?.IsGenericType == true && type.BaseType.GetGenericTypeDefinition() == baseType)
-            {
-                services.AddSingleton(type);
-                services.AddSingleton(x => (IConfigService)x.GetRequiredService(type));
-            }
-        }
+        services.Scan(x => x.FromCallingAssembly()
+                            .AddClasses(f => f.AssignableTo(typeof(ConfigServiceBase<>)))
+                            .AsSelfWithInterfaces());
+        
+        // var baseType = typeof(ConfigServiceBase<>);
+        //
+        // foreach (var type in Assembly.GetCallingAssembly().ExportedTypes.Where(x => x.IsSealed))
+        // {
+        //     if (type.BaseType?.IsGenericType == true && type.BaseType.GetGenericTypeDefinition() == baseType)
+        //     {
+        //         services.AddSingleton(type);
+        //         services.AddSingleton(x => (IConfigService)x.GetRequiredService(type));
+        //     }
+        // }
 
         return services;
     }
