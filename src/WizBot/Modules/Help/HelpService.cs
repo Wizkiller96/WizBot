@@ -81,8 +81,7 @@ public class HelpService : IExecNoCommand, INService
             em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
         em.AddField(_strings.GetText(strs.usage),
-              string.Join("\n",
-                  Array.ConvertAll(com.RealRemarksArr(_strings,_medusae, culture, prefix), arg => Format.Code(arg))))
+              string.Join("\n", com.RealRemarksArr(_strings,_medusae, culture, prefix).Map(arg => Format.Code(arg))))
           .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
           .WithOkColor();
 

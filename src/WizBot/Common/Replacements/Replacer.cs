@@ -36,7 +36,15 @@ public class Replacer
         {
             SmartEmbedText embedData => Replace(embedData),
             SmartPlainText plain => Replace(plain),
+            SmartEmbedTextArray arr => Replace(arr),
             _ => throw new ArgumentOutOfRangeException(nameof(data), "Unsupported argument type")
+        };
+
+    public SmartEmbedTextArray Replace(SmartEmbedTextArray embedArr)
+        => new()
+        {
+            Embeds = embedArr.Embeds.Map(Replace),
+            PlainText = Replace(embedArr.PlainText)
         };
 
     public SmartPlainText Replace(SmartPlainText plainText)

@@ -16,19 +16,22 @@ public static class MessageChannelExtensions
     public static Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
         string? plainText,
-        Embed? embed,
+        Embed? embed = null,
+        Embed[]? embeds = null,
         bool sanitizeAll = false)
     {
         plainText = sanitizeAll ? plainText?.SanitizeAllMentions() ?? "" : plainText?.SanitizeMentions() ?? "";
 
-        return channel.SendMessageAsync(plainText, embed: embed);
+        return channel.SendMessageAsync(plainText, embed: embed, embeds: embeds);
     }
 
     public static Task<IUserMessage> SendAsync(this IMessageChannel channel, SmartText text, bool sanitizeAll = false)
         => text switch
         {
-            SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed().Build(), sanitizeAll),
-            SmartPlainText st => channel.SendAsync(st.Text, null, sanitizeAll),
+            SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed().Build(), sanitizeAll: sanitizeAll),
+            SmartPlainText st => channel.SendAsync(st.Text, null, sanitizeAll: sanitizeAll),
+            SmartEmbedTextArray arr => channel.SendAsync(arr.PlainText,
+                embeds: arr.GetEmbedBuilders().Map(e => e.Build())),
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 

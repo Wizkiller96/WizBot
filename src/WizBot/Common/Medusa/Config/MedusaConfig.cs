@@ -1,4 +1,5 @@
-﻿using Cloneable;
+﻿#nullable enable
+using Cloneable;
 using WizBot.Common.Yml;
 
 namespace WizBot.Medusa;
@@ -10,7 +11,7 @@ public sealed partial class MedusaConfig : ICloneable<MedusaConfig>
     public int Version { get; set; } = 1;
     
     [Comment("List of medusae automatically loaded at startup")]
-    public List<string> Loaded { get; set; }
+    public List<string>? Loaded { get; set; }
 
     public MedusaConfig()
     {

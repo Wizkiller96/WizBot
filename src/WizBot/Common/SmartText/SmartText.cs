@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace WizBot;
 
@@ -11,6 +11,15 @@ public abstract record SmartText
     public bool IsPlainText
         => this is SmartPlainText;
 
+    public bool IsEmbedArray
+        => this is SmartEmbedTextArray;
+
+    private static readonly JsonSerializerOptions _opts = new JsonSerializerOptions()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public static SmartText operator +(SmartText text, string input)
         => text switch
         {
@@ -19,6 +28,10 @@ public abstract record SmartText
                 PlainText = set.PlainText + input
             },
             SmartPlainText spt => new SmartPlainText(spt.Text + input),
+            SmartEmbedTextArray arr => arr with
+            {
+                PlainText = arr.PlainText + input
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 
@@ -30,27 +43,45 @@ public abstract record SmartText
                 PlainText = input + set.PlainText
             },
             SmartPlainText spt => new SmartPlainText(input + spt.Text),
+            SmartEmbedTextArray arr => arr with
+            {
+                PlainText = input + arr.PlainText
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 
     public static SmartText CreateFrom(string input)
     {
-        if (string.IsNullOrWhiteSpace(input) || !input.TrimStart().StartsWith("{"))
+        if (string.IsNullOrWhiteSpace(input))
             return new SmartPlainText(input);
 
         try
         {
-            var smartEmbedText = JsonConvert.DeserializeObject<SmartEmbedText>(input);
+            var doc = JsonDocument.Parse(input);
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Object)
+            {
+                if (root.TryGetProperty("embeds", out _))
+                {
+                    var arr = root.Deserialize<SmartEmbedTextArray>(_opts);
 
-            if (smartEmbedText is null)
-                throw new FormatException();
+                    if (arr is null)
+                        return new SmartPlainText(input);
 
-            smartEmbedText.NormalizeFields();
+                    arr!.NormalizeFields();
+                    return arr;
+                }
 
-            if (!smartEmbedText.IsValid)
-                return new SmartPlainText(input);
+                var obj = root.Deserialize<SmartEmbedText>(_opts);
 
-            return smartEmbedText;
+                if (obj is null)
+                    return new SmartPlainText(input);
+
+                obj.NormalizeFields();
+                return obj;
+            }
+            
+            return new SmartPlainText(input);
         }
         catch
         {
