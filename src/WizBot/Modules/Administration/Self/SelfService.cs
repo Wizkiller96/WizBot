@@ -114,7 +114,10 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         }
 
         if (_client.ShardId == 0)
+        {
             await LoadOwnerChannels();
+            await LoadAdminChannels();
+        }
     }
 
     private Timer TimerFromAutoCommand(AutoCommand x)

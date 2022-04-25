@@ -220,7 +220,7 @@ hello:
 <configuration>
     <packageSources>
         <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-        <add key="nadeko.bot" value="https://www.myget.org/F/nadeko/api/v3/index.json" protocolVersion="3" />
+        <add key="wizbot.cc" value="https://www.myget.org/F/wizbot/api/v3/index.json" protocolVersion="3" />
     </packageSources>
 </configuration>
 ```
