@@ -101,6 +101,8 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 3. Make sure your python is version 3+ with `python --version`
     - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
 
+*You can use nadeko bash script [prerequisites installer](https://gitlab.com/Kwoth/nadeko-bash-installer/-/blob/v4/n-prereq.sh) as a reference*
+
 ###### Installation
 
 1. Stop the bot
