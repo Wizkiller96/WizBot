@@ -92,6 +92,17 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ##### Release Update Instructions
 
+###### Prerequisites
+
+1. Nadeko requires redis to function
+    - ubuntu installation command: `sudo apt-get install redis-server`
+2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `youtube-dl` (which in turn requires python3)
+    - ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
+3. Make sure your python is version 3+ with `python --version`
+    - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
+
+###### Installation
+
 1. Stop the bot
 2. Download the latest release from <https://gitlab.com/Kwoth/nadekobot/-/releases>
     - Look for the file called "x.x.x-linux-x64-build.tar" (where `X.X.X` is a version, for example 3.0.4) and download it
