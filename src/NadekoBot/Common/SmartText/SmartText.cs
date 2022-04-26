@@ -30,7 +30,7 @@ public abstract record SmartText
             SmartPlainText spt => new SmartPlainText(spt.Text + input),
             SmartEmbedTextArray arr => arr with
             {
-                PlainText = arr.PlainText + input
+                Content = arr.Content + input
             },
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
@@ -45,7 +45,7 @@ public abstract record SmartText
             SmartPlainText spt => new SmartPlainText(input + spt.Text),
             SmartEmbedTextArray arr => arr with
             {
-                PlainText = input + arr.PlainText
+                Content = input + arr.Content
             },
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
