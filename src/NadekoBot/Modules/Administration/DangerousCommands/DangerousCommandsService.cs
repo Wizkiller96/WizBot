@@ -19,7 +19,7 @@ public class DangerousCommandsService : INService
         await using var ctx = _db.GetDbContext();
         await ctx.DiscordUser.UpdateAsync(_ => new DiscordUser()
         {
-            Club = null,
+            ClubId = null,
             // IsClubAdmin = false,
             TotalXp = 0
         });
