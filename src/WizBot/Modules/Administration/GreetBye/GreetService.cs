@@ -256,15 +256,55 @@ public class GreetService : INService, IReadyExecutor
             {
                 text = new SmartEmbedText()
                 {
-                    PlainText = pt.Text
+                    Description = pt.Text
                 };
             }
 
-            ((SmartEmbedText)text).Footer = new()
+            else if (text is SmartEmbedText set)
             {
-                Text = $"This message was sent from {user.Guild} server.",
-                IconUrl = user.Guild.IconUrl
-            };
+                text = set with
+                {
+                    Footer = CreateFooterSource(user)
+                };
+            }
+            else if (text is SmartEmbedTextArray seta)
+            {
+                // if the greet dm message is a text array
+                var ebElem = seta.Embeds.LastOrDefault();
+                if (ebElem is null)
+                {
+                    // if there are no embeds, add an embed with the footer
+                    text = seta with
+                    {
+                        Embeds = new[]
+                        {
+                            new SmartEmbedArrayElementText()
+                            {
+                                Footer = CreateFooterSource(user)
+                            }
+                        }
+                    };
+                }
+                else
+                {
+                    // if the maximum amount of embeds is reached, edit the last embed
+                    if (seta.Embeds.Length >= 10)
+                    {
+                        seta.Embeds[^1] = seta.Embeds[^1] with
+                        {
+                            Footer = CreateFooterSource(user)
+                        };
+                    }
+                    else
+                    {
+                        // if there is less than 10 embeds, add an embed with footer only
+                        seta.Embeds = seta.Embeds.Append(new SmartEmbedArrayElementText()
+                        {
+                            Footer = CreateFooterSource(user)
+                        }).ToArray();
+                    }
+                }
+            }
 
             await user.SendAsync(text);
         }
@@ -275,6 +315,13 @@ public class GreetService : INService, IReadyExecutor
 
         return true;
     }
+    
+    private static SmartTextEmbedFooter CreateFooterSource(IGuildUser user)
+        => new()
+        {
+            Text = $"This message was sent from {user.Guild} server.",
+            IconUrl = user.Guild.IconUrl
+        };
 
     private Task OnUserJoined(IGuildUser user)
     {

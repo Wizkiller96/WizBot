@@ -84,13 +84,12 @@ public class PatreonRewardsService : INService, IReadyExecutor
         try
         {
             using var http = _httpFactory.CreateClient();
-            using var content = new StringContent(string.Empty);
             using var res = await http.PostAsync("https://www.patreon.com/api/oauth2/token"
                                                  + "?grant_type=refresh_token"
                                                  + $"&refresh_token={creds.Patreon.RefreshToken}"
                                                  + $"&client_id={creds.Patreon.ClientId}"
                                                  + $"&client_secret={creds.Patreon.ClientSecret}",
-                content);
+                null);
 
             res.EnsureSuccessStatusCode();
 

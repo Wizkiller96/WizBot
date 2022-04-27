@@ -26,7 +26,7 @@ public static class Extensions
             SmartEmbedTextArray set => msg.ModifyAsync(x =>
             {
                 x.Embeds = set.GetEmbedBuilders().Map(eb => eb.Build());
-                x.Content = set.PlainText?.SanitizeMentions() ?? "";
+                x.Content = set.Content?.SanitizeMentions() ?? "";
             }),
             SmartPlainText spt => msg.ModifyAsync(x =>
             {

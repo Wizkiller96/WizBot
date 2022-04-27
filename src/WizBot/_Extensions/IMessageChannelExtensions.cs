@@ -30,7 +30,7 @@ public static class MessageChannelExtensions
         {
             SmartEmbedText set => channel.SendAsync(set.PlainText, set.GetEmbed().Build(), sanitizeAll: sanitizeAll),
             SmartPlainText st => channel.SendAsync(st.Text, null, sanitizeAll: sanitizeAll),
-            SmartEmbedTextArray arr => channel.SendAsync(arr.PlainText,
+            SmartEmbedTextArray arr => channel.SendAsync(arr.Content,
                 embeds: arr.GetEmbedBuilders().Map(e => e.Build())),
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };

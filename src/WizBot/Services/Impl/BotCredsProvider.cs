@@ -53,10 +53,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("WizBot_")
                                             .Build();
-
-#if !GLOBAL_WIZBOT
+        
         _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
-#endif
 
         Reload();
     }

@@ -3,8 +3,8 @@ namespace WizBot;
 
 public sealed record SmartEmbedTextArray : SmartText
 {
-    public string PlainText { get; set; }
-    public SmartEmbedText[] Embeds { get; set; }
+    public string Content { get; set; }
+    public SmartEmbedArrayElementText[] Embeds { get; set; }
 
     public bool IsValid
         => Embeds?.All(x => x.IsValid) ?? false;

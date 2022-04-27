@@ -1,20 +1,64 @@
-﻿#nullable disable
+﻿using SixLabors.ImageSharp.PixelFormats;
+
+#nullable disable
 namespace WizBot;
 
-public sealed record SmartEmbedText : SmartText
+public sealed record SmartEmbedArrayElementText : SmartEmbedTextBase
 {
-    public string PlainText { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Url { get; set; }
-    public string Thumbnail { get; set; }
-    public string Image { get; set; }
+    public string Color { get; init; } = string.Empty;
 
-    public SmartTextEmbedAuthor Author { get; set; }
-    public SmartTextEmbedFooter Footer { get; set; }
-    public SmartTextEmbedField[] Fields { get; set; }
+    public SmartEmbedArrayElementText() : base()
+    {
+        
+    }
+    
+    public SmartEmbedArrayElementText(IEmbed eb) : base(eb)
+    {
+        
+    }
 
-    public uint Color { get; set; } = 7458112;
+    protected override EmbedBuilder GetEmbedInternal()
+    {
+        var embed = base.GetEmbedInternal();
+        return embed.WithColor(Rgba32.ParseHex(Color).ToDiscordColor());
+    }
+}
+
+public sealed record SmartEmbedText : SmartEmbedTextBase
+{
+    public string PlainText { get; init; }
+
+    public uint Color { get; init; } = 7458112;
+
+    public SmartEmbedText()
+    {
+    }
+
+    private SmartEmbedText(IEmbed eb, string plainText = null)
+        : base(eb)
+        => (PlainText, Color) = (plainText, eb.Color?.RawValue ?? 0);
+
+    public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
+        => new(eb, plainText);
+
+    protected override EmbedBuilder GetEmbedInternal()
+    {
+        var embed = base.GetEmbedInternal();
+        return embed.WithColor(Color);
+    }
+}
+
+public abstract record SmartEmbedTextBase : SmartText
+{
+    public string Title { get; init; }
+    public string Description { get; init; }
+    public string Url { get; init; }
+    public string Thumbnail { get; init; }
+    public string Image { get; init; }
+
+    public SmartTextEmbedAuthor Author { get; init; }
+    public SmartTextEmbedFooter Footer { get; init; }
+    public SmartTextEmbedField[] Fields { get; init; }
 
     public bool IsValid
         => !string.IsNullOrWhiteSpace(Title)
@@ -26,36 +70,37 @@ public sealed record SmartEmbedText : SmartText
                && (!string.IsNullOrWhiteSpace(Footer.Text) || !string.IsNullOrWhiteSpace(Footer.IconUrl)))
            || Fields is { Length: > 0 };
 
-    public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
+    protected SmartEmbedTextBase()
     {
-        var set = new SmartEmbedText
-        {
-            PlainText = plainText,
-            Title = eb.Title,
-            Description = eb.Description,
-            Url = eb.Url,
-            Thumbnail = eb.Thumbnail?.Url,
-            Image = eb.Image?.Url,
-            Author = eb.Author is { } ea
-                ? new()
-                {
-                    Name = ea.Name,
-                    Url = ea.Url,
-                    IconUrl = ea.IconUrl
-                }
-                : null,
-            Footer = eb.Footer is { } ef
-                ? new()
-                {
-                    Text = ef.Text,
-                    IconUrl = ef.IconUrl
-                }
-                : null
-        };
-
+        
+    }
+    
+    protected SmartEmbedTextBase(IEmbed eb)
+    {
+        Title = eb.Title;
+        Description = eb.Description;
+        Url = eb.Url;
+        Thumbnail = eb.Thumbnail?.Url;
+        Image = eb.Image?.Url;
+        Author = eb.Author is { } ea
+            ? new()
+            {
+                Name = ea.Name,
+                Url = ea.Url,
+                IconUrl = ea.IconUrl
+            }
+            : null;
+        Footer = eb.Footer is { } ef
+            ? new()
+            {
+                Text = ef.Text,
+                IconUrl = ef.IconUrl
+            }
+            : null;
+        
         if (eb.Fields.Length > 0)
         {
-            set.Fields = eb.Fields.Select(field
+            Fields = eb.Fields.Select(field
                                => new SmartTextEmbedField
                                {
                                    Inline = field.Inline,
@@ -64,14 +109,14 @@ public sealed record SmartEmbedText : SmartText
                                })
                            .ToArray();
         }
-
-        set.Color = eb.Color?.RawValue ?? 0;
-        return set;
     }
 
     public EmbedBuilder GetEmbed()
+        => GetEmbedInternal();
+    
+    protected virtual EmbedBuilder GetEmbedInternal()
     {
-        var embed = new EmbedBuilder().WithColor(Color);
+        var embed = new EmbedBuilder();
 
         if (!string.IsNullOrWhiteSpace(Title))
             embed.WithTitle(Title);

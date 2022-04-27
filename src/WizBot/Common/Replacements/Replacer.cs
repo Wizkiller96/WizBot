@@ -34,69 +34,59 @@ public class Replacer
     public SmartText Replace(SmartText data)
         => data switch
         {
-            SmartEmbedText embedData => Replace(embedData),
+            SmartEmbedText embedData => Replace(embedData) with
+            {
+                PlainText = Replace(embedData.PlainText),
+                Color = embedData.Color
+            },
             SmartPlainText plain => Replace(plain),
             SmartEmbedTextArray arr => Replace(arr),
             _ => throw new ArgumentOutOfRangeException(nameof(data), "Unsupported argument type")
         };
 
-    public SmartEmbedTextArray Replace(SmartEmbedTextArray embedArr)
+    private SmartEmbedTextArray Replace(SmartEmbedTextArray embedArr)
         => new()
         {
-            Embeds = embedArr.Embeds.Map(Replace),
-            PlainText = Replace(embedArr.PlainText)
+            Embeds = embedArr.Embeds.Map(e => Replace(e) with
+            {
+                Color = e.Color
+            }),
+            Content = Replace(embedArr.Content)
         };
 
-    public SmartPlainText Replace(SmartPlainText plainText)
+    private SmartPlainText Replace(SmartPlainText plainText)
         => Replace(plainText.Text);
 
-    public SmartEmbedText Replace(SmartEmbedText embedData)
+    private T Replace<T>(T embedData) where T: SmartEmbedTextBase, new()
     {
-        var newEmbedData = new SmartEmbedText
+        var newEmbedData = new T
         {
-            PlainText = Replace(embedData.PlainText),
             Description = Replace(embedData.Description),
             Title = Replace(embedData.Title),
             Thumbnail = Replace(embedData.Thumbnail),
             Image = Replace(embedData.Image),
-            Url = Replace(embedData.Url)
-        };
-        if (embedData.Author is not null)
-        {
-            newEmbedData.Author = new()
-            {
-                Name = Replace(embedData.Author.Name),
-                IconUrl = Replace(embedData.Author.IconUrl)
-            };
-        }
-
-        if (embedData.Fields is not null)
-        {
-            var fields = new List<SmartTextEmbedField>();
-            foreach (var f in embedData.Fields)
-            {
-                var newF = new SmartTextEmbedField
+            Url = Replace(embedData.Url),
+            Author = embedData.Author is null
+                ? null
+                : new()
                 {
-                    Name = Replace(f.Name),
-                    Value = Replace(f.Value),
-                    Inline = f.Inline
-                };
-                fields.Add(newF);
-            }
-
-            newEmbedData.Fields = fields.ToArray();
-        }
-
-        if (embedData.Footer is not null)
-        {
-            newEmbedData.Footer = new()
+                    Name = Replace(embedData.Author.Name),
+                    IconUrl = Replace(embedData.Author.IconUrl)
+                },
+            Fields = embedData.Fields?.Map(f => new SmartTextEmbedField
             {
-                Text = Replace(embedData.Footer.Text),
-                IconUrl = Replace(embedData.Footer.IconUrl)
-            };
-        }
-
-        newEmbedData.Color = embedData.Color;
+                Name = Replace(f.Name),
+                Value = Replace(f.Value),
+                Inline = f.Inline
+            }),
+            Footer = embedData.Footer is null
+                ? null
+                : new()
+                {
+                    Text = Replace(embedData.Footer.Text),
+                    IconUrl = Replace(embedData.Footer.IconUrl)
+                }
+        };
 
         return newEmbedData;
     }
