@@ -121,6 +121,18 @@ public partial class Searches
             else
                 await ReplyConfirmLocalizedAsync(strs.stream_off_disabled);
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        public async partial Task StreamOnlineDelete()
+        {
+            var newValue = _service.ToggleStreamOnlineDelete(ctx.Guild.Id);
+            if (newValue)
+                await ReplyConfirmLocalizedAsync(strs.stream_online_delete_enabled);
+            else
+                await ReplyConfirmLocalizedAsync(strs.stream_online_delete_disabled);
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]

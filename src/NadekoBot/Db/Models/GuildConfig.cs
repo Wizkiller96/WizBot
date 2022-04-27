@@ -92,6 +92,7 @@ public class GuildConfig : DbEntity
     public List<FeedSub> FeedSubs { get; set; } = new();
     public IndexedCollection<ReactionRoleMessage> ReactionRoleMessages { get; set; } = new();
     public bool NotifyStreamOffline { get; set; }
+    public bool DeleteStreamOnlineMessage { get; set; }
     public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
     public int WarnExpireHours { get; set; }
     public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;

@@ -518,6 +518,9 @@ streamoffline:
 - streamoffline
 - sto
 - stoff
+streamonlinedelete:
+- streamonlinedelte
+- stondel
 streammessage:
 - streammsg
 - stm

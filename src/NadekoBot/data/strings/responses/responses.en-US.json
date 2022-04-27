@@ -519,6 +519,8 @@
   "stream_no": "No such stream.",
   "stream_off_enabled": "Stream notifications will now show when a stream goes offline.",
   "stream_off_disabled": "Stream notifications will no longer show when a stream goes offline.",
+  "stream_online_delete_enabled": "Online stream notifications will now be deleted when the stream goes offline.",
+  "stream_online_delete_disabled": "Online stream notifications will no longer be deleted when the stream goes offline.",
   "stream_not_added": "Stream was not added. Either stream doesn't exist, that platform is unsupported, or you've reached the maximum number of streams allowed.",
   "stream_message_reset": "Announcement message for {0} stream has been reset.",
   "stream_message_set": "Announcement message when {0} stream goes online has been set.",

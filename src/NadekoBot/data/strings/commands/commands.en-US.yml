@@ -912,6 +912,10 @@ streamoffline:
   desc: "Toggles whether the bot will also notify when added streams go offline."
   args:
     - ""
+streamonlinedelete:
+  desc: "Toggles whether the bot will delete stream online message when the stream goes offline."
+  args:
+    - ""
 streammessage:
   desc: "Sets the message which will show when the stream on the specified index comes online. You can use %user% and %platform% placeholders."
   args:
