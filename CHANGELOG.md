@@ -4,6 +4,15 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added
+
+- Added support for embed arrays in commands such as .say, .greet, .bye, etc...
+  - Website to create them is live at wizbot.cc/eb2 (it will soon be replacing wizbot.cc/embedbuilder)
+  - Embed arrays don't have a plainText property (it's renamed to 'content')
+  - Embed arrays use color hex values instead of an integer
+  - Old embed format will still work
+  - There shouldn't be any breaking changes
+
 ## [4.1.2] - 18.04.2022
 
 ### Fixed
