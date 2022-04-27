@@ -16,6 +16,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Fixed
 
 - Fixed `.deletexp` command
+- `.give` command should send DMs again
 
 ## [4.1.2] - 18.04.2022
 

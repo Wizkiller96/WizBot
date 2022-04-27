@@ -7,8 +7,7 @@ public interface IWallet
     public Task<long> GetBalance();
     public Task<bool> Take(long amount, TxData txData);
     public Task Add(long amount, TxData txData);
-
-    // todo message
+    
     public async Task<bool> Transfer(
         long amount,
         IWallet to,
