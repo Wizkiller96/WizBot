@@ -13,6 +13,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Old embed format will still work
   - There shouldn't be any breaking changes
 
+### Fixed
+
+- Fixed `.deletexp` command
+
 ## [4.1.2] - 18.04.2022
 
 ### Fixed
