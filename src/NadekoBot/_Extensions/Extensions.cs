@@ -143,27 +143,6 @@ public static class Extensions
     public static IEmbedBuilder WithErrorColor(this IEmbedBuilder eb)
         => eb.WithColor(EmbedColor.Error);
 
-    public static ReactionEventWrapper OnReaction(
-        this IUserMessage msg,
-        DiscordSocketClient client,
-        Func<SocketReaction, Task> reactionAdded,
-        Func<SocketReaction, Task>? reactionRemoved = null)
-    {
-        if (reactionRemoved is null)
-            reactionRemoved = _ => Task.CompletedTask;
-
-        var wrap = new ReactionEventWrapper(client, msg);
-        wrap.OnReactionAdded += r =>
-        {
-            _ = Task.Run(() => reactionAdded(r));
-        };
-        wrap.OnReactionRemoved += r =>
-        {
-            _ = Task.Run(() => reactionRemoved(r));
-        };
-        return wrap;
-    }
-
     public static HttpClient AddFakeHeaders(this HttpClient http)
     {
         AddFakeHeaders(http.DefaultRequestHeaders);

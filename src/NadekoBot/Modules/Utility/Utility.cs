@@ -48,7 +48,7 @@ public partial class Utility : NadekoModule
         _tracker = tracker;
         _httpFactory = httpFactory;
     }
-
+    
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
