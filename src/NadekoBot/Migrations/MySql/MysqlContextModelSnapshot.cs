@@ -1032,6 +1032,10 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("deletemessageoncommand");
 
+                    b.Property<bool>("DeleteStreamOnlineMessage")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("deletestreamonlinemessage");
+
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("longtext")
                         .HasColumnName("dmgreetmessagetext");
