@@ -129,6 +129,8 @@ public partial class Help : NadekoModule<HelpService>
                 return strs.module_description_permissions;
             case "xp":
                 return strs.module_description_xp;
+            case "medusa":
+                return strs.module_description_medusa;
             default:
                 return strs.module_description_missing;
         }
