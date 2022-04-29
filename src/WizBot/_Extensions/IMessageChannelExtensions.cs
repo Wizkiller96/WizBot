@@ -159,11 +159,14 @@ public static class MessageChannelExtensions
         {
             _ = Task.Run(async () =>
             {
-                await si.DeferAsync();
                 if (si is not SocketMessageComponent smc)
                     return;
 
-                if (smc.User.Id != ctx.User.Id || smc.Message.Id != msg.Id)
+                if (smc.Message.Id != msg.Id)
+                    return;
+                
+                await si.DeferAsync();
+                if (smc.User.Id != ctx.User.Id)
                     return;
 
                 if (smc.Data.CustomId == BUTTON_LEFT)

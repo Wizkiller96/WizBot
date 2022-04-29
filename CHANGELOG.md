@@ -22,6 +22,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Fixed `.deletexp` command
 - `.give` command should send DMs again
+- `.modules` command now has a medusa module description
 
 ## [4.1.2] - 18.04.2022
 
