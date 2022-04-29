@@ -2,12 +2,14 @@ namespace WizBot.Extensions;
 
 public static class MessageChannelExtensions
 {
-    private static readonly IEmote _arrowLeft = new Emoji("⬅");
-    private static readonly IEmote _arrowRight = new Emoji("➡");
-
-    public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
+    public static Task<IUserMessage> EmbedAsync(
+        this IMessageChannel ch,
+        IEmbedBuilder embed,
+        string msg = "",
+        MessageComponent? components = null)
         => ch.SendMessageAsync(msg,
             embed: embed.Build(),
+            components: components,
             options: new()
             {
                 RetryMode = RetryMode.AlwaysRetry
@@ -117,9 +119,12 @@ public static class MessageChannelExtensions
             itemsPerPage,
             addPaginatedFooter);
 
-    /// <summary>
-    ///     danny kamisama
-    /// </summary>
+    private const string BUTTON_LEFT = "BUTTON_LEFT";
+    private const string BUTTON_RIGHT = "BUTTON_RIGHT";
+    
+    private static readonly IEmote _arrowLeft = new Emoji("⬅️");
+    private static readonly IEmote _arrowRight = new Emoji("➡️");
+    
     public static async Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
@@ -128,87 +133,78 @@ public static class MessageChannelExtensions
         int itemsPerPage,
         bool addPaginatedFooter = true)
     {
+        var lastPage = (totalElements - 1) / itemsPerPage;
+        
         var embed = await pageFunc(currentPage);
 
-        var lastPage = (totalElements - 1) / itemsPerPage;
-
-        var canPaginate = true;
-        if (ctx.Guild is SocketGuild sg && !sg.CurrentUser.GetPermissions((IGuildChannel)ctx.Channel).AddReactions)
-            canPaginate = false;
-
-        if (!canPaginate)
-            embed.WithFooter("⚠️ AddReaction permission required for pagination.");
-        else if (addPaginatedFooter)
+        if (addPaginatedFooter)
             embed.AddPaginatedFooter(currentPage, lastPage);
 
-        var msg = await ctx.Channel.EmbedAsync(embed);
-
-        if (lastPage == 0 || !canPaginate)
-            return;
-
-        await msg.AddReactionAsync(_arrowLeft);
-        await msg.AddReactionAsync(_arrowRight);
-
-        await Task.Delay(2000);
-
-        var lastPageChange = DateTime.MinValue;
-
-        async Task ChangePage(SocketReaction r)
+        var component = new ComponentBuilder()
+                        .WithButton(new ButtonBuilder()
+                                    .WithStyle(ButtonStyle.Secondary)
+                                    .WithCustomId(BUTTON_LEFT)
+                                    .WithDisabled(lastPage == 0)
+                                    .WithEmote(_arrowLeft))
+                        .WithButton(new ButtonBuilder()
+                                    .WithStyle(ButtonStyle.Primary)
+                                    .WithCustomId(BUTTON_RIGHT)
+                                    .WithDisabled(lastPage == 0)
+                                    .WithEmote(_arrowRight))
+                        .Build();
+        
+        var msg = await ctx.Channel.EmbedAsync(embed, components: component);
+        
+        Task OnInteractionAsync(SocketInteraction si)
         {
-            try
+            _ = Task.Run(async () =>
             {
-                if (r.UserId != ctx.User.Id)
+                await si.DeferAsync();
+                if (si is not SocketMessageComponent smc)
                     return;
-                if (DateTime.UtcNow - lastPageChange < TimeSpan.FromSeconds(1))
+
+                if (smc.User.Id != ctx.User.Id || smc.Message.Id != msg.Id)
                     return;
-                if (r.Emote.Name == _arrowLeft.Name)
+
+                if (smc.Data.CustomId == BUTTON_LEFT)
                 {
                     if (currentPage == 0)
                         return;
-                    lastPageChange = DateTime.UtcNow;
+
                     var toSend = await pageFunc(--currentPage);
                     if (addPaginatedFooter)
                         toSend.AddPaginatedFooter(currentPage, lastPage);
-                    await msg.ModifyAsync(x => x.Embed = toSend.Build());
+
+                    await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
                 }
-                else if (r.Emote.Name == _arrowRight.Name)
+                else if (smc.Data.CustomId == BUTTON_RIGHT)
                 {
                     if (lastPage > currentPage)
                     {
-                        lastPageChange = DateTime.UtcNow;
                         var toSend = await pageFunc(++currentPage);
                         if (addPaginatedFooter)
                             toSend.AddPaginatedFooter(currentPage, lastPage);
-                        await msg.ModifyAsync(x => x.Embed = toSend.Build());
+
+                        await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
                     }
                 }
-            }
-            catch (Exception)
-            {
-                //ignored
-            }
+            });
+
+            return Task.CompletedTask;
         }
 
-        using (msg.OnReaction((DiscordSocketClient)ctx.Client, ChangePage, ChangePage))
-        {
-            await Task.Delay(30000);
-        }
+        if (lastPage == 0)
+            return;
 
-        try
-        {
-            if (msg.Channel is ITextChannel && ((SocketGuild)ctx.Guild).CurrentUser.GuildPermissions.ManageMessages)
-                await msg.RemoveAllReactionsAsync();
-            else
-            {
-                await msg.Reactions.Where(x => x.Value.IsMe)
-                         .Select(x => msg.RemoveReactionAsync(x.Key, ctx.Client.CurrentUser))
-                         .WhenAll();
-            }
-        }
-        catch
-        {
-            // ignored
-        }
+        var client = (DiscordSocketClient)ctx.Client;
+
+        client.InteractionCreated += OnInteractionAsync;
+
+        await Task.Delay(30_000);
+
+        client.InteractionCreated -= OnInteractionAsync;
+        
+        await msg.ModifyAsync(mp => mp.Components = new ComponentBuilder().Build());
     }
 
     public static Task OkAsync(this ICommandContext ctx)

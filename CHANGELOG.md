@@ -14,6 +14,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - There shouldn't be any breaking changes
 - Added `.stondel` command which, when toggled, will make the bot delete online stream messages on the server when the stream goes offline
 
+### Changed
+
+- Pagination is now using buttons instead of reactions
+
 ### Fixed
 
 - Fixed `.deletexp` command

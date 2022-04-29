@@ -5,9 +5,13 @@ namespace WizBot;
 
 public static class MedusaExtensions
 {
-    public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch, IEmbedBuilder embed, string msg = "")
+    public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch,
+        IEmbedBuilder embed,
+        string msg = "",
+        MessageComponent? components = null)
         => ch.SendMessageAsync(msg,
             embed: embed.Build(),
+            components: components,
             options: new()
             {
                 RetryMode = RetryMode.AlwaysRetry
