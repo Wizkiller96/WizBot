@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    partial class PostgreSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220428044547_stondel")]
+    partial class stondel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1085,14 +1087,14 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<bool>("DeleteMessageOnCommand")
                         .HasColumnType("boolean")
                         .HasColumnName("deletemessageoncommand");
-                    
+
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                     .HasColumnType("boolean")
-                     .HasColumnName("deletestreamonlinemessage");
+                        .HasColumnType("boolean")
+                        .HasColumnName("deletestreamonlinemessage");
 
                     b.Property<string>("DmGreetMessageText")
-                     .HasColumnType("text")
-                     .HasColumnName("dmgreetmessagetext");
+                        .HasColumnType("text")
+                        .HasColumnName("dmgreetmessagetext");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("boolean")
