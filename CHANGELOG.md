@@ -12,6 +12,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Embed arrays use color hex values instead of an integer
   - Old embed format will still work
   - There shouldn't be any breaking changes
+- Added `.stondel` command which, when toggled, will make the bot delete online stream messages on the server when the stream goes offline
 
 ### Fixed
 

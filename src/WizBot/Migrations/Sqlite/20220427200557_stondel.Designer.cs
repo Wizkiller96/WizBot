@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,9 +11,10 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20220427200557_stondel")]
+    partial class stondel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -810,10 +812,10 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                     .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DmGreetMessageText")
-                     .HasColumnType("TEXT");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("INTEGER");
