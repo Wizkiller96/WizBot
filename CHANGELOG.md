@@ -1,3 +1,4 @@
+
 # Changelog
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
@@ -13,6 +14,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Old embed format will still work
   - There shouldn't be any breaking changes
 - Added `.stondel` command which, when toggled, will make the bot delete online stream messages on the server when the stream goes offline
+- Added a simple bank system.
+  - Users can deposit, withdraw and check the balance of their currency in the bank.
+  - Users can't check other user's bank balances.
+- Added a button on a .$ command which, when clicked, sends you a message with your bank balance that only you can see.
+- Added `.h <command group>`  
+  - Using this command will list all commands in the specified group
+  - Atm only .bank is a proper group (`.h bank`)
 
 ### Changed
 

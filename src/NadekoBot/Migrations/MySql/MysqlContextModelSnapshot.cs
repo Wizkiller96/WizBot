@@ -19,6 +19,35 @@ namespace NadekoBot.Migrations.Mysql
                 .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bankusers");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bankusers_userid");
+
+                    b.ToTable("bankusers", (string)null);
+                });
+
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
                 {
                     b.Property<int>("ClubId")

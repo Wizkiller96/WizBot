@@ -3,6 +3,7 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
+using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Services.Currency;
@@ -40,6 +41,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly NumberFormatInfo _enUsCulture;
     private readonly DownloadTracker _tracker;
     private readonly GamblingConfigService _configService;
+    private readonly IBankService _bank;
 
     private IUserMessage rdMsg;
 
@@ -49,13 +51,16 @@ public partial class Gambling : GamblingModule<GamblingService>
         IDataCache cache,
         DiscordSocketClient client,
         DownloadTracker tracker,
-        GamblingConfigService configService)
+        GamblingConfigService configService,
+        IBankService bank)
         : base(configService)
     {
         _db = db;
         _cs = currency;
         _cache = cache;
         _client = client;
+        _bank = bank;
+        
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
         _enUsCulture.NumberGroupSeparator = " ";
@@ -312,6 +317,31 @@ public partial class Gambling : GamblingModule<GamblingService>
             _ => $"{type.Titleize()} - {subType.Titleize()}"
         };
 
+
+    public sealed class CashInteraction : NadekoInteraction
+    {
+        public override string Name
+            => "CASH_OPEN_BANK";
+
+        public override IEmote Emote
+            => new Emoji("🏦");
+
+        public CashInteraction(
+            [NotNull] DiscordSocketClient client,
+            ulong authorId,
+            Func<SocketMessageComponent, Task> onAction)
+            : base(client, authorId, onAction)
+        {
+            
+        }
+
+        public static CashInteraction Create(
+            DiscordSocketClient client,
+            ulong userId,
+            Func<SocketMessageComponent, Task> onAction)
+            => new(client, userId, onAction);
+    }
+    
     [Cmd]
     [Priority(0)]
     public async partial Task Cash(ulong userId)
@@ -319,14 +349,30 @@ public partial class Gambling : GamblingModule<GamblingService>
         var cur = await GetBalanceStringAsync(userId);
         await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), cur));
     }
-
+    
+    private async Task BankAction(SocketMessageComponent smc)
+    {
+        var balance = await _bank.GetBalanceAsync(ctx.User.Id);
+        await smc.RespondAsync(GetText(strs.bank_balance(N(balance))), ephemeral: true);
+    }
+    
     [Cmd]
     [Priority(1)]
     public async partial Task Cash([Leftover] IUser user = null)
     {
         user ??= ctx.User;
         var cur = await GetBalanceStringAsync(user.Id);
-        await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), cur));
+
+        if (user == ctx.User)
+        {
+            var inter = CashInteraction.Create(_client, ctx.User.Id, BankAction);
+            await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), cur), inter);
+        }
+        else
+        {
+            await ConfirmLocalizedAsync(strs.has(Format.Bold(user.ToString()), cur));
+        }
+
     }
 
     [Cmd]

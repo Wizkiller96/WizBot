@@ -519,7 +519,7 @@ streamoffline:
 - sto
 - stoff
 streamonlinedelete:
-- streamonlinedelte
+- streamonlinedelete
 - stondel
 streammessage:
 - streammsg
@@ -1286,3 +1286,15 @@ medusalist:
 medusainfo:
   - medusainfo
   - meinfo
+bankdeposit:
+  - deposit
+  - d
+  - dep
+bankwithdraw:
+  - withdraw
+  - w
+  - with
+bankbalance:
+  - balance
+  - b
+  - bal

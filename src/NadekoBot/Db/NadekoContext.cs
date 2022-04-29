@@ -51,6 +51,8 @@ public abstract class NadekoContext : DbContext
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
 
     public DbSet<Permissionv2> Permissions { get; set; }
+    
+    public DbSet<BankUser> BankUsers { get; set; }
 
     #region Mandatory Provider-Specific Values
 
@@ -402,6 +404,12 @@ public abstract class NadekoContext : DbContext
             x.ChannelId,
             x.UserId
         }));
+
+        #region BANK
+
+        modelBuilder.Entity<BankUser>(bu => bu.HasIndex(x => x.UserId).IsUnique());
+
+        #endregion
     }
 
 #if DEBUG
