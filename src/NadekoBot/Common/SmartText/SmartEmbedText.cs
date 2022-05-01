@@ -20,7 +20,10 @@ public sealed record SmartEmbedArrayElementText : SmartEmbedTextBase
     protected override EmbedBuilder GetEmbedInternal()
     {
         var embed = base.GetEmbedInternal();
-        return embed.WithColor(Rgba32.ParseHex(Color).ToDiscordColor());
+        if (Rgba32.TryParseHex(Color, out var color))
+            return embed.WithColor(color.ToDiscordColor());
+
+        return embed;
     }
 }
 
