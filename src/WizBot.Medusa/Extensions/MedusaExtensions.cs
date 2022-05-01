@@ -5,6 +5,20 @@ namespace WizBot;
 
 public static class MedusaExtensions
 {
+    // public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch,
+    //     IEmbedBuilder embed,
+    //     string msg = "",
+    //     MessageComponent? components = null)
+    // {
+    //     return ch.SendMessageAsync(msg,
+    //         embed: embed.Build(),
+    //         components: components,
+    //         options: new()
+    //         {
+    //             RetryMode = RetryMode.AlwaysRetry
+    //         });
+    // }
+
     public static Task<IUserMessage> EmbedAsync(this IMessageChannel ch,
         IEmbedBuilder embed,
         string msg = "",
@@ -37,7 +51,7 @@ public static class MedusaExtensions
     public static Task<IUserMessage> SendErrorAsync(this AnyContext ctx, string msg)
         => ctx.Channel.SendErrorAsync(ctx, msg);
 
-    // localized
+    // reaction responses
     public static Task ConfirmAsync(this AnyContext ctx)
         => ctx.Message.AddReactionAsync(new Emoji("✅"));
 
@@ -50,6 +64,7 @@ public static class MedusaExtensions
     public static Task WaitAsync(this AnyContext ctx)
         => ctx.Message.AddReactionAsync(new Emoji("🤔"));
 
+    // localized
     public static Task<IUserMessage> ErrorLocalizedAsync(this AnyContext ctx, string key, params object[]? args)
         => ctx.SendErrorAsync(ctx.GetText(key));
 

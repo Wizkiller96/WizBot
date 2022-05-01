@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,35 +11,36 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20220428051304_bank")]
+    partial class bank
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
-            
+
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("INTEGER");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                b.Property<long>("Balance")
-                 .HasColumnType("INTEGER");
+                    b.Property<long>("Balance")
+                        .HasColumnType("INTEGER");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("TEXT");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
 
-                b.Property<ulong>("UserId")
-                 .HasColumnType("INTEGER");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("INTEGER");
 
-                b.HasKey("Id");
+                    b.HasKey("Id");
 
-                b.HasIndex("UserId")
-                 .IsUnique();
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                b.ToTable("BankUsers");
-            });
+                    b.ToTable("BankUsers");
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -833,10 +835,10 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                     .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DmGreetMessageText")
-                     .HasColumnType("TEXT");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("INTEGER");

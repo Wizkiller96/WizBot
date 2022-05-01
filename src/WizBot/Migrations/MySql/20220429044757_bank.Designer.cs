@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,43 +11,44 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    partial class MysqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220429044757_bank")]
+    partial class bank
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-            
+
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("int")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                b.Property<long>("Balance")
-                 .HasColumnType("bigint")
-                 .HasColumnName("balance");
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("datetime(6)")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
 
-                b.Property<ulong>("UserId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("userid");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
 
-                b.HasKey("Id")
-                 .HasName("pk_bankusers");
+                    b.HasKey("Id")
+                        .HasName("pk_bankusers");
 
-                b.HasIndex("UserId")
-                 .IsUnique()
-                 .HasDatabaseName("ix_bankusers_userid");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bankusers_userid");
 
-                b.ToTable("bankusers", (string)null);
-            });
+                    b.ToTable("bankusers", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -1060,14 +1062,14 @@ namespace WizBot.Migrations.Mysql
                     b.Property<bool>("DeleteMessageOnCommand")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("deletemessageoncommand");
-                    
+
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                     .HasColumnType("tinyint(1)")
-                     .HasColumnName("deletestreamonlinemessage");
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("deletestreamonlinemessage");
 
                     b.Property<string>("DmGreetMessageText")
-                     .HasColumnType("longtext")
-                     .HasColumnName("dmgreetmessagetext");
+                        .HasColumnType("longtext")
+                        .HasColumnName("dmgreetmessagetext");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("tinyint(1)")

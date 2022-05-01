@@ -269,6 +269,20 @@ public partial class Help : WizBotModule<HelpService>
         embed.WithFooter(GetText(strs.commands_instr(prefix)));
         await ctx.Channel.EmbedAsync(embed);
     }
+    
+    private async Task Group(ModuleInfo group)
+    {
+        var eb = _eb.Create(ctx)
+                    .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
+                    .WithOkColor();
+
+        foreach (var cmd in group.Commands)
+        {
+            eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
+        }
+
+        await ctx.Channel.EmbedAsync(eb);
+    }
 
     [Cmd]
     [Priority(0)]
@@ -279,6 +293,20 @@ public partial class Help : WizBotModule<HelpService>
         if (prefixless is not null)
         {
             await H(prefixless);
+            return;
+        }
+        
+        if (fail.StartsWith(prefix))
+            fail = fail.Substring(prefix.Length);
+        
+        var group = _cmds.Modules
+                         .SelectMany(x => x.Submodules)
+                         .Where(x => !string.IsNullOrWhiteSpace(x.Group))
+                         .FirstOrDefault(x => x.Group.Equals(fail, StringComparison.InvariantCultureIgnoreCase));
+
+        if (group is not null)
+        {
+            await Group(group);
             return;
         }
 

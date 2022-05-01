@@ -21,6 +21,37 @@ namespace WizBot.Migrations.PostgreSql
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            
+            modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
+            {
+                b.Property<int>("Id")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("integer")
+                 .HasColumnName("id");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<long>("Balance")
+                 .HasColumnType("bigint")
+                 .HasColumnName("balance");
+
+                b.Property<DateTime?>("DateAdded")
+                 .HasColumnType("timestamp with time zone")
+                 .HasColumnName("dateadded");
+
+                b.Property<decimal>("UserId")
+                 .HasColumnType("numeric(20,0)")
+                 .HasColumnName("userid");
+
+                b.HasKey("Id")
+                 .HasName("pk_bankusers");
+
+                b.HasIndex("UserId")
+                 .IsUnique()
+                 .HasDatabaseName("ix_bankusers_userid");
+
+                b.ToTable("bankusers", (string)null);
+            });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {

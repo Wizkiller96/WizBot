@@ -121,7 +121,7 @@ public static class Extensions
             args = strings.GetCommandStrings(cmd.Summary, culture).Args;
         }
         
-        return args.Map(arg => GetFullUsage(cmd.Name, arg, prefix));
+        return args.Map(arg => GetFullUsage(cmd.Aliases.First(), arg, prefix));
     }
 
     private static string GetFullUsage(string commandName, string args, string prefix)

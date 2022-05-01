@@ -2185,6 +2185,18 @@ medusalist:
     Read about the medusa system [here](https://wizbot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
   args:
     - ""
+bankdeposit:
+  desc: "Deposits the specified amount of currency into the bank for later use."
+  args:
+    - "50"
+bankwithdraw:
+  desc: "Withdraws the specified amount of currency from the bank if available."
+  args:
+    - "49"
+bankbalance:
+  desc: "Shows your current bank balance available for withdrawal."
+  args:
+    - ""
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   args:

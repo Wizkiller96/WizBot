@@ -996,5 +996,10 @@
   "medusa_unloaded": "Medusa {0} has been unloaded.",
   "medusa_empty": "Medusa wasn't loaded as it didn't contain any Sneks.",
   "medusa_already_loaded": "Medusa {0} is already loaded",
-  "medusa_invalid_not_found": "Medusa with that name wasn't found or the file was invalid"
+  "medusa_invalid_not_found": "Medusa with that name wasn't found or the file was invalid",
+  "bank_balance": "You have {0} in your bank account.",
+  "bank_deposited": "You deposited {0} to your bank account.",
+  "bank_withdrew": "You withdrew {0} from your bank account.",
+  "bank_withdraw_insuff": "You don't have sufficient {0} in your bank account.",
+  "cmd_group_commands": "'{0}' command group"
 }
