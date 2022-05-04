@@ -5,12 +5,12 @@ namespace NadekoBot.Modules.Xp;
 
 public class LevelStats
 {
-    public int Level { get; }
-    public int LevelXp { get; }
-    public int RequiredXp { get; }
-    public int TotalXp { get; }
+    public long Level { get; }
+    public long LevelXp { get; }
+    public long RequiredXp { get; }
+    public long TotalXp { get; }
 
-    public LevelStats(int xp)
+    public LevelStats(long xp)
     {
         if (xp < 0)
             xp = 0;

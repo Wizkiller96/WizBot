@@ -97,13 +97,12 @@ public class CmdAttribute : System.Attribute
             var name = $"{model.Namespace}.{string.Join(".", model.ClassHierarchy)}.g.cs";
             try
             {
-                Debug.WriteLine($"Writing {name}");
                 var source = GetSourceText(model);
                 ctx.AddSource(name, SourceText.From(source, Encoding.UTF8));
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error writing source file {name}\n" + ex);
+                Console.WriteLine($"Error writing source file {name}\n" + ex);
             }
         }
     }

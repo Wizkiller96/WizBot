@@ -76,6 +76,7 @@ public class RemindService : INService, IReadyExecutor
         await uow.SaveChangesAsync();
     }
 
+    // todo move isonshard to a method
     private async Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
     {
         await using var uow = _db.GetDbContext();

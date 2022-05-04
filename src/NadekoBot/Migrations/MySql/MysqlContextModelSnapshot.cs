@@ -16,7 +16,7 @@ namespace NadekoBot.Migrations.Mysql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
@@ -1813,39 +1813,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.ToTable("quotes", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("EmoteName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("emotename");
-
-                    b.Property<int?>("ReactionRoleMessageId")
-                        .HasColumnType("int")
-                        .HasColumnName("reactionrolemessageid");
-
-                    b.Property<ulong>("RoleId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("roleid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_reactionrole");
-
-                    b.HasIndex("ReactionRoleMessageId")
-                        .HasDatabaseName("ix_reactionrole_reactionrolemessageid");
-
-                    b.ToTable("reactionrole", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleV2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1860,29 +1828,42 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<bool>("Exclusive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("exclusive");
+                    b.Property<string>("Emote")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("emote");
 
-                    b.Property<int>("GuildConfigId")
+                    b.Property<int>("Group")
                         .HasColumnType("int")
-                        .HasColumnName("guildconfigid");
+                        .HasColumnName("group");
 
-                    b.Property<int>("Index")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.Property<int>("LevelReq")
                         .HasColumnType("int")
-                        .HasColumnName("index");
+                        .HasColumnName("levelreq");
 
                     b.Property<ulong>("MessageId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("messageid");
 
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("roleid");
+
                     b.HasKey("Id")
-                        .HasName("pk_reactionrolemessage");
+                        .HasName("pk_reactionroles");
 
-                    b.HasIndex("GuildConfigId")
-                        .HasDatabaseName("ix_reactionrolemessage_guildconfigid");
+                    b.HasIndex("GuildId")
+                        .HasDatabaseName("ix_reactionroles_guildid");
 
-                    b.ToTable("reactionrolemessage", (string)null);
+                    b.HasIndex("MessageId", "Emote")
+                        .IsUnique()
+                        .HasDatabaseName("ix_reactionroles_messageid_emote");
+
+                    b.ToTable("reactionroles", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.Reminder", b =>
@@ -3108,27 +3089,6 @@ namespace NadekoBot.Migrations.Mysql
                         .HasConstraintName("fk_pollvote_poll_pollid");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.ReactionRoleMessage", null)
-                        .WithMany("ReactionRoles")
-                        .HasForeignKey("ReactionRoleMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_reactionrole_reactionrolemessage_reactionrolemessageid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("ReactionRoleMessages")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_reactionrolemessage_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>
                 {
                     b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
@@ -3378,8 +3338,6 @@ namespace NadekoBot.Migrations.Mysql
 
                     b.Navigation("Permissions");
 
-                    b.Navigation("ReactionRoleMessages");
-
                     b.Navigation("SelfAssignableRoleGroupNames");
 
                     b.Navigation("ShopEntries");
@@ -3418,11 +3376,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.Navigation("ReactionRoles");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>

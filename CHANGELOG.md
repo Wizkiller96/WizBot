@@ -24,7 +24,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Changed
 
+- Reaction roles rewritten completely 
+  - Supports multiple exclusivity groups per message 
+  - Supports level requirements
+  - However they can only be added one by one
 - Pagination is now using buttons instead of reactions
+- Bot will now support much higher XP values for global and server levels
 
 ### Fixed
 

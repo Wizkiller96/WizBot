@@ -53,6 +53,8 @@ public abstract class NadekoContext : DbContext
     public DbSet<Permissionv2> Permissions { get; set; }
     
     public DbSet<BankUser> BankUsers { get; set; }
+    
+    public DbSet<ReactionRoleV2> ReactionRoles { get; set; }
 
     #region Mandatory Provider-Specific Values
 
@@ -361,11 +363,18 @@ public abstract class NadekoContext : DbContext
 
         #region Reaction roles
 
-        modelBuilder.Entity<ReactionRoleMessage>(rrm => rrm
-                                                        .HasMany(x => x.ReactionRoles)
-                                                        .WithOne()
-                                                        .OnDelete(DeleteBehavior.Cascade));
+        modelBuilder.Entity<ReactionRoleV2>(rr2 =>
+        {
+            rr2.HasIndex(x => x.GuildId)
+               .IsUnique(false);
 
+            rr2.HasIndex(x => new
+            {
+                x.MessageId,
+                x.Emote
+            }).IsUnique();
+        });
+        
         #endregion
 
         #region LogSettings
@@ -410,6 +419,7 @@ public abstract class NadekoContext : DbContext
         modelBuilder.Entity<BankUser>(bu => bu.HasIndex(x => x.UserId).IsUnique());
 
         #endregion
+        
     }
 
 #if DEBUG

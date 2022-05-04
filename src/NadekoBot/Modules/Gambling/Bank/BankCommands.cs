@@ -4,7 +4,6 @@ using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Gambling;
 
-// todo .h [group] should show commands in that group 
 public partial class Gambling
 {
     [Name("Bank")]
