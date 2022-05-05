@@ -1,6 +1,5 @@
 ﻿namespace NadekoBot;
 
-
 public abstract class NadekoInteraction
 {
     // improvements:
@@ -9,20 +8,16 @@ public abstract class NadekoInteraction
     //  - 
     public abstract string Name { get; }
     public abstract IEmote Emote { get; }
-    public Func<SocketMessageComponent, Task> OnAction { get; }
 
     protected readonly DiscordSocketClient _client;
 
     protected readonly TaskCompletionSource<bool> _interactionCompletedSource;
 
-    protected ulong _authorId;
     protected IUserMessage message = null!;
 
-    protected NadekoInteraction(DiscordSocketClient client, ulong authorId, Func<SocketMessageComponent, Task> onAction)
+    protected NadekoInteraction(DiscordSocketClient client)
     {
         _client = client;
-        _authorId = authorId;
-        OnAction = onAction;
         _interactionCompletedSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
 
@@ -37,6 +32,7 @@ public abstract class NadekoInteraction
         await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
     }
 
+    protected abstract ValueTask<bool> Validate(SocketMessageComponent smc);
     private async Task OnInteraction(SocketInteraction arg)
     {
         if (arg is not SocketMessageComponent smc)
@@ -48,15 +44,15 @@ public abstract class NadekoInteraction
         if (smc.Data.CustomId != Name)
             return;
 
-        if (smc.User.Id != _authorId)
+        if (!await Validate(smc))
         {
-            await arg.DeferAsync();
+            await smc.DeferAsync();
             return;
         }
 
         _ = Task.Run(async () =>
         {
-            await OnAction(smc);
+            await ExecuteOnActionAsync(smc);
             
             // this should only be a thing on single-response buttons
             _interactionCompletedSource.TrySetResult(true);
@@ -76,5 +72,6 @@ public abstract class NadekoInteraction
 
         return comp.Build();
     }
+
+    public abstract Task ExecuteOnActionAsync(SocketMessageComponent smc);
 }
-    

@@ -39,13 +39,19 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         return true;
     }
 
+    public static string N(long cur, IFormatProvider format)
+        => cur.ToString("C0", format);
+    
+    public static string N(decimal cur, IFormatProvider format)
+        => cur.ToString("C0", format);
+    
     protected string N(long cur)
-        => cur.ToString("C0", GetFlowersCiInternal());
+        => N(cur, GetFlowersCiInternal());
 
     protected string N(decimal cur)
-        => cur.ToString("C0", GetFlowersCiInternal());
+        => N(cur, GetFlowersCiInternal());
 
-    private IFormatProvider GetFlowersCiInternal()
+    protected IFormatProvider GetFlowersCiInternal()
     {
         var flowersCi = (CultureInfo)Culture.Clone();
         flowersCi.NumberFormat.CurrencySymbol = CurrencySign;

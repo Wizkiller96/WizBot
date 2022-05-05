@@ -54,7 +54,19 @@ public partial class Gambling
         {
             var bal = await _bank.GetBalanceAsync(ctx.User.Id);
 
-            await ReplyConfirmLocalizedAsync(strs.bank_balance(N(bal)));
+            var eb = _eb.Create(ctx)
+                        .WithOkColor()
+                        .WithDescription(GetText(strs.bank_balance(N(bal))));
+
+            try
+            {
+                await ctx.User.EmbedAsync(eb);
+                await ctx.OkAsync();
+            }
+            catch
+            {
+                await ReplyErrorLocalizedAsync(strs.unable_to_dm_user);
+            }
         }
     }
 }

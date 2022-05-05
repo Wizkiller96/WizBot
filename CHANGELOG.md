@@ -3,7 +3,7 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.1.3] - 06.05.2022
 
 ### Added 
 
@@ -28,8 +28,16 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - Supports multiple exclusivity groups per message 
   - Supports level requirements
   - However they can only be added one by one
+  - Use the following commands for more information 
+    - `.h .reroa`
+    - `.h .reroli`
+    - `.h .rerot`
+    - `.h .rerorm`
+    - `.h .rerodela`
 - Pagination is now using buttons instead of reactions
 - Bot will now support much higher XP values for global and server levels
+- [dev] Small change and generation perf improvement for the localized response strings
+
 
 ### Fixed
 
