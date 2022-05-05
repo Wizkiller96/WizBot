@@ -77,7 +77,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     public async partial Task Economy()
     {
-        var ec = _service.GetEconomy();
+        var ec = await _service.GetEconomyAsync();
         decimal onePercent = 0;
 
         // This stops the top 1% from owning more than 100% of the money
@@ -94,7 +94,8 @@ public partial class Gambling : GamblingModule<GamblingService>
                        .AddField(GetText(strs.currency_planted), N(ec.Planted))
                        .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
                        .AddField(GetText(strs.bot_currency), N(ec.Bot))
-                       .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus))
+                       .AddField(GetText(strs.bank_accounts), N(ec.Bank))
+                       .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
                        .WithOkColor();
 
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table

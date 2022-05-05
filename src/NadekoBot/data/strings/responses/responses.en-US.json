@@ -939,6 +939,7 @@
   "owned_waifus_total": "Total value of owned waifus",
   "bot_currency": "Currency owned by the bot",
   "total": "Total",
+  "bank_accounts": "Bank Accounts",
   "no_invites": "No invites on this page.",
   "invite_deleted": "Invite {0} has been deleted.",
   "group_name_added": "Group #{0} now has a name: {1}",

@@ -8,7 +8,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added 
 
 - Added support for embed arrays in commands such as .say, .greet, .bye, etc...
-  - Website to create them is live at eb2.nadeko.bot (it will soon be replacing eb.nadeko.bot)
+  - Website to create them is live at eb.nadeko.bot (old one is moved to oldeb.nadeko.bot)
   - Embed arrays don't have a plainText property (it's renamed to 'content')
   - Embed arrays use color hex values instead of an integer
   - Old embed format will still work
@@ -21,6 +21,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.h <command group>`  
   - Using this command will list all commands in the specified group
   - Atm only .bank is a proper group (`.h bank`)
+- Added "Bank Accounts" entry to `.economy`
 
 ### Changed
 
