@@ -63,12 +63,13 @@ public sealed class Bot
                 ? GatewayIntents.All
                 : GatewayIntents.AllUnprivileged,
             LogGatewayIntentWarnings = false,
+            FormatUsersInBidirectionalUnicode = false,
         });
 
         _commandService = new(new()
         {
             CaseSensitiveCommands = false,
-            DefaultRunMode = RunMode.Sync
+            DefaultRunMode = RunMode.Sync,
         });
 
         // _interactionService = new(Client.Rest);
