@@ -1,5 +1,6 @@
 ﻿#nullable disable
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace WizBot;
 
@@ -13,12 +14,6 @@ public abstract record SmartText
 
     public bool IsEmbedArray
         => this is SmartEmbedTextArray;
-
-    private static readonly JsonSerializerOptions _opts = new JsonSerializerOptions()
-    {
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
 
     public static SmartText operator +(SmartText text, string input)
         => text switch
@@ -57,13 +52,13 @@ public abstract record SmartText
 
         try
         {
-            var doc = JsonDocument.Parse(input);
-            var root = doc.RootElement;
-            if (root.ValueKind == JsonValueKind.Object)
+            var doc = JObject.Parse(input);
+            var root = doc.Root;
+            if (root.Type == JTokenType.Object)
             {
-                if (root.TryGetProperty("embeds", out _))
+                if (((JObject)root).TryGetValue("embeds", out _))
                 {
-                    var arr = root.Deserialize<SmartEmbedTextArray>(_opts);
+                    var arr = root.ToObject<SmartEmbedTextArray>();
 
                     if (arr is null)
                         return new SmartPlainText(input);
@@ -72,7 +67,7 @@ public abstract record SmartText
                     return arr;
                 }
 
-                var obj = root.Deserialize<SmartEmbedText>(_opts);
+                var obj = root.ToObject<SmartEmbedText>();
 
                 if (obj is null)
                     return new SmartPlainText(input);
