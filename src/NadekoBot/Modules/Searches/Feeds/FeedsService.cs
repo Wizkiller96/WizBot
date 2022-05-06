@@ -53,7 +53,7 @@ public class FeedsService : INService
                 if (kvp.Value.Count == 0)
                     continue;
 
-                var rssUrl = kvp.Key;
+                var rssUrl = kvp.Value.First().Url;
                 try
                 {
                     var feed = await FeedReader.ReadAsync(rssUrl);
@@ -143,8 +143,9 @@ public class FeedsService : INService
                         allSendTasks.Add(feedSendTasks.WhenAll());
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Warning("An error occured while getting rss stream: {Message}", ex.Message);
                 }
             }
 
