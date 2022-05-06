@@ -330,7 +330,7 @@ public partial class Gambling : GamblingModule<GamblingService>
               .Pipe(text => smc.RespondConfirmAsync(_eb, text, ephemeral: true));
     }
     
-    private NadekoInteraction CreateCashInteraction()
+    private WizBotInteraction CreateCashInteraction()
         => CashInteraction.CreateInstance(_client, ctx.User.Id, BankAction);
 
     [Cmd]
