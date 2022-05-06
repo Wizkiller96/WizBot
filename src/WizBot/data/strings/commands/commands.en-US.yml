@@ -2068,21 +2068,34 @@ rollduel:
   args:
     - "50 @Someone"
     - "@Challenger"
-reactionroles:
-  desc: "Specify role names and server emojis with which they're represented, the bot will then add those emojis to the previous message in the channel, and users will be able to get the roles by clicking on the emoji. You can set 'excl' as the parameter before the reactions and roles to make them exclusive. You can have up to 10 of these enabled on one server at a time. Optionally you can specify target message if you don't want it to be the previous one."
+reactionroleadd:
+  desc: |-
+    Specify a message id, emote and a role name to have the bot assign the specified role to the user who reacts to the specified message (in this channel) with the specified emoji.
+    You can optionally specify an exclusivity group. Default is group 0 which is non-exclusive. Other groups are exclusive. Exclusive groups will let the user only have one of the roles specified in that group.
+    You can optionally specify a level requirement after a group. Users who don't meet the level requirement will not receive the role.
+    You can have up to 50 reaction roles per server in total.
   args:
-    - "Gamer :SomeServerEmoji: Streamer :Other: Watcher :Other2:"
-    - "excl Horde :Horde: Alliance :Alliance:"
-    - "886382471732662332 excl Horde :Horde: Alliance :Alliance:"
-    - "886382471732662332 Gamer :SomeServerEmoji: Streamer :Other: Watcher :Other2:"
+    - 971276352684691466 😊 gamer
+    - 971276352684691466 😢 emo 1
+    - 971276352684691466 🤔 philosopher 5 20
+    - 971276352684691466 👨 normie 5 20
 reactionroleslist:
-  desc: "Lists all ReactionRole messages on this channel and their indexes."
+  desc: "Lists all ReactionRole messages on this server with their message ids. Clicking/Tapping message ids will send you to that message."
   args:
     - ""
 reactionrolesremove:
-  desc: "Removed a ReactionRole message on the specified index."
+  desc: "Remove all reaction roles from message specified by the id"
   args:
     - "1"
+    - "971276352684691466"
+reactionrolesdeleteall:
+  desc: "Deletes all reaction roles on the server. This action is irreversible."
+  args:
+    - ""
+reactionrolestransfer:
+  desc: "Transfers reaction roles from one message to another by specifying their ids. If the target message has reaction roles specified already, the reaction roles will be MERGED, not overwritten."
+  args:
+    - "971276352684691466 971427748448964628"
 blackjack:
   desc: "Start or join a blackjack game. You must specify the amount you're betting. Use `{0}hit`, `{0}stand` and `{0}double` commands to play. Game is played with 4 decks. Dealer hits on soft 17 and wins draws."
   args:

@@ -1164,15 +1164,21 @@ pathofexilecurrency:
 - poec
 rollduel:
 - rollduel
-reactionroles:
-- reactionroles
-- rero
+reactionroleadd:
+  - reactionroleadd
+  - reroa
 reactionroleslist:
 - reactionroleslist
 - reroli
 reactionrolesremove:
 - reactionrolesremove
 - rerorm
+reactionrolesdeleteall:
+- rerodeleteall
+- rerodela
+reactionrolestransfer:
+- rerotransfer
+- rerot
 blackjack:
 - blackjack
 - bj

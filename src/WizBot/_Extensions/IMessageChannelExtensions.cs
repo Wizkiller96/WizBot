@@ -187,9 +187,9 @@ public static class MessageChannelExtensions
     private const string BUTTON_LEFT = "BUTTON_LEFT";
     private const string BUTTON_RIGHT = "BUTTON_RIGHT";
     
-    private static readonly IEmote _arrowLeft = new Emoji("⬅️");
-    private static readonly IEmote _arrowRight = new Emoji("➡️");
-    
+    private static readonly IEmote _arrowLeft = Emote.Parse("<:arrow_left:>");
+    private static readonly IEmote _arrowRight = Emote.Parse("<:arrow_right:>");
+
     public static async Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
@@ -218,7 +218,7 @@ public static class MessageChannelExtensions
                                     .WithEmote(_arrowRight))
                         .Build();
         
-        var msg = await ctx.Channel.EmbedAsync(embed, components: component);
+        var msg = await ctx.Channel.SendAsync(null, embed: embed.Build(), components: component);
         
         Task OnInteractionAsync(SocketInteraction si)
         {

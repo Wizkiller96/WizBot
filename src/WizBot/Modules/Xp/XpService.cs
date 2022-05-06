@@ -17,7 +17,6 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Xp.Services;
 
-// todo improve xp with linqtodb
 public class XpService : INService, IReadyExecutor, IExecNoCommand
 {
     public const int XP_REQUIRED_LVL_1 = 36;
@@ -133,7 +132,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         try
         {
             var toNotify =
-                new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, int Level,
+                new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, long Level,
                     XpNotificationLocation NotifyType, NotifOf NotifOf)>();
             var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
             var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
@@ -640,7 +639,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         DiscordUser du;
         UserXpStats stats;
-        int totalXp;
+        long totalXp;
         int globalRank;
         int guildRank;
         await using (var uow = _db.GetDbContext())

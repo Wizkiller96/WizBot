@@ -50,9 +50,7 @@ public static class GuildConfigExtensions
                   .Include(gc => gc.StreamRole)
                   .Include(gc => gc.XpSettings)
                   .ThenInclude(x => x.ExclusionList)
-                  .Include(gc => gc.DelMsgOnCmdChannels)
-                  .Include(gc => gc.ReactionRoleMessages)
-                  .ThenInclude(x => x.ReactionRoles);
+                  .Include(gc => gc.DelMsgOnCmdChannels);
 
     public static IEnumerable<GuildConfig> GetAllGuildConfigs(
         this DbSet<GuildConfig> configs,

@@ -16,7 +16,7 @@ public abstract class WizBotInteraction
     protected readonly TaskCompletionSource<bool> _interactionCompletedSource;
 
     protected ulong _authorId;
-    protected IUserMessage message;
+    protected IUserMessage message = null!;
 
     protected WizBotInteraction(DiscordSocketClient client, ulong authorId, Func<SocketMessageComponent, Task> onAction)
     {

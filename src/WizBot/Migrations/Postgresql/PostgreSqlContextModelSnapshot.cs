@@ -17,41 +17,41 @@ namespace WizBot.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-            
+
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<long>("Balance")
-                 .HasColumnType("bigint")
-                 .HasColumnName("balance");
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("timestamp with time zone")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("dateadded");
 
-                b.Property<decimal>("UserId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("userid");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
 
-                b.HasKey("Id")
-                 .HasName("pk_bankusers");
+                    b.HasKey("Id")
+                        .HasName("pk_bankusers");
 
-                b.HasIndex("UserId")
-                 .IsUnique()
-                 .HasDatabaseName("ix_bankusers_userid");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bankusers_userid");
 
-                b.ToTable("bankusers", (string)null);
-            });
+                    b.ToTable("bankusers", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -1116,14 +1116,14 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<bool>("DeleteMessageOnCommand")
                         .HasColumnType("boolean")
                         .HasColumnName("deletemessageoncommand");
-                    
+
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                     .HasColumnType("boolean")
-                     .HasColumnName("deletestreamonlinemessage");
+                        .HasColumnType("boolean")
+                        .HasColumnName("deletestreamonlinemessage");
 
                     b.Property<string>("DmGreetMessageText")
-                     .HasColumnType("text")
-                     .HasColumnName("dmgreetmessagetext");
+                        .HasColumnType("text")
+                        .HasColumnName("dmgreetmessagetext");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("boolean")
@@ -1901,41 +1901,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("quotes", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("EmoteName")
-                        .HasColumnType("text")
-                        .HasColumnName("emotename");
-
-                    b.Property<int?>("ReactionRoleMessageId")
-                        .HasColumnType("integer")
-                        .HasColumnName("reactionrolemessageid");
-
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("roleid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_reactionrole");
-
-                    b.HasIndex("ReactionRoleMessageId")
-                        .HasDatabaseName("ix_reactionrole_reactionrolemessageid");
-
-                    b.ToTable("reactionrole", (string)null);
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleV2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1952,29 +1918,42 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("dateadded");
 
-                    b.Property<bool>("Exclusive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("exclusive");
+                    b.Property<string>("Emote")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("emote");
 
-                    b.Property<int>("GuildConfigId")
+                    b.Property<int>("Group")
                         .HasColumnType("integer")
-                        .HasColumnName("guildconfigid");
+                        .HasColumnName("group");
 
-                    b.Property<int>("Index")
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<int>("LevelReq")
                         .HasColumnType("integer")
-                        .HasColumnName("index");
+                        .HasColumnName("levelreq");
 
                     b.Property<decimal>("MessageId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("messageid");
 
+                    b.Property<decimal>("RoleId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("roleid");
+
                     b.HasKey("Id")
-                        .HasName("pk_reactionrolemessage");
+                        .HasName("pk_reactionroles");
 
-                    b.HasIndex("GuildConfigId")
-                        .HasDatabaseName("ix_reactionrolemessage_guildconfigid");
+                    b.HasIndex("GuildId")
+                        .HasDatabaseName("ix_reactionroles_guildid");
 
-                    b.ToTable("reactionrolemessage", (string)null);
+                    b.HasIndex("MessageId", "Emote")
+                        .IsUnique()
+                        .HasDatabaseName("ix_reactionroles_messageid_emote");
+
+                    b.ToTable("reactionroles", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Reminder", b =>
@@ -3250,27 +3229,6 @@ namespace WizBot.Migrations.PostgreSql
                         .HasConstraintName("fk_pollvote_poll_pollid");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.HasOne("WizBot.Services.Database.Models.ReactionRoleMessage", null)
-                        .WithMany("ReactionRoles")
-                        .HasForeignKey("ReactionRoleMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_reactionrole_reactionrolemessage_reactionrolemessageid");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.HasOne("WizBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("ReactionRoleMessages")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_reactionrolemessage_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntry", b =>
                 {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
@@ -3520,8 +3478,6 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.Navigation("Permissions");
 
-                    b.Navigation("ReactionRoleMessages");
-
                     b.Navigation("SelfAssignableRoleGroupNames");
 
                     b.Navigation("ShopEntries");
@@ -3560,11 +3516,6 @@ namespace WizBot.Migrations.PostgreSql
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.Navigation("ReactionRoles");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntry", b =>
