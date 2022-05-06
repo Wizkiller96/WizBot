@@ -1,8 +1,11 @@
 #nullable disable
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
+using WizBot.Db.Models;
+using WizBot.Migrations;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Connect4;
 using WizBot.Modules.Gambling.Common.Slot;
@@ -158,7 +161,7 @@ public class GamblingService : INService, IReadyExecutor
         return toReturn;
     }
 
-    public EconomyResult GetEconomy()
+    public async Task<EconomyResult> GetEconomyAsync()
     {
         if (_cache.TryGetEconomy(out var data))
         {
@@ -173,6 +176,7 @@ public class GamblingService : INService, IReadyExecutor
         decimal onePercent;
         decimal planted;
         decimal waifus;
+        decimal bank;
         long bot;
 
         using (var uow = _db.GetDbContext())
@@ -182,6 +186,8 @@ public class GamblingService : INService, IReadyExecutor
             planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
             waifus = uow.WaifuInfo.GetTotalValue();
             bot = uow.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
+            bank = await uow.GetTable<BankUser>()
+                            .SumAsyncLinqToDB(x => x.Balance);
         }
 
         var result = new EconomyResult
@@ -190,7 +196,8 @@ public class GamblingService : INService, IReadyExecutor
             Planted = planted,
             Bot = bot,
             Waifus = waifus,
-            OnePercent = onePercent
+            OnePercent = onePercent,
+            Bank = bank
         };
 
         _cache.SetEconomy(JsonConvert.SerializeObject(result));
@@ -207,6 +214,7 @@ public class GamblingService : INService, IReadyExecutor
         public decimal Planted { get; set; }
         public decimal Waifus { get; set; }
         public decimal OnePercent { get; set; }
+        public decimal Bank { get; set; }
         public long Bot { get; set; }
     }
 }
