@@ -319,9 +319,23 @@ public partial class Xp
         public async partial Task ClubDescription([Leftover] string desc = null)
         {
             if (_service.SetDescription(ctx.User.Id, desc))
-                await ReplyConfirmLocalizedAsync(strs.club_desc_updated(Format.Bold(desc ?? "-")));
+            {
+                desc = string.IsNullOrWhiteSpace(desc)
+                    ? "-"
+                    : desc;
+                
+                var eb = _eb.Create(ctx)
+                            .WithAuthor(ctx.User)
+                            .WithTitle(GetText(strs.club_desc_update))
+                            .WithOkColor()
+                            .WithDescription(desc);
+
+                await ctx.Channel.EmbedAsync(eb);
+            }
             else
+            {
                 await ReplyErrorLocalizedAsync(strs.club_desc_update_failed);
+            }
         }
 
         [Cmd]

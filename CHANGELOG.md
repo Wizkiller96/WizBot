@@ -5,7 +5,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-### [4.1.4] - 06-05-2022
+### Changed
+
+- `.clubdesc <msg>` will now have a nicer response
+
+## [4.1.4] - 06-05-2022
 
 ### Fixed
 
@@ -52,7 +56,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Fixed `.deletexp` command
 - `.give` command should send DMs again
-- `.modules` commanad now has a medusa module description
+- `.modules` command now has a medusa module description
 
 ## [4.1.2] - 16.04.2022
 
