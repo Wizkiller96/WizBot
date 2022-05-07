@@ -363,7 +363,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg))
+        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount)))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;

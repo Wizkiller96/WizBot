@@ -9,6 +9,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.clubdesc <msg>` will now have a nicer response
 
+### Fixed
+
+- `.give` DM will once again show an amount
+
 ## [4.1.4] - 06-05-2022
 
 ### Fixed

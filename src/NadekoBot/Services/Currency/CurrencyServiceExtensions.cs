@@ -17,7 +17,8 @@ public static class CurrencyServiceExtensions
         IUser from,
         IUser to,
         long amount,
-        string? note)
+        string? note,
+        string formattedAmount)
     {
         var fromWallet = await cs.GetWalletAsync(from.Id);
         var toWallet = await cs.GetWalletAsync(to.Id);
@@ -28,8 +29,8 @@ public static class CurrencyServiceExtensions
         {
             await to.SendConfirmAsync(ebs,
                 string.IsNullOrWhiteSpace(note)
-                    ? $"Gift from {from}"
-                    : $"Gift from {from}: {note}");
+                    ? $"Received {formattedAmount} from {from} "
+                    : $"Received {formattedAmount} from {from}: {note}");
             return true;
         }
 
