@@ -5,7 +5,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
-### [4.1.4] - 06-05-2022
+### Changed
+
+- `.clubdesc <msg>` will now have a nicer response
+
+## [4.1.4] - 06-05-2022
 
 ### Fixed
 

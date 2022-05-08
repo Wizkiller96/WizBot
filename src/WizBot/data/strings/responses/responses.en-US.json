@@ -840,7 +840,7 @@
   "club_user_ban_fail": "Failed to ban. You're either not the club owner, or that user is not in your club or applied to it.",
   "club_user_unbanned": "Unbanned user {0} in {1} club.",
   "club_user_unban_fail": "Failed to unban. You're either not the club owner, or that user is not in your club or applied to it.",
-  "club_desc_updated": "Updated club description to {0}",
+  "club_desc_update": "Club Description Updated",
   "club_desc_update_failed": "Failed changing club description.",
   "club_disbanded": "Club {0} has been disbanded",
   "club_disband_error": "Error. You are either not in a club, or you are not the owner of your club.",
