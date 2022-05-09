@@ -94,7 +94,7 @@ public static class MessageChannelExtensions
 
         return ch.EmbedAsync(builder, inter: inter);
     }
-
+    
     // regular send overloads
     public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
         => ch.SendAsync(eb, text, MessageType.Error);
@@ -187,8 +187,8 @@ public static class MessageChannelExtensions
     private const string BUTTON_LEFT = "BUTTON_LEFT";
     private const string BUTTON_RIGHT = "BUTTON_RIGHT";
     
-    private static readonly IEmote _arrowLeft = Emote.Parse("<:arrow_left:>");
-    private static readonly IEmote _arrowRight = Emote.Parse("<:arrow_right:>");
+    private static readonly IEmote _arrowLeft = new Emoji("⬅️");
+    private static readonly IEmote _arrowRight = new Emoji("➡️");
 
     public static async Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
@@ -229,10 +229,10 @@ public static class MessageChannelExtensions
 
                 if (smc.Message.Id != msg.Id)
                     return;
-                
+
                 if (smc.Data.CustomId != BUTTON_LEFT && smc.Data.CustomId != BUTTON_RIGHT)
                     return;
-
+                
                 await si.DeferAsync();
                 if (smc.User.Id != ctx.User.Id)
                     return;
@@ -277,7 +277,7 @@ public static class MessageChannelExtensions
         
         await msg.ModifyAsync(mp => mp.Components = new ComponentBuilder().Build());
     }
-    
+
     private static readonly Emoji _okEmoji = new Emoji("✅");
     private static readonly Emoji _warnEmoji = new Emoji("⚠️");
     private static readonly Emoji _errorEmoji = new Emoji("❌");
