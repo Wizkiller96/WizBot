@@ -145,11 +145,14 @@ public class FeedsService : INService
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning("An error occured while getting rss stream: {Message}", ex.Message);
+                    Log.Warning("An error occured while getting rss stream {RssFeed}"
+                                + "\n {Message}",
+                        rssUrl,
+                        $"[{ex.GetType().Name}]: {ex.Message}");
                 }
             }
 
-            await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(10000));
+            await Task.WhenAll(Task.WhenAll(allSendTasks), Task.Delay(30000));
         }
     }
 
