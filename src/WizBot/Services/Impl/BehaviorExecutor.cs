@@ -116,6 +116,8 @@ public sealed class BehaviorHandler : IBehaviorHandler, INService
                             usrMsg.Author.Id,
                             usrMsg.Channel.Id,
                             usrMsg.Content?.TrimTo(10));
+                        
+                        return true;
                     }
                 }
                 catch (Exception ex)

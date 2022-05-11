@@ -12,6 +12,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Fixed
 
 - `.give` DM will once again show an amount
+- Fixed an issue with filters not working and with custom reactions no longer being able to override commands.
 
 ## [4.1.4] - 06-05-2022
 
