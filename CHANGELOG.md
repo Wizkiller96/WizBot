@@ -5,6 +5,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.1.5] - 11.05.2022
+
 ### Changed
 
 - `.clubdesc <msg>` will now have a nicer response
@@ -13,6 +15,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.give` DM will once again show an amount
 - Fixed an issue with filters not working and with custom reactions no longer being able to override commands.
+- Fixed `.stock` command
 
 ## [4.1.4] - 06-05-2022
 

@@ -1,5 +1,9 @@
-﻿using System.Text.Json;
-using YahooFinanceApi;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Google.Protobuf.WellKnownTypes;
+using System.Globalization;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace WizBot.Modules.Searches;
 
@@ -17,19 +21,14 @@ public sealed class DefaultStockDataService : IStockDataService, INService
             if (!query.IsAlphaNumeric())
                 return default;
 
-            var symbols = await Yahoo.Symbols(query)
-                                     .Fields(Field.LongName,
-                                         Field.Symbol,
-                                         Field.RegularMarketPrice,
-                                         Field.RegularMarketPreviousClose,
-                                         Field.MarketCap,
-                                         Field.FiftyDayAverageChangePercent,
-                                         Field.TwoHundredDayAverageChangePercent,
-                                         Field.AverageDailyVolume10Day,
-                                         Field.FullExchangeName)
-                                     .QueryAsync();
+            using var http = _httpClientFactory.CreateClient();
+            var data = await http.GetFromJsonAsync<YahooQueryModel>(
+                $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={query}");
 
-            var symbol = symbols.Values.FirstOrDefault();
+            if (data is null)
+                return default; 
+            
+            var symbol = data.QuoteResponse.Result.FirstOrDefault();
 
             if (symbol is null)
                 return default;
@@ -78,12 +77,26 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                   .Select(x => new SymbolData(x.Symbol, x.Name))
                   .ToList();
     }
+    
+    private static CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture)
+    {
+        PrepareHeaderForMatch = args => args.Header.Humanize(LetterCasing.Title)
+    };
 
     public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
     {
-        var candles = await Yahoo.GetHistoricalAsync(query, DateTime.Now.Subtract(30.Days()));
+        using var http = _httpClientFactory.CreateClient();
+        await using var resStream = await http.GetStreamAsync(
+            $"https://query1.finance.yahoo.com/v7/finance/download/{query}"
+            + $"?period1={DateTime.UtcNow.Subtract(30.Days()).ToTimestamp().Seconds}"
+            + $"&period2={DateTime.UtcNow.ToTimestamp().Seconds}"
+            + "&interval=1d");
 
-        return candles
+        using var textReader = new StreamReader(resStream);
+        using var csv = new CsvReader(textReader, _csvConfig);
+        var records = csv.GetRecords<YahooFinanceCandleData>().ToArray();
+
+        return records
             .Map(static x => new CandleData(x.Open, x.Close, x.High, x.Low, x.Volume));
     }
 }
