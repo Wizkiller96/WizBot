@@ -17,7 +17,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed an issue with filters not working and with custom reactions no longer being able to override commands.
 - Fixed `.stock` command
 
-## [4.1.4] - 06-05-2022
+## [4.1.4] - 06.05.2022
 
 ### Fixed
 
