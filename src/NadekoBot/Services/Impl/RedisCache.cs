@@ -147,8 +147,10 @@ public class RedisCache : IDataCache
         if (db.StringSet($"{_redisKey}_ratelimit_{id}_{name}",
                 0, // i don't use the value
                 TimeSpan.FromSeconds(expireIn),
-                When.NotExists))
+                when: When.NotExists))
+        {
             return null;
+        }
 
         return db.KeyTimeToLive($"{_redisKey}_ratelimit_{id}_{name}");
     }

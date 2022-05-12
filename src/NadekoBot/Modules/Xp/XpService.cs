@@ -502,7 +502,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         _cache.Redis.GetDatabase()
-              .StringSet(key, value, TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes), When.NotExists);
+              .StringSet(key,
+                  value,
+                  TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
+                  when: When.NotExists);
     }
 
     private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
@@ -632,7 +635,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var r = _cache.Redis.GetDatabase();
         var key = $"{_creds.RedisKey()}_user_xp_gain_{userId}";
 
-        return r.StringSet(key, true, TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown), When.NotExists);
+        return r.StringSet(key,
+            true,
+            TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
+            when: When.NotExists);
     }
 
     public async Task<FullUserStats> GetUserStatsAsync(IGuildUser user)
