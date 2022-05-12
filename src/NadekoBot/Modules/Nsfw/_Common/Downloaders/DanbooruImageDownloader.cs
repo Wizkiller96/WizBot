@@ -9,7 +9,7 @@ public sealed class DanbooruImageDownloader : DapiImageDownloader
     private static readonly ConcurrentDictionary<string, bool> _existentTags = new();
     private static readonly ConcurrentDictionary<string, bool> _nonexistentTags = new();
 
-    public DanbooruImageDownloader(HttpClient http)
+    public DanbooruImageDownloader(IHttpClientFactory http)
         : base(Booru.Danbooru, http, "http://danbooru.donmai.us")
     {
     }
@@ -22,7 +22,8 @@ public sealed class DanbooruImageDownloader : DapiImageDownloader
         if (_nonexistentTags.ContainsKey(tag))
             return false;
 
-        var tags = await _http.GetFromJsonAsync<DapiTag[]>(
+        using var http = _http.CreateClient();
+        var tags = await http.GetFromJsonAsync<DapiTag[]>(
             _baseUrl + "/tags.json" + $"?search[name_or_alias_matches]={tag}",
             _serializerOptions,
             cancel);

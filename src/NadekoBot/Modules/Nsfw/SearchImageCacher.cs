@@ -264,18 +264,18 @@ public class SearchImageCacher : INService
         return new();
     }
 
-    private IImageDownloader GetImageDownloader(Booru booru, HttpClient http)
+    private IImageDownloader GetImageDownloader(Booru booru)
         => booru switch
         {
-            Booru.Danbooru => new DanbooruImageDownloader(http),
-            Booru.Yandere => new YandereImageDownloader(http),
-            Booru.Konachan => new KonachanImageDownloader(http),
-            Booru.Safebooru => new SafebooruImageDownloader(http),
-            Booru.E621 => new E621ImageDownloader(http),
-            Booru.Derpibooru => new DerpibooruImageDownloader(http),
-            Booru.Gelbooru => new GelbooruImageDownloader(http),
-            Booru.Rule34 => new Rule34ImageDownloader(http),
-            Booru.Sankaku => new SankakuImageDownloader(http),
+            Booru.Danbooru => new DanbooruImageDownloader(_httpFactory),
+            Booru.Yandere => new YandereImageDownloader(_httpFactory),
+            Booru.Konachan => new KonachanImageDownloader(_httpFactory),
+            Booru.Safebooru => new SafebooruImageDownloader(_httpFactory),
+            Booru.E621 => new E621ImageDownloader(_httpFactory),
+            Booru.Derpibooru => new DerpibooruImageDownloader(_httpFactory),
+            Booru.Gelbooru => new GelbooruImageDownloader(_httpFactory),
+            Booru.Rule34 => new Rule34ImageDownloader(_httpFactory),
+            Booru.Sankaku => new SankakuImageDownloader(_httpFactory),
             _ => throw new NotImplementedException($"{booru} downloader not implemented.")
         };
 
@@ -290,8 +290,7 @@ public class SearchImageCacher : INService
         {
             Log.Information("Downloading from {Type} (page {Page})...", type, page);
 
-            using var http = _httpFactory.CreateClient();
-            var downloader = GetImageDownloader(type, http);
+            var downloader = GetImageDownloader(type);
 
             var images = await downloader.DownloadImageDataAsync(tags, page, isExplicit, cancel);
             if (images.Count == 0)

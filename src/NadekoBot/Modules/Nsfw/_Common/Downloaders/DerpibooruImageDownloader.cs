@@ -5,7 +5,7 @@ namespace NadekoBot.Modules.Nsfw.Common;
 
 public class DerpibooruImageDownloader : ImageDownloader<DerpiImageObject>
 {
-    public DerpibooruImageDownloader(HttpClient http)
+    public DerpibooruImageDownloader(IHttpClientFactory http)
         : base(Booru.Derpibooru, http)
     {
     }
@@ -21,7 +21,8 @@ public class DerpibooruImageDownloader : ImageDownloader<DerpiImageObject>
             $"https://www.derpibooru.org/api/v1/json/search/images?q={tagString.Replace('+', ',')}&per_page=49&page={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         req.Headers.AddFakeHeaders();
-        using var res = await _http.SendAsync(req, cancel);
+        using var http = _http.CreateClient();
+        using var res = await http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
 
         var container = await res.Content.ReadFromJsonAsync<DerpiContainer>(_serializerOptions, cancel);

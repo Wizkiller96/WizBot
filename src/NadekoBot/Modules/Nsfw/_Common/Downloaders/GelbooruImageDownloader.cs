@@ -6,7 +6,7 @@ namespace NadekoBot.Modules.Nsfw.Common;
 
 public class GelbooruImageDownloader : ImageDownloader<DapiImageObject>
 {
-    public GelbooruImageDownloader(HttpClient http)
+    public GelbooruImageDownloader(IHttpClientFactory http)
         : base(Booru.Gelbooru, http)
     {
     }
@@ -26,7 +26,8 @@ public class GelbooruImageDownloader : ImageDownloader<DapiImageObject>
                   + $"&tags={tagString}"
                   + $"&pid={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
-        using var res = await _http.SendAsync(req, cancel);
+        using var http = _http.CreateClient();
+        using var res = await http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
         var resString = await res.Content.ReadAsStringAsync(cancel);
         if (string.IsNullOrWhiteSpace(resString))
