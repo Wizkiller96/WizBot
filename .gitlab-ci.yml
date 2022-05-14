@@ -22,8 +22,8 @@ variables:
 build:
   stage: build
   script:
-    - "dotnet publish -c Release -r linux-x64 -o $LINUX_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r win7-x64 -o $WIN_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r linux-x64 --self-contained -o $LINUX_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r win7-x64 --self-contained -o $WIN_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
   artifacts:
     paths:
       - "$LINUX_X64_OUTPUT_DIR/"
