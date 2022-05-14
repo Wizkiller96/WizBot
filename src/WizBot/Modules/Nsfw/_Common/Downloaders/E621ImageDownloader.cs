@@ -5,7 +5,7 @@ namespace WizBot.Modules.Nsfw.Common;
 
 public class E621ImageDownloader : ImageDownloader<E621Object>
 {
-    public E621ImageDownloader(HttpClient http)
+    public E621ImageDownloader(IHttpClientFactory http)
         : base(Booru.E621, http)
     {
     }
@@ -20,7 +20,8 @@ public class E621ImageDownloader : ImageDownloader<E621Object>
         var uri = $"https://e621.net/posts.json?limit=32&tags={tagString}&page={page}";
         using var req = new HttpRequestMessage(HttpMethod.Get, uri);
         req.Headers.AddFakeHeaders();
-        using var res = await _http.SendAsync(req, cancel);
+        using var http = _http.CreateClient();
+        using var res = await http.SendAsync(req, cancel);
         res.EnsureSuccessStatusCode();
 
         var data = await res.Content.ReadFromJsonAsync<E621Response>(_serializerOptions, cancel);

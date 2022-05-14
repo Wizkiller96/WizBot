@@ -7,7 +7,7 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
 {
     protected readonly string _baseUrl;
 
-    public DapiImageDownloader(Booru booru, HttpClient http, string baseUrl)
+    public DapiImageDownloader(Booru booru, IHttpClientFactory http, string baseUrl)
         : base(booru, http)
         => _baseUrl = baseUrl;
 
@@ -43,7 +43,8 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
         var tagString = ImageDownloaderHelper.GetTagString(tags, isExplicit);
 
         var uri = $"{_baseUrl}/posts.json?limit=200&tags={tagString}&page={page}";
-        var imageObjects = await _http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel);
+        using var http = _http.CreateClient();
+        var imageObjects = await http.GetFromJsonAsync<DapiImageObject[]>(uri, _serializerOptions, cancel);
         if (imageObjects is null)
             return new();
         return imageObjects.Where(x => x.FileUrl is not null).ToList();

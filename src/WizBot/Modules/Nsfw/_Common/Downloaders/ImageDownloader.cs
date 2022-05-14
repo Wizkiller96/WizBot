@@ -8,7 +8,7 @@ public abstract class ImageDownloader<T> : IImageDownloader
     where T : IImageData
 {
     public Booru Booru { get; }
-    protected readonly HttpClient _http;
+    protected readonly IHttpClientFactory _http;
 
     protected readonly JsonSerializerOptions _serializerOptions = new()
     {
@@ -16,7 +16,7 @@ public abstract class ImageDownloader<T> : IImageDownloader
         NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
     };
 
-    public ImageDownloader(Booru booru, HttpClient http)
+    public ImageDownloader(Booru booru, IHttpClientFactory http)
     {
         _http = http;
         Booru = booru;

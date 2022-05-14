@@ -5,5 +5,5 @@ namespace WizBot.Modules.Searches;
 public class YahooQueryModel
 {
     [JsonPropertyName("quoteResponse")]
-    public QuoteResponse QuoteResponse { get; set; }
+    public QuoteResponse QuoteResponse { get; set; } = null!;
 }
