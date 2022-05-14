@@ -68,15 +68,15 @@ publish-windows:
     - if: "$CI_COMMIT_TAG"
   image: scottyhardy/docker-wine
   before_script:
-    - choco install dotnet-6.0-runtime -y
-    - choco install dotnet-6.0-sdk -y
+    - choco install dotnet-6.0-runtime --version=6.0.4 -y
+    - choco install dotnet-6.0-sdk --version=6.0.202 -y
     - choco install innosetup -y
   artifacts:
     paths:
       - "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
   script:
     - dotnet clean
-    - dotnet restore -f --no-cache
+    - dotnet restore -f --no-cache -v n
     - dotnet publish -c Release --runtime win7-x64 /p:Version=$CI_COMMIT_TAG src/WizBot
     - $env:WIZBOT_INSTALL_VERSION = $CI_COMMIT_TAG
     - iscc.exe "/O+" ".\exe_builder.iss"
