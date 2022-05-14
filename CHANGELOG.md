@@ -5,6 +5,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.1.6] - 14.05.2022
+
+### Fixed
+
+- Fixed windows release and updated packages
+
 ## [4.1.5] - 11.05.2022
 
 ### Changed
