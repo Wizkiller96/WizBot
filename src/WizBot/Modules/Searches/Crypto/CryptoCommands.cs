@@ -156,19 +156,22 @@ public partial class Searches
             var volume = usd.Volume24h.ToString("C0", localCulture);
             var marketCap = usd.MarketCap.ToString("C0", localCulture);
             var dominance = (usd.MarketCapDominance / 100).ToString("P2", localCulture);
+            
+            await using var sparkline = await _service.GetSparklineAsync(crypto.Id, usd.PercentChange7d >= 0);
+            var fileName = $"{crypto.Slug}_7d.png";
 
             var toSend = _eb.Create()
                             .WithOkColor()
                             .WithAuthor($"#{crypto.CmcRank}")
                             .WithTitle($"{crypto.Name} ({crypto.Symbol})")
                             .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
-                            .WithThumbnailUrl( $"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
+                            .WithThumbnailUrl($"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
                             .AddField(GetText(strs.market_cap), marketCap, true)
                             .AddField(GetText(strs.price), price, true)
                             .AddField(GetText(strs.volume_24h), volume, true)
                             .AddField(GetText(strs.change_7d_24h), $"{sevenDay} / {lastDay}", true)
                             .AddField(GetText(strs.market_cap_dominance), dominance, true)
-                            .WithImageUrl($"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{crypto.Id}.png");
+                            .WithImageUrl($"attachment://{fileName}");
 
             if (crypto.CirculatingSupply is double cs)
             {
@@ -187,7 +190,7 @@ public partial class Searches
             }
             
             
-            await ctx.Channel.EmbedAsync(toSend);
+            await ctx.Channel.SendFileAsync(sparkline, fileName, embed: toSend.Build());
         }
     }
 }

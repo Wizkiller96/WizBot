@@ -5,6 +5,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Fixed
+
+- Fixed `.crypto` sparklines
+
 ## [4.1.6] - 14.05.2022
 
 ### Fixed
