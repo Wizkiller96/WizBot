@@ -36,7 +36,7 @@ namespace WizBot.Modules.Roblox;
                 {
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
                     // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
-                    RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
+                    // RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                     // Roblox Membership Type Checker
                     // RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
@@ -89,7 +89,7 @@ namespace WizBot.Modules.Roblox;
                     .AddField("Followers", $"{RInfo["followerCount"]}", true)
                     .AddField("Following", $"{RInfo["followingCount"]}", true)
                     // .AddField("Membership", $"{RMT["membershipType"]}", true)
-                    .AddField("Presence", $"{RStatus["LastLocation"]}", true)
+                    // .AddField("Presence", $"{RStatus["LastLocation"]}", true)
                     .AddField("Account Age", string.IsNullOrEmpty($"{RInfo["age"]}") ? none : ($"{RInfo["age"]}"), true)
                     .AddField("Join Date", string.IsNullOrEmpty($"{RInfo["joinDate"]}") ? none : ($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
                     .AddField("Status", string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}"), false)
