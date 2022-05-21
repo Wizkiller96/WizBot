@@ -30,7 +30,7 @@ namespace WizBot.Modules.Roblox;
                 // Todo make a checker to see if a Roblox account exist before showing info.
                 JToken RInfo;
                 //JToken RUID;
-                JToken RStatus;
+                //JToken RStatus;
                 //JToken RMT;
                 using (var http = _httpFactory.CreateClient())
                 {
