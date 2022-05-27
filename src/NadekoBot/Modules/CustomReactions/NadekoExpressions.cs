@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 namespace NadekoBot.Modules.NadekoExpressions;
 
@@ -266,8 +266,8 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     public async partial Task ExprClear()
     {
         if (await PromptUserConfirmAsync(_eb.Create()
-                                            .WithTitle("Custom reaction clear")
-                                            .WithDescription("This will delete all custom reactions on this server.")))
+                                            .WithTitle("Expression clear")
+                                            .WithDescription("This will delete all expressions on this server.")))
         {
             var count = _service.DeleteAllExpressions(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.exprs_cleared(count));

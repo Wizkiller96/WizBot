@@ -17,8 +17,6 @@ To self-host your own Nadeko, use the guides below:
 - [:material-linux: Linux guide][linux-guide]
 - [:material-apple: Mac OS guide][macos-guide]
 
-Alternatively, you may also setup the bot [from source][from-source-guide] if you want to modify the code.
-
 In case you need any help, join our [Discord server][discord-server] where we may provide support.
 
 ---
