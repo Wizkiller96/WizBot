@@ -193,13 +193,13 @@ iamnot:
   args:
     - "Gamer"
 expradd:
-  desc: "Add a custom reaction with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global custom reaction. Guide here: <http://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
+  desc: "Add a expression with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <http://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
   args:
     - "\"hello\" Hi there %user.mention%"
 exprlist:
   desc: |-
-    Lists global or server custom reactions (20 commands per page).
-    Running the command in DM will list global custom reactions, while running it in a server will list server custom reactions.
+    Lists global or server expressions (20 commands per page).
+    Running the command in DM will list global expressions, while running it in a server will list server expressions.
     Shows enabled settings, followed by id, followed by the trigger.
     **Settings:** 
     • 🗯️ Triggered if trigger matches any word (`{0}h {0}exca`)
@@ -209,15 +209,15 @@ exprlist:
     - "1"
     - "all"
 exprshow:
-  desc: "Shows a custom reaction's response on a given ID."
+  desc: "Shows a expression's response on a given ID."
   args:
     - "1"
 exprdelete:
-  desc: "Deletes a custom reaction on a specific index. If ran in DM, it is bot owner only and deletes a global custom reaction. If ran in a server, it requires Administration privileges and removes server custom reaction."
+  desc: "Deletes a expression on a specific index. If ran in DM, it is bot owner only and deletes a global expression. If ran in a server, it requires Administration privileges and removes server expression."
   args:
     - "5"
 exprclear:
-  desc: "Deletes all custom reactions on this server."
+  desc: "Deletes all expression on this server."
   args:
     - ""
 fwclear:
@@ -578,7 +578,7 @@ serverblacklist:
     - ""
     - "2"
 cmdcooldown:
-  desc: "Sets a cooldown per user for a command or a custom reaction. Set it to 0 to remove the cooldown."
+  desc: "Sets a cooldown per user for a command or a expression. Set it to 0 to remove the cooldown."
   args:
     - ".h 5"
     - ".pat 30"
@@ -1331,7 +1331,7 @@ listservers:
   args:
     - "3"
 cleverbot:
-  desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Custom reactions starting with %bot.mention% won't work if cleverbot is enabled."
+  desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Expressions starting with %bot.mention% won't work if cleverbot is enabled."
   args:
     - ""
 shorten:
@@ -1545,37 +1545,37 @@ rategirl:
   args:
     - "@SomeGurl"
 exprreact:
-  desc: "Sets or resets reactions (up to 3) which will be added to the response message of the CustomReaction with the specified ID. Provide no emojis to reset."
+  desc: "Sets or resets reactions (up to 3) which will be added to the response message of the Expression with the specified ID. Provide no emojis to reset."
   args:
     - "59 \U0001F44D \U0001F44E "
     - "59 <a:nFlower:408963839191941120>"
     - "59"
 exprad:
-  desc: "Toggles whether the message triggering the custom reaction will be automatically deleted."
+  desc: "Toggles whether the message triggering the expression will be automatically deleted."
   args:
     - "59"
 exprat:
-  desc: "Toggles whether the custom reaction will allow extra input after the trigger. For example, with this feature enabled, custom reaction with trigger 'hi' will also be invoked when a user types 'hi there'. This feature is automatically enabled on custom reactions which have '%target%' in their response."
+  desc: "Toggles whether the expression will allow extra input after the trigger. For example, with this feature enabled, expression with trigger 'hi' will also be invoked when a user types 'hi there'. This feature is automatically enabled on expressions which have '%target%' in their response."
   args:
     - "59"
 exprdm:
-  desc: "Toggles whether the response message of the custom reaction will be sent as a direct message."
+  desc: "Toggles whether the response message of the expression will be sent as a direct message."
   args:
     - "44"
 exprca:
-  desc: "Toggles whether the custom reaction will trigger if the triggering message contains the keyword (instead of only starting with it)."
+  desc: "Toggles whether the expression will trigger if the triggering message contains the keyword (instead of only starting with it)."
   args:
     - "44"
 exprsreload:
-  desc: "Reloads all custom reactions on all shards. Use this if you've made changes to the database while the bot is running, or used `{0}deleteunusedcrnq`"
+  desc: "Reloads all expressions on all shards. Use this if you've made changes to the database while the bot is running, or used `{0}deleteunusedcrnq`"
   args:
     - ""
 exprsimport:
-  desc: "Upload the file or send the raw .yml data with this command to import all custom reactions from the specified string or file into the current server (or as global custom reactions in dm)"
+  desc: "Upload the file or send the raw .yml data with this command to import all expressions from the specified string or file into the current server (or as global expressions in dm)"
   args:
     - "<upload .yml file>"
 exprsexport:
-  desc: "Exports custom reactions from the current server (or global custom reactions in DMs) into a .yml file"
+  desc: "Exports expressions from the current server (or global expressions in DMs) into a .yml file"
   args:
     - ""
 quotesimport:
@@ -1953,7 +1953,7 @@ feedlist:
   args:
     - ""
 expredit:
-  desc: "Edits the custom reaction's response given its ID."
+  desc: "Edits the expression's response given its ID."
   args:
     - "123 I'm a magical girl"
 say:
