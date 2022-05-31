@@ -10,7 +10,7 @@ Donating to us also gives you the following benefits:
 - A hoisted **Donators role** in our [Discord server][discord-server]
 - Access to exclusive **#noticed** text and voice channels
 - **1000 flowers** on the public bot per dollar donated (after fees)
-- **Custom Reactions** on the public bot for [Patreon pledges][patreon] of $5 or higher
+- **Expressions** on the public bot for [Patreon pledges][patreon] of $5 or higher
 
 ## Patreon
 
