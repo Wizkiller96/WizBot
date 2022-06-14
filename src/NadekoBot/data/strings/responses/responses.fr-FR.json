@@ -301,7 +301,7 @@
     "botid": "ID du bot",
     "channelid": "{0} de ce salon est {1}.",
     "channel_topic": "Thème du salon",
-    "commands_ran": "Commande exécutée",
+    "commands_ran": "Commandes exécutées",
     "convert": "{0} {1} est égal à {2} {3}",
     "convertlist": "Unités qui peuvent être converties par le convertisseur",
     "convert_not_found": "Impossible de convertir {0} vers {1}: unités introuvables",
