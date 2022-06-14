@@ -39,7 +39,7 @@ public sealed class GoogleSearchService : SearchServiceBase, INService
         return result;
     }
 
-    public override async ITask<GoogleCustomSearchResult?> SearchAsync(string query)
+    public override async ITask<GoogleCustomSearchResult?> SearchAsync(string? query)
     {
         ArgumentNullException.ThrowIfNull(query);
 
