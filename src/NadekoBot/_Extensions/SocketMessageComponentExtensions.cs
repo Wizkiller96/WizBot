@@ -36,7 +36,7 @@ public static class SocketMessageComponentExtensions
         => text switch
         {
             SmartEmbedText set => smc.RespondAsync(set.PlainText,
-                set.GetEmbed().Build(),
+                set.IsValid ? set.GetEmbed().Build() : null,
                 sanitizeAll: sanitizeAll,
                 ephemeral: ephemeral),
             SmartPlainText st => smc.RespondAsync(st.Text,

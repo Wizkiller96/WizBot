@@ -68,7 +68,7 @@ public abstract record SmartText
 
                 var obj = root.ToObject<SmartEmbedText>();
 
-                if (obj is null)
+                if (obj is null || !(obj.IsValid || !string.IsNullOrWhiteSpace(obj.PlainText)))
                     return new SmartPlainText(input);
 
                 obj.NormalizeFields();
