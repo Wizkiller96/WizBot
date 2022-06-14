@@ -3,11 +3,11 @@
 /// <summary>
 /// Interaction which only the author can use
 /// </summary>
-public abstract class NadekoOwnInteraction : NadekoInteraction
+public abstract class NadekoButtonOwnInteraction : NadekoButtonInteraction
 {
     protected readonly ulong _authorId;
 
-    protected NadekoOwnInteraction(DiscordSocketClient client, ulong authorId) : base(client)
+    protected NadekoButtonOwnInteraction(DiscordSocketClient client, ulong authorId) : base(client)
         => _authorId = authorId;
 
     protected override ValueTask<bool> Validate(SocketMessageComponent smc)

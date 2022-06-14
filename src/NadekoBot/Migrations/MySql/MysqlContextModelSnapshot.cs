@@ -16,7 +16,7 @@ namespace NadekoBot.Migrations.Mysql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
@@ -186,10 +186,10 @@ namespace NadekoBot.Migrations.Mysql
                         .HasDefaultValue(0)
                         .HasColumnName("notifyonlevelup");
 
-                    b.Property<int>("TotalXp")
+                    b.Property<long>("TotalXp")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
                         .HasColumnName("totalxp");
 
                     b.Property<ulong>("UserId")
@@ -263,6 +263,74 @@ namespace NadekoBot.Migrations.Mysql
                         .HasDatabaseName("ix_followedstream_guildconfigid");
 
                     b.ToTable("followedstream", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("FeatureType")
+                        .HasColumnType("int")
+                        .HasColumnName("featuretype");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("feature");
+
+                    b.Property<uint>("DailyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("dailycount");
+
+                    b.Property<uint>("HourlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("hourlycount");
+
+                    b.Property<uint>("MonthlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("monthlycount");
+
+                    b.HasKey("UserId", "FeatureType", "Feature")
+                        .HasName("pk_patronquotas");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_patronquotas_userid");
+
+                    b.ToTable("patronquotas", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("int")
+                        .HasColumnName("amountcents");
+
+                    b.Property<DateTime>("LastCharge")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("lastcharge");
+
+                    b.Property<string>("UniquePlatformUserId")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("uniqueplatformuserid");
+
+                    b.Property<DateTime>("ValidThru")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("validthru");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_patrons");
+
+                    b.HasIndex("UniquePlatformUserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+
+                    b.ToTable("patrons", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
@@ -1138,7 +1206,9 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnName("timezoneid");
 
                     b.Property<bool>("VerboseErrors")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
                         .HasColumnName("verboseerrors");
 
                     b.Property<bool>("VerbosePermissions")
@@ -1962,8 +2032,8 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("AmountRewardedThisMonth")
-                        .HasColumnType("int")
+                    b.Property<long>("AmountRewardedThisMonth")
+                        .HasColumnType("bigint")
                         .HasColumnName("amountrewardedthismonth");
 
                     b.Property<DateTime?>("DateAdded")
@@ -1974,9 +2044,9 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("lastreward");
 
-                    b.Property<string>("PatreonUserId")
+                    b.Property<string>("PlatformUserId")
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("patreonuserid");
+                        .HasColumnName("platformuserid");
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("bigint unsigned")
@@ -1985,9 +2055,9 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasKey("Id")
                         .HasName("pk_rewardedusers");
 
-                    b.HasIndex("PatreonUserId")
+                    b.HasIndex("PlatformUserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_rewardedusers_patreonuserid");
+                        .HasDatabaseName("ix_rewardedusers_platformuserid");
 
                     b.ToTable("rewardedusers", (string)null);
                 });
@@ -2404,8 +2474,8 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("AwardedXp")
-                        .HasColumnType("int")
+                    b.Property<long>("AwardedXp")
+                        .HasColumnType("bigint")
                         .HasColumnName("awardedxp");
 
                     b.Property<DateTime?>("DateAdded")
@@ -2430,8 +2500,8 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
-                    b.Property<int>("Xp")
-                        .HasColumnType("int")
+                    b.Property<long>("Xp")
+                        .HasColumnType("bigint")
                         .HasColumnName("xp");
 
                     b.HasKey("Id")

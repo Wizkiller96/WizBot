@@ -15,7 +15,7 @@ namespace NadekoBot.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
 
             modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
                 {
@@ -149,10 +149,10 @@ namespace NadekoBot.Migrations
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(0);
 
-                    b.Property<int>("TotalXp")
+                    b.Property<long>("TotalXp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(0L);
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
@@ -207,6 +207,59 @@ namespace NadekoBot.Migrations
                     b.HasIndex("GuildConfigId");
 
                     b.ToTable("FollowedStream");
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FeatureType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("DailyCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("HourlyCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("MonthlyCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "FeatureType", "Feature");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PatronQuotas");
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastCharge")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UniquePlatformUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ValidThru")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("UniquePlatformUserId")
+                        .IsUnique();
+
+                    b.ToTable("Patrons");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
@@ -890,7 +943,9 @@ namespace NadekoBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("VerboseErrors")
-                        .HasColumnType("INTEGER");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("VerbosePermissions")
                         .HasColumnType("INTEGER");
@@ -1531,7 +1586,7 @@ namespace NadekoBot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AmountRewardedThisMonth")
+                    b.Property<long>("AmountRewardedThisMonth")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -1540,7 +1595,7 @@ namespace NadekoBot.Migrations
                     b.Property<DateTime>("LastReward")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PatreonUserId")
+                    b.Property<string>("PlatformUserId")
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("UserId")
@@ -1548,7 +1603,7 @@ namespace NadekoBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatreonUserId")
+                    b.HasIndex("PlatformUserId")
                         .IsUnique();
 
                     b.ToTable("RewardedUsers");
@@ -1877,7 +1932,7 @@ namespace NadekoBot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AwardedXp")
+                    b.Property<long>("AwardedXp")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -1897,7 +1952,7 @@ namespace NadekoBot.Migrations
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Xp")
+                    b.Property<long>("Xp")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

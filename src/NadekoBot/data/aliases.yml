@@ -597,11 +597,10 @@ image:
 lmgtfy:
 - lmgtfy
 google:
-- google
-- g
-duckduckgo:
-  - duckduckgo
-  - ddg
+  - google
+  - search
+  - g
+  - s
 hearthstone:
 - hearthstone
 - hs
@@ -1304,3 +1303,8 @@ bankbalance:
   - balance
   - b
   - bal
+patron:
+  - patron
+patronmessage:
+  - patronmessage
+  - patronmsg

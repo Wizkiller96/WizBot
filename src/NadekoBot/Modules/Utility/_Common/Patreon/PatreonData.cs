@@ -12,7 +12,7 @@ public sealed class Attributes
     public bool IsFollower { get; set; }
 
     [JsonPropertyName("last_charge_date")]
-    public DateTime LastChargeDate { get; set; }
+    public DateTime? LastChargeDate { get; set; }
 
     [JsonPropertyName("last_charge_status")]
     public string LastChargeStatus { get; set; }
@@ -57,7 +57,7 @@ public sealed class Address
 //     // public CurrentlyEntitledTiers CurrentlyEntitledTiers { get; set; }
 // }
 
-public sealed class PatreonResponse
+public sealed class PatreonMembersResponse
 {
     [JsonPropertyName("data")]
     public List<PatreonMember> Data { get; set; }

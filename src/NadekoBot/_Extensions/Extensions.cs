@@ -1,5 +1,6 @@
 using Humanizer.Localisation;
 using Nadeko.Medusa;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -179,6 +180,9 @@ public static class Extensions
         return module;
     }
 
+    public static string GetGroupName(this ModuleInfo module)
+        => module.Name.Replace("Commands", "", StringComparison.InvariantCulture);
+
     public static async Task<IEnumerable<IGuildUser>> GetMembersAsync(this IRole role)
     {
         var users = await role.Guild.GetUsersAsync(CacheMode.CacheOnly);
@@ -214,4 +218,10 @@ public static class Extensions
         => msg.Content.Headers.ContentLength is long length
             ? length
             : long.MaxValue;
+
+    public static void Lap(this Stopwatch sw, string checkpoint)
+    {
+        Log.Information("Checkpoint {CheckPoint}: {Time}", checkpoint, sw.Elapsed.TotalMilliseconds);
+        sw.Restart();
+    }
 }

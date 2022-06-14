@@ -465,9 +465,6 @@ public partial class Utility : NadekoModule
     }
 
     [Cmd]
-#if GLOBAL_NADEKO
-        [Ratelimit(30)]
-#endif
     public async partial Task Ping()
     {
         await sem.WaitAsync(5000);

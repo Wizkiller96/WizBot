@@ -1,6 +1,5 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
@@ -26,7 +25,7 @@ public abstract class NadekoContext : DbContext
     public DbSet<ClubInfo> Clubs { get; set; }
     public DbSet<ClubBans> ClubBans { get; set; }
     public DbSet<ClubApplicants> ClubApplicants { get; set; }
-    
+
 
     //logging
     public DbSet<LogSetting> LogSettings { get; set; }
@@ -51,19 +50,23 @@ public abstract class NadekoContext : DbContext
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
 
     public DbSet<Permissionv2> Permissions { get; set; }
-    
+
     public DbSet<BankUser> BankUsers { get; set; }
-    
+
     public DbSet<ReactionRoleV2> ReactionRoles { get; set; }
+
+    public DbSet<PatronUser> Patrons { get; set; }
+
+    public DbSet<PatronQuota> PatronQuotas { get; set; }
 
     #region Mandatory Provider-Specific Values
 
     protected abstract string CurrencyTransactionOtherIdDefaultValue { get; }
     protected abstract string DiscordUserLastXpGainDefaultValue { get; }
     protected abstract string LastLevelUpDefaultValue { get; }
-    
+
     #endregion
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         #region QUOTES
@@ -77,7 +80,11 @@ public abstract class NadekoContext : DbContext
         #region GuildConfig
 
         var configEntity = modelBuilder.Entity<GuildConfig>();
-        configEntity.HasIndex(c => c.GuildId).IsUnique();
+        configEntity.HasIndex(c => c.GuildId)
+                    .IsUnique();
+
+        configEntity.Property(x => x.VerboseErrors)
+                    .HasDefaultValue(true);
 
         modelBuilder.Entity<AntiSpamSetting>().HasOne(x => x.GuildConfig).WithOne(x => x.AntiSpamSetting);
 
@@ -190,13 +197,6 @@ public abstract class NadekoContext : DbContext
             warn.HasIndex(x => x.DateAdded);
             warn.Property(x => x.Weight).HasDefaultValue(1);
         });
-
-        #endregion
-
-        #region PatreonRewards
-
-        var pr = modelBuilder.Entity<RewardedUser>();
-        pr.HasIndex(x => x.PatreonUserId).IsUnique();
 
         #endregion
 
@@ -369,12 +369,13 @@ public abstract class NadekoContext : DbContext
                .IsUnique(false);
 
             rr2.HasIndex(x => new
-            {
-                x.MessageId,
-                x.Emote
-            }).IsUnique();
+               {
+                   x.MessageId,
+                   x.Emote
+               })
+               .IsUnique();
         });
-        
+
         #endregion
 
         #region LogSettings
@@ -419,7 +420,37 @@ public abstract class NadekoContext : DbContext
         modelBuilder.Entity<BankUser>(bu => bu.HasIndex(x => x.UserId).IsUnique());
 
         #endregion
-        
+
+
+        #region Patron
+
+        // currency rewards
+        var pr = modelBuilder.Entity<RewardedUser>();
+        pr.HasIndex(x => x.PlatformUserId).IsUnique();
+
+        // patrons
+        // patrons are not identified by their user id, but by their platform user id
+        // as multiple accounts (even maybe on different platforms) could have
+        // the same account connected to them
+        modelBuilder.Entity<PatronUser>(pu =>
+        {
+            pu.HasIndex(x => x.UniquePlatformUserId).IsUnique();
+            pu.HasKey(x => x.UserId);
+        });
+
+        // quotes are per user id
+        modelBuilder.Entity<PatronQuota>(pq =>
+        {
+            pq.HasIndex(x => x.UserId).IsUnique(false);
+            pq.HasKey(x => new
+            {
+                x.UserId,
+                x.FeatureType,
+                x.Feature
+            });
+        });
+
+        #endregion
     }
 
 #if DEBUG

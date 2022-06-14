@@ -15,7 +15,6 @@ public partial class Administration
         
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRoleAdd(
@@ -46,27 +45,26 @@ public partial class Administration
 
             var emote = emoteStr.ToIEmote();
             await msg.AddReactionAsync(emote);
-            var succ = await _rero.AddReactionRole(ctx.Guild.Id,
+            var res = await _rero.AddReactionRole(ctx.Guild,
                 msg,
-                (ITextChannel)ctx.Channel,
                 emoteStr,
                 role,
                 group,
                 levelReq);
-            
-            if (succ)
-            {
-                await ctx.OkAsync();
-            }
-            else
-            {
-                await ctx.ErrorAsync();
-            }
+
+            await res.Match(
+                _ => ctx.OkAsync(),
+                fl =>
+                {
+                    _ = msg.RemoveReactionAsync(emote, ctx.Client.CurrentUser);
+                    return !fl.IsPatronLimit
+                        ? ReplyErrorLocalizedAsync(strs.limit_reached(fl.Quota))
+                        : ReplyPendingLocalizedAsync(strs.feature_limit_reached_owner(fl.Quota, fl.Name));
+                });
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRolesList()
@@ -109,7 +107,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRolesRemove(ulong messageId)
@@ -123,7 +120,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         public async partial Task ReactionRolesDeleteAll()
@@ -134,7 +130,6 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NoPublicBot]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Ratelimit(60)]

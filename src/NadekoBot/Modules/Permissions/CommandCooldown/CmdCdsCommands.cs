@@ -27,9 +27,7 @@ public partial class Permissions
             _db = db;
         }
 
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        public async partial Task CmdCooldown(CommandOrCrInfo command, int secs)
+        private async Task CmdCooldownInternal(string cmdName, int secs)
         {
             var channel = (ITextChannel)ctx.Channel;
             if (secs is < 0 or > 3600)
@@ -38,7 +36,7 @@ public partial class Permissions
                 return;
             }
 
-            var name = command.Name.ToLowerInvariant();
+            var name = cmdName.ToLowerInvariant();
             await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
@@ -71,6 +69,18 @@ public partial class Permissions
             else
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString())));
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [Priority(0)]
+        public partial Task CmdCooldown(CleverBotResponseStr command, int secs)
+            => CmdCooldownInternal(CleverBotResponseStr.CLEVERBOT_RESPONSE, secs);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public partial Task CmdCooldown(CommandOrCrInfo command, int secs)
+            => CmdCooldownInternal(command.Name, secs);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]

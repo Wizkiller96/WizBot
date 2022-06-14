@@ -219,7 +219,7 @@ public sealed class MusicPlayer : IMusicPlayer
                                 errorCount = 0;
                             }
 
-                            // todo future windows multimedia api
+                            // FUTURE windows multimedia api
 
                             // wait for slightly less than the latency
                             Thread.Sleep(delay);

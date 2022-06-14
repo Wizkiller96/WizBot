@@ -193,7 +193,7 @@ iamnot:
   args:
     - "Gamer"
 expradd:
-  desc: "Add a expression with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <http://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
+  desc: "Add an expression with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <https://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
   args:
     - "\"hello\" Hi there %user.mention%"
 exprlist:
@@ -278,7 +278,7 @@ rolehoist:
   desc: "Toggles whether this role is displayed in the sidebar or not. The role you specify has to be lower in the role hierarchy than your highest role."
   args:
     - "Guests"
-    - "\"Space Wizards\""
+    - "Space Wizards"
 createrole:
   desc: "Creates a role with a given name."
   args:
@@ -380,7 +380,7 @@ setnick:
 setavatar:
   desc: "Sets a new avatar image for the NadekoBot. Parameter is a direct link to an image."
   args:
-    - "http://i.imgur.com/xTG3a1I.jpg"
+    - "https://i.imgur.com/xTG3a1I.jpg"
 setgame:
   desc: "Sets the bots game status to either Playing, Listening, or Watching."
   args:
@@ -578,7 +578,9 @@ serverblacklist:
     - ""
     - "2"
 cmdcooldown:
-  desc: "Sets a cooldown per user for a command or a expression. Set it to 0 to remove the cooldown."
+  desc: "Sets a cooldown, in seconds, for a command or an expression which will be applied per user. 
+   Set it to 0 to remove the cooldown.
+   Supports a special command `cleverbot:response` which can be used limit how often users can talk to cleverbot"
   args:
     - ".h 5"
     - ".pat 30"
@@ -1040,11 +1042,11 @@ urbandict:
   args:
     - "Pineapple"
 catfact:
-  desc: "Shows a random catfact from <http://catfacts-api.appspot.com/api/facts>"
+  desc: "Shows a random catfact from <https://catfacts-api.appspot.com/api/facts>"
   args:
     - ""
 yomama:
-  desc: "Shows a random joke from <http://api.yomomma.info/>"
+  desc: "Shows a random joke from <https://api.yomomma.info/>"
   args:
     - ""
 randjoke:
@@ -2209,3 +2211,11 @@ bankbalance:
   desc: "Shows your current bank balance available for withdrawal."
   args:
     - ""
+patron:
+  desc: "Check your patronage status and command usage quota. Bot owners can check targeted user's patronage status."
+  args:
+    - ""
+patronmessage:
+  desc: "Sends a message to all patrons of the specified tier and higher. Supports embeds."
+  args:
+    - "x hello"

@@ -1,0 +1,67 @@
+# DO NOT CHANGE
+version: 1
+# Whether the patronage feature is enabled
+isEnabled: false
+# List of patron only features and relevant quota data
+quotas:
+# Dictionary of feature names with their respective limits. Set to null for unlimited
+  features:
+    "timely:extra_percent":
+      v: 10
+      x: 22
+      xx: 50
+      l: 150
+      c: 350
+    "rero:max_count":
+      v: 25
+      x: 50
+    "cleverbot:response":
+      v: -20
+      x: 5000
+      xx: 12000
+      l: 35000
+      c: 100000
+  # Dictionary of commands with their respective quota data
+  commands:
+    prune:
+      x:
+        perHour: 1
+      xx:
+        perHour: 3
+    google:
+      v:
+        perDay: 15
+      x:
+        perDay: 30
+      xx: 
+        perDay: 60
+      l:
+        perDay: 150
+      c:
+        perDay: 300
+    image:
+      v:
+        perDay: 15
+      x:
+        perDay: 30
+      xx:
+        perDay: 60
+      l:
+        perDay: 150
+      c:
+        perDay: 300
+    youtube:
+      v:
+        perDay: 25
+      x:
+        perDay: 50
+      xx:
+        perDay: 100
+      l:
+        perDay: 250
+      c:
+        perDay: 500      
+  # Dictionary of groups with their respective quota data
+  groups: {}
+  # Dictionary of modules with their respective quota data
+  modules: {}
