@@ -259,7 +259,8 @@ public class GreetService : INService, IReadyExecutor
                     Description = pt.Text
                 };
             }
-            else if (text is SmartEmbedText set)
+            
+            if (text is SmartEmbedText set)
             {
                 text = set with
                 {
