@@ -164,6 +164,15 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
             localImageUrls.Version = 3;
             File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(localImageUrls));
         }
+
+        if (localImageUrls.Version == 3)
+        {
+            localImageUrls.Version = 4;
+            if (localImageUrls.Xp?.Bg.ToString() == "https://cdn.nadeko.bot/other/xp/bg.png")
+                localImageUrls.Xp.Bg = new("https://cdn.nadeko.bot/other/xp/bg_k.png");
+            
+            File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(localImageUrls));
+        }
     }
 
     public async Task Reload()

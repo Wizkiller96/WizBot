@@ -18,7 +18,7 @@ public sealed class Creds : IBotCredentials
     [Comment("Keep this on 'true' unless you're sure your bot shouldn't use privileged intents or you're waiting to be accepted")]
     public bool UsePrivilegedIntents { get; set; }
 
-    [Comment(@"The number of shards that the bot will running on.
+    [Comment(@"The number of shards that the bot will be running on.
 Leave at 1 if you don't know what you're doing.")]
     public int TotalShards { get; set; }
 
@@ -27,6 +27,16 @@ Leave at 1 if you don't know what you're doing.")]
 Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
 Used only for Youtube Data Api (at the moment).")]
     public string GoogleApiKey { get; set; }
+    
+    [Comment(   
+        @"Create a new custom search here https://programmablesearchengine.google.com/cse/create/new
+Enable SafeSearch
+Remove all Sites to Search
+Enable Search the entire web
+Copy the 'Search Engine ID' to the SearchId field
+
+Do all steps again but enable image search for the ImageSearchId")]
+    public GoogleApiConfig Google { get; set; }
 
     [Comment(@"Settings for voting system for discordbots. Meant for use on global Nadeko.")]
     public VotesSettings Votes { get; set; }
@@ -119,6 +129,7 @@ Windows default
         CoordinatorUrl = "http://localhost:3442";
 
         RestartCommand = new();
+        Google = new();
     }
 
 
@@ -200,4 +211,10 @@ This should be equivalent to the DiscordsKey in your NadekoBot.Votes api appsett
             DiscordsKey = discordsKey;
         }
     }
+}
+
+public class GoogleApiConfig
+{
+    public string SearchId { get; init; }
+    public string ImageSearchId { get; init; }
 }

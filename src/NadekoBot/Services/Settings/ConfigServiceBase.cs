@@ -12,7 +12,7 @@ namespace NadekoBot.Services;
 public abstract class ConfigServiceBase<TSettings> : IConfigService
     where TSettings : ICloneable<TSettings>, new()
 {
-    // todo future config arrays are not copied - they're not protected from mutations
+    // FUTURE config arrays are not copied - they're not protected from mutations
     public TSettings Data
         => data.Clone();
 

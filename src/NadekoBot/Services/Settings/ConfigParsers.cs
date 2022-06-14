@@ -1,4 +1,5 @@
 #nullable disable
+using NadekoBot.Modules.Searches;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Globalization;
 
@@ -31,6 +32,10 @@ public static class ConfigParsers
             return false;
         }
     }
+
+    public static bool InsensitiveEnum<T>(string input, out T output)
+        where T: struct
+        => Enum.TryParse(input, true, out output);
 }
 
 public static class ConfigPrinters

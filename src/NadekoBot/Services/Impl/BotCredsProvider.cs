@@ -112,8 +112,6 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
         ymlData = Yaml.Serializer.Serialize(creds);
         File.WriteAllText(CREDS_FILE_NAME, ymlData);
-
-        Reload();
     }
     
     private string OldCredsJsonPath
@@ -174,5 +172,10 @@ public sealed class BotCredsProvider : IBotCredsProvider
     }
 
     public IBotCredentials GetCreds()
-        => _creds;
+    {
+        lock (_reloadLock)
+        {
+            return _creds;
+        }
+    }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
+using NadekoBot.Modules.Utility.Patronage;
 using NadekoBot.Services.Database.Models;
 using Newtonsoft.Json;
 using SixLabors.Fonts;
@@ -43,6 +44,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly DiscordSocketClient _client;
 
     private readonly TypedKey<bool> _xpTemplateReloadKey;
+    private readonly IPatronageService _ps;
 
     public XpService(
         DiscordSocketClient client,
@@ -57,7 +59,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         IHttpClientFactory http,
         XpConfigService xpConfig,
         IPubSub pubSub,
-        IEmbedBuilderService eb)
+        IEmbedBuilderService eb,
+        IPatronageService ps)
     {
         _db = db;
         _cmd = cmd;
@@ -75,6 +78,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _excludedChannels = new();
         _client = client;
         _xpTemplateReloadKey = new("xp.template.reload");
+        _ps = ps;
 
         InternalReloadXpTemplate();
 
@@ -167,7 +171,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                     if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
                     {
-                        du.LastLevelUp = DateTime.UtcNow;
                         var first = item.First();
                         if (du.NotifyOnLevelUp != XpNotificationLocation.None)
                         {
@@ -178,7 +181,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                     if (oldGuildLevelData.Level < newGuildLevelData.Level)
                     {
-                        usr.LastLevelUp = DateTime.UtcNow;
                         //send level up notification
                         var first = item.First();
                         if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
@@ -270,7 +272,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
     }
 
-
+    private const string XP_TEMPLATE_PATH = "./data/xp_template.json";
     private void InternalReloadXpTemplate()
     {
         try
@@ -279,15 +281,33 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 ContractResolver = new RequireObjectPropertiesContractResolver()
             };
-            template = JsonConvert.DeserializeObject<XpTemplate>(File.ReadAllText("./data/xp_template.json"),
+
+            if (!File.Exists(XP_TEMPLATE_PATH))
+            {
+                var newTemp = new XpTemplate();
+                newTemp.Version = 1;
+                File.WriteAllText(XP_TEMPLATE_PATH, JsonConvert.SerializeObject(newTemp, Formatting.Indented));
+            }
+
+            template = JsonConvert.DeserializeObject<XpTemplate>(
+                File.ReadAllText(XP_TEMPLATE_PATH),
                 settings);
+
+            if (template!.Version < 1)
+            {
+                Log.Warning("Loaded default xp_template.json values as the old one was version 0. "
+                            + "Old one was renamed to xp_template.json.old");
+                File.WriteAllText("./data/xp_template.json.old", JsonConvert.SerializeObject(template, Formatting.Indented));
+                template = new();
+                template.Version = 1;
+                File.WriteAllText(XP_TEMPLATE_PATH, JsonConvert.SerializeObject(template, Formatting.Indented));
+            }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Xp template is invalid. Loaded default values");
+            Log.Error(ex, "xp_template.json is invalid. Loaded default values");
             template = new();
-            File.WriteAllText("./data/xp_template_backup.json",
-                JsonConvert.SerializeObject(template, Formatting.Indented));
+            template.Version = 1;
         }
     }
 
@@ -643,22 +663,20 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     public async Task<FullUserStats> GetUserStatsAsync(IGuildUser user)
     {
-        DiscordUser du;
-        UserXpStats stats;
-        long totalXp;
-        int globalRank;
-        int guildRank;
-        await using (var uow = _db.GetDbContext())
-        {
-            du = uow.GetOrCreateUser(user, set => set.Include(x => x.Club));
-            totalXp = du.TotalXp;
-            globalRank = uow.DiscordUser.GetUserGlobalRank(user.Id);
-            guildRank = uow.UserXpStats.GetUserGuildRanking(user.Id, user.GuildId);
-            stats = uow.GetOrCreateUserXpStats(user.GuildId, user.Id);
-            await uow.SaveChangesAsync();
-        }
+        await using var uow = _db.GetDbContext();
+        var du = uow.GetOrCreateUser(user, set => set.Include(x => x.Club));
+        var totalXp = du.TotalXp;
+        var globalRank = uow.DiscordUser.GetUserGlobalRank(user.Id);
+        var guildRank = uow.UserXpStats.GetUserGuildRanking(user.Id, user.GuildId);
+        var stats = uow.GetOrCreateUserXpStats(user.GuildId, user.Id);
+        await uow.SaveChangesAsync();
 
-        return new(du, stats, new(totalXp), new(stats.Xp + stats.AwardedXp), globalRank, guildRank);
+        return new(du,
+            stats,
+            new(totalXp),
+            new(stats.Xp + stats.AwardedXp),
+            globalRank,
+            guildRank);
     }
 
     public bool ToggleExcludeServer(ulong id)
@@ -801,12 +819,38 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)));
             }
 
+            Font GetTruncatedFont(
+                FontFamily fontFamily,
+                int fontSize,
+                FontStyle style,
+                string text,
+                int maxSize)
+            {
+                var font = fontFamily.CreateFont(fontSize, style);
+                var size = TextMeasurer.Measure(text, new(font));
+                var scale = maxSize / size.Width;
+                if (scale < 1)
+                    font = fontFamily.CreateFont(fontSize * scale, style);
+
+                return font;
+            }
+            
+            
             if (template.User.GlobalLevel.Show)
             {
+                // up to 83 width
+
+                var globalLevelFont = GetTruncatedFont(
+                    _fonts.NotoSans,
+                    template.User.GlobalLevel.FontSize,
+                    FontStyle.Bold,
+                    stats.Global.Level.ToString(),
+                    75);
+                
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Global.Level.ToString(),
-                        _fonts.NotoSans.CreateFont(template.User.GlobalLevel.FontSize, FontStyle.Bold),
+                        globalLevelFont,
                         template.User.GlobalLevel.Color,
                         new(template.User.GlobalLevel.Pos.X, template.User.GlobalLevel.Pos.Y)); //level
                 });
@@ -814,17 +858,23 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (template.User.GuildLevel.Show)
             {
+                var guildLevelFont = GetTruncatedFont(
+                    _fonts.NotoSans,
+                    template.User.GuildLevel.FontSize,
+                    FontStyle.Bold,
+                    stats.Guild.Level.ToString(),
+                    75);
+                
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Guild.Level.ToString(),
-                        _fonts.NotoSans.CreateFont(template.User.GuildLevel.FontSize, FontStyle.Bold),
+                        guildLevelFont,
                         template.User.GuildLevel.Color,
                         new(template.User.GuildLevel.Pos.X, template.User.GuildLevel.Pos.Y));
                 });
             }
 
-
-            var pen = new Pen(Color.Black, 1);
+            var pen = new Pen(Color.Black, 1.25f);
 
             var global = stats.Global;
             var guild = stats.Guild;
@@ -840,7 +890,16 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (template.User.Xp.Global.Show)
             {
-                img.Mutate(x => x.DrawText($"{global.LevelXp}/{global.RequiredXp}",
+                img.Mutate(x => x.DrawText(
+                    new()
+                    {
+                        TextOptions = new()
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center
+                        }
+                    },
+                    $"{global.LevelXp}/{global.RequiredXp}",
                     _fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Global.Color),
                     pen,
@@ -849,7 +908,16 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (template.User.Xp.Guild.Show)
             {
-                img.Mutate(x => x.DrawText($"{guild.LevelXp}/{guild.RequiredXp}",
+                img.Mutate(x => x.DrawText(
+                    new()
+                    {
+                        TextOptions = new()
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center
+                        }
+                    },
+                    $"{guild.LevelXp}/{guild.RequiredXp}",
                     _fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Guild.Color),
                     pen,
@@ -872,46 +940,39 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             //ranking
             if (template.User.GlobalRank.Show)
             {
-                img.Mutate(x => x.DrawText(stats.GlobalRanking.ToString(),
-                    _fonts.UniSans.CreateFont(template.User.GlobalRank.FontSize, FontStyle.Bold),
+                var globalRankStr = stats.GlobalRanking.ToString();
+                
+                var globalRankFont = GetTruncatedFont(
+                    _fonts.UniSans,
+                    template.User.GlobalRank.FontSize,
+                    FontStyle.Bold,
+                    globalRankStr,
+                    68);
+                
+                img.Mutate(x => x.DrawText(globalRankStr,
+                    globalRankFont,
                     template.User.GlobalRank.Color,
                     new(template.User.GlobalRank.Pos.X, template.User.GlobalRank.Pos.Y)));
             }
 
             if (template.User.GuildRank.Show)
             {
-                img.Mutate(x => x.DrawText(stats.GuildRanking.ToString(),
-                    _fonts.UniSans.CreateFont(template.User.GuildRank.FontSize, FontStyle.Bold),
+                var guildRankStr = stats.GuildRanking.ToString();
+                
+                var guildRankFont = GetTruncatedFont(
+                    _fonts.UniSans,
+                    template.User.GuildRank.FontSize,
+                    FontStyle.Bold,
+                    guildRankStr,
+                    43);
+                
+                img.Mutate(x => x.DrawText(guildRankStr,
+                    guildRankFont,
                     template.User.GuildRank.Color,
                     new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)));
             }
-
-            //time on this level
-
-            string GetTimeSpent(DateTime time, string format)
-            {
-                var offset = DateTime.UtcNow - time;
-                return string.Format(format, offset.Days, offset.Hours, offset.Minutes);
-            }
-
-            if (template.User.TimeOnLevel.Global.Show)
-            {
-                img.Mutate(x => x.DrawText(GetTimeSpent(stats.User.LastLevelUp, template.User.TimeOnLevel.Format),
-                    _fonts.NotoSans.CreateFont(template.User.TimeOnLevel.Global.FontSize, FontStyle.Bold),
-                    template.User.TimeOnLevel.Global.Color,
-                    new(template.User.TimeOnLevel.Global.Pos.X, template.User.TimeOnLevel.Global.Pos.Y)));
-            }
-
-            if (template.User.TimeOnLevel.Guild.Show)
-            {
-                img.Mutate(x
-                    => x.DrawText(GetTimeSpent(stats.FullGuildStats.LastLevelUp, template.User.TimeOnLevel.Format),
-                        _fonts.NotoSans.CreateFont(template.User.TimeOnLevel.Guild.FontSize, FontStyle.Bold),
-                        template.User.TimeOnLevel.Guild.Color,
-                        new(template.User.TimeOnLevel.Guild.Pos.X, template.User.TimeOnLevel.Guild.Pos.Y)));
-            }
+            
             //avatar
-
             if (stats.User.AvatarId is not null && template.User.Icon.Show)
             {
                 try
@@ -959,9 +1020,33 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.Club.Icon.Show)
                 await DrawClubImage(img, stats);
 
-            img.Mutate(x => x.Resize(template.OutputSize.X, template.OutputSize.Y));
-            return ((Stream)img.ToStream(imageFormat), imageFormat);
+// #if GLOBAL_NADEKO
+            await DrawFrame(img, stats.User.UserId);
+// #endif
+            
+            var outputSize = template.OutputSize;
+            if (outputSize.X != img.Width || outputSize.Y != img.Height)
+                img.Mutate(x => x.Resize(template.OutputSize.X, template.OutputSize.Y));
+            
+            var output = ((Stream)await img.ToStreamAsync(imageFormat), imageFormat);
+            
+            return output;
         });
+
+// #if GLOBAL_NADEKO
+    private async Task DrawFrame(Image<Rgba32> img, ulong userId)
+    {
+        var patron = await _ps.GetPatronAsync(userId);
+        Image frame = null;
+        if (patron.Tier == PatronTier.V)
+            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
+        else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
+            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+
+        if (frame is not null)
+            img.Mutate(x => x.DrawImage(frame, new Point(0, 0), new GraphicsOptions()));
+    }
+// #endif
 
     private void DrawXpBar(float percent, XpBar info, Image<Rgba32> img)
     {
@@ -1026,7 +1111,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     {
                         if (!temp.IsImage() || temp.GetContentLength() > 11.Megabytes().Bytes)
                             return;
-                        
+
                         var imgData = await temp.Content.ReadAsByteArrayAsync();
                         using (var tempDraw = Image.Load(imgData))
                         {

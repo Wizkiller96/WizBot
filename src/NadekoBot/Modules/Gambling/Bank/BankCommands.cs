@@ -65,7 +65,7 @@ public partial class Gambling
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.unable_to_dm_user);
+                await ReplyErrorLocalizedAsync(strs.cant_dm);
             }
         }
     }

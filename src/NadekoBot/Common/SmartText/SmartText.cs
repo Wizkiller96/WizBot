@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace NadekoBot;
@@ -45,7 +44,6 @@ public abstract record SmartText
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 
-    [CanBeNull]
     public static SmartText CreateFrom(string input)
     {
         if (string.IsNullOrWhiteSpace(input))

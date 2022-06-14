@@ -42,8 +42,6 @@ public class RadioResolver : IRadioResolver
         }
 
         if (query.Contains(".pls"))
-            //File1=http://armitunes.com:8000/
-            //Regex.Match(query)
         {
             try
             {
@@ -59,11 +57,6 @@ public class RadioResolver : IRadioResolver
         }
 
         if (query.Contains(".m3u"))
-            /* 
-    # This is a comment
-                   C:\xxx4xx\xxxxxx3x\xx2xxxx\xx.mp3
-                   C:\xxx5xx\x6xxxxxx\x7xxxxx\xx.mp3
-                */
         {
             try
             {
@@ -79,7 +72,6 @@ public class RadioResolver : IRadioResolver
         }
 
         if (query.Contains(".asx"))
-            //<ref href="http://armitunes.com:8000"/>
         {
             try
             {
@@ -95,12 +87,6 @@ public class RadioResolver : IRadioResolver
         }
 
         if (query.Contains(".xspf"))
-            /*
-                <?xml version="1.0" encoding="UTF-8"?>
-                    <playlist version="1" xmlns="http://xspf.org/ns/0/">
-                        <trackList>
-                            <track><location>file:///mp3s/song_1.mp3</location></track>
-                */
         {
             try
             {

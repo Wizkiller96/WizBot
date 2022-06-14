@@ -26,15 +26,6 @@ public class SearchesService : INService
         Birds
     }
 
-    private static readonly HtmlParser _googleParser = new(new()
-    {
-        IsScripting = false,
-        IsEmbedded = false,
-        IsSupportingProcessingInstructions = false,
-        IsKeepingSourceReferences = false,
-        IsNotSupportingFrames = true
-    });
-
     public List<WoWJoke> WowJokes { get; } = new();
     public List<MagicItem> MagicItems { get; } = new();
     private readonly IHttpClientFactory _httpFactory;
@@ -161,7 +152,7 @@ public class SearchesService : INService
         using var http = _httpFactory.CreateClient();
         try
         {
-            var data = await http.GetStringAsync("http://api.openweathermap.org/data/2.5/weather?"
+            var data = await http.GetStringAsync("https://api.openweathermap.org/data/2.5/weather?"
                                                  + $"q={query}&"
                                                  + "appid=42cd627dd60debf25a5739e50a217d74&"
                                                  + "units=metric");
@@ -440,22 +431,6 @@ public class SearchesService : INService
     public async Task<int> GetSteamAppIdByName(string query)
     {
         const string steamGameIdsKey = "steam_names_to_appid";
-        // var exists = await db.KeyExistsAsync(steamGameIdsKey);
-
-        // if we didn't get steam name to id map already, get it
-        //if (!exists)
-        //{
-        //    using (var http = _httpFactory.CreateClient())
-        //    {
-        //        // https://api.steampowered.com/ISteamApps/GetAppList/v2/
-        //        var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
-        //        var apps = JsonConvert.DeserializeAnonymousType(gamesStr, new { applist = new { apps = new List<SteamGameId>() } }).applist.apps;
-
-        //        //await db.HashSetAsync("steam_game_ids", apps.Select(app => new HashEntry(app.Name.Trim().ToLowerInvariant(), app.AppId)).ToArray());
-        //        await db.StringSetAsync("steam_game_ids", gamesStr, TimeSpan.FromHours(24));
-        //        //await db.KeyExpireAsync("steam_game_ids", TimeSpan.FromHours(24), CommandFlags.FireAndForget);
-        //    }
-        //}
 
         var gamesMap = await _cache.GetOrAddCachedDataAsync(steamGameIdsKey,
             async _ =>
@@ -502,150 +477,5 @@ public class SearchesService : INService
         }
 
         return gamesMap[key];
-
-
-        //// try finding the game id
-        //var val = db.HashGet(STEAM_GAME_IDS_KEY, query);
-        //if (val == default)
-        //    return -1; // not found
-
-        //var appid = (int)val;
-        //return appid;
-
-        // now that we have appid, get the game info with that appid
-        //var gameData = await _cache.GetOrAddCachedDataAsync($"steam_game:{appid}", SteamGameDataFactory, appid, TimeSpan.FromHours(12))
-        //;
-
-        //return gameData;
-    }
-
-    public async Task<GoogleSearchResultData> GoogleSearchAsync(string query)
-    {
-        query = WebUtility.UrlEncode(query)?.Replace(' ', '+');
-
-        var fullQueryLink = $"https://www.google.ca/search?q={query}&safe=on&lr=lang_eng&hl=en&ie=utf-8&oe=utf-8";
-
-        using var msg = new HttpRequestMessage(HttpMethod.Get, fullQueryLink);
-        msg.Headers.Add("User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36");
-        msg.Headers.Add("Cookie", "CONSENT=YES+shp.gws-20210601-0-RC2.en+FX+423;");
-
-        using var http = _httpFactory.CreateClient();
-        http.DefaultRequestHeaders.Clear();
-
-        using var response = await http.SendAsync(msg);
-        await using var content = await response.Content.ReadAsStreamAsync();
-
-        using var document = await _googleParser.ParseDocumentAsync(content);
-        var elems = document.QuerySelectorAll("div.g > div > div");
-
-        var resultsElem = document.QuerySelectorAll("#resultStats").FirstOrDefault();
-        var totalResults = resultsElem?.TextContent;
-        //var time = resultsElem.Children.FirstOrDefault()?.TextContent
-        //^ this doesn't work for some reason, <nobr> is completely missing in parsed collection
-        if (!elems.Any())
-            return default;
-
-        var results = elems.Select(elem =>
-                           {
-                               var children = elem.Children.ToList();
-                               if (children.Count < 2)
-                                   return null;
-
-                               var href = (children[0].QuerySelector("a") as IHtmlAnchorElement)?.Href;
-                               var name = children[0].QuerySelector("h3")?.TextContent;
-
-                               if (href is null || name is null)
-                                   return null;
-
-                               var txt = children[1].TextContent;
-
-                               if (string.IsNullOrWhiteSpace(txt))
-                                   return null;
-
-                               return new GoogleSearchResult(name, href, txt);
-                           })
-                           .Where(x => x is not null)
-                           .ToList();
-
-        return new(results.AsReadOnly(), fullQueryLink, totalResults);
-    }
-
-    public async Task<GoogleSearchResultData> DuckDuckGoSearchAsync(string query)
-    {
-        query = WebUtility.UrlEncode(query)?.Replace(' ', '+');
-
-        var fullQueryLink = "https://html.duckduckgo.com/html";
-
-        using var http = _httpFactory.CreateClient();
-        http.DefaultRequestHeaders.Clear();
-        http.DefaultRequestHeaders.Add("User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36");
-
-        using var formData = new MultipartFormDataContent();
-        formData.Add(new StringContent(query), "q");
-        using var response = await http.PostAsync(fullQueryLink, formData);
-        var content = await response.Content.ReadAsStringAsync();
-
-        using var document = await _googleParser.ParseDocumentAsync(content);
-        var searchResults = document.QuerySelector(".results");
-        var elems = searchResults.QuerySelectorAll(".result");
-
-        if (!elems.Any())
-            return default;
-
-        var results = elems.Select(elem =>
-                           {
-                               if (elem.QuerySelector(".result__a") is not IHtmlAnchorElement anchor)
-                                   return null;
-
-                               var href = anchor.Href;
-                               var name = anchor.TextContent;
-
-                               if (string.IsNullOrWhiteSpace(href) || string.IsNullOrWhiteSpace(name))
-                                   return null;
-
-                               var txt = elem.QuerySelector(".result__snippet")?.TextContent;
-
-                               if (string.IsNullOrWhiteSpace(txt))
-                                   return null;
-
-                               return new GoogleSearchResult(name, href, txt);
-                           })
-                           .Where(x => x is not null)
-                           .ToList();
-
-        return new(results.AsReadOnly(), fullQueryLink, "0");
-    }
-
-    //private async Task<SteamGameData> SteamGameDataFactory(int appid)
-    //{
-    //    using (var http = _httpFactory.CreateClient())
-    //    {
-    //        //  https://store.steampowered.com/api/appdetails?appids=
-    //        var responseStr = await http.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={appid}");
-    //        var data = JsonConvert.DeserializeObject<Dictionary<int, SteamGameData.Container>>(responseStr);
-    //        if (!data.ContainsKey(appid) || !data[appid].Success)
-    //            return null; // for some reason we can't get the game with valid appid. SHould never happen
-
-    //        return data[appid].Data;
-    //    }
-    //}
-
-    public class GoogleSearchResultData
-    {
-        public IReadOnlyList<GoogleSearchResult> Results { get; }
-        public string FullQueryLink { get; }
-        public string TotalResults { get; }
-
-        public GoogleSearchResultData(
-            IReadOnlyList<GoogleSearchResult> results,
-            string fullQueryLink,
-            string totalResults)
-        {
-            Results = results;
-            FullQueryLink = fullQueryLink;
-            TotalResults = totalResults;
-        }
     }
 }

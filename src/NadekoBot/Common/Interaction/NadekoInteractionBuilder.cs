@@ -20,6 +20,7 @@ public class NadekoInteractionBuilder
     // {
     //     this.isOwn = isOwn;
     //     return this;
+    
     // }
     
     public NadekoInteractionBuilder WithAction(in Func<SocketMessageComponent, Task> fn)
@@ -28,7 +29,7 @@ public class NadekoInteractionBuilder
         return this;
     }
 
-    public NadekoActionInteraction Build(DiscordSocketClient client, ulong userId)
+    public NadekoButtonActionInteraction Build(DiscordSocketClient client, ulong userId)
     {
         if (iData is null)
             throw new InvalidOperationException("You have to specify the data before building the interaction");

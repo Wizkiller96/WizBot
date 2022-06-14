@@ -1,11 +1,11 @@
 ﻿namespace NadekoBot;
 
-public sealed class NadekoActionInteraction : NadekoOwnInteraction
+public sealed class NadekoButtonActionInteraction : NadekoButtonOwnInteraction
 {
     private readonly NadekoInteractionData _data;
     private readonly Func<SocketMessageComponent, Task> _action;
 
-    public NadekoActionInteraction(
+    public NadekoButtonActionInteraction(
         DiscordSocketClient client,
         ulong authorId,
         NadekoInteractionData data,
@@ -17,10 +17,12 @@ public sealed class NadekoActionInteraction : NadekoOwnInteraction
         _action = action;
     }
 
-    public override string Name
+    protected override string Name
         => _data.CustomId;
-    public override IEmote Emote
+    protected override IEmote Emote
         => _data.Emote;
+    protected override string? Text
+        => _data.Text;
 
     public override Task ExecuteOnActionAsync(SocketMessageComponent smc)
         => _action(smc);

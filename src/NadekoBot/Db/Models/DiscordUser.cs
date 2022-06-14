@@ -3,6 +3,8 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db.Models;
 
+
+// FUTURE remove LastLevelUp from here and UserXpStats
 public class DiscordUser : DbEntity
 {
     public ulong UserId { get; set; }

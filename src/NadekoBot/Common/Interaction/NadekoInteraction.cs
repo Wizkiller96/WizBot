@@ -1,23 +1,24 @@
 ﻿namespace NadekoBot;
 
-public abstract class NadekoInteraction
+public abstract class NadekoButtonInteraction
 {
     // improvements:
     //  - state in OnAction
     //  - configurable delay
     //  - 
-    public abstract string Name { get; }
-    public abstract IEmote Emote { get; }
+    protected abstract string Name { get; }
+    protected abstract IEmote Emote { get; }
+    protected virtual string? Text { get; } = null;
 
-    protected readonly DiscordSocketClient _client;
+    public DiscordSocketClient Client { get; }
 
     protected readonly TaskCompletionSource<bool> _interactionCompletedSource;
 
     protected IUserMessage message = null!;
 
-    protected NadekoInteraction(DiscordSocketClient client)
+    protected NadekoButtonInteraction(DiscordSocketClient client)
     {
-        _client = client;
+        Client = client;
         _interactionCompletedSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
     }
 
@@ -25,9 +26,9 @@ public abstract class NadekoInteraction
     {
         message = msg;
 
-        _client.InteractionCreated += OnInteraction;
+        Client.InteractionCreated += OnInteraction;
         await Task.WhenAny(Task.Delay(10_000), _interactionCompletedSource.Task);
-        _client.InteractionCreated -= OnInteraction;
+        Client.InteractionCreated -= OnInteraction;
 
         await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
     }
@@ -65,13 +66,18 @@ public abstract class NadekoInteraction
     }
 
 
-    public MessageComponent CreateComponent()
+    public virtual MessageComponent CreateComponent()
     {
         var comp = new ComponentBuilder()
-            .WithButton(new ButtonBuilder(style: ButtonStyle.Secondary, emote: Emote, customId: Name));
+            .WithButton(GetButtonBuilder());
 
         return comp.Build();
     }
 
+    public ButtonBuilder GetButtonBuilder()
+        => new ButtonBuilder(style: ButtonStyle.Secondary, emote: Emote, customId: Name, label: Text);
+
     public abstract Task ExecuteOnActionAsync(SocketMessageComponent smc);
 }
+
+// this is all so wrong ...

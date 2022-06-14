@@ -9,7 +9,6 @@
         <RootNamespace>Nadeko.Snake</RootNamespace>
         
         <Authors>The NadekoBot Team</Authors>
-        <Version>1.0.3</Version>
     </PropertyGroup>
 
     <ItemGroup>

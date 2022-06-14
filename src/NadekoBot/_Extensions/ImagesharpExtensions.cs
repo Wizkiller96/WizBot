@@ -100,4 +100,25 @@ public static class ImagesharpExtensions
         imageStream.Position = 0;
         return imageStream;
     }
+
+    public static async Task<MemoryStream> ToStreamAsync(this Image<Rgba32> img, IImageFormat? format = null)
+    {
+        var imageStream = new MemoryStream();
+        if (format?.Name == "GIF")
+        {
+            await img.SaveAsGifAsync(imageStream);
+        }
+        else
+        {
+            await img.SaveAsPngAsync(imageStream,
+                new PngEncoder()
+                {
+                    ColorType = PngColorType.RgbWithAlpha,
+                    CompressionLevel = PngCompressionLevel.DefaultCompression
+                });
+        }
+
+        imageStream.Position = 0;
+        return imageStream;
+    }
 }

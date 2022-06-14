@@ -14,7 +14,6 @@ public partial class Games
         public ChatterBotCommands(DbService db)
             => _db = db;
 
-        [NoPublicBot]
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]

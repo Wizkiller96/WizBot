@@ -3,7 +3,134 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.2.0] - 14.06.2022
+
+### Added
+
+- Added `data/searches.yml` file which configures some of the new search functionality
+  The file comments explaining what each property does.
+  Explained briefly here:
+  ```yml
+  # what will be used for .google command. Either google (official api) or searx
+  webSearchEngine: Google
+  # what will be used for .img command. Either google (official api) or searx
+  imgSearchEngine: Google
+  # how will yt results be retrieved: ytdataapi or ytdl or ytdlp
+  ytProvider: YtDataApiv3
+  # in case web or img search is set to searx, the following instances will be used:
+  searxInstances: []
+  # in case ytProvider is set to invidious, the following instances will be used
+  invidiousInstances: []
+  ```
+- Added new properties to `creds.yml`. google -> searchId and google -> searchImageId.
+- These properties are used as `cx` (google api query parameter) in case you've setup your `data/searches.yml` to use the official google api.
+  `searchId` is used for web search
+  `searchimageId` is used for image search
+  ```yml
+  google:
+      searchId: ""
+      searchImageId: ""
+  ```
+- Check `creds_example.yml` for comments explaining how to obtain them.
+
+#### Patronage system added
+- Added `data/patron.yml` for configuration
+- Implemented only for patreon so far
+- Patreon subscription code completely rewritten
+- Users who pledge on patreon get benefits based on the amount they pledged
+- Public nadeko only. But selfhosters can adapt it to their own patreon pages by configuring their patreon credentials in `creds.yml` and enabling the system in `data/patron.yml` file.
+  - Most of the patronage system strings are hardcoded atm, so if you wish to use this system on selfhosts, you will have to modify the source
+- Pledge amounts are split into tiers. This is not configurable atm.
+  - Tier I - 1$ - 4.99$ a month
+  - Tier V - 5$ - 9.99$ a month
+  - Tier X - 10$ - 19.99$ a month
+  - Tier XX - 20$ - 49.99$ a month
+  - Tier L - 50$ - 99.99$ a month
+  - Tier C - 100$+ a month
+- Rewards and command quotas for each of the tiers are configurable
+- Limitations to certain features are also configurable. ex:
+```yml
+quotas:
+    features:
+        "rero:max_count":
+            x: 50
+```
+- ^ this setting would set the maximum number of reaction roles to be 50 for a user who is in Patron Tier X
+- Read the comments in the .yml file for (much) more info
+- Quota system allows the owner to set up hourly, daily and monthly quota usage for each tier
+- Quota system applies to entire server owner by a patron
+  - Patron spends own quota by using the commands on any server
+  - Any user on *any* server owned by a patron spends that patron's quota
+- When users subscribe to patreon they will receive a welcome message
+  - If you're enabling patron system for a selfhost, you will want to edit it
+
+Added `.patron` and `.patronmessage` commands
+- `.patron` checks your patronage status, and quotas. Requires patron system to be enabled.
+- `.patronmessage` (owner only) sends message to all patrons with the specified tier or higher. Supports embeds
+
+- Added a fake `.cmdcd` command `cleverbot:response` which can be used to limit how often users can talk to the cleverbot.
+
+### Changed
+
+- CurrencyReward now support adding additional flowers to patrons.
+- `.donate` command completely reworked.
+  - Works only on public bot (OnlyPublicBotAttribute)
+  - Guides user on how to donate to support the project
+  - Added interaction explaining selfhosting
+
+- `.google` reimplemented. It now has 2 modes configurable in `data/searches.yml` under the `webSearchengine` property
+  - If set to `google`, official custom search api will be used. You will need to set googleapikey and google.searchId in `creds.yml`
+  - if set to `searx` one of the instances specified in the `searxInstances:` property will be randomly chosen for each request
+    - instances must have `format=json` allowed (public ones usually don't allow it)
+    - instances are specified as a fully qualified url, example: `https://my.cool.searx.instance.io`
+- `.image` reimplemented. Same as `.google` - it uses either `google` official api (in which case it uses `google.searchImageId` from `creds.yml`) or `searx`
+
+- `.youtube` reimplemented. It will use a `ytProvider:` property from `data/searches.yml` to determine how to retrieve results
+  - `ytdataapi` will use the official google api (requires `GoogleApiKey` specified in `creds.yml`) and YoutubeDataApi enabled in the dev console
+  - `ytdl` will use `youtube-dl` program from the host machine. It must be downloaded and it's location must be added to path env variable.
+  - `ytdlp` will use `yt-dlp` program from the host machine. Same as `youtube-dl` - must be in path env variable.
+  - `invidious` will use one of invidious instances specified in the `invidiousInstances` property. Very good. 
+
+- `.google`, `.youtube` and `.image` moved to the new Search group
+
+Note: Results of each `.youtube` query will be cached for 1 hour to improve perfomance
+- Removed 30 second `.ping` ratelimit on public nadeko
+
+- xp image generation changes
+  - In case you have default settings, your xp image will look slightly different
+  - If you've modified xp_template.json, your xp image might look broken. Your old template will be saved in xp_template.json.old
+  - Xp number outline is now slightly thicker
+  - Xp number will now have Center vertical and horizontal alignment
+  - LastLevelUp no longer supported
+
+- Some commands will now use timestamp tags for better user experience
+- `.prune` was slightly slowed down to avoid ratelimits
+- `.wof` moved from it's own group to the default Gambling group
+- `.feed` urls which error for more than 100 times will be automatically removed.
+- `.ve` is now enabled by default
+
+- [dev] nadeko interaction slightly improved to make it less nonsense (they still don't make sense)  
+- [dev] RewardedUsers table slightly changed to make it more general  
+- [dev] renamed `// todo`s which aren't planned soon to `// FUTURE`  
+- [dev] currency rewards have been reimplemented and moved to a separate service  
+
+### Fixed
+ 
+- `.rh` no longer needs quotes for multi word roles
+- `.deletexp` will now properly delete server xp too
+- [dev] added support for configs to properly parse enums without case sensitivity (ConfigParsers.InsensitiveEnum)
+- [dev] Fixed a bug in .gencmdlist  
+- [dev] small fixes to creds provider  
+
+### Removed
+
+- `.ddg` removed.
+- [dev] removed some dead code and comments
+
+### Obsolete
+
+
+  
 
 ### Fixed
 

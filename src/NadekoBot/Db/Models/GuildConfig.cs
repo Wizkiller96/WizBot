@@ -84,7 +84,7 @@ public class GuildConfig : DbEntity
 
     public List<ShopEntry> ShopEntries { get; set; }
     public ulong? GameVoiceChannel { get; set; }
-    public bool VerboseErrors { get; set; }
+    public bool VerboseErrors { get; set; } = true;
 
     public StreamRoleSettings StreamRole { get; set; }
 

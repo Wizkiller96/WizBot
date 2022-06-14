@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 coins:
   heads:
     - https://cdn.nadeko.bot/coins/heads3.png
@@ -24,7 +24,7 @@ rategirl:
   matrix: https://cdn.nadeko.bot/other/rategirl/matrix.png
   dot: https://cdn.nadeko.bot/other/rategirl/dot.png
 xp:
-  bg: https://cdn.nadeko.bot/other/xp/bg.png
+  bg: https://cdn.nadeko.bot/other/xp/bg_k.png
 rip:
   bg: https://cdn.nadeko.bot/other/rip/rip.png
   overlay: https://cdn.nadeko.bot/other/rip/overlay.png

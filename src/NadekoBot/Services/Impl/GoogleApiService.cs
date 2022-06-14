@@ -1,6 +1,5 @@
 #nullable disable
 using Google;
-using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using Google.Apis.Urlshortener.v1;
 using Google.Apis.YouTube.v3;
@@ -13,8 +12,6 @@ namespace NadekoBot.Services;
 
 public class GoogleApiService : IGoogleApiService, INService
 {
-    private const string SEARCH_ENGINE_ID = "018084019232060951019:hs5piey28-e";
-
     private static readonly Regex
         _plRegex = new("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
 
@@ -153,13 +150,12 @@ public class GoogleApiService : IGoogleApiService, INService
 
     private readonly YouTubeService _yt;
     private readonly UrlshortenerService _sh;
-    private readonly CustomsearchService _cs;
 
     //private readonly Regex YtVideoIdRegex = new Regex(@"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})", RegexOptions.Compiled);
-    private readonly IBotCredentials _creds;
+    private readonly IBotCredsProvider _creds;
     private readonly IHttpClientFactory _httpFactory;
 
-    public GoogleApiService(IBotCredentials creds, IHttpClientFactory factory)
+    public GoogleApiService(IBotCredsProvider creds, IHttpClientFactory factory)
     {
         _creds = creds;
         _httpFactory = factory;
@@ -167,12 +163,11 @@ public class GoogleApiService : IGoogleApiService, INService
         var bcs = new BaseClientService.Initializer
         {
             ApplicationName = "Nadeko Bot",
-            ApiKey = _creds.GoogleApiKey
+            ApiKey = _creds.GetCreds().GoogleApiKey
         };
 
         _yt = new(bcs);
         _sh = new(bcs);
-        _cs = new(bcs);
     }
 
     public async Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1)
@@ -207,7 +202,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.RelatedToVideoId = id;
         query.Type = "video";
         query.QuotaUser = user;
-        return (await query.ExecuteAsync()).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
+        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
     public async Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
@@ -223,7 +218,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.Q = keywords;
         query.Type = "video";
         query.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.Strict;
-        return (await query.ExecuteAsync()).Items.Select(i => "http://www.youtube.com/watch?v=" + i.Id.VideoId);
+        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
     public async Task<IEnumerable<(string Name, string Id, string Url)>> GetVideoInfosByKeywordAsync(
@@ -241,7 +236,7 @@ public class GoogleApiService : IGoogleApiService, INService
         query.Q = keywords;
         query.Type = "video";
         return (await query.ExecuteAsync()).Items.Select(i
-            => (i.Snippet.Title.TrimTo(50), i.Id.VideoId, "http://www.youtube.com/watch?v=" + i.Id.VideoId));
+            => (i.Snippet.Title.TrimTo(50), i.Id.VideoId, "https://www.youtube.com/watch?v=" + i.Id.VideoId));
     }
 
     public Task<string> ShortenUrl(Uri url)
@@ -252,7 +247,7 @@ public class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentNullException(nameof(url));
 
-        if (string.IsNullOrWhiteSpace(_creds.GoogleApiKey))
+        if (string.IsNullOrWhiteSpace(_creds.GetCreds().GoogleApiKey))
             return url;
 
         try
@@ -332,25 +327,6 @@ public class GoogleApiService : IGoogleApiService, INService
         return toReturn;
     }
 
-    public async Task<ImageResult> GetImageAsync(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-            throw new ArgumentNullException(nameof(query));
-
-        var req = _cs.Cse.List();
-        req.Q = query;
-        req.Cx = SEARCH_ENGINE_ID;
-        req.Num = 1;
-        req.Fields = "items(image(contextLink,thumbnailLink),link)";
-        req.SearchType = CseResource.ListRequest.SearchTypeEnum.Image;
-        req.Start = new NadekoRandom().Next(0, 20);
-        req.Safe = CseResource.ListRequest.SafeEnum.Active;
-
-        var search = await req.ExecuteAsync();
-
-        return new(search.Items[0].Image, search.Items[0].Link);
-    }
-
     public async Task<string> Translate(string sourceText, string sourceLanguage, string targetLanguage)
     {
         string text;
@@ -380,3 +356,4 @@ public class GoogleApiService : IGoogleApiService, INService
         return mode;
     }
 }
+

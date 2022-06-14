@@ -149,7 +149,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RoleHoist(IRole role)
+        public async partial Task RoleHoist([Leftover] IRole role)
         {
             var newHoisted = !role.IsHoisted;
             await role.ModifyAsync(r => r.Hoist = newHoisted);

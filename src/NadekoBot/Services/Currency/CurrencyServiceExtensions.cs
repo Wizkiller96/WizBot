@@ -10,7 +10,7 @@ public static class CurrencyServiceExtensions
         return await wallet.GetBalance();
     }
     
-    // todo transfer should be a transaction
+    // FUTURE should be a transaction
     public static async Task<bool> TransferAsync(
         this ICurrencyService cs,
         IEmbedBuilderService ebs,
