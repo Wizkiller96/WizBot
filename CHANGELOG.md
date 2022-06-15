@@ -3,6 +3,17 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.2] - 15.06.2022
+
+### Fixed
+
+- Added missing Patron Tiers and fixed Patron pledge update bugs
+- Prevented creds_example.yml error in docker containers from crashing it
+
+### Changed
+
+- Rss feeds will now show error counter before deletion
+
 ## [4.2.1] - 14.06.2022
 
 ### Added
@@ -130,6 +141,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
  
 - `.rh` no longer needs quotes for multi word roles
 - `.deletexp` will now properly delete server xp too
+- Fixed `.crypto` sparklines
 - [dev] added support for configs to properly parse enums without case sensitivity (ConfigParsers.InsensitiveEnum)
 - [dev] Fixed a bug in .gencmdlist  
 - [dev] small fixes to creds provider  
@@ -138,15 +150,6 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 - `.ddg` removed.
 - [dev] removed some dead code and comments
-
-### Obsolete
-
-
-  
-
-### Fixed
-
-- Fixed `.crypto` sparklines
 
 ## [4.1.6] - 14.05.2022
 
