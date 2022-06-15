@@ -37,8 +37,15 @@ public sealed class BotCredsProvider : IBotCredsProvider
     public BotCredsProvider(int? totalShards = null)
     {
         _totalShards = totalShards;
-        if (!File.Exists(CredsExamplePath))
-            File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
+        try
+        {
+            if (!File.Exists(CredsExamplePath))
+                File.WriteAllText(CredsExamplePath, Yaml.Serializer.Serialize(_creds));
+        }
+        catch
+        {
+            // this can fail in docker containers
+        }
 
         MigrateCredentials();
 
