@@ -402,7 +402,7 @@ public partial class Help : NadekoModule<HelpService>
                     ContentType = "application/json",
                     ContentBody = uploadData,
                     // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
-                    Key = $"cmds/v4/{StatsService.BOT_VERSION}.json",
+                    Key = $"cmds/{StatsService.BOT_VERSION}.json",
                     CannedACL = S3CannedACL.PublicRead
                 });
             }
@@ -414,7 +414,7 @@ public partial class Help : NadekoModule<HelpService>
                 using var oldVersionObject = await dlClient.GetObjectAsync(new()
                 {
                     BucketName = "nadeko-pictures",
-                    Key = "cmds/v4/versions.json"
+                    Key = "cmds/versions.json"
                 });
 
                 await using var ms = new MemoryStream();
@@ -445,7 +445,7 @@ public partial class Help : NadekoModule<HelpService>
                     ContentType = "application/json",
                     ContentBody = versionListString,
                     // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
-                    Key = "cmds/v4/versions.json",
+                    Key = "cmds/versions.json",
                     CannedACL = S3CannedACL.PublicRead
                 });
             }
