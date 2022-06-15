@@ -234,23 +234,33 @@ public sealed class PatronageService
                              || dbPatron.UserId != subscriber.UserId) // if user updated user id)
                     {
                         // the user updated the pledge or changed the connected discord account
-                        var newData = await ctx.GetTable<PatronUser>()
-                                               .Where(x => x.UniquePlatformUserId == subscriber.UniquePlatformUserId
-                                                           && x.LastCharge < lastChargeUtc)
-                                               .UpdateWithOutputAsync(old => new()
-                                               {
-                                                   UserId = subscriber.UserId,
-                                                   AmountCents = subscriber.Cents,
-                                                   LastCharge = lastChargeUtc,
-                                                   ValidThru = old.ValidThru,
-                                               });
-                        await tran.CommitAsync();
-        
-                        // this should never happen
-                        if (newData.Length == 0)
+                        var count = await ctx.GetTable<PatronUser>()
+                                             .Where(x => x.UniquePlatformUserId == subscriber.UniquePlatformUserId
+                                                         && x.LastCharge < lastChargeUtc)
+                                             .UpdateAsync(old => new()
+                                             {
+                                                 UserId = subscriber.UserId,
+                                                 AmountCents = subscriber.Cents,
+                                                 LastCharge = lastChargeUtc,
+                                                 ValidThru = old.ValidThru,
+                                             });
+
+                        if (count == 0)
+                        {
+                            await tran.RollbackAsync();
                             continue;
-        
-                        await OnPatronUpdated(PatronUserToPatron(dbPatron), PatronUserToPatron(newData[0].Inserted));
+                        }
+
+                        var newData = await ctx.GetTable<PatronUser>()
+                                               .FirstAsync(x => x.UniquePlatformUserId 
+                                                                == subscriber.UniquePlatformUserId);
+
+
+                        await tran.CommitAsync();
+                        await OnPatronUpdated(
+                            PatronUserToPatron(dbPatron),
+                            PatronUserToPatron(newData));
+
                     }
                 }
             }
@@ -262,22 +272,26 @@ public sealed class PatronageService
             }
         }
         
+        var expiredDate = DateTime.MinValue;
         foreach (var patron in subscribers.Where(x => x.ChargeStatus == SubscriptionChargeStatus.Refunded))
         {
-            var expiredDate = DateTime.MinValue;
             // if the subscription is refunded, Disable user's valid thru 
-            var output = await ctx.GetTable<PatronUser>()
+            var changedCount = await ctx.GetTable<PatronUser>()
                                   .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId
                                               && x.ValidThru != expiredDate)
-                                  .UpdateWithOutputAsync(old => new()
+                                  .UpdateAsync(old => new()
                                   {
                                       ValidThru = expiredDate
                                   });
         
-            if (output.Length == 0)
+            if (changedCount == 0)
                 continue;
-        
-            await OnPatronRefunded(PatronUserToPatron(output[0].Inserted));
+
+            var updated = await ctx.GetTable<PatronUser>()
+                                  .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId)
+                                  .FirstAsync();
+            
+            await OnPatronRefunded(PatronUserToPatron(updated));
         }
     }
 
