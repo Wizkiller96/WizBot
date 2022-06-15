@@ -136,7 +136,7 @@ public class ChatterBotService : IExecOnMessage
 
             var channel = (ITextChannel)usrMsg.Channel;
             var conf = _ps.GetConfig();
-            if (conf.IsEnabled)
+            if (!_creds.IsOwner(sg.OwnerId) && conf.IsEnabled)
             {
                 var quota = await _ps.TryGetFeatureLimitAsync(_flKey, sg.OwnerId, 0);
 
