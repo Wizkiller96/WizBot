@@ -23,6 +23,8 @@ quotas:
       C: 100000
   # Dictionary of commands with their respective quota data
   commands:
+    cleverbot:
+      V: null
     prune:
       X:
         PerHour: 1

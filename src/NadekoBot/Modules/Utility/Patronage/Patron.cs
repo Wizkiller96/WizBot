@@ -5,10 +5,10 @@ public readonly struct Patron
     /// <summary>
     /// Unique id assigned to this patron by the payment platform
     /// </summary>
-    public string UnqiuePlatformUserId { get; init; }
+    public string UniquePlatformUserId { get; init; }
 
     /// <summary>
-    /// Discord UserId to which this <see cref="UnqiuePlatformUserId"/> is connected to
+    /// Discord UserId to which this <see cref="UniquePlatformUserId"/> is connected to
     /// </summary>
     public ulong UserId { get; init; }
 

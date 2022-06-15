@@ -75,19 +75,4 @@ public sealed class BankService : IBankService, INService
                ?.Balance
                ?? 0;
     }
-
-    public async Task<long> BurnAllAsync(ulong userId)
-    {
-        await using var ctx = _db.GetDbContext();
-        var output = await ctx.GetTable<BankUser>()
-                              .Where(x => x.UserId == userId)
-                              .UpdateWithOutputAsync(old => new()
-                              {
-                                  Balance = 0
-                              });
-        if (output.Length == 0)
-            return 0;
-        
-        return output[0].Deleted.Balance;
-    }
 }

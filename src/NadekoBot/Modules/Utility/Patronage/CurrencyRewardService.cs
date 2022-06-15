@@ -50,67 +50,91 @@ public class CurrencyRewardService : INService, IDisposable
 
     private async Task OnPatronUpdate(Patron oldPatron, Patron newPatron)
     {
-        if (oldPatron.Amount != newPatron.Amount)
+        // if pledge was increased
+        if (oldPatron.Amount < newPatron.Amount)
         {
             var conf = _config.Data;
+            var newAmount = (long)(newPatron.Amount * conf.PatreonCurrencyPerCent);
 
-            var newAmount = (long)(Math.Max(newPatron.Amount, oldPatron.Amount) * conf.PatreonCurrencyPerCent);
-            UpdateOutput<RewardedUser>[] output;
+            RewardedUser old;
             await using (var ctx = _db.GetDbContext())
             {
-                output = await ctx.GetTable<RewardedUser>()
-                                  .Where(x => x.PlatformUserId == newPatron.UnqiuePlatformUserId)
-                                  .UpdateWithOutputAsync(old => new()
+                old = await ctx.GetTable<RewardedUser>()
+                         .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
+                         .FirstOrDefaultAsync();
+                
+                if (old is null)
+                {
+                    await OnNewPayment(newPatron);
+                    return;
+                }
+                
+                // no action as the amount is the same or lower
+                if (old.AmountRewardedThisMonth >= newAmount)
+                    return;
+                
+                var count = await ctx.GetTable<RewardedUser>()
+                                  .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
+                                  .UpdateAsync(_ => new()
                                   {
-                                      PlatformUserId = newPatron.UnqiuePlatformUserId,
+                                      PlatformUserId = newPatron.UniquePlatformUserId,
                                       UserId = newPatron.UserId,
                                       // amount before bonuses
                                       AmountRewardedThisMonth = newAmount,
                                       LastReward = newPatron.PaidAt
                                   });
+
+                // shouldn't ever happen
+                if (count == 0)
+                    return;
             }
 
-            // if the user wasn't previously in the db for some reason,
-            // we will treat him as a new patron
-            if (output.Length == 0)
-            {
-                await OnNewPayment(newPatron);
-                return;
-            }
+            var oldAmount = old.AmountRewardedThisMonth;
 
-            var oldAmount = output[0].Deleted.AmountRewardedThisMonth;
-
-            var diff = newAmount - oldAmount;
+            var realNewAmount = GetRealCurrencyReward(
+                (int)(newAmount / conf.PatreonCurrencyPerCent),
+                newAmount,
+                out var percentBonus);
+            
+            var realOldAmount = GetRealCurrencyReward(
+                (int)(oldAmount / conf.PatreonCurrencyPerCent),
+                oldAmount,
+                out _);
+            
+            var diff = realNewAmount - realOldAmount;
             if (diff <= 0)
                 return; // no action if new is lower
 
             // if the user pledges 5$ or more, they will get X % more flowers where X is amount in dollars,
             // up to 100%
-
-            var realAmount = GetRealCurrencyReward(newPatron.Amount, diff, out var percentBonus);
-            await _cs.AddAsync(newPatron.UserId, realAmount, new TxData("patron","update"));
+            
+            await _cs.AddAsync(newPatron.UserId, diff, new TxData("patron","update"));
             
             _ = SendMessageToUser(newPatron.UserId,
-                $"You've received an additional **{realAmount}**{_config.Data.Currency.Sign} as a currency reward (+{percentBonus}%)!");
+                $"You've received an additional **{diff}**{_config.Data.Currency.Sign} as a currency reward (+{percentBonus}%)!");
         }
     }
 
-    private long GetRealCurrencyReward(int fullPledge, long currentAmount, out int percentBonus)
+    private long GetRealCurrencyReward(int pledgeCents, long modifiedAmount, out int percentBonus)
     {
         // needs at least 5$ to be eligible for a bonus
-        if (fullPledge < 500)
+        if (pledgeCents < 500)
         {
             percentBonus = 0;
-            return currentAmount;
+            return modifiedAmount;
         }
 
-        var dollarValue = fullPledge / 100;
+        var dollarValue = pledgeCents / 100;
         percentBonus = dollarValue switch
         {
-            > 100 => 100,
-            _ => dollarValue
+            >= 100 => 100,
+            >= 50 => 50,
+            >= 20 => 20,
+            >= 10 => 10,
+            >= 5 => 5,
+            _ => 0
         };
-        return (long)(currentAmount * (1 + (percentBonus / 100.0f)));
+        return (long)(modifiedAmount * (1 + (percentBonus / 100.0f)));
     }
 
     // on a new payment, always give the full amount.
@@ -121,7 +145,7 @@ public class CurrencyRewardService : INService, IDisposable
         await ctx.GetTable<RewardedUser>()
                  .InsertOrUpdateAsync(() => new()
                      {
-                         PlatformUserId = patron.UnqiuePlatformUserId,
+                         PlatformUserId = patron.UniquePlatformUserId,
                          UserId = patron.UserId,
                          AmountRewardedThisMonth = amount,
                          LastReward = patron.PaidAt,
@@ -134,7 +158,7 @@ public class CurrencyRewardService : INService, IDisposable
                      },
                      () => new()
                      {
-                         PlatformUserId = patron.UnqiuePlatformUserId
+                         PlatformUserId = patron.UniquePlatformUserId
                      });
         
         var realAmount = GetRealCurrencyReward(patron.Amount, amount, out var percentBonus);
@@ -167,24 +191,9 @@ public class CurrencyRewardService : INService, IDisposable
     {
         await using var ctx = _db.GetDbContext();
         _ = await ctx.GetTable<RewardedUser>()
-                     .UpdateWithOutputAsync(old => new()
+                     .UpdateAsync(old => new()
                      {
                          AmountRewardedThisMonth = old.AmountRewardedThisMonth * 2
                      });
-
-        // var toTake = old.Length == 0
-        //     ? patron.Amount
-        //     : old[0].Inserted.AmountRewardedThisMonth;
-
-        // if (toTake > 0)
-        // {
-        //     Log.Warning("Wiping the wallet and bank of the user {UserId} due to a refund/fraud...",
-        //         patron.UserId);
-        //     await _cs.RemoveAsync(patron.UserId, patron.Amount, new("patreon", "refund"));
-        //     await _bs.BurnAllAsync(patron.UserId);
-        //     Log.Warning("Burned {Amount} currency from the bank of the user {UserId} due to a refund/fraud.",
-        //         patron.Amount,
-        //         patron.UserId);
-        // }
     }
 }
