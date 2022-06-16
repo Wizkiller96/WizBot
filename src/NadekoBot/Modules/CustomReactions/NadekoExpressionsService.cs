@@ -189,7 +189,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                     continue;
                 }
 
-                // if CA is disabled, and CR has AllowTarget, then the
+                // if CA is disabled, and expr has AllowTarget, then the
                 // content has to start with the trigger followed by a space
                 if (expr.AllowTarget
                     && content.StartsWith(trigger, StringComparison.OrdinalIgnoreCase)

@@ -79,7 +79,7 @@ public partial class Permissions
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public partial Task CmdCooldown(CommandOrCrInfo command, int secs)
+        public partial Task CmdCooldown(CommandOrExprInfo command, int secs)
             => CmdCooldownInternal(command.Name, secs);
 
         [Cmd]
