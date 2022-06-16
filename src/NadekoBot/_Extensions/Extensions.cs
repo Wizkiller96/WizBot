@@ -221,7 +221,7 @@ public static class Extensions
 
     public static void Lap(this Stopwatch sw, string checkpoint)
     {
-        Log.Information("Checkpoint {CheckPoint}: {Time}", checkpoint, sw.Elapsed.TotalMilliseconds);
+        Log.Information("Checkpoint {CheckPoint}: {Time}ms", checkpoint, sw.Elapsed.TotalMilliseconds);
         sw.Restart();
     }
 }
