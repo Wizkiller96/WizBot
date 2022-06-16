@@ -77,8 +77,8 @@ Say you want to only enable NSFW commands for a specific role, just do the follo
 
 If you don't want server or global Expressions, just block the module that controls their usage:
 
-1. `.sm Expressions disable`
-    - Disables the ActualCustomReactions module from being used
+1. `.sm ActualExpressions disable`
+    - Disables the ActualExpression module from being used
 
 **Note**: The `Expressions` module controls the usage of Expressions. The `Expressions` module controls commands related to Expressions (such as `.acr`, `.lcr`, `.crca`, etc).
 
