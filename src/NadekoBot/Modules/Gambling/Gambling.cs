@@ -126,13 +126,15 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         if (_cache.AddTimelyClaim(ctx.User.Id, period) is { } rem)
         {
-            await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")));
+            var now = DateTime.UtcNow;
+            var relativeTag = TimestampTag.FromDateTime(now.Add(rem), TimestampTagStyles.Relative);
+            await ReplyErrorLocalizedAsync(strs.timely_already_claimed(relativeTag));
             return;
         }
 
         var result = await _ps.TryGetFeatureLimitAsync(_timelyKey, ctx.User.Id, 0);
 
-        val = (int)(val * (1 + (result.Quota * 0.01f)));
+        val = (int)(val * (1 + (result.Quota! * 0.01f)));
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 

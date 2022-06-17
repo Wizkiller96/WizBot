@@ -878,7 +878,7 @@
   "autodc_enable": "I will disconnect from the voice channel when there are no more tracks to play.",
   "autodc_disable": "I will no longer disconnect from the voice channel when there are no more tracks to play.",
   "timely_none": "Bot owner didn't specify a timely reward.",
-  "timely_already_claimed": "You've already claimed your timely reward. You can get it again in {0}.",
+  "timely_already_claimed": "You've already claimed your timely reward. You can get it again {0}.",
   "timely": "You've claimed your {0}. You can claim again in {1}h",
   "timely_set": "Users will be able to claim {0} every {1}h",
   "timely_set_none": "Users will not be able to claim any timely currency.",
