@@ -57,6 +57,6 @@ public sealed class QueueRunner
         }
     }
     
-    public ValueTask EnqueueAsync(Func<Task> action)
+    public ValueTask Enqueue(Func<Task> action)
         => _channel.Writer.WriteAsync(action);
 }
