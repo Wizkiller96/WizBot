@@ -1,4 +1,6 @@
 #nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -13,6 +15,7 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using StackExchange.Redis;
+using System.Threading.Channels;
 using Color = SixLabors.ImageSharp.Color;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -39,7 +42,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
     private readonly ConcurrentHashSet<ulong> _excludedServers;
 
-    private readonly ConcurrentQueue<UserCacheItem> _addMessageXp = new();
     private XpTemplate template;
     private readonly DiscordSocketClient _client;
 
@@ -127,144 +129,199 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         using var timer = new PeriodicTimer(5.Seconds());
         while (await timer.WaitForNextTickAsync())
         {
-            await UpdateLoop();
+            await UpdateXp();
         }
     }
 
-    private async Task UpdateLoop()
+
+    private readonly QueueRunner _levelUpQueue = new QueueRunner(0, 50);
+    private readonly Channel<UserCacheItem> _xpGainQueue = Channel.CreateUnbounded<UserCacheItem>();
+
+    private async Task UpdateXp()
     {
         try
         {
-            var toNotify =
-                new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, long Level,
-                    XpNotificationLocation NotifyType, NotifOf NotifOf)>();
-            var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
-            var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
+            var reader = _xpGainQueue.Reader;
 
-            var toAddTo = new List<UserCacheItem>();
-            while (_addMessageXp.TryDequeue(out var usr))
-                toAddTo.Add(usr);
-
-            var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
-            if (toAddTo.Count == 0)
+            // no elements, quick return
+            if (!reader.TryPeek(out _))
                 return;
 
-            await using (var uow = _db.GetDbContext())
+            await using var ctx = _db.GetDbContext();
+            await using var tran = await ctx.Database.BeginTransactionAsync();
+
+            var userAdds = new Dictionary<ulong, int>();
+            while (reader.TryRead(out var item))
             {
-                foreach (var item in group)
-                {
-                    var xp = item.Sum(x => x.XpAmount);
+                // // update xp
+                // await ctx.GetTable<UserXpStats>()
+                //          .Where(x => x.UserId == item.User.Id)
+                //          .UpdateWithOutputAsync(old => new()
+                //          {
+                //              Xp = old.Xp + item.XpAmount
+                //          }, (o, n) => n);
 
-                    var usr = uow.GetOrCreateUserXpStats(item.Key.GuildId, item.Key.User.Id);
-                    var du = uow.GetOrCreateUser(item.Key.User);
-
-                    var globalXp = du.TotalXp;
-                    var oldGlobalLevelData = new LevelStats(globalXp);
-                    var newGlobalLevelData = new LevelStats(globalXp + xp);
-
-                    var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-                    usr.Xp += xp;
-                    du.TotalXp += xp;
-                    if (du.Club is not null)
-                        du.Club.Xp += xp;
-                    var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
-
-                    if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
-                    {
-                        var first = item.First();
-                        if (du.NotifyOnLevelUp != XpNotificationLocation.None)
-                        {
-                            toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
-                                du.NotifyOnLevelUp, NotifOf.Global));
-                        }
-                    }
-
-                    if (oldGuildLevelData.Level < newGuildLevelData.Level)
-                    {
-                        //send level up notification
-                        var first = item.First();
-                        if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
-                        {
-                            toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
-                                usr.NotifyOnLevelUp, NotifOf.Server));
-                        }
-
-                        //give role
-                        if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
-                        {
-                            rrews = uow.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
-                            roleRewards.Add(usr.GuildId, rrews);
-                        }
-
-                        if (!curRewards.TryGetValue(usr.GuildId, out var crews))
-                        {
-                            crews = uow.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
-                            curRewards.Add(usr.GuildId, crews);
-                        }
-
-                        //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
-                        for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
-                        {
-                            var rrew = rrews.FirstOrDefault(x => x.Level == i);
-                            if (rrew is not null)
-                            {
-                                var role = first.User.Guild.GetRole(rrew.RoleId);
-                                if (role is not null)
-                                {
-                                    if (rrew.Remove)
-                                        _ = first.User.RemoveRoleAsync(role);
-                                    else
-                                        _ = first.User.AddRoleAsync(role);
-                                }
-                            }
-
-                            //get currency reward for this level
-                            var crew = crews.FirstOrDefault(x => x.Level == i);
-                            if (crew is not null)
-                                //give the user the reward if it exists
-                                await _cs.AddAsync(item.Key.User.Id, crew.Amount, new("xp", "level-up"));
-                        }
-                    }
-                }
-
-                uow.SaveChanges();
+                var user = item.User;
+                var du = await ctx.GetTable<DiscordUser>()
+                                  .Where(x => x.UserId == user.Id)
+                                  .UpdateWithOutputAsync(
+                                      old => new()
+                                      {
+                                          TotalXp = old.TotalXp + item.XpAmount
+                                      },
+                                      (_, n) => n);
             }
+            
+            await tran.CommitAsync();
 
-            await toNotify.Select(async x =>
-                          {
-                              if (x.NotifOf == NotifOf.Server)
-                              {
-                                  if (x.NotifyType == XpNotificationLocation.Dm)
-                                  {
-                                      await x.User.SendConfirmAsync(_eb,
-                                          _strings.GetText(strs.level_up_dm(x.User.Mention,
-                                                  Format.Bold(x.Level.ToString()),
-                                                  Format.Bold(x.Guild.ToString() ?? "-")),
-                                              x.Guild.Id));
-                                  }
-                                  else if (x.MessageChannel is not null) // channel
-                                  {
-                                      await x.MessageChannel.SendConfirmAsync(_eb,
-                                          _strings.GetText(strs.level_up_channel(x.User.Mention,
-                                                  Format.Bold(x.Level.ToString())),
-                                              x.Guild.Id));
-                                  }
-                              }
-                              else
-                              {
-                                  IMessageChannel chan;
-                                  if (x.NotifyType == XpNotificationLocation.Dm)
-                                      chan = await x.User.CreateDMChannelAsync();
-                                  else // channel
-                                      chan = x.MessageChannel;
+            var users = await ctx.GetTable<DiscordUser>()
+                                 .Where(x => userAdds.Keys.Contains(x.UserId))
+                                 .ToListAsyncLinqToDB();
 
-                                  await chan.SendConfirmAsync(_eb,
-                                      _strings.GetText(strs.level_up_global(x.User.Mention,
-                                              Format.Bold(x.Level.ToString())),
-                                          x.Guild.Id));
-                              }
-                          })
-                          .WhenAll();
+            // foreach (var user in users)
+            // {
+            //     var oldLevel = new LevelStats(user.TotalXp - userAdds[user.UserId]);
+            //     var newLevel = new LevelStats(user.TotalXp);
+            //
+            //     if (oldLevel.Level != newLevel.Level)
+            //     {
+            //         await _levelUpQueue.EnqueueAsync(
+            //             NotifyUser(user.UserId,
+            //                 user.NotifyOnLevelUp));
+            //     }
+            // }
+
+            return;
+            // var toNotify =
+            //     new List<(IGuild Guild, IMessageChannel MessageChannel, IUser User, long Level,
+            //         XpNotificationLocation NotifyType, NotifOf NotifOf)>();
+            // var roleRewards = new Dictionary<ulong, List<XpRoleReward>>();
+            // var curRewards = new Dictionary<ulong, List<XpCurrencyReward>>();
+            //
+            // var toAddTo = new List<UserCacheItem>();
+            // while (_addMessageXp.TryDequeue(out var usr))
+            //     toAddTo.Add(usr);
+            //
+            // var group = toAddTo.GroupBy(x => (GuildId: x.Guild.Id, x.User));
+            // if (toAddTo.Count == 0)
+            //     return;
+            //
+            // await using (var uow = _db.GetDbContext())
+            // {
+            //     foreach (var item in group)
+            //     {
+            //         var xp = item.Sum(x => x.XpAmount);
+            //
+            //         var usr = uow.GetOrCreateUserXpStats(item.Key.GuildId, item.Key.User.Id);
+            //         var du = uow.GetOrCreateUser(item.Key.User);
+            //
+            //         var globalXp = du.TotalXp;
+            //         var oldGlobalLevelData = new LevelStats(globalXp);
+            //         var newGlobalLevelData = new LevelStats(globalXp + xp);
+            //
+            //         var oldGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+            //         usr.Xp += xp;
+            //         du.TotalXp += xp;
+            //         if (du.Club is not null)
+            //             du.Club.Xp += xp;
+            //         var newGuildLevelData = new LevelStats(usr.Xp + usr.AwardedXp);
+            //
+            //         if (oldGlobalLevelData.Level < newGlobalLevelData.Level)
+            //         {
+            //             var first = item.First();
+            //             if (du.NotifyOnLevelUp != XpNotificationLocation.None)
+            //             {
+            //                 toNotify.Add((first.Guild, first.Channel, first.User, newGlobalLevelData.Level,
+            //                     du.NotifyOnLevelUp, NotifOf.Global));
+            //             }
+            //         }
+            //
+            //         if (oldGuildLevelData.Level < newGuildLevelData.Level)
+            //         {
+            //             //send level up notification
+            //             var first = item.First();
+            //             if (usr.NotifyOnLevelUp != XpNotificationLocation.None)
+            //             {
+            //                 toNotify.Add((first.Guild, first.Channel, first.User, newGuildLevelData.Level,
+            //                     usr.NotifyOnLevelUp, NotifOf.Server));
+            //             }
+            //
+            //             //give role
+            //             if (!roleRewards.TryGetValue(usr.GuildId, out var rrews))
+            //             {
+            //                 rrews = uow.XpSettingsFor(usr.GuildId).RoleRewards.ToList();
+            //                 roleRewards.Add(usr.GuildId, rrews);
+            //             }
+            //
+            //             if (!curRewards.TryGetValue(usr.GuildId, out var crews))
+            //             {
+            //                 crews = uow.XpSettingsFor(usr.GuildId).CurrencyRewards.ToList();
+            //                 curRewards.Add(usr.GuildId, crews);
+            //             }
+            //
+            //             //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
+            //             for (var i = oldGuildLevelData.Level + 1; i <= newGuildLevelData.Level; i++)
+            //             {
+            //                 var rrew = rrews.FirstOrDefault(x => x.Level == i);
+            //                 if (rrew is not null)
+            //                 {
+            //                     var role = first.User.Guild.GetRole(rrew.RoleId);
+            //                     if (role is not null)
+            //                     {
+            //                         if (rrew.Remove)
+            //                             _ = first.User.RemoveRoleAsync(role);
+            //                         else
+            //                             _ = first.User.AddRoleAsync(role);
+            //                     }
+            //                 }
+            //
+            //                 //get currency reward for this level
+            //                 var crew = crews.FirstOrDefault(x => x.Level == i);
+            //                 if (crew is not null)
+            //                     //give the user the reward if it exists
+            //                     await _cs.AddAsync(item.Key.User.Id, crew.Amount, new("xp", "level-up"));
+            //             }
+            //         }
+            //     }
+            //
+            //     uow.SaveChanges();
+            // }
+            //
+            // await toNotify.Select(async x =>
+            //               {
+            //                   if (x.NotifOf == NotifOf.Server)
+            //                   {
+            //                       if (x.NotifyType == XpNotificationLocation.Dm)
+            //                       {
+            //                           await x.User.SendConfirmAsync(_eb,
+            //                               _strings.GetText(strs.level_up_dm(x.User.Mention,
+            //                                       Format.Bold(x.Level.ToString()),
+            //                                       Format.Bold(x.Guild.ToString() ?? "-")),
+            //                                   x.Guild.Id));
+            //                       }
+            //                       else if (x.MessageChannel is not null) // channel
+            //                       {
+            //                           await x.MessageChannel.SendConfirmAsync(_eb,
+            //                               _strings.GetText(strs.level_up_channel(x.User.Mention,
+            //                                       Format.Bold(x.Level.ToString())),
+            //                                   x.Guild.Id));
+            //                       }
+            //                   }
+            //                   else
+            //                   {
+            //                       IMessageChannel chan;
+            //                       if (x.NotifyType == XpNotificationLocation.Dm)
+            //                           chan = await x.User.CreateDMChannelAsync();
+            //                       else // channel
+            //                           chan = x.MessageChannel;
+            //
+            //                       await chan.SendConfirmAsync(_eb,
+            //                           _strings.GetText(strs.level_up_global(x.User.Mention,
+            //                                   Format.Bold(x.Level.ToString())),
+            //                               x.Guild.Id));
+            //                   }
+            //               })
+            //               .WhenAll();
         }
         catch (Exception ex)
         {
@@ -272,7 +329,69 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
     }
 
+    private Func<Task> NotifyUser(
+        ulong guildId,
+        ulong channelId,
+        ulong userId,
+        bool isServer,
+        int level,
+        XpNotificationLocation notifyLoc)
+        => async () =>
+        {
+            var notify = HandleNotifyInternalAsync(guildId, channelId, userId, isServer, level, notifyLoc);
+
+            await Task.WhenAll(notify);
+        };
+
+    private async Task HandleNotifyInternalAsync(ulong guildId, ulong channelId, ulong userId, bool isServer, int level,
+        XpNotificationLocation notifyLoc)
+    {
+        var user = await _client.GetUserAsync(userId);
+        var guild = _client.GetGuild(guildId);
+        var ch = guild?.GetTextChannel(channelId);
+
+        if (user is null || guild is null)
+            return;
+
+        if (isServer)
+        {
+            if (notifyLoc == XpNotificationLocation.Dm)
+            {
+                await user.SendConfirmAsync(_eb,
+                    _strings.GetText(strs.level_up_dm(user.Mention,
+                            Format.Bold(level.ToString()),
+                            Format.Bold(guild.ToString() ?? "-")),
+                        guild.Id));
+            }
+            else // channel
+            {
+                await ch.SendConfirmAsync(_eb,
+                    _strings.GetText(strs.level_up_channel(user.Mention,
+                            Format.Bold(level.ToString())),
+                        guild.Id));
+            }
+        }
+        else // global level
+        {
+            var chan = notifyLoc switch
+            {
+                XpNotificationLocation.Dm => (IMessageChannel)await user.CreateDMChannelAsync(),
+                XpNotificationLocation.Channel => ch,
+                _ => null
+            };
+
+            if (chan is null)
+                return;
+
+            await chan.SendConfirmAsync(_eb,
+                _strings.GetText(strs.level_up_global(user.Mention,
+                        Format.Bold(level.ToString())),
+                    guild.Id));
+        }
+    }
+
     private const string XP_TEMPLATE_PATH = "./data/xp_template.json";
+
     private void InternalReloadXpTemplate()
     {
         try
@@ -297,7 +416,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 Log.Warning("Loaded default xp_template.json values as the old one was version 0. "
                             + "Old one was renamed to xp_template.json.old");
-                File.WriteAllText("./data/xp_template.json.old", JsonConvert.SerializeObject(template, Formatting.Indented));
+                File.WriteAllText("./data/xp_template.json.old",
+                    JsonConvert.SerializeObject(template, Formatting.Indented));
                 template = new();
                 template.Version = 1;
                 File.WriteAllText(XP_TEMPLATE_PATH, JsonConvert.SerializeObject(template, Formatting.Indented));
@@ -467,7 +587,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (socketUser is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
             if (before.VoiceChannel is not null)
                 ScanChannelForVoiceXp(before.VoiceChannel);
@@ -475,15 +595,17 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (after.VoiceChannel is not null && after.VoiceChannel != before.VoiceChannel)
                 ScanChannelForVoiceXp(after.VoiceChannel);
             else if (after.VoiceChannel is null)
+            {
                 // In this case, the user left the channel and the previous for loops didn't catch
                 // it because it wasn't in any new channel. So we need to get rid of it.
-                UserLeftVoiceChannel(user, before.VoiceChannel);
+                await UserLeftVoiceChannel(user, before.VoiceChannel);
+            }
         });
 
         return Task.CompletedTask;
     }
 
-    private void ScanChannelForVoiceXp(SocketVoiceChannel channel)
+    private async Task ScanChannelForVoiceXp(SocketVoiceChannel channel)
     {
         if (ShouldTrackVoiceChannel(channel))
         {
@@ -493,7 +615,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         else
         {
             foreach (var user in channel.Users)
-                UserLeftVoiceChannel(user, channel);
+                await UserLeftVoiceChannel(user, channel);
         }
     }
 
@@ -528,7 +650,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                   when: When.NotExists);
     }
 
-    private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
+    private async Task UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
     {
         var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
         var value = _cache.Redis.GetDatabase().StringGet(key);
@@ -549,7 +671,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
         if (actualXp > 0)
         {
-            _addMessageXp.Enqueue(new()
+            await _xpGainQueue.Writer.WriteAsync(new()
             {
                 Guild = channel.Guild,
                 User = user,
@@ -596,7 +718,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (!SetUserRewarded(user.Id))
                 return;
 
-            _addMessageXp.Enqueue(new()
+            _xpGainQueue.Writer.WriteAsync(new()
             {
                 Guild = user.Guild,
                 Channel = arg.Channel,
@@ -607,19 +729,19 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return Task.CompletedTask;
     }
 
-    public void AddXpDirectly(IGuildUser user, IMessageChannel channel, int amount)
-    {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-
-        _addMessageXp.Enqueue(new()
-        {
-            Guild = user.Guild,
-            Channel = channel,
-            User = user,
-            XpAmount = amount
-        });
-    }
+    // public void AddXpDirectly(IGuildUser user, IMessageChannel channel, int amount)
+    // {
+    //     if (amount <= 0)
+    //         throw new ArgumentOutOfRangeException(nameof(amount));
+    //
+    //     _xpGainQueue.Writer.WriteAsync(new()
+    //     {
+    //         Guild = user.Guild,
+    //         Channel = channel,
+    //         User = user,
+    //         XpAmount = amount
+    //     });
+    // }
 
     public void AddXp(ulong userId, ulong guildId, int amount)
     {
@@ -655,6 +777,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var r = _cache.Redis.GetDatabase();
         var key = $"{_creds.RedisKey()}_user_xp_gain_{userId}";
 
+        // todo remove this return
+        return true;
         return r.StringSet(key,
             true,
             TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
@@ -834,8 +958,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 return font;
             }
-            
-            
+
+
             if (template.User.GlobalLevel.Show)
             {
                 // up to 83 width
@@ -846,7 +970,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     FontStyle.Bold,
                     stats.Global.Level.ToString(),
                     75);
-                
+
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Global.Level.ToString(),
@@ -864,7 +988,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     FontStyle.Bold,
                     stats.Guild.Level.ToString(),
                     75);
-                
+
                 img.Mutate(x =>
                 {
                     x.DrawText(stats.Guild.Level.ToString(),
@@ -941,14 +1065,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.GlobalRank.Show)
             {
                 var globalRankStr = stats.GlobalRanking.ToString();
-                
+
                 var globalRankFont = GetTruncatedFont(
                     _fonts.UniSans,
                     template.User.GlobalRank.FontSize,
                     FontStyle.Bold,
                     globalRankStr,
                     68);
-                
+
                 img.Mutate(x => x.DrawText(globalRankStr,
                     globalRankFont,
                     template.User.GlobalRank.Color,
@@ -958,20 +1082,20 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.GuildRank.Show)
             {
                 var guildRankStr = stats.GuildRanking.ToString();
-                
+
                 var guildRankFont = GetTruncatedFont(
                     _fonts.UniSans,
                     template.User.GuildRank.FontSize,
                     FontStyle.Bold,
                     guildRankStr,
                     43);
-                
+
                 img.Mutate(x => x.DrawText(guildRankStr,
                     guildRankFont,
                     template.User.GuildRank.Color,
                     new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)));
             }
-            
+
             //avatar
             if (stats.User.AvatarId is not null && template.User.Icon.Show)
             {
@@ -1023,13 +1147,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 // #if GLOBAL_NADEKO
             await DrawFrame(img, stats.User.UserId);
 // #endif
-            
+
             var outputSize = template.OutputSize;
             if (outputSize.X != img.Width || outputSize.Y != img.Height)
                 img.Mutate(x => x.Resize(template.OutputSize.X, template.OutputSize.Y));
-            
+
             var output = ((Stream)await img.ToStreamAsync(imageFormat), imageFormat);
-            
+
             return output;
         });
 
