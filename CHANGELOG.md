@@ -3,6 +3,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.3] - 17.06.2022
+
+### Fixed
+
+- Fixed `.timely` nullref bug and made it nicer
+- Fixed `.streamrole` not updating in real time!
+- Disabling specific Global Expressions should now work with `.sc` (and other permission commands)
+
 ## [4.2.2] - 15.06.2022
 
 ### Fixed
