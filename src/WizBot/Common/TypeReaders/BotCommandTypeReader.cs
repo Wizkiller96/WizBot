@@ -48,7 +48,7 @@ public sealed class CommandOrCrTypeReader : WizBotTypeReader<CommandOrCrInfo>
     {
         input = input.ToUpperInvariant();
 
-        if (_exprs.ExpressionExists(ctx.Guild?.Id, input))
+        if (_exprs.ExpressionExists(ctx.Guild?.Id, input) || _exprs.ExpressionExists(null, input))
             return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(ctx, input);
