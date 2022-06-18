@@ -17,7 +17,7 @@ It is recommended that you use **Ubuntu 20.04**, as there have been nearly no pr
 
 ##### Compatible operating systems:
 
-- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10
+- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10, 22.04
 - Mint: 19, 20
 - Debian: 9, 10
 - CentOS: 7
@@ -63,9 +63,20 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 4. Run the bot (type `3` and press enter)
 5. 🎉 
 
+## **⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠**
+
 ## Linux Release
 
-**⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠** 
+###### Prerequisites
+
+1. WizBot requires redis to function
+   - ubuntu installation command: `sudo apt-get install redis-server`
+2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `youtube-dl` (which in turn requires python3)
+   - ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
+3. Make sure your python is version 3+ with `python --version`
+   - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
+
+*You can use nadeko bash script [prerequisites installer](https://github.com/Wizkiller96/wizbot-bash-installer/blob/v4/w-prereq.sh) as a reference*
 
 ##### Installation Instructions
 
@@ -91,19 +102,6 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
     - `./WizBot`
 
 ##### Release Update Instructions
-
-###### Prerequisites
-
-1. WizBot requires redis to function
-   - ubuntu installation command: `sudo apt-get install redis-server`
-2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `youtube-dl` (which in turn requires python3)
-   - ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
-3. Make sure your python is version 3+ with `python --version`
-   - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
-
-*You can use wizbot bash script [prerequisites installer](https://github.com/Wizkiller96/wizbot-bash-installer/blob/v4/w-prereq.sh) as a reference*
-
-###### Installation
 
 1. Stop the bot
 2. Download the latest release from <https://gitlab.com/WizNet/WizBot/-/releases>
