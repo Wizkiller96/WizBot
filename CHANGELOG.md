@@ -3,9 +3,17 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.2.1] - 14.06.2022
 
--
+### Added
+
+- Localized strings updated
+
+### Fixed
+
+- Fixed `.exexport`, `.savechat`, and `.quoteexport`
+- Fixed plaintext-only embeds
+- Fixed greet message footer not showing origin server
 
 ## [4.2.0] - 14.06.2022
 
