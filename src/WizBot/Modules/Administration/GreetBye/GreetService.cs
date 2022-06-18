@@ -260,7 +260,7 @@ public class GreetService : INService, IReadyExecutor
                 };
             }
 
-            else if (text is SmartEmbedText set)
+            if (text is SmartEmbedText set)
             {
                 text = set with
                 {
