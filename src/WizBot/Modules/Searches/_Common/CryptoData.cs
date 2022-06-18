@@ -16,11 +16,11 @@ public class CmcQuote
     [JsonPropertyName("volume_24h")]
     public double Volume24h { get; set; }
 
-    [JsonPropertyName("volume_change_24h")]
-    public double VolumeChange24h { get; set; }
-
-    [JsonPropertyName("percent_change_1h")]
-    public double PercentChange1h { get; set; }
+    // [JsonPropertyName("volume_change_24h")]
+    // public double VolumeChange24h { get; set; }
+    //
+    // [JsonPropertyName("percent_change_1h")]
+    // public double PercentChange1h { get; set; }
 
     [JsonPropertyName("percent_change_24h")]
     public double PercentChange24h { get; set; }
@@ -33,12 +33,6 @@ public class CmcQuote
 
     [JsonPropertyName("market_cap_dominance")]
     public double MarketCapDominance { get; set; }
-
-    [JsonPropertyName("fully_diluted_market_cap")]
-    public double FullyDilutedMarketCap { get; set; }
-
-    [JsonPropertyName("last_updated")]
-    public DateTime LastUpdated { get; set; }
 }
 
 public class CmcResponseData
@@ -58,9 +52,6 @@ public class CmcResponseData
     [JsonPropertyName("cmc_rank")]
     public int CmcRank { get; set; }
 
-    [JsonPropertyName("num_market_pairs")]
-    public int NumMarketPairs { get; set; }
-
     [JsonPropertyName("circulating_supply")]
     public double? CirculatingSupply { get; set; }
 
@@ -69,15 +60,6 @@ public class CmcResponseData
 
     [JsonPropertyName("max_supply")]
     public double? MaxSupply { get; set; }
-
-    [JsonPropertyName("last_updated")]
-    public DateTime LastUpdated { get; set; }
-
-    [JsonPropertyName("date_added")]
-    public DateTime DateAdded { get; set; }
-
-    [JsonPropertyName("tags")]
-    public List<string> Tags { get; set; }
 
     [JsonPropertyName("quote")]
     public Dictionary<string, CmcQuote> Quote { get; set; }

@@ -138,9 +138,9 @@ public class CryptoService : INService
                         using var http = _httpFactory.CreateClient();
                         var strData = await http.GetFromJsonAsync<CryptoResponse>(
                             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?"
-                            + $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}"
+                            + $"CMC_PRO_API_KEY=e79ec505-0913-439d-ae07-069e296a6079"
                             + "&start=1"
-                            + "&limit=5000"
+                            + "&limit=5"
                             + "&convert=USD");
 
                         return JsonSerializer.Serialize(strData);
