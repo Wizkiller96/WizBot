@@ -697,7 +697,7 @@ public sealed class PatronageService
             return new()
             {
                 Name = key.PrettyName,
-                Quota = default,
+                Quota = defaultValue,
                 IsPatronLimit = false
             };
         
