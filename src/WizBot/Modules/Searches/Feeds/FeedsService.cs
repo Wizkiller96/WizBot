@@ -49,7 +49,7 @@ public class FeedsService : INService
     private void ClearErrors(string url)
         => _errorCounters.Remove(url);
 
-    private async Task AddError(string url, List<int> ids)
+    private async Task<uint> AddError(string url, List<int> ids)
     {
         try
         {
@@ -68,10 +68,13 @@ public class FeedsService : INService
                 // reset the error counter
                 ClearErrors(url);
             }
+            
+            return newValue;
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error adding rss errors...");
+            return 0;
         }
     }
 
@@ -181,12 +184,13 @@ public class FeedsService : INService
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning("An error occured while getting rss stream {RssFeed}"
+                    var errorCount = await AddError(rssUrl, kvp.Value.Select(x => x.Id).ToList());
+                    
+                    Log.Warning("An error occured while getting rss stream ({ErrorCount} / 100) {RssFeed}"
                                 + "\n {Message}",
+                        errorCount,
                         rssUrl,
                         $"[{ex.GetType().Name}]: {ex.Message}");
-
-                    await AddError(rssUrl, kvp.Value.Select(x => x.Id).ToList());
                 }
             }
 
