@@ -221,7 +221,7 @@ public class StreamRoleService : IReadyExecutor, INService
     }
 
     private async ValueTask RescanUser(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
-        => await _queueRunner.EnqueueAsync(() => RescanUserInternal(user, setting, addRole));
+        => await _queueRunner.Enqueue(() => RescanUserInternal(user, setting, addRole));
 
     private async Task RescanUserInternal(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
     {
@@ -239,7 +239,7 @@ public class StreamRoleService : IReadyExecutor, INService
             && setting.Blacklist.All(x => x.UserId != user.Id)
             && user.RoleIds.Contains(setting.FromRoleId))
         {
-            await _queueRunner.EnqueueAsync(async () =>
+            await _queueRunner.Enqueue(async () =>
             {
                 try
                 {
@@ -277,7 +277,7 @@ public class StreamRoleService : IReadyExecutor, INService
             //check if user is in the addrole
             if (user.RoleIds.Contains(setting.AddRoleId))
             {
-                await _queueRunner.EnqueueAsync(async () =>
+                await _queueRunner.Enqueue(async () =>
                 {
                     try
                     {

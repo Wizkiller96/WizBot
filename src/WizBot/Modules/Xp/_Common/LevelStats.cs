@@ -3,7 +3,7 @@ using WizBot.Modules.Xp.Services;
 
 namespace WizBot.Modules.Xp;
 
-public readonly struct LevelStats
+public class LevelStats
 {
     public long Level { get; }
     public long LevelXp { get; }
