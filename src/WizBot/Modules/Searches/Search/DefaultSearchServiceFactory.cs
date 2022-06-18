@@ -1,4 +1,5 @@
-﻿using WizBot.Modules.Searches.Youtube;
+﻿using WizBot.Modules.Searches.GoogleScrape;
+using WizBot.Modules.Searches.Youtube;
 
 namespace WizBot.Modules.Searches;
 
@@ -12,10 +13,12 @@ public sealed class DefaultSearchServiceFactory : ISearchServiceFactory, INServi
     private readonly YtdlYoutubeSearchService _ytdl;
     private readonly YoutubeDataApiSearchService _ytdata;
     private readonly InvidiousYtSearchService _iYtSs;
+    private readonly GoogleScrapeService _gscs;
 
     public DefaultSearchServiceFactory(
         SearchesConfigService scs,
         GoogleSearchService gss,
+        GoogleScrapeService gscs,
         SearxSearchService sss,
         YtdlpYoutubeSearchService ytdlp,
         YtdlYoutubeSearchService ytdl,
@@ -25,6 +28,7 @@ public sealed class DefaultSearchServiceFactory : ISearchServiceFactory, INServi
         _scs = scs;
         _sss = sss;
         _gss = gss;
+        _gscs = gscs;
         _iYtSs = iYtSs;
 
         _ytdlp = ytdlp;
@@ -36,6 +40,7 @@ public sealed class DefaultSearchServiceFactory : ISearchServiceFactory, INServi
         => _scs.Data.WebSearchEngine switch
         {
             WebSearchEngine.Google => _gss,
+            WebSearchEngine.Google_Scrape => _gscs,
             WebSearchEngine.Searx => _sss,
             _ => _gss
         };

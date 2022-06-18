@@ -25,7 +25,7 @@ public sealed class SearxSearchService : SearchServiceBase, INService
         return instances[_rng.Next(0, instances.Count)];
     }
     
-    public override async ITask<SearxSearchResult> SearchAsync(string query)
+    public override async ITask<SearxSearchResult> SearchAsync(string? query)
     {
         ArgumentNullException.ThrowIfNull(query);
 

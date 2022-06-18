@@ -27,5 +27,19 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             sc => sc.YtProvider,
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
+        
+        Migrate();
+    }
+
+    private void Migrate()
+    {
+        if (data.Version < 1)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 1;
+                c.WebSearchEngine = WebSearchEngine.Google_Scrape;
+            });
+        }
     }
 }
