@@ -472,9 +472,6 @@ public partial class Utility : WizBotModule
     }
 
     [Cmd]
-#if GLOBAL_WIZBOT
-        [Ratelimit(30)]
-#endif
     public async partial Task Ping()
     {
         await sem.WaitAsync(5000);

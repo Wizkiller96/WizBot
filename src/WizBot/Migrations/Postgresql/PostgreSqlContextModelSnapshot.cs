@@ -17,7 +17,7 @@ namespace WizBot.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -194,10 +194,10 @@ namespace WizBot.Migrations.PostgreSql
                         .HasDefaultValue(0)
                         .HasColumnName("notifyonlevelup");
 
-                    b.Property<int>("TotalXp")
+                    b.Property<long>("TotalXp")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
                         .HasColumnName("totalxp");
 
                     b.Property<decimal>("UserId")
@@ -273,6 +273,74 @@ namespace WizBot.Migrations.PostgreSql
                         .HasDatabaseName("ix_followedstream_guildconfigid");
 
                     b.ToTable("followedstream", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.PatronQuota", b =>
+                {
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("FeatureType")
+                        .HasColumnType("integer")
+                        .HasColumnName("featuretype");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("text")
+                        .HasColumnName("feature");
+
+                    b.Property<long>("DailyCount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("dailycount");
+
+                    b.Property<long>("HourlyCount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("hourlycount");
+
+                    b.Property<long>("MonthlyCount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("monthlycount");
+
+                    b.HasKey("UserId", "FeatureType", "Feature")
+                        .HasName("pk_patronquotas");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_patronquotas_userid");
+
+                    b.ToTable("patronquotas", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
+                {
+                    b.Property<decimal>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("integer")
+                        .HasColumnName("amountcents");
+
+                    b.Property<DateTime>("LastCharge")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lastcharge");
+
+                    b.Property<string>("UniquePlatformUserId")
+                        .HasColumnType("text")
+                        .HasColumnName("uniqueplatformuserid");
+
+                    b.Property<DateTime>("ValidThru")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("validthru");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_patrons");
+
+                    b.HasIndex("UniquePlatformUserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+
+                    b.ToTable("patrons", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
@@ -1194,7 +1262,9 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("timezoneid");
 
                     b.Property<bool>("VerboseErrors")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
+                        .HasDefaultValue(true)
                         .HasColumnName("verboseerrors");
 
                     b.Property<bool>("VerbosePermissions")
@@ -2058,8 +2128,8 @@ namespace WizBot.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AmountRewardedThisMonth")
-                        .HasColumnType("integer")
+                    b.Property<long>("AmountRewardedThisMonth")
+                        .HasColumnType("bigint")
                         .HasColumnName("amountrewardedthismonth");
 
                     b.Property<DateTime?>("DateAdded")
@@ -2070,9 +2140,9 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("lastreward");
 
-                    b.Property<string>("PatreonUserId")
+                    b.Property<string>("PlatformUserId")
                         .HasColumnType("text")
-                        .HasColumnName("patreonuserid");
+                        .HasColumnName("platformuserid");
 
                     b.Property<decimal>("UserId")
                         .HasColumnType("numeric(20,0)")
@@ -2081,9 +2151,9 @@ namespace WizBot.Migrations.PostgreSql
                     b.HasKey("Id")
                         .HasName("pk_rewardedusers");
 
-                    b.HasIndex("PatreonUserId")
+                    b.HasIndex("PlatformUserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_rewardedusers_patreonuserid");
+                        .HasDatabaseName("ix_rewardedusers_platformuserid");
 
                     b.ToTable("rewardedusers", (string)null);
                 });
@@ -2526,8 +2596,8 @@ namespace WizBot.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AwardedXp")
-                        .HasColumnType("integer")
+                    b.Property<long>("AwardedXp")
+                        .HasColumnType("bigint")
                         .HasColumnName("awardedxp");
 
                     b.Property<DateTime?>("DateAdded")
@@ -2552,8 +2622,8 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("userid");
 
-                    b.Property<int>("Xp")
-                        .HasColumnType("integer")
+                    b.Property<long>("Xp")
+                        .HasColumnType("bigint")
                         .HasColumnName("xp");
 
                     b.HasKey("Id")

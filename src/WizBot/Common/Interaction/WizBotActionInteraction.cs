@@ -1,11 +1,11 @@
 ﻿namespace WizBot;
 
-public sealed class WizBotActionInteraction : WizBotOwnInteraction
+public sealed class WizBotButtonActionInteraction : WizBotButtonOwnInteraction
 {
     private readonly WizBotInteractionData _data;
     private readonly Func<SocketMessageComponent, Task> _action;
 
-    public WizBotActionInteraction(
+    public WizBotButtonActionInteraction(
         DiscordSocketClient client,
         ulong authorId,
         WizBotInteractionData data,
@@ -17,10 +17,12 @@ public sealed class WizBotActionInteraction : WizBotOwnInteraction
         _action = action;
     }
 
-    public override string Name
+    protected override string Name
         => _data.CustomId;
-    public override IEmote Emote
+    protected override IEmote Emote
         => _data.Emote;
+    protected override string? Text
+        => _data.Text;
 
     public override Task ExecuteOnActionAsync(SocketMessageComponent smc)
         => _action(smc);

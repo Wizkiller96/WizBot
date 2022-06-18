@@ -134,6 +134,25 @@ public class HelpService : IExecNoCommand, INService
         
         if (cmd.Preconditions.Any(x => x is AdminOnlyAttribute))
             toReturn.Add("Bot Staff Only");
+        
+        if(cmd.Preconditions.Any(x => x is NoPublicBotAttribute)
+           || cmd.Module
+                 .Preconditions
+                 .Any(x => x is NoPublicBotAttribute)
+           || cmd.Module.GetTopLevelModule()
+                 .Preconditions
+                 .Any(x => x is NoPublicBotAttribute))
+            toReturn.Add("No Public Bot");
+
+        if (cmd.Preconditions
+               .Any(x => x is OnlyPublicBotAttribute)
+            || cmd.Module
+                  .Preconditions
+                  .Any(x => x is OnlyPublicBotAttribute)
+            || cmd.Module.GetTopLevelModule()
+                  .Preconditions
+                  .Any(x => x is OnlyPublicBotAttribute))
+            toReturn.Add("Only Public Bot");
 
         var userPerm = (UserPermAttribute)cmd.Preconditions.FirstOrDefault(ca => ca is UserPermAttribute);
 

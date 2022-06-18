@@ -20,6 +20,7 @@ public class WizBotInteractionBuilder
     // {
     //     this.isOwn = isOwn;
     //     return this;
+    
     // }
     
     public WizBotInteractionBuilder WithAction(in Func<SocketMessageComponent, Task> fn)
@@ -28,7 +29,7 @@ public class WizBotInteractionBuilder
         return this;
     }
 
-    public WizBotActionInteraction Build(DiscordSocketClient client, ulong userId)
+    public WizBotButtonActionInteraction Build(DiscordSocketClient client, ulong userId)
     {
         if (iData is null)
             throw new InvalidOperationException("You have to specify the data before building the interaction");

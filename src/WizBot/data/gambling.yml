@@ -52,10 +52,10 @@ generation:
 timely:
 # How much currency will the users get every time they run .timely command
 # setting to 0 or less will disable this feature
-  amount: 0
+  amount: 120
   # How often (in hours) can users claim currency with .timely command
   # setting to 0 or less will disable this feature
-  cooldown: 24
+  cooldown: 12
 # How much will each user's owned currency decay over time.
 decay:
 # Percentage of user's current currency which will be deducted every 24h.

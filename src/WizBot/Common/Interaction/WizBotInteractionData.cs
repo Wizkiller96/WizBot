@@ -5,4 +5,4 @@
 /// </summary>
 /// <param name="Emote">Emote which will show on a button</param>
 /// <param name="CustomId">Custom interaction id</param>
-public record WizBotInteractionData(IEmote Emote, string CustomId);
+public record WizBotInteractionData(IEmote Emote, string CustomId, string? Text = null);

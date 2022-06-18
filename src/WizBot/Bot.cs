@@ -4,9 +4,11 @@ using WizBot.Common.Configs;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 using WizBot.Modules.Administration;
+using WizBot.Modules.Utility;
 using WizBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using RunMode = Discord.Commands.RunMode;
 
@@ -121,6 +123,12 @@ public sealed class Bot
             {
                 AllowAutoRedirect = false
             });
+        
+        svcs.AddHttpClient("google:search")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
 
         if (Environment.GetEnvironmentVariable("WIZBOT_IS_COORDINATED") != "1")
             svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
@@ -160,6 +168,7 @@ public sealed class Bot
         //initialize Services
         Services = svcs.BuildServiceProvider();
         Services.GetRequiredService<IBehaviorHandler>().Initialize();
+        Services.GetRequiredService<CurrencyRewardService>();
 
         if (Client.ShardId == 0)
             ApplyConfigMigrations();

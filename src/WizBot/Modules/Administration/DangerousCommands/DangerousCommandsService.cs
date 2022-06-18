@@ -23,6 +23,8 @@ public class DangerousCommandsService : INService
             // IsClubAdmin = false,
             TotalXp = 0
         });
+        
+        await ctx.UserXpStats.DeleteAsync();
         await ctx.ClubApplicants.DeleteAsync();
         await ctx.ClubBans.DeleteAsync();
         await ctx.Clubs.DeleteAsync();

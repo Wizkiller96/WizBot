@@ -30,7 +30,7 @@ public static class MessageChannelExtensions
     public static async Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
         string? plainText,
-        WizBotInteraction? inter,
+        WizBotButtonInteraction? inter,
         Embed? embed = null,
         IReadOnlyCollection<Embed>? embeds = null,
         bool sanitizeAll = false)
@@ -69,7 +69,7 @@ public static class MessageChannelExtensions
         IEmbedBuilder? embed,
         string plainText = "",
         IReadOnlyCollection<IEmbedBuilder>? embeds = null,
-        WizBotInteraction? inter = null)
+        WizBotButtonInteraction? inter = null)
         => ch.SendAsync(plainText,
             inter,
             embed: embed?.Build(),
@@ -80,7 +80,7 @@ public static class MessageChannelExtensions
         IEmbedBuilderService eb,
         string text,
         MessageType type,
-        WizBotInteraction? inter = null)
+        WizBotButtonInteraction? inter = null)
     {
         var builder = eb.Create().WithDescription(text);
 
@@ -106,12 +106,14 @@ public static class MessageChannelExtensions
         this IMessageChannel ch,
         IEmbedBuilderService eb,
         MessageType type,
-        string title,
+        string? title,
         string text,
         string? url = null,
         string? footer = null)
     {
-        var embed = eb.Create().WithDescription(text).WithTitle(title);
+        var embed = eb.Create()
+                      .WithDescription(text)
+                      .WithTitle(title);
 
         if (url is not null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
             embed.WithUrl(url);
@@ -135,7 +137,7 @@ public static class MessageChannelExtensions
     public static Task<IUserMessage> SendConfirmAsync(
         this IMessageChannel ch,
         IEmbedBuilderService eb,
-        string title,
+        string? title,
         string text,
         string? url = null,
         string? footer = null)

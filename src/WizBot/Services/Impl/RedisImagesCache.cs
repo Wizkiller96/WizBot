@@ -113,12 +113,12 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
                             Heads =
                                 oldData.Coins.Heads.Length == 1
                                 && oldData.Coins.Heads[0].ToString()
-                                == "https://wizbot-pictures.nyc3.digitaloceanspaces.com/other/coins/heads.png"
+                                == "https://wizbot-images.nyc3.digitaloceanspaces.com/other/coins/heads.png"
                                     ? new[] { new Uri("https://cdn.wizbot.cc/coins/heads3.png") }
                                     : oldData.Coins.Heads,
                             Tails = oldData.Coins.Tails.Length == 1
                                     && oldData.Coins.Tails[0].ToString()
-                                    == "https://wizbot-pictures.nyc3.digitaloceanspaces.com/other/coins/tails.png"
+                                    == "https://wizbot-images.nyc3.digitaloceanspaces.com/other/coins/tails.png"
                                 ? new[] { new Uri("https://cdn.wizbot.cc/coins/tails3.png") }
                                 : oldData.Coins.Tails
                         },
@@ -162,6 +162,15 @@ public sealed class RedisImagesCache : IImageCache, IReadyExecutor
         if (localImageUrls.Version == 2)
         {
             localImageUrls.Version = 3;
+            File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(localImageUrls));
+        }
+
+        if (localImageUrls.Version == 3)
+        {
+            localImageUrls.Version = 4;
+            if (localImageUrls.Xp?.Bg.ToString() == "https://cdn.wizbot.cc/other/xp/bg.png")
+                localImageUrls.Xp.Bg = new("https://cdn.wizbot.cc/other/xp/bg_k.png");
+            
             File.WriteAllText(_imagesPath, Yaml.Serializer.Serialize(localImageUrls));
         }
     }

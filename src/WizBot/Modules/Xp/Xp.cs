@@ -2,6 +2,7 @@
 using WizBot.Modules.Gambling.Services;
 using WizBot.Modules.Xp.Services;
 using WizBot.Services.Database.Models;
+using System.Diagnostics;
 
 namespace WizBot.Modules.Xp;
 

@@ -10,13 +10,23 @@ ownerIds: []
 adminIds: []
 # Keep this on 'true' unless you're sure your bot shouldn't use privileged intents or you're waiting to be accepted
 usePrivilegedIntents: true
-# The number of shards that the bot will running on.
+# The number of shards that the bot will be running on.
 # Leave at 1 if you don't know what you're doing.
 totalShards: 1
 # Login to https://console.cloud.google.com, create a new project, go to APIs & Services -> Library -> YouTube Data API and enable it.
 # Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
 # Used only for Youtube Data Api (at the moment).
 googleApiKey: ''
+# Create a new custom search here https://programmablesearchengine.google.com/cse/create/new
+# Enable SafeSearch
+# Remove all Sites to Search
+# Enable Search the entire web
+# Copy the 'Search Engine ID' to the SearchId field
+# 
+# Do all steps again but enable image search for the ImageSearchId
+google:
+  searchId:
+  imageSearchId:
 # Settings for voting system for discordbots. Meant for use on global WizBot.
 votes:
 # top.gg votes service url

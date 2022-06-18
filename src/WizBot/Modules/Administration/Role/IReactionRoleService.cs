@@ -1,6 +1,8 @@
 ﻿#nullable disable
+using WizBot.Modules.Utility.Patronage;
 using WizBot.Services.Database.Models;
-using System.Collections;
+using OneOf;
+using OneOf.Types;
 
 namespace WizBot.Modules.Administration.Services;
 
@@ -9,18 +11,16 @@ public interface IReactionRoleService
     /// <summary>
     /// Adds a single reaction role
     /// </summary>
-    /// <param name="guildId"></param>
-    /// <param name="msg"></param>
-    /// <param name="channel"></param>
+    /// <param name="guild">Guild where to add a reaction role</param>
+    /// <param name="msg">Message to which to add a reaction role</param>
     /// <param name="emote"></param>
     /// <param name="role"></param>
     /// <param name="group"></param>
     /// <param name="levelReq"></param>
-    /// <returns></returns>
-    Task<bool> AddReactionRole(
-        ulong guildId,
+    /// <returns>The result of the operation</returns>
+    Task<OneOf<Success, FeatureLimit>> AddReactionRole(
+        IGuild guild,
         IMessage msg,
-        ITextChannel channel,
         string emote,
         IRole role,
         int group = 0,

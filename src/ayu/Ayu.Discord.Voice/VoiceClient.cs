@@ -147,7 +147,7 @@ namespace Ayu.Discord.Voice
                 Buffer.BlockCopy(nonce, 0, rtpData, rtpDataLength - 4, 4);
 
                 gw.SendRtpData(rtpData, rtpDataLength);
-                // todo future When there's a break in the sent data,
+                // FUTURE When there's a break in the sent data,
                 // the packet transmission shouldn't simply stop.
                 // Instead, send five frames of silence (0xF8, 0xFF, 0xFE)
                 // before stopping to avoid unintended Opus interpolation

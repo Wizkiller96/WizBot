@@ -216,7 +216,7 @@ public partial class Help : WizBotModule<HelpService>
                 cmds = cmds.Where(x => succ.Contains(x)).ToList();
         }
 
-        var cmdsWithGroup = cmds.GroupBy(c => c.Module.Name.Replace("Commands", "", StringComparison.InvariantCulture))
+        var cmdsWithGroup = cmds.GroupBy(c => c.Module.GetGroupName())
                                 .OrderBy(x => x.Key == x.First().Module.Name ? int.MaxValue : x.Count())
                                 .ToList();
 
@@ -397,28 +397,37 @@ public partial class Help : WizBotModule<HelpService>
             };
 
             using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
-            using var oldVersionObject = await dlClient.GetObjectAsync(new()
-            {
-                BucketName = "wizbot-pictures",
-                Key = "cmds/versions.json"
-            });
 
             using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
             {
                 await client.PutObjectAsync(new()
                 {
-                    BucketName = "wizbot-pictures",
+                    BucketName = "wizbot-images",
                     ContentType = "application/json",
                     ContentBody = uploadData,
                     // either use a path provided in the argument or the default one for public wizbot, other/cmds.json
-                    Key = $"cmds/{StatsService.BOT_VERSION}.json",
+                    Key = $"cmds/v4/{StatsService.BOT_VERSION}.json",
                     CannedACL = S3CannedACL.PublicRead
                 });
             }
 
-            await using var ms = new MemoryStream();
-            await oldVersionObject.ResponseStream.CopyToAsync(ms);
-            var versionListString = Encoding.UTF8.GetString(ms.ToArray());
+            var versionListString = "[]";
+            try
+            {
+                using var oldVersionObject = await dlClient.GetObjectAsync(new()
+                {
+                    BucketName = "wizbot-images",
+                    Key = "cmds/v4/versions.json"
+                });
+
+                await using var ms = new MemoryStream();
+                await oldVersionObject.ResponseStream.CopyToAsync(ms);
+                versionListString = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            catch (Exception)
+            {
+                Log.Information("No old version list found. Creating a new one.");
+            }
 
             var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
             if (versionList is not null && !versionList.Contains(StatsService.BOT_VERSION))
@@ -435,11 +444,11 @@ public partial class Help : WizBotModule<HelpService>
                 using var client = new AmazonS3Client(accessKey, secretAcccessKey, config);
                 await client.PutObjectAsync(new()
                 {
-                    BucketName = "wizbot-pictures",
+                    BucketName = "wizbot-images",
                     ContentType = "application/json",
                     ContentBody = versionListString,
                     // either use a path provided in the argument or the default one for public wizbot, other/cmds.json
-                    Key = "cmds/versions.json",
+                    Key = "cmds/v4/versions.json",
                     CannedACL = S3CannedACL.PublicRead
                 });
             }
@@ -563,9 +572,71 @@ public partial class Help : WizBotModule<HelpService>
     [Cmd]
     public async partial Task Guide()
         => await ConfirmLocalizedAsync(strs.guide("https://commands.wizbot.cc",
-            "http://wizbot.readthedocs.io/en/latest/"));
+            "https://wizbot.readthedocs.io/en/latest/"));
+
+
+    private Task SelfhostAction(SocketMessageComponent smc)
+        => smc.RespondConfirmAsync(_eb,
+            @"- In case you don't want or cannot Donate to WizBot project, but you 
+- WizBot is a completely free and fully [open source](https://gitlab.com/WizNet/WizBot) project which means you can run your own ""selfhosted"" instance on your computer or server for free.
+
+*Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
+
+- You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
+- If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/wiznet) to keep the development going :)",
+            true);
 
     [Cmd]
+    [OnlyPublicBot]
     public async partial Task Donate()
-        => await ReplyConfirmLocalizedAsync(strs.donate(PATREON_URL, PAYPAL_URL));
+        {
+        var selfhostInter = new DonateSelfhostingInteraction(_client, ctx.User.Id, SelfhostAction);
+        
+        var eb = _eb.Create(ctx)
+                    .WithOkColor()
+                    .WithTitle("Thank you for considering to donate to the WizBot project!");
+
+        eb
+            .WithDescription("WizBot relies on donations to keep the servers, services and APIs running.\n"
+                             + "Donating will give you access to some exclusive features. You can read about them on the [patreon page](https://patreon.com/join/wiznet)")
+            .AddField("Donation Instructions",
+                $@"
+🗒️ Before pledging it is recommended to open your DMs as WizBot will send you a welcome message with instructions after you pledge has been processed and confirmed.
+
+**Step 1:** ❤️ Pledge on Patreon ❤️
+
+`1.` Go to <https://patreon.com/join/wiznet> and choose a tier.
+`2.` Make sure your payment is processed and accepted.
+
+**Step 2** 🤝 Connect your Discord account 🤝
+
+`1.` Go to your profile settings on Patreon and connect your Discord account to it.
+*please make sure you're logged into the correct Discord account*
+
+If you do not know how to do it, you may follow instructions in this link:
+<https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron->
+
+**Step 3** ⏰ Wait a short while (usually 1-3 minutes) ⏰
+  
+WizBot will DM you the welcome instructions, and you may start using the patron-only commands and features!
+🎉 **Enjoy!** 🎉
+")
+            .AddField("Troubleshooting",
+                @"
+*In case you didn't receive the rewards within 5 minutes:*
+`1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
+`2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
+`3.` Make sure your payment has been processed and not declined by Patreon.
+`4.` If any of the previous steps don't help, you can join the WizNet support server <https://wizbot.cc/discord> and ask for help in the #help channel");
+
+        try
+        {
+            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter.GetInteraction());
+            _ = ctx.OkAsync();
+        }
+        catch
+        {
+            await ReplyErrorLocalizedAsync(strs.cant_dm);
+        }
+    }
 }

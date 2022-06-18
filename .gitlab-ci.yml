@@ -7,6 +7,7 @@ stages:
   - release
   - publish-windows
 #  - upload-windows-updater-release
+  - publish-medusa-package
 
 variables:
   project: "WizBot"
@@ -97,6 +98,16 @@ publish-windows:
 #    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
 #    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
 
+publish-medusa-package:
+  stage: publish-medusa-package
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - LAST_TAG=$(git describe --tags --abbrev=0)
+    - if [ $CI_COMMIT_TAG ]; then MEDUSA_VERSION=$CI_COMMIT_TAG; else MEDUSA_VERSION="$LAST_TAG-$CI_COMMIT_REF_SLUG"
+    - dotnet pack -c Release /p:Version=$MEDUSA_VERSION -o bin/Release/packed
+    - dotnet nuget push bin/Release/packed/ --api-key $MYGET_API_KEY --source https://www.myget.org/F/wizbot/api/v2/package
+
 docker-build:
   # Use the official docker image.
   image: docker:latest
@@ -120,6 +131,6 @@ docker-build:
     - docker push "$CI_REGISTRY_IMAGE${tag}"
   # Run this job in a branch where a Dockerfile exists
   rules:
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       exists:
         - Dockerfile

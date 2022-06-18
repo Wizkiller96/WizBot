@@ -87,7 +87,7 @@ namespace WizBot.Migrations
                 name: "VoicePresenceChannelId",
                 table: "LogSettings");
             
-            // todo cleanup guildconfigs which have logsettings id set to null
+            // FUTURE cleanup guildconfigs which have logsettings id set to null
             migrationBuilder.Sql("UPDATE GuildConfigs SET LogSettingId = null WHERE LogSettingId NOT IN (SELECT Id from LogSettings)");
             
             migrationBuilder.DropTable(

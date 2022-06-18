@@ -9,7 +9,6 @@
         <RootNamespace>WizBot.Snake</RootNamespace>
 
         <Authors>WizNet</Authors>
-        <Version>1.0.3</Version>
     </PropertyGroup>
 
     <ItemGroup>

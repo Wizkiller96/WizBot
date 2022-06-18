@@ -2,8 +2,11 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
+using WizBot.Modules.Utility.Patronage;
 using WizBot.Modules.Xp.Extensions;
 using WizBot.Services.Database.Models;
+using OneOf.Types;
+using OneOf;
 
 namespace WizBot.Modules.Administration.Services;
 
@@ -16,20 +19,33 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     private ConcurrentDictionary<ulong, List<ReactionRoleV2>> _cache;
     private readonly object _cacheLock = new();
     private readonly SemaphoreSlim _assignementLock = new(1, 1);
+    private readonly IPatronageService _ps;
 
-    public ReactionRolesService(DiscordSocketClient client, DbService db, IBotCredentials creds)
+    private static readonly FeatureLimitKey _reroFLKey = new()
+    {
+        Key = "rero:max_count",
+        PrettyName = "Reaction Role"
+    };
+
+    public ReactionRolesService(
+        DiscordSocketClient client,
+        DbService db,
+        IBotCredentials creds,
+        IPatronageService ps)
     {
         _db = db;
+        _ps = ps;
         _client = client;
         _creds = creds;
         _cache = new();
     }
-    
+
     public async Task OnReadyAsync()
     {
         await using var uow = _db.GetDbContext();
         var reros = await uow.GetTable<ReactionRoleV2>()
-                             .Where(x => Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
+                             .Where(
+                                 x => Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
                              .ToListAsyncLinqToDB();
 
         foreach (var group in reros.GroupBy(x => x.MessageId))
@@ -126,12 +142,12 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                     {
                         await using var ctx = _db.GetDbContext();
                         var levelData = await ctx.GetTable<UserXpStats>()
-                                 .GetLevelDataFor(user.GuildId, user.Id);
+                                                 .GetLevelDataFor(user.GuildId, user.Id);
 
                         if (levelData.Level < rero.LevelReq)
                             return;
                     }
-                    
+
                     // remove all other roles from the same group from the user
                     // execept in group 0, which is a special, non-exclusive group
                     if (rero.Group != 0)
@@ -141,7 +157,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                                         .Select(x => x.RoleId)
                                         .Distinct();
 
-                        
+
                         try { await user.RemoveRolesAsync(exclusive); }
                         catch { }
 
@@ -181,18 +197,16 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     /// <summary>
     /// Adds a single reaction role
     /// </summary>
-    /// <param name="guildId"></param>
-    /// <param name="msg"></param>
-    /// <param name="channel"></param>
+    /// <param name="guild">Guild where to add a reaction role</param>
+    /// <param name="msg">Message to which to add a reaction role</param>
     /// <param name="emote"></param>
     /// <param name="role"></param>
     /// <param name="group"></param>
     /// <param name="levelReq"></param>
-    /// <returns></returns>
-    public async Task<bool> AddReactionRole(
-        ulong guildId,
+    /// <returns>The result of the operation</returns>
+    public async Task<OneOf<Success, FeatureLimit>> AddReactionRole(
+        IGuild guild,
         IMessage msg,
-        ITextChannel channel,
         string emote,
         IRole role,
         int group = 0,
@@ -205,44 +219,46 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
             throw new ArgumentOutOfRangeException(nameof(group));
 
         await using var ctx = _db.GetDbContext();
+
+        await using var tran = await ctx.Database.BeginTransactionAsync();
         var activeReactionRoles = await ctx.GetTable<ReactionRoleV2>()
-                                           .Where(x => x.GuildId == guildId)
+                                           .Where(x => x.GuildId == guild.Id)
                                            .CountAsync();
+        
+        var result = await _ps.TryGetFeatureLimitAsync(_reroFLKey, guild.OwnerId, 50);
+        if (result.Quota != -1 && activeReactionRoles >= result.Quota)
+            return result;
 
-        if (activeReactionRoles >= 50)
-            return false;
+        await ctx.GetTable<ReactionRoleV2>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         GuildId = guild.Id,
+                         ChannelId = msg.Channel.Id,
 
-        var changed = await ctx.GetTable<ReactionRoleV2>()
-                               .InsertOrUpdateAsync(() => new()
-                                   {
-                                       GuildId = guildId,
-                                       ChannelId = channel.Id,
+                         MessageId = msg.Id,
+                         Emote = emote,
 
-                                       MessageId = msg.Id,
-                                       Emote = emote,
+                         RoleId = role.Id,
+                         Group = group,
+                         LevelReq = levelReq
+                     },
+                     (old) => new()
+                     {
+                         RoleId = role.Id,
+                         Group = group,
+                         LevelReq = levelReq
+                     },
+                     () => new()
+                     {
+                         MessageId = msg.Id,
+                         Emote = emote,
+                     });
 
-                                       RoleId = role.Id,
-                                       Group = group,
-                                       LevelReq = levelReq
-                                   },
-                                   (old) => new()
-                                   {
-                                       RoleId = role.Id,
-                                       Group = group,
-                                       LevelReq = levelReq
-                                   },
-                                   () => new()
-                                   {
-                                       MessageId = msg.Id,
-                                       Emote = emote,
-                                   });
-
-        if (changed == 0)
-            return false;
+        await tran.CommitAsync();
 
         var obj = new ReactionRoleV2()
         {
-            GuildId = guildId,
+            GuildId = guild.Id,
             MessageId = msg.Id,
             Emote = emote,
             RoleId = role.Id,
@@ -265,7 +281,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                 });
         }
 
-        return true;
+        return new Success();
     }
 
     /// <summary>
@@ -326,7 +342,10 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         return output.Length;
     }
 
-    public async Task<IReadOnlyCollection<IEmote>> TransferReactionRolesAsync(ulong guildId, ulong fromMessageId, ulong toMessageId)
+    public async Task<IReadOnlyCollection<IEmote>> TransferReactionRolesAsync(
+        ulong guildId,
+        ulong fromMessageId,
+        ulong toMessageId)
     {
         await using var ctx = _db.GetDbContext();
         var updated = ctx.GetTable<ReactionRoleV2>()

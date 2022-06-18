@@ -1,17 +1,13 @@
 ﻿#nullable disable
 namespace WizBot.Modules.Gambling;
 
-public class CashInteraction
+public class CashInteraction : NInteraction
 {
-    public static WizBotInteractionData Data =
-        new WizBotInteractionData(new Emoji("🏦"), "cash:bank_show_balance");
+    protected override WizBotInteractionData Data
+        => new WizBotInteractionData(new Emoji("🏦"), "cash:bank_show_balance");
 
-    public static WizBotInteraction CreateInstance(
-        DiscordSocketClient client,
-        ulong userId,
-        Func<SocketMessageComponent, Task> action)
-        => new WizBotInteractionBuilder()
-           .WithData(Data)
-           .WithAction(action)
-           .Build(client, userId);
+    public CashInteraction(DiscordSocketClient client, ulong userId, Func<SocketMessageComponent, Task> action)
+        : base(client, userId, action)
+    {
+    }
 }

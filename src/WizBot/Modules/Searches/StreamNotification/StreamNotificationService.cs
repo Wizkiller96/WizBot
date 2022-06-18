@@ -1,6 +1,4 @@
 #nullable disable
-using LinqToDB;
-using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
@@ -78,9 +76,9 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                                               .ToList());
             
             _deleteOnOfflineServers = new(guildConfigs
-                                          .Where(gc => gc.DeleteStreamOnlineMessage)
-                                          .Select(x => x.GuildId)
-                                          .ToList());
+                                              .Where(gc => gc.DeleteStreamOnlineMessage)
+                                              .Select(x => x.GuildId)
+                                              .ToList());
 
             var followedStreams = guildConfigs.SelectMany(x => x.FollowedStreams).ToList();
 
@@ -253,7 +251,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                       .WhenAll();
             }
         }
-        
+
         if (_client.ShardId == 0)
         {
             foreach (var stream in offlineStreams)
@@ -301,29 +299,29 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
             {
                 var messages = await fss.SelectMany(x => x.Value)
-                                        .Select(async fs =>
-                                        {
-                                            var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
+                         .Select(async fs =>
+                         {
+                             var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
 
-                                            if (textChannel is null)
-                                                return default;
+                             if (textChannel is null)
+                                 return default;
 
-                                            var rep = new ReplacementBuilder().WithOverride("%user%", () => fs.Username)
-                                                                              .WithOverride("%platform%", () => fs.Type.ToString())
-                                                                              .Build();
+                             var rep = new ReplacementBuilder().WithOverride("%user%", () => fs.Username)
+                                                               .WithOverride("%platform%", () => fs.Type.ToString())
+                                                               .Build();
 
-                                            var message = string.IsNullOrWhiteSpace(fs.Message) ? "" : rep.Replace(fs.Message);
+                             var message = string.IsNullOrWhiteSpace(fs.Message) ? "" : rep.Replace(fs.Message);
 
-                                            var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream), message);
+                             var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream), message);
 
-                                            // only cache the ids of channel/message pairs 
-                                            if(_deleteOnOfflineServers.Contains(fs.GuildId))
-                                                return (textChannel.Id, msg.Id);
-                                            else 
-                                                return default;
-                                        })
-                                        .WhenAll();
-                
+                             // only cache the ids of channel/message pairs 
+                             if(_deleteOnOfflineServers.Contains(fs.GuildId))
+                                return (textChannel.Id, msg.Id);
+                             else 
+                                 return default;
+                         })
+                         .WhenAll();
+
                 
                 // push online stream messages to redis
                 // when streams go offline, any server which

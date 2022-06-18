@@ -3,11 +3,13 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Db;
 using WizBot.Db.Models;
+using WizBot.Modules.Utility.Patronage;
 using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Services.Currency;
 using WizBot.Services.Database.Models;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
 
@@ -42,6 +44,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly DownloadTracker _tracker;
     private readonly GamblingConfigService _configService;
     private readonly IBankService _bank;
+    private readonly IPatronageService _ps;
 
     private IUserMessage rdMsg;
 
@@ -52,7 +55,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         DiscordSocketClient client,
         DownloadTracker tracker,
         GamblingConfigService configService,
-        IBankService bank)
+        IBankService bank,
+        IPatronageService ps)
         : base(configService)
     {
         _db = db;
@@ -60,6 +64,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _cache = cache;
         _client = client;
         _bank = bank;
+        _ps = ps;
 
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
@@ -102,6 +107,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         await ctx.Channel.EmbedAsync(embed);
     }
 
+    private static readonly FeatureLimitKey _timelyKey = new FeatureLimitKey()
+    {
+        Key = "timely:extra_percent",
+        PrettyName = "Timely"
+    };
+
     [Cmd]
     public async partial Task Timely()
     {
@@ -118,6 +129,10 @@ public partial class Gambling : GamblingModule<GamblingService>
             await ReplyErrorLocalizedAsync(strs.timely_already_claimed(rem.ToString(@"dd\d\ hh\h\ mm\m\ ss\s")));
             return;
         }
+        
+        var result = await _ps.TryGetFeatureLimitAsync(_timelyKey, ctx.User.Id, 0);
+
+        val = (int)(val * (1 + (result.Quota * 0.01f)));
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
@@ -331,8 +346,8 @@ public partial class Gambling : GamblingModule<GamblingService>
               .Pipe(text => smc.RespondConfirmAsync(_eb, text, ephemeral: true));
     }
 
-    private WizBotInteraction CreateCashInteraction()
-        => CashInteraction.CreateInstance(_client, ctx.User.Id, BankAction);
+    private WizBotButtonInteraction CreateCashInteraction()
+        => new CashInteraction(_client, ctx.User.Id, BankAction).GetInteraction();
 
     [Cmd]
     [Priority(1)]
@@ -779,5 +794,32 @@ public partial class Gambling : GamblingModule<GamblingService>
         embed.WithDescription(msg);
 
         await ctx.Channel.EmbedAsync(embed);
+    }
+    
+    private static readonly ImmutableArray<string> _emojis =
+        new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
+
+    [Cmd]
+    public async partial Task WheelOfFortune(ShmartNumber amount)
+    {
+        if (!await CheckBetMandatory(amount))
+            return;
+
+        if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("wheel", "bet")))
+        {
+            await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+            return;
+        }
+
+        var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
+
+        var wofMultipliers = Config.WheelOfFortune.Multipliers;
+        await SendConfirmAsync(Format.Bold($@"{ctx.User} won: {N(result.Amount)}
+
+   『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
+
+『{wofMultipliers[2]}』      {_emojis[result.Index]}      『{wofMultipliers[6]}』
+
+     『{wofMultipliers[3]}』   『{wofMultipliers[4]}』   『{wofMultipliers[5]}』"));
     }
 }

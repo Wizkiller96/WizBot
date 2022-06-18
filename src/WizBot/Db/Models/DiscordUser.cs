@@ -3,6 +3,7 @@ using WizBot.Services.Database.Models;
 
 namespace WizBot.Db.Models;
 
+// FUTURE remove LastLevelUp from here and UserXpStats
 public class DiscordUser : DbEntity
 {
     public ulong UserId { get; set; }

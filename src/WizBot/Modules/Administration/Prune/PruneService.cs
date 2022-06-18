@@ -23,12 +23,13 @@ public class PruneService : INService
 
         try
         {
+            var now = DateTime.UtcNow;
             IMessage[] msgs;
             IMessage lastMessage = null;
             msgs = (await channel.GetMessagesAsync(50).FlattenAsync()).Where(predicate).Take(amount).ToArray();
             while (amount > 0 && msgs.Any())
             {
-                lastMessage = msgs[msgs.Length - 1];
+                lastMessage = msgs[^1];
 
                 var bulkDeletable = new List<IMessage>();
                 var singleDeletable = new List<IMessage>();
@@ -36,17 +37,23 @@ public class PruneService : INService
                 {
                     _logService.AddDeleteIgnore(x.Id);
 
-                    if (DateTime.UtcNow - x.CreatedAt < _twoWeeks)
+                    if (now - x.CreatedAt < _twoWeeks)
                         bulkDeletable.Add(x);
                     else
                         singleDeletable.Add(x);
                 }
 
                 if (bulkDeletable.Count > 0)
-                    await Task.WhenAll(Task.Delay(1000), channel.DeleteMessagesAsync(bulkDeletable));
+                {
+                    await channel.DeleteMessagesAsync(bulkDeletable);
+                    await Task.Delay(2000);
+                }
 
                 foreach (var group in singleDeletable.Chunk(5))
-                    await Task.WhenAll(Task.Delay(5000), group.Select(x => x.DeleteAsync()).WhenAll());
+                {
+                    await group.Select(x => x.DeleteAsync()).WhenAll();
+                    await Task.Delay(5000);
+                }
 
                 //this isn't good, because this still work as if i want to remove only specific user's messages from the last
                 //100 messages, Maybe this needs to be reduced by msgs.Length instead of 100

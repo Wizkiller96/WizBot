@@ -54,7 +54,7 @@ public static class SocketMessageComponentExtensions
         IEmbedBuilder? embed,
         string plainText = "",
         IReadOnlyCollection<IEmbedBuilder>? embeds = null,
-        WizBotInteraction? inter = null,
+        WizBotButtonInteraction? inter = null,
         bool ephemeral = false)
         => smc.RespondAsync(plainText,
             embed: embed?.Build(),
@@ -66,7 +66,7 @@ public static class SocketMessageComponentExtensions
         string text,
         MessageType type,
         bool ephemeral = false,
-        WizBotInteraction? inter = null)
+        WizBotButtonInteraction? inter = null)
     {
         var builder = eb.Create().WithDescription(text);
 

@@ -1,4 +1,5 @@
 #nullable disable
+using WizBot.Modules.Utility.Patronage;
 using System.Text;
 
 namespace WizBot.Modules.Utility;
@@ -10,11 +11,13 @@ public partial class Utility
     {
         private readonly DiscordSocketClient _client;
         private readonly IStatsService _stats;
+        private readonly IPatronageService _ps;
 
-        public InfoCommands(DiscordSocketClient client, IStatsService stats)
+        public InfoCommands(DiscordSocketClient client, IStatsService stats, IPatronageService ps)
         {
             _client = client;
             _stats = stats;
+            _ps = ps;
         }
 
         [Cmd]
@@ -106,6 +109,7 @@ public partial class Utility
             var embed = _eb.Create().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
             if (!string.IsNullOrWhiteSpace(user.Nickname))
                 embed.AddField(GetText(strs.nickname), user.Nickname, true);
+            
             embed.AddField(GetText(strs.id), user.Id.ToString(), true)
                  .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                  .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
@@ -114,9 +118,24 @@ public partial class Utility
                      true)
                  .WithOkColor();
 
+            var patron = await _ps.GetPatronAsync(user.Id);
+            
+            if (patron.Tier != PatronTier.None)
+            {
+                embed.WithFooter(patron.Tier switch
+                {
+                    PatronTier.V => "❤️❤️",
+                    PatronTier.X => "❤️❤️❤️",
+                    PatronTier.XX => "❤️❤️❤️❤️",
+                    PatronTier.L => "❤️❤️❤️❤️❤️",
+                    _ => "❤️",
+                });
+            }
+            
             var av = user.RealAvatarUrl();
             if (av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
+            
             await ctx.Channel.EmbedAsync(embed);
         }
 

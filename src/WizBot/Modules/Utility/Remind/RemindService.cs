@@ -75,16 +75,15 @@ public class RemindService : INService, IReadyExecutor
 
         await uow.SaveChangesAsync();
     }
-    
-    // todo move isonshard to a method
+
     private async Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
     {
         await using var uow = _db.GetDbContext();
         return await uow.Reminders
-                  .ToLinqToDBTable()
-                  .Where(x => x.ServerId / 4194304 % (ulong)_creds.TotalShards == (ulong)_client.ShardId
-                              && x.When < now)
-                  .ToListAsyncLinqToDB();
+                        .ToLinqToDBTable()
+                        .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId, _creds.TotalShards, _client.ShardId)
+                                    && x.When < now)
+                        .ToListAsyncLinqToDB();
     }
 
     public bool TryParseRemindMessage(string input, out RemindObject obj)
