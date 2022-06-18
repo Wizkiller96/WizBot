@@ -3,6 +3,7 @@ using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
 using OneOf;
+using OneOf.Types;
 using StackExchange.Redis;
 using CommandInfo = Discord.Commands.CommandInfo;
 
@@ -500,8 +501,8 @@ public sealed class PatronageService
         if (!confData.IsEnabled)
             return default;
 
-        if (_creds.IsOwner(userId))
-            return default;
+        // if (_creds.IsOwner(userId))
+        //     return default;
 
         // get user tier
         var patron = await GetPatronAsync(userId);
@@ -558,7 +559,9 @@ public sealed class PatronageService
             data.TryGetValue(QuotaPer.PerMonth, out var monthly) ? monthly : null
         );
 
-        return quotaCheckResult.Match(_ => default, x => x);
+        return quotaCheckResult.Match<OneOf<Success, InsufficientTier, QuotaLimit>>(
+            _ => new Success(),
+            x => x);
     }
 
     private bool TryGetTierDataOrLower<T>(
