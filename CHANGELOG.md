@@ -3,6 +3,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.4] - 17.06.2022
+
+### Fixed
+
+- Fixed `.crypto`, you will still need coinmarketcapApiKey in `creds.yml` in order to make it run consistently as the key is shared
+
 ## [4.2.3] - 17.06.2022
 
 ### Fixed
