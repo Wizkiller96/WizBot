@@ -1,6 +1,6 @@
-﻿using SixLabors.ImageSharp.PixelFormats;
+﻿#nullable disable warnings
+using SixLabors.ImageSharp.PixelFormats;
 
-#nullable disable
 namespace WizBot;
 
 public sealed record SmartEmbedArrayElementText : SmartEmbedTextBase
@@ -37,11 +37,11 @@ public sealed record SmartEmbedText : SmartEmbedTextBase
     {
     }
 
-    private SmartEmbedText(IEmbed eb, string plainText = null)
+    private SmartEmbedText(IEmbed eb, string? plainText = null)
         : base(eb)
         => (PlainText, Color) = (plainText, eb.Color?.RawValue ?? 0);
 
-    public static SmartEmbedText FromEmbed(IEmbed eb, string plainText = null)
+    public static SmartEmbedText FromEmbed(IEmbed eb, string? plainText = null)
         => new(eb, plainText);
 
     protected override EmbedBuilder GetEmbedInternal()

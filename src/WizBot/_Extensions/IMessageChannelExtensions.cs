@@ -54,7 +54,7 @@ public static class MessageChannelExtensions
         => text switch
         {
             SmartEmbedText set => channel.SendAsync(set.PlainText,
-                set.GetEmbed().Build(),
+                set.IsValid ? set.GetEmbed().Build() : null,
                 sanitizeAll: sanitizeAll),
             SmartPlainText st => channel.SendAsync(st.Text,
                 default(Embed),
