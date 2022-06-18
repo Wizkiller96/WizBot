@@ -640,8 +640,7 @@ public sealed class PatronageService
             Modules = userModuleQuotaStats,
         };
     }
-
-    // should i allow users to pay extra for more quota?
+    
     private IReadOnlyDictionary<string, FeatureQuotaStats> GetFeatureQuotaStats(
         PatronTier patronTier,
         IReadOnlyDictionary<string, PatronQuota>? allQuotasDict,
@@ -747,6 +746,9 @@ public sealed class PatronageService
 
         return user.AmountCents switch
         {
+            /*>= 10_000 => PatronTier.C,
+            >= 5000 => PatronTier.L,
+            >= 2000 => PatronTier.XX,*/
             >= 1000 => PatronTier.X,
             >= 500 => PatronTier.V,
             >= 100 => PatronTier.I,
