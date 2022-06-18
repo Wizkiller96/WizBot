@@ -14,5 +14,9 @@ public class PatronageConfig : ConfigServiceBase<PatronConfigData>
 
     public PatronageConfig(IConfigSeria serializer, IPubSub pubSub) : base(FILE_PATH, serializer, pubSub, _changeKey)
     {
+        AddParsedProp("enabled",
+            x => x.IsEnabled,
+            bool.TryParse,
+            ConfigPrinters.ToString);
     }
 }
