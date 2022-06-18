@@ -173,7 +173,7 @@ public sealed class PatronageService
         
             var lastChargeUtc = subscriber.LastCharge.Value.ToUniversalTime();
             var dateInOneMonth = lastChargeUtc.Date.AddMonths(1);
-            await using var tran = await ctx.Database.BeginTransactionAsync();
+            // await using var tran = await ctx.Database.BeginTransactionAsync();
             try
             {
                 var dbPatron = await ctx.GetTable<PatronUser>()
@@ -193,7 +193,7 @@ public sealed class PatronageService
                                             ValidThru = dateInOneMonth,
                                         });
         
-                    await tran.CommitAsync();
+                    // await tran.CommitAsync();
         
                     var newPatron = PatronUserToPatron(dbPatron);
                     _ = SendWelcomeMessage(newPatron);
@@ -222,45 +222,38 @@ public sealed class PatronageService
                         // this should never happen
                         if (count == 0)
                         {
-                            await tran.RollbackAsync();
+                            // await tran.RollbackAsync();
                             continue;
                         }
         
-                        await tran.CommitAsync();
+                        // await tran.CommitAsync();
         
                         await OnNewPatronPayment(PatronUserToPatron(dbPatron));
                     }
                     else if (dbPatron.AmountCents != subscriber.Cents // if user changed the amount 
                              || dbPatron.UserId != subscriber.UserId) // if user updated user id)
                     {
+                        var cents = subscriber.Cents;
                         // the user updated the pledge or changed the connected discord account
-                        var count = await ctx.GetTable<PatronUser>()
-                                             .Where(x => x.UniquePlatformUserId == subscriber.UniquePlatformUserId
-                                                         && x.LastCharge < lastChargeUtc)
-                                             .UpdateAsync(old => new()
-                                             {
-                                                 UserId = subscriber.UserId,
-                                                 AmountCents = subscriber.Cents,
-                                                 LastCharge = lastChargeUtc,
-                                                 ValidThru = old.ValidThru,
-                                             });
+                        await ctx.GetTable<PatronUser>()
+                                 .Where(x => x.UniquePlatformUserId == subscriber.UniquePlatformUserId)
+                                 .UpdateAsync(old => new()
+                                 {
+                                     UserId = subscriber.UserId,
+                                     AmountCents = cents,
+                                     LastCharge = lastChargeUtc,
+                                     ValidThru = old.ValidThru,
+                                 });
 
-                        if (count == 0)
-                        {
-                            await tran.RollbackAsync();
-                            continue;
-                        }
-
-                        var newData = await ctx.GetTable<PatronUser>()
-                                               .FirstAsync(x => x.UniquePlatformUserId 
-                                                                == subscriber.UniquePlatformUserId);
-
-
-                        await tran.CommitAsync();
+                        var newPatron = dbPatron.Clone();
+                        newPatron.AmountCents = cents;
+                        newPatron.UserId = subscriber.UserId;
+                        
+                        // idk what's going on but UpdateWithOutputAsync doesn't work properly here
+                        // nor does firstordefault after update. I'm not seeing something obvious
                         await OnPatronUpdated(
                             PatronUserToPatron(dbPatron),
-                            PatronUserToPatron(newData));
-
+                            PatronUserToPatron(newPatron));
                     }
                 }
             }
@@ -745,7 +738,7 @@ public sealed class PatronageService
     private Patron PatronUserToPatron(PatronUser user)
         => new Patron()
         {
-            UnqiuePlatformUserId = user.UniquePlatformUserId,
+            UniquePlatformUserId = user.UniquePlatformUserId,
             UserId = user.UserId,
             Amount = user.AmountCents,
             Tier = CalculateTier(user),
@@ -798,7 +791,7 @@ public sealed class PatronageService
 *- Any user in any of your servers can use Patron-only commands, but they will spend **your quota**, which is why it's recommended to use WizBot's command cooldown system (.h .cmdcd) or permission system to limit the command usage for your server members.*
 *- Permission guide can be found here if you're not familiar with it: <https://wizbot.readthedocs.io/en/latest/permissions-system/>*",
                             isInline: false)
-                        .WithFooter($"platform id: {patron.UnqiuePlatformUserId}");
+                        .WithFooter($"platform id: {patron.UniquePlatformUserId}");
 
             await user.EmbedAsync(eb);
         }

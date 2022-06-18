@@ -35,4 +35,14 @@ public class PatronUser
     
     // Date Only component
     public DateTime ValidThru { get; set; }
+    
+    public PatronUser Clone()
+        => new PatronUser()
+        {
+            UniquePlatformUserId = this.UniquePlatformUserId,
+            UserId = this.UserId,
+            AmountCents = this.AmountCents,
+            LastCharge = this.LastCharge,
+            ValidThru = this.ValidThru
+        };
 }

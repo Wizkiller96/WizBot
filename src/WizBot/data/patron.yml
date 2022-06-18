@@ -23,11 +23,13 @@ quotas:
       #C: 100000
   # Dictionary of commands with their respective quota data
   commands:
+    cleverbot:
+      V: null
     prune:
       X:
         PerHour: 1
-      XX:
-        PerHour: 3
+      #XX:
+        #PerHour: 3
     #google:
       #V:
         #PerDay: 15
