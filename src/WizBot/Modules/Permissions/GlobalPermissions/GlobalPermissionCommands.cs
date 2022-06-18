@@ -60,7 +60,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task GlobalCommand(CommandOrCrInfo cmd)
+        public async partial Task GlobalCommand(CommandOrExprInfo cmd)
         {
             var commandName = cmd.Name.ToLowerInvariant();
             var added = _service.ToggleCommand(commandName);

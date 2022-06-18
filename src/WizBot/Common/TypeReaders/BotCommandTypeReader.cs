@@ -31,38 +31,38 @@ public sealed class CommandTypeReader : WizBotTypeReader<CommandInfo>
     }
 }
 
-public sealed class CommandOrCrTypeReader : WizBotTypeReader<CommandOrCrInfo>
+public sealed class CommandOrExprTypeReader : WizBotTypeReader<CommandOrExprInfo>
 {
     private readonly CommandService _cmds;
     private readonly CommandHandler _commandHandler;
     private readonly WizBotExpressionsService _exprs;
 
-    public CommandOrCrTypeReader(CommandService cmds, WizBotExpressionsService exprs, CommandHandler commandHandler)
+    public CommandOrExprTypeReader(CommandService cmds, WizBotExpressionsService exprs, CommandHandler commandHandler)
     {
         _cmds = cmds;
         _exprs = exprs;
         _commandHandler = commandHandler;
     }
 
-    public override async ValueTask<TypeReaderResult<CommandOrCrInfo>> ReadAsync(ICommandContext ctx, string input)
+    public override async ValueTask<TypeReaderResult<CommandOrExprInfo>> ReadAsync(ICommandContext ctx, string input)
     {
         input = input.ToUpperInvariant();
 
         if (_exprs.ExpressionExists(ctx.Guild?.Id, input) || _exprs.ExpressionExists(null, input))
-            return TypeReaderResult.FromSuccess(new CommandOrCrInfo(input, CommandOrCrInfo.Type.Custom));
+            return TypeReaderResult.FromSuccess(new CommandOrExprInfo(input, CommandOrExprInfo.Type.Custom));
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(ctx, input);
         if (cmd.IsSuccess)
         {
-            return TypeReaderResult.FromSuccess(new CommandOrCrInfo(((CommandInfo)cmd.Values.First().Value).Name,
-                CommandOrCrInfo.Type.Normal));
+            return TypeReaderResult.FromSuccess(new CommandOrExprInfo(((CommandInfo)cmd.Values.First().Value).Name,
+                CommandOrExprInfo.Type.Normal));
         }
 
-        return TypeReaderResult.FromError<CommandOrCrInfo>(CommandError.ParseFailed, "No such command or cr found.");
+        return TypeReaderResult.FromError<CommandOrExprInfo>(CommandError.ParseFailed, "No such command or expression found.");
     }
 }
 
-public class CommandOrCrInfo
+public class CommandOrExprInfo
 {
     public enum Type
     {
@@ -76,7 +76,7 @@ public class CommandOrCrInfo
     public bool IsCustom
         => CmdType == Type.Custom;
 
-    public CommandOrCrInfo(string input, Type type)
+    public CommandOrExprInfo(string input, Type type)
     {
         Name = input;
         CmdType = type;

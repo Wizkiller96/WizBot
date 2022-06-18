@@ -14,7 +14,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task DiscordPermOverride(CommandOrCrInfo cmd, params GuildPerm[] perms)
+        public async partial Task DiscordPermOverride(CommandOrExprInfo cmd, params GuildPerm[] perms)
         {
             if (perms is null || perms.Length == 0)
             {

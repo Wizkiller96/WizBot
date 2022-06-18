@@ -147,7 +147,7 @@ public partial class Help : WizBotModule<HelpService>
                 return "❓";
             case "administration":
                 return "🛠️";
-            case "customreactions":
+            case "expressions":
                 return "🗣️";
             case "searches":
                 return "🔍";
