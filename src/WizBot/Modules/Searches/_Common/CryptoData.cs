@@ -19,7 +19,6 @@ public class CmcQuote
     // [JsonPropertyName("volume_change_24h")]
     // public double VolumeChange24h { get; set; }
     //
-    //
     // [JsonPropertyName("percent_change_1h")]
     // public double PercentChange1h { get; set; }
 
