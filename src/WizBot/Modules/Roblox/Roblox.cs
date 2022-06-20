@@ -29,12 +29,14 @@ namespace WizBot.Modules.Roblox;
             {
                 // Todo make a checker to see if a Roblox account exist before showing info.
                 JToken RInfo;
+                JToken RAvatar;
                 //JToken RUID;
                 //JToken RStatus;
                 //JToken RMT;
                 using (var http = _httpFactory.CreateClient())
                 {
                     RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
+                    RAvatar = JObject.Parse(await http.GetStringAsync($"https://thumbnails.roblox.com/v1/users/avatar?userIds={RInfo["userid"]}&size=720x720&format=png&isCircular=false").ConfigureAwait(false));
                     // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
                     // RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                     // Roblox Membership Type Checker
@@ -81,7 +83,7 @@ namespace WizBot.Modules.Roblox;
                     .WithAuthor($"{RInfo["username"]}'s Roblox Info", 
                         "https://i.imgur.com/jDcWXPD.png",
                         "https://roblox.com")
-                    .WithThumbnailUrl($"https://assetgame.roblox.com/Thumbs/Avatar.ashx?username={RInfo["username"]}")
+                    .WithThumbnailUrl($"{RAvatar["imageUrl"]}")
                     .AddField("Username", $"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)", true)
                     .AddField("User ID", $"{RInfo["userid"]}", true)
                     // .AddField("Banned", $"{RInfo["isBanned"]}", true)
