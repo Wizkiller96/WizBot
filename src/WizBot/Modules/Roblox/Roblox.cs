@@ -28,77 +28,53 @@ namespace WizBot.Modules.Roblox;
             try
             {
                 // Todo make a checker to see if a Roblox account exist before showing info.
-                JToken RInfo;
-                JToken RAvatar;
-                //JToken RUID;
-                //JToken RStatus;
-                //JToken RMT;
+                JToken rInfo;
+                JToken rAvatar;
+                //JToken rUID;
+                //JToken rStatus;
+                //JToken rMT;
                 using (var http = _httpFactory.CreateClient())
                 {
-                    RInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
-                    RAvatar = JObject.Parse(await http.GetStringAsync($"https://thumbnails.roblox.com/v1/users/avatar?userIds={RInfo["userid"]}&size=720x720&format=png&isCircular=false").ConfigureAwait(false));
-                    // RUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
-                    // RStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{RInfo["userid"]}/onlinestatus").ConfigureAwait(false));
+                    rInfo = JObject.Parse(await http.GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}").ConfigureAwait(false));
+                    rAvatar = JObject.Parse(await http.GetStringAsync($"https://thumbnails.roblox.com/v1/users/avatar?userIds={rInfo["userid"]}&size=720x720&format=png&isCircular=false").ConfigureAwait(false));
+                    // rUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
+                    // rStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{rInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                     // Roblox Membership Type Checker
-                    // RMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{RInfo["userid"]}/group-membership-status").ConfigureAwait(false));
+                    // rMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{rInfo["userid"]}/group-membership-status").ConfigureAwait(false));
                 }
-                // Currently doesn't work at this time. If you know a sulotion feel free to try.
-                // if ((int)RInfo["ErrorCode"] == 404)
-                // {
-                //     await ctx.Channel.EmbedAsync(new EmbedBuilder().WithErrorColor()
-                //     .WithAuthor(eab => eab.WithUrl("https://roblox.com/")
-                //         .WithIconUrl("https://i.imgur.com/jDcWXPD.png")
-                //         .WithName($"Roblox Info Error"))
-                //     .WithDescription("The user you are trying to find doesn't exist or is banned. Please try again."))
-                //     .ConfigureAwait(false);
-                // }
-                // else
-                // {
-                // If Roblox User Blurb and Status is nulled.
                 var none = "N/A";
                 // Roblox Membership Type Checker
-                /* if ((int)RMT["membershipType"] == 4)
+                /* if ((int)rMT["membershipType"] == 4)
                 {
-                    RMT["membershipType"] = "Premium";
+                    rMT["membershipType"] = "Premium";
                 }
                 else
                 {
-                    RMT["membershipType"] = "None";
+                    rMT["membershipType"] = "None";
                 } */
-                // Roblox Ban Check
-                /* if ((bool)RInfo["isBanned"] == true)
-                {
-                    RInfo["isBanned"] = "Yes";
-                }
-                else
-                {
-                    RInfo["isBanned"] = "No";
-                } */
-                var pastNames = string.Join("\n", RInfo["oldNames"]!.Take(5));
+                var pastNames = string.Join("\n", rInfo["oldNames"]!.Take(5));
                 if (string.IsNullOrEmpty(pastNames))
                 {
                     pastNames = "N/A";
                 }
                 await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                    .WithAuthor($"{RInfo["username"]}'s Roblox Info", 
+                    .WithAuthor($"{rInfo["username"]}'s Roblox Info", 
                         "https://i.imgur.com/jDcWXPD.png",
                         "https://roblox.com")
-                    .WithThumbnailUrl($"{RAvatar["imageUrl"]}")
-                    .AddField("Username", $"[{RInfo["username"]}](https://www.roblox.com/users/{RInfo["userid"]}/profile)", true)
-                    .AddField("User ID", $"{RInfo["userid"]}", true)
-                    // .AddField("Banned", $"{RInfo["isBanned"]}", true)
-                    .AddField("Friends", $"{RInfo["friendCount"]}", true)
-                    .AddField("Followers", $"{RInfo["followerCount"]}", true)
-                    .AddField("Following", $"{RInfo["followingCount"]}", true)
-                    // .AddField("Membership", $"{RMT["membershipType"]}", true)
-                    // .AddField("Presence", $"{RStatus["LastLocation"]}", true)
-                    .AddField("Account Age", string.IsNullOrEmpty($"{RInfo["age"]}") ? none : ($"{RInfo["age"]}"), true)
-                    .AddField("Join Date", string.IsNullOrEmpty($"{RInfo["joinDate"]}") ? none : ($"{RInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
-                    .AddField("Status", string.IsNullOrEmpty($"{RInfo["status"]}") ? none : ($"{RInfo["status"]}"), false)
-                    .AddField("Blurb", string.IsNullOrEmpty($"{RInfo["blurb"]}") ? none : ($"{RInfo["blurb"]}".TrimTo(170)), false)
-                    .AddField($"Past Names (" + RInfo["oldNames"]!.Count() + ")", pastNames, false))
+                    .WithThumbnailUrl($"{rAvatar["data"]![0]!["imageUrl"]}")
+                    .AddField("Username", $"[{rInfo["username"]}](https://www.roblox.com/users/{rInfo["userid"]}/profile)", true)
+                    .AddField("User ID", $"{rInfo["userid"]}", true)
+                    .AddField("Friends", $"{rInfo["friendCount"]}", true)
+                    .AddField("Followers", $"{rInfo["followerCount"]}", true)
+                    .AddField("Following", $"{rInfo["followingCount"]}", true)
+                    // .AddField("Membership", $"{rMT["membershipType"]}", true)
+                    // .AddField("Presence", $"{rStatus["LastLocation"]}", true)
+                    .AddField("Account Age", string.IsNullOrEmpty($"{rInfo["age"]}") ? none : ($"{rInfo["age"]}"), true)
+                    .AddField("Join Date", string.IsNullOrEmpty($"{rInfo["joinDate"]}") ? none : ($"{rInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
+                    .AddField("Status", string.IsNullOrEmpty($"{rInfo["status"]}") ? none : ($"{rInfo["status"]}"))
+                    .AddField("Blurb", (string.IsNullOrEmpty($"{rInfo["blurb"]}") ? none : ($"{rInfo["blurb"]}".TrimTo(170)))!)
+                    .AddField($"Past Names (" + rInfo["oldNames"]!.Count() + ")", pastNames))
                 .ConfigureAwait(false);
-                //}
             }
             catch (Exception ex)
             {
