@@ -4,7 +4,7 @@ using WizBot.Services.Database.Models;
 
 namespace WizBot.Modules.Music;
 
-[NoPublicBot]
+// [NoPublicBot]
 public sealed partial class Music : WizBotModule<IMusicService>
 {
     public enum All { All = -1 }

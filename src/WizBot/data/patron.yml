@@ -66,4 +66,6 @@ quotas:
   # Dictionary of groups with their respective quota data
   groups: {}
   # Dictionary of modules with their respective quota data
-  modules: {}
+  modules: 
+    music:
+      X: null
