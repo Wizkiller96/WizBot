@@ -7,7 +7,7 @@ namespace NadekoBot.Modules.Utility.Patronage;
 public partial class PatronConfigData : ICloneable<PatronConfigData>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 1;
+    public int Version { get; set; } = 2;
     
     [Comment("Whether the patronage feature is enabled")]
     public bool IsEnabled { get; set; }

@@ -18,5 +18,19 @@ public class PatronageConfig : ConfigServiceBase<PatronConfigData>
             x => x.IsEnabled,
             bool.TryParse,
             ConfigPrinters.ToString);
+
+        Migrate();
+    }
+
+    private void Migrate()
+    {
+        ModifyConfig(c =>
+        {
+            if (c.Version == 1)
+            {
+                c.Version = 2;
+                c.IsEnabled = false;
+            }
+        });
     }
 }
