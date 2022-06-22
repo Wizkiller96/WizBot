@@ -1,7 +1,7 @@
 ﻿# DO NOT CHANGE
-version: 1
+version: 2
 # Whether the patronage feature is enabled
-isEnabled: true
+isEnabled: false
 # List of patron only features and relevant quota data
 quotas:
   # Dictionary of feature names with their respective limits. Set to null for unlimited
@@ -25,9 +25,9 @@ quotas:
   commands:
     cleverbot:
       V: null
-    prune:
-      X:
-        PerHour: 1
+    #prune:
+      #X:
+        #PerHour: 1
       #XX:
         #PerHour: 3
     #google:
