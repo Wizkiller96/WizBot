@@ -1,4 +1,4 @@
-[data-md-color-scheme="wizbot"] {
+[data-md-color-scheme="wizbot-dark"] {
 	/* Default color shades */
 	--md-primary-fg-color: #590074;
 	--md-primary-fg-color--light: #590074;
@@ -9,7 +9,13 @@
 	--md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
 	--md-default-fg-color--lightest: hsla(0, 0%, 100%, 0.12);
 	--md-accent-fg-color: #590074 !important;
+	--md-typeset-color: var(--md-default-fg-color);
 	--md-typeset-a-color: #964aad !important;
+	--md-typeset-mark-color: #448aff;
+	--md-typeset-kbd-color: hsla(220, 10%, 94%, 0.12);
+	--md-typeset-kbd-accent-color: hsla(220, 10%, 94%, 0.2);
+	--md-typeset-kbd-border-color: hsla(220, 10%, 14%, 1);
+	--md-admonition-bg-color: hsla(220, 10%, 100%, 0.025);
 
 	/* Code Color Shade */
 	--md-code-fg-color: rgb(255, 255, 255);
@@ -33,6 +39,28 @@
 	--md-footer-bg-color: rgb(43, 44, 46) !important;
 	--md-footer-bg-color--dark: rgb(25, 26, 27) !important;
 }
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset {
+	color: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme="wizbot-dark"][data-md-color-primary="black"], [data-md-color-scheme="wizbot-dark"][data-md-color-primary="white"] {
+	--md-typeset-a-color: var(--md-accent-fg-color);
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-header {
+	background: var(--md-default-bg-color--light);
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav__item :not(.md-nav__link--active) {
+	color: var(--md-default-fg-color--light);
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav__item .md-nav__link:hover {
+	color: var(--md-primary-fg-color);
+}
+
+/* Original Dark Theme */
 
 [data-md-color-scheme="dark"] {
 	--md-default-fg-color: hsl(220, 10%, 100%);

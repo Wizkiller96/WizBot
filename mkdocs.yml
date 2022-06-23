@@ -10,7 +10,7 @@ copyright: © Copyright 2021 WizNet - All Rights Reserved.
 theme:
   name: material
   palette:
-    scheme: 'wizbot'
+    scheme: 'wizbot-dark'
   features:
     - navigation.instant
     - navigation.expand
@@ -76,7 +76,7 @@ nav:
       - Basic Creds: creds-guide.md
       - Advanced Creds: jsons-explained.md
       - Permissions System: permissions-system.md
-      - Custom Reactions: custom-reactions.md
+      - Expressions: expressions.md
       - Placeholders: placeholders.md
       - Config: config-guide.md
       - Medusa System:
