@@ -1,5 +1,3 @@
-## Expressions
-
 ### Important
 
 - For modifying **global** expressions, the ones which will work across all the servers your bot is connected to, you **must** be a Bot Owner.  
