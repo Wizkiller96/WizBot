@@ -5,6 +5,7 @@
 
 .md-typeset * {
 	letter-spacing: 0 !important;
+	color: var(--md-default-fg-color);
 }
 
 .md-header__topic {
