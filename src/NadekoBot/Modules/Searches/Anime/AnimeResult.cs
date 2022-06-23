@@ -1,34 +1,38 @@
 #nullable disable
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Searches.Common;
 
 public class AnimeResult
 {
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    public string AiringStatus
-        => AiringStatusParsed.ToTitleCase();
-
-    [JsonProperty("airing_status")]
+    [JsonPropertyName("airing_status")]
     public string AiringStatusParsed { get; set; }
 
-    [JsonProperty("title_english")]
+    [JsonPropertyName("title_english")]
     public string TitleEnglish { get; set; }
 
-    [JsonProperty("total_episodes")]
+    [JsonPropertyName("total_episodes")]
     public int TotalEpisodes { get; set; }
-
+    
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
-    [JsonProperty("image_url_lge")]
+    [JsonPropertyName("image_url_lge")]
     public string ImageUrlLarge { get; set; }
 
+    [JsonPropertyName("genres")]
     public string[] Genres { get; set; }
 
-    [JsonProperty("average_score")]
-    public string AverageScore { get; set; }
+    [JsonPropertyName("average_score")]
+    public float AverageScore { get; set; }
 
+    
+    public string AiringStatus
+        => AiringStatusParsed.ToTitleCase();
+    
     public string Link
         => "http://anilist.co/anime/" + Id;
 

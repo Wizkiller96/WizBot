@@ -1,32 +1,36 @@
 #nullable disable
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Searches.Common;
 
 public class MangaResult
 {
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonProperty("publishing_status")]
+    [JsonPropertyName("publishing_status")]
     public string PublishingStatus { get; set; }
 
-    [JsonProperty("image_url_lge")]
+    [JsonPropertyName("image_url_lge")]
     public string ImageUrlLge { get; set; }
 
-    [JsonProperty("title_english")]
+    [JsonPropertyName("title_english")]
     public string TitleEnglish { get; set; }
 
-    [JsonProperty("total_chapters")]
+    [JsonPropertyName("total_chapters")]
     public int TotalChapters { get; set; }
 
-    [JsonProperty("total_volumes")]
+    [JsonPropertyName("total_volumes")]
     public int TotalVolumes { get; set; }
 
+    [JsonPropertyName("description")]
     public string Description { get; set; }
+    
+    [JsonPropertyName("genres")]
     public string[] Genres { get; set; }
 
-    [JsonProperty("average_score")]
-    public string AverageScore { get; set; }
+    [JsonPropertyName("average_score")]
+    public float AverageScore { get; set; }
 
     public string Link
         => "http://anilist.co/manga/" + Id;

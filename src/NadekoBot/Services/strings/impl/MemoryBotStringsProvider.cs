@@ -1,13 +1,13 @@
 #nullable disable
 namespace NadekoBot.Services;
 
-public class LocalBotStringsProvider : IBotStringsProvider
+public class MemoryBotStringsProvider : IBotStringsProvider
 {
     private readonly IStringsSource _source;
     private IReadOnlyDictionary<string, Dictionary<string, string>> responseStrings;
     private IReadOnlyDictionary<string, Dictionary<string, CommandStrings>> commandStrings;
 
-    public LocalBotStringsProvider(IStringsSource source)
+    public MemoryBotStringsProvider(IStringsSource source)
     {
         _source = source;
         Reload();

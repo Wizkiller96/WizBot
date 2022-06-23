@@ -9,10 +9,10 @@ namespace NadekoBot.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBotStringsServices(this IServiceCollection services, int totalShards)
-        => totalShards <= 1
+    public static IServiceCollection AddBotStringsServices(this IServiceCollection services, BotCacheImplemenation botCache)
+        => botCache == BotCacheImplemenation.Memory
             ? services.AddSingleton<IStringsSource, LocalFileStringsSource>()
-                      .AddSingleton<IBotStringsProvider, LocalBotStringsProvider>()
+                      .AddSingleton<IBotStringsProvider, MemoryBotStringsProvider>()
                       .AddSingleton<IBotStrings, BotStrings>()
             : services.AddSingleton<IStringsSource, LocalFileStringsSource>()
                       .AddSingleton<IBotStringsProvider, RedisBotStringsProvider>()
@@ -23,17 +23,6 @@ public static class ServiceCollectionExtensions
         services.Scan(x => x.FromCallingAssembly()
                             .AddClasses(f => f.AssignableTo(typeof(ConfigServiceBase<>)))
                             .AsSelfWithInterfaces());
-        
-        // var baseType = typeof(ConfigServiceBase<>);
-        //
-        // foreach (var type in Assembly.GetCallingAssembly().ExportedTypes.Where(x => x.IsSealed))
-        // {
-        //     if (type.BaseType?.IsGenericType == true && type.BaseType.GetGenericTypeDefinition() == baseType)
-        //     {
-        //         services.AddSingleton(type);
-        //         services.AddSingleton(x => (IConfigService)x.GetRequiredService(type));
-        //     }
-        // }
 
         return services;
     }
@@ -48,7 +37,7 @@ public static class ServiceCollectionExtensions
                    .AddSingleton<ISoundcloudResolver, SoundcloudResolver>()
                    .AddSingleton<ILocalTrackResolver, LocalTrackResolver>()
                    .AddSingleton<IRadioResolver, RadioResolver>()
-                   .AddSingleton<ITrackCacher, RedisTrackCacher>()
+                   .AddSingleton<ITrackCacher, TrackCacher>()
                    .AddSingleton<YtLoader>()
                    .AddSingleton<IPlaceholderProvider>(svc => svc.GetRequiredService<IMusicService>());
 
@@ -65,10 +54,23 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddRedis(this IServiceCollection services, string redisOptions)
+    public static IServiceCollection AddCache(this IServiceCollection services, IBotCredentials creds)
     {
-        var conf = ConfigurationOptions.Parse(redisOptions);
-        services.AddSingleton(ConnectionMultiplexer.Connect(conf));
-        return services;
+        if (creds.BotCache == BotCacheImplemenation.Redis)
+        {
+            var conf = ConfigurationOptions.Parse(creds.RedisOptions);
+            services.AddSingleton(ConnectionMultiplexer.Connect(conf))
+                    .AddSingleton<IBotCache, RedisBotCache>()
+                    .AddSingleton<IPubSub, RedisPubSub>();
+        }
+        else
+        {
+            services.AddSingleton<IBotCache, MemoryBotCache>()
+                    .AddSingleton<IPubSub, EventPubSub>();
+
+        }
+
+        return services
+            .AddBotStringsServices(creds.BotCache);
     }
 }

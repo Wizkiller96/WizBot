@@ -30,9 +30,9 @@ public static class UserExtensions
         => usr.AvatarId is null ? new(usr.GetDefaultAvatarUrl()) : new Uri(usr.GetAvatarUrl(ImageFormat.Auto, size));
 
     // This method is only used for the xp card
-    public static Uri? RealAvatarUrl(this DiscordUser usr)
+    public static Uri RealAvatarUrl(this DiscordUser usr)
         => usr.AvatarId is null
-            ? null
+            ? new(CDN.GetDefaultUserAvatarUrl(ushort.Parse(usr.Discriminator)))
             : new Uri(usr.AvatarId.StartsWith("a_", StringComparison.InvariantCulture)
                 ? $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.gif"
                 : $"{DiscordConfig.CDNUrl}avatars/{usr.UserId}/{usr.AvatarId}.png");

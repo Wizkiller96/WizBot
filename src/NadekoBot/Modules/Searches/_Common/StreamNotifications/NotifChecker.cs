@@ -1,7 +1,5 @@
 ﻿using NadekoBot.Db.Models;
 using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
-using Newtonsoft.Json;
-using StackExchange.Redis;
 
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications;
 
@@ -9,30 +7,22 @@ public class NotifChecker
 {
     public event Func<List<StreamData>, Task> OnStreamsOffline = _ => Task.CompletedTask;
     public event Func<List<StreamData>, Task> OnStreamsOnline = _ => Task.CompletedTask;
-    private readonly ConnectionMultiplexer _multi;
-    private readonly string _key;
 
-    private readonly Dictionary<FollowedStream.FType, Provider> _streamProviders;
+    private readonly IReadOnlyDictionary<FollowedStream.FType, Provider> _streamProviders;
     private readonly HashSet<(FollowedStream.FType, string)> _offlineBuffer;
+    private readonly ConcurrentDictionary<StreamDataKey, StreamData?> _cache = new();
 
     public NotifChecker(
         IHttpClientFactory httpClientFactory,
-        IBotCredsProvider credsProvider,
-        ConnectionMultiplexer multi,
-        string uniqueCacheKey,
-        bool isMaster)
+        IBotCredsProvider credsProvider)
     {
-        _multi = multi;
-        _key = $"{uniqueCacheKey}_followed_streams_data";
-        _streamProviders = new()
+        _streamProviders = new Dictionary<FollowedStream.FType, Provider>()
         {
             { FollowedStream.FType.Twitch, new TwitchHelixProvider(httpClientFactory, credsProvider) },
             { FollowedStream.FType.Picarto, new PicartoProvider(httpClientFactory) },
             { FollowedStream.FType.Trovo, new TrovoProvider(httpClientFactory, credsProvider) }
         };
         _offlineBuffer = new();
-        if (isMaster)
-            CacheClearAllData();
     }
 
     // gets all streams which have been failing for more than the provided timespan
@@ -61,7 +51,7 @@ public class NotifChecker
             {
                 try
                 {
-                    var allStreamData = CacheGetAllData();
+                    var allStreamData = GetAllData();
 
                     var oldStreamDataDict = allStreamData
                                             // group by type
@@ -101,7 +91,7 @@ public class NotifChecker
                             || !typeDict.TryGetValue(key.Name, out var oldData)
                             || oldData is null)
                         {
-                            CacheAddData(key, newData, true);
+                            AddLastData(key, newData, true);
                             continue;
                         }
                         
@@ -109,7 +99,7 @@ public class NotifChecker
                         if (string.IsNullOrWhiteSpace(newData.Game))
                             newData.Game = oldData.Game;
                         
-                        CacheAddData(key, newData, true);
+                        AddLastData(key, newData, true);
 
                         // if the stream is offline, we need to check if it was
                         // marked as offline once previously
@@ -158,39 +148,22 @@ public class NotifChecker
             }
         });
 
-    public bool CacheAddData(StreamDataKey key, StreamData? data, bool replace)
+    public bool AddLastData(StreamDataKey key, StreamData? data, bool replace)
     {
-        var db = _multi.GetDatabase();
-        return db.HashSet(_key,
-            JsonConvert.SerializeObject(key),
-            JsonConvert.SerializeObject(data),
-            replace ? When.Always : When.NotExists);
+        if (replace)
+        {
+            _cache[key] = data;
+            return true;
+        }
+        
+        return _cache.TryAdd(key, data);
     }
 
-    public void CacheDeleteData(StreamDataKey key)
-    {
-        var db = _multi.GetDatabase();
-        db.HashDelete(_key, JsonConvert.SerializeObject(key));
-    }
+    public void DeleteLastData(StreamDataKey key)
+        => _cache.TryRemove(key, out _);
 
-    public void CacheClearAllData()
-    {
-        var db = _multi.GetDatabase();
-        db.KeyDelete(_key);
-    }
-
-    public Dictionary<StreamDataKey, StreamData?> CacheGetAllData()
-    {
-        var db = _multi.GetDatabase();
-        if (!db.KeyExists(_key))
-            return new();
-
-        return db.HashGetAll(_key)
-                 .ToDictionary(entry => JsonConvert.DeserializeObject<StreamDataKey>(entry.Name),
-                     entry => entry.Value.IsNullOrEmpty
-                         ? default
-                         : JsonConvert.DeserializeObject<StreamData>(entry.Value));
-    }
+    public Dictionary<StreamDataKey, StreamData?> GetAllData()
+        => _cache.ToDictionary(x => x.Key, x => x.Value);
 
     public async Task<StreamData?> GetStreamDataByUrlAsync(string url)
     {
@@ -234,9 +207,9 @@ public class NotifChecker
 
         // if stream is found, add it to the cache for tracking only if it doesn't already exist
         // because stream will be checked and events will fire in a loop. We don't want to override old state
-        return CacheAddData(data.CreateKey(), data, false);
+        return AddLastData(data.CreateKey(), data, false);
     }
 
     public void UntrackStreamByKey(in StreamDataKey key)
-        => CacheDeleteData(key);
+        => DeleteLastData(key);
 }

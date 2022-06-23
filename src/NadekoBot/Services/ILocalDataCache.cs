@@ -6,8 +6,8 @@ namespace NadekoBot.Services;
 
 public interface ILocalDataCache
 {
-    IReadOnlyDictionary<string, SearchPokemon> Pokemons { get; }
-    IReadOnlyDictionary<string, SearchPokemonAbility> PokemonAbilities { get; }
-    IReadOnlyDictionary<int, string> PokemonMap { get; }
-    TriviaQuestion[] TriviaQuestions { get; }
+    Task<IReadOnlyDictionary<string, SearchPokemon>> GetPokemonsAsync();
+    Task<IReadOnlyDictionary<string, SearchPokemonAbility>> GetPokemonAbilitiesAsync();
+    Task<TriviaQuestionModel[]> GetTriviaQuestionsAsync();
+    Task<PokemonNameId[]> GetPokemonMapAsync();
 }

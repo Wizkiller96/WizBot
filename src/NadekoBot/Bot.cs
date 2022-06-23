@@ -102,20 +102,20 @@ public sealed class Bot
         var svcs = new ServiceCollection().AddTransient(_ => _credsProvider.GetCreds()) // bot creds
                                           .AddSingleton(_credsProvider)
                                           .AddSingleton(_db) // database
-                                          .AddRedis(_creds.RedisOptions) // redis
                                           .AddSingleton(Client) // discord socket client
                                           .AddSingleton(_commandService)
                                           // .AddSingleton(_interactionService)
                                           .AddSingleton(this)
                                           .AddSingleton<ISeria, JsonSeria>()
-                                          .AddSingleton<IPubSub, RedisPubSub>()
                                           .AddSingleton<IConfigSeria, YamlSeria>()
-                                          .AddBotStringsServices(_creds.TotalShards)
                                           .AddConfigServices()
                                           .AddConfigMigrators()
                                           .AddMemoryCache()
                                           // music
-                                          .AddMusic();
+                                          .AddMusic()
+                                          // cache
+                                          .AddCache(_creds);
+        
         // admin
 #if GLOBAL_NADEKO
         svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
@@ -142,13 +142,6 @@ public sealed class Bot
                 .AddSingleton<ICoordinator>(x => x.GetRequiredService<RemoteGrpcCoordinator>())
                 .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
         }
-
-        svcs.AddSingleton<RedisLocalDataCache>()
-            .AddSingleton<ILocalDataCache>(x => x.GetRequiredService<RedisLocalDataCache>())
-            .AddSingleton<RedisImagesCache>()
-            .AddSingleton<IImageCache>(x => x.GetRequiredService<RedisImagesCache>())
-            .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RedisImagesCache>())
-            .AddSingleton<IDataCache, RedisCache>();
 
         svcs.Scan(scan => scan.FromAssemblyOf<IReadyExecutor>()
                               .AddClasses(classes => classes.AssignableToAny(

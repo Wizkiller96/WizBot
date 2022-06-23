@@ -14,8 +14,8 @@ public partial class Gambling
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;
 
-        public DrawCommands(IDataCache data)
-            => _images = data.LocalImages;
+        public DrawCommands(IImageCache images)
+            => _images = images;
 
         private async Task<(Stream ImageStream, string ToSend)> InternalDraw(int num, ulong? guildId = null)
         {
@@ -43,7 +43,8 @@ public partial class Gambling
 
                 var currentCard = cards.Draw();
                 cardObjects.Add(currentCard);
-                images.Add(Image.Load(_images.GetCard(currentCard.ToString().ToLowerInvariant().Replace(' ', '_'))));
+                var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
+                images.Add(Image.Load(await File.ReadAllBytesAsync($"data/images/cards/{cardName}.png")));
             }
 
             using var img = images.Merge();

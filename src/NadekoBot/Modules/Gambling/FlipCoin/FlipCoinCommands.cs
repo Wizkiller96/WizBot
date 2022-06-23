@@ -25,11 +25,17 @@ public partial class Gambling
         private static readonly NadekoRandom _rng = new();
         private readonly IImageCache _images;
         private readonly ICurrencyService _cs;
+        private readonly ImagesConfig _ic;
 
-        public FlipCoinCommands(IDataCache data, ICurrencyService cs, GamblingConfigService gss)
+        public FlipCoinCommands(
+            IImageCache images,
+            ImagesConfig ic,
+            ICurrencyService cs,
+            GamblingConfigService gss)
             : base(gss)
         {
-            _images = data.LocalImages;
+            _ic = ic;
+            _images = images;
             _cs = cs;
         }
 
@@ -47,8 +53,8 @@ public partial class Gambling
             var imgs = new Image<Rgba32>[count];
             for (var i = 0; i < count; i++)
             {
-                var headsArr = _images.Heads[_rng.Next(0, _images.Heads.Count)];
-                var tailsArr = _images.Tails[_rng.Next(0, _images.Tails.Count)];
+                var headsArr = await _images.GetHeadsImageAsync();
+                var tailsArr = await _images.GetTailsImageAsync();
                 if (_rng.Next(0, 10) < 5)
                 {
                     imgs[i] = Image.Load(headsArr);
@@ -94,7 +100,7 @@ public partial class Gambling
 
             BetFlipGuess result;
             Uri imageToSend;
-            var coins = _images.ImageUrls.Coins;
+            var coins = _ic.Data.Coins;
             if (_rng.Next(0, 1000) <= 499)
             {
                 imageToSend = coins.Heads[_rng.Next(0, coins.Heads.Length)];

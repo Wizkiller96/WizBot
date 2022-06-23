@@ -1,23 +1,24 @@
 ﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Utility.Common;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Utility.Services;
 
 public class ConverterService : INService, IReadyExecutor
 {
-    public ConvertUnit[] Units
-        => _cache.Redis.GetDatabase().StringGet("converter_units").ToString().MapJson<ConvertUnit[]>();
+    private static readonly TypedKey<List<ConvertUnit>> _convertKey =
+        new("convert:units");
 
     private readonly TimeSpan _updateInterval = new(12, 0, 0);
     private readonly DiscordSocketClient _client;
-    private readonly IDataCache _cache;
+    private readonly IBotCache _cache;
     private readonly IHttpClientFactory _httpFactory;
 
     public ConverterService(
         DiscordSocketClient client,
-        IDataCache cache,
+        IBotCache cache,
         IHttpClientFactory factory)
     {
         _client = client;
@@ -48,7 +49,7 @@ public class ConverterService : INService, IReadyExecutor
     {
         using var http = _httpFactory.CreateClient();
         var res = await http.GetStringAsync("https://convertapi.nadeko.bot/latest");
-        return JsonConvert.DeserializeObject<Rates>(res);
+        return JsonSerializer.Deserialize<Rates>(res);
     }
 
     private async Task UpdateCurrency()
@@ -61,29 +62,38 @@ public class ConverterService : INService, IReadyExecutor
             Modifier = decimal.One,
             UnitType = unitTypeString
         };
-        var range = currencyRates.ConversionRates.Select(u => new ConvertUnit
+        var units = currencyRates.ConversionRates.Select(u => new ConvertUnit
                                  {
                                      Triggers = new[] { u.Key },
                                      Modifier = u.Value,
                                      UnitType = unitTypeString
                                  })
-                                 .ToArray();
+                                 .ToList();
 
-        var fileData = JsonConvert.DeserializeObject<ConvertUnit[]>(File.ReadAllText("data/units.json"))
-                                  ?.Where(x => x.UnitType != "currency");
-        if (fileData is null)
-            return;
-
-        var data = JsonConvert.SerializeObject(range.Append(baseType).Concat(fileData).ToList());
-        _cache.Redis.GetDatabase().StringSet("converter_units", data);
+        var stream =  File.OpenRead("data/units.json");
+        var defaultUnits = await JsonSerializer.DeserializeAsync<ConvertUnit[]>(stream);
+        if(defaultUnits is not null)
+            units.AddRange(defaultUnits);
+        
+        units.Add(baseType);
+        
+        await _cache.AddAsync(_convertKey, units);
     }
+
+    public async Task<IReadOnlyList<ConvertUnit>> GetUnitsAsync()
+        => (await _cache.GetAsync(_convertKey)).TryGetValue(out var list)
+            ? list
+            : Array.Empty<ConvertUnit>();
 }
 
 public class Rates
 {
+    [JsonPropertyName("base")]
     public string Base { get; set; }
+    
+    [JsonPropertyName("date")]
     public DateTime Date { get; set; }
 
-    [JsonProperty("rates")]
+    [JsonPropertyName("rates")]
     public Dictionary<string, decimal> ConversionRates { get; set; }
 }

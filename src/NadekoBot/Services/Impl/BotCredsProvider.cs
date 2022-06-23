@@ -172,9 +172,10 @@ public sealed class BotCredsProvider : IBotCredsProvider
         if (File.Exists(CREDS_FILE_NAME))
         {
             var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));
-            if (creds.Version <= 4)
+            if (creds.Version <= 5)
             {
-                creds.Version = 5;
+                creds.Version = 6;
+                creds.BotCache = BotCacheImplemenation.Redis;
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }

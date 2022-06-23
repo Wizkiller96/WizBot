@@ -58,6 +58,9 @@ public abstract class NadekoContext : DbContext
     public DbSet<PatronUser> Patrons { get; set; }
 
     public DbSet<PatronQuota> PatronQuotas { get; set; }
+    
+    public DbSet<StreamOnlineMessage> StreamOnlineMessages { get; set; }
+
 
     #region Mandatory Provider-Specific Values
 

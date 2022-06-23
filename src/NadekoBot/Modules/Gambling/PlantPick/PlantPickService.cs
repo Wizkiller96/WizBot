@@ -34,7 +34,7 @@ public class PlantPickService : INService, IExecNoCommand
         DbService db,
         CommandHandler cmd,
         IBotStrings strings,
-        IDataCache cache,
+        IImageCache images,
         FontProvider fonts,
         ICurrencyService cs,
         CommandHandler cmdHandler,
@@ -43,7 +43,7 @@ public class PlantPickService : INService, IExecNoCommand
     {
         _db = db;
         _strings = strings;
-        _images = cache.LocalImages;
+        _images = images;
         _fonts = fonts;
         _cs = cs;
         _cmdHandler = cmdHandler;
@@ -110,30 +110,21 @@ public class PlantPickService : INService, IExecNoCommand
     /// <param name="pass">Optional password to add to top left corner.</param>
     /// <param name="extension">Extension of the file, defaults to png</param>
     /// <returns>Stream of the currency image</returns>
-    public Stream GetRandomCurrencyImage(string pass, out string extension)
+    public async Task<(Stream, string)> GetRandomCurrencyImageAsync(string pass)
     {
-        // get a random currency image bytes
-        var rng = new NadekoRandom();
-        var curImg = _images.Currency[rng.Next(0, _images.Currency.Count)];
+        var curImg = await _images.GetCurrencyImageAsync();
 
         if (string.IsNullOrWhiteSpace(pass))
         {
             // determine the extension
-            using (_ = Image.Load(curImg, out var format))
-            {
-                extension = format.FileExtensions.FirstOrDefault() ?? "png";
-            }
+            using var load = _ = Image.Load(curImg, out var format);
 
             // return the image
-            return curImg.ToStream();
+            return (curImg.ToStream(), format.FileExtensions.FirstOrDefault() ?? "png");
         }
 
         // get the image stream and extension
-        var (s, ext) = AddPassword(curImg, pass);
-        // set the out extension parameter to the extension we've got
-        extension = ext;
-        // return the image
-        return s;
+        return AddPassword(curImg, pass);
     }
 
     /// <summary>
@@ -214,10 +205,10 @@ public class PlantPickService : INService, IExecNoCommand
                         var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
 
                         IUserMessage sent;
-                        await using (var stream = GetRandomCurrencyImage(pw, out var ext))
-                        {
+                        var (stream, ext) = await GetRandomCurrencyImageAsync(pw);
+
+                        await using (stream)
                             sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend);
-                        }
 
                         await AddPlantToDatabase(channel.GuildId,
                             channel.Id,
@@ -278,7 +269,7 @@ public class PlantPickService : INService, IExecNoCommand
                 if (amount > 0)
                     // give the picked currency to the user
                     await _cs.AddAsync(uid, amount, new("currency", "collect"));
-                uow.SaveChanges();
+                await uow.SaveChangesAsync();
             }
 
             try
@@ -316,11 +307,14 @@ public class PlantPickService : INService, IExecNoCommand
                 msgToSend += " " + GetText(gid, strs.pick_sn(prefix));
 
             //get the image
-            await using var stream = GetRandomCurrencyImage(pass, out var ext);
+            var (stream, ext) = await GetRandomCurrencyImageAsync(pass);
             // send it
-            var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend);
-            // return sent message's id (in order to be able to delete it when it's picked)
-            return msg.Id;
+            await using (stream)
+            {
+                var msg = await ch.SendFileAsync(stream, $"img.{ext}", msgToSend);
+                // return sent message's id (in order to be able to delete it when it's picked)
+                return msg.Id;
+            }
         }
         catch
         {
