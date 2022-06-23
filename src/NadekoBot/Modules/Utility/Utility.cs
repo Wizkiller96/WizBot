@@ -1,4 +1,7 @@
 #nullable disable
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
+using NadekoBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
@@ -32,6 +35,7 @@ public partial class Utility : NadekoModule
     private readonly IBotCredentials _creds;
     private readonly DownloadTracker _tracker;
     private readonly IHttpClientFactory _httpFactory;
+    private readonly VerboseErrorsService _veService;
 
     public Utility(
         DiscordSocketClient client,
@@ -39,7 +43,8 @@ public partial class Utility : NadekoModule
         IStatsService stats,
         IBotCredentials creds,
         DownloadTracker tracker,
-        IHttpClientFactory httpFactory)
+        IHttpClientFactory httpFactory,
+        VerboseErrorsService veService)
     {
         _client = client;
         _coord = coord;
@@ -47,6 +52,7 @@ public partial class Utility : NadekoModule
         _creds = creds;
         _tracker = tracker;
         _httpFactory = httpFactory;
+        _veService = veService;
     }
     
     [Cmd]
@@ -482,44 +488,17 @@ public partial class Utility : NadekoModule
             sem.Release();
         }
     }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.ManageMessages)]
+    public async partial Task VerboseError(bool? newstate = null)
+    {
+        var state = _veService.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 
-
-    // [NadekoCommand, Usage, Description, Aliases]
-    // [RequireContext(ContextType.Guild)]
-    // public async Task CreateMyInvite(CreateInviteType type = CreateInviteType.Any)
-    // {
-    //     if (type == CreateInviteType.Any)
-    //     {
-    //         if (_inviteService.TryGetInvite(type, out var code))
-    //         {
-    //             await ReplyErrorLocalizedAsync(strs.your_invite($"https://discord.gg/{code}"));
-    //             return;
-    //         }
-    //     }
-    //     
-    //     var invite = await ((ITextChannel) ctx.Channel).CreateInviteAsync(isUnique: true);
-    // }
-    //
-    // [NadekoCommand, Usage, Description, Aliases]
-    // [RequireContext(ContextType.Guild)]
-    // public async partial Task InviteLb(int page = 1)
-    // {
-    //     if (--page < 0)
-    //         return;
-    //
-    //     var inviteUsers = await _inviteService.GetInviteUsersAsync(ctx.Guild.Id);
-    //     
-    //     var embed = _eb.Create()
-    //         .WithOkColor();
-    //
-    //     await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
-    //     {
-    //         var items = inviteUsers.Skip(curPage * 9).Take(9);
-    //         var i = 0;
-    //         foreach (var item in items)
-    //             embed.AddField($"#{curPage * 9 + ++i} {item.UserName} [{item.User.Id}]", item.InvitedUsers);
-    //
-    //         return embed;
-    //     }, inviteUsers.Count, 9);
-    // }
+        if (state)
+            await ReplyConfirmLocalizedAsync(strs.verbose_errors_enabled);
+        else
+            await ReplyConfirmLocalizedAsync(strs.verbose_errors_disabled);
+    }
 }
