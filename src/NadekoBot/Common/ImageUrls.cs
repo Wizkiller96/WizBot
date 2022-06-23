@@ -1,9 +1,11 @@
 ﻿#nullable disable
 using NadekoBot.Common.Yml;
+using Cloneable;
 
 namespace NadekoBot.Common;
 
-public class ImageUrls
+[Cloneable]
+public partial class ImageUrls : ICloneable<ImageUrls> 
 {
     [Comment("DO NOT CHANGE")]
     public int Version { get; set; } = 3;

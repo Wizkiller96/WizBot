@@ -26,6 +26,7 @@ public interface IBotCredentials
     string TwitchClientId { get; set; }
     string TwitchClientSecret { get; set; }
     GoogleApiConfig Google { get; set; }
+    BotCacheImplemenation BotCache { get; set; }
 }
 
 public class RestartConfig

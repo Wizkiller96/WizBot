@@ -52,6 +52,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
         <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="NonBlocking" Version="2.0.0" />
         <PackageReference Include="OneOf" Version="3.0.216" />
         <PackageReference Include="Scrutor" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />

@@ -31,9 +31,10 @@ public sealed class PatronageService
     private readonly DiscordSocketClient _client;
     private readonly ISubscriptionHandler _subsHandler;
     private readonly IEmbedBuilderService _eb;
-    private readonly ConnectionMultiplexer _redis;
-    private readonly IBotCredentials _creds;
-    private readonly TypedKey<bool> _quotaKey;
+    private static readonly TypedKey<long> _quotaKey 
+        = new($"quota:last_hourly_reset");
+
+    private readonly IBotCache _cache;
 
     public PatronageService(
         PatronageConfig pConf,
@@ -41,18 +42,14 @@ public sealed class PatronageService
         DiscordSocketClient client,
         ISubscriptionHandler subsHandler,
         IEmbedBuilderService eb,
-        ConnectionMultiplexer redis,
-        IBotCredentials creds)
+        IBotCache cache)
     {
         _pConf = pConf;
         _db = db;
         _client = client;
         _subsHandler = subsHandler;
         _eb = eb;
-        _redis = redis;
-        _creds = creds;
-
-        _quotaKey = new TypedKey<bool>($"{_creds.RedisKey()}:quota:last_hourly_reset");
+        _cache = cache;
     }
 
     public Task OnReadyAsync()
@@ -101,11 +98,10 @@ public sealed class PatronageService
                 var now = DateTime.UtcNow;
                 var lastRun = DateTime.MinValue;
 
-                var rdb = _redis.GetDatabase();
-                var lastVal = await rdb.StringGetAsync(_quotaKey.Key);
-                if (lastVal != default)
+                var result = await _cache.GetAsync(_quotaKey);
+                if (result.TryGetValue(out var lastVal) && lastVal != default)
                 {
-                    lastRun = DateTime.FromBinary((long)lastVal);
+                    lastRun = DateTime.FromBinary(lastVal);
                 }
 
                 var nowDate = now.ToDateOnly();
@@ -130,8 +126,6 @@ public sealed class PatronageService
                                  HourlyCount = 0,
                                  DailyCount = 0,
                              });
-
-                    await rdb.StringSetAsync(_quotaKey.Key, true);
                 }
                 else if (now.Hour != lastRun.Hour) // if it's not, just reset hourly quotas
                 {
@@ -143,7 +137,7 @@ public sealed class PatronageService
                 }
 
                 // assumes that the code above runs in less than an hour
-                await rdb.StringSetAsync(_quotaKey.Key, now.ToBinary());
+                await _cache.AddAsync(_quotaKey, now.ToBinary());
                 await tran.CommitAsync();
             }
             catch (Exception ex)

@@ -38,7 +38,6 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
-    private readonly IDataCache _cache;
     private readonly DiscordSocketClient _client;
     private readonly NumberFormatInfo _enUsCulture;
     private readonly DownloadTracker _tracker;
@@ -51,7 +50,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     public Gambling(
         DbService db,
         ICurrencyService currency,
-        IDataCache cache,
         DiscordSocketClient client,
         DownloadTracker tracker,
         GamblingConfigService configService,
@@ -61,7 +59,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         _db = db;
         _cs = currency;
-        _cache = cache;
         _client = client;
         _bank = bank;
         _ps = ps;
@@ -124,7 +121,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        if (_cache.AddTimelyClaim(ctx.User.Id, period) is { } rem)
+        if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } rem)
         {
             var now = DateTime.UtcNow;
             var relativeTag = TimestampTag.FromDateTime(now.Add(rem), TimestampTagStyles.Relative);
@@ -145,7 +142,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [OwnerOnly]
     public async partial Task TimelyReset()
     {
-        _cache.RemoveAllTimelyClaims();
+        await _service.RemoveAllTimelyClaimsAsync();
         await ReplyConfirmLocalizedAsync(strs.timely_reset);
     }
 

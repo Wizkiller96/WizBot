@@ -3,6 +3,26 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Changed
+
+- New cache abstraction added
+  - 2 implemenations: redis and memory 
+  - All current bots will stay on redis cache, all new bots will use in-process memory cache
+  - This change removes bot's hard dependency on redis
+  - Configurable in `creds.yml` (please read the comments)
+  - You **MUST** use 'redis' if your bot runs on more than 1 shard (2000+ servers)
+- [dev] Using new non-locking ConcurrentDictionary
+
+### Fixed
+
+- `.xp` will now show default user avatars too
+
+### Removed
+
+- Removed `.imagesreload` as images are now lazily loaded on request and then cached
+
 ## [4.2.6] - 22.06.2022
 
 ### Fixed

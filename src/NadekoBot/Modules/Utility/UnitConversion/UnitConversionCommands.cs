@@ -11,7 +11,7 @@ public partial class Utility
         [Cmd]
         public async partial Task ConvertList()
         {
-            var units = _service.Units;
+            var units = await _service.GetUnitsAsync();
 
             var embed = _eb.Create().WithTitle(GetText(strs.convertlist)).WithOkColor();
 
@@ -29,9 +29,10 @@ public partial class Utility
         [Priority(0)]
         public async partial Task Convert(string origin, string target, decimal value)
         {
-            var originUnit = _service.Units.FirstOrDefault(x
+            var units = await _service.GetUnitsAsync();
+            var originUnit = units.FirstOrDefault(x
                 => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(origin.ToUpperInvariant()));
-            var targetUnit = _service.Units.FirstOrDefault(x
+            var targetUnit = units.FirstOrDefault(x
                 => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(target.ToUpperInvariant()));
             if (originUnit is null || targetUnit is null)
             {

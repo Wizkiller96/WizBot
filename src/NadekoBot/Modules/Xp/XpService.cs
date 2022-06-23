@@ -23,10 +23,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public const int XP_REQUIRED_LVL_1 = 36;
 
     private readonly DbService _db;
-    private readonly CommandHandler _cmd;
     private readonly IImageCache _images;
     private readonly IBotStrings _strings;
-    private readonly IDataCache _cache;
     private readonly FontProvider _fonts;
     private readonly IBotCredentials _creds;
     private readonly ICurrencyService _cs;
@@ -45,14 +43,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     private readonly TypedKey<bool> _xpTemplateReloadKey;
     private readonly IPatronageService _ps;
+    private readonly IBotCache _c;
 
     public XpService(
         DiscordSocketClient client,
-        CommandHandler cmd,
         Bot bot,
         DbService db,
         IBotStrings strings,
-        IDataCache cache,
+        IImageCache images,
+        IBotCache c,
         FontProvider fonts,
         IBotCredentials creds,
         ICurrencyService cs,
@@ -63,10 +62,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         IPatronageService ps)
     {
         _db = db;
-        _cmd = cmd;
-        _images = cache.LocalImages;
+        _images = images;
         _strings = strings;
-        _cache = cache;
         _fonts = fonts;
         _creds = creds;
         _cs = cs;
@@ -79,6 +76,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _client = client;
         _xpTemplateReloadKey = new("xp.template.reload");
         _ps = ps;
+        _c = c;
 
         InternalReloadXpTemplate();
 
@@ -453,10 +451,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     private Task Client_OnGuildAvailable(SocketGuild guild)
     {
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             foreach (var channel in guild.VoiceChannels)
-                ScanChannelForVoiceXp(channel);
+                await ScanChannelForVoiceXp(channel);
         });
 
         return Task.CompletedTask;
@@ -467,33 +465,33 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (socketUser is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
             if (before.VoiceChannel is not null)
-                ScanChannelForVoiceXp(before.VoiceChannel);
+                await ScanChannelForVoiceXp(before.VoiceChannel);
 
             if (after.VoiceChannel is not null && after.VoiceChannel != before.VoiceChannel)
-                ScanChannelForVoiceXp(after.VoiceChannel);
+                await ScanChannelForVoiceXp(after.VoiceChannel);
             else if (after.VoiceChannel is null)
                 // In this case, the user left the channel and the previous for loops didn't catch
                 // it because it wasn't in any new channel. So we need to get rid of it.
-                UserLeftVoiceChannel(user, before.VoiceChannel);
+                await UserLeftVoiceChannel(user, before.VoiceChannel);
         });
 
         return Task.CompletedTask;
     }
 
-    private void ScanChannelForVoiceXp(SocketVoiceChannel channel)
+    private async Task ScanChannelForVoiceXp(SocketVoiceChannel channel)
     {
         if (ShouldTrackVoiceChannel(channel))
         {
             foreach (var user in channel.Users)
-                ScanUserForVoiceXp(user, channel);
+                await ScanUserForVoiceXp(user, channel);
         }
         else
         {
             foreach (var user in channel.Users)
-                UserLeftVoiceChannel(user, channel);
+                await UserLeftVoiceChannel(user, channel);
         }
     }
 
@@ -502,12 +500,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     /// </summary>
     /// <param name="user"></param>
     /// <param name="channel"></param>
-    private void ScanUserForVoiceXp(SocketGuildUser user, SocketVoiceChannel channel)
+    private async Task ScanUserForVoiceXp(SocketGuildUser user, SocketVoiceChannel channel)
     {
         if (UserParticipatingInVoiceChannel(user) && ShouldTrackXp(user, channel.Id))
-            UserJoinedVoiceChannel(user);
+            await UserJoinedVoiceChannel(user);
         else
-            UserLeftVoiceChannel(user, channel);
+            await UserLeftVoiceChannel(user, channel);
     }
 
     private bool ShouldTrackVoiceChannel(SocketVoiceChannel channel)
@@ -516,32 +514,31 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private bool UserParticipatingInVoiceChannel(SocketGuildUser user)
         => !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
 
-    private void UserJoinedVoiceChannel(SocketGuildUser user)
+    private TypedKey<long> GetVoiceXpKey(ulong userId)
+        => new($"xp:vc_join:{userId}");
+    
+    private async Task UserJoinedVoiceChannel(SocketGuildUser user)
     {
-        var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
         var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        _cache.Redis.GetDatabase()
-              .StringSet(key,
-                  value,
-                  TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
-                  when: When.NotExists);
+        await _c.AddAsync(GetVoiceXpKey(user.Id),
+            value,
+            TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
+            overwrite: false);
     }
 
-    private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
+    private async Task UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
     {
-        var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
-        var value = _cache.Redis.GetDatabase().StringGet(key);
-        _cache.Redis.GetDatabase().KeyDelete(key);
+        var key = GetVoiceXpKey(user.Id);
+        var result = await _c.GetAsync(key);
+        if (!await _c.RemoveAsync(key))
+            return;
 
         // Allow for if this function gets called multiple times when a user leaves a channel.
-        if (value.IsNull)
+        if (!result.TryGetValue(out var unixTime))
             return;
 
-        if (!value.TryParse(out long startUnixTime))
-            return;
-
-        var dateStart = DateTimeOffset.FromUnixTimeSeconds(startUnixTime);
+        var dateStart = DateTimeOffset.FromUnixTimeSeconds(unixTime);
         var dateEnd = DateTimeOffset.UtcNow;
         var minutes = (dateEnd - dateStart).TotalMinutes;
         var xp = _xpConfig.Data.VoiceXpPerMinute * minutes;
@@ -577,7 +574,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (arg.Author is not SocketGuildUser user || user.IsBot)
             return Task.CompletedTask;
 
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
             if (!ShouldTrackXp(user, arg.Channel.Id))
                 return;
@@ -593,7 +590,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (xp <= 0)
                 return;
 
-            if (!SetUserRewarded(user.Id))
+            if (!await SetUserRewardedAsync(user.Id))
                 return;
 
             _addMessageXp.Enqueue(new()
@@ -650,16 +647,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return Enumerable.Empty<ulong>();
     }
 
-    private bool SetUserRewarded(ulong userId)
-    {
-        var r = _cache.Redis.GetDatabase();
-        var key = $"{_creds.RedisKey()}_user_xp_gain_{userId}";
+    private static TypedKey<bool> GetUserRewKey(ulong userId)
+        => new($"xp:user_gain:{userId}");
 
-        return r.StringSet(key,
+    private async Task<bool> SetUserRewardedAsync(ulong userId)
+        => await _c.AddAsync(GetUserRewKey(userId),
             true,
-            TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
-            when: When.NotExists);
-    }
+            expiry: TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
+            overwrite: false);
 
     public async Task<FullUserStats> GetUserStatsAsync(IGuildUser user)
     {
@@ -782,7 +777,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 }
             }.WithFallbackFonts(_fonts.FallBackFonts);
 
-            using var img = Image.Load<Rgba32>(_images.XpBackground, out var imageFormat);
+            using var img = Image.Load<Rgba32>(await GetXpBackgroundAsync(stats.User.UserId), out var imageFormat);
             if (template.User.Name.Show)
             {
                 var fontSize = (int)(template.User.Name.FontSize * 0.9);
@@ -979,8 +974,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 {
                     var avatarUrl = stats.User.RealAvatarUrl();
 
-                    var (succ, data) = await _cache.TryGetImageDataAsync(avatarUrl);
-                    if (!succ)
+                    var result = await _c.GetImageDataAsync(avatarUrl);
+                    if (!result.TryPickT0(out var data, out _))
                     {
                         using (var http = _httpFactory.CreateClient())
                         {
@@ -999,7 +994,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             }
                         }
 
-                        await _cache.SetImageDataAsync(avatarUrl, data);
+                        await _c.SetImageDataAsync(avatarUrl, data);
                     }
 
                     using var toDraw = Image.Load(data);
@@ -1033,7 +1028,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             return output;
         });
 
-// #if GLOBAL_NADEKO
+    private async Task<byte[]> GetXpBackgroundAsync(ulong userId)
+    {
+        var img = await _images.GetXpBackgroundImageAsync();
+        return img;
+    }
+
+    // #if GLOBAL_NADEKO
     private async Task DrawFrame(Image<Rgba32> img, ulong userId)
     {
         var patron = await _ps.GetPatronAsync(userId);
@@ -1103,8 +1104,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             try
             {
                 var imgUrl = new Uri(stats.User.Club.ImageUrl);
-                var (succ, data) = await _cache.TryGetImageDataAsync(imgUrl);
-                if (!succ)
+                var result = await _c.GetImageDataAsync(imgUrl);
+                if (!result.TryPickT0(out var data, out _))
                 {
                     using (var http = _httpFactory.CreateClient())
                     using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead))
@@ -1127,7 +1128,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         }
                     }
 
-                    await _cache.SetImageDataAsync(imgUrl, data);
+                    await _c.SetImageDataAsync(imgUrl, data);
                 }
 
                 using var toDraw = Image.Load(data);

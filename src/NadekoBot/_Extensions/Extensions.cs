@@ -37,8 +37,9 @@ public static class Extensions
             _ => throw new ArgumentOutOfRangeException(nameof(text))
         };
 
-    public static List<ulong> GetGuildIds(this DiscordSocketClient client)
-        => client.Guilds.Select(x => x.Id).ToList();
+    public static ulong[] GetGuildIds(this DiscordSocketClient client)
+        => client.Guilds
+                 .Map(x => x.Id);
 
     /// <summary>
     ///     Generates a string in the format HHH:mm if timespan is &gt;= 2m.

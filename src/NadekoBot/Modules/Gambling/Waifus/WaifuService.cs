@@ -1,5 +1,6 @@
 #nullable disable
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -14,7 +15,7 @@ public class WaifuService : INService, IReadyExecutor
 {
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
-    private readonly IDataCache _cache;
+    private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
     private readonly IBotCredentials _creds;
     private readonly DiscordSocketClient _client;
@@ -22,7 +23,7 @@ public class WaifuService : INService, IReadyExecutor
     public WaifuService(
         DbService db,
         ICurrencyService cs,
-        IDataCache cache,
+        IBotCache cache,
         GamblingConfigService gss,
         IBotCredentials creds,
         DiscordSocketClient client)
@@ -236,8 +237,13 @@ public class WaifuService : INService, IReadyExecutor
             var newAff = target is null ? null : uow.GetOrCreateUser(target);
             if (w?.Affinity?.UserId == target?.Id)
             {
+                return (null, false, null);
             }
-            else if (!_cache.TryAddAffinityCooldown(user.Id, out remaining))
+
+            remaining = await _cache.GetRatelimitAsync(GetAffinityKey(user.Id),
+                30.Minutes());
+            
+            if (remaining is not null)
             {
             }
             else if (w is null)
@@ -294,6 +300,12 @@ public class WaifuService : INService, IReadyExecutor
         return uow.WaifuInfo.GetWaifuUserId(ownerId, name);
     }
 
+    private static TypedKey<long> GetDivorceKey(ulong userId)
+        => new($"waifu:divorce_cd:{userId}");
+    
+    private static TypedKey<long> GetAffinityKey(ulong userId)
+        => new($"waifu:affinity:{userId}");
+    
     public async Task<(WaifuInfo, DivorceResult, long, TimeSpan?)> DivorceWaifuAsync(IUser user, ulong targetId)
     {
         DivorceResult result;
@@ -305,10 +317,15 @@ public class WaifuService : INService, IReadyExecutor
             w = uow.WaifuInfo.ByWaifuUserId(targetId);
             if (w?.Claimer is null || w.Claimer.UserId != user.Id)
                 result = DivorceResult.NotYourWife;
-            else if (!_cache.TryAddDivorceCooldown(user.Id, out remaining))
-                result = DivorceResult.Cooldown;
             else
             {
+                remaining = await _cache.GetRatelimitAsync(GetDivorceKey(user.Id), 6.Hours());
+                if (remaining is TimeSpan rem)
+                {
+                    result = DivorceResult.Cooldown;
+                    return (w, result, amount, rem);
+                }
+
                 amount = w.Price / 2;
 
                 if (w.Affinity?.UserId == user.Id)
@@ -486,13 +503,13 @@ public class WaifuService : INService, IReadyExecutor
                    .ToList();
     }
 
+    private static readonly TypedKey<long> _waifuDecayKey = $"waifu:last_decay";
     public async Task OnReadyAsync()
     {
         // only decay waifu values from shard 0
         if (_client.ShardId != 0)
             return;
 
-        var redisKey = $"{_creds.RedisKey()}_last_waifu_decay";
         while (true)
         {
             try
@@ -504,28 +521,31 @@ public class WaifuService : INService, IReadyExecutor
                 if (multi is < 0f or > 1f || decayInterval < 0)
                     continue;
 
-                var val = await _cache.Redis.GetDatabase().StringGetAsync(redisKey);
-                if (val != default)
+                var now = DateTime.UtcNow;
+                var nowB = now.ToBinary();
+
+                var result = await _cache.GetAsync(_waifuDecayKey);
+                
+                if (result.TryGetValue(out var val))
                 {
-                    var lastDecay = DateTime.FromBinary((long)val);
+                    var lastDecay = DateTime.FromBinary(val);
                     var toWait = decayInterval.Hours() - (DateTime.UtcNow - lastDecay);
 
                     if (toWait > 0.Hours())
                         continue;
                 }
 
-                await _cache.Redis.GetDatabase().StringSetAsync(redisKey, DateTime.UtcNow.ToBinary());
+                await _cache.AddAsync(_waifuDecayKey, nowB);
 
                 await using var uow = _db.GetDbContext();
 
-                await uow.WaifuInfo
+                await uow.GetTable<WaifuInfo>()
                          .Where(x => x.Price > minPrice && x.ClaimerId == null)
                          .UpdateAsync(old => new()
                          {
                              Price = (long)(old.Price * multi)
                          });
 
-                await uow.SaveChangesAsync();
             }
             catch (Exception ex)
             {

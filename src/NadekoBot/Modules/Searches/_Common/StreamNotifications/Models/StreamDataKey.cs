@@ -6,10 +6,9 @@ namespace NadekoBot.Modules.Searches.Common;
 
 public readonly struct StreamDataKey
 {
-    public FollowedStream.FType Type { get; }
-    public string Name { get; }
+    public FollowedStream.FType Type { get; init; }
+    public string Name { get; init; }
 
-    [JsonConstructor]
     public StreamDataKey(FollowedStream.FType type, string name)
     {
         Type = type;

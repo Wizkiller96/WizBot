@@ -502,14 +502,6 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task ImagesReload()
-        {
-            await _service.ReloadImagesAsync();
-            await ReplyConfirmLocalizedAsync(strs.images_loading);
-        }
-
-        [Cmd]
-        [OwnerOnly]
         public async partial Task StringsReload()
         {
             _strings.Reload();

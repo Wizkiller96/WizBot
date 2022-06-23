@@ -24,7 +24,7 @@ quotas:
   # Dictionary of commands with their respective quota data
   commands:
     cleverbot:
-      V: null
+      V: 
     prune:
       X:
         PerHour: 1

@@ -16,7 +16,7 @@ namespace NadekoBot.Migrations.Mysql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.5")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
@@ -331,6 +331,39 @@ namespace NadekoBot.Migrations.Mysql
                         .HasDatabaseName("ix_patrons_uniqueplatformuserid");
 
                     b.ToTable("patrons", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamOnlineMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messageid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_streamonlinemessages");
+
+                    b.ToTable("streamonlinemessages", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
