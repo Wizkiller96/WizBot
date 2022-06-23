@@ -4,6 +4,7 @@
 	--md-primary-fg-color--light: #590074;
 	--md-primary-fg-color--dark: #590074;
 	--md-default-bg-color: #0b0b0b;
+	--md-default-bg-color--light: #e8e8e8;
 	--md-default-fg-color: hsla(0, 75%, 95%, 1);
 	--md-default-fg-color--light: hsla(0, 0%, 100%, 0.849);
 	--md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
@@ -48,16 +49,12 @@
 	--md-typeset-a-color: var(--md-accent-fg-color);
 }
 
-[data-md-color-scheme="wizbot-dark"] .md-header {
-	background: var(--md-default-bg-color--light);
-}
-
 [data-md-color-scheme="wizbot-dark"] .md-nav__item :not(.md-nav__link--active) {
 	color: var(--md-default-fg-color--light);
 }
 
 [data-md-color-scheme="wizbot-dark"] .md-nav__item .md-nav__link:hover {
-	color: var(--md-primary-fg-color);
+	color: var(--md-typeset-a-color);
 }
 
 /* Original Dark Theme */
