@@ -1306,3 +1306,5 @@ patron:
 patronmessage:
   - patronmessage
   - patronmsg
+eval: 
+  - eval
