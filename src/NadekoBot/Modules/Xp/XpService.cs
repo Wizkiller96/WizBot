@@ -37,7 +37,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
     private readonly ConcurrentHashSet<ulong> _excludedServers;
 
-    private readonly ConcurrentQueue<UserCacheItem> _addMessageXp = new();
+    private readonly System.Collections.Concurrent.ConcurrentQueue<UserCacheItem> _addMessageXp = new();
     private XpTemplate template;
     private readonly DiscordSocketClient _client;
 
