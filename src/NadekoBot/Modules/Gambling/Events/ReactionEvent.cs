@@ -20,7 +20,7 @@ public class ReactionEvent : ICurrencyEvent
     private readonly bool _isPotLimited;
     private readonly ITextChannel _channel;
     private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
-    private readonly ConcurrentQueue<ulong> _toAward = new();
+    private readonly System.Collections.Concurrent.ConcurrentQueue<ulong> _toAward = new();
     private readonly Timer _t;
     private readonly Timer _timeout;
     private readonly bool _noRecentlyJoinedServer;
