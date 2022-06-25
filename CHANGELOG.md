@@ -5,6 +5,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.2.8] - 24.06.2022
+
+### Fixed
+
+- `.timely` should be fixed
+
 ## [4.2.7] - 24.06.2022
 
 ### Changed

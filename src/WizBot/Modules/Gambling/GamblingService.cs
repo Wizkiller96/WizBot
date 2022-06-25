@@ -244,7 +244,7 @@ public class GamblingService : INService, IReadyExecutor
         }
         finally
         {
-            await _timelyLock.WaitAsync();
+            _timelyLock.Release();
         }
     }
 
