@@ -2226,7 +2226,7 @@ eval:
     `channel` - Channel in which the command is executed
     `user` - User executing the command
     `ctx` - Discord.Net command context
-    `services` - Nadeko's IServiceProvider
+    `services` - WizBot's IServiceProvider
   args:
     - "123 / 4.5f"
     - "await ctx.OkAsync();"

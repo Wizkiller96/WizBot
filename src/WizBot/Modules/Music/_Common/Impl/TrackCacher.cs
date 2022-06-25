@@ -44,30 +44,40 @@ public sealed class TrackCacher : ITrackCacher
         => await _cache.AddAsync(GetStreamLinkKey(platform, id), url, expiry);
 
     // track data by id
-    private TypedKey<ICachableTrackData> GetTrackDataKey(MusicPlatform platform, string id)
+    private TypedKey<CachableTrackData> GetTrackDataKey(MusicPlatform platform, string id)
         => new($"music:track:{platform}:{id}");
     public async Task CacheTrackDataAsync(ICachableTrackData data)
-        => await _cache.AddAsync(GetTrackDataKey(data.Platform, data.Id), data);
-    
+        => await _cache.AddAsync(GetTrackDataKey(data.Platform, data.Id), ToCachableTrackData(data));
+
+    private CachableTrackData ToCachableTrackData(ICachableTrackData data)
+        => new CachableTrackData()
+        {
+            Id = data.Id,
+            Platform = data.Platform,
+            Thumbnail = data.Thumbnail,
+            Title = data.Title,
+            Url = data.Url,
+        };
+
     public async Task<ICachableTrackData?> GetCachedDataByIdAsync(string id, MusicPlatform platform)
         => await _cache.GetOrDefaultAsync(GetTrackDataKey(platform, id)); 
     
     
     // track data by query
-    private TypedKey<ICachableTrackData> GetTrackDataQueryKey(MusicPlatform platform, string query)
+    private TypedKey<CachableTrackData> GetTrackDataQueryKey(MusicPlatform platform, string query)
         => new($"music:track:{platform}:q:{query}");
 
     public async Task CacheTrackDataByQueryAsync(string query, ICachableTrackData data)
         => await Task.WhenAll(
-            _cache.AddAsync(GetTrackDataQueryKey(data.Platform, query), data).AsTask(),
-            _cache.AddAsync(GetTrackDataKey(data.Platform, data.Id), data).AsTask());
+            _cache.AddAsync(GetTrackDataQueryKey(data.Platform, query), ToCachableTrackData(data)).AsTask(),
+            _cache.AddAsync(GetTrackDataKey(data.Platform, data.Id), ToCachableTrackData(data)).AsTask());
     
     public async Task<ICachableTrackData?> GetCachedDataByQueryAsync(string query, MusicPlatform platform)
         => await _cache.GetOrDefaultAsync(GetTrackDataQueryKey(platform, query));
 
 
     // playlist track ids by playlist id
-    private TypedKey<IReadOnlyCollection<string>> GetPlaylistTracksCacheKey(string playlist, MusicPlatform platform)
+    private TypedKey<List<string>> GetPlaylistTracksCacheKey(string playlist, MusicPlatform platform)
         => new($"music:playlist_tracks:{platform}:{playlist}");
 
     public async Task CachePlaylistTrackIdsAsync(string playlistId, MusicPlatform platform, IEnumerable<string> ids)
