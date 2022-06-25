@@ -8,7 +8,7 @@ namespace WizBot.Modules.Administration.Services;
 public class VcRoleService : INService
 {
     public ConcurrentDictionary<ulong, ConcurrentDictionary<ulong, IRole>> VcRoles { get; }
-    public ConcurrentDictionary<ulong, ConcurrentQueue<(bool, IGuildUser, IRole)>> ToAssign { get; }
+    public ConcurrentDictionary<ulong, System.Collections.Concurrent.ConcurrentQueue<(bool, IGuildUser, IRole)>> ToAssign { get; }
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
 
@@ -37,7 +37,7 @@ public class VcRoleService : INService
         {
             while (true)
             {
-                Task Selector(ConcurrentQueue<(bool, IGuildUser, IRole)> queue)
+                Task Selector(System.Collections.Concurrent.ConcurrentQueue<(bool, IGuildUser, IRole)> queue)
                 {
                     return Task.Run(async () =>
                     {
@@ -203,7 +203,7 @@ public class VcRoleService : INService
 
     private void Assign(bool v, SocketGuildUser gusr, IRole role)
     {
-        var queue = ToAssign.GetOrAdd(gusr.Guild.Id, new ConcurrentQueue<(bool, IGuildUser, IRole)>());
+        var queue = ToAssign.GetOrAdd(gusr.Guild.Id, new System.Collections.Concurrent.ConcurrentQueue<(bool, IGuildUser, IRole)>());
         queue.Enqueue((v, gusr, role));
     }
 }

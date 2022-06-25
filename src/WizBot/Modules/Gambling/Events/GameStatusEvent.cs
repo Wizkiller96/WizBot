@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using WizBot.Services.Database.Models;
+using System.Collections.Concurrent;
 
 namespace WizBot.Modules.Gambling.Common.Events;
 
