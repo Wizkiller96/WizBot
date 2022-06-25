@@ -35,6 +35,7 @@ public sealed class PatronageService
         = new($"quota:last_hourly_reset");
 
     private readonly IBotCache _cache;
+    private readonly IBotCredsProvider _creds;
 
     public PatronageService(
         PatronageConfig pConf,
@@ -42,7 +43,8 @@ public sealed class PatronageService
         DiscordSocketClient client,
         ISubscriptionHandler subsHandler,
         IEmbedBuilderService eb,
-        IBotCache cache)
+        IBotCache cache, 
+        IBotCredsProvider creds)
     {
         _pConf = pConf;
         _db = db;
@@ -50,6 +52,7 @@ public sealed class PatronageService
         _subsHandler = subsHandler;
         _eb = eb;
         _cache = cache;
+        _creds = creds;
     }
 
     public Task OnReadyAsync()
@@ -495,8 +498,8 @@ public sealed class PatronageService
         if (!confData.IsEnabled)
             return default;
 
-        // if (_creds.IsOwner(userId))
-        //     return default;
+        if (_creds.GetCreds().IsOwner(userId))
+            return default;
 
         // get user tier
         var patron = await GetPatronAsync(userId);
