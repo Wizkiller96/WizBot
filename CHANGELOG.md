@@ -3,7 +3,11 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.2.9] - 25.06.202
+
+### Fixed
+
+- Fixed `creds_example.yml` misssing from output directory
 
 ## [4.2.8] - 24.06.2022
 
