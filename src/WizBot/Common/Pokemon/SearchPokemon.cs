@@ -1,11 +1,12 @@
 ﻿#nullable disable
-using Newtonsoft.Json;
+
+using System.Text.Json.Serialization;
 
 namespace WizBot.Common.Pokemon;
 
 public class SearchPokemon
 {
-    [JsonProperty("num")]
+    [JsonPropertyName("num")]
     public int Id { get; set; }
 
     public string Species { get; set; }

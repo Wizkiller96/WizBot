@@ -1496,10 +1496,6 @@ musicquality:
     - ""
     - "High"
     - "Low"
-imagesreload:
-  desc: "Reloads images bot is using. Safe to use even when bot is being used heavily."
-  args:
-    - ""
 stringsreload:
   desc: "Reloads localized bot strings."
   args:

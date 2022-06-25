@@ -10,14 +10,14 @@ public partial class Searches
     public partial class SearchCommands : WizBotModule
     {
         private readonly ISearchServiceFactory _searchFactory;
-        private readonly ConnectionMultiplexer _redis;
+        private readonly IBotCache _cache;
 
         public SearchCommands(
             ISearchServiceFactory searchFactory,
-            ConnectionMultiplexer redis)
+            IBotCache cache)
         {
             _searchFactory = searchFactory;
-            _redis = redis;
+            _cache = cache;
         }
 
         [Cmd]
@@ -127,18 +127,17 @@ public partial class Searches
             await ctx.Channel.EmbedAsync(null, embeds: embeds);
         }
 
+        private TypedKey<string> GetYtCacheKey(string query)
+            => new($"search:youtube:{query}");
+
         private async Task AddYoutubeUrlToCacheAsync(string query, string url)
-        {
-            var db = _redis.GetDatabase();
-            await db.StringSetAsync($"search:youtube:{query}", url, expiry: 1.Hours());
-        }
+            => await _cache.AddAsync(GetYtCacheKey(query), url, expiry: 1.Hours());
 
         private async Task<VideoInfo?> GetYoutubeUrlFromCacheAsync(string query)
         {
-            var db = _redis.GetDatabase();
-            var url = await db.StringGetAsync($"search:youtube:{query}");
+            var result = await _cache.GetAsync(GetYtCacheKey(query));
 
-            if (string.IsNullOrWhiteSpace(url))
+            if (!result.TryGetValue(out var url) || string.IsNullOrWhiteSpace(url))
                 return null;
 
             return new VideoInfo()

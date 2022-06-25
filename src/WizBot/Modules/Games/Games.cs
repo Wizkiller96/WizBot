@@ -14,9 +14,9 @@ public partial class Games : WizBotModule<GamesService>
     private readonly IHttpClientFactory _httpFactory;
     private readonly Random _rng = new();
 
-    public Games(IDataCache data, IHttpClientFactory factory)
+    public Games(IImageCache images, IHttpClientFactory factory)
     {
-        _images = data.LocalImages;
+        _images = images;
         _httpFactory = factory;
     }
 

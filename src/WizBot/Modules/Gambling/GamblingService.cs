@@ -1,16 +1,13 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 using WizBot.Db.Models;
-using WizBot.Migrations;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Connect4;
 using WizBot.Modules.Gambling.Common.Slot;
 using WizBot.Modules.Gambling.Common.WheelOfFortune;
-using Newtonsoft.Json;
 
 namespace WizBot.Modules.Gambling.Services;
 
@@ -22,7 +19,7 @@ public class GamblingService : INService, IReadyExecutor
     private readonly ICurrencyService _cs;
     private readonly Bot _bot;
     private readonly DiscordSocketClient _client;
-    private readonly IDataCache _cache;
+    private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
 
     public GamblingService(
@@ -30,7 +27,7 @@ public class GamblingService : INService, IReadyExecutor
         Bot bot,
         ICurrencyService cs,
         DiscordSocketClient client,
-        IDataCache cache,
+        IBotCache cache,
         GamblingConfigService gss)
     {
         _db = db;
@@ -73,6 +70,7 @@ public class GamblingService : INService, IReadyExecutor
         }
     }
 
+    private static readonly TypedKey<long> _curDecayKey = new("currency:last_decay");
     private async Task CurrencyDecayLoopAsync()
     {
         if (_bot.Client.ShardId != 0)
@@ -88,11 +86,16 @@ public class GamblingService : INService, IReadyExecutor
                 if (config.Decay.Percent is <= 0 or > 1 || maxDecay < 0)
                     continue;
 
+                var now = DateTime.UtcNow;
+                
                 await using var uow = _db.GetDbContext();
-                var lastCurrencyDecay = _cache.GetLastCurrencyDecay();
+                var result = await _cache.GetAsync(_curDecayKey);
 
-                if (DateTime.UtcNow - lastCurrencyDecay < TimeSpan.FromHours(config.Decay.HourInterval))
+                if (result.TryPickT0(out var bin, out _)
+                    && (now - DateTime.FromBinary(bin) < TimeSpan.FromHours(config.Decay.HourInterval)))
+                {
                     continue;
+                }
 
                 Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
                                     | max: {MaxDecay} 
@@ -115,8 +118,9 @@ public class GamblingService : INService, IReadyExecutor
                                      : old.CurrencyAmount - maxDecay 
                          });
 
-                _cache.SetLastCurrencyDecay();
                 await uow.SaveChangesAsync();
+
+                await _cache.AddAsync(_curDecayKey, now.ToBinary());
             }
             catch (Exception ex)
             {
@@ -161,60 +165,100 @@ public class GamblingService : INService, IReadyExecutor
         return toReturn;
     }
 
+    private static readonly TypedKey<EconomyResult> _ecoKey = new("wizbot:economy");
+
     public async Task<EconomyResult> GetEconomyAsync()
     {
-        if (_cache.TryGetEconomy(out var data))
-        {
-            try
+        var data = await _cache.GetOrAddAsync(_ecoKey,
+            async () =>
             {
-                return JsonConvert.DeserializeObject<EconomyResult>(data);
-            }
-            catch { }
-        }
+                await using var uow = _db.GetDbContext();
+                var cash = uow.DiscordUser.GetTotalCurrency();
+                var onePercent = uow.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
+                decimal planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
+                var waifus = uow.WaifuInfo.GetTotalValue();
+                var bot = uow.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
+                decimal bank = await uow.GetTable<BankUser>()
+                                        .SumAsyncLinqToDB(x => x.Balance);
 
-        decimal cash;
-        decimal onePercent;
-        decimal planted;
-        decimal waifus;
-        decimal bank;
-        long bot;
+                var result = new EconomyResult
+                {
+                    Cash = cash,
+                    Planted = planted,
+                    Bot = bot,
+                    Waifus = waifus,
+                    OnePercent = onePercent,
+                    Bank = bank
+                };
 
-        using (var uow = _db.GetDbContext())
-        {
-            cash = uow.DiscordUser.GetTotalCurrency();
-            onePercent = uow.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
-            planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
-            waifus = uow.WaifuInfo.GetTotalValue();
-            bot = uow.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
-            bank = await uow.GetTable<BankUser>()
-                            .SumAsyncLinqToDB(x => x.Balance);
-        }
+                return result;
+            },
+            TimeSpan.FromMinutes(3));
 
-        var result = new EconomyResult
-        {
-            Cash = cash,
-            Planted = planted,
-            Bot = bot,
-            Waifus = waifus,
-            OnePercent = onePercent,
-            Bank = bank
-        };
-
-        _cache.SetEconomy(JsonConvert.SerializeObject(result));
-        return result;
+        return data;
     }
 
     public Task<WheelOfFortuneGame.Result> WheelOfFortuneSpinAsync(ulong userId, long bet)
         => new WheelOfFortuneGame(userId, bet, _gss.Data, _cs).SpinAsync();
 
 
-    public struct EconomyResult
+    private static readonly SemaphoreSlim _timelyLock = new (1, 1);
+
+    private static TypedKey<Dictionary<ulong, long>> _timelyKey
+        = new("timely:claims");
+    public async Task<TimeSpan?> ClaimTimelyAsync(ulong userId, int period)
     {
-        public decimal Cash { get; set; }
-        public decimal Planted { get; set; }
-        public decimal Waifus { get; set; }
-        public decimal OnePercent { get; set; }
-        public decimal Bank { get; set; }
-        public long Bot { get; set; }
+        if (period == 0)
+            return null;
+
+        await _timelyLock.WaitAsync();
+        try
+        {
+            // get the dictionary from the cache or get a new one
+            var dict = (await _cache.GetOrAddAsync(_timelyKey,
+                () => Task.FromResult(new Dictionary<ulong, long>())))!;
+
+            var now = DateTime.UtcNow;
+            var nowB = now.ToBinary();
+
+            // try to get users last claim
+            if (!dict.TryGetValue(userId, out var lastB))
+                lastB = dict[userId] = now.ToBinary();
+
+            var diff = now - DateTime.FromBinary(lastB);
+
+            // if its now, or too long ago => success
+            if (lastB == nowB || diff > period.Hours())
+            {
+                // update the cache
+                dict[userId] = nowB;
+                await _cache.AddAsync(_timelyKey, dict);
+                
+                return null;
+            }
+            else
+            {
+                // otherwise return the remaining time
+                return period.Hours() - diff;
+            }
+        }
+        finally
+        {
+            await _timelyLock.WaitAsync();
+        }
+    }
+
+    public async Task RemoveAllTimelyClaimsAsync()
+        => await _cache.RemoveAsync(_timelyKey);
+
+
+    public readonly struct EconomyResult
+    {
+        public decimal Cash { get; init; }
+        public decimal Planted { get; init; }
+        public decimal Waifus { get; init; }
+        public decimal OnePercent { get; init; }
+        public decimal Bank { get; init; }
+        public long Bot { get; init; }
     }
 }

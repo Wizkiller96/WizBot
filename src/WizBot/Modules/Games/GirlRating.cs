@@ -28,11 +28,12 @@ public class GirlRating
         Roll = roll;
         Advice = advice; // convenient to have it here, even though atm there are only few different ones.
 
-        Stream = new(() =>
+        Stream = new(async () =>
         {
             try
             {
-                using var img = Image.Load(_images.RategirlMatrix);
+                var bgBytes = await _images.GetRategirlBgAsync();
+                using var img = Image.Load(bgBytes);
                 const int minx = 35;
                 const int miny = 385;
                 const int length = 345;
@@ -40,7 +41,8 @@ public class GirlRating
                 var pointx = (int)(minx + (length * (Hot / 10)));
                 var pointy = (int)(miny - (length * ((Crazy - 4) / 6)));
 
-                using (var pointImg = Image.Load(_images.RategirlDot))
+                var dotBytes = await _images.GetRategirlDotAsync(); 
+                using (var pointImg = Image.Load(dotBytes))
                 {
                     img.Mutate(x => x.DrawImage(pointImg, new(pointx - 10, pointy - 10), new GraphicsOptions()));
                 }

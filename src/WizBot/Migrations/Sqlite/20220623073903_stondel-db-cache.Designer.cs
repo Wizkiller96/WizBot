@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,9 +11,10 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20220623073903_stondel-db-cache")]
+    partial class stondeldbcache
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
@@ -261,33 +263,33 @@ namespace WizBot.Migrations
 
                     b.ToTable("Patrons");
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.StreamOnlineMessage", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("INTEGER");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                b.Property<ulong>("ChannelId")
-                 .HasColumnType("INTEGER");
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("TEXT");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
 
-                b.Property<ulong>("MessageId")
-                 .HasColumnType("INTEGER");
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("INTEGER");
 
-                b.Property<string>("Name")
-                 .IsRequired()
-                 .HasColumnType("TEXT");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                b.Property<int>("Type")
-                 .HasColumnType("INTEGER");
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
 
-                b.HasKey("Id");
+                    b.HasKey("Id");
 
-                b.ToTable("StreamOnlineMessages");
-            });
+                    b.ToTable("StreamOnlineMessages");
+                });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
                 {

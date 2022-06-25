@@ -24,7 +24,7 @@ quotas:
   # Dictionary of commands with their respective quota data
   commands:
     cleverbot:
-      V: null
+      V:
     #prune:
       #X:
         #PerHour: 1
@@ -68,4 +68,4 @@ quotas:
   # Dictionary of modules with their respective quota data
   modules: 
     music:
-      X: null
+      X:

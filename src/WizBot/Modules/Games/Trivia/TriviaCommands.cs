@@ -9,14 +9,14 @@ public partial class Games
     [Group]
     public partial class TriviaCommands : WizBotModule<GamesService>
     {
-        private readonly IDataCache _cache;
+        private readonly ILocalDataCache _cache;
         private readonly ICurrencyService _cs;
         private readonly GamesConfigService _gamesConfig;
         private readonly DiscordSocketClient _client;
 
         public TriviaCommands(
             DiscordSocketClient client,
-            IDataCache cache,
+            ILocalDataCache cache,
             ICurrencyService cs,
             GamesConfigService gamesConfig)
         {

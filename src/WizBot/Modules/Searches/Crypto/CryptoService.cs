@@ -15,13 +15,13 @@ namespace WizBot.Modules.Searches.Services;
 
 public class CryptoService : INService
 {
-    private readonly IDataCache _cache;
+    private readonly IBotCache _cache;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IBotCredentials _creds;
 
     private readonly SemaphoreSlim _getCryptoLock = new(1, 1);
 
-    public CryptoService(IDataCache cache, IHttpClientFactory httpFactory, IBotCredentials creds)
+    public CryptoService(IBotCache cache, IHttpClientFactory httpFactory, IBotCredentials creds)
     {
         _cache = cache;
         _httpFactory = httpFactory;
@@ -40,7 +40,8 @@ public class CryptoService : INService
         Span<PointF> points = new PointF[gElement.ChildNodes.Count];
         var cnt = 0;
 
-        bool GetValuesFromAttributes(XmlAttributeCollection attrs,
+        bool GetValuesFromAttributes(
+            XmlAttributeCollection attrs,
             out float x1,
             out float y1,
             out float x2,
@@ -56,7 +57,7 @@ public class CryptoService : INService
                    && attrs["y2"]?.Value is string y2Str
                    && float.TryParse(y2Str, NumberStyles.Any, CultureInfo.InvariantCulture, out y2);
         }
-        
+
         foreach (XmlElement x in gElement.ChildNodes)
         {
             if (x.Name != "line")
@@ -67,22 +68,22 @@ public class CryptoService : INService
                 points[cnt++] = new(x1, y1);
                 // this point will be set twice to the same value
                 // on all points except the last one
-                if(cnt + 1 < points.Length)
+                if (cnt + 1 < points.Length)
                     points[cnt + 1] = new(x2, y2);
             }
         }
 
         if (cnt == 0)
             return Array.Empty<PointF>();
-        
+
         return points.Slice(0, cnt).ToArray();
     }
-    
+
     private SixLabors.ImageSharp.Image<Rgba32> GenerateSparklineChart(PointF[] points, bool up)
     {
         const int width = 164;
         const int height = 48;
-        
+
         var img = new Image<Rgba32>(width, height, Color.Transparent);
         var color = up
             ? Color.Green
@@ -92,10 +93,10 @@ public class CryptoService : INService
         {
             x.DrawLines(color, 2, points);
         });
-        
+
         return img;
     }
-    
+
     public async Task<(CmcResponseData? Data, CmcResponseData? Nearest)> GetCryptoData(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -130,20 +131,20 @@ public class CryptoService : INService
         await _getCryptoLock.WaitAsync();
         try
         {
-            var fullStrData = await _cache.GetOrAddCachedDataAsync("wizbot:crypto_data",
-                async _ =>
+            var data = await _cache.GetOrAddAsync(new("wizbot:crypto_data"),
+                async () =>
                 {
                     try
                     {
                         using var http = _httpFactory.CreateClient();
-                        var strData = await http.GetFromJsonAsync<CryptoResponse>(
+                        var data = await http.GetFromJsonAsync<CryptoResponse>(
                             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?"
                             + $"CMC_PRO_API_KEY={_creds.CoinmarketcapApiKey}"
                             + "&start=1"
                             + "&limit=5000"
                             + "&convert=USD");
 
-                        return JsonSerializer.Serialize(strData);
+                        return data;
                     }
                     catch (Exception ex)
                     {
@@ -151,13 +152,12 @@ public class CryptoService : INService
                         return default;
                     }
                 },
-                "",
                 TimeSpan.FromHours(2));
-            
-            if (fullStrData is null)
+
+            if (data is null)
                 return default;
 
-            return JsonSerializer.Deserialize<CryptoResponse>(fullStrData)?.Data ?? new();
+            return data.Data;
         }
         catch (Exception ex)
         {
@@ -169,50 +169,48 @@ public class CryptoService : INService
             _getCryptoLock.Release();
         }
     }
-    
+
+    private TypedKey<byte[]> GetSparklineKey(int id)
+        => new($"crypto:sparkline:{id}");
+
     public async Task<Stream?> GetSparklineAsync(int id, bool up)
-    {
-        var key = $"crypto:sparkline:{id}";
-        
-        // attempt to get from cache
-        var db = _cache.Redis.GetDatabase();
-        byte[] bytes = await db.StringGetAsync(key);
-        // if it succeeds, return it
-        if (bytes is { Length: > 0 })
-        {
-            return bytes.ToStream();
-        }
-        
-        // if it fails, generate a new one
-        var points = await DownloadSparklinePointsAsync(id);
-        if (points is null)
-            return default;
-        
-        var sparkline = GenerateSparklineChart(points, up);
-
-        // add to cache for 1h and return it
-        
-        var stream = sparkline.ToStream();
-        await db.StringSetAsync(key, stream.ToArray(), expiry: TimeSpan.FromHours(1));
-        return stream;
-    }
-
-    private async Task<PointF[]?> DownloadSparklinePointsAsync(int id)
     {
         try
         {
-            using var http = _httpFactory.CreateClient();
-            var str = await http.GetStringAsync(
-                $"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{id}.svg");
-            var points = GetSparklinePointsFromSvgText(str);
-            return points;
+            var bytes = await _cache.GetOrAddAsync(GetSparklineKey(id),
+                async () =>
+                {
+                    // if it fails, generate a new one
+                    var points = await DownloadSparklinePointsAsync(id);
+                    var sparkline = GenerateSparklineChart(points, up);
+
+                    using var stream = await sparkline.ToStreamAsync();
+                    return stream.ToArray();
+                },
+                TimeSpan.FromHours(1));
+
+            if (bytes is { Length: > 0 })
+            {
+                return bytes.ToStream();
+            }
+
+            return default;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Warning(ex,
                 "Exception occurred while downloading sparkline points: {ErrorMessage}",
                 ex.Message);
             return default;
         }
+    }
+
+    private async Task<PointF[]> DownloadSparklinePointsAsync(int id)
+    {
+        using var http = _httpFactory.CreateClient();
+        var str = await http.GetStringAsync(
+            $"https://s3.coinmarketcap.com/generated/sparklines/web/7d/usd/{id}.svg");
+        var points = GetSparklinePointsFromSvgText(str);
+        return points;
     }
 }

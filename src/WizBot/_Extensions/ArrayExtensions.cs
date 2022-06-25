@@ -32,7 +32,7 @@ public static class ArrayExtensions
     public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
         => Array.ConvertAll(arr, x => f(x));
 
-    public static IReadOnlyCollection<TOut> Map<TIn, TOut>(this IReadOnlyCollection<TIn> col, Func<TIn, TOut> f)
+    public static TOut[] Map<TIn, TOut>(this IReadOnlyCollection<TIn> col, Func<TIn, TOut> f)
     {
         var toReturn = new TOut[col.Count];
         

@@ -4,6 +4,15 @@ using System.Text.RegularExpressions;
 // THANKS @ShoMinamimoto for suggestions and coding help
 namespace WizBot.Modules.Games.Common.Trivia;
 
+public sealed class TriviaQuestionModel
+{
+    public string Category { get; init; }
+    public string Question { get; init; }
+    public string ImageUrl { get; init; }
+    public string AnswerImageUrl { get; init; }
+    public string Answer { get; init; }
+}
+
 public class TriviaQuestion
 {
     public const int MAX_STRING_LENGTH = 22;
@@ -17,29 +26,30 @@ public class TriviaQuestion
         new(22, 3)
     };
 
-    public string Category { get; set; }
-    public string Question { get; set; }
-    public string ImageUrl { get; set; }
-    public string AnswerImageUrl { get; set; }
-    public string Answer { get; set; }
+    public string Category
+        => _qModel.Category;
+
+    public string Question
+        => _qModel.Question;
+
+    public string ImageUrl
+        => _qModel.ImageUrl;
+
+    public string AnswerImageUrl
+        => _qModel.AnswerImageUrl ?? ImageUrl;
+
+    public string Answer
+        => _qModel.Answer;
 
     public string CleanAnswer
         => cleanAnswer ?? (cleanAnswer = Clean(Answer));
 
     private string cleanAnswer;
+    private readonly TriviaQuestionModel _qModel;
 
-    public TriviaQuestion(
-        string q,
-        string a,
-        string c,
-        string img = null,
-        string answerImage = null)
+    public TriviaQuestion(TriviaQuestionModel qModel)
     {
-        Question = q;
-        Answer = a;
-        Category = c;
-        ImageUrl = img;
-        AnswerImageUrl = answerImage ?? img;
+        _qModel = qModel;
     }
 
     public string GetHint()

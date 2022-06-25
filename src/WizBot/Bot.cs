@@ -98,20 +98,19 @@ public sealed class Bot
         var svcs = new ServiceCollection().AddTransient(_ => _credsProvider.GetCreds()) // bot creds
                                           .AddSingleton(_credsProvider)
                                           .AddSingleton(_db) // database
-                                          .AddRedis(_creds.RedisOptions) // redis
                                           .AddSingleton(Client) // discord socket client
                                           .AddSingleton(_commandService)
                                           // .AddSingleton(_interactionService)
                                           .AddSingleton(this)
                                           .AddSingleton<ISeria, JsonSeria>()
-                                          .AddSingleton<IPubSub, RedisPubSub>()
                                           .AddSingleton<IConfigSeria, YamlSeria>()
-                                          .AddBotStringsServices(_creds.TotalShards)
                                           .AddConfigServices()
                                           .AddConfigMigrators()
                                           .AddMemoryCache()
                                           // music
-                                          .AddMusic();
+                                          .AddMusic()
+                                          // cache
+                                          .AddCache(_creds);
         // admin
 //#if GLOBAL_WIZBOT
         //svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
@@ -139,24 +138,17 @@ public sealed class Bot
                 .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
         }
 
-        svcs.AddSingleton<RedisLocalDataCache>()
-            .AddSingleton<ILocalDataCache>(x => x.GetRequiredService<RedisLocalDataCache>())
-            .AddSingleton<RedisImagesCache>()
-            .AddSingleton<IImageCache>(x => x.GetRequiredService<RedisImagesCache>())
-            .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RedisImagesCache>())
-            .AddSingleton<IDataCache, RedisCache>();
-
         svcs.Scan(scan => scan.FromAssemblyOf<IReadyExecutor>()
                               .AddClasses(classes => classes.AssignableToAny(
-                                      // services
-                                      typeof(INService),
+                                                                // services
+                                                                typeof(INService),
 
-                                      // behaviours
-                                      typeof(IExecOnMessage),
-                                      typeof(IInputTransformer),
-                                      typeof(IExecPreCommand),
-                                      typeof(IExecPostCommand),
-                                      typeof(IExecNoCommand))
+                                                                // behaviours
+                                                                typeof(IExecOnMessage),
+                                                                typeof(IInputTransformer),
+                                                                typeof(IExecPreCommand),
+                                                                typeof(IExecPostCommand),
+                                                                typeof(IExecNoCommand))
                                                             .WithoutAttribute<DontAddToIocContainerAttribute>()
 #if GLOBAL_WIZBOT
                                                             .WithoutAttribute<NoPublicBotAttribute>()

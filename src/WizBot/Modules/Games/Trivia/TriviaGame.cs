@@ -17,7 +17,7 @@ public class TriviaGame
     public bool GameActive { get; private set; }
     public bool ShouldStopGame { get; private set; }
     private readonly SemaphoreSlim _guessLock = new(1, 1);
-    private readonly IDataCache _cache;
+    private readonly ILocalDataCache _cache;
     private readonly IBotStrings _strings;
     private readonly DiscordSocketClient _client;
     private readonly GamesConfig _config;
@@ -35,7 +35,7 @@ public class TriviaGame
         IBotStrings strings,
         DiscordSocketClient client,
         GamesConfig config,
-        IDataCache cache,
+        ILocalDataCache cache,
         ICurrencyService cs,
         IGuild guild,
         ITextChannel channel,
@@ -70,7 +70,7 @@ public class TriviaGame
             showHowToQuit = !showHowToQuit;
 
             // load question
-            CurrentQuestion = _questionPool.GetRandomQuestion(OldQuestions, _options.IsPokemon);
+            CurrentQuestion = await _questionPool.GetRandomQuestionAsync(OldQuestions, _options.IsPokemon);
             if (string.IsNullOrWhiteSpace(CurrentQuestion?.Answer)
                 || string.IsNullOrWhiteSpace(CurrentQuestion.Question))
             {

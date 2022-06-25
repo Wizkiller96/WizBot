@@ -21,7 +21,7 @@ namespace WizBot.Tests
             var stringsSource = new LocalFileStringsSource(
                 responsesPath,
                 commandsPath);
-            var strings = new LocalBotStringsProvider(stringsSource);
+            var strings = new MemoryBotStringsProvider(stringsSource);
 
             var culture = new CultureInfo("en-US");
 

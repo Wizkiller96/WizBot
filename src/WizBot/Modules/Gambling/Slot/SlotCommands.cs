@@ -32,13 +32,13 @@ public partial class Gambling
         private readonly DbService _db;
 
         public SlotCommands(
-            IDataCache data,
+            ImageCache images,
             FontProvider fonts,
             DbService db,
             GamblingConfigService gamb)
             : base(gamb)
         {
-            _images = data.LocalImages;
+            _images = images;
             _fonts = fonts;
             _db = db;
         }
@@ -130,7 +130,8 @@ public partial class Gambling
                                   ?? 0;
                 }
 
-                using (var bgImage = Image.Load<Rgba32>(_images.SlotBackground, out _))
+                var slotBg = await _images.GetSlotBgAsync();
+                using (var bgImage = Image.Load<Rgba32>(slotBg, out _))
                 {
                     var numbers = new int[3];
                     result.Rolls.CopyTo(numbers, 0);
@@ -184,7 +185,7 @@ public partial class Gambling
 
                     for (var i = 0; i < 3; i++)
                     {
-                        using var img = Image.Load(_images.SlotEmojis[numbers[i]]);
+                        using var img = Image.Load(await _images.GetSlotEmojiAsync(numbers[i]));
                         bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
                     }
 
@@ -201,7 +202,7 @@ public partial class Gambling
                             msg = GetText(strs.slot_jackpot(30));
                     }
 
-                    await using (var imgStream = bgImage.ToStream())
+                    await using (var imgStream = await bgImage.ToStreamAsync())
                     {
                         await ctx.Channel.SendFileAsync(imgStream,
                             "result.png",

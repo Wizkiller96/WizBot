@@ -23,7 +23,10 @@ public sealed class Creds : IBotCredentials
     public bool UsePrivilegedIntents { get; set; }
 
     [Comment(@"The number of shards that the bot will be running on.
-Leave at 1 if you don't know what you're doing.")]
+Leave at 1 if you don't know what you're doing.
+
+note: If you are planning to have more than one shard, then you must change botCache to 'redis'.
+      Also, in that case you should be using WizBot.Coordinator to start the bot, and it will correctly override this value.")]
     public int TotalShards { get; set; }
 
     [Comment(   
@@ -55,7 +58,13 @@ go to https://www.patreon.com/portal -> my clients -> create client")]
     [Comment(@"Official cleverbot api key.")]
     public string CleverbotApiKey { get; set; }
 
-    [Comment(@"Redis connection string. Don't change if you don't know what you're doing.")]
+    [Comment(@"Which cache implementation should bot use.
+'memory' - Cache will be in memory of the bot's process itself. Only use this on bots with a single shard. When the bot is restarted the cache is reset. 
+'redis' - Uses redis (which needs to be separately downloaded and installed). The cache will persist through bot restarts. You can configure connection string in creds.yml")]
+    public BotCacheImplemenation BotCache { get; set; }
+    
+    [Comment(@"Redis connection string. Don't change if you don't know what you're doing.
+Only used if botCache is set to 'redis'")]
     public string RedisOptions { get; set; }
 
     [Comment(@"Database options. Don't change if you don't know what you're doing. Leave null for default values")]
@@ -108,12 +117,12 @@ Linux default
     args: ""WizBot.dll -- {0}""
 Windows default
     cmd: WizBot.exe
-    args: {0}")]
+    args: ""{0}""")]
     public RestartConfig RestartCommand { get; set; }
 
     public Creds()
     {
-        Version = 5;
+        Version = 6;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
@@ -124,6 +133,7 @@ Windows default
         Patreon = new(string.Empty, string.Empty, string.Empty, string.Empty);
         BotListToken = string.Empty;
         CleverbotApiKey = string.Empty;
+        BotCache = BotCacheImplemenation.Memory;
         RedisOptions = "localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=";
         Db = new()
         {
@@ -222,4 +232,10 @@ public class GoogleApiConfig
 {
     public string SearchId { get; init; }
     public string ImageSearchId { get; init; }
+}
+
+public enum BotCacheImplemenation
+{
+    Memory,
+    Redis
 }
