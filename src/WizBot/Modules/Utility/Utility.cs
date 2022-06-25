@@ -1,4 +1,7 @@
 #nullable disable
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
+using WizBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Text;
@@ -32,6 +35,7 @@ public partial class Utility : WizBotModule
     private readonly IBotCredentials _creds;
     private readonly DownloadTracker _tracker;
     private readonly IHttpClientFactory _httpFactory;
+    private readonly VerboseErrorsService _veService;
 
     public Utility(
         DiscordSocketClient client,
@@ -39,7 +43,8 @@ public partial class Utility : WizBotModule
         IStatsService stats,
         IBotCredentials creds,
         DownloadTracker tracker,
-        IHttpClientFactory httpFactory)
+        IHttpClientFactory httpFactory,
+        VerboseErrorsService veService)
     {
         _client = client;
         _coord = coord;
@@ -47,6 +52,7 @@ public partial class Utility : WizBotModule
         _creds = creds;
         _tracker = tracker;
         _httpFactory = httpFactory;
+        _veService = veService;
     }
 
     [Cmd]
@@ -264,7 +270,7 @@ public partial class Utility : WizBotModule
         var ownerIds = string.Join("\n", _creds.OwnerIds);
         if (string.IsNullOrWhiteSpace(ownerIds))
             ownerIds = "-";
-        
+
         var adminIds = string.Join("\n", _creds.OwnerIds);
         if (string.IsNullOrWhiteSpace(adminIds))
             adminIds = "-";
@@ -489,13 +495,24 @@ public partial class Utility : WizBotModule
             sem.Release();
         }
     }
-    
+
     [Cmd]
-        public async partial Task Donators()
-        {
-            
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.ManageMessages)]
+    public async partial Task VerboseError(bool? newstate = null)
+    {
+        var state = _veService.ToggleVerboseErrors(ctx.Guild.Id, newstate);
+
+        if (state)
+            await ReplyConfirmLocalizedAsync(strs.verbose_errors_enabled);
+        else
+            await ReplyConfirmLocalizedAsync(strs.verbose_errors_disabled);
+    }
+
+    [Cmd]
+    public async partial Task Donators()
+    {
 #if GLOBAL_WIZBOT
-            
             // Make it so it wont error when no users are found.
             var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
             var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
@@ -513,19 +530,19 @@ public partial class Utility : WizBotModule
                 .ConfigureAwait(false);
 
 #else
-            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                .WithTitle("Command Restricted")
-                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
-            
+        await ctx.Channel.EmbedAsync(_eb.Create()
+                                        .WithErrorColor()
+                                        .WithTitle("Command Restricted")
+                                        .WithDescription("This command is disabled on self-host bots."))
+                 .ConfigureAwait(false);
+
 #endif
-        }
+    }
 
-        [Cmd]
-        public async partial Task WizNet()
-        {
-            
+    [Cmd]
+    public async partial Task WizNet()
+    {
 #if GLOBAL_WIZBOT
-
             // Make it so it wont error when no users are found.
             var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
             var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
@@ -541,49 +558,11 @@ public partial class Utility : WizBotModule
                 .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
 
 #else
-            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                .WithTitle("Command Restricted")
-                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
+        await ctx.Channel.EmbedAsync(_eb.Create()
+                                        .WithErrorColor()
+                                        .WithTitle("Command Restricted")
+                                        .WithDescription("This command is disabled on self-host bots."))
+                 .ConfigureAwait(false);
 #endif
-        }
-
-
-    // [WizBotCommand, Usage, Description, Aliases]
-    // [RequireContext(ContextType.Guild)]
-    // public async Task CreateMyInvite(CreateInviteType type = CreateInviteType.Any)
-    // {
-    //     if (type == CreateInviteType.Any)
-    //     {
-    //         if (_inviteService.TryGetInvite(type, out var code))
-    //         {
-    //             await ReplyErrorLocalizedAsync(strs.your_invite($"https://discord.gg/{code}"));
-    //             return;
-    //         }
-    //     }
-    //     
-    //     var invite = await ((ITextChannel) ctx.Channel).CreateInviteAsync(isUnique: true);
-    // }
-    //
-    // [WizBotCommand, Usage, Description, Aliases]
-    // [RequireContext(ContextType.Guild)]
-    // public async partial Task InviteLb(int page = 1)
-    // {
-    //     if (--page < 0)
-    //         return;
-    //
-    //     var inviteUsers = await _inviteService.GetInviteUsersAsync(ctx.Guild.Id);
-    //     
-    //     var embed = _eb.Create()
-    //         .WithOkColor();
-    //
-    //     await ctx.SendPaginatedConfirmAsync(page, (curPage) =>
-    //     {
-    //         var items = inviteUsers.Skip(curPage * 9).Take(9);
-    //         var i = 0;
-    //         foreach (var item in items)
-    //             embed.AddField($"#{curPage * 9 + ++i} {item.UserName} [{item.User.Id}]", item.InvitedUsers);
-    //
-    //         return embed;
-    //     }, inviteUsers.Count, 9);
-    // }
+    }
 }
