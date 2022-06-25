@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace NadekoBot.Modules.Nsfw;
 
+#if !GLOBAL_NADEKO
 [NoPublicBot]
 public partial class NSFW : NadekoModule<ISearchImagesService>
 {
@@ -437,3 +438,4 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                                             $"{data.Rating} ({data.Provider}) | {string.Join(" | ", data.Tags.Where(x => !string.IsNullOrWhiteSpace(x)).Take(5))}"));
     }
 }
+#endif
