@@ -5,11 +5,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.2.7] - 24.06.2022
+
 ### Changed
 
 - New cache abstraction added
   - 2 implemenations: redis and memory
-  - All current bots will stay on redis cache, all new bots will use in-process memory cache
+  - All current bots will stay on redis cache, all new bots will use **in-process memory cache by default**
   - This change removes bot's hard dependency on redis
   - Configurable in `creds.yml` (please read the comments)
   - You **MUST** use 'redis' if your bot runs on more than 1 shard (2000+ servers)
