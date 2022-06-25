@@ -118,7 +118,7 @@
         <None Update="wizbot_icon.ico;libopus.so;libsodium.so;libsodium.dll;opus.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="creds.yml">
+        <None Update="creds.yml;creds_example.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
