@@ -1,9 +1,8 @@
-
 # Changelog
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [4.2.9] - 25.06.202
+## [4.2.9] - 25.06.2022
 
 ### Fixed
 
