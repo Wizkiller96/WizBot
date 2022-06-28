@@ -50,7 +50,7 @@ public sealed class FilterService : IExecOnMessage
                 new(configs.SelectMany(gc => gc.FilterLinksChannelIds.Select(fci => fci.ChannelId)));
 
             var dict = configs.ToDictionary(gc => gc.GuildId,
-                gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word)));
+                gc => new ConcurrentHashSet<string>(gc.FilteredWords.Select(fw => fw.Word).Distinct()));
 
             ServerFilteredWords = new(dict);
 
