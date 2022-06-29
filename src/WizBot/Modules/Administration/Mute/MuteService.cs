@@ -293,7 +293,7 @@ public class MuteService : INService
         if (guild is null)
             throw new ArgumentNullException(nameof(guild));
 
-        const string defaultMuteRoleName = "wizbot-pictures-mute";
+        const string defaultMuteRoleName = "wizbot-mute";
 
         var muteRoleName = GuildMuteRoles.GetOrAdd(guild.Id, defaultMuteRoleName);
 
