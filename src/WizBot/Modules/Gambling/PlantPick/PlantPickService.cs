@@ -16,7 +16,7 @@ namespace WizBot.Modules.Gambling.Services;
 public class PlantPickService : INService, IExecNoCommand
 {
     //channelId/last generation
-    public ConcurrentDictionary<ulong, DateTime> LastGenerations { get; } = new();
+    public ConcurrentDictionary<ulong, long> LastGenerations { get; } = new();
     private readonly DbService _db;
     private readonly IBotStrings _strings;
     private readonly IImageCache _images;
@@ -175,15 +175,15 @@ public class PlantPickService : INService, IExecNoCommand
             try
             {
                 var config = _gss.Data;
-                var lastGeneration = LastGenerations.GetOrAdd(channel.Id, DateTime.MinValue);
+                var lastGeneration = LastGenerations.GetOrAdd(channel.Id, DateTime.MinValue.ToBinary());
                 var rng = new WizBotRandom();
 
                 if (DateTime.UtcNow - TimeSpan.FromSeconds(config.Generation.GenCooldown)
-                    < lastGeneration) //recently generated in this channel, don't generate again
+                    < DateTime.FromBinary(lastGeneration)) //recently generated in this channel, don't generate again
                     return;
 
                 var num = rng.Next(1, 101) + (config.Generation.Chance * 100);
-                if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.UtcNow, lastGeneration))
+                if (num > 100 && LastGenerations.TryUpdate(channel.Id, DateTime.UtcNow.ToBinary(), lastGeneration))
                 {
                     var dropAmount = config.Generation.MinAmount;
                     var dropAmountMax = config.Generation.MaxAmount;
