@@ -2,6 +2,10 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.10] - 29.06.202
+
+- Fixed currency generation working only once
+
 ## [4.2.9] - 25.06.2022
 
 ### Fixed
