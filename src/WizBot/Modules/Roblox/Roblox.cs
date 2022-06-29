@@ -135,7 +135,10 @@ public partial class Roblox : WizBotModule<SearchesService>
                                             .AddField("Username",
                                                 $"[{rInfo["username"]}](https://devforum.roblox.com/u/{rDevForum["user"]!["username"]})",
                                                 true)
-                                            .AddField("Title", $"{rDevForum["user"]!["title"]}", true)
+                                            .AddField("Title",
+                                                string.IsNullOrEmpty($"{rDevForum["user"]!["title"]}")
+                                                    ? none
+                                                    : ($"{rDevForum["user"]!["title"]}"), true)
                                             .AddField("Trust Level", $"{rDevForum["user"]!["trust_level"]}", true)
                                             .AddField("Bio", (string.IsNullOrEmpty($"{rDevForum["user"]!["bio_raw"]}")
                                                 ? none
