@@ -115,10 +115,6 @@ public partial class Roblox : WizBotModule<SearchesService>
                                                 string.IsNullOrEmpty($"{rInfo["joinDate"]}")
                                                     ? none
                                                     : ($"{rInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
-                                            .AddField("Status",
-                                                string.IsNullOrEmpty($"{rInfo["status"]}")
-                                                    ? none
-                                                    : ($"{rInfo["status"]}"))
                                             .AddField("Blurb",
                                                 (string.IsNullOrEmpty($"{rInfo["blurb"]}")
                                                     ? none
