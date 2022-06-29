@@ -44,7 +44,7 @@ public partial class Gambling
                 var currentCard = cards.Draw();
                 cardObjects.Add(currentCard);
                 var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
-                images.Add(Image.Load(await File.ReadAllBytesAsync($"data/images/cards/{cardName}.png")));
+                images.Add(Image.Load(await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg")));
             }
 
             using var img = images.Merge();
