@@ -160,7 +160,8 @@ public class CmdAttribute : System.Attribute
         
         var methodModels = methods
             .Select(x => MethodDeclarationToMethodModel(compilation, x!))
-            .Where(static x => x is not null);
+            .Where(static x => x is not null)
+            .Cast<MethodModel>();
 
         var groups = methodModels
             .GroupBy(static x => $"{x.Namespace}.{string.Join(".", x.Classes)}");
@@ -180,7 +181,7 @@ public class CmdAttribute : System.Attribute
             var model = new FileModel(
                 methods: elems,
                 ns: elems[0].Namespace,
-                classHierarchy: elems[0].Classes
+                classHierarchy: elems![0].Classes
             );
             
             models.Add(model);

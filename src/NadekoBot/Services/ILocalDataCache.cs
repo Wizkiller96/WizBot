@@ -9,5 +9,5 @@ public interface ILocalDataCache
     Task<IReadOnlyDictionary<string, SearchPokemon>> GetPokemonsAsync();
     Task<IReadOnlyDictionary<string, SearchPokemonAbility>> GetPokemonAbilitiesAsync();
     Task<TriviaQuestionModel[]> GetTriviaQuestionsAsync();
-    Task<PokemonNameId[]> GetPokemonMapAsync();
+    Task<IReadOnlyDictionary<int, string>> GetPokemonMapAsync();
 }
