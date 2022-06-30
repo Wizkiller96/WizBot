@@ -19,14 +19,14 @@ public class TriviaQuestionPool
         {
             var pokes = await _cache.GetPokemonMapAsync();
 
-            if (pokes is null or { Length: 0 })
+            if (pokes is null or { Count: 0 })
                 return default;
 
             var num = _rng.Next(1, _maxPokemonId + 1);
             return new(new()
             {
                 Question = "Who's That Pokémon?",
-                Answer = pokes[num].Name.ToTitleCase(),
+                Answer = pokes[num].ToTitleCase(),
                 Category = "Pokemon",
                 ImageUrl = $@"https://wizbot.cc/assets/pokemon/shadows/{num}.png",
                 AnswerImageUrl = $@"https://wizbot.cc/assets/pokemon/real/{num}.png"
