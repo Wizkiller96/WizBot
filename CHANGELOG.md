@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.13] - 30.06.2022
+
+### Fixed
+
+- Fixed `.cash` bank interaction not being ephemeral anymore
+
 ## [4.2.12] - 30.06.2022
 
 ### Fixed
@@ -19,7 +25,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed currency generation working only once
 
 ## [4.2.9] - 25.06.2022
-
+  
 ### Fixed
 
 - Fixed `creds_example.yml` misssing from output directory
