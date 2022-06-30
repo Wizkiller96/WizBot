@@ -51,6 +51,8 @@ markdown_extensions:
   - admonition
   - meta
   - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
   - pymdownx.details
   - pymdownx.inlinehilite
   - pymdownx.superfences
