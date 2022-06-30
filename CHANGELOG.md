@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.12] - 30.06.2022
+
+### Fixed
+
+- Fixed `.trivia --pokemon` showing incorrect pokemons
+
 ## [4.2.11] - 29.06.2022
 
 ### Fixed
