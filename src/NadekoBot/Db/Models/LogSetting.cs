@@ -4,7 +4,7 @@ namespace NadekoBot.Services.Database.Models;
 public class LogSetting : DbEntity
 {
     public List<IgnoredLogItem> LogIgnores { get; set; } = new();
-
+    
     public ulong GuildId { get; set; }
     public ulong? LogOtherId { get; set; }
     public ulong? MessageUpdatedId { get; set; }
@@ -29,4 +29,5 @@ public class LogSetting : DbEntity
 
     public ulong? LogVoicePresenceId { get; set; }
     public ulong? LogVoicePresenceTTSId { get; set; }
+    public ulong? LogWarnsId { get; set; }
 }

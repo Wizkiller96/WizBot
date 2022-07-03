@@ -1472,6 +1472,10 @@ namespace NadekoBot.Migrations.PostgreSql
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("logvoicepresencettsid");
 
+                    b.Property<decimal?>("LogWarnsId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("logwarnsid");
+
                     b.Property<decimal?>("MessageDeletedId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("messagedeletedid");

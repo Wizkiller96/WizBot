@@ -27,5 +27,6 @@ public enum LogType
     UserPresence,
     VoicePresence,
     VoicePresenceTts,
-    UserMuted
+    UserMuted,
+    UserWarned,
 }

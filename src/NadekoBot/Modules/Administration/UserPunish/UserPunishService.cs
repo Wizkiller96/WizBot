@@ -18,6 +18,8 @@ public class UserPunishService : INService, IReadyExecutor
     private readonly BotConfigService _bcs;
     private readonly DiscordSocketClient _client;
 
+    public event Func<Warning, Task> OnUserWarned = static delegate { return Task.CompletedTask; };
+
     public UserPunishService(
         MuteService mute,
         DbService db,
@@ -92,6 +94,8 @@ public class UserPunishService : INService, IReadyExecutor
 
             await uow.SaveChangesAsync();
         }
+
+        _ = OnUserWarned(warn);
 
         var totalCount = previousCount + weight;
         
