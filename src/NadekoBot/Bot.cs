@@ -261,6 +261,7 @@ public sealed class Bot
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
 
+        // _ = Client.SetStatusAsync(UserStatus.Online);
         Log.Information("Shard {ShardId} logged in", Client.ShardId);
     }
 

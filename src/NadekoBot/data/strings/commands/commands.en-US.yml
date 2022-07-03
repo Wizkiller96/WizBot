@@ -601,9 +601,12 @@ quoteshow:
   args:
     - "123"
 quotesearch:
-  desc: "Shows a random quote for a keyword that contains any text specified in the search."
+  desc: "Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author"
   args:
-    - "keyword text"
+    - """find this long text"""
+    - "AuthorName" 
+    - "keyword some text"
+    - "keyword AuthorName"
 quoteid:
   desc: "Displays the quote with the specified ID number. Quote ID numbers can be found by typing `{0}liqu [num]` where `[num]` is a number of a page which contains 15 quotes."
   args:
