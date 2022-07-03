@@ -945,11 +945,25 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 ITextChannel? logChannel;
                 if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserBanned)) == null)
                     return;
+
+
+                string? reason = null;
+                try
+                {
+                    var ban = await guild.GetBanAsync(usr);
+                    reason = ban?.Reason;
+                }
+                catch
+                {
+                    
+                }
+                
                 var embed = _eb.Create()
                                .WithOkColor()
                                .WithTitle("🚫 " + GetText(logChannel.Guild, strs.user_banned))
                                .WithDescription(usr.ToString()!)
                                .AddField("Id", usr.Id.ToString())
+                               .AddField("Reason", string.IsNullOrWhiteSpace(reason) ? "-" : reason)
                                .WithFooter(CurrentTime(guild));
 
                 var avatarUrl = usr.GetAvatarUrl();
