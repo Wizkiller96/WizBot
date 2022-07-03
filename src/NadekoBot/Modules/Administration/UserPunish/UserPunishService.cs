@@ -186,6 +186,9 @@ public class UserPunishService : INService, IReadyExecutor
                 }
 
                 break;
+            case PunishmentAction.Warn:
+                await Warn(guild, user.Id, mod, 1, reason);
+                break;
         }
     }
 

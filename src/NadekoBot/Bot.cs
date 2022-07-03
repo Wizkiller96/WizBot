@@ -70,6 +70,7 @@ public sealed class Bot
                 : GatewayIntents.AllUnprivileged,
             LogGatewayIntentWarnings = false,
             FormatUsersInBidirectionalUnicode = false,
+            DefaultRetryMode = RetryMode.AlwaysRetry ^ RetryMode.RetryRatelimit
         });
 
         _commandService = new(new()
