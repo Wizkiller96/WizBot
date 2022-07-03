@@ -2,6 +2,24 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.2.14] - 03.07.2022
+
+### Added
+
+- Added `.log userwarned` (Logging user warnings)
+- Claiming `.timely` will now show a button which you can click to set a reminder
+- Added `%server.icon%` placeholder
+- Added `warn` punishment action for protection commands (it won't work with `.warnp`)
+
+### Changed
+
+- `.log userbanned` will now have a ban reason
+- When `.die` is used, bot will try to update it's status to `Invisible`
+
+### Fixed
+
+- Fixed elipsis character issue with aliases/quotes. You should now be able to set an elipsis to be an alias of `.quoteprint`
+
 ## [4.2.13] - 30.06.2022
 
 ### Fixed

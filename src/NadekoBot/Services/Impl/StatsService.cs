@@ -7,7 +7,7 @@ namespace NadekoBot.Services;
 
 public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
-    public const string BOT_VERSION = "4.2.13";
+    public const string BOT_VERSION = "4.2.14";
 
     public string Author
         => "Kwoth#2452";
