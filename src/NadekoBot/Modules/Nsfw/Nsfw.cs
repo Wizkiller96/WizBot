@@ -404,15 +404,19 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                          .Join(" ");
 
         var embed = _eb.Create()
-                       .WithTitle(g.Title)
-                       .WithDescription(g.FullTitle)
-                       .WithImageUrl(g.Thumbnail)
-                       .WithUrl(g.Url)
-                       .AddField(GetText(strs.favorites), g.Likes, true)
-                       .AddField(GetText(strs.pages), g.PageCount, true)
-                       .AddField(GetText(strs.tags), tagString, true)
-                       .WithFooter(g.UploadedAt.ToString("f"))
-                       .WithOkColor();
+            .WithTitle(g.Title)
+            .WithDescription(g.FullTitle)
+            .WithImageUrl(g.Thumbnail)
+            .WithUrl(g.Url)
+            .AddField(GetText(strs.favorites), g.Likes, true)
+            .AddField(GetText(strs.pages), g.PageCount, true)
+            .AddField(GetText(strs.tags),
+                string.IsNullOrWhiteSpace(tagString)
+                    ? "?"
+                    : tagString,
+                true)
+            .WithFooter(g.UploadedAt.ToString("f"))
+            .WithOkColor();
 
         await ctx.Channel.EmbedAsync(embed);
     }
