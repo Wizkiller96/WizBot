@@ -2,6 +2,17 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Changed
+
+### Fixed
+
+- Fixed `.nh*ntai` nsfw command
+- Xp Freezes may have been fixed
+- `data/images.yml` should once again support local file paths
+- Fixed multiword aliases
+
 ## [4.2.14] - 03.07.2022
 
 ### Added
