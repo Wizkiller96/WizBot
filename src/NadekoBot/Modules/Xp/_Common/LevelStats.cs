@@ -3,7 +3,7 @@ using NadekoBot.Modules.Xp.Services;
 
 namespace NadekoBot.Modules.Xp;
 
-public class LevelStats
+public readonly struct LevelStats
 {
     public long Level { get; }
     public long LevelXp { get; }
