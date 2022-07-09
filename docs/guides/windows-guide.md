@@ -31,7 +31,8 @@
  ![Create a new bot](https://i.imgur.com/JxtRk9e.png "Create a new bot")
 - Click on **`DOWNLOAD`** at the lower right
  ![Bot Setup](https://i.imgur.com/HqAl36p.png "Bot Setup")
-- Click on **`Install`** next to **`Redis`**.
+- Click on **`Install`** next to **`Redis`**. 
+- **(Note: Redis is optional unless you are are using the bot on 2000+ servers)**
 - Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
 - If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
