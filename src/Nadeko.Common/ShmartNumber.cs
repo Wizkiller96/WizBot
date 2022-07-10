@@ -1,14 +1,11 @@
-﻿#nullable disable
-using System;
+﻿namespace Nadeko.Common;
 
-namespace NadekoBot.Common;
-
-public struct ShmartNumber : IEquatable<ShmartNumber>
+public readonly struct ShmartNumber : IEquatable<ShmartNumber>
 {
     public long Value { get; }
-    public string Input { get; }
+    public string? Input { get; }
 
-    public ShmartNumber(long val, string input = null)
+    public ShmartNumber(long val, string? input = null)
     {
         Value = val;
         Input = input;
@@ -26,14 +23,14 @@ public struct ShmartNumber : IEquatable<ShmartNumber>
     public override string ToString()
         => Value.ToString();
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
         => obj is ShmartNumber sn && Equals(sn);
 
     public bool Equals(ShmartNumber other)
         => other.Value == Value;
 
     public override int GetHashCode()
-        => Value.GetHashCode() ^ Input.GetHashCode(StringComparison.InvariantCulture);
+        => Value.GetHashCode();
 
     public static bool operator ==(ShmartNumber left, ShmartNumber right)
         => left.Equals(right);

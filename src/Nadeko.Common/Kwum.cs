@@ -1,7 +1,6 @@
-﻿#nullable disable
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 // needs proper invalid input check (character array input out of range)
 // needs negative number support
@@ -90,7 +89,7 @@ public readonly struct kwum : IEquatable<kwum>
         return new(chars);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
         => obj is kwum kw && kw == this;
 
     public bool Equals(kwum other)

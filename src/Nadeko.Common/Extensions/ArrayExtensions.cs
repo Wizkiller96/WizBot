@@ -1,6 +1,4 @@
-using System.Buffers;
-
-namespace NadekoBot.Extensions;
+﻿namespace Nadeko.Common;
 
 // made for expressions because they almost never get added
 // and they get looped through constantly
@@ -32,6 +30,14 @@ public static class ArrayExtensions
     public static TOut[] Map<TIn, TOut>(this TIn[] arr, Func<TIn, TOut> f)
         => Array.ConvertAll(arr, x => f(x));
 
+    /// <summary>
+    ///     Creates a new array by applying the specified function to every element in the input array
+    /// </summary>
+    /// <param name="col">Array to modify</param>
+    /// <param name="f">Function to apply</param>
+    /// <typeparam name="TIn">Orignal type of the elements in the array</typeparam>
+    /// <typeparam name="TOut">Output type of the elements of the array</typeparam>
+    /// <returns>New array with updated elements</returns>
     public static TOut[] Map<TIn, TOut>(this IReadOnlyCollection<TIn> col, Func<TIn, TOut> f)
     {
         var toReturn = new TOut[col.Count];

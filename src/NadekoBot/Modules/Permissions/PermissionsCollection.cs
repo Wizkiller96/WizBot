@@ -1,7 +1,4 @@
 #nullable disable
-using NadekoBot.Common.Collections;
-using NadekoBot.Services.Database.Models;
-
 namespace NadekoBot.Modules.Permissions.Common;
 
 public class PermissionsCollection<T> : IndexedCollection<T>

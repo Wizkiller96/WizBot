@@ -1,6 +1,7 @@
 #nullable disable
 using NadekoBot.Modules.Utility.Patronage;
 using System.Text;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Utility;
 

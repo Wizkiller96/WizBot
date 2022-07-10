@@ -1,5 +1,6 @@
 using NadekoBot.Db.Models;
 using System.Text.RegularExpressions;
+using Nadeko.Common;
 using TwitchLib.Api;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

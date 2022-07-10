@@ -1,8 +1,11 @@
-﻿#nullable disable
-using NadekoBot.Services.Database.Models;
-using System.Collections;
+﻿using System.Collections;
 
-namespace NadekoBot.Common.Collections;
+namespace Nadeko.Common;
+
+public interface IIndexed
+{
+    int Index { get; set; }
+}
 
 public class IndexedCollection<T> : IList<T>
     where T : class, IIndexed

@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
+using Nadeko.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;

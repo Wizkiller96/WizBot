@@ -1,6 +1,7 @@
 ﻿using System.Threading.Channels;
+using Serilog;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public sealed class QueueRunner
 {

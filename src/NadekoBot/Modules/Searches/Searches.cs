@@ -11,6 +11,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using Nadeko.Common;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Searches;

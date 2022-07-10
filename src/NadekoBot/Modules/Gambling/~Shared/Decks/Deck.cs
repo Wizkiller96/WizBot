@@ -1,4 +1,6 @@
 #nullable disable
+using Nadeko.Common;
+
 namespace NadekoBot.Modules.Gambling.Common;
 
 public class Deck

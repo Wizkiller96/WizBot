@@ -234,8 +234,8 @@ public class TriviaGame
 
                 if (!guess)
                     return;
+                
                 triviaCancelSource.Cancel();
-
 
                 if (_options.WinRequirement != 0 && Users[guildUser] == _options.WinRequirement)
                 {

@@ -1,14 +1,9 @@
-﻿#nullable enable
-#pragma warning disable
-// License MIT
-// Source: https://github.com/i3arnon/ConcurrentHashSet
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace System.Collections.Generic;
 
 [DebuggerDisplay("{_backingStore.Count}")]
-public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T>
+public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ICollection<T> where T : notnull
 {
     private readonly ConcurrentDictionary<T, bool> _backingStore;
     

@@ -3,6 +3,7 @@ using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Services;
 using NCalc;
 using System.Text.RegularExpressions;
+using Nadeko.Common;
 
 namespace NadekoBot.Common.TypeReaders;
 

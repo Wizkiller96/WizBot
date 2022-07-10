@@ -1,6 +1,7 @@
 ﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Nadeko.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 

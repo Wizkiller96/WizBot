@@ -1,4 +1,5 @@
-﻿using Nadeko.Medusa;
+﻿using Nadeko.Common;
+using Nadeko.Medusa;
 
 namespace NadekoBot.Modules;
 

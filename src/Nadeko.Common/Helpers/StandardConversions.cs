@@ -1,5 +1,4 @@
-#nullable disable
-namespace NadekoBot.Services;
+namespace Nadeko.Common;
 
 public static class StandardConversions
 {

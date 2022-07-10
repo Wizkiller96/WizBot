@@ -7,6 +7,7 @@ using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
+using Nadeko.Common;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;

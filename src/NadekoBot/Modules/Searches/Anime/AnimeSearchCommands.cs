@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using AngleSharp;
 using AngleSharp.Html.Dom;
+using Nadeko.Common;
 using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;

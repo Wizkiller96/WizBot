@@ -1,5 +1,6 @@
 #nullable disable warnings
 using LinqToDB;
+using Nadeko.Common;
 using NadekoBot.Modules.Nsfw.Common;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json.Linq;

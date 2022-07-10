@@ -2,6 +2,7 @@ using NadekoBot.Common.Yml;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using Nadeko.Common;
 
 namespace NadekoBot.Extensions;
 

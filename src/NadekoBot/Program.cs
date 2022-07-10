@@ -1,3 +1,5 @@
+using Nadeko.Common;
+
 var pid = Environment.ProcessId;
 
 var shardId = 0;

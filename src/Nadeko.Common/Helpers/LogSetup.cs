@@ -1,9 +1,9 @@
-#nullable disable
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Text;
+using Serilog;
 
-namespace NadekoBot.Services;
+namespace Nadeko.Common;
 
 public static class LogSetup
 {

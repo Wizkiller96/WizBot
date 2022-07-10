@@ -1,8 +1,6 @@
-using NadekoBot.Common.Collections;
-using NadekoBot.Services.Database.Models;
 using System.Security.Cryptography;
 
-namespace NadekoBot.Extensions;
+namespace Nadeko.Common;
 
 public static class EnumerableExtensions
 {

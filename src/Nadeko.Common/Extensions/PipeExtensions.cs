@@ -1,5 +1,4 @@
-﻿namespace NadekoBot.Extensions;
-
+﻿namespace Nadeko.Common;
 
 public delegate TOut PipeFunc<TIn, out TOut>(in TIn a);
 public delegate TOut PipeFunc<TIn1, TIn2, out TOut>(in TIn1 a, in TIn2 b);

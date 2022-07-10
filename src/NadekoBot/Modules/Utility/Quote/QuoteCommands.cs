@@ -1,4 +1,5 @@
 #nullable disable warnings
+using Nadeko.Common;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;

@@ -1,3 +1,5 @@
+using Nadeko.Common;
+
 namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions

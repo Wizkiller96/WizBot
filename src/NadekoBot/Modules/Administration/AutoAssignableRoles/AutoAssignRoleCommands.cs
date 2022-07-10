@@ -1,4 +1,5 @@
 #nullable disable
+using Nadeko.Common;
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;

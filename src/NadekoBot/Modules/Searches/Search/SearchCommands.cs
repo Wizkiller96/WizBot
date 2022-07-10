@@ -2,6 +2,7 @@
 using StackExchange.Redis;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Searches;
 

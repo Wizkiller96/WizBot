@@ -1,4 +1,5 @@
-﻿namespace NadekoBot.Modules.Nsfw;
+﻿#nullable disable warnings
+namespace NadekoBot.Modules.Nsfw;
 
 public record UrlReply
 {

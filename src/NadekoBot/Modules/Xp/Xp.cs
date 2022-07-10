@@ -3,6 +3,7 @@ using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Xp.Services;
 using NadekoBot.Services.Database.Models;
 using System.Diagnostics;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Xp;
 

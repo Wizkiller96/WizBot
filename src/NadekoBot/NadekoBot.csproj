@@ -101,6 +101,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
+        <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
@@ -121,6 +122,9 @@
         <None Update="creds.yml;creds_example.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Common\Collections" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

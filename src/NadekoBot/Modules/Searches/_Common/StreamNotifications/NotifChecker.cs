@@ -1,4 +1,5 @@
-﻿using NadekoBot.Db.Models;
+﻿using Nadeko.Common;
+using NadekoBot.Db.Models;
 using NadekoBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 namespace NadekoBot.Modules.Searches.Common.StreamNotifications;

@@ -1,5 +1,7 @@
 #nullable disable
 
+using Nadeko.Common;
+
 namespace NadekoBot.Modules.NadekoExpressions;
 
 [Name("Expressions")]

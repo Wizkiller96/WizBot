@@ -13,6 +13,7 @@ using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Gambling;
 

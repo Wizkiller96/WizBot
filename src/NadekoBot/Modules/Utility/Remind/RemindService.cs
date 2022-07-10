@@ -4,6 +4,7 @@ using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.Text.RegularExpressions;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Utility.Services;
 

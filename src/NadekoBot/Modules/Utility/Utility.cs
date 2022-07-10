@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Nadeko.Common;
 using SystemTextJsonSamples;
 
 namespace NadekoBot.Modules.Utility;

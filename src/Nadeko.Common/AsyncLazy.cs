@@ -1,7 +1,6 @@
-﻿#nullable disable
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public class AsyncLazy<T> : Lazy<Task<T>>
 {
