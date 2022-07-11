@@ -1,291 +1,202 @@
-﻿#nullable disable
-using System.Net;
-using System.Text;
+﻿using System.Threading.Channels;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 
-public class TriviaGame
+public sealed class TriviaGame
 {
-    public IGuild Guild { get; }
-    public ITextChannel Channel { get; }
+    private readonly TriviaOptions _opts;
 
-    public TriviaQuestion CurrentQuestion { get; private set; }
-    public HashSet<TriviaQuestion> OldQuestions { get; } = new();
 
-    public ConcurrentDictionary<IGuildUser, int> Users { get; } = new();
+    private readonly IQuestionPool _questionPool;
 
-    public bool GameActive { get; private set; }
-    public bool ShouldStopGame { get; private set; }
-    private readonly SemaphoreSlim _guessLock = new(1, 1);
-    private readonly ILocalDataCache _cache;
-    private readonly IBotStrings _strings;
-    private readonly DiscordSocketClient _client;
-    private readonly GamesConfig _config;
-    private readonly ICurrencyService _cs;
-    private readonly TriviaOptions _options;
+    #region Events
+    public event Func<TriviaGame, TriviaQuestion, Task> OnQuestion = static delegate { return Task.CompletedTask; };
+    public event Func<TriviaGame, TriviaQuestion, Task> OnHint = static delegate { return Task.CompletedTask; };
+    public event Func<TriviaGame, Task> OnStats = static delegate { return Task.CompletedTask; };
+    public event Func<TriviaGame, TriviaUser, TriviaQuestion, bool, Task> OnGuess = static delegate { return Task.CompletedTask; };
+    public event Func<TriviaGame, TriviaQuestion, Task> OnTimeout = static delegate { return Task.CompletedTask; };
+    public event Func<TriviaGame, Task> OnEnded = static delegate { return Task.CompletedTask; };
+    #endregion
 
-    private CancellationTokenSource triviaCancelSource;
+    private bool _isStopped;
 
-    private readonly TriviaQuestionPool _questionPool;
-    private int timeoutCount;
-    private readonly string _quitCommand;
-    private readonly IEmbedBuilderService _eb;
+    public TriviaQuestion? CurrentQuestion { get; set; }
 
-    public TriviaGame(
-        IBotStrings strings,
-        DiscordSocketClient client,
-        GamesConfig config,
-        ILocalDataCache cache,
-        ICurrencyService cs,
-        IGuild guild,
-        ITextChannel channel,
-        TriviaOptions options,
-        string quitCommand,
-        IEmbedBuilderService eb)
+
+    private readonly ConcurrentDictionary<ulong, int> _users = new ();
+
+    private readonly Channel<(TriviaUser User, string Input)> _inputs
+        = Channel.CreateUnbounded<(TriviaUser, string)>(new UnboundedChannelOptions
+        {
+            AllowSynchronousContinuations = true,
+            SingleReader = true,
+            SingleWriter = false,
+        });
+
+    public TriviaGame(TriviaOptions options, ILocalDataCache cache)
     {
-        _cache = cache;
-        _questionPool = new(_cache);
-        _strings = strings;
-        _client = client;
-        _config = config;
-        _cs = cs;
-        _options = options;
-        _quitCommand = quitCommand;
-        _eb = eb;
+        _opts = options;
 
-        Guild = guild;
-        Channel = channel;
+        _questionPool = _opts.IsPokemon
+            ? new PokemonQuestionPool(cache)
+            : new DefaultQuestionPool(cache);
+
+    }
+    public async Task RunAsync()
+    {
+        await GameLoop();
     }
 
-    private string GetText(in LocStr key)
-        => _strings.GetText(key, Channel.GuildId);
-
-    public async Task StartGame()
+    private async Task GameLoop()
     {
-        var showHowToQuit = false;
-        while (!ShouldStopGame)
-        {
-            // reset the cancellation source    
-            triviaCancelSource = new();
-            showHowToQuit = !showHowToQuit;
+        Task TimeOutFactory() => Task.Delay(_opts.QuestionTimer * 1000 / 2);
 
-            // load question
-            CurrentQuestion = await _questionPool.GetRandomQuestionAsync(OldQuestions, _options.IsPokemon);
-            if (string.IsNullOrWhiteSpace(CurrentQuestion?.Answer)
-                || string.IsNullOrWhiteSpace(CurrentQuestion.Question))
+        var errorCount = 0;
+        var inactivity = 0;
+
+        // loop until game is stopped
+        // each iteration is one round
+        var firstRun = true;
+        while (!_isStopped)
+        {
+            if (errorCount >= 5)
             {
-                await Channel.SendErrorAsync(_eb, GetText(strs.trivia_game), GetText(strs.failed_loading_question));
-                return;
+                Log.Warning("Trivia errored 5 times and will quit");
+                break;
             }
 
-            OldQuestions.Add(CurrentQuestion); //add it to exclusion list so it doesn't show up again
+            // wait for 3 seconds before posting the next question
+            if (firstRun)
+            {
+                firstRun = false;
+            }
+            else
+            {
+                await Task.Delay(3000);
+            }
 
-            IEmbedBuilder questionEmbed;
-            IUserMessage questionMessage;
+            var maybeQuestion = await _questionPool.GetQuestionAsync();
+
+            if(!(maybeQuestion is TriviaQuestion question))
+            {
+                // if question is null (ran out of question, or other bugg ) - stop
+                break;
+            }
+
+            CurrentQuestion = question;
             try
             {
-                questionEmbed = _eb.Create()
-                                   .WithOkColor()
-                                   .WithTitle(GetText(strs.trivia_game))
-                                   .AddField(GetText(strs.category), CurrentQuestion.Category)
-                                   .AddField(GetText(strs.question), CurrentQuestion.Question);
+                // clear out all of the past guesses
+                while (_inputs.Reader.TryRead(out _)) ;
 
-                if (showHowToQuit)
-                    questionEmbed.WithFooter(GetText(strs.trivia_quit(_quitCommand)));
-
-                if (Uri.IsWellFormedUriString(CurrentQuestion.ImageUrl, UriKind.Absolute))
-                    questionEmbed.WithImageUrl(CurrentQuestion.ImageUrl);
-
-                questionMessage = await Channel.EmbedAsync(questionEmbed);
-            }
-            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound
-                                               or HttpStatusCode.Forbidden
-                                               or HttpStatusCode.BadRequest)
-            {
-                return;
+                await OnQuestion(this, question);
             }
             catch (Exception ex)
             {
-                Log.Warning(ex, "Error sending trivia embed");
-                await Task.Delay(2000);
+                Log.Warning(ex, "Error executing OnQuestion: {Message}", ex.Message);
+                errorCount++;
                 continue;
             }
 
-            //receive messages
-            try
-            {
-                _client.MessageReceived += PotentialGuess;
 
-                //allow people to guess
-                GameActive = true;
-                try
+            // just keep looping through user inputs until someone guesses the answer
+            // or the timer expires
+            var halfGuessTimerTask = TimeOutFactory();
+            var hintSent = false;
+            var guessed = false;
+            while (true)
+            {
+                var readTask = _inputs.Reader.ReadAsync().AsTask();
+
+                // wait for either someone to attempt to guess
+                // or for timeout
+                var task = await Task.WhenAny(readTask, halfGuessTimerTask);
+
+                // if the task which completed is the timeout task
+                if (task == halfGuessTimerTask)
                 {
-                    //hint
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
-                    if (!_options.NoHint)
+                    // if hint is already sent, means time expired
+                    // break (end the round)
+                    if (hintSent)
+                        break;
+
+                    // else, means half time passed, send a hint
+                    hintSent = true;
+                    // start a new countdown of the same length
+                    halfGuessTimerTask = TimeOutFactory();
+                    // send a hint out
+                    await OnHint(this, question);
+
+                    continue;
+                }
+
+                // otherwise, read task is successful, and we're gonna
+                // get the user input data
+                var (user, input) = await readTask;
+
+                // check the guess
+                if (question.IsAnswerCorrect(input))
+                {
+                    // add 1 point to the user
+                    var val = _users.AddOrUpdate(user.Id, 1, (_, points) => ++points);
+                    guessed = true;
+
+                    // reset inactivity counter
+                    inactivity = 0;
+
+                    var isWin = false;
+                    // if user won the game, tell the game to stop
+                    if (val >= _opts.WinRequirement)
                     {
-                        try
-                        {
-                            await questionMessage.ModifyAsync(m
-                                => m.Embed = questionEmbed.WithFooter(CurrentQuestion.GetHint()).Build());
-                        }
-                        catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound
-                                                           or HttpStatusCode.Forbidden)
-                        {
-                            break;
-                        }
-                        catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
+                        _isStopped = true;
+                        isWin = true;
                     }
 
-                    //timeout
-                    await Task.Delay(_options.QuestionTimer * 1000 / 2, triviaCancelSource.Token);
-                }
-                catch (TaskCanceledException) { timeoutCount = 0; } //means someone guessed the answer
-            }
-            finally
-            {
-                GameActive = false;
-                _client.MessageReceived -= PotentialGuess;
-            }
-
-            if (!triviaCancelSource.IsCancellationRequested)
-            {
-                try
-                {
-                    var embed = _eb.Create()
-                                   .WithErrorColor()
-                                   .WithTitle(GetText(strs.trivia_game))
-                                   .WithDescription(GetText(strs.trivia_times_up(Format.Bold(CurrentQuestion.Answer))));
-                    if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
-                        embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
-
-                    await Channel.EmbedAsync(embed);
-
-                    if (_options.Timeout != 0 && ++timeoutCount >= _options.Timeout)
-                        await StopGame();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error sending trivia time's up message");
+                    // call onguess
+                    await OnGuess(this, user, question, isWin);
+                    break;
                 }
             }
 
-            await Task.Delay(5000);
-        }
-    }
-
-    public async Task EnsureStopped()
-    {
-        ShouldStopGame = true;
-
-        await Channel.EmbedAsync(_eb.Create()
-                                    .WithOkColor()
-                                    .WithAuthor("Trivia Game Ended")
-                                    .WithTitle("Final Results")
-                                    .WithDescription(GetLeaderboard()));
-    }
-
-    public async Task StopGame()
-    {
-        var old = ShouldStopGame;
-        ShouldStopGame = true;
-        if (!old)
-        {
-            try
+            if (!guessed)
             {
-                await Channel.SendConfirmAsync(_eb, GetText(strs.trivia_game), GetText(strs.trivia_stopping));
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Error sending trivia stopping message");
-            }
-        }
-    }
-
-    private Task PotentialGuess(SocketMessage imsg)
-    {
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                if (imsg.Author.IsBot)
-                    return;
-
-                var umsg = imsg as SocketUserMessage;
-
-                if (umsg?.Channel is not ITextChannel textChannel || textChannel.Guild != Guild)
-                    return;
-
-                var guildUser = (IGuildUser)umsg.Author;
-
-                var guess = false;
-                await _guessLock.WaitAsync();
-                try
-                {
-                    if (GameActive
-                        && CurrentQuestion.IsAnswerCorrect(umsg.Content)
-                        && !triviaCancelSource.IsCancellationRequested)
-                    {
-                        Users.AddOrUpdate(guildUser, 1, (_, old) => ++old);
-                        guess = true;
-                    }
-                }
-                finally { _guessLock.Release(); }
-
-                if (!guess)
-                    return;
+                await OnTimeout(this, question);
                 
-                triviaCancelSource.Cancel();
-
-                if (_options.WinRequirement != 0 && Users[guildUser] == _options.WinRequirement)
+                if (_opts.Timeout != 0 && ++inactivity >= _opts.Timeout)
                 {
-                    ShouldStopGame = true;
-                    try
-                    {
-                        var embedS = _eb.Create()
-                                        .WithOkColor()
-                                        .WithTitle(GetText(strs.trivia_game))
-                                        .WithDescription(GetText(strs.trivia_win(guildUser.Mention,
-                                            Format.Bold(CurrentQuestion.Answer))));
-                        if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
-                            embedS.WithImageUrl(CurrentQuestion.AnswerImageUrl);
-                        await Channel.EmbedAsync(embedS);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    var reward = _config.Trivia.CurrencyReward;
-                    if (reward > 0)
-                        await _cs.AddAsync(guildUser, reward, new("trivia", "win"));
-                    return;
+                    Log.Information("Trivia game is stopping due to inactivity");
+                    break;
                 }
-
-                var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle(GetText(strs.trivia_game))
-                               .WithDescription(GetText(strs.trivia_guess(guildUser.Mention,
-                                   Format.Bold(CurrentQuestion.Answer))));
-                if (Uri.IsWellFormedUriString(CurrentQuestion.AnswerImageUrl, UriKind.Absolute))
-                    embed.WithImageUrl(CurrentQuestion.AnswerImageUrl);
-                await Channel.EmbedAsync(embed);
             }
-            catch (Exception ex) { Log.Warning(ex, "Exception in a potential guess"); }
-        });
-        return Task.CompletedTask;
+        }
+
+        // make sure game is set as ended
+        _isStopped = true;
+        
+        await OnEnded(this);
     }
 
-    public string GetLeaderboard()
+    public IReadOnlyList<(ulong User, int points)> GetLeaderboard()
+        => _users.Select(x => (x.Key, x.Value)).ToArray();
+
+    public ValueTask InputAsync(TriviaUser user, string input)
+        => _inputs.Writer.WriteAsync((user, input));
+
+    public bool Stop()
     {
-        if (Users.Count == 0)
-            return GetText(strs.no_results);
+        var isStopped = _isStopped;
+        _isStopped = true;
+        return !isStopped;
+    }
 
-        var sb = new StringBuilder();
+    public async ValueTask TriggerStatsAsync()
+    {
+        await OnStats(this);
+    }
 
-        foreach (var kvp in Users.OrderByDescending(kvp => kvp.Value))
-            sb.AppendLine(GetText(strs.trivia_points(Format.Bold(kvp.Key.ToString()), kvp.Value)));
-
-        return sb.ToString();
+    public async Task TriggerQuestionAsync()
+    {
+        if(CurrentQuestion is TriviaQuestion q)
+            await OnQuestion(this, q);
     }
 }
