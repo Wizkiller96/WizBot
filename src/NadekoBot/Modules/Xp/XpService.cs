@@ -325,7 +325,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var user = guild?.GetUser(userId);
         var ch = guild?.GetTextChannel(channelId);
 
-        if (user is null || guild is null)
+        if (guild is null || user is null)
             return;
 
         if (isServer)
