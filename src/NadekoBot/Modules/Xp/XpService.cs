@@ -319,11 +319,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         long newLevel,
         XpNotificationLocation notifyLoc)
     {
-        var user = await _client.GetUserAsync(userId);
+        if (notifyLoc == XpNotificationLocation.None)
+            return;
+            
         var guild = _client.GetGuild(guildId);
+        var user = guild?.GetUser(userId);
         var ch = guild?.GetTextChannel(channelId);
 
-        if (user is null || guild is null)
+        if (guild is null || user is null)
             return;
 
         if (isServer)
