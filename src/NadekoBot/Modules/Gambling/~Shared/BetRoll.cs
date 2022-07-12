@@ -6,7 +6,7 @@ public class Betroll
     private readonly IOrderedEnumerable<BetRollPair> _thresholdPairs;
     private readonly Random _rng;
 
-    public Betroll(BetRollConfig settings)
+    public Betroll(IReadOnlyList<long> pairs)
     {
         _thresholdPairs = settings.Pairs.OrderByDescending(x => x.WhenAbove);
         _rng = new();
