@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Nadeko.Econ.Gambling;
+using Nadeko.Econ.Gambling.Rps;
 using NadekoBot.Modules.Gambling.Services;
 using OneOf;
 
@@ -20,11 +21,17 @@ public sealed class NewGamblingService : IGamblingService, INService
     // todo ladder of fortune
     public async Task<OneOf<WofResult, GamblingError>> WofAsync(ulong userId, long amount)
     {
-        var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("wof", "bet"));
-
-        if (!isTakeSuccess)
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        
+        if (amount > 0)
         {
-            return GamblingError.InsufficientFunds;
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("wof", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
         }
 
         var game = new WofGame(_bcs.Data.WheelOfFortune.Multipliers);
@@ -41,16 +48,23 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<BetrollResult, GamblingError>> BetRollAsync(ulong userId, long amount)
     {
-        var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betroll", "bet"));
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
 
-        if (!isTakeSuccess)
+        if (amount > 0)
         {
-            return GamblingError.InsufficientFunds;
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betroll", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
         }
 
         var game = new BetrollGame(_bcs.Data.BetRoll.Pairs
-            .Select(x => ((decimal)x.WhenAbove, (decimal)x.MultiplyBy))
+            .Select(x => (x.WhenAbove, (decimal)x.MultiplyBy))
             .ToList());
+        
         var result = game.Roll(amount);
         
         var won = (long)result.Won;
@@ -64,11 +78,17 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<BetflipResult, GamblingError>> BetFlipAsync(ulong userId, long amount, byte guess)
     {
-        var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
 
-        if (!isTakeSuccess)
+        if (amount > 0)
         {
-            return GamblingError.InsufficientFunds;
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
         }
 
         var game = new BetflipGame(_bcs.Data.BetFlip.Multiplier);
@@ -85,6 +105,9 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<SlotResult, GamblingError>> SlotAsync(ulong userId, long amount)
     {
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        
         if (amount > 0)
         {
             var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
@@ -106,7 +129,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         return result;
     }
-    
+
     public Task<FlipResult[]> FlipAsync(int count)
     {
         var game = new BetflipGame(0);
@@ -123,8 +146,8 @@ public sealed class NewGamblingService : IGamblingService, INService
         return Task.FromResult(results);
     }
     
-    // todo deck draw black/white?
-    
+    // // todo deck draw black/white?
+    //
     //
     // private readonly ConcurrentDictionary<ulong, Deck> _decks = new ConcurrentDictionary<ulong, Deck>();
     //
@@ -177,79 +200,41 @@ public sealed class NewGamblingService : IGamblingService, INService
     //  return Task.FromResult(toReturn);
     // }
     //
-    // public override async Task<RpsReply> Rps(RpsRequest request, ServerCallContext context)
-    // {
-    //  if (request.Amount > 0)
-    //  {
-    //      var res = await _currency.TransferCurrencyAsync(new TransferCurrencyRequest
-    //      {
-    //          Amount = request.Amount,
-    //          FromId = request.UserId,
-    //          Type = "rps",
-    //          Subtype = "bet",
-    //      });
-    //
-    //      if (!res.Success)
-    //      {
-    //          return new RpsReply
-    //          {
-    //              Result = RpsReply.Types.ResultType.NotEnough
-    //          };
-    //      }
-    //  }
-    //
-    //  var botPick = _rng.Next(0, 3);
-    //  var userPick = (int) request.Pick;
-    //
-    //  if (botPick == userPick)
-    //  {
-    //      if (request.Amount > 0)
-    //      {
-    //          await _currency.GrantToUserAsync(new GrantToUserRequest
-    //          {
-    //              Amount = request.Amount,
-    //              GranterId = 0,
-    //              Type = "rps",
-    //              Subtype = "draw",
-    //              UserId = request.UserId,
-    //          });
-    //      }
-    //
-    //      return new RpsReply
-    //      {
-    //          BotPick = (RpsPick) botPick,
-    //          WonAmount = request.Amount,
-    //          Result = RpsReply.Types.ResultType.Draw
-    //      };
-    //  }
-    //
-    //  if ((botPick == 1 && userPick == 2) || (botPick == 2 && userPick == 0) || (botPick == 0 && userPick == 1))
-    //  {
-    //      if (request.Amount > 0)
-    //      {
-    //          await _currency.GrantToUserAsync(new GrantToUserRequest
-    //          {
-    //              Amount = (long) (request.Amount * 1.95f),
-    //              GranterId = 0,
-    //              Type = "rps",
-    //              Subtype = "draw",
-    //              UserId = request.UserId,
-    //          });
-    //      }
-    //
-    //      return new RpsReply
-    //      {
-    //          BotPick = (RpsPick) botPick,
-    //          WonAmount = (long) (request.Amount * 1.95f),
-    //          Result = RpsReply.Types.ResultType.Won
-    //      };
-    //  }
-    //
-    //  return new RpsReply
-    //  {
-    //      BotPick = (RpsPick) botPick,
-    //      WonAmount = 0,
-    //      Result = RpsReply.Types.ResultType.Lost
-    //  };
-    // }
+
+    public async Task<OneOf<RpsResult, GamblingError>> RpsAsync(ulong userId, long amount, byte pick)
+    {
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+
+        if (pick > 2)
+            throw new ArgumentOutOfRangeException(nameof(pick));
+        
+        if (amount > 0)
+        {
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("rps", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
+        }
+
+        var rps = new RpsGame();
+        var result = rps.Play((RpsPick)pick, amount);
+        
+        var won = (long)result.Won;
+        if (won > 0)
+        {
+            var extra = result.Result switch
+            {
+                RpsResultType.Draw => "draw",
+                RpsResultType.Win => "win",
+                _ => "lose"
+            };
+
+            await _cs.AddAsync(userId, won, new("rps", extra));
+        }
+
+        return result;
+    }
 }

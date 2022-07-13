@@ -2,10 +2,10 @@ namespace Nadeko.Econ.Gambling;
 
 public sealed class BetrollGame
 {
-    private readonly (decimal WhenAbove, decimal MultiplyBy)[] _thresholdPairs;
-    private readonly Random _rng;
+    private readonly (int WhenAbove, decimal MultiplyBy)[] _thresholdPairs;
+    private readonly NadekoRandom _rng;
 
-    public BetrollGame(IReadOnlyList<(decimal WhenAbove, decimal MultiplyBy)> pairs)
+    public BetrollGame(IReadOnlyList<(int WhenAbove, decimal MultiplyBy)> pairs)
     {
         _thresholdPairs = pairs.OrderByDescending(x => x.WhenAbove).ToArray();
         _rng = new();

@@ -13,6 +13,7 @@ using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
+using Nadeko.Econ.Gambling.Rps;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -759,65 +760,72 @@ public partial class Gambling : GamblingModule<GamblingService>
             opts.Clean);
     }
 
+    public enum InputRpsPick : byte
+    {
+        R = 0,
+        Rock = 0,
+        Rocket = 0,
+        P = 1,
+        Paper = 1,
+        Paperclip = 1,
+        S = 2,
+        Scissors = 2
+    }
+    
     // todo check if trivia is being disposed
     [Cmd]
-    public async partial Task Rps(RpsPick pick, ShmartNumber amount = default)
+    public async partial Task Rps(InputRpsPick pick, ShmartNumber amount = default)
     {
-        if (!await CheckBetOptional(amount) || amount == 1)
-        {
-            return;
-        }
-
-        string GetRpsPick(RpsPick p)
+        static string GetRpsPick(InputRpsPick p)
         {
             switch (p)
             {
-                case RpsPick.R:
+                case InputRpsPick.R:
                     return "🚀";
-                case RpsPick.P:
+                case InputRpsPick.P:
                     return "📎";
                 default:
                     return "✂️";
             }
         }
+        
+        if (!await CheckBetOptional(amount) || amount == 1)
+            return;
 
-        var embed = _eb.Create();
+        var res = await _gs.RpsAsync(ctx.User.Id, amount, (byte)pick);
 
-        var nadekoPick = (RpsPick)new NadekoRandom().Next(0, 3);
-
-        if (amount > 0)
+        if (!res.TryPickT0(out var result, out _))
         {
-            if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("rps", "bet")))
-            {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                return;
-            }
+            await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+            return;
         }
-
+        
+        var embed = _eb.Create();
+        
         string msg;
-        if (pick == nadekoPick)
+        if (result.Result == RpsResultType.Draw)
         {
-            await _cs.AddAsync(ctx.User.Id, amount, new("rps", "draw"));
-            embed.WithOkColor();
             msg = GetText(strs.rps_draw(GetRpsPick(pick)));
         }
-        else if ((pick == RpsPick.Paper && nadekoPick == RpsPick.Rock)
-                 || (pick == RpsPick.Rock && nadekoPick == RpsPick.Scissors)
-                 || (pick == RpsPick.Scissors && nadekoPick == RpsPick.Paper))
+        else if (result.Result == RpsResultType.Win)
         {
-            amount = (long)(amount * Config.BetFlip.Multiplier);
-            await _cs.AddAsync(ctx.User.Id, amount, new("rps", "win"));
-            embed.WithOkColor();
-            embed.AddField(GetText(strs.won), N(amount.Value));
-            msg = GetText(strs.rps_win(ctx.User.Mention, GetRpsPick(pick), GetRpsPick(nadekoPick)));
+            if((long)result.Won > 0)
+                 embed.AddField(GetText(strs.won), N(amount.Value));
+
+            msg = GetText(strs.rps_win(ctx.User.Mention,
+                GetRpsPick(pick),
+                GetRpsPick((InputRpsPick)result.ComputerPick)));
         }
         else
         {
-            embed.WithErrorColor();
-            msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention, GetRpsPick(nadekoPick), GetRpsPick(pick)));
+            msg = GetText(strs.rps_win(ctx.Client.CurrentUser.Mention,
+                GetRpsPick((InputRpsPick)result.ComputerPick),
+                GetRpsPick(pick)));
         }
 
-        embed.WithDescription(msg);
+        embed
+            .WithOkColor()
+            .WithDescription(msg);
 
         await ctx.Channel.EmbedAsync(embed);
     }
