@@ -1,11 +1,10 @@
-#nullable disable
-namespace NadekoBot.Modules.Gambling.Common.Slot;
+namespace Nadeko.Econ.Gambling;
 
 public class SlotGame
 {
     private static readonly Random _rng = new NadekoRandom();
 
-    public Result Spin()
+    public SlotResult Spin(decimal bet)
     {
         var rolls = new[] { _rng.Next(0, 6), _rng.Next(0, 6), _rng.Next(0, 6) };
         var multi = 0;
@@ -19,18 +18,11 @@ public class SlotGame
         else if (rolls.Any(x => x == 5))
             multi = 1;
 
-        return new(multi, rolls);
-    }
-
-    public class Result
-    {
-        public float Multiplier { get; }
-        public int[] Rolls { get; }
-
-        public Result(float multiplier, int[] rolls)
+        return new()
         {
-            Multiplier = multiplier;
-            Rolls = rolls;
-        }
+            Won = bet * multi,
+            Multiplier = multi,
+            Rolls = rolls,
+        };
     }
 }

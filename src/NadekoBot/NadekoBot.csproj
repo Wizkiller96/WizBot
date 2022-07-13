@@ -102,6 +102,7 @@
     <ItemGroup>
         <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
         <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
+        <ProjectReference Include="..\Nadeko.Econ\Nadeko.Econ.csproj" />
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
@@ -125,6 +126,7 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Common\Collections" />
+      <Folder Include="Modules\Gambling\Wheel" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

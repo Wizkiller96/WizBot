@@ -1,7 +1,7 @@
 #nullable disable
 namespace NadekoBot.Modules.Gambling;
 
-public enum GamblingError
+public enum OldGamblingError
 {
     None,
     NotEnough

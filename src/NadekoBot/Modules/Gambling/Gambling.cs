@@ -38,6 +38,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         Draw
     }
 
+    private readonly IGamblingService _gs;
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
     private readonly DiscordSocketClient _client;
@@ -51,6 +52,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private IUserMessage rdMsg;
 
     public Gambling(
+        IGamblingService gs,
         DbService db,
         ICurrencyService currency,
         DiscordSocketClient client,
@@ -61,6 +63,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         RemindService remind)
         : base(configService)
     {
+        _gs = gs;
         _db = db;
         _cs = currency;
         _client = client;
@@ -657,27 +660,29 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
     }
 
-    private async Task InternallBetroll(long amount)
+    [Cmd]
+    public async partial Task BetRoll(ShmartNumber amount)
     {
         if (!await CheckBetMandatory(amount))
         {
             return;
         }
 
-        if (!await _cs.RemoveAsync(ctx.User, amount, new("betroll", "bet")))
+        var result = await _gs.BetRollAsync()
+        if (!)
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
         }
 
-        var br = new Betroll(Config.BetRoll);
+        var br = new BetrollGame(Config.BetRoll);
 
         var result = br.Roll();
 
+        var win = (long)result.Won;
         var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll(result.Roll)));
-        if (result.Multiplier > 0)
+        if (win > 0)
         {
-            var win = (long)(amount * result.Multiplier);
             str += GetText(strs.br_win(N(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
             await _cs.AddAsync(ctx.User, win, new("betroll", "win"));
         }
@@ -688,10 +693,6 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await SendConfirmAsync(str);
     }
-
-    [Cmd]
-    public partial Task BetRoll(ShmartNumber amount)
-        => InternallBetroll(amount);
 
     [Cmd]
     [NadekoOptions(typeof(LbOpts))]

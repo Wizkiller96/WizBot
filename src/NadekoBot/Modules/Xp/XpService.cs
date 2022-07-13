@@ -1281,10 +1281,4 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         uow.RemoveRange(guildConfig.XpSettings.CurrencyRewards);
         await uow.SaveChangesAsync();
     }
-
-    private enum NotifOf
-    {
-        Server,
-        Global
-    } // is it a server level-up or global level-up notification
 }

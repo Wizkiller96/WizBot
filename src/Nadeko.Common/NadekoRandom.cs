@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using System.Security.Cryptography;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public class NadekoRandom : Random
 {
