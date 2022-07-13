@@ -27,7 +27,7 @@ public partial class Gambling
         private static decimal totalBet;
         private static decimal totalPaidOut;
 
-        private static readonly HashSet<ulong> _runningUsers = new();
+        private static readonly ConcurrentHashSet<ulong> _runningUsers = new();
 
         //here is a payout chart
         //https://lh6.googleusercontent.com/-i1hjAJy_kN4/UswKxmhrbPI/AAAAAAAAB1U/82wq_4ZZc-Y/DE6B0895-6FC1-48BE-AC4F-14D1B91AB75B.jpg
@@ -84,11 +84,12 @@ public partial class Gambling
             var dict = new Dictionary<decimal, int>();
             for (var i = 0; i < tests; i++)
             {
-                var res = SlotMachine.Pull(0);
-                if (dict.ContainsKey(res.Multiplier))
-                    dict[res.Multiplier] += 1;
+                var res = await _service.SlotAsync(ctx.User.Id, 0);
+                var multi = res.AsT0.Multiplier;
+                if (dict.ContainsKey(multi))
+                    dict[multi] += 1;
                 else
-                    dict.Add(res.Multiplier, 1);
+                    dict.Add(multi, 1);
             }
 
             var sb = new StringBuilder();
@@ -157,7 +158,7 @@ public partial class Gambling
                                 WrapTextWidth = 140
                             }
                         },
-                        result.Won.ToString(),
+                        ((long)result.Won).ToString(),
                         _fonts.DottyFont.CreateFont(65),
                         fontColor,
                         new(227, 92)));
@@ -219,50 +220,9 @@ public partial class Gambling
             }
             finally
             {
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(1000);
-                    _runningUsers.Remove(ctx.User.Id);
-                });
+                await Task.Delay(1000);
+                _runningUsers.TryRemove(ctx.User.Id);
             }
         }
-    }
-}
-
-public sealed class SlotMachine
-{
-    public const int MAX_VALUE = 5;
-
-    private static readonly List<Func<int[], int>> _winningCombos = new()
-    {
-        //three flowers
-        arr => arr.All(a => a == MAX_VALUE) ? 30 : 0,
-        //three of the same
-        arr => arr.All(a => a == arr[0]) ? 10 : 0,
-        //two flowers
-        arr => arr.Count(a => a == MAX_VALUE) == 2 ? 4 : 0,
-        //one flower
-        arr => arr.Any(a => a == MAX_VALUE) ? 1 : 0
-    };
-
-    public static SlotResult Pull(decimal amount)
-    {
-        var numbers = new int[3];
-        for (var i = 0; i < numbers.Length; i++)
-            numbers[i] = new NadekoRandom().Next(0, MAX_VALUE + 1);
-        var multi = 0M;
-        foreach (var t in _winningCombos)
-        {
-            multi = t(numbers);
-            if (multi != 0)
-                break;
-        }
-
-        return new()
-        {
-            Rolls = numbers,
-            Multiplier = multi,
-            Won = multi * amount,
-        };
     }
 }

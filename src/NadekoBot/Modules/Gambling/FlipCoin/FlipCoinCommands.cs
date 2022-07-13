@@ -11,16 +11,16 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class FlipCoinCommands : GamblingSubmodule<GamblingService>
+    public partial class FlipCoinCommands : GamblingSubmodule<IGamblingService>
     {
-        public enum BetFlipGuess
+        public enum BetFlipGuess : byte
         {
-            H = 1,
-            Head = 1,
-            Heads = 1,
-            T = 2,
-            Tail = 2,
-            Tails = 2
+            H = 0,
+            Head = 0,
+            Heads = 0,
+            T = 1,
+            Tail = 1,
+            Tails = 1
         }
 
         private static readonly NadekoRandom _rng = new();
@@ -52,11 +52,14 @@ public partial class Gambling
             var headCount = 0;
             var tailCount = 0;
             var imgs = new Image<Rgba32>[count];
-            for (var i = 0; i < count; i++)
+            var headsArr = await _images.GetHeadsImageAsync();
+            var tailsArr = await _images.GetTailsImageAsync();
+
+            var result = await _service.FlipAsync(count);
+            
+            for (var i = 0; i < result.Length; i++)
             {
-                var headsArr = await _images.GetHeadsImageAsync();
-                var tailsArr = await _images.GetTailsImageAsync();
-                if (_rng.Next(0, 10) < 5)
+                if (result[i].Side == 0)
                 {
                     imgs[i] = Image.Load(headsArr);
                     headCount++;
@@ -69,7 +72,7 @@ public partial class Gambling
             }
 
             using var img = imgs.Merge(out var format);
-            await using var stream = img.ToStream(format);
+            await using var stream = await img.ToStreamAsync(format);
             foreach (var i in imgs)
                 i.Dispose();
 
@@ -92,38 +95,37 @@ public partial class Gambling
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;
 
-            var removed = await _cs.RemoveAsync(ctx.User, amount, new("betflip", "bet"));
-            if (!removed)
+            var res = await _service.BetFlipAsync(ctx.User.Id, amount, (byte)guess);
+            if (!res.TryPickT0(out var result, out _))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
 
-            BetFlipGuess result;
             Uri imageToSend;
             var coins = _ic.Data.Coins;
-            if (_rng.Next(0, 1000) <= 499)
+            if (result.Side == 0)
             {
                 imageToSend = coins.Heads[_rng.Next(0, coins.Heads.Length)];
-                result = BetFlipGuess.Heads;
             }
             else
             {
                 imageToSend = coins.Tails[_rng.Next(0, coins.Tails.Length)];
-                result = BetFlipGuess.Tails;
             }
 
             string str;
-            if (guess == result)
+            var won = (long)result.Won;
+            if (won > 0)
             {
-                var toWin = (long)(amount * Config.BetFlip.Multiplier);
-                str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess(N(toWin)));
-                await _cs.AddAsync(ctx.User, toWin, new("betflip", "win"));
+                str = Format.Bold(GetText(strs.flip_guess(N(won))));
             }
             else
-                str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.better_luck);
+            {
+                str = Format.Bold(GetText(strs.better_luck));
+            }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
+                .WithAuthor(ctx.User)
                                             .WithDescription(str)
                                             .WithOkColor()
                                             .WithImageUrl(imageToSend.ToString()));

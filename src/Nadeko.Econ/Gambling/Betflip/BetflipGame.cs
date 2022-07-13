@@ -11,9 +11,9 @@ public sealed class BetflipGame
         _rng = new NadekoRandom();
     }
 
-    public BetflipResult Flip(int guess, decimal amount)
+    public BetflipResult Flip(byte guess, decimal amount)
     {
-        var side = _rng.Next(0, 1);
+        var side = _rng.Next(0, 2);
         decimal won = 0;
         
         if (side == guess)

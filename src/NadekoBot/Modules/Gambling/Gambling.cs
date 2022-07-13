@@ -655,19 +655,26 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
+        
         var win = (long)result.Won;
-        var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll(result.Roll)));
+        string str;
         if (win > 0)
         {
-            str += GetText(strs.br_win(N(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
+            str = GetText(strs.br_win(N(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
             await _cs.AddAsync(ctx.User, win, new("betroll", "win"));
         }
         else
         {
-            str += GetText(strs.better_luck);
+            str = GetText(strs.better_luck);
         }
 
-        await SendConfirmAsync(str);
+        var eb = _eb.Create(ctx)
+            .WithAuthor(ctx.User)
+            .WithFooter(str)
+            .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
+            .WithOkColor();
+
+        await ctx.Channel.EmbedAsync(eb);
     }
 
     [Cmd]

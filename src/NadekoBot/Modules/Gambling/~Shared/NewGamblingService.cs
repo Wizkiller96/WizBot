@@ -17,6 +17,7 @@ public sealed class NewGamblingService : IGamblingService, INService
     }
     
     // todo input checks
+    // todo ladder of fortune
     public async Task<OneOf<WofResult, GamblingError>> WofAsync(ulong userId, long amount)
     {
         var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("wof", "bet"));
@@ -61,7 +62,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         return result;
     }
 
-    public async Task<OneOf<BetflipResult, GamblingError>> BetFlipAsync(ulong userId, long amount, int guess)
+    public async Task<OneOf<BetflipResult, GamblingError>> BetFlipAsync(ulong userId, long amount, byte guess)
     {
         var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
 
@@ -84,11 +85,14 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<SlotResult, GamblingError>> SlotAsync(ulong userId, long amount)
     {
-        var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
-
-        if (!isTakeSuccess)
+        if (amount > 0)
         {
-            return GamblingError.InsufficientFunds;
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
         }
 
         var game = new SlotGame();
