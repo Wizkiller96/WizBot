@@ -19,11 +19,6 @@ public enum GamblingError
     InsufficientFunds,
 }
 
-// public interface ISlotService
-// {
-//     ValueTask<OneOf<SlotResult, SlotError>> PullAsync(ulong userId, long amount);
-// }
-
 public partial class Gambling
 {
     [Group]
@@ -204,18 +199,15 @@ public partial class Gambling
                         bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
                     }
 
-                    var msg = GetText(strs.better_luck);
-                    if (result.Multiplier > 0)
+                    var multi = result.Multiplier.ToString("0.##");
+                    var msg = result.WinType switch
                     {
-                        if (Math.Abs(result.Multiplier - 1M) <= decimal.)
-                            msg = GetText(strs.slot_single(CurrencySign, 1));
-                        else if (Math.Abs(result.Multiplier - 4M) < float.Epsilon)
-                            msg = GetText(strs.slot_two(CurrencySign, 4));
-                        else if (Math.Abs(result.Multiplier - 10M) <= float.Epsilon)
-                            msg = GetText(strs.slot_three(10));
-                        else if (Math.Abs(result.Multiplier - 30M) <= float.Epsilon)
-                            msg = GetText(strs.slot_jackpot(30));
-                    }
+                        SlotWinType.SingleJoker => GetText(strs.slot_single(CurrencySign, multi)),
+                        SlotWinType.DoubleJoker => GetText(strs.slot_two(CurrencySign, multi)),
+                        SlotWinType.TrippleNormal => GetText(strs.slot_three(multi)),
+                        SlotWinType.TrippleJoker => GetText(strs.slot_jackpot(multi)),
+                        _ => GetText(strs.better_luck),
+                    };
 
                     await using (var imgStream = await bgImage.ToStreamAsync())
                     {

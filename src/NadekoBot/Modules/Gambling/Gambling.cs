@@ -13,31 +13,11 @@ using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Gambling;
 
 public partial class Gambling : GamblingModule<GamblingService>
 {
-    public enum RpsPick
-    {
-        R = 0,
-        Rock = 0,
-        Rocket = 0,
-        P = 1,
-        Paper = 1,
-        Paperclip = 1,
-        S = 2,
-        Scissors = 2
-    }
-
-    public enum RpsResult
-    {
-        Win,
-        Loss,
-        Draw
-    }
-
     private readonly IGamblingService _gs;
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
@@ -668,16 +648,12 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var result = await _gs.BetRollAsync()
-        if (!)
+        var maybeResult = await _gs.BetRollAsync(ctx.User.Id, amount);
+        if (!maybeResult.TryPickT0(out var result, out _))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
         }
-
-        var br = new BetrollGame(Config.BetRoll);
-
-        var result = br.Roll();
 
         var win = (long)result.Won;
         var str = Format.Bold(ctx.User.ToString()) + Format.Code(GetText(strs.roll(result.Roll)));
@@ -776,6 +752,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             opts.Clean);
     }
 
+    // todo check if trivia is being disposed
     [Cmd]
     public async partial Task Rps(RpsPick pick, ShmartNumber amount = default)
     {
@@ -803,7 +780,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         if (amount > 0)
         {
-            if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("rps", "bet", "")))
+            if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("rps", "bet")))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
@@ -847,16 +824,15 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (!await CheckBetMandatory(amount))
             return;
 
-        if (!await _cs.RemoveAsync(ctx.User.Id, amount, new("wheel", "bet")))
+        var res = await _gs.WofAsync(ctx.User.Id, amount);
+        if (!res.TryPickT0(out var result, out _))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
         }
 
-        var result = await _service.WheelOfFortuneSpinAsync(ctx.User.Id, amount);
-
         var wofMultipliers = Config.WheelOfFortune.Multipliers;
-        await SendConfirmAsync(Format.Bold($@"{ctx.User} won: {N(result.Amount)}
+        await SendConfirmAsync(Format.Bold($@"{ctx.User} won: {N(result.Won)}
 
    『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
 
