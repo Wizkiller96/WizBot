@@ -174,8 +174,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             var gxps = new List<UserXpStats>(globalToAdd.Count);
             await using (var ctx = _db.GetDbContext())
             {
-                await using var tran = await ctx.Database.BeginTransactionAsync();
-
                 // update global user xp in batches
                 // group by xp amount and update the same amounts at the same time
                 foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
@@ -209,8 +207,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         gxps.AddRange(items);
                     }
                 }
-
-                await tran.CommitAsync();
             }
 
             foreach (var du in dus)
