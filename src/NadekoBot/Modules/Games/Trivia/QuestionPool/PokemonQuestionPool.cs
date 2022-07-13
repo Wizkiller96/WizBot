@@ -12,7 +12,7 @@ public sealed class PokemonQuestionPool : IQuestionPool
         _rng = new NadekoRandom();
     }
 
-    public async Task<TriviaQuestion?> GetRandomQuestionAsync(ISet<TriviaQuestion> exclude)
+    public async Task<TriviaQuestion?> GetQuestionAsync()
     {
         var pokes = await _cache.GetPokemonMapAsync();
 
