@@ -834,7 +834,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
     [Cmd]
-    public async partial Task WheelOfFortune(ShmartNumber amount)
+    public async partial Task LuckyLadder(ShmartNumber amount)
     {
         if (!await CheckBetMandatory(amount))
             return;
@@ -846,13 +846,29 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var wofMultipliers = Config.WheelOfFortune.Multipliers;
-        await SendConfirmAsync(Format.Bold($@"{ctx.User} won: {N(result.Won)}
+        var multis = result.Multipliers;
 
-   『{wofMultipliers[1]}』   『{wofMultipliers[0]}』   『{wofMultipliers[7]}』
+        var sb = new StringBuilder();
+        foreach (var multi in multis)
+        {
+            sb.Append($"╠══╣");
 
-『{wofMultipliers[2]}』      {_emojis[result.Index]}      『{wofMultipliers[6]}』
+            if (multi == result.Multiplier)
+                sb.Append($"{Format.Bold($"x{multi:0.##}")} ⬅️");
+            else
+                sb.Append($"||x{multi:0.##}||");
+            
+            sb.AppendLine();
+        }
 
-     『{wofMultipliers[3]}』   『{wofMultipliers[4]}』   『{wofMultipliers[5]}』"));
+        var eb = _eb.Create(ctx)
+            .WithOkColor()
+            .WithDescription(sb.ToString())
+            .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)
+            .AddField(GetText(strs.won), $"{(long)result.Won}", true)
+            .WithAuthor(ctx.User);
+
+
+        await ctx.Channel.EmbedAsync(eb);
     }
 }

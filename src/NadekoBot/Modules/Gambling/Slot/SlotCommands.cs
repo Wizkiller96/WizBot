@@ -81,6 +81,11 @@ public partial class Gambling
             if (tests <= 0)
                 return;
             //multi vs how many times it occured
+            
+            int streak = 0;
+            int maxW = 0;
+            int maxL = 0;
+            
             var dict = new Dictionary<decimal, int>();
             for (var i = 0; i < tests; i++)
             {
@@ -90,16 +95,39 @@ public partial class Gambling
                     dict[multi] += 1;
                 else
                     dict.Add(multi, 1);
-            }
 
+                if (multi == 0)
+                {
+                    if (streak <= 0)
+                        --streak;
+                    else
+                        streak = -1;
+
+                    maxL = Math.Max(maxL, -streak);
+                }
+                else
+                {
+                    if (streak >= 0)
+                        ++streak;
+                    else
+                        streak = 1;
+
+                    maxW = Math.Max(maxW, streak);
+                }
+            }
+            
             var sb = new StringBuilder();
             decimal payout = 0;
             foreach (var key in dict.Keys.OrderByDescending(x => x))
             {
-                sb.AppendLine($"x{key} occured {dict[key]} times. {dict[key] * 1.0f / tests * 100}%");
+                sb.AppendLine($"x{key} occured `{dict[key]}` times. {dict[key] * 1.0f / tests * 100}%");
                 payout += key * dict[key];
             }
 
+            sb.AppendLine();
+            sb.AppendLine($"Longest win streak: `{maxW}`");
+            sb.AppendLine($"Longest lose streak: `{maxL}`");
+            
             await SendConfirmAsync("Slot Test Results",
                 sb.ToString(),
                 footer: $"Total Bet: {tests} | Payout: {payout:F0} | {payout * 1.0M / tests * 100}%");

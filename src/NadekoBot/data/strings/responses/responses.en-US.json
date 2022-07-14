@@ -238,6 +238,7 @@
   "slot_three": "Wow! Lucky! Three of a kind! x{0}",
   "slot_two": "Good job! Two {0} - bet x{1}",
   "won": "Won",
+  "multiplier": "Multiplier",
   "tails": "Tail",
   "take": "successfully took {0} from {1}",
   "take_fail": "was unable to take {0} from {1} because the user doesn't have that much {2}!",

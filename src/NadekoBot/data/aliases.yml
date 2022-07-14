@@ -371,9 +371,11 @@ take:
 betroll:
 - betroll
 - br
-wheeloffortune:
-- wheeloffortune
+luckyladder:
+- luckyladder
+- lula
 - wheel
+- wof
 leaderboard:
 - leaderboard
 - lb

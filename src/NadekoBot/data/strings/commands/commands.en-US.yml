@@ -703,8 +703,8 @@ betroll:
   desc: "Bets a certain amount of currency and rolls a dice. Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10."
   args:
     - "5"
-wheeloffortune:
-  desc: "Bets a certain amount of currency on the wheel of fortune. Wheel can stop on one of many different multipliers. Won amount is rounded down to the nearest whole number."
+luckyladder:
+  desc: "Bets a certain amount of currency on the lucky ladder. You can stop on one of many different multipliers. Won amount is rounded down to the nearest whole number."
   args:
     - "10"
 leaderboard:

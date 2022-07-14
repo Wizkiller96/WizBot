@@ -94,162 +94,6 @@ public partial class Games
 
             await ReplyErrorLocalizedAsync(strs.trivia_none);
         }
-        
-
-        private void RegisterEvents(TriviaGame trivia)
-        {
-            IEmbedBuilder? questionEmbed = null;
-            IUserMessage? questionMessage = null;
-            var showHowToQuit = false;
-
-            trivia.OnQuestion += async (_, question) =>
-            {
-                try
-                {
-                    questionEmbed = _eb.Create()
-                        .WithOkColor()
-                        .WithTitle(GetText(strs.trivia_game))
-                        .AddField(GetText(strs.category), question.Category)
-                        .AddField(GetText(strs.question), question.Question);
-                    
-                    showHowToQuit = !showHowToQuit;
-                    if (showHowToQuit)
-                        questionEmbed.WithFooter(GetText(strs.trivia_quit($"{prefix}tq")));
-
-                    if (Uri.IsWellFormedUriString(question.ImageUrl, UriKind.Absolute))
-                        questionEmbed.WithImageUrl(question.ImageUrl);
-
-                    questionMessage = await ctx.Channel.EmbedAsync(questionEmbed);
-                }
-                catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound
-                                                   or HttpStatusCode.Forbidden
-                                                   or HttpStatusCode.BadRequest)
-                {
-                    Log.Warning("Unable to send trivia questions. Stopping immediately");
-                    trivia.Stop();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning(ex, "Error sending trivia embed");
-                    await Task.Delay(2000);
-                }
-            };
-
-            trivia.OnHint += async (_, question) =>
-            {
-                try
-                {
-                    if (questionMessage is null)
-                    {
-                        trivia.Stop();
-                        return;
-                    }
-
-                    if (questionEmbed is not null)
-                        await questionMessage.ModifyAsync(m
-                            => m.Embed = questionEmbed.WithFooter(question.GetHint()).Build());
-                }
-                catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound
-                                                   or HttpStatusCode.Forbidden)
-                {
-                    Log.Warning("Unable to edit message to show hint. Stopping trivia");
-                    trivia.Stop();
-                }
-                catch (Exception ex) { Log.Warning(ex, "Error editing triva message"); }
-
-            };
-
-            trivia.OnGuess += async (_, user, question, isWin) =>
-            {
-                try
-                {
-                    var embed = _eb.Create()
-                        .WithOkColor()
-                        .WithTitle(GetText(strs.trivia_game))
-                        .WithDescription(GetText(strs.trivia_win(user.Name,
-                            Format.Bold(question.Answer))));
-
-                    if (Uri.IsWellFormedUriString(question.AnswerImageUrl, UriKind.Absolute))
-                        embed.WithImageUrl(question.AnswerImageUrl);
-
-
-                    if (isWin)
-                    {
-                        await ctx.Channel.EmbedAsync(embed);
-
-                        var reward = _gamesConfig.Data.Trivia.CurrencyReward;
-                        if (reward > 0)
-                            await _cs.AddAsync(user.Id, reward, new("trivia", "win"));
-                        
-                        return;
-                    }
-
-                    embed.WithDescription(GetText(strs.trivia_guess(user.Name,
-                        Format.Bold(question.Answer))));
-                    
-                    await ctx.Channel.EmbedAsync(embed);
-
-                }
-                catch
-                {
-                    // ignored
-                }
-            };
-
-            trivia.OnEnded += async (game) =>
-            {
-                try
-                {
-                    await ctx.Channel.EmbedAsync(_eb.Create(ctx)
-                        .WithOkColor()
-                        .WithAuthor(GetText(strs.trivia_ended))
-                        .WithTitle(GetText(strs.leaderboard))
-                        .WithDescription(GetLeaderboardString(game)));
-                }
-                catch
-                {
-                    // ignored
-                }
-                finally
-                {
-                    _service.RunningTrivias.TryRemove(ctx.Guild.Id, out _);
-                }
-
-            };
-
-            trivia.OnStats += async (game) =>
-            {
-                try
-                {
-                    await SendConfirmAsync(GetText(strs.leaderboard), GetLeaderboardString(game));
-                }
-                catch
-                {
-                    // ignored
-                }
-            };
-
-            trivia.OnTimeout += async (_, question) =>
-            {
-                try
-                {
-                    var embed = _eb.Create()
-                        .WithErrorColor()
-                        .WithTitle(GetText(strs.trivia_game))
-                        .WithDescription(GetText(strs.trivia_times_up(Format.Bold(question.Answer))));
-                    
-                    if (Uri.IsWellFormedUriString(question.AnswerImageUrl, UriKind.Absolute))
-                        embed.WithImageUrl(question.AnswerImageUrl);
-
-                    await ctx.Channel.EmbedAsync(embed);
-
-                }
-                catch
-                {
-                    // ignored
-                }
-            };
-        }
 
         private string GetLeaderboardString(TriviaGame tg)
         {
@@ -260,6 +104,176 @@ public partial class Games
 
             return sb.ToString();
 
+        }
+
+        private IEmbedBuilder? questionEmbed = null;
+        private IUserMessage? questionMessage = null;
+        private bool showHowToQuit = false;
+        
+        private void RegisterEvents(TriviaGame trivia)
+        {
+            trivia.OnQuestion += OnTriviaOnOnQuestion;
+            trivia.OnHint += OnTriviaOnOnHint;
+            trivia.OnGuess += OnTriviaOnOnGuess;
+            trivia.OnEnded += OnTriviaOnOnEnded;
+            trivia.OnStats += OnTriviaOnOnStats;
+            trivia.OnTimeout += OnTriviaOnOnTimeout;
+        }
+        
+        private void UnregisterEvents(TriviaGame trivia)
+        {
+            trivia.OnQuestion -= OnTriviaOnOnQuestion;
+            trivia.OnHint -= OnTriviaOnOnHint;
+            trivia.OnGuess -= OnTriviaOnOnGuess;
+            trivia.OnEnded -= OnTriviaOnOnEnded;
+            trivia.OnStats -= OnTriviaOnOnStats;
+            trivia.OnTimeout -= OnTriviaOnOnTimeout;
+        }
+
+        private async Task OnTriviaOnOnHint(TriviaGame game, TriviaQuestion question)
+        {
+            try
+            {
+                if (questionMessage is null)
+                {
+                    game.Stop();
+                    return;
+                }
+
+                if (questionEmbed is not null)
+                    await questionMessage.ModifyAsync(m => m.Embed = questionEmbed.WithFooter(question.GetHint()).Build());
+            }
+            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
+            {
+                Log.Warning("Unable to edit message to show hint. Stopping trivia");
+                game.Stop();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Error editing triva message");
+            }
+        }
+
+        private async Task OnTriviaOnOnQuestion(TriviaGame game, TriviaQuestion question)
+        {
+            try
+            {
+                questionEmbed = _eb.Create()
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.trivia_game))
+                    .AddField(GetText(strs.category), question.Category)
+                    .AddField(GetText(strs.question), question.Question);
+
+                showHowToQuit = !showHowToQuit;
+                if (showHowToQuit)
+                    questionEmbed.WithFooter(GetText(strs.trivia_quit($"{prefix}tq")));
+
+                if (Uri.IsWellFormedUriString(question.ImageUrl, UriKind.Absolute))
+                    questionEmbed.WithImageUrl(question.ImageUrl);
+
+                questionMessage = await ctx.Channel.EmbedAsync(questionEmbed);
+            }
+            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden or HttpStatusCode.BadRequest)
+            {
+                Log.Warning("Unable to send trivia questions. Stopping immediately");
+                game.Stop();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Error sending trivia embed");
+                await Task.Delay(2000);
+            }
+        }
+
+        private async Task OnTriviaOnOnTimeout(TriviaGame _, TriviaQuestion question)
+        {
+            try
+            {
+                var embed = _eb.Create()
+                    .WithErrorColor()
+                    .WithTitle(GetText(strs.trivia_game))
+                    .WithDescription(GetText(strs.trivia_times_up(Format.Bold(question.Answer))));
+
+                if (Uri.IsWellFormedUriString(question.AnswerImageUrl, UriKind.Absolute))
+                    embed.WithImageUrl(question.AnswerImageUrl);
+
+                await ctx.Channel.EmbedAsync(embed);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        private async Task OnTriviaOnOnStats(TriviaGame game)
+        {
+            try
+            {
+                await SendConfirmAsync(GetText(strs.leaderboard), GetLeaderboardString(game));
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        private async Task OnTriviaOnOnEnded(TriviaGame game)
+        {
+            try
+            {
+                await ctx.Channel.EmbedAsync(_eb.Create(ctx)
+                    .WithOkColor()
+                    .WithAuthor(GetText(strs.trivia_ended))
+                    .WithTitle(GetText(strs.leaderboard))
+                    .WithDescription(GetLeaderboardString(game)));
+            }
+            catch
+            {
+                // ignored
+            }
+            finally
+            {
+                _service.RunningTrivias.TryRemove(ctx.Guild.Id, out _);
+            }
+
+            UnregisterEvents(game);
+            await Task.Delay(1000);
+        }
+
+        private async Task OnTriviaOnOnGuess(TriviaGame _, TriviaUser user, TriviaQuestion question, bool isWin)
+        {
+            try
+            {
+                var embed = _eb.Create()
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.trivia_game))
+                    .WithDescription(GetText(strs.trivia_win(user.Name,
+                        Format.Bold(question.Answer))));
+
+                if (Uri.IsWellFormedUriString(question.AnswerImageUrl, UriKind.Absolute))
+                    embed.WithImageUrl(question.AnswerImageUrl);
+
+
+                if (isWin)
+                {
+                    await ctx.Channel.EmbedAsync(embed);
+
+                    var reward = _gamesConfig.Data.Trivia.CurrencyReward;
+                    if (reward > 0)
+                        await _cs.AddAsync(user.Id, reward, new("trivia", "win"));
+
+                    return;
+                }
+
+                embed.WithDescription(GetText(strs.trivia_guess(user.Name,
+                    Format.Bold(question.Answer))));
+
+                await ctx.Channel.EmbedAsync(embed);
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

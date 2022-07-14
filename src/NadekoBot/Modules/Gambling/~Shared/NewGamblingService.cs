@@ -19,7 +19,7 @@ public sealed class NewGamblingService : IGamblingService, INService
     
     // todo input checks
     // todo ladder of fortune
-    public async Task<OneOf<WofResult, GamblingError>> WofAsync(ulong userId, long amount)
+    public async Task<OneOf<LuLaResult, GamblingError>> WofAsync(ulong userId, long amount)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
@@ -34,7 +34,7 @@ public sealed class NewGamblingService : IGamblingService, INService
             }
         }
 
-        var game = new WofGame(_bcs.Data.WheelOfFortune.Multipliers);
+        var game = new LulaGame(_bcs.Data.LuckyLadder.Multipliers);
         var result = game.Spin(amount);
         
         var won = (long)result.Won;
