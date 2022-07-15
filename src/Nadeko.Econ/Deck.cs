@@ -1,7 +1,7 @@
 #nullable disable
 using Nadeko.Common;
 
-namespace NadekoBot.Modules.Gambling.Common;
+namespace Nadeko.Econ;
 
 public class Deck
 {
@@ -274,7 +274,7 @@ public class Deck
 
         public string GetValueText()
             => _cardNames[Number];
-
+        
         public override string ToString()
             => _cardNames[Number] + " Of " + Suit;
 

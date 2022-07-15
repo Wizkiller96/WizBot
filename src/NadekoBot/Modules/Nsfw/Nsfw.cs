@@ -108,7 +108,7 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
                 return t;
             });
 
-        await ReplyConfirmLocalizedAsync(strs.autohentai_started(interval, string.Join(", ", tags)));
+        await SendConfirmAsync($"Autohentai started. Interval: {interval}, Tags: {string.Join(", ", tags)}");
     }
 
     [Cmd]

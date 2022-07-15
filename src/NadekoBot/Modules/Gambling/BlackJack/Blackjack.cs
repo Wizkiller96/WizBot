@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using Nadeko.Econ;
+
 namespace NadekoBot.Modules.Gambling.Common.Blackjack;
 
 public class Blackjack

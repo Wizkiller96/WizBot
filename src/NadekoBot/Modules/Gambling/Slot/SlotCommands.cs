@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿#nullable disable warnings
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
@@ -73,184 +73,215 @@ public partial class Gambling
 
             await ctx.Channel.EmbedAsync(embed);
         }
-
-        [Cmd]
-        [OwnerOnly]
-        public async partial Task SlotTest(int tests = 1000)
+        public sealed class SlotInteraction : NInteraction
         {
-            if (tests <= 0)
-                return;
-            //multi vs how many times it occured
-            
-            int streak = 0;
-            int maxW = 0;
-            int maxL = 0;
-            
-            var dict = new Dictionary<decimal, int>();
-            for (var i = 0; i < tests; i++)
+            public SlotInteraction(DiscordSocketClient client, ulong userId, Func<SocketMessageComponent, Task> action) : base(client, userId, action)
             {
-                var res = await _service.SlotAsync(ctx.User.Id, 0);
-                var multi = res.AsT0.Multiplier;
-                if (dict.ContainsKey(multi))
-                    dict[multi] += 1;
-                else
-                    dict.Add(multi, 1);
-
-                if (multi == 0)
-                {
-                    if (streak <= 0)
-                        --streak;
-                    else
-                        streak = -1;
-
-                    maxL = Math.Max(maxL, -streak);
-                }
-                else
-                {
-                    if (streak >= 0)
-                        ++streak;
-                    else
-                        streak = 1;
-
-                    maxW = Math.Max(maxW, streak);
-                }
-            }
-            
-            var sb = new StringBuilder();
-            decimal payout = 0;
-            foreach (var key in dict.Keys.OrderByDescending(x => x))
-            {
-                sb.AppendLine($"x{key} occured `{dict[key]}` times. {dict[key] * 1.0f / tests * 100}%");
-                payout += key * dict[key];
             }
 
-            sb.AppendLine();
-            sb.AppendLine($"Longest win streak: `{maxW}`");
-            sb.AppendLine($"Longest lose streak: `{maxL}`");
-            
-            await SendConfirmAsync("Slot Test Results",
-                sb.ToString(),
-                footer: $"Total Bet: {tests} | Payout: {payout:F0} | {payout * 1.0M / tests * 100}%");
+            protected override NadekoInteractionData Data { get; } = new(Emoji.Parse("🔁"),
+                "slot:again",
+                "Pull Again");
         }
 
         [Cmd]
         public async partial Task Slot(ShmartNumber amount)
         {
+            if (!await CheckBetMandatory(amount))
+                return;
+
+            // var slotInteraction = CreateSlotInteractionIntenal(amount);
+
+            await ctx.Channel.TriggerTypingAsync();
+
             if (!_runningUsers.Add(ctx.User.Id))
                 return;
 
             try
             {
-                if (!await CheckBetMandatory(amount))
-                    return;
-
-                await ctx.Channel.TriggerTypingAsync();
-
-                var maybeResult = await _service.SlotAsync(ctx.User.Id, amount);
-
-                if (!maybeResult.TryPickT0(out var result, out var error))
+                if (await InternalSlotAsync(amount) is not SlotResult result)
                 {
-                    if (error == GamblingError.InsufficientFunds)
-                        await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-
+                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                     return;
                 }
 
-                lock (_slotStatsLock)
-                {
-                    totalBet += amount;
-                    totalPaidOut += result.Won;
-                }
+                var msg = GetSlotMessageInternal(result);
 
-                long ownedAmount;
-                await using (var uow = _db.GetDbContext())
-                {
-                    ownedAmount = uow.Set<DiscordUser>().FirstOrDefault(x => x.UserId == ctx.User.Id)?.CurrencyAmount
-                                  ?? 0;
-                }
+                using var image = await GenerateSlotImageAsync(amount, result);
+                await using var imgStream = await image.ToStreamAsync();
 
-                var slotBg = await _images.GetSlotBgAsync();
-                using (var bgImage = Image.Load<Rgba32>(slotBg, out _))
-                {
-                    var numbers = new int[3];
-                    result.Rolls.CopyTo(numbers, 0);
 
-                    Color fontColor = Config.Slots.CurrencyFontColor;
+                var eb = _eb.Create(ctx)
+                    .WithAuthor(ctx.User)
+                    .WithDescription(Format.Bold(msg))
+                    .WithImageUrl($"attachment://result.png")
+                    .WithOkColor();
+                
+                // var inter = slotInteraction.GetInteraction();
+                await ctx.Channel.SendFileAsync(imgStream,
+                    "result.png",
+                    embed: eb.Build()
+                    // components: inter.CreateComponent()
+                );
 
-                    bgImage.Mutate(x => x.DrawText(new()
-                        {
-                            TextOptions = new()
-                            {
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 140
-                            }
-                        },
-                        ((long)result.Won).ToString(),
-                        _fonts.DottyFont.CreateFont(65),
-                        fontColor,
-                        new(227, 92)));
-
-                    var bottomFont = _fonts.DottyFont.CreateFont(50);
-
-                    bgImage.Mutate(x => x.DrawText(new()
-                        {
-                            TextOptions = new()
-                            {
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 135
-                            }
-                        },
-                        amount.ToString(),
-                        bottomFont,
-                        fontColor,
-                        new(129, 472)));
-
-                    bgImage.Mutate(x => x.DrawText(new()
-                        {
-                            TextOptions = new()
-                            {
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                WrapTextWidth = 135
-                            }
-                        },
-                        ownedAmount.ToString(),
-                        bottomFont,
-                        fontColor,
-                        new(325, 472)));
-                    //sw.PrintLap("drew red text");
-
-                    for (var i = 0; i < 3; i++)
-                    {
-                        using var img = Image.Load(await _images.GetSlotEmojiAsync(numbers[i]));
-                        bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
-                    }
-
-                    var multi = result.Multiplier.ToString("0.##");
-                    var msg = result.WinType switch
-                    {
-                        SlotWinType.SingleJoker => GetText(strs.slot_single(CurrencySign, multi)),
-                        SlotWinType.DoubleJoker => GetText(strs.slot_two(CurrencySign, multi)),
-                        SlotWinType.TrippleNormal => GetText(strs.slot_three(multi)),
-                        SlotWinType.TrippleJoker => GetText(strs.slot_jackpot(multi)),
-                        _ => GetText(strs.better_luck),
-                    };
-
-                    await using (var imgStream = await bgImage.ToStreamAsync())
-                    {
-                        await ctx.Channel.SendFileAsync(imgStream,
-                            "result.png",
-                            Format.Bold(ctx.User.ToString()) + " " + msg);
-                    }
-                }
+                // await inter.RunAsync(resMsg);
             }
             finally
             {
                 await Task.Delay(1000);
                 _runningUsers.TryRemove(ctx.User.Id);
             }
+        }
+
+        // private SlotInteraction CreateSlotInteractionIntenal(long amount)
+        // {
+        //     return new SlotInteraction((DiscordSocketClient)ctx.Client,
+        //         ctx.User.Id,
+        //         async (smc) =>
+        //         {
+        //             try
+        //             {
+        //                 if (await InternalSlotAsync(amount) is not SlotResult result)
+        //                 {
+        //                     await smc.RespondErrorAsync(_eb, GetText(strs.not_enough(CurrencySign)), true);
+        //                     return;
+        //                 }
+        //
+        //                 var msg = GetSlotMessageInternal(result);
+        //
+        //                 using var image = await GenerateSlotImageAsync(amount, result);
+        //                 await using var imgStream = await image.ToStreamAsync();
+        //
+        //                 var guid = Guid.NewGuid();
+        //                 var imgName = $"result_{guid}.png";
+        //                 
+        //                 var slotInteraction = CreateSlotInteractionIntenal(amount).GetInteraction();
+        //                 
+        //                 await smc.Message.ModifyAsync(m =>
+        //                 {
+        //                     m.Content = msg;
+        //                     m.Attachments = new[]
+        //                     {
+        //                         new FileAttachment(imgStream, imgName)
+        //                     };
+        //                     m.Components = slotInteraction.CreateComponent();
+        //                 });
+        //                 
+        //                 _ = slotInteraction.RunAsync(smc.Message);
+        //             }
+        //             catch (Exception ex)
+        //             {
+        //                 Log.Error(ex, "Error pulling slot again");
+        //             }
+        //             // finally
+        //             // {
+        //             //     await Task.Delay(1000);
+        //             //     _runningUsers.TryRemove(ctx.User.Id);
+        //             // }
+        //         });
+        // }
+
+        private string GetSlotMessageInternal(SlotResult result)
+        {
+            var multi = result.Multiplier.ToString("0.##");
+            var msg = result.WinType switch
+            {
+                SlotWinType.SingleJoker => GetText(strs.slot_single(CurrencySign, multi)),
+                SlotWinType.DoubleJoker => GetText(strs.slot_two(CurrencySign, multi)),
+                SlotWinType.TrippleNormal => GetText(strs.slot_three(multi)),
+                SlotWinType.TrippleJoker => GetText(strs.slot_jackpot(multi)),
+                _ => GetText(strs.better_luck),
+            };
+            return msg;
+        }
+
+        private async Task<SlotResult?> InternalSlotAsync(long amount)
+        {
+            var maybeResult = await _service.SlotAsync(ctx.User.Id, amount);
+
+            if (!maybeResult.TryPickT0(out var result, out var error))
+            {
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                return null;
+            }
+            
+            lock (_slotStatsLock)
+            {
+                totalBet += amount;
+                totalPaidOut += result.Won;
+            }
+
+            return result;
+        }
+
+        private async Task<Image<Rgba32>> GenerateSlotImageAsync(long amount, SlotResult result)
+        {
+            long ownedAmount;
+            await using (var uow = _db.GetDbContext())
+            {
+                ownedAmount = uow.Set<DiscordUser>().FirstOrDefault(x => x.UserId == ctx.User.Id)?.CurrencyAmount
+                              ?? 0;
+            }
+
+            var slotBg = await _images.GetSlotBgAsync();
+            var bgImage = Image.Load<Rgba32>(slotBg, out _);
+            var numbers = new int[3];
+            result.Rolls.CopyTo(numbers, 0);
+
+            Color fontColor = Config.Slots.CurrencyFontColor;
+
+            bgImage.Mutate(x => x.DrawText(new()
+                {
+                    TextOptions = new()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        WrapTextWidth = 140
+                    }
+                },
+                ((long)result.Won).ToString(),
+                _fonts.DottyFont.CreateFont(65),
+                fontColor,
+                new(227, 92)));
+
+            var bottomFont = _fonts.DottyFont.CreateFont(50);
+
+            bgImage.Mutate(x => x.DrawText(new()
+                {
+                    TextOptions = new()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        WrapTextWidth = 135
+                    }
+                },
+                amount.ToString(),
+                bottomFont,
+                fontColor,
+                new(129, 472)));
+
+            bgImage.Mutate(x => x.DrawText(new()
+                {
+                    TextOptions = new()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        WrapTextWidth = 135
+                    }
+                },
+                ownedAmount.ToString(),
+                bottomFont,
+                fontColor,
+                new(325, 472)));
+            //sw.PrintLap("drew red text");
+
+            for (var i = 0; i < 3; i++)
+            {
+                using var img = Image.Load(await _images.GetSlotEmojiAsync(numbers[i]));
+                bgImage.Mutate(x => x.DrawImage(img, new Point(148 + (105 * i), 217), 1f));
+            }
+
+            return bgImage;
         }
     }
 }

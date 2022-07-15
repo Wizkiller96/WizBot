@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Nadeko.Econ.Gambling;
+using Nadeko.Econ.Gambling.Betdraw;
 using Nadeko.Econ.Gambling.Rps;
 using NadekoBot.Modules.Gambling.Services;
 using OneOf;
@@ -17,9 +18,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         _cs = cs;
     }
     
-    // todo input checks
-    // todo ladder of fortune
-    public async Task<OneOf<LuLaResult, GamblingError>> WofAsync(ulong userId, long amount)
+    public async Task<OneOf<LuLaResult, GamblingError>> LulaAsync(ulong userId, long amount)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
@@ -64,9 +63,9 @@ public sealed class NewGamblingService : IGamblingService, INService
         var game = new BetrollGame(_bcs.Data.BetRoll.Pairs
             .Select(x => (x.WhenAbove, (decimal)x.MultiplyBy))
             .ToList());
-        
+
         var result = game.Roll(amount);
-        
+
         var won = (long)result.Won;
         if (won > 0)
         {
@@ -81,6 +80,9 @@ public sealed class NewGamblingService : IGamblingService, INService
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
 
+        if (guess > 1)
+            throw new ArgumentOutOfRangeException(nameof(guess));
+
         if (amount > 0)
         {
             var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
@@ -93,6 +95,42 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         var game = new BetflipGame(_bcs.Data.BetFlip.Multiplier);
         var result = game.Flip(guess, amount);
+        
+        var won = (long)result.Won;
+        if (won > 0)
+        {
+            await _cs.AddAsync(userId, won, new("betflip", "win"));
+        }
+        
+        return result;
+    }
+    
+    public async Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(ulong userId, long amount, byte? guessValue, byte? guessColor)
+    {
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+
+        if (guessColor is null && guessValue is null)
+            throw new ArgumentNullException();
+
+        if (guessColor > 1)
+            throw new ArgumentOutOfRangeException(nameof(guessColor));
+        
+        if (guessValue > 1)
+            throw new ArgumentOutOfRangeException(nameof(guessValue));
+
+        if (amount > 0)
+        {
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
+
+            if (!isTakeSuccess)
+            {
+                return GamblingError.InsufficientFunds;
+            }
+        }
+
+        var game = new BetdrawGame();
+        var result = game.Draw((BetdrawValueGuess?)guessValue, (BetdrawColorGuess?)guessColor, amount);
         
         var won = (long)result.Won;
         if (won > 0)
@@ -132,6 +170,9 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public Task<FlipResult[]> FlipAsync(int count)
     {
+        if (count < 1)
+            throw new ArgumentOutOfRangeException(nameof(count));
+        
         var game = new BetflipGame(0);
 
         var results = new FlipResult[count];

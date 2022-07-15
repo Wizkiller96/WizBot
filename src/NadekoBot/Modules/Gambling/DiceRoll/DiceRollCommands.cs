@@ -30,14 +30,23 @@ public partial class Gambling
 
             var num1 = gen / 10;
             var num2 = gen % 10;
-
+            
             using var img1 = await GetDiceAsync(num1);
             using var img2 = await GetDiceAsync(num2);
             using var img = new[] { img1, img2 }.Merge(out var format);
             await using var ms = await img.ToStreamAsync(format);
+
+            var fileName = $"dice.{format.FileExtensions.First()}";
+
+            var eb = _eb.Create(ctx)
+                .WithOkColor()
+                .WithAuthor(ctx.User)
+                .AddField(GetText(strs.roll2), gen)
+                .WithImageUrl($"attachment://{fileName}");
+
             await ctx.Channel.SendFileAsync(ms,
-                $"dice.{format.FileExtensions.First()}",
-                Format.Bold(ctx.User.ToString()) + " " + GetText(strs.dice_rolled(Format.Code(gen.ToString()))));
+                fileName,
+                embed: eb.Build());
         }
 
         [Cmd]
@@ -105,14 +114,18 @@ public partial class Gambling
             foreach (var d in dice)
                 d.Dispose();
 
+            var imageName = $"dice.{format.FileExtensions.First()}";
+            var eb = _eb.Create(ctx)
+                .WithOkColor()
+                .WithAuthor(ctx.User)
+                .AddField(GetText(strs.rolls), values.Select(x => Format.Code(x.ToString())).Join(' '), true)
+                .AddField(GetText(strs.total), values.Sum(), true)
+                .WithDescription(GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString()))))
+                .WithImageUrl($"attachment://{imageName}");
+
             await ctx.Channel.SendFileAsync(ms,
-                $"dice.{format.FileExtensions.First()}",
-                Format.Bold(ctx.User.ToString())
-                + " "
-                + GetText(strs.dice_rolled_num(Format.Bold(values.Count.ToString())))
-                + " "
-                + GetText(strs.total_average(Format.Bold(values.Sum().ToString()),
-                    Format.Bold((values.Sum() / (1.0f * values.Count)).ToString("N2")))));
+                imageName,
+                embed: eb.Build());
         }
 
         private async Task InternallDndRoll(string arg, bool ordered)
@@ -130,9 +143,8 @@ public partial class Gambling
                     rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
                 var embed = _eb.Create()
                                .WithOkColor()
-                               .WithDescription(ctx.User.Mention
-                                                + " "
-                                                + GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
+                               .WithAuthor(ctx.User)
+                               .WithDescription(GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
                                .AddField(Format.Bold("Result"),
                                    string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
 
@@ -160,10 +172,9 @@ public partial class Gambling
                     var sum = arr.Sum();
                     var embed = _eb.Create()
                                    .WithOkColor()
-                                   .WithDescription(ctx.User.Mention
-                                                    + " "
-                                                    + GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
-                                   .AddField(Format.Bold("Rolls"),
+                                   .WithAuthor(ctx.User)
+                                   .WithDescription(GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
+                                   .AddField(Format.Bold(GetText(strs.rolls)),
                                        string.Join(" ",
                                            (ordered ? arr.OrderBy(x => x).AsEnumerable() : arr).Select(x
                                                => Format.Code(x.ToString()))))

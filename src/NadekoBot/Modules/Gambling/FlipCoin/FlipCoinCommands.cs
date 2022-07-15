@@ -76,17 +76,23 @@ public partial class Gambling
             foreach (var i in imgs)
                 i.Dispose();
 
+            var imgName = $"coins.{format.FileExtensions.First()}";
+            
             var msg = count != 1
-                ? Format.Bold(ctx.User.ToString())
-                  + " "
-                  + GetText(strs.flip_results(count, headCount, tailCount))
-                : Format.Bold(ctx.User.ToString())
-                  + " "
-                  + GetText(strs.flipped(headCount > 0
-                      ? Format.Bold(GetText(strs.heads))
-                      : Format.Bold(GetText(strs.tails))));
+                ? Format.Bold(GetText(strs.flip_results(count, headCount, tailCount)))
+                : GetText(strs.flipped(headCount > 0
+                    ? Format.Bold(GetText(strs.heads))
+                    : Format.Bold(GetText(strs.tails))));
+            
+            var eb = _eb.Create(ctx)
+                .WithOkColor()
+                .WithAuthor(ctx.User)
+                .WithDescription(msg)
+                .WithImageUrl($"attachment://{imgName}");
 
-            await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
+            await ctx.Channel.SendFileAsync(stream,
+                imgName,
+                embed: eb.Build());
         }
 
         [Cmd]

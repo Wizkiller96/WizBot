@@ -1,5 +1,7 @@
 ﻿#nullable disable
+using Nadeko.Econ;
 using NadekoBot.Modules.Gambling.Common;
+using NadekoBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -9,23 +11,23 @@ namespace NadekoBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class DrawCommands : NadekoModule
+    public partial class DrawCommands : GamblingSubmodule<IGamblingService>
     {
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;
 
-        public DrawCommands(IImageCache images)
+        public DrawCommands(IImageCache images, GamblingConfigService gcs) : base(gcs)
             => _images = images;
 
-        private async Task<(Stream ImageStream, string ToSend)> InternalDraw(int num, ulong? guildId = null)
+        private async Task InternalDraw(int count, ulong? guildId = null)
         {
-            if (num is < 1 or > 10)
-                throw new ArgumentOutOfRangeException(nameof(num));
+            if (count is < 1 or > 10)
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             var cards = guildId is null ? new() : _allDecks.GetOrAdd(ctx.Guild, _ => new());
             var images = new List<Image<Rgba32>>();
             var cardObjects = new List<Deck.Card>();
-            for (var i = 0; i < num; i++)
+            for (var i = 0; i < count; i++)
             {
                 if (cards.CardPool.Count == 0 && i != 0)
                 {
@@ -43,22 +45,43 @@ public partial class Gambling
 
                 var currentCard = cards.Draw();
                 cardObjects.Add(currentCard);
-                var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
-                images.Add(Image.Load(await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg")));
+                var image = await GetCardImageAsync(currentCard);
+                images.Add(image);
             }
 
+            var imgName = "cards.jpg";
             using var img = images.Merge();
             foreach (var i in images)
                 i.Dispose();
 
-            var toSend = $"{Format.Bold(ctx.User.ToString())}";
+            var eb = _eb.Create(ctx)
+                .WithOkColor();
+            
+            var toSend = string.Empty;
             if (cardObjects.Count == 5)
-                toSend += $" drew `{Deck.GetHandValue(cardObjects)}`";
+                eb.AddField(GetText(strs.hand_value), Deck.GetHandValue(cardObjects), true);
 
             if (guildId is not null)
-                toSend += "\n" + GetText(strs.cards_left(Format.Bold(cards.CardPool.Count.ToString())));
+                toSend += GetText(strs.cards_left(Format.Bold(cards.CardPool.Count.ToString())));
 
-            return (img.ToStream(), toSend);
+            eb.WithDescription(toSend)
+              .WithAuthor(ctx.User)
+              .WithImageUrl($"attachment://{imgName}");
+
+            if (count > 1)
+                eb.AddField(GetText(strs.cards), count.ToString(), true);
+                
+            await using var imageStream = await img.ToStreamAsync();
+            await ctx.Channel.SendFileAsync(imageStream,
+                imgName,
+                embed: eb.Build());
+        }
+
+        private async Task<Image<Rgba32>> GetCardImageAsync(Deck.Card currentCard)
+        {
+            var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
+            var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
+            return Image.Load(cardBytes);
         }
 
         [Cmd]
@@ -66,30 +89,24 @@ public partial class Gambling
         public async partial Task Draw(int num = 1)
         {
             if (num < 1)
-                num = 1;
+                return;
+            
             if (num > 10)
                 num = 10;
 
-            var (imageStream, toSend) = await InternalDraw(num, ctx.Guild.Id);
-            await using (imageStream)
-            {
-                await ctx.Channel.SendFileAsync(imageStream, num + " cards.jpg", toSend);
-            }
+            await InternalDraw(num, ctx.Guild.Id);
         }
 
         [Cmd]
         public async partial Task DrawNew(int num = 1)
         {
             if (num < 1)
-                num = 1;
+                return;
+            
             if (num > 10)
                 num = 10;
 
-            var (imageStream, toSend) = await InternalDraw(num);
-            await using (imageStream)
-            {
-                await ctx.Channel.SendFileAsync(imageStream, num + " cards.jpg", toSend);
-            }
+            await InternalDraw(num);
         }
 
         [Cmd]
@@ -107,6 +124,99 @@ public partial class Gambling
                 });
 
             await ReplyConfirmLocalizedAsync(strs.deck_reshuffled);
+        }
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public partial Task BetDraw(ShmartNumber amount, InputValueGuess val, InputColorGuess? col = null)
+            => BetDrawInternal(amount, val, col);
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public partial Task BetDraw(ShmartNumber amount, InputColorGuess col, InputValueGuess? val = null)
+            => BetDrawInternal(amount, val, col);
+        
+        public async Task BetDrawInternal(long amount, InputValueGuess? val, InputColorGuess? col)
+        {
+            var res = await _service.BetDrawAsync(ctx.User.Id,
+                amount,
+                (byte?)val,
+                (byte?)col);
+
+            if (!res.TryPickT0(out var result, out _))
+            {
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                return;
+            }
+
+            var eb = _eb.Create(ctx)
+                .WithOkColor()
+                .WithAuthor(ctx.User)
+                .AddField(GetText(strs.guess), GetGuessInfo(val, col), true)
+                .AddField(GetText(strs.card), GetCardInfo(result.Card), true)
+                .AddField(GetText(strs.won), N((long)result.Won), false)
+                .WithImageUrl("attachment://card.png");
+
+            using var img = await GetCardImageAsync(result.Card);
+            await using var imgStream = await img.ToStreamAsync();
+            await ctx.Channel.SendFileAsync(imgStream, "card.png", embed: eb.Build());
+        }
+
+        private string GetGuessInfo(InputValueGuess? valG, InputColorGuess? colG)
+        {
+            var val = valG switch
+            {
+                InputValueGuess.H => "Hi ⬆️",
+                InputValueGuess.L => "Lo ⬇️",
+                _ => "❓"
+            };
+
+            var col = colG switch
+            {
+                InputColorGuess.Red => "R 🔴",
+                InputColorGuess.Black => "B ⚫",
+                _ => "❓"
+            };
+            
+            return $"{val} / {col}";
+        }
+        private string GetCardInfo(Deck.Card card)
+        {
+            var val = card.Number switch
+            {
+                < 7 => "Lo ⬇️",
+                > 7 => "Hi ⬆️",
+                _ => "7 💀"
+            };
+
+            var col = card.Number == 7
+                ? "7 💀"
+                : card.Suit switch
+                {
+                    Deck.CardSuit.Diamonds or Deck.CardSuit.Hearts => "R 🔴",
+                    _ => "B ⚫"
+                };
+            
+            return $"{val} / {col}";
+        }
+
+        public enum InputValueGuess
+        {
+            High = 0,
+            H = 0,
+            Hi = 0,
+            Low = 1,
+            L = 1,
+            Lo = 1,
+        }
+
+        public enum InputColorGuess
+        {
+            R = 0,
+            Red = 0,
+            B = 1,
+            Bl = 1,
+            Black = 1,
         }
     }
 }

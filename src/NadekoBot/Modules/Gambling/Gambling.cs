@@ -345,7 +345,8 @@ public partial class Gambling : GamblingModule<GamblingService>
             ("award", var name, ulong userId) => GetText(strs.curtr_award(name, userId)),
             ("take", var name, ulong userId) => GetText(strs.curtr_take(name, userId)),
             ("blackjack", _, _) => $"Blackjack - {subType}",
-            ("wheel", _, _) => $"Wheel Of Fortune - {subType}",
+            ("wheel", _, _) => $"Lucky Ladder - {subType}",
+            ("lula", _, _) => $"Lucky Ladder - {subType}",
             ("rps", _, _) => $"Rock Paper Scissors - {subType}",
             (null, _, _) => null,
             (_, null, _) => null,
@@ -671,7 +672,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var eb = _eb.Create(ctx)
             .WithAuthor(ctx.User)
-            .WithFooter(str)
+            .WithDescription(Format.Bold(str))
             .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
             .WithOkColor();
 
@@ -772,7 +773,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         Scissors = 2
     }
     
-    // todo check if trivia is being disposed
     [Cmd]
     public async partial Task Rps(InputRpsPick pick, ShmartNumber amount = default)
     {
@@ -839,7 +839,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (!await CheckBetMandatory(amount))
             return;
 
-        var res = await _gs.WofAsync(ctx.User.Id, amount);
+        var res = await _gs.LulaAsync(ctx.User.Id, amount);
         if (!res.TryPickT0(out var result, out _))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
@@ -871,4 +871,99 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await ctx.Channel.EmbedAsync(eb);
     }
+    
+
+        public enum GambleTestTarget
+        {
+            Slot,
+            BetDraw,
+            BetDrawHL,
+            BetDrawRB,
+            Betflip,
+            BetflipT,
+            Lula,
+            Rps,
+        }
+
+        [Cmd]
+        [OwnerOnly]
+        public async partial Task BetTest()
+        {
+            await SendConfirmAsync(GetText(strs.available_tests),
+                Enum.GetValues<GambleTestTarget>()
+                    .Select(x => $"`{x}`")
+                    .Join(", "));
+        }
+
+        [Cmd]
+        [OwnerOnly]
+        public async partial Task BetTest(GambleTestTarget target, int tests = 1000)
+        {
+            if (tests <= 0)
+                return;
+            
+            await ctx.Channel.TriggerTypingAsync();
+            
+            var streak = 0;
+            var maxW = 0;
+            var maxL = 0;
+            
+            var dict = new Dictionary<decimal, int>();
+            for (var i = 0; i < tests; i++)
+            {
+                var multi = target switch
+                {
+                    GambleTestTarget.BetDraw => (await _gs.BetDrawAsync(ctx.User.Id, 0, 1, 0)).AsT0.Multiplier,
+                    GambleTestTarget.BetDrawRB => (await _gs.BetDrawAsync(ctx.User.Id, 0, null, 1)).AsT0.Multiplier,
+                    GambleTestTarget.BetDrawHL => (await _gs.BetDrawAsync(ctx.User.Id, 0, 0, null)).AsT0.Multiplier,
+                    GambleTestTarget.Slot => (await _gs.SlotAsync(ctx.User.Id, 0)).AsT0.Multiplier,
+                    GambleTestTarget.Betflip => (await _gs.BetFlipAsync(ctx.User.Id, 0, 0)).AsT0.Multiplier,
+                    GambleTestTarget.BetflipT => (await _gs.BetFlipAsync(ctx.User.Id, 0, 1)).AsT0.Multiplier,
+                    GambleTestTarget.Lula => (await _gs.LulaAsync(ctx.User.Id, 0)).AsT0.Multiplier,
+                    GambleTestTarget.Rps => (await _gs.RpsAsync(ctx.User.Id, 0, (byte)(i % 3))).AsT0.Multiplier,
+                    _ => throw new ArgumentOutOfRangeException(nameof(target))
+                };
+                
+                if (dict.ContainsKey(multi))
+                    dict[multi] += 1;
+                else
+                    dict.Add(multi, 1);
+
+                if (multi < 1)
+                {
+                    if (streak <= 0)
+                        --streak;
+                    else
+                        streak = -1;
+
+                    maxL = Math.Max(maxL, -streak);
+                }
+                else if (multi > 1)
+                {
+                    if (streak >= 0)
+                        ++streak;
+                    else
+                        streak = 1;
+
+                    maxW = Math.Max(maxW, streak);
+                }
+            }
+            
+            var sb = new StringBuilder();
+            decimal payout = 0;
+            foreach (var key in dict.Keys.OrderByDescending(x => x))
+            {
+                sb.AppendLine($"x**{key}** occured `{dict[key]}` times. {dict[key] * 1.0f / tests * 100}%");
+                payout += key * dict[key];
+            }
+
+            sb.AppendLine();
+            sb.AppendLine($"Longest win streak: `{maxW}`");
+            sb.AppendLine($"Longest lose streak: `{maxL}`");
+            
+            await SendConfirmAsync(GetText(strs.test_results_for(target)),
+                sb.ToString(),
+                footer: $"Total Bet: {tests} | Payout: {payout:F0} | {payout * 1.0M / tests * 100}%");
+        }
+
 }

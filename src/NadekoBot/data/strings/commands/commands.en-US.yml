@@ -653,7 +653,7 @@ rolluo:
     - "7"
     - "3d5"
 nroll:
-  desc: "Rolls in a given range. If you specify just one number instead of the range, it will role from 0 to that number."
+  desc: "Rolls in a given range. If you specify just one number instead of the range, it will roll from 0 to that number."
   args:
     - "5"
     - "5-15"
@@ -2232,3 +2232,22 @@ eval:
     - "123 / 4.5f"
     - "await ctx.OkAsync();"
     - 'await ctx.SendConfirmAsync("uwu");'
+betdraw:
+  desc: |-
+    Bet on the card value and/or color. Specify the amount followed by your guess. 
+    You can specify `r` or `b` for red or black, and `h` or `l` for high or low.
+    You can specify only h/l or only r/b or both.
+    Returns are high but **7 always loses**.
+  args:
+    - "50 r"
+    - "200 b l"
+    - "1000 h"
+    - "38 hi black"
+bettest:
+  desc: |-
+    Tests a betting command by specifying the name followed by the number of tests. Some have multiple variations.
+    See the list of all tests by specifying no parameters.
+  args:
+    - ""
+    - "betflip 1000"
+    - "slot 2000"
