@@ -25,7 +25,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         
         if (amount > 0)
         {
-            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("wof", "bet"));
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("lula", "bet"));
 
             if (!isTakeSuccess)
             {
@@ -39,7 +39,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         var won = (long)result.Won;
         if (won > 0)
         {
-            await _cs.AddAsync(userId, won, new("wof", "win"));
+            await _cs.AddAsync(userId, won, new("lula", "win"));
         }
 
         return result;
@@ -121,7 +121,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         if (amount > 0)
         {
-            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betflip", "bet"));
+            var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("betdraw", "bet"));
 
             if (!isTakeSuccess)
             {
@@ -135,7 +135,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         var won = (long)result.Won;
         if (won > 0)
         {
-            await _cs.AddAsync(userId, won, new("betflip", "win"));
+            await _cs.AddAsync(userId, won, new("betdraw", "win"));
         }
         
         return result;
@@ -187,7 +187,6 @@ public sealed class NewGamblingService : IGamblingService, INService
         return Task.FromResult(results);
     }
     
-    // // todo deck draw black/white?
     //
     //
     // private readonly ConcurrentDictionary<ulong, Deck> _decks = new ConcurrentDictionary<ulong, Deck>();
@@ -226,7 +225,6 @@ public sealed class NewGamblingService : IGamblingService, INService
     //      list.Add(card);
     //  }
     //
-    //  // todo 3.2 should replace all "placeholder" words in command strings with a link to the placeholder list explanation
     //  var cards = list
     //      .Select(x => new Card
     //      {
