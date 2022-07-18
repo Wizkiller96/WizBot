@@ -1,4 +1,4 @@
-#nullable disable
+#nullable disable warnings
 using WizBot.Common.Yml;
 using WizBot.Db;
 using WizBot.Services.Database.Models;
@@ -134,29 +134,39 @@ public partial class Utility
                                                .WithFooter(
                                                    GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})"))));
 
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        public async partial Task QuoteSearch(string keyword, [Leftover] string text)
+        private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
         {
-            if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(textOrAuthor))
                 return;
 
-            keyword = keyword.ToUpperInvariant();
+            keyword = keyword?.ToUpperInvariant();
 
-            Quote keywordquote;
+            Quote quote;
             await using (var uow = _db.GetDbContext())
             {
-                keywordquote = await uow.Quotes.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, text);
+                quote = await uow.Quotes.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
             }
 
-            if (keywordquote is null)
+            if (quote is null)
                 return;
 
-            await ctx.Channel.SendMessageAsync($"`#{keywordquote.Id}` 💬 "
-                                               + keyword.ToLowerInvariant()
+            await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 💬 "
+                                               + quote.Keyword.ToLowerInvariant()
                                                + ":  "
-                                               + keywordquote.Text.SanitizeAllMentions());
+                                               + quote.Text.SanitizeAllMentions());
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [Priority(0)]
+        public partial Task QuoteSearch(string textOrAuthor)
+            => QuoteSearchinternalAsync(null, textOrAuthor);
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [Priority(1)]
+        public partial Task QuoteSearch(string keyword, [Leftover] string textOrAuthor)
+            => QuoteSearchinternalAsync(keyword, textOrAuthor);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
