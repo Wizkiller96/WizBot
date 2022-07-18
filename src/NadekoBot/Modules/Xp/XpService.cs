@@ -1,4 +1,3 @@
-#nullable disable warnings
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
@@ -342,7 +341,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             }
             else // channel
             {
-                await ch.SendConfirmAsync(_eb,
+                await ch?.SendConfirmAsync(_eb,
                     _strings.GetText(strs.level_up_channel(user.Mention,
                             Format.Bold(newLevel.ToString())),
                         guild.Id));
@@ -494,7 +493,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 Level = level,
                 RoleId = roleId,
-                Remove = remove
+                Remove = remove,
             });
         }
 
@@ -654,6 +653,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 Guild = channel.Guild,
                 User = user,
                 XpAmount = actualXp,
+                Channel = channel
             });
         }
     }
@@ -862,7 +862,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats)
         => Task.Run(async () =>
         {
-            using var img = Image.Load<Rgba32>(await GetXpBackgroundAsync(stats.User.UserId), out var imageFormat);
+            var bgBytes = await GetXpBackgroundAsync(stats.User.UserId);
+
+            if (bgBytes is null)
+            {
+                Log.Warning("Xp background image could not be loaded");
+                throw new ArgumentNullException(nameof(bgBytes));
+            }
+
+            using var img = Image.Load<Rgba32>(bgBytes, out var imageFormat);
             if (template.User.Name.Show)
             {
                 var fontSize = (int)(template.User.Name.FontSize * 0.9);
@@ -1113,7 +1121,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             return output;
         });
 
-    private async Task<byte[]> GetXpBackgroundAsync(ulong userId)
+    private async Task<byte[]?> GetXpBackgroundAsync(ulong _)
     {
         var img = await _images.GetXpBackgroundImageAsync();
         return img;
@@ -1123,7 +1131,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private async Task DrawFrame(Image<Rgba32> img, ulong userId)
     {
         var patron = await _ps.GetPatronAsync(userId);
-        Image frame = null;
+        Image? frame = null;
         if (patron.Tier == PatronTier.V)
             frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
         else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
