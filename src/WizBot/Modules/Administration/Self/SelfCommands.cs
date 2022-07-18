@@ -335,7 +335,8 @@ public partial class Administration
         {
             try
             {
-                await _client.SetStatusAsync(UserStatus.DoNotDisturb);
+                await _client.SetStatusAsync(UserStatus.Invisible);
+                _ =  _client.StopAsync();
                 await ReplyConfirmLocalizedAsync(strs.shutting_down);
             }
             catch
