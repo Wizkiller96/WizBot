@@ -13,7 +13,6 @@ public class CurrencyEventsService : INService
 
     private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events = new();
 
-// todo fix xp freeze
     public CurrencyEventsService(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService configService)
     {
         _client = client;
