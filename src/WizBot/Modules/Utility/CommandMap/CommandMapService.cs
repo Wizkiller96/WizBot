@@ -45,7 +45,7 @@ public class CommandMapService : IInputTransformer, INService
         uow.SaveChanges();
         return count;
     }
-    
+
     public async Task<string> TransformInput(
         IGuild guild,
         IMessageChannel channel,
@@ -57,45 +57,41 @@ public class CommandMapService : IInputTransformer, INService
         
         if (AliasMaps.TryGetValue(guild.Id, out var maps))
         {
-            string word;
-            var index = input.IndexOf(' ', StringComparison.InvariantCulture);
-            if (index == -1)
+            string newInput = null;
+            foreach (var (k, v) in maps)
             {
-                word = input;
-            }
-            else
-            {
-                word = input[..index];
-            }
-
-            string newInput;
-            if (maps.TryGetValue(word, out var alias))
-            {
-                if (index == -1)
-                    newInput = alias;
-                else
-                    newInput = alias + ' ' + input[index..];
-            }
-            else
-            {
-                return null;
-            }
-            
-            try
-            {
-                var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
-                _ = Task.Run(async () =>
+                if (string.Equals(input, k, StringComparison.OrdinalIgnoreCase))
                 {
-                    await Task.Delay(1500);
-                    await toDelete.DeleteAsync(new()
-                    {
-                        RetryMode = RetryMode.AlwaysRetry
-                    });
-                });
-            }
-            catch { }
+                    newInput = v;
+                }
+                else if (input.StartsWith(k + ' ', StringComparison.OrdinalIgnoreCase))
+                {
+                    newInput = v + ' ' + input[k.Length..];
+                }
 
-            return newInput;
+                if (newInput is not null)
+                {
+                    try
+                    {
+                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
+                        _ = Task.Run(async () =>
+                        {
+                            await Task.Delay(1500);
+                            await toDelete.DeleteAsync(new()
+                            {
+                                RetryMode = RetryMode.AlwaysRetry
+                            });
+                        });
+                    }
+                    catch
+                    {
+                    }
+
+                    return newInput;
+                }
+            }
+
+            return null;
 
             // var keys = maps.Keys.OrderByDescending(x => x.Length);
             // foreach (var k in keys)
