@@ -1,4 +1,4 @@
-#nullable disable
+#nullable disable warnings
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
@@ -169,53 +169,55 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 else
                     ci.XpAmount += item.XpAmount;
             }
-            
-            await using var ctx = _db.GetDbContext();
-            await using var tran = await ctx.Database.BeginTransactionAsync();
-            
-            // update global user xp in batches
-            // group by xp amount and update the same amounts at the same time
+
             var dus = new List<DiscordUser>(globalToAdd.Count);
-            foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
-            {
-                var items = await ctx.DiscordUser
-                    .Where(x => group.Contains(x.UserId))
-                    .UpdateWithOutputAsync(old => new()
-                        {
-                            TotalXp = old.TotalXp + group.Key
-                        },
-                        (_, n) => n);
-            
-                dus.AddRange(items);
-            }
-            
-            // update guild user xp in batches
             var gxps = new List<UserXpStats>(globalToAdd.Count);
-            foreach (var (guildId, toAdd) in guildToAdd)
+            await using (var ctx = _db.GetDbContext())
             {
-                foreach (var group in toAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
+                await using var tran = await ctx.Database.BeginTransactionAsync();
+
+                // update global user xp in batches
+                // group by xp amount and update the same amounts at the same time
+                foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
                 {
-                    var items = await ctx
-                        .UserXpStats
-                        .Where(x => x.GuildId == guildId)
+                    var items = await ctx.DiscordUser
                         .Where(x => group.Contains(x.UserId))
                         .UpdateWithOutputAsync(old => new()
                             {
-                                Xp = old.Xp + group.Key
+                                TotalXp = old.TotalXp + group.Key
                             },
                             (_, n) => n);
 
-                    gxps.AddRange(items);
+                    dus.AddRange(items);
                 }
+
+                // update guild user xp in batches
+                foreach (var (guildId, toAdd) in guildToAdd)
+                {
+                    foreach (var group in toAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
+                    {
+                        var items = await ctx
+                            .UserXpStats
+                            .Where(x => x.GuildId == guildId)
+                            .Where(x => group.Contains(x.UserId))
+                            .UpdateWithOutputAsync(old => new()
+                                {
+                                    Xp = old.Xp + group.Key
+                                },
+                                (_, n) => n);
+
+                        gxps.AddRange(items);
+                    }
+                }
+
+                await tran.CommitAsync();
             }
-            
-            await tran.CommitAsync();
-            
+
             foreach (var du in dus)
             {
                 var oldLevel = new LevelStats(du.TotalXp - globalToAdd[du.UserId].XpAmount);
                 var newLevel = new LevelStats(du.TotalXp);
-            
+
                 if (oldLevel.Level != newLevel.Level)
                 {
                     var item = globalToAdd[du.UserId];
@@ -278,10 +280,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     private async Task HandleRewardsInternalAsync(ulong guildId, ulong userId, long oldLevel, long newLevel)
     {
-        await using var ctx = _db.GetDbContext();
-            var rrews = ctx.XpSettingsFor(guildId).RoleRewards.ToList();
-            var crews = ctx.XpSettingsFor(guildId).CurrencyRewards.ToList();
-        
+        List<XpRoleReward> rrews;
+        List<XpCurrencyReward> crews;
+        await using (var ctx = _db.GetDbContext())
+        {
+            rrews = ctx.XpSettingsFor(guildId).RoleRewards.ToList();
+            crews = ctx.XpSettingsFor(guildId).CurrencyRewards.ToList();
+        }
+
         //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
         for (var i = oldLevel + 1; i <= newLevel; i++)
         {
@@ -320,12 +326,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         if (notifyLoc == XpNotificationLocation.None)
             return;
-
+            
         var guild = _client.GetGuild(guildId);
         var user = guild?.GetUser(userId);
         var ch = guild?.GetTextChannel(channelId);
 
-        if (user is null || guild is null)
+        if (guild is null || user is null)
             return;
 
         if (isServer)
@@ -568,8 +574,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 await ScanChannelForVoiceXp(before.VoiceChannel);
 
             if (after.VoiceChannel is not null && after.VoiceChannel != before.VoiceChannel)
+            {
                 await ScanChannelForVoiceXp(after.VoiceChannel);
-            else if (after.VoiceChannel is null)
+            }
+            else if (after.VoiceChannel is null && before.VoiceChannel is not null)
             {
                 // In this case, the user left the channel and the previous for loops didn't catch
                 // it because it wasn't in any new channel. So we need to get rid of it.
