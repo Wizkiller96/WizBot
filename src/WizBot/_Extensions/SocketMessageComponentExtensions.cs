@@ -58,8 +58,9 @@ public static class SocketMessageComponentExtensions
         bool ephemeral = false)
         => smc.RespondAsync(plainText,
             embed: embed?.Build(),
-            embeds: embeds?.Map(x => x.Build()));
-    
+            embeds: embeds?.Map(x => x.Build()),
+            ephemeral: ephemeral);
+
     public static Task RespondAsync(
         this SocketMessageComponent ch,
         IEmbedBuilderService eb,
