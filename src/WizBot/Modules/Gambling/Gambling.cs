@@ -7,6 +7,7 @@ using WizBot.Modules.Utility.Patronage;
 using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
+using WizBot.Modules.Utility.Services;
 using WizBot.Services.Currency;
 using WizBot.Services.Database.Models;
 using System.Collections.Immutable;
@@ -44,6 +45,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly GamblingConfigService _configService;
     private readonly IBankService _bank;
     private readonly IPatronageService _ps;
+    private readonly RemindService _remind;
 
     private IUserMessage rdMsg;
 
@@ -54,7 +56,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         DownloadTracker tracker,
         GamblingConfigService configService,
         IBankService bank,
-        IPatronageService ps)
+        IPatronageService ps,
+        RemindService remind)
         : base(configService)
     {
         _db = db;
@@ -62,6 +65,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _client = client;
         _bank = bank;
         _ps = ps;
+        _remind = remind;
 
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
@@ -109,6 +113,39 @@ public partial class Gambling : GamblingModule<GamblingService>
         Key = "timely:extra_percent",
         PrettyName = "Timely"
     };
+    
+    public class RemindMeInteraction : NInteraction
+    {
+        public RemindMeInteraction(
+            [NotNull] DiscordSocketClient client,
+            ulong userId,
+            [NotNull] Func<SocketMessageComponent, Task> action)
+            : base(client, userId, action)
+        {
+        }
+
+        protected override WizBotInteractionData Data
+            => new WizBotInteractionData(
+                Emote: Emoji.Parse("⏰"),
+                CustomId: "timely:remind_me",
+                Text: "Remind me"
+            );
+    }
+
+    private Func<SocketMessageComponent, Task> RemindTimelyAction(DateTime when)
+        => async smc =>
+        {
+            var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
+
+            await _remind.AddReminderAsync(ctx.User.Id,
+                ctx.Channel.Id,
+                ctx.Guild.Id,
+                true,
+                when,
+                GetText(strs.timely_time));
+
+            await smc.RespondConfirmAsync(_eb, GetText(strs.remind_timely(tt)), ephemeral: true);
+        };
 
     [Cmd]
     public async partial Task Timely()
@@ -135,7 +172,11 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        await ReplyConfirmLocalizedAsync(strs.timely(N(val), period));
+        var inter = new RemindMeInteraction(_client,
+            ctx.User.Id,
+            RemindTimelyAction(DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
+
+        await ReplyConfirmLocalizedAsync(strs.timely(N(val), period), inter.GetInteraction());
     }
 
     [Cmd]

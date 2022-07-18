@@ -178,4 +178,26 @@ public class RemindService : INService, IReadyExecutor
         public string What { get; set; }
         public TimeSpan Time { get; set; }
     }
+    
+    public async Task AddReminderAsync(ulong userId,
+        ulong channelId,
+        ulong? guildId,
+        bool isPrivate,
+        DateTime time,
+        string message)
+    {
+        var rem = new Reminder
+        {
+            UserId = userId,
+            ChannelId = channelId,
+            ServerId = guildId ?? 0,
+            IsPrivate = isPrivate,
+            When = time,
+            Message = message,
+        };
+
+        await using var ctx = _db.GetDbContext();
+        await ctx.Reminders
+                 .AddAsync(rem);
+    }
 }
