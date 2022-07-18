@@ -603,7 +603,7 @@ quoteshow:
 quotesearch:
   desc: "Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author"
   args:
-    - """find this long text"""
+    - "\"find this long text\""
     - "AuthorName"
     - "keyword some text"
     - "keyword AuthorName"
