@@ -31,7 +31,7 @@ public partial class Games
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         [NadekoOptions(typeof(TriviaOptions))]
-        public async partial Task Trivia(params string[] args)
+        public async Task Trivia(params string[] args)
         {
             var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);
 
@@ -56,7 +56,7 @@ public partial class Games
         
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Tl()
+        public async Task Tl()
         {
             if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out var trivia))
             {
@@ -69,7 +69,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Tq()
+        public async Task Tq()
         {
             var channel = (ITextChannel)ctx.Channel;
 

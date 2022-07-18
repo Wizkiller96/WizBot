@@ -19,7 +19,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task StreamAdd(string link)
+        public async Task StreamAdd(string link)
         {
             var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
             if (data is null)
@@ -36,7 +36,7 @@ public partial class Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public async partial Task StreamRemove(int index)
+        public async Task StreamRemove(int index)
         {
             if (--index < 0)
                 return;
@@ -54,7 +54,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task StreamsClear()
+        public async Task StreamsClear()
         {
             await _service.ClearAllStreams(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.streams_cleared);
@@ -62,7 +62,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamList(int page = 1)
+        public async Task StreamList(int page = 1)
         {
             if (page-- < 1)
                 return;
@@ -113,7 +113,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task StreamOffline()
+        public async Task StreamOffline()
         {
             var newValue = _service.ToggleStreamOffline(ctx.Guild.Id);
             if (newValue)
@@ -125,7 +125,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task StreamOnlineDelete()
+        public async Task StreamOnlineDelete()
         {
             var newValue = _service.ToggleStreamOnlineDelete(ctx.Guild.Id);
             if (newValue)
@@ -137,7 +137,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task StreamMessage(int index, [Leftover] string message)
+        public async Task StreamMessage(int index, [Leftover] string message)
         {
             if (--index < 0)
                 return;
@@ -157,7 +157,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task StreamMessageAll([Leftover] string message)
+        public async Task StreamMessageAll([Leftover] string message)
         {
             var count = _service.SetStreamMessageForAll(ctx.Guild.Id, message);
 
@@ -172,7 +172,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamCheck(string url)
+        public async Task StreamCheck(string url)
         {
             try
             {

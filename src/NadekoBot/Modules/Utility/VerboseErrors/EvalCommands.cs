@@ -19,7 +19,7 @@ public partial class Utility
         [Cmd]
         [NoPublicBot]
         [OwnerOnly]
-        public async partial Task Eval([Leftover] string scriptText)
+        public async Task Eval([Leftover] string scriptText)
         {
             _ = ctx.Channel.TriggerTypingAsync();
 

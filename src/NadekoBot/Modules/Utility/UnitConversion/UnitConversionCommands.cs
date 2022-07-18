@@ -9,7 +9,7 @@ public partial class Utility
     public partial class UnitConverterCommands : NadekoModule<ConverterService>
     {
         [Cmd]
-        public async partial Task ConvertList()
+        public async Task ConvertList()
         {
             var units = await _service.GetUnitsAsync();
 
@@ -27,7 +27,7 @@ public partial class Utility
 
         [Cmd]
         [Priority(0)]
-        public async partial Task Convert(string origin, string target, decimal value)
+        public async Task Convert(string origin, string target, decimal value)
         {
             var units = await _service.GetUnitsAsync();
             var originUnit = units.FirstOrDefault(x

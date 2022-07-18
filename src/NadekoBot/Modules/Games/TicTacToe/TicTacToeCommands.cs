@@ -18,7 +18,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptions(typeof(TicTacToe.Options))]
-        public async partial Task TicTacToe(params string[] args)
+        public async Task TicTacToe(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);
             var channel = (ITextChannel)ctx.Channel;

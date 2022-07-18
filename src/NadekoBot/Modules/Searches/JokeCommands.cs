@@ -9,22 +9,22 @@ public partial class Searches
     public partial class JokeCommands : NadekoModule<SearchesService>
     {
         [Cmd]
-        public async partial Task Yomama()
+        public async Task Yomama()
             => await SendConfirmAsync(await _service.GetYomamaJoke());
 
         [Cmd]
-        public async partial Task Randjoke()
+        public async Task Randjoke()
         {
             var (setup, punchline) = await _service.GetRandomJoke();
             await SendConfirmAsync(setup, punchline);
         }
 
         [Cmd]
-        public async partial Task ChuckNorris()
+        public async Task ChuckNorris()
             => await SendConfirmAsync(await _service.GetChuckNorrisJoke());
 
         [Cmd]
-        public async partial Task WowJoke()
+        public async Task WowJoke()
         {
             if (!_service.WowJokes.Any())
             {
@@ -37,7 +37,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task MagicItem()
+        public async Task MagicItem()
         {
             if (!_service.WowJokes.Any())
             {

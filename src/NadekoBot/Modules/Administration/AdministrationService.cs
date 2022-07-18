@@ -42,11 +42,11 @@ public class AdministrationService : INService
 
     private Task DelMsgOnCmd_Handler(IUserMessage msg, CommandInfo cmd)
     {
+        if (msg.Channel is not ITextChannel channel)
+            return Task.CompletedTask;
+        
         _ = Task.Run(async () =>
         {
-            if (msg.Channel is not SocketTextChannel channel)
-                return;
-
             //wat ?!
             if (DeleteMessagesOnCommandChannels.TryGetValue(channel.Id, out var state))
             {

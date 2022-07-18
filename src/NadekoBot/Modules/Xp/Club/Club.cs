@@ -15,7 +15,7 @@ public partial class Xp
             => _xps = xps;
 
         [Cmd]
-        public async partial Task ClubTransfer([Leftover] IUser newOwner)
+        public async Task ClubTransfer([Leftover] IUser newOwner)
         {
             var club = _service.TransferClub(ctx.User, newOwner);
 
@@ -35,7 +35,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubAdmin([Leftover] IUser toAdmin)
+        public async Task ClubAdmin([Leftover] IUser toAdmin)
         {
             var admin = await _service.ToggleAdminAsync(ctx.User, toAdmin);
         
@@ -47,7 +47,7 @@ public partial class Xp
                 await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
         }
         [Cmd]
-        public async partial Task ClubCreate([Leftover] string clubName)
+        public async Task ClubCreate([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
             {
@@ -73,7 +73,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubIcon([Leftover] string url = null)
+        public async Task ClubIcon([Leftover] string url = null)
         {
             if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url is not null)
                 || !await _service.SetClubIconAsync(ctx.User.Id, url))
@@ -135,7 +135,7 @@ public partial class Xp
 
         [Cmd]
         [Priority(1)]
-        public async partial Task ClubInformation(IUser user = null)
+        public async Task ClubInformation(IUser user = null)
         {
             user ??= ctx.User;
             var club = _service.GetClubByMember(user);
@@ -150,7 +150,7 @@ public partial class Xp
 
         [Cmd]
         [Priority(0)]
-        public async partial Task ClubInformation([Leftover] string clubName = null)
+        public async Task ClubInformation([Leftover] string clubName = null)
         {
             if (string.IsNullOrWhiteSpace(clubName))
             {
@@ -168,7 +168,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public partial Task ClubBans(int page = 1)
+        public Task ClubBans(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -194,7 +194,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public partial Task ClubApps(int page = 1)
+        public Task ClubApps(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -220,7 +220,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubApply([Leftover] string clubName)
+        public async Task ClubApply([Leftover] string clubName)
         {
             if (string.IsNullOrWhiteSpace(clubName))
                 return;
@@ -239,12 +239,12 @@ public partial class Xp
 
         [Cmd]
         [Priority(1)]
-        public partial Task ClubAccept(IUser user)
+        public Task ClubAccept(IUser user)
             => ClubAccept(user.ToString());
 
         [Cmd]
         [Priority(0)]
-        public async partial Task ClubAccept([Leftover] string userName)
+        public async Task ClubAccept([Leftover] string userName)
         {
             if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
@@ -253,7 +253,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task Clubleave()
+        public async Task Clubleave()
         {
             if (_service.LeaveClub(ctx.User))
                 await ReplyConfirmLocalizedAsync(strs.club_left);
@@ -263,12 +263,12 @@ public partial class Xp
 
         [Cmd]
         [Priority(1)]
-        public partial Task ClubKick([Leftover] IUser user)
+        public Task ClubKick([Leftover] IUser user)
             => ClubKick(user.ToString());
 
         [Cmd]
         [Priority(0)]
-        public partial Task ClubKick([Leftover] string userName)
+        public Task ClubKick([Leftover] string userName)
         {
             if (_service.Kick(ctx.User.Id, userName, out var club))
             {
@@ -281,12 +281,12 @@ public partial class Xp
 
         [Cmd]
         [Priority(1)]
-        public partial Task ClubBan([Leftover] IUser user)
+        public Task ClubBan([Leftover] IUser user)
             => ClubBan(user.ToString());
 
         [Cmd]
         [Priority(0)]
-        public partial Task ClubBan([Leftover] string userName)
+        public Task ClubBan([Leftover] string userName)
         {
             if (_service.Ban(ctx.User.Id, userName, out var club))
             {
@@ -299,12 +299,12 @@ public partial class Xp
 
         [Cmd]
         [Priority(1)]
-        public partial Task ClubUnBan([Leftover] IUser user)
+        public Task ClubUnBan([Leftover] IUser user)
             => ClubUnBan(user.ToString());
 
         [Cmd]
         [Priority(0)]
-        public partial Task ClubUnBan([Leftover] string userName)
+        public Task ClubUnBan([Leftover] string userName)
         {
             if (_service.UnBan(ctx.User.Id, userName, out var club))
             {
@@ -316,7 +316,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubDescription([Leftover] string desc = null)
+        public async Task ClubDescription([Leftover] string desc = null)
         {
             if (_service.SetDescription(ctx.User.Id, desc))
             {
@@ -339,7 +339,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public async partial Task ClubDisband()
+        public async Task ClubDisband()
         {
             if (_service.Disband(ctx.User.Id, out var club))
                 await ReplyConfirmLocalizedAsync(strs.club_disbanded(Format.Bold(club.Name)));
@@ -348,7 +348,7 @@ public partial class Xp
         }
 
         [Cmd]
-        public partial Task ClubLeaderboard(int page = 1)
+        public Task ClubLeaderboard(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;

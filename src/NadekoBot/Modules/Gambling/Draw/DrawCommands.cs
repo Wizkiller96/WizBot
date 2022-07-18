@@ -81,12 +81,12 @@ public partial class Gambling
         {
             var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
             var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
-            return Image.Load(cardBytes);
+            return Image.Load<Rgba32>(cardBytes);
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Draw(int num = 1)
+        public async Task Draw(int num = 1)
         {
             if (num < 1)
                 return;
@@ -98,7 +98,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task DrawNew(int num = 1)
+        public async Task DrawNew(int num = 1)
         {
             if (num < 1)
                 return;
@@ -111,7 +111,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task DeckShuffle()
+        public async Task DeckShuffle()
         {
             //var channel = (ITextChannel)ctx.Channel;
 
@@ -128,12 +128,12 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task BetDraw(ShmartNumber amount, InputValueGuess val, InputColorGuess? col = null)
+        public Task BetDraw(ShmartNumber amount, InputValueGuess val, InputColorGuess? col = null)
             => BetDrawInternal(amount, val, col);
         
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task BetDraw(ShmartNumber amount, InputColorGuess col, InputValueGuess? val = null)
+        public Task BetDraw(ShmartNumber amount, InputColorGuess col, InputValueGuess? val = null)
             => BetDrawInternal(amount, val, col);
         
         public async Task BetDrawInternal(long amount, InputValueGuess? val, InputColorGuess? col)

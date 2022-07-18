@@ -55,7 +55,7 @@ public partial class Gambling
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task SlotStats()
+        public async Task SlotStats()
         {
             //i remembered to not be a moron
             var paid = totalPaidOut;
@@ -85,7 +85,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task Slot(ShmartNumber amount)
+        public async Task Slot(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;
@@ -230,49 +230,37 @@ public partial class Gambling
 
             Color fontColor = Config.Slots.CurrencyFontColor;
 
-            bgImage.Mutate(x => x.DrawText(new()
+            bgImage.Mutate(x => x.DrawText(new TextOptions(_fonts.DottyFont.CreateFont(65))
                 {
-                    TextOptions = new()
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        WrapTextWidth = 140
-                    }
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    WrappingLength = 140,
+                    Origin = new(227, 92)
                 },
                 ((long)result.Won).ToString(),
-                _fonts.DottyFont.CreateFont(65),
-                fontColor,
-                new(227, 92)));
+                fontColor));
 
             var bottomFont = _fonts.DottyFont.CreateFont(50);
 
-            bgImage.Mutate(x => x.DrawText(new()
+            bgImage.Mutate(x => x.DrawText(new TextOptions(bottomFont)
                 {
-                    TextOptions = new()
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        WrapTextWidth = 135
-                    }
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    WrappingLength = 135,
+                    Origin = new(129, 472)
                 },
                 amount.ToString(),
-                bottomFont,
-                fontColor,
-                new(129, 472)));
+                fontColor));
 
-            bgImage.Mutate(x => x.DrawText(new()
+            bgImage.Mutate(x => x.DrawText(new(bottomFont)
                 {
-                    TextOptions = new()
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        WrapTextWidth = 135
-                    }
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    WrappingLength = 135,
+                    Origin = new(325, 472)
                 },
                 ownedAmount.ToString(),
-                bottomFont,
-                fontColor,
-                new(325, 472)));
+                fontColor));
             //sw.PrintLap("drew red text");
 
             for (var i = 0; i < 3; i++)

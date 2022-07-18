@@ -23,7 +23,7 @@ public partial class Gambling
             => _images = images;
 
         [Cmd]
-        public async partial Task Roll()
+        public async Task Roll()
         {
             var rng = new NadekoRandom();
             var gen = rng.Next(1, 101);
@@ -51,23 +51,23 @@ public partial class Gambling
 
         [Cmd]
         [Priority(1)]
-        public async partial Task Roll(int num)
+        public async Task Roll(int num)
             => await InternalRoll(num, true);
 
 
         [Cmd]
         [Priority(1)]
-        public async partial Task Rolluo(int num = 1)
+        public async Task Rolluo(int num = 1)
             => await InternalRoll(num, false);
 
         [Cmd]
         [Priority(0)]
-        public async partial Task Roll(string arg)
+        public async Task Roll(string arg)
             => await InternallDndRoll(arg, true);
 
         [Cmd]
         [Priority(0)]
-        public async partial Task Rolluo(string arg)
+        public async Task Rolluo(string arg)
             => await InternallDndRoll(arg, false);
 
         private async Task InternalRoll(int num, bool ordered)
@@ -186,7 +186,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task NRoll([Leftover] string range)
+        public async Task NRoll([Leftover] string range)
         {
             int rolled;
             if (range.Contains("-"))
@@ -213,12 +213,12 @@ public partial class Gambling
 
             if (num == 10)
             {
-                using var imgOne = Image.Load(await _images.GetDiceAsync(1));
-                using var imgZero = Image.Load(await _images.GetDiceAsync(0));
+                using var imgOne = Image.Load<Rgba32>(await _images.GetDiceAsync(1));
+                using var imgZero = Image.Load<Rgba32>(await _images.GetDiceAsync(0));
                 return new[] { imgOne, imgZero }.Merge();
             }
 
-            return Image.Load(await _images.GetDiceAsync(num));
+            return Image.Load<Rgba32>(await _images.GetDiceAsync(num));
         }
     }
 }

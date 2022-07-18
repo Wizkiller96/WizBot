@@ -15,7 +15,7 @@ public partial class Xp
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task XpRewsReset()
+        public async Task XpRewsReset()
         {
             var promptEmbed = _eb.Create()
                                  .WithPendingColor()
@@ -32,7 +32,7 @@ public partial class Xp
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task XpLevelUpRewards(int page = 1)
+        public Task XpLevelUpRewards(int page = 1)
         {
             page--;
 
@@ -92,7 +92,7 @@ public partial class Xp
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
         [Priority(2)]
-        public async partial Task XpRoleReward(int level)
+        public async Task XpRoleReward(int level)
         {
             _service.ResetRoleReward(ctx.Guild.Id, level);
             await ReplyConfirmLocalizedAsync(strs.xp_role_reward_cleared(level));
@@ -103,7 +103,7 @@ public partial class Xp
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
+        public async Task XpRoleReward(int level, AddRemove action, [Leftover] IRole role)
         {
             if (level < 1)
                 return;
@@ -121,7 +121,7 @@ public partial class Xp
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async partial Task XpCurrencyReward(int level, int amount = 0)
+        public async Task XpCurrencyReward(int level, int amount = 0)
         {
             if (level < 1 || amount < 0)
                 return;

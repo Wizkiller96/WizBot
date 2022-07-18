@@ -22,7 +22,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Google([Leftover] string? query = null)
+        public async Task Google([Leftover] string? query = null)
         {
             query = query?.Trim();
 
@@ -76,7 +76,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Image([Leftover] string? query = null)
+        public async Task Image([Leftover] string? query = null)
         {
             query = query?.Trim();
 
@@ -148,7 +148,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Youtube([Leftover] string? query = null)
+        public async Task Youtube([Leftover] string? query = null)
         {
             query = query?.Trim();
 
@@ -173,7 +173,7 @@ public partial class Searches
         }
 
 //     [Cmd]
-//     public async partial Task DuckDuckGo([Leftover] string query = null)
+//     public async Task DuckDuckGo([Leftover] string query = null)
 //     {
 //         query = query?.Trim();
 //         if (!await ValidateQuery(query))

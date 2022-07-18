@@ -19,13 +19,13 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public partial Task RaffleCur(Mixed _, ShmartNumber amount)
+        public Task RaffleCur(Mixed _, ShmartNumber amount)
             => RaffleCur(amount, true);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task RaffleCur(ShmartNumber amount, bool mixed = false)
+        public async Task RaffleCur(ShmartNumber amount, bool mixed = false)
         {
             if (!await CheckBetMandatory(amount))
                 return;

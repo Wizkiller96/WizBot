@@ -13,7 +13,7 @@ public partial class Administration
         //delets her own messages, no perm required
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Prune(string parameter = null)
+        public async Task Prune(string parameter = null)
         {
             var user = await ctx.Guild.GetCurrentUserAsync();
 
@@ -30,7 +30,7 @@ public partial class Administration
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(1)]
-        public async partial Task Prune(int count, string parameter = null)
+        public async Task Prune(int count, string parameter = null)
         {
             count++;
             if (count < 1)
@@ -50,7 +50,7 @@ public partial class Administration
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
-        public partial Task Prune(IGuildUser user, int count = 100, string parameter = null)
+        public Task Prune(IGuildUser user, int count = 100, string parameter = null)
             => Prune(user.Id, count, parameter);
 
         //prune userid [x]
@@ -59,7 +59,7 @@ public partial class Administration
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [Priority(0)]
-        public async partial Task Prune(ulong userId, int count = 100, string parameter = null)
+        public async Task Prune(ulong userId, int count = 100, string parameter = null)
         {
             if (userId == ctx.User.Id)
                 count++;

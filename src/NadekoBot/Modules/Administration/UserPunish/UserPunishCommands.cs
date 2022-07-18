@@ -51,13 +51,13 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public partial Task Warn(IGuildUser user, [Leftover] string reason = null)
+        public Task Warn(IGuildUser user, [Leftover] string reason = null)
             => Warn(1, user, reason);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async partial Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
+        public async Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
         {
             if (weight <= 0)
                 return;
@@ -116,7 +116,7 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         [NadekoOptions(typeof(WarnExpireOptions))]
         [Priority(1)]
-        public async partial Task WarnExpire()
+        public async Task WarnExpire()
         {
             var expireDays = await _service.GetWarnExpire(ctx.Guild.Id);
 
@@ -131,7 +131,7 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         [NadekoOptions(typeof(WarnExpireOptions))]
         [Priority(2)]
-        public async partial Task WarnExpire(int days, params string[] args)
+        public async Task WarnExpire(int days, params string[] args)
         {
             if (days is < 0 or > 366)
                 return;
@@ -157,7 +157,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(2)]
-        public partial Task Warnlog(int page, [Leftover] IGuildUser user = null)
+        public Task Warnlog(int page, [Leftover] IGuildUser user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
@@ -167,7 +167,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(3)]
-        public partial Task Warnlog(IGuildUser user = null)
+        public Task Warnlog(IGuildUser user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
@@ -180,14 +180,14 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public partial Task Warnlog(int page, ulong userId)
+        public Task Warnlog(int page, ulong userId)
             => InternalWarnlog(userId, page - 1);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public partial Task Warnlog(ulong userId)
+        public Task Warnlog(ulong userId)
             => InternalWarnlog(userId, 0);
 
         private async Task InternalWarnlog(ulong userId, int inputPage)
@@ -241,7 +241,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async partial Task WarnlogAll(int page = 1)
+        public async Task WarnlogAll(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -275,13 +275,13 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public partial Task Warnclear(IGuildUser user, int index = 0)
+        public Task Warnclear(IGuildUser user, int index = 0)
             => Warnclear(user.Id, index);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async partial Task Warnclear(ulong userId, int index = 0)
+        public async Task Warnclear(ulong userId, int index = 0)
         {
             if (index < 0)
                 return;
@@ -302,7 +302,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public async partial Task WarnPunish(
+        public async Task WarnPunish(
             int number,
             AddRole _,
             IRole role,
@@ -338,7 +338,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async partial Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
+        public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
         {
             // this should never happen. Addrole has its own method with higher priority
             // also disallow warn punishment for getting warned
@@ -366,7 +366,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async partial Task WarnPunish(int number)
+        public async Task WarnPunish(int number)
         {
             if (!_service.WarnPunishRemove(ctx.Guild.Id, number))
                 return;
@@ -376,7 +376,7 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task WarnPunishList()
+        public async Task WarnPunishList()
         {
             var ps = _service.WarnPunishList(ctx.Guild.Id);
 
@@ -398,7 +398,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public async partial Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
+        public async Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
         {
             if (time.Time > TimeSpan.FromDays(49))
                 return;
@@ -446,7 +446,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public async partial Task Ban(ulong userId, [Leftover] string msg = null)
+        public async Task Ban(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -467,7 +467,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(2)]
-        public async partial Task Ban(IGuildUser user, [Leftover] string msg = null)
+        public async Task Ban(IGuildUser user, [Leftover] string msg = null)
         {
             if (!await CheckRoleHierarchy(user))
                 return;
@@ -504,7 +504,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async partial Task BanMessage([Leftover] string message = null)
+        public async Task BanMessage([Leftover] string message = null)
         {
             if (message is null)
             {
@@ -527,7 +527,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async partial Task BanMsgReset()
+        public async Task BanMsgReset()
         {
             _service.SetBanTemplate(ctx.Guild.Id, null);
             await ctx.OkAsync();
@@ -538,7 +538,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public partial Task BanMessageTest([Leftover] string reason = null)
+        public Task BanMessageTest([Leftover] string reason = null)
             => InternalBanMessageTest(reason, null);
 
         [Cmd]
@@ -546,7 +546,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public partial Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
+        public Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
             => InternalBanMessageTest(reason, duration.Time);
 
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
@@ -576,7 +576,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async partial Task Unban([Leftover] string user)
+        public async Task Unban([Leftover] string user)
         {
             var bans = await ctx.Guild.GetBansAsync().FlattenAsync();
 
@@ -595,7 +595,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async partial Task Unban(ulong userId)
+        public async Task Unban(ulong userId)
         {
             var bun = await ctx.Guild.GetBanAsync(userId);
 
@@ -619,14 +619,14 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.BanMembers)]
-        public partial Task Softban(IGuildUser user, [Leftover] string msg = null)
+        public Task Softban(IGuildUser user, [Leftover] string msg = null)
             => SoftbanInternal(user, msg);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.KickMembers | GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.BanMembers)]
-        public async partial Task Softban(ulong userId, [Leftover] string msg = null)
+        public async Task Softban(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -672,7 +672,7 @@ public partial class Administration
         [UserPerm(GuildPerm.KickMembers)]
         [BotPerm(GuildPerm.KickMembers)]
         [Priority(1)]
-        public partial Task Kick(IGuildUser user, [Leftover] string msg = null)
+        public Task Kick(IGuildUser user, [Leftover] string msg = null)
             => KickInternal(user, msg);
 
         [Cmd]
@@ -680,7 +680,7 @@ public partial class Administration
         [UserPerm(GuildPerm.KickMembers)]
         [BotPerm(GuildPerm.KickMembers)]
         [Priority(0)]
-        public async partial Task Kick(ulong userId, [Leftover] string msg = null)
+        public async Task Kick(ulong userId, [Leftover] string msg = null)
         {
             var user = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
             if (user is null)
@@ -724,7 +724,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Ratelimit(30)]
-        public async partial Task MassBan(params string[] userStrings)
+        public async Task MassBan(params string[] userStrings)
         {
             if (userStrings.Length == 0)
                 return;
@@ -800,7 +800,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [OwnerOnly]
-        public async partial Task MassKill([Leftover] string people)
+        public async Task MassKill([Leftover] string people)
         {
             if (string.IsNullOrWhiteSpace(people))
                 return;

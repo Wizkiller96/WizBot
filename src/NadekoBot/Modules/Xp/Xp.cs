@@ -33,7 +33,7 @@ public partial class Xp : NadekoModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Experience([Leftover] IUser user = null)
+    public async Task Experience([Leftover] IUser user = null)
     {
         user ??= ctx.User;
         await ctx.Channel.TriggerTypingAsync();
@@ -46,7 +46,7 @@ public partial class Xp : NadekoModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpNotify()
+    public async Task XpNotify()
     {
         var globalSetting = _service.GetNotificationType(ctx.User);
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
@@ -61,7 +61,7 @@ public partial class Xp : NadekoModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpNotify(NotifyPlace place, XpNotificationLocation type)
+    public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
     {
         if (place == NotifyPlace.Guild)
             await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type);
@@ -74,7 +74,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task XpExclude(Server _)
+    public async Task XpExclude(Server _)
     {
         var ex = _service.ToggleExcludeServer(ctx.Guild.Id);
 
@@ -87,7 +87,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [UserPerm(GuildPerm.ManageRoles)]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpExclude(Role _, [Leftover] IRole role)
+    public async Task XpExclude(Role _, [Leftover] IRole role)
     {
         var ex = _service.ToggleExcludeRole(ctx.Guild.Id, role.Id);
 
@@ -100,7 +100,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [UserPerm(GuildPerm.ManageChannels)]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpExclude(Channel _, [Leftover] IChannel channel = null)
+    public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
     {
         if (channel is null)
             channel = ctx.Channel;
@@ -115,7 +115,7 @@ public partial class Xp : NadekoModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpExclusionList()
+    public async Task XpExclusionList()
     {
         var serverExcluded = _service.IsServerExcluded(ctx.Guild.Id);
         var roles = _service.GetExcludedRoles(ctx.Guild.Id)
@@ -157,14 +157,14 @@ public partial class Xp : NadekoModule<XpService>
     [NadekoOptions(typeof(LbOpts))]
     [Priority(0)]
     [RequireContext(ContextType.Guild)]
-    public partial Task XpLeaderboard(params string[] args)
+    public Task XpLeaderboard(params string[] args)
         => XpLeaderboard(1, args);
 
     [Cmd]
     [NadekoOptions(typeof(LbOpts))]
     [Priority(1)]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpLeaderboard(int page = 1, params string[] args)
+    public async Task XpLeaderboard(int page = 1, params string[] args)
     {
         if (--page < 0 || page > 100)
             return;
@@ -225,7 +225,7 @@ public partial class Xp : NadekoModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task XpGlobalLeaderboard(int page = 1)
+    public async Task XpGlobalLeaderboard(int page = 1)
     {
         if (--page < 0 || page > 99)
             return;
@@ -251,7 +251,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task XpAdd(int amount, ulong userId)
+    public async Task XpAdd(int amount, ulong userId)
     {
         if (amount == 0)
             return;
@@ -264,13 +264,13 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public partial Task XpAdd(int amount, [Leftover] IGuildUser user)
+    public Task XpAdd(int amount, [Leftover] IGuildUser user)
         => XpAdd(amount, user.Id);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public async partial Task XpTemplateReload()
+    public async Task XpTemplateReload()
     {
         _service.ReloadXpTemplate();
         await Task.Delay(1000);
@@ -280,13 +280,13 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public partial Task XpReset(IGuildUser user)
+    public Task XpReset(IGuildUser user)
         => XpReset(user.Id);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task XpReset(ulong userId)
+    public async Task XpReset(ulong userId)
     {
         var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_user_confirm));
 
@@ -301,7 +301,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task XpReset()
+    public async Task XpReset()
     {
         var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_server_confirm));
 

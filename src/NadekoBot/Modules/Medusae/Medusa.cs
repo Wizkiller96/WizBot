@@ -8,7 +8,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 {
     [Cmd]
     [OwnerOnly]
-    public async partial Task MedusaLoad(string? name = null)
+    public async Task MedusaLoad(string? name = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -60,7 +60,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
     
     [Cmd]
     [OwnerOnly]
-    public async partial Task MedusaUnload(string? name = null)
+    public async Task MedusaUnload(string? name = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -98,7 +98,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task MedusaList()
+    public async Task MedusaList()
     {
         var all = _service.GetAllMedusae();
 
@@ -132,7 +132,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task MedusaInfo(string? name = null)
+    public async Task MedusaInfo(string? name = null)
     {
         var medusae = _service.GetLoadedMedusae();
 

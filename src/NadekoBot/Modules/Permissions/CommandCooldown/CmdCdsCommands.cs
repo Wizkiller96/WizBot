@@ -73,18 +73,18 @@ public partial class Permissions
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public partial Task CmdCooldown(CleverBotResponseStr command, int secs)
+        public Task CmdCooldown(CleverBotResponseStr command, int secs)
             => CmdCooldownInternal(CleverBotResponseStr.CLEVERBOT_RESPONSE, secs);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public partial Task CmdCooldown(CommandOrExprInfo command, int secs)
+        public Task CmdCooldown(CommandOrExprInfo command, int secs)
             => CmdCooldownInternal(command.Name, secs);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task AllCmdCooldowns()
+        public async Task AllCmdCooldowns()
         {
             var channel = (ITextChannel)ctx.Channel;
             var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());

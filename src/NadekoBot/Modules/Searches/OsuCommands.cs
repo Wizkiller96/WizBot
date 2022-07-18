@@ -20,7 +20,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Osu(string user, [Leftover] string mode = null)
+        public async Task Osu(string user, [Leftover] string mode = null)
         {
             if (string.IsNullOrWhiteSpace(user))
                 return;
@@ -76,7 +76,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Gatari(string user, [Leftover] string mode = null)
+        public async Task Gatari(string user, [Leftover] string mode = null)
         {
             using var http = _httpFactory.CreateClient();
             var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
@@ -114,7 +114,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Osu5(string user, [Leftover] string mode = null)
+        public async Task Osu5(string user, [Leftover] string mode = null)
         {
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
             {

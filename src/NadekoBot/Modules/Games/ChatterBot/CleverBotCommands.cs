@@ -17,7 +17,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task Cleverbot()
+        public async Task Cleverbot()
         {
             var channel = (ITextChannel)ctx.Channel;
 

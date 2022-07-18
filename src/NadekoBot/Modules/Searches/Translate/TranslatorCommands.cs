@@ -13,7 +13,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Translate(string from, string to, [Leftover] string text = null)
+        public async Task Translate(string from, string to, [Leftover] string text = null)
         {
             try
             {
@@ -35,7 +35,7 @@ public partial class Searches
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(ChannelPerm.ManageMessages)]
         [OwnerOnly]
-        public async partial Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
+        public async Task AutoTranslate(AutoDeleteAutoTranslate autoDelete = AutoDeleteAutoTranslate.Nodel)
         {
             var toggle =
                 await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
@@ -47,7 +47,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task AutoTransLang()
+        public async Task AutoTransLang()
         {
             if (await _service.UnregisterUser(ctx.Channel.Id, ctx.User.Id))
                 await ReplyConfirmLocalizedAsync(strs.atl_removed);
@@ -55,7 +55,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task AutoTransLang(string from, string to)
+        public async Task AutoTransLang(string from, string to)
         {
             var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, from.ToLower(), to.ToLower());
 
@@ -76,7 +76,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Translangs()
+        public async Task Translangs()
             => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}");
     }
 }

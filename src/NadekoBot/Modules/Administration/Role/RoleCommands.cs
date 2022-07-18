@@ -25,7 +25,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task SetRole(IGuildUser targetUser, [Leftover] IRole roleToAdd)
+        public async Task SetRole(IGuildUser targetUser, [Leftover] IRole roleToAdd)
         {
             var runnerUser = (IGuildUser)ctx.User;
             var runnerMaxRolePosition = runnerUser.GetRoles().Max(x => x.Position);
@@ -49,7 +49,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
+        public async Task RemoveRole(IGuildUser targetUser, [Leftover] IRole roleToRemove)
         {
             var runnerUser = (IGuildUser)ctx.User;
             if (ctx.User.Id != runnerUser.Guild.OwnerId
@@ -71,7 +71,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RenameRole(IRole roleToEdit, [Leftover] string newname)
+        public async Task RenameRole(IRole roleToEdit, [Leftover] string newname)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= roleToEdit.Position)
@@ -97,7 +97,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RemoveAllRoles([Leftover] IGuildUser user)
+        public async Task RemoveAllRoles([Leftover] IGuildUser user)
         {
             var guser = (IGuildUser)ctx.User;
 
@@ -122,7 +122,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task CreateRole([Leftover] string roleName = null)
+        public async Task CreateRole([Leftover] string roleName = null)
         {
             if (string.IsNullOrWhiteSpace(roleName))
                 return;
@@ -135,7 +135,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task DeleteRole([Leftover] IRole role)
+        public async Task DeleteRole([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -149,7 +149,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RoleHoist([Leftover] IRole role)
+        public async Task RoleHoist([Leftover] IRole role)
         {
             var newHoisted = !role.IsHoisted;
             await role.ModifyAsync(r => r.Hoist = newHoisted);
@@ -162,7 +162,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task RoleColor([Leftover] IRole role)
+        public async Task RoleColor([Leftover] IRole role)
             => await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6"));
 
         [Cmd]
@@ -170,7 +170,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async partial Task RoleColor(Color color, [Leftover] IRole role)
+        public async Task RoleColor(Color color, [Leftover] IRole role)
         {
             try
             {

@@ -66,7 +66,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    public async partial Task Economy()
+    public async Task Economy()
     {
         var ec = await _service.GetEconomyAsync();
         decimal onePercent = 0;
@@ -133,7 +133,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         };
 
     [Cmd]
-    public async partial Task Timely()
+    public async Task Timely()
     {
         var val = Config.Timely.Amount;
         var period = Config.Timely.Cooldown;
@@ -166,7 +166,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task TimelyReset()
+    public async Task TimelyReset()
     {
         await _service.RemoveAllTimelyClaimsAsync();
         await ReplyConfirmLocalizedAsync(strs.timely_reset);
@@ -174,7 +174,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task TimelySet(int amount, int period = 24)
+    public async Task TimelySet(int amount, int period = 24)
     {
         if (amount < 0 || period < 0)
         {
@@ -199,7 +199,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Raffle([Leftover] IRole role = null)
+    public async Task Raffle([Leftover] IRole role = null)
     {
         role ??= ctx.Guild.EveryoneRole;
 
@@ -218,7 +218,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RaffleAny([Leftover] IRole role = null)
+    public async Task RaffleAny([Leftover] IRole role = null)
     {
         role ??= ctx.Guild.EveryoneRole;
 
@@ -237,19 +237,19 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [Priority(2)]
-    public partial Task CurrencyTransactions(int page = 1)
+    public Task CurrencyTransactions(int page = 1)
         => InternalCurrencyTransactions(ctx.User.Id, page);
 
     [Cmd]
     [OwnerOnly]
     [Priority(0)]
-    public partial Task CurrencyTransactions([Leftover] IUser usr)
+    public Task CurrencyTransactions([Leftover] IUser usr)
         => InternalCurrencyTransactions(usr.Id, 1);
 
     [Cmd]
     [OwnerOnly]
     [Priority(1)]
-    public partial Task CurrencyTransactions(IUser usr, int page)
+    public Task CurrencyTransactions(IUser usr, int page)
         => InternalCurrencyTransactions(usr.Id, page);
 
     private async Task InternalCurrencyTransactions(ulong userId, int page)
@@ -299,7 +299,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         => $"{ct.DateAdded:HH:mm yyyy-MM-dd}";
 
     [Cmd]
-    public async partial Task CurrencyTransaction(kwum id)
+    public async Task CurrencyTransaction(kwum id)
     {
         int intId = id;
         await using var uow = _db.GetDbContext();
@@ -356,7 +356,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     
     [Cmd]
     [Priority(0)]
-    public async partial Task Cash(ulong userId)
+    public async Task Cash(ulong userId)
     {
         var cur = await GetBalanceStringAsync(userId);
         await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), cur));
@@ -377,7 +377,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [Priority(1)]
-    public async partial Task Cash([Leftover] IUser user = null)
+    public async Task Cash([Leftover] IUser user = null)
     {
         user ??= ctx.User;
         var cur = await GetBalanceStringAsync(user.Id);
@@ -397,7 +397,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async partial Task Give(ShmartNumber amount, IGuildUser receiver, [Leftover] string msg)
+    public async Task Give(ShmartNumber amount, IGuildUser receiver, [Leftover] string msg)
     {
         if (amount <= 0 || ctx.User.Id == receiver.Id || receiver.IsBot)
         {
@@ -416,27 +416,27 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public partial Task Give(ShmartNumber amount, [Leftover] IGuildUser receiver)
+    public Task Give(ShmartNumber amount, [Leftover] IGuildUser receiver)
         => Give(amount, receiver, null);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
     [Priority(0)]
-    public partial Task Award(long amount, IGuildUser usr, [Leftover] string msg)
+    public Task Award(long amount, IGuildUser usr, [Leftover] string msg)
         => Award(amount, usr.Id, msg);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
     [Priority(1)]
-    public partial Task Award(long amount, [Leftover] IGuildUser usr)
+    public Task Award(long amount, [Leftover] IGuildUser usr)
         => Award(amount, usr.Id);
 
     [Cmd]
     [OwnerOnly]
     [Priority(2)]
-    public async partial Task Award(long amount, ulong usrId, [Leftover] string msg = null)
+    public async Task Award(long amount, ulong usrId, [Leftover] string msg = null)
     {
         if (amount <= 0)
         {
@@ -459,7 +459,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
     [Priority(3)]
-    public async partial Task Award(long amount, [Leftover] IRole role)
+    public async Task Award(long amount, [Leftover] IRole role)
     {
         var users = (await ctx.Guild.GetUsersAsync()).Where(u => u.GetRoles().Contains(role)).ToList();
 
@@ -476,7 +476,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
     [Priority(0)]
-    public async partial Task Take(long amount, [Leftover] IRole role)
+    public async Task Take(long amount, [Leftover] IRole role)
     {
         var users = (await role.GetMembersAsync()).ToList();
 
@@ -493,7 +493,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
     [Priority(1)]
-    public async partial Task Take(long amount, [Leftover] IGuildUser user)
+    public async Task Take(long amount, [Leftover] IGuildUser user)
     {
         if (amount <= 0)
         {
@@ -514,7 +514,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task Take(long amount, [Leftover] ulong usrId)
+    public async Task Take(long amount, [Leftover] ulong usrId)
     {
         if (amount <= 0)
         {
@@ -535,7 +535,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RollDuel(IUser u)
+    public async Task RollDuel(IUser u)
     {
         if (ctx.User.Id == u.Id)
         {
@@ -552,7 +552,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RollDuel(ShmartNumber amount, IUser u)
+    public async Task RollDuel(ShmartNumber amount, IUser u)
     {
         if (ctx.User.Id == u.Id)
         {
@@ -643,7 +643,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    public async partial Task BetRoll(ShmartNumber amount)
+    public async Task BetRoll(ShmartNumber amount)
     {
         if (!await CheckBetMandatory(amount))
         {
@@ -682,13 +682,13 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [NadekoOptions(typeof(LbOpts))]
     [Priority(0)]
-    public partial Task Leaderboard(params string[] args)
+    public Task Leaderboard(params string[] args)
         => Leaderboard(1, args);
 
     [Cmd]
     [NadekoOptions(typeof(LbOpts))]
     [Priority(1)]
-    public async partial Task Leaderboard(int page = 1, params string[] args)
+    public async Task Leaderboard(int page = 1, params string[] args)
     {
         if (--page < 0)
         {
@@ -774,7 +774,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
     
     [Cmd]
-    public async partial Task Rps(InputRpsPick pick, ShmartNumber amount = default)
+    public async Task Rps(InputRpsPick pick, ShmartNumber amount = default)
     {
         static string GetRpsPick(InputRpsPick p)
         {
@@ -834,7 +834,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
     [Cmd]
-    public async partial Task LuckyLadder(ShmartNumber amount)
+    public async Task LuckyLadder(ShmartNumber amount)
     {
         if (!await CheckBetMandatory(amount))
             return;
@@ -887,7 +887,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task BetTest()
+        public async Task BetTest()
         {
             await SendConfirmAsync(GetText(strs.available_tests),
                 Enum.GetValues<GambleTestTarget>()
@@ -897,7 +897,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task BetTest(GambleTestTarget target, int tests = 1000)
+        public async Task BetTest(GambleTestTarget target, int tests = 1000)
         {
             if (tests <= 0)
                 return;

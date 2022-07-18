@@ -41,7 +41,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageGuild)]
-    public async partial Task ImageOnlyChannel(StoopidTime time = null)
+    public async Task ImageOnlyChannel(StoopidTime time = null)
     {
         var newValue = _imageOnly.ToggleImageOnlyChannel(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
@@ -54,7 +54,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageChannels)]
     [BotPerm(ChannelPerm.ManageChannels)]
-    public async partial Task Slowmode(StoopidTime time = null)
+    public async Task Slowmode(StoopidTime time = null)
     {
         var seconds = (int?)time?.Time.TotalSeconds ?? 0;
         if (time is not null && (time.Time < TimeSpan.FromSeconds(0) || time.Time > TimeSpan.FromHours(6)))
@@ -73,7 +73,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageMessages)]
     [Priority(2)]
-    public async partial Task Delmsgoncmd(List _)
+    public async Task Delmsgoncmd(List _)
     {
         var guild = (SocketGuild)ctx.Guild;
         var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
@@ -104,7 +104,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageMessages)]
     [Priority(1)]
-    public async partial Task Delmsgoncmd(Server _ = Server.Server)
+    public async Task Delmsgoncmd(Server _ = Server.Server)
     {
         if (_service.ToggleDeleteMessageOnCommand(ctx.Guild.Id))
         {
@@ -123,7 +123,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageMessages)]
     [Priority(0)]
-    public partial Task Delmsgoncmd(Channel _, State s, ITextChannel ch)
+    public Task Delmsgoncmd(Channel _, State s, ITextChannel ch)
         => Delmsgoncmd(_, s, ch.Id);
 
     [Cmd]
@@ -131,7 +131,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageMessages)]
     [Priority(1)]
-    public async partial Task Delmsgoncmd(Channel _, State s, ulong? chId = null)
+    public async Task Delmsgoncmd(Channel _, State s, ulong? chId = null)
     {
         var actualChId = chId ?? ctx.Channel.Id;
         await _service.SetDelMsgOnCmdState(ctx.Guild.Id, actualChId, s);
@@ -148,7 +148,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.DeafenMembers)]
     [BotPerm(GuildPerm.DeafenMembers)]
-    public async partial Task Deafen(params IGuildUser[] users)
+    public async Task Deafen(params IGuildUser[] users)
     {
         await _service.DeafenUsers(true, users);
         await ReplyConfirmLocalizedAsync(strs.deafen);
@@ -158,7 +158,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.DeafenMembers)]
     [BotPerm(GuildPerm.DeafenMembers)]
-    public async partial Task UnDeafen(params IGuildUser[] users)
+    public async Task UnDeafen(params IGuildUser[] users)
     {
         await _service.DeafenUsers(false, users);
         await ReplyConfirmLocalizedAsync(strs.undeafen);
@@ -168,7 +168,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task DelVoiChanl([Leftover] IVoiceChannel voiceChannel)
+    public async Task DelVoiChanl([Leftover] IVoiceChannel voiceChannel)
     {
         await voiceChannel.DeleteAsync();
         await ReplyConfirmLocalizedAsync(strs.delvoich(Format.Bold(voiceChannel.Name)));
@@ -178,7 +178,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task CreatVoiChanl([Leftover] string channelName)
+    public async Task CreatVoiChanl([Leftover] string channelName)
     {
         var ch = await ctx.Guild.CreateVoiceChannelAsync(channelName);
         await ReplyConfirmLocalizedAsync(strs.createvoich(Format.Bold(ch.Name)));
@@ -188,7 +188,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task DelTxtChanl([Leftover] ITextChannel toDelete)
+    public async Task DelTxtChanl([Leftover] ITextChannel toDelete)
     {
         await toDelete.DeleteAsync();
         await ReplyConfirmLocalizedAsync(strs.deltextchan(Format.Bold(toDelete.Name)));
@@ -198,9 +198,9 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task CreaTxtChanl([Leftover] string channelName)
+    public async Task CreaTxtChanl([Leftover] string channelName)
     {
-        var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName);
+        var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName); 
         await ReplyConfirmLocalizedAsync(strs.createtextchan(Format.Bold(txtCh.Name)));
     }
 
@@ -208,7 +208,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task SetTopic([Leftover] string topic = null)
+    public async Task SetTopic([Leftover] string topic = null)
     {
         var channel = (ITextChannel)ctx.Channel;
         topic ??= "";
@@ -220,7 +220,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task SetChanlName([Leftover] string name)
+    public async Task SetChanlName([Leftover] string name)
     {
         var channel = (ITextChannel)ctx.Channel;
         await channel.ModifyAsync(c => c.Name = name);
@@ -231,7 +231,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async partial Task NsfwToggle()
+    public async Task NsfwToggle()
     {
         var channel = (ITextChannel)ctx.Channel;
         var isEnabled = channel.IsNsfw;
@@ -248,13 +248,13 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageMessages)]
     [Priority(0)]
-    public partial Task Edit(ulong messageId, [Leftover] string text)
+    public Task Edit(ulong messageId, [Leftover] string text)
         => Edit((ITextChannel)ctx.Channel, messageId, text);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public async partial Task Edit(ITextChannel channel, ulong messageId, [Leftover] string text)
+    public async Task Edit(ITextChannel channel, ulong messageId, [Leftover] string text)
     {
         var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
         var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
@@ -277,12 +277,12 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageMessages)]
     [BotPerm(ChannelPerm.ManageMessages)]
-    public partial Task Delete(ulong messageId, StoopidTime time = null)
+    public Task Delete(ulong messageId, StoopidTime time = null)
         => Delete((ITextChannel)ctx.Channel, messageId, time);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
+    public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
         => await InternalMessageAction(channel, messageId, time, msg => msg.DeleteAsync());
 
     private async Task InternalMessageAction(

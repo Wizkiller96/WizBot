@@ -20,7 +20,7 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(EventOptions))]
         [OwnerOnly]
-        public async partial Task EventStart(CurrencyEvent.Type ev, params string[] options)
+        public async Task EventStart(CurrencyEvent.Type ev, params string[] options)
         {
             var (opts, _) = OptionsParser.ParseFrom(new EventOptions(), options);
             if (!await _service.TryCreateEventAsync(ctx.Guild.Id, ctx.Channel.Id, ev, opts, GetEmbed))

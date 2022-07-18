@@ -10,7 +10,7 @@ public partial class Administration
     {
         [Cmd]
         [OwnerOnly]
-        public async partial Task RotatePlaying()
+        public async Task RotatePlaying()
         {
             if (_service.ToggleRotatePlaying())
                 await ReplyConfirmLocalizedAsync(strs.ropl_enabled);
@@ -20,7 +20,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task AddPlaying(ActivityType t, [Leftover] string status)
+        public async Task AddPlaying(ActivityType t, [Leftover] string status)
         {
             await _service.AddPlaying(t, status);
 
@@ -29,7 +29,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task ListPlaying()
+        public async Task ListPlaying()
         {
             var statuses = _service.GetRotatingStatuses();
 
@@ -45,7 +45,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task RemovePlaying(int index)
+        public async Task RemovePlaying(int index)
         {
             index -= 1;
 

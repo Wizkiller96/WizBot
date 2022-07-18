@@ -41,7 +41,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task Flip(int count = 1)
+        public async Task Flip(int count = 1)
         {
             if (count is > 10 or < 1)
             {
@@ -61,12 +61,12 @@ public partial class Gambling
             {
                 if (result[i].Side == 0)
                 {
-                    imgs[i] = Image.Load(headsArr);
+                    imgs[i] = Image.Load<Rgba32>(headsArr);
                     headCount++;
                 }
                 else
                 {
-                    imgs[i] = Image.Load(tailsArr);
+                    imgs[i] = Image.Load<Rgba32>(tailsArr);
                     tailCount++;
                 }
             }
@@ -96,7 +96,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task Betflip(ShmartNumber amount, BetFlipGuess guess)
+        public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
         {
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;

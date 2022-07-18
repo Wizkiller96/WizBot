@@ -13,7 +13,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task AutoAssignRole([Leftover] IRole role)
+        public async Task AutoAssignRole([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (role.Id == ctx.Guild.EveryoneRole.Id)
@@ -39,7 +39,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task AutoAssignRole()
+        public async Task AutoAssignRole()
         {
             if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
             {

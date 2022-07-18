@@ -653,7 +653,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 Guild = channel.Guild,
                 User = user,
-                XpAmount = actualXp
+                XpAmount = actualXp,
             });
         }
     }
@@ -862,24 +862,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats)
         => Task.Run(async () =>
         {
-            var usernameTextOptions = new TextGraphicsOptions
-            {
-                TextOptions = new()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                }
-            }.WithFallbackFonts(_fonts.FallBackFonts);
-
-            var clubTextOptions = new TextGraphicsOptions
-            {
-                TextOptions = new()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    VerticalAlignment = VerticalAlignment.Top
-                }
-            }.WithFallbackFonts(_fonts.FallBackFonts);
-
             using var img = Image.Load<Rgba32>(await GetXpBackgroundAsync(stats.User.UserId), out var imageFormat);
             if (template.User.Name.Show)
             {
@@ -894,11 +876,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 img.Mutate(x =>
                 {
-                    x.DrawText(usernameTextOptions,
+                    x.DrawText(new TextOptions(usernameFont)
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            FallbackFontFamilies = _fonts.FallBackFonts,
+                            Origin = new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8)
+                        },
                         "@" + username,
-                        usernameFont,
-                        template.User.Name.Color,
-                        new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8));
+                        template.User.Name.Color);
                 });
             }
 
@@ -910,11 +896,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 var clubFont = _fonts.NotoSans.CreateFont(template.Club.Name.FontSize, FontStyle.Regular);
 
-                img.Mutate(x => x.DrawText(clubTextOptions,
+                img.Mutate(x => x.DrawText(new TextOptions(clubFont)
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        FallbackFontFamilies = _fonts.FallBackFonts,
+                        Origin = new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)
+                    },
                     clubName,
-                    clubFont,
-                    template.Club.Name.Color,
-                    new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)));
+                    template.Club.Name.Color));
             }
 
             Font GetTruncatedFont(
@@ -989,37 +979,29 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.Xp.Global.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new()
+                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold))
                     {
-                        TextOptions = new()
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center
-                        }
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Origin = new(template.User.Xp.Global.Pos.X, template.User.Xp.Global.Pos.Y),
                     },
                     $"{global.LevelXp}/{global.RequiredXp}",
-                    _fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Global.Color),
-                    pen,
-                    new(template.User.Xp.Global.Pos.X, template.User.Xp.Global.Pos.Y)));
+                    pen));
             }
 
             if (template.User.Xp.Guild.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new()
+                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold))
                     {
-                        TextOptions = new()
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center
-                        }
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Origin = new(template.User.Xp.Guild.Pos.X, template.User.Xp.Guild.Pos.Y)
                     },
                     $"{guild.LevelXp}/{guild.RequiredXp}",
-                    _fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Guild.Color),
-                    pen,
-                    new(template.User.Xp.Guild.Pos.X, template.User.Xp.Guild.Pos.Y)));
+                    pen));
             }
 
             if (stats.FullGuildStats.AwardedXp != 0 && template.User.Xp.Awarded.Show)
@@ -1083,14 +1065,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         using (var http = _httpFactory.CreateClient())
                         {
                             var avatarData = await http.GetByteArrayAsync(avatarUrl);
-                            using (var tempDraw = Image.Load(avatarData))
+                            using (var tempDraw = Image.Load<Rgba32>(avatarData))
                             {
                                 tempDraw.Mutate(x => x
                                                      .Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y)
                                                      .ApplyRoundedCorners(Math.Max(template.User.Icon.Size.X,
                                                                               template.User.Icon.Size.Y)
                                                                           / 2.0f));
-                                await using (var stream = tempDraw.ToStream())
+                                await using (var stream = await tempDraw.ToStreamAsync())
                                 {
                                     data = stream.ToArray();
                                 }
@@ -1217,14 +1199,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             return;
 
                         var imgData = await temp.Content.ReadAsByteArrayAsync();
-                        using (var tempDraw = Image.Load(imgData))
+                        using (var tempDraw = Image.Load<Rgba32>(imgData))
                         {
                             tempDraw.Mutate(x => x
                                                  .Resize(template.Club.Icon.Size.X, template.Club.Icon.Size.Y)
                                                  .ApplyRoundedCorners(Math.Max(template.Club.Icon.Size.X,
                                                                           template.Club.Icon.Size.Y)
                                                                       / 2.0f));
-                            await using (var tds = tempDraw.ToStream())
+                            await using (var tds = await tempDraw.ToStreamAsync())
                             {
                                 data = tds.ToArray();
                             }
