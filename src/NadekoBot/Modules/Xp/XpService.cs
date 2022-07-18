@@ -341,10 +341,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             }
             else // channel
             {
-                await ch?.SendConfirmAsync(_eb,
-                    _strings.GetText(strs.level_up_channel(user.Mention,
-                            Format.Bold(newLevel.ToString())),
-                        guild.Id));
+                if (ch is not null)
+                {
+                    await ch.SendConfirmAsync(_eb,
+                        _strings.GetText(strs.level_up_channel(user.Mention,
+                                Format.Bold(newLevel.ToString())),
+                            guild.Id));
+                }
             }
         }
         else // global level
