@@ -29,4 +29,5 @@ public class LogSetting : DbEntity
 
     public ulong? LogVoicePresenceId { get; set; }
     public ulong? LogVoicePresenceTTSId { get; set; }
+    public ulong? LogWarnsId { get; set; }
 }

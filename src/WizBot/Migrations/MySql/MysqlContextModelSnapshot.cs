@@ -1405,10 +1405,14 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong?>("LogVoicePresenceTTSId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("logvoicepresencettsid");
+                    
+                    b.Property<ulong?>("LogWarnsId")
+                     .HasColumnType("bigint unsigned")
+                     .HasColumnName("logwarnsid");
 
                     b.Property<ulong?>("MessageDeletedId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("messagedeletedid");
+                     .HasColumnType("bigint unsigned")
+                     .HasColumnName("messagedeletedid");
 
                     b.Property<ulong?>("MessageUpdatedId")
                         .HasColumnType("bigint unsigned")

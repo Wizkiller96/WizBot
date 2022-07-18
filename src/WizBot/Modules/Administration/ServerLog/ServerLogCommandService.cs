@@ -27,6 +27,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
     private readonly IMemoryCache _memoryCache;
 
     private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new();
+    private readonly UserPunishService _punishService;
 
     public LogCommandService(
         DiscordSocketClient client,
@@ -36,7 +37,8 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         ProtectionService prot,
         GuildTimezoneService tz,
         IMemoryCache memoryCache,
-        IEmbedBuilderService eb)
+        IEmbedBuilderService eb,
+        UserPunishService punishService)
     {
         _client = client;
         _memoryCache = memoryCache;
@@ -46,8 +48,8 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute = mute;
         _prot = prot;
         _tz = tz;
+        _punishService = punishService;
         
-
         using (var uow = db.GetDbContext())
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -82,6 +84,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
         
+        _punishService.OnUserWarned += PunishServiceOnOnUserWarned;
     }
 
     public async Task OnReadyAsync()
@@ -185,6 +188,30 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                         logSetting.LogVoicePresenceTTSId = value ? channelId : null;
         await uow.SaveChangesAsync();
         GuildLogSettings.AddOrUpdate(guildId, _ => logSetting, (_, _) => logSetting);
+    }
+    
+    
+    
+    private async Task PunishServiceOnOnUserWarned(Warning arg)
+    {
+        if (!GuildLogSettings.TryGetValue(arg.GuildId, out var logSetting) || logSetting.LogWarnsId is null)
+            return;
+        
+        var g = _client.GetGuild(arg.GuildId);
+        
+        ITextChannel? logChannel;
+        if ((logChannel = await TryGetLogChannel(g, logSetting, LogType.UserWarned)) is null)
+            return;
+
+        var embed = _eb.Create()
+                       .WithOkColor()
+                       .WithTitle($"⚠️ User Warned")
+                       .WithDescription($"<@{arg.UserId}> | {arg.UserId}")
+                       .AddField("Mod", arg.Moderator)
+                       .AddField("Reason", string.IsNullOrWhiteSpace(arg.Reason) ? "-" : arg.Reason, true)
+                       .WithFooter(CurrentTime(g));
+
+        await logChannel.EmbedAsync(embed);
     }
 
     private Task _client_UserUpdated(SocketUser before, SocketUser uAfter)
@@ -299,6 +326,9 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 case LogType.VoicePresenceTts:
                     channelId = logSetting.LogVoicePresenceTTSId =
                         logSetting.LogVoicePresenceTTSId is null ? cid : default;
+                    break;
+                case LogType.UserWarned:
+                    channelId = logSetting.LogWarnsId = logSetting.LogWarnsId is null ? cid : default;
                     break;
             }
 
@@ -1148,6 +1178,9 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             case LogType.UserMuted:
                 id = logSetting.UserMutedId;
                 break;
+            case LogType.UserWarned:
+                id = logSetting.LogWarnsId;
+                break;
         }
 
         if (id is null or 0)
@@ -1217,6 +1250,9 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 break;
             case LogType.VoicePresenceTts:
                 newLogSetting.LogVoicePresenceTTSId = null;
+                break;
+            case LogType.UserWarned:
+                newLogSetting.LogWarnsId = null;
                 break;
         }
 
