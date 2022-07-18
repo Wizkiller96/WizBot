@@ -555,7 +555,11 @@ public partial class NSFW : WizBotModule<ISearchImagesService>
                        .WithUrl(g.Url)
                        .AddField(GetText(strs.favorites), g.Likes, true)
                        .AddField(GetText(strs.pages), g.PageCount, true)
-                       .AddField(GetText(strs.tags), tagString, true)
+                       .AddField(GetText(strs.tags),
+                           string.IsNullOrWhiteSpace(tagString)
+                               ? "?"
+                               : tagString,
+                           true)
                        .WithFooter(g.UploadedAt.ToString("f"))
                        .WithOkColor();
 

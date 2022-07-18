@@ -9,7 +9,7 @@ public sealed class Tag
 
 public sealed class Gallery
 {
-    public string Id { get; }
+    public uint Id { get; }
     public string Url { get; }
     public string FullTitle { get; }
     public string Title { get; }
@@ -21,7 +21,7 @@ public sealed class Gallery
 
 
     public Gallery(
-        string id,
+        uint id,
         string url,
         string fullTitle,
         string title,
