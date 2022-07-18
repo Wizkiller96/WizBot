@@ -67,8 +67,7 @@ helpText: |-
 # List of modules and commands completely blocked on the bot
 blocked:
   commands: []
-  modules: 
-    - nsfw
+  modules: []
 # Which string will be used to recognize the commands
 prefix: .
 # Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
