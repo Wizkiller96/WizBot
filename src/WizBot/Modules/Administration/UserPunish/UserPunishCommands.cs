@@ -341,7 +341,8 @@ public partial class Administration
         public async partial Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
         {
             // this should never happen. Addrole has its own method with higher priority
-            if (punish == PunishmentAction.AddRole)
+            // also disallow warn punishment for getting warned
+            if (punish is PunishmentAction.AddRole or PunishmentAction.Warn)
                 return;
 
             var success = _service.WarnPunish(ctx.Guild.Id, number, punish, time);
