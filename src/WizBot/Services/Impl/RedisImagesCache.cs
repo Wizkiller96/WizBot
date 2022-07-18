@@ -59,6 +59,11 @@ public sealed class ImageCache : IImageCache, INService
             GetImageKey(url),
             async () =>
             {
+                if (url.IsFile)
+                {
+                    return await File.ReadAllBytesAsync(url.LocalPath);
+                }
+
                 using var http = _httpFactory.CreateClient();
                 var bytes = await http.GetByteArrayAsync(url);
                 return bytes;
