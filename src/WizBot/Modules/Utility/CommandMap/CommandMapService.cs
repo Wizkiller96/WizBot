@@ -45,8 +45,7 @@ public class CommandMapService : IInputTransformer, INService
         uow.SaveChanges();
         return count;
     }
-
-    // todo bank take all
+    
     public async Task<string> TransformInput(
         IGuild guild,
         IMessageChannel channel,

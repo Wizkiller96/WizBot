@@ -55,6 +55,7 @@ public class ReplacementBuilder
         _reps.TryAdd("%server%", () => g is null ? "DM" : g.Name);
         _reps.TryAdd("%server.id%", () => g is null ? "DM" : g.Id.ToString());
         _reps.TryAdd("%server.name%", () => g is null ? "DM" : g.Name);
+        _reps.TryAdd("%server.icon%", () => g is null ? null : g.IconUrl);
         _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server.boosters%", () => g.PremiumSubscriptionCount.ToString());
         _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
