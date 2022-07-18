@@ -193,11 +193,12 @@ public class RemindService : INService, IReadyExecutor
             ServerId = guildId ?? 0,
             IsPrivate = isPrivate,
             When = time,
-            Message = message,
+            Message = message, 
         };
 
         await using var ctx = _db.GetDbContext();
         await ctx.Reminders
                  .AddAsync(rem);
+        await ctx.SaveChangesAsync();
     }
 }
