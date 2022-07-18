@@ -138,7 +138,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
 
             await _remind.AddReminderAsync(ctx.User.Id,
-                ctx.Channel.Id,
+                ctx.User.Id,
                 ctx.Guild.Id,
                 true,
                 when,

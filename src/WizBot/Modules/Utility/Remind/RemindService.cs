@@ -180,7 +180,7 @@ public class RemindService : INService, IReadyExecutor
     }
     
     public async Task AddReminderAsync(ulong userId,
-        ulong channelId,
+        ulong targetId,
         ulong? guildId,
         bool isPrivate,
         DateTime time,
@@ -189,7 +189,7 @@ public class RemindService : INService, IReadyExecutor
         var rem = new Reminder
         {
             UserId = userId,
-            ChannelId = channelId,
+            ChannelId = targetId,
             ServerId = guildId ?? 0,
             IsPrivate = isPrivate,
             When = time,
