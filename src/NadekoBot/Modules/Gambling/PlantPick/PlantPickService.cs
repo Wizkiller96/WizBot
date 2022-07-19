@@ -319,9 +319,10 @@ public class PlantPickService : INService, IExecNoCommand
                 return msg.Id;
             }
         }
-        catch
+        catch (Exception ex)
         {
             // if sending fails, return null as message id
+            Log.Warning(ex, "Sending plant message failed: {Message}", ex.Message);
             return null;
         }
     }
