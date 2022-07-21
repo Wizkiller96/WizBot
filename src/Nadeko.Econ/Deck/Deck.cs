@@ -1,6 +1,4 @@
 #nullable disable
-using Nadeko.Common;
-
 namespace Nadeko.Econ;
 
 public class Deck
