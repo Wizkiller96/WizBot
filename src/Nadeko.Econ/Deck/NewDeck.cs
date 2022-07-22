@@ -39,13 +39,16 @@ public abstract class NewDeck<TCard, TSuit, TValue>
         return null;
     }
 
+    public virtual TCard? Peek()
+        => _cards.First?.Value;
+
     public virtual void Shuffle()
     {
         var cards = _cards.ToList();
-        cards.Shuffle();
+        var newCards = cards.Shuffle();
         
         _cards.Clear();
-        foreach (var card in cards)
+        foreach (var card in newCards)
             _cards.AddFirst(card);
     }
 }

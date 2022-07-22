@@ -1,15 +1,18 @@
-﻿namespace Nadeko.Econ.Gambling.Betdraw;
+﻿using Serilog;
+
+namespace Nadeko.Econ.Gambling.Betdraw;
 
 public sealed class BetdrawGame
 {
     private static readonly NadekoRandom _rng = new();
+    private readonly RegularDeck _deck;
 
     private const decimal SINGLE_GUESS_MULTI = 2.075M;
     private const decimal DOUBLE_GUESS_MULTI = 4.15M;
     
     public BetdrawGame()
     {
-        
+        _deck = new RegularDeck();
     }
     
     public BetdrawResult Draw(BetdrawValueGuess? val, BetdrawColorGuess? col, decimal amount)
@@ -17,18 +20,19 @@ public sealed class BetdrawGame
         if (val is null && col is null)
             throw new ArgumentNullException(nameof(val));
 
-        var card = new Deck().CardPool[_rng.Next(0, 52)];
+        _deck.Shuffle();
+        var card = _deck.Peek()!;
 
-        var realVal = card.Number < 7
+        var realVal = (int)card.Value < 7
             ? BetdrawValueGuess.Low
             : BetdrawValueGuess.High;
 
-        var realCol = card.Suit is Deck.CardSuit.Diamonds or Deck.CardSuit.Hearts
+        var realCol = card.Suit is RegularSuit.Diamonds or RegularSuit.Hearts
             ? BetdrawColorGuess.Red
             : BetdrawColorGuess.Black;
         
         // if card is 7, autoloss
-        if (card.Number == 7)
+        if (card.Value == RegularValue.Seven)
         {
             return new()
             {

@@ -77,6 +77,25 @@ public partial class Gambling
                 embed: eb.Build());
         }
 
+        private async Task<Image<Rgba32>> GetCardImageAsync(RegularCard currentCard)
+        {
+            var oldCard = new Deck.Card((currentCard.Suit switch
+                {
+                    RegularSuit.Clubs => Deck.CardSuit.Clubs,
+                    RegularSuit.Diamonds => Deck.CardSuit.Diamonds,
+                    RegularSuit.Hearts => Deck.CardSuit.Hearts,
+                    _ => Deck.CardSuit.Spades
+                }),
+                (int)currentCard.Value >= 11
+                    ? (int)currentCard.Value - 1
+                    : (int)currentCard.Value);
+            
+            return await GetCardImageAsync(oldCard);
+            // var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
+            // var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
+            // return Image.Load<Rgba32>(cardBytes);
+        }
+        
         private async Task<Image<Rgba32>> GetCardImageAsync(Deck.Card currentCard)
         {
             var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
@@ -152,6 +171,7 @@ public partial class Gambling
             var eb = _eb.Create(ctx)
                 .WithOkColor()
                 .WithAuthor(ctx.User)
+                .WithDescription(result.Card.GetEmoji())
                 .AddField(GetText(strs.guess), GetGuessInfo(val, col), true)
                 .AddField(GetText(strs.card), GetCardInfo(result.Card), true)
                 .AddField(GetText(strs.won), N((long)result.Won), false)
@@ -180,20 +200,20 @@ public partial class Gambling
             
             return $"{val} / {col}";
         }
-        private string GetCardInfo(Deck.Card card)
+        private string GetCardInfo(RegularCard card)
         {
-            var val = card.Number switch
+            var val = (int)card.Value switch
             {
                 < 7 => "Lo ⬇️",
                 > 7 => "Hi ⬆️",
                 _ => "7 💀"
             };
 
-            var col = card.Number == 7
+            var col = card.Value == RegularValue.Seven
                 ? "7 💀"
                 : card.Suit switch
                 {
-                    Deck.CardSuit.Diamonds or Deck.CardSuit.Hearts => "R 🔴",
+                    RegularSuit.Diamonds or RegularSuit.Hearts => "R 🔴",
                     _ => "B ⚫"
                 };
             
