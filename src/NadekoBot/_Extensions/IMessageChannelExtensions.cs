@@ -228,40 +228,47 @@ public static class MessageChannelExtensions
         {
             _ = Task.Run(async () =>
             {
-                if (si is not SocketMessageComponent smc)
-                    return;
-
-                if (smc.Message.Id != msg.Id)
-                    return;
-
-                if (smc.Data.CustomId != BUTTON_LEFT && smc.Data.CustomId != BUTTON_RIGHT)
-                    return;
-                
-                await si.DeferAsync();
-                if (smc.User.Id != ctx.User.Id)
-                    return;
-
-                if (smc.Data.CustomId == BUTTON_LEFT)
+                try
                 {
-                    if (currentPage == 0)
+                    if (si is not SocketMessageComponent smc)
                         return;
 
-                    var toSend = await pageFunc(--currentPage);
-                    if (addPaginatedFooter)
-                        toSend.AddPaginatedFooter(currentPage, lastPage);
+                    if (smc.Message.Id != msg.Id)
+                        return;
 
-                    await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
-                }
-                else if (smc.Data.CustomId == BUTTON_RIGHT)
-                {
-                    if (lastPage > currentPage)
+                    if (smc.Data.CustomId != BUTTON_LEFT && smc.Data.CustomId != BUTTON_RIGHT)
+                        return;
+
+                    await si.DeferAsync();
+                    if (smc.User.Id != ctx.User.Id)
+                        return;
+
+                    if (smc.Data.CustomId == BUTTON_LEFT)
                     {
-                        var toSend = await pageFunc(++currentPage);
+                        if (currentPage == 0)
+                            return;
+
+                        var toSend = await pageFunc(--currentPage);
                         if (addPaginatedFooter)
                             toSend.AddPaginatedFooter(currentPage, lastPage);
 
                         await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
                     }
+                    else if (smc.Data.CustomId == BUTTON_RIGHT)
+                    {
+                        if (lastPage > currentPage)
+                        {
+                            var toSend = await pageFunc(++currentPage);
+                            if (addPaginatedFooter)
+                                toSend.AddPaginatedFooter(currentPage, lastPage);
+
+                            await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
                 }
             });
 
