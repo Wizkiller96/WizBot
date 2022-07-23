@@ -79,21 +79,9 @@ public partial class Gambling
 
         private async Task<Image<Rgba32>> GetCardImageAsync(RegularCard currentCard)
         {
-            var oldCard = new Deck.Card((currentCard.Suit switch
-                {
-                    RegularSuit.Clubs => Deck.CardSuit.Clubs,
-                    RegularSuit.Diamonds => Deck.CardSuit.Diamonds,
-                    RegularSuit.Hearts => Deck.CardSuit.Hearts,
-                    _ => Deck.CardSuit.Spades
-                }),
-                (int)currentCard.Value >= 11
-                    ? (int)currentCard.Value - 1
-                    : (int)currentCard.Value);
-            
-            return await GetCardImageAsync(oldCard);
-            // var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
-            // var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
-            // return Image.Load<Rgba32>(cardBytes);
+            var cardName = currentCard.GetName().ToLowerInvariant().Replace(' ', '_');
+            var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
+            return Image.Load<Rgba32>(cardBytes);
         }
         
         private async Task<Image<Rgba32>> GetCardImageAsync(Deck.Card currentCard)

@@ -27,7 +27,7 @@ public class NewDeckTests
         
         Assert.IsNotNull(card);
         Assert.AreEqual(card.Suit, RegularSuit.Hearts);
-        Assert.AreEqual(card.Value, RegularValue.A);
+        Assert.AreEqual(card.Value, RegularValue.Ace);
         Assert.AreEqual(_deck.CurrentCount, _deck.TotalCount - 1);
     }
 
@@ -47,5 +47,25 @@ public class NewDeckTests
         var noCard = _deck.Draw();
         
         Assert.IsNull(noCard);
+    }
+
+    [Test]
+    public void TestCardGetName()
+    {
+        var ace = _deck.Draw()!;
+        var two = _deck.Draw()!;
+        
+        Assert.AreEqual("Ace of Hearts", ace.GetName());
+        Assert.AreEqual("Two of Hearts", two.GetName());
+    }
+
+    [Test]
+    public void TestPeek()
+    {
+        var ace = _deck.Peek()!;
+
+        var tenOfSpades = _deck.Peek(48);
+        Assert.AreEqual(ace, new RegularCard(RegularSuit.Hearts, RegularValue.Ace));
+        Assert.AreEqual(tenOfSpades, new RegularCard(RegularSuit.Spades, RegularValue.Ten));
     }
 }

@@ -20,8 +20,7 @@ public sealed class BetdrawGame
         if (val is null && col is null)
             throw new ArgumentNullException(nameof(val));
 
-        _deck.Shuffle();
-        var card = _deck.Peek()!;
+        var card = _deck.Peek(_rng.Next(0, 52))!;
 
         var realVal = (int)card.Value < 7
             ? BetdrawValueGuess.Low

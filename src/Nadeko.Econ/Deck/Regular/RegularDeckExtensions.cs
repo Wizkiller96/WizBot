@@ -1,6 +1,6 @@
 ﻿namespace Nadeko.Econ;
 
-public static class DeckExtensions
+public static class RegularDeckExtensions
 {
     public static string GetEmoji(this RegularSuit suit)
         => suit switch
@@ -14,7 +14,7 @@ public static class DeckExtensions
     public static string GetEmoji(this RegularValue value)
         => value switch
         {
-            RegularValue.A => "🇦",
+            RegularValue.Ace => "🇦",
             RegularValue.Two => "2️⃣",
             RegularValue.Three => "3️⃣",
             RegularValue.Four => "4️⃣",
@@ -31,6 +31,15 @@ public static class DeckExtensions
 
     public static string GetEmoji(this RegularCard card)
         => $"{card.Value.GetEmoji()} {card.Suit.GetEmoji()}";
+
+    public static string GetName(this RegularValue value)
+        => value.ToString();
+
+    public static string GetName(this RegularSuit suit)
+        => suit.ToString();
+
+    public static string GetName(this RegularCard card)
+        => $"{card.Value.ToString()} of {card.Suit.GetName()}";
 }
 
 

@@ -2,7 +2,7 @@
 
 public enum RegularValue
 {
-    A = 1,
+    Ace = 1,
     Two = 2,
     Three = 3,
     Four = 4,

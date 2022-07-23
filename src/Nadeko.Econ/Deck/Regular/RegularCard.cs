@@ -14,4 +14,7 @@ public sealed class RegularCard : NewCard<RegularSuit, RegularValue>
 
     public override int GetHashCode()
         => Suit.GetHashCode() * 17 + Value.GetHashCode();
+
+    public override string ToString()
+        => $"{Value.ToString()}-{Suit.ToString()}";
 }
