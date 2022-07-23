@@ -1,15 +1,5 @@
 ﻿namespace Nadeko.Econ;
 
-public abstract class NewCard<TSuit, TValue>
+public abstract record class NewCard<TSuit, TValue>(TSuit Suit, TValue Value)
     where TSuit : struct, Enum
-    where TValue : struct, Enum
-{
-    public TSuit Suit { get; }
-    public TValue Value { get; }
-
-    public NewCard(TSuit suit, TValue value)
-    {
-        Suit = suit;
-        Value = value;
-    }
-}
+    where TValue : struct, Enum;

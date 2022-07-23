@@ -42,7 +42,7 @@ public class NewDeckTests
         var lastCard = _deck.Draw();
         
         Assert.IsNotNull(lastCard);
-        Assert.AreEqual(lastCard, new RegularCard(RegularSuit.Spades, RegularValue.King));
+        Assert.AreEqual(new RegularCard(RegularSuit.Spades, RegularValue.King), lastCard);
 
         var noCard = _deck.Draw();
         
@@ -65,7 +65,19 @@ public class NewDeckTests
         var ace = _deck.Peek()!;
 
         var tenOfSpades = _deck.Peek(48);
-        Assert.AreEqual(ace, new RegularCard(RegularSuit.Hearts, RegularValue.Ace));
-        Assert.AreEqual(tenOfSpades, new RegularCard(RegularSuit.Spades, RegularValue.Ten));
+        Assert.AreEqual(new RegularCard(RegularSuit.Hearts, RegularValue.Ace), ace);
+        Assert.AreEqual(new RegularCard(RegularSuit.Spades, RegularValue.Ten), tenOfSpades);
+    }
+
+    [Test]
+    public void TestMultipleDeck()
+    {
+        var quadDeck = new MultipleRegularDeck(4);
+        var count = quadDeck.TotalCount;
+        
+        Assert.AreEqual(52 * 4, count);
+
+        var card = quadDeck.Peek(54);
+        Assert.AreEqual(new RegularCard(RegularSuit.Hearts, RegularValue.Three), card);
     }
 }

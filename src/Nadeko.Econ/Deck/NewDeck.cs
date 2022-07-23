@@ -5,26 +5,18 @@ public abstract class NewDeck<TCard, TSuit, TValue>
     where TSuit : struct, Enum
     where TValue : struct, Enum
 {
+    protected static readonly TSuit[] _suits = Enum.GetValues<TSuit>();
+    protected static readonly TValue[] _values = Enum.GetValues<TValue>();
+    
     public virtual int CurrentCount
         => _cards.Count;
     
     public virtual int TotalCount { get; }
 
-    private readonly LinkedList<TCard> _cards = new();
+    protected readonly LinkedList<TCard> _cards = new();
     public NewDeck()
     {
-        var suits = Enum.GetValues<TSuit>();
-        var values = Enum.GetValues<TValue>();
-
-        TotalCount =  suits.Length * values.Length;
-        
-        foreach (var suit in suits)
-        {
-            foreach (var val in values)
-            {
-                _cards.AddLast((TCard)Activator.CreateInstance(typeof(TCard), suit, val)!);
-            }
-        }
+        TotalCount = _suits.Length * _values.Length;
     }
 
     public virtual TCard? Draw()
