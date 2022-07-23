@@ -271,7 +271,7 @@ public partial class Utility : WizBotModule
         if (string.IsNullOrWhiteSpace(ownerIds))
             ownerIds = "-";
 
-        var adminIds = string.Join("\n", _creds.OwnerIds);
+        var adminIds = string.Join("\n", _creds.AdminIds);
         if (string.IsNullOrWhiteSpace(adminIds))
             adminIds = "-";
 
