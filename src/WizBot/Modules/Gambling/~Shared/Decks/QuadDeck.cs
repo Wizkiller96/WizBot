@@ -1,4 +1,6 @@
-﻿namespace WizBot.Modules.Gambling.Common;
+﻿using Wiz.Econ;
+
+namespace WizBot.Modules.Gambling.Common;
 
 public class QuadDeck : Deck
 {

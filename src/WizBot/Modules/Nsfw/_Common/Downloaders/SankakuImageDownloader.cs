@@ -1,5 +1,6 @@
 #nullable disable
 using System.Text.Json;
+using Wiz.Common;
 
 namespace WizBot.Modules.Nsfw.Common;
 

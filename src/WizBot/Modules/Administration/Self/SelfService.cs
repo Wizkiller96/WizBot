@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System.Collections.Immutable;
+using Wiz.Common;
 
 namespace WizBot.Modules.Administration.Services;
 

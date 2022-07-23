@@ -16,7 +16,7 @@ public partial class Searches
 
         [Cmd]
         [Priority(0)]
-        public async partial Task Xkcd(string arg = null)
+        public async Task Xkcd(string arg = null)
         {
             if (arg?.ToLowerInvariant().Trim() == "latest")
             {
@@ -50,7 +50,7 @@ public partial class Searches
 
         [Cmd]
         [Priority(1)]
-        public async partial Task Xkcd(int num)
+        public async Task Xkcd(int num)
         {
             if (num < 1)
                 return;

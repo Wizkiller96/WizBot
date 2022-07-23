@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Grpc.Core;
 using Grpc.Net.Client;
+using Wiz.Common;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Coordinator;
 

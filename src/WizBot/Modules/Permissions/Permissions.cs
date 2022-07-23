@@ -19,7 +19,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Verbose(PermissionAction action = null)
+    public async Task Verbose(PermissionAction action = null)
     {
         await using (var uow = _db.GetDbContext())
         {
@@ -41,7 +41,7 @@ public partial class Permissions : WizBotModule<PermissionService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [Priority(0)]
-    public async partial Task PermRole([Leftover] IRole role = null)
+    public async Task PermRole([Leftover] IRole role = null)
     {
         if (role is not null && role == role.Guild.EveryoneRole)
             return;
@@ -72,7 +72,7 @@ public partial class Permissions : WizBotModule<PermissionService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [Priority(1)]
-    public async partial Task PermRole(Reset _)
+    public async Task PermRole(Reset _)
     {
         await using (var uow = _db.GetDbContext())
         {
@@ -87,7 +87,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task ListPerms(int page = 1)
+    public async Task ListPerms(int page = 1)
     {
         if (page < 1)
             return;
@@ -120,7 +120,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RemovePerm(int index)
+    public async Task RemovePerm(int index)
     {
         index -= 1;
         if (index < 0)
@@ -150,7 +150,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task MovePerm(int from, int to)
+    public async Task MovePerm(int from, int to)
     {
         from -= 1;
         to -= 1;
@@ -204,7 +204,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task SrvrCmd(CommandOrExprInfo command, PermissionAction action)
+    public async Task SrvrCmd(CommandOrExprInfo command, PermissionAction action)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -225,7 +225,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task SrvrMdl(ModuleOrCrInfo module, PermissionAction action)
+    public async Task SrvrMdl(ModuleOrCrInfo module, PermissionAction action)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -245,7 +245,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task UsrCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] IGuildUser user)
+    public async Task UsrCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] IGuildUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -274,7 +274,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task UsrMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IGuildUser user)
+    public async Task UsrMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IGuildUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -302,7 +302,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RoleCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] IRole role)
+    public async Task RoleCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -334,7 +334,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task RoleMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IRole role)
+    public async Task RoleMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -366,7 +366,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task ChnlCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] ITextChannel chnl)
+    public async Task ChnlCmd(CommandOrExprInfo command, PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -395,7 +395,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task ChnlMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] ITextChannel chnl)
+    public async Task ChnlMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -423,7 +423,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task AllChnlMdls(PermissionAction action, [Leftover] ITextChannel chnl)
+    public async Task AllChnlMdls(PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -443,7 +443,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task AllRoleMdls(PermissionAction action, [Leftover] IRole role)
+    public async Task AllRoleMdls(PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -466,7 +466,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task AllUsrMdls(PermissionAction action, [Leftover] IUser user)
+    public async Task AllUsrMdls(PermissionAction action, [Leftover] IUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -486,7 +486,7 @@ public partial class Permissions : WizBotModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task AllSrvrMdls(PermissionAction action)
+    public async Task AllSrvrMdls(PermissionAction action)
     {
         var newPerm = new Permissionv2
         {

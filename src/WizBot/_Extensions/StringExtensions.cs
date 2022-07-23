@@ -2,6 +2,7 @@ using WizBot.Common.Yml;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using Wiz.Common;
 
 namespace WizBot.Extensions;
 
@@ -23,7 +24,7 @@ public static class StringExtensions
     {
         var spaces = length - str.Length;
         var padLeft = (spaces / 2) + str.Length;
-        return str.PadLeft(padLeft).PadRight(length);
+        return str.PadLeft(padLeft, '_').PadRight(length, '_');
     }
 
     public static T? MapJson<T>(this string str)

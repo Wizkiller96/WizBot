@@ -6,6 +6,7 @@ using WizBot.Modules.Utility.Common.Exceptions;
 using WizBot.Services.Database.Models;
 using System.Diagnostics;
 using System.Net;
+using Wiz.Common;
 
 namespace WizBot.Modules.Utility.Services;
 

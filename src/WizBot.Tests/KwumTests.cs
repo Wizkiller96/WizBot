@@ -1,4 +1,5 @@
-﻿using WizBot.Common;
+﻿using Wiz.Common;
+using WizBot.Common;
 using NUnit.Framework;
 
 namespace WizBot.Tests

@@ -18,7 +18,7 @@ public partial class Searches
         }
         
         [Cmd]
-        public async partial Task Stock([Leftover]string query)
+        public async Task Stock([Leftover]string query)
         {
             using var typing = ctx.Channel.EnterTypingState();
             
@@ -116,7 +116,7 @@ public partial class Searches
         
 
         [Cmd]
-        public async partial Task Crypto(string name)
+        public async Task Crypto(string name)
         {
             name = name?.ToUpperInvariant();
 

@@ -5,6 +5,7 @@ using WizBot.Db;
 using WizBot.Services.Database.Models;
 using System.Net;
 using System.Threading.Channels;
+using Wiz.Common;
 
 namespace WizBot.Modules.Administration.Services;
 

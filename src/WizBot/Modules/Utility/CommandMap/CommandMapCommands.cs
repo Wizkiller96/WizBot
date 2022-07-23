@@ -23,7 +23,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task AliasesClear()
+        public async Task AliasesClear()
         {
             var count = _service.ClearAliases(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.aliases_cleared(count));
@@ -32,7 +32,7 @@ public partial class Utility
         [Cmd]
         [UserPerm(GuildPerm.Administrator)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Alias(string trigger, [Leftover] string mapping = null)
+        public async Task Alias(string trigger, [Leftover] string mapping = null)
         {
             if (string.IsNullOrWhiteSpace(trigger))
                 return;
@@ -106,7 +106,7 @@ public partial class Utility
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task AliasList(int page = 1)
+        public async Task AliasList(int page = 1)
         {
             page -= 1;
 

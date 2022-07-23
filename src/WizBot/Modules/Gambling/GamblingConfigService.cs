@@ -174,5 +174,13 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
                 c.Version = 5;
             });
         }
+        
+        if (data.Version < 6)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 6;
+            });
+        }
     }
 }

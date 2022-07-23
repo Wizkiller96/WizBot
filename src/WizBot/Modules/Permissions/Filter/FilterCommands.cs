@@ -19,7 +19,7 @@ public partial class Permissions
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task FwClear()
+        public async Task FwClear()
         {
             _service.ClearFilteredWords(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.fw_cleared);
@@ -27,7 +27,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task SrvrFilterInv()
+        public async Task SrvrFilterInv()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -53,7 +53,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task ChnlFilterInv()
+        public async Task ChnlFilterInv()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -89,7 +89,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task SrvrFilterLin()
+        public async Task SrvrFilterLin()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -115,7 +115,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task ChnlFilterLin()
+        public async Task ChnlFilterLin()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -151,7 +151,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task SrvrFilterWords()
+        public async Task SrvrFilterWords()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -177,7 +177,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task ChnlFilterWords()
+        public async Task ChnlFilterWords()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -213,7 +213,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task FilterWord([Leftover] string word)
+        public async Task FilterWord([Leftover] string word)
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -259,7 +259,7 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task LstFilterWords(int page = 1)
+        public async Task LstFilterWords(int page = 1)
         {
             page--;
             if (page < 0)

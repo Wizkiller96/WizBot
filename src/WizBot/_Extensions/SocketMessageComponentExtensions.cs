@@ -1,4 +1,6 @@
-﻿namespace WizBot.Extensions;
+﻿using Wiz.Common;
+
+namespace WizBot.Extensions;
 
 public static class SocketMessageComponentExtensions
 {

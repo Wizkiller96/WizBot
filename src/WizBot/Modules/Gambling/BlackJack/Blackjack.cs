@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using Wiz.Econ;
+
 namespace WizBot.Modules.Gambling.Common.Blackjack;
 
 public class Blackjack

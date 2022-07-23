@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Html2Markdown;
+using Wiz.Common;
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -104,18 +105,14 @@ public class SearchesService : INService
         }
 
         bg.Mutate(x => x.DrawText(
-            new()
+            new TextOptions(_fonts.RipFont)
             {
-                TextOptions = new TextOptions
-                {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    WrapTextWidth = 190
-                }.WithFallbackFonts(_fonts.FallBackFonts)
+                HorizontalAlignment = HorizontalAlignment.Center,
+                FallbackFontFamilies = _fonts.FallBackFonts,
+                Origin = new(bg.Width / 2, 225),
             },
             text,
-            _fonts.RipFont,
-            Color.Black,
-            new(25, 225)));
+            Color.Black));
 
         //flowa
         using (var flowers = Image.Load(await _imgs.GetRipOverlayAsync()))

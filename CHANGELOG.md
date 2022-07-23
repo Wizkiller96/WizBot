@@ -2,6 +2,62 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.0] - 27.07.2022
+
+### Added
+
+- Added `.bettest` command which lets you test many gambling commands
+  - Better than .slottest
+  - Counts win/loss streaks too
+  - Doesn't count 1x returns as neither wins nor losses
+  - multipliers < 1 are considered losses, > 1 considered wins
+- Added `.betdraw` command which lets you guess red/black and/or high/low for a random card
+  - They payouts are very good, but seven always loses
+- Added `.lula` command. Plays the same as `.wof` but looks much nicer, and is easily customizable from gambling.yml without any changes to the sourcecode needed.
+- Added `.repeatskip` command which makes the next repeat trigger not post anything
+- Added `.imageonly` which will make the bot only allow link posts in the channel. Exclusive with `.imageonly`
+- Added release notifications. Bot owners will now receive new release notifications in dms if they have `checkForUpdates` set to `true` in data/bot.yml
+  - You can also configure it via `.conf bot checkforupdates <true/false>`
+- Added `.xpshop` which lets bot owners add xp backgrounds and xp frames for sale by configuring `data/xp.yml`
+  - You can also toggle xpshop feature via `.conf xp shop.is_enabled`
+
+### Changed
+
+- `.t` Trivia code cleaned up, added ALL pokemon generations
+
+- `.xpadd` will now work on roles too. It will add the specified xp to each user (visible to the bot) in the role
+- Improved / cleaned up / modernized how most gambling commands look
+  - `.roll`
+  - `.rolluo`
+  - `.draw`
+  - `.flip`
+  - `.slot`
+  - `.betroll`
+  - `.betflip`
+  - Try them out!
+- `.draw`, `.betdraw` and some other card commands (not all) will use the new, rewritten deck system
+- Error will be printed to the console if there's a problem in `.plant`
+- [dev] Split Wiz.Common into a separate project
+  - [dev] It will contain classes/utilities which can be shared across different WizBot related projects
+- [dev] Split Wiz.Econ into a separate project
+  - [dev] It should be home for the backend any gambling/currency/economy feature
+  - [dev] It will contain most gambling games and any shared logic
+- [dev] Compliation should take less time and RAM
+  - [dev] No longer using generator and partial methods for commands
+
+### Fixed
+
+- `.slot` will now show correct multipliers if they've been modified
+- Fix patron errors showing up even with permissions disabling the command
+- Fixed an issue with voice xp breaking xp gain.
+
+### Removed
+
+- Removed `.slottest`, replaced by `.bettest`
+- Removed `.wof`, replaced by `.lula`
+- [dev] Removed a lot of unused methods
+- [dev] Removed several unused response strings
+
 ## [4.2.15] - 12.07.2022
 
 ### Fixed

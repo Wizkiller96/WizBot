@@ -12,7 +12,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.MoveMembers)]
-        public async partial Task GameVoiceChannel()
+        public async Task GameVoiceChannel()
         {
             var vch = ((IGuildUser)ctx.User).VoiceChannel;
 

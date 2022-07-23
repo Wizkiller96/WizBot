@@ -1,7 +1,4 @@
 #nullable disable
-using WizBot.Common.Collections;
-using WizBot.Services.Database.Models;
-
 namespace WizBot.Modules.Permissions.Common;
 
 public class PermissionsCollection<T> : IndexedCollection<T>

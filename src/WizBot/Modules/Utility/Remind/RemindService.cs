@@ -4,6 +4,7 @@ using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Services.Database.Models;
 using System.Text.RegularExpressions;
+using Wiz.Common;
 
 namespace WizBot.Modules.Utility.Services;
 

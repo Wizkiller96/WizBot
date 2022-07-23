@@ -28,7 +28,7 @@ public partial class Searches
             => _httpFactory = factory;
 
         [Cmd]
-        public async partial Task Memelist(int page = 1)
+        public async Task Memelist(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -55,7 +55,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task Memegen(string meme, [Leftover] string memeText = null)
+        public async Task Memegen(string meme, [Leftover] string memeText = null)
         {
             var memeUrl = $"http://api.memegen.link/{meme}";
             if (!string.IsNullOrWhiteSpace(memeText))

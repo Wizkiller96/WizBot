@@ -12,7 +12,7 @@ namespace WizBot.Common.Configs;
 public sealed partial class BotConfig : ICloneable<BotConfig>
 {
     [Comment(@"DO NOT CHANGE")]
-    public int Version { get; set; } = 3;
+    public int Version { get; set; } = 4;
 
     [Comment(@"Most commands, when executed, have a small colored line
 next to the response. The color depends whether the command
@@ -29,12 +29,8 @@ and copy the hex code fo your selected color (marked as #)")]
 Allowed values: Simple, Normal, None")]
     public ConsoleOutputType ConsoleOutputType { get; set; }
 
-//         [Comment(@"For what kind of updates will the bot check.
-// Allowed values: Release, Commit, None")]
-//         public UpdateCheckType CheckForUpdates { get; set; }
-
-    // [Comment(@"How often will the bot check for updates, in hours")]
-    // public int CheckUpdateInterval { get; set; }
+    [Comment(@"Whether the bot will check for new releases every hour")]
+    public bool CheckForUpdates { get; set; } = true;
 
     [Comment(@"Do you want any messages sent by users in Bot's DM to be forwarded to the owner(s)?")]
     public bool ForwardMessages { get; set; }

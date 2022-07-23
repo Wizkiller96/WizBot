@@ -1,4 +1,5 @@
-﻿namespace WizBot.Modules.Nsfw;
+﻿#nullable disable warnings
+namespace WizBot.Modules.Nsfw;
 
 public record UrlReply
 {

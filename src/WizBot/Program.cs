@@ -1,3 +1,5 @@
+using Wiz.Common;
+
 var pid = Environment.ProcessId;
 
 var shardId = 0;

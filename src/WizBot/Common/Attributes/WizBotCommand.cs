@@ -3,11 +3,16 @@ using System.Runtime.CompilerServices;
 namespace WizBot.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class WizBotCommandAttribute : CommandAttribute
+public sealed class CmdAttribute : CommandAttribute
 {
     public string MethodName { get; }
 
-    public WizBotCommandAttribute([CallerMemberName] string memberName = "")
+    public CmdAttribute([CallerMemberName] string memberName = "")
         : base(CommandNameLoadHelper.GetCommandNameFor(memberName))
-        => MethodName = memberName.ToLowerInvariant();
+    {
+        MethodName = memberName.ToLowerInvariant();
+        Aliases = CommandNameLoadHelper.GetAliasesFor(memberName);
+        Remarks = memberName.ToLowerInvariant();
+        Summary = memberName.ToLowerInvariant();
+    }
 }

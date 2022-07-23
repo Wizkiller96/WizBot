@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Wiz.Common;
 using WizBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using WizBot.Modules.Games.Common;
 

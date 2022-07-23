@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Wiz.Common;
 
 namespace WizBot.Modules.Music.Resolvers;
 

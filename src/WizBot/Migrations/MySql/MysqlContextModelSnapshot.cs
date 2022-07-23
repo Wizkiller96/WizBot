@@ -16,7 +16,7 @@ namespace WizBot.Migrations.Mysql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
@@ -364,6 +364,44 @@ namespace WizBot.Migrations.Mysql
                  .HasName("pk_streamonlinemessages");
 
                 b.ToTable("streamonlinemessages", (string)null);
+            });
+            
+            modelBuilder.Entity("WizBot.Db.Models.XpShopOwnedItem", b =>
+            {
+                b.Property<int>("Id")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("int")
+                 .HasColumnName("id");
+
+                b.Property<DateTime?>("DateAdded")
+                 .HasColumnType("datetime(6)")
+                 .HasColumnName("dateadded");
+
+                b.Property<bool>("IsUsing")
+                 .HasColumnType("tinyint(1)")
+                 .HasColumnName("isusing");
+
+                b.Property<string>("ItemKey")
+                 .IsRequired()
+                 .HasColumnType("varchar(255)")
+                 .HasColumnName("itemkey");
+
+                b.Property<int>("ItemType")
+                 .HasColumnType("int")
+                 .HasColumnName("itemtype");
+
+                b.Property<ulong>("UserId")
+                 .HasColumnType("bigint unsigned")
+                 .HasColumnName("userid");
+
+                b.HasKey("Id")
+                 .HasName("pk_xpshopowneditem");
+
+                b.HasIndex("UserId", "ItemType", "ItemKey")
+                 .IsUnique()
+                 .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+
+                b.ToTable("xpshopowneditem", (string)null);
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
@@ -1352,6 +1390,10 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong>("GuildId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
+                    
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
 
                     b.HasKey("Id")
                         .HasName("pk_imageonlychannels");

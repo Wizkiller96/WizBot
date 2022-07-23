@@ -7,6 +7,7 @@ using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
+using Wiz.Common;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

@@ -1,6 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
-using WizBot.Common.Collections;
+using Wiz.Common;
 using WizBot.Db;
 using WizBot.Services.Database;
 using WizBot.Services.Database.Models;

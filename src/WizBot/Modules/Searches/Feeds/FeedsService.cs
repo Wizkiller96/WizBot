@@ -4,6 +4,7 @@ using CodeHollow.FeedReader.Feeds;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Wiz.Common;
 using WizBot.Db;
 using WizBot.Services.Database.Models;
 

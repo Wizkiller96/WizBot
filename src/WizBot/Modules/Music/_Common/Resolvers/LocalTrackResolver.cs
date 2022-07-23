@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using Wiz.Common;
 
 namespace WizBot.Modules.Music.Resolvers;
 

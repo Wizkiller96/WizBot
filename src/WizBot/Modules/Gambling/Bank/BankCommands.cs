@@ -1,4 +1,5 @@
-﻿using WizBot.Modules.Gambling.Bank;
+﻿using Wiz.Common;
+using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
 
@@ -18,7 +19,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task BankDeposit(ShmartNumber amount)
+        public async Task BankDeposit(ShmartNumber amount)
         {
             if (amount <= 0)
                 return;
@@ -34,7 +35,7 @@ public partial class Gambling
         }
         
         [Cmd]
-        public async partial Task BankWithdraw(ShmartNumber amount)
+        public async Task BankWithdraw(ShmartNumber amount)
         {
             if (amount <= 0)
                 return;
@@ -50,7 +51,7 @@ public partial class Gambling
         }
         
         [Cmd]
-        public async partial Task BankBalance()
+        public async Task BankBalance()
         {
             var bal = await _bank.GetBalanceAsync(ctx.User.Id);
 

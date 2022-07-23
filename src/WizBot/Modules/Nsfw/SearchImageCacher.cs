@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Microsoft.Extensions.Caching.Memory;
+using Wiz.Common;
 
 namespace WizBot.Modules.Nsfw.Common;
 

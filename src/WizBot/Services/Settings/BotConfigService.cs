@@ -24,6 +24,7 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
         AddParsedProp("console.type", bs => bs.ConsoleOutputType, Enum.TryParse, ConfigPrinters.ToString);
         AddParsedProp("locale", bs => bs.DefaultLocale, ConfigParsers.Culture, ConfigPrinters.Culture);
         AddParsedProp("prefix", bs => bs.Prefix, ConfigParsers.String, ConfigPrinters.ToString);
+        AddParsedProp("checkforupdates", bs => bs.CheckForUpdates, bool.TryParse, ConfigPrinters.ToString);
 
         Migrate();
     }
@@ -48,5 +49,12 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
                                      .ToHashSet();
             });
         }
+        
+        if (data.Version < 4)
+            ModifyConfig(c =>
+            {
+                c.Version = 4;
+                c.CheckForUpdates = true;
+            });
     }
 }

@@ -25,7 +25,7 @@ public sealed class BehaviorHandler : IBehaviorHandler, INService
     public void Initialize()
     {
         noCommandExecs = _services.GetServices<IExecNoCommand>().ToArray();
-        preCommandExecs = _services.GetServices<IExecPreCommand>().ToArray();
+        preCommandExecs = _services.GetServices<IExecPreCommand>().OrderByDescending(x => x.Priority).ToArray();
         onMessageExecs = _services.GetServices<IExecOnMessage>().OrderByDescending(x => x.Priority).ToArray();
         inputTransformers = _services.GetServices<IInputTransformer>().ToArray();
     }

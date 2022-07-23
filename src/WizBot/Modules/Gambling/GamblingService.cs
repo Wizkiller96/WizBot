@@ -6,8 +6,6 @@ using WizBot.Db;
 using WizBot.Db.Models;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Connect4;
-using WizBot.Modules.Gambling.Common.Slot;
-using WizBot.Modules.Gambling.Common.WheelOfFortune;
 
 namespace WizBot.Modules.Gambling.Services;
 
@@ -21,6 +19,8 @@ public class GamblingService : INService, IReadyExecutor
     private readonly DiscordSocketClient _client;
     private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
+
+    private static readonly TypedKey<long> _curDecayKey = new("currency:last_decay");
 
     public GamblingService(
         DbService db,
@@ -69,8 +69,7 @@ public class GamblingService : INService, IReadyExecutor
             }
         }
     }
-
-    private static readonly TypedKey<long> _curDecayKey = new("currency:last_decay");
+    
     private async Task CurrencyDecayLoopAsync()
     {
         if (_bot.Client.ShardId != 0)
@@ -131,40 +130,6 @@ public class GamblingService : INService, IReadyExecutor
         }
     }
 
-    public async Task<SlotResponse> SlotAsync(ulong userId, long amount)
-    {
-        var takeRes = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
-
-        if (!takeRes)
-        {
-            return new()
-            {
-                Error = GamblingError.NotEnough
-            };
-        }
-
-        var game = new SlotGame();
-        var result = game.Spin();
-        long won = 0;
-
-        if (result.Multiplier > 0)
-        {
-            won = (long)(result.Multiplier * amount);
-
-            await _cs.AddAsync(userId, won, new("slot", "win", $"Slot Machine x{result.Multiplier}"));
-        }
-
-        var toReturn = new SlotResponse
-        {
-            Multiplier = result.Multiplier,
-            Won = won
-        };
-
-        toReturn.Rolls.AddRange(result.Rolls);
-
-        return toReturn;
-    }
-
     private static readonly TypedKey<EconomyResult> _ecoKey = new("wizbot:economy");
 
     public async Task<EconomyResult> GetEconomyAsync()
@@ -197,9 +162,6 @@ public class GamblingService : INService, IReadyExecutor
 
         return data;
     }
-
-    public Task<WheelOfFortuneGame.Result> WheelOfFortuneSpinAsync(ulong userId, long bet)
-        => new WheelOfFortuneGame(userId, bet, _gss.Data, _cs).SpinAsync();
 
 
     private static readonly SemaphoreSlim _timelyLock = new (1, 1);
@@ -250,15 +212,4 @@ public class GamblingService : INService, IReadyExecutor
 
     public async Task RemoveAllTimelyClaimsAsync()
         => await _cache.RemoveAsync(_timelyKey);
-
-
-    public readonly struct EconomyResult
-    {
-        public decimal Cash { get; init; }
-        public decimal Planted { get; init; }
-        public decimal Waifus { get; init; }
-        public decimal OnePercent { get; init; }
-        public decimal Bank { get; init; }
-        public long Bot { get; init; }
-    }
 }

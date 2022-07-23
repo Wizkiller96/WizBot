@@ -11,6 +11,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using Wiz.Common;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Searches;
@@ -39,7 +40,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Rip([Leftover] IGuildUser usr)
+    public async Task Rip([Leftover] IGuildUser usr)
     {
         var av = usr.RealAvatarUrl();
         await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av);
@@ -49,7 +50,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Weather([Leftover] string query)
+    public async Task Weather([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -97,7 +98,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Time([Leftover] string query)
+    public async Task Time([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -145,7 +146,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Movie([Leftover] string query = null)
+    public async Task Movie([Leftover] string query = null)
     {
         if (!await ValidateQuery(query))
             return;
@@ -171,19 +172,19 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public partial Task RandomCat()
+    public Task RandomCat()
         => InternalRandomImage(SearchesService.ImageTag.Cats);
 
     [Cmd]
-    public partial Task RandomDog()
+    public Task RandomDog()
         => InternalRandomImage(SearchesService.ImageTag.Dogs);
 
     [Cmd]
-    public partial Task RandomFood()
+    public Task RandomFood()
         => InternalRandomImage(SearchesService.ImageTag.Food);
 
     [Cmd]
-    public partial Task RandomBird()
+    public Task RandomBird()
         => InternalRandomImage(SearchesService.ImageTag.Birds);
 
     private Task InternalRandomImage(SearchesService.ImageTag tag)
@@ -193,7 +194,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Lmgtfy([Leftover] string ffs = null)
+    public async Task Lmgtfy([Leftover] string ffs = null)
     {
         if (!await ValidateQuery(ffs))
             return;
@@ -203,7 +204,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Shorten([Leftover] string query)
+    public async Task Shorten([Leftover] string query)
     {
         if (!await ValidateQuery(query))
             return;
@@ -246,7 +247,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task MagicTheGathering([Leftover] string search)
+    public async Task MagicTheGathering([Leftover] string search)
     {
         if (!await ValidateQuery(search))
             return;
@@ -273,7 +274,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Hearthstone([Leftover] string name)
+    public async Task Hearthstone([Leftover] string name)
     {
         if (!await ValidateQuery(name))
             return;
@@ -302,7 +303,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task UrbanDict([Leftover] string query = null)
+    public async Task UrbanDict([Leftover] string query = null)
     {
         if (!await ValidateQuery(query))
             return;
@@ -341,7 +342,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Define([Leftover] string word)
+    public async Task Define([Leftover] string word)
     {
         if (!await ValidateQuery(word))
             return;
@@ -412,7 +413,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Catfact()
+    public async Task Catfact()
     {
         using var http = _httpFactory.CreateClient();
         var response = await http.GetStringAsync("https://catfact.ninja/fact");
@@ -424,7 +425,7 @@ public partial class Searches : WizBotModule<SearchesService>
     //done in 3.0
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Revav([Leftover] IGuildUser usr = null)
+    public async Task Revav([Leftover] IGuildUser usr = null)
     {
         if (usr is null)
             usr = (IGuildUser)ctx.User;
@@ -435,7 +436,7 @@ public partial class Searches : WizBotModule<SearchesService>
 
     //done in 3.0
     [Cmd]
-    public async partial Task Revimg([Leftover] string imageLink = null)
+    public async Task Revimg([Leftover] string imageLink = null)
     {
         imageLink = imageLink?.Trim() ?? "";
 
@@ -446,7 +447,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Wiki([Leftover] string query = null)
+    public async Task Wiki([Leftover] string query = null)
     {
         query = query?.Trim();
 
@@ -465,7 +466,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Color(params Color[] colors)
+    public async Task Color(params Color[] colors)
     {
         if (!colors.Any())
             return;
@@ -485,7 +486,7 @@ public partial class Searches : WizBotModule<SearchesService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Avatar([Leftover] IGuildUser usr = null)
+    public async Task Avatar([Leftover] IGuildUser usr = null)
     {
         if (usr is null)
             usr = (IGuildUser)ctx.User;
@@ -502,7 +503,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Wikia(string target, [Leftover] string query)
+    public async Task Wikia(string target, [Leftover] string query)
     {
         if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
         {
@@ -540,103 +541,137 @@ public partial class Searches : WizBotModule<SearchesService>
             await ReplyErrorLocalizedAsync(strs.wikia_error);
         }
     }
-    
+
     [Cmd]
-        public async partial Task Nya(string format = "img", [Remainder] string category = "neko")
+    public async Task Nya(string format = "img", [Remainder] string category = "neko")
+    {
+        // List if category to pull an image from.
+        string[] img_cat =
         {
-            // List if category to pull an image from.
-            string[] img_cat = { "lizard", "cat", "neko", "no_tag_avatar", "neko_avatars_avatar", "wallpaper", "kitsune", "kiminonawa", "waifu", "keta_avatar", "gecg", "holo_avatar", "smug", "holo" };
+            "lizard", "cat", "neko", "no_tag_avatar", "neko_avatars_avatar", "wallpaper", "kitsune", "kiminonawa",
+            "waifu", "keta_avatar", "gecg", "holo_avatar", "smug", "holo"
+        };
 
-            string[] gif_cat = { "baka", "tickle", "feed", "neko", "poke", "pat", "kiss", "hug", "cuddle", "slap", "smug" };
+        string[] gif_cat = { "baka", "tickle", "feed", "neko", "poke", "pat", "kiss", "hug", "cuddle", "slap", "smug" };
 
-            // Check to see if the command is calling for a normal image or a gif.
-            string[] img_format = { "img", "gif" };
+        // Check to see if the command is calling for a normal image or a gif.
+        string[] img_format = { "img", "gif" };
 
-            if (string.IsNullOrWhiteSpace(category))
-                return;
+        if (string.IsNullOrWhiteSpace(category))
+            return;
 
-            if (string.IsNullOrWhiteSpace(format))
-                return;
+        if (string.IsNullOrWhiteSpace(format))
+            return;
 
-            try
+        try
+        {
+            JToken nekotitle;
+            JToken nekoimg;
+            using (var http = _httpFactory.CreateClient())
             {
-                JToken nekotitle;
-                JToken nekoimg;
-                using (var http = _httpFactory.CreateClient())
-                {
-                    nekotitle = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/text/cat_emote/").ConfigureAwait(false));
-                    nekoimg = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/images/sfw/{format}/{category}/").ConfigureAwait(false));
-                }
-                if (img_format.Contains("img") && img_cat.Contains(category))
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                        .WithAuthor($"Nekos Life - SFW IMG Database {nekotitle["data"]["response"]["text"]}",
-                            "https://i.imgur.com/a36AMkG.png",
-                            "http://nekos.life/")
-                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
-                else if (img_format.Contains("gif") && gif_cat.Contains(category))
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                        .WithAuthor($"Nekos Life - SFW GIF Database {nekotitle["data"]["response"]["text"]}",
-                            "https://i.imgur.com/a36AMkG.png",
-                            "http://nekos.life/")
-                        .WithImageUrl($"{nekoimg["data"]["response"]["url"]}")).ConfigureAwait(false);
-                else if (img_format.Contains("img") && gif_cat.Contains(category))
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithAuthor("Nekos Life - Invalid SFW IMG Category",
-                "https://i.imgur.com/a36AMkG.png",
-                "http://nekos.life/")
-                    .WithDescription("Seems the image category you was looking for could not be found. Please use the categories listed below.")
-                    .AddField("SFW IMG Categories", "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`", false)).ConfigureAwait(false);
-                else if (img_format.Contains("gif") && img_cat.Contains(category))
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithAuthor("Nekos Life - Invalid SFW GIF Category",
-                        "https://i.imgur.com/a36AMkG.png",
-                        "http://nekos.life/")
-                    .WithDescription("Seems the gif category you was looking for could not be found. Please use the categories listed below.")
-                    .AddField("SFW GIF Categories", "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`", false)).ConfigureAwait(false);
-                else
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithAuthor("Nekos Life - Invalid SFW Image Type or Category",
-                        "https://i.imgur.com/a36AMkG.png",
-                        "http://nekos.life/")
-                    .WithDescription("Seems the image type or category you was looking for could not be found. Please use the image type or categories listed below.")
-                    .AddField("SFW IMG Types", "`img`, `gif`", false)
-                    .AddField("SFW IMG Categories", "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`", false)
-                    .AddField("SFW GIF Categories", "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`", false)).ConfigureAwait(false);
+                nekotitle = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/text/cat_emote/")
+                                                    .ConfigureAwait(false));
+                nekoimg = JObject.Parse(await http
+                                              .GetStringAsync(
+                                                  $"https://api.nekos.dev/api/v3/images/sfw/{format}/{category}/")
+                                              .ConfigureAwait(false));
             }
-            catch (Exception ex)
+
+            if (img_format.Contains("img") && img_cat.Contains(category))
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithOkColor()
+                                                .WithAuthor(
+                                                    $"Nekos Life - SFW IMG Database {nekotitle["data"]["response"]["text"]}",
+                                                    "https://i.imgur.com/a36AMkG.png",
+                                                    "http://nekos.life/")
+                                                .WithImageUrl($"{nekoimg["data"]["response"]["url"]}"))
+                         .ConfigureAwait(false);
+            else if (img_format.Contains("gif") && gif_cat.Contains(category))
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithOkColor()
+                                                .WithAuthor(
+                                                    $"Nekos Life - SFW GIF Database {nekotitle["data"]["response"]["text"]}",
+                                                    "https://i.imgur.com/a36AMkG.png",
+                                                    "http://nekos.life/")
+                                                .WithImageUrl($"{nekoimg["data"]["response"]["url"]}"))
+                         .ConfigureAwait(false);
+            else if (img_format.Contains("img") && gif_cat.Contains(category))
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithAuthor("Nekos Life - Invalid SFW IMG Category",
+                                                    "https://i.imgur.com/a36AMkG.png",
+                                                    "http://nekos.life/")
+                                                .WithDescription(
+                                                    "Seems the image category you was looking for could not be found. Please use the categories listed below.")
+                                                .AddField("SFW IMG Categories",
+                                                    "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`",
+                                                    false))
+                         .ConfigureAwait(false);
+            else if (img_format.Contains("gif") && img_cat.Contains(category))
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithAuthor("Nekos Life - Invalid SFW GIF Category",
+                                                    "https://i.imgur.com/a36AMkG.png",
+                                                    "http://nekos.life/")
+                                                .WithDescription(
+                                                    "Seems the gif category you was looking for could not be found. Please use the categories listed below.")
+                                                .AddField("SFW GIF Categories",
+                                                    "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`",
+                                                    false))
+                         .ConfigureAwait(false);
+            else
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithAuthor("Nekos Life - Invalid SFW Image Type or Category",
+                                                    "https://i.imgur.com/a36AMkG.png",
+                                                    "http://nekos.life/")
+                                                .WithDescription(
+                                                    "Seems the image type or category you was looking for could not be found. Please use the image type or categories listed below.")
+                                                .AddField("SFW IMG Types", "`img`, `gif`", false)
+                                                .AddField("SFW IMG Categories",
+                                                    "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`",
+                                                    false)
+                                                .AddField("SFW GIF Categories",
+                                                    "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`",
+                                                    false))
+                         .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            await SendErrorAsync(ex.Message).ConfigureAwait(false);
+        }
+    }
+
+    // Waifu Gen Command
+
+    [Cmd]
+    public async Task GWaifu()
+    {
+        try
+        {
+            using (var http = _httpFactory.CreateClient())
             {
-                await SendErrorAsync(ex.Message).ConfigureAwait(false);
+                //var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithOkColor()
+                                                .WithAuthor("This Waifu Does Not Exist",
+                                                    null,
+                                                    "https://www.thiswaifudoesnotexist.net")
+                                                .WithImageUrl(
+                                                    $"https://www.thiswaifudoesnotexist.net/example-{new WizBotRandom().Next(0, 100000)}.jpg"))
+                         //.WithDescription($"{waifutxt}".TrimTo(1000)))
+                         .ConfigureAwait(false);
             }
         }
-
-        // Waifu Gen Command
-
-        [Cmd]
-        public async partial Task GWaifu()
+        catch (Exception ex)
         {
-            try 
-            {
-                using (var http = _httpFactory.CreateClient())
-                {
-                    //var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
-                    await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor()
-                        .WithAuthor("This Waifu Does Not Exist",
-                            null,
-                            "https://www.thiswaifudoesnotexist.net")
-                        .WithImageUrl($"https://www.thiswaifudoesnotexist.net/example-{new WizBotRandom().Next(0, 100000)}.jpg"))
-                        //.WithDescription($"{waifutxt}".TrimTo(1000)))
-                        .ConfigureAwait(false);
-                }
-            }
-            catch (Exception ex)
-            {
-                await SendErrorAsync(ex.Message).ConfigureAwait(false);
-            }
+            await SendErrorAsync(ex.Message).ConfigureAwait(false);
         }
+    }
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Bible(string book, string chapterAndVerse)
+    public async Task Bible(string book, string chapterAndVerse)
     {
         var obj = new BibleVerses();
         try
@@ -663,7 +698,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async partial Task Steam([Leftover] string query)
+    public async Task Steam([Leftover] string query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return;

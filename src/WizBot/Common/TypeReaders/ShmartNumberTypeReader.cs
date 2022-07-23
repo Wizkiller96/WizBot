@@ -3,6 +3,7 @@ using WizBot.Db;
 using WizBot.Modules.Gambling.Services;
 using NCalc;
 using System.Text.RegularExpressions;
+using Wiz.Common;
 
 namespace WizBot.Common.TypeReaders;
 

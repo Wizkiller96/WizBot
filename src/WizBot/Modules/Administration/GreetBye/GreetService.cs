@@ -191,6 +191,11 @@ public class GreetService : INService, IReadyExecutor
             if (conf.AutoDeleteByeMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
+        {
+            Log.Warning(ex, "Missing permissions to send a bye message, the bye message will be disabled on server: {GuildId}", channel.GuildId);
+            await SetBye(channel.GuildId, channel.Id, false);
+        }
         catch (Exception ex)
         {
             Log.Warning(ex, "Error embeding bye message");
@@ -218,6 +223,11 @@ public class GreetService : INService, IReadyExecutor
             var toDelete = await channel.SendAsync(text);
             if (conf.AutoDeleteGreetMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
+        }
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
+        {
+            Log.Warning(ex, "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}", channel.GuildId);
+            await SetGreet(channel.GuildId, channel.Id, false);
         }
         catch (Exception ex)
         {
@@ -259,7 +269,7 @@ public class GreetService : INService, IReadyExecutor
                     Description = pt.Text
                 };
             }
-
+            
             if (text is SmartEmbedText set)
             {
                 text = set with
@@ -315,7 +325,7 @@ public class GreetService : INService, IReadyExecutor
 
         return true;
     }
-    
+
     private static SmartTextEmbedFooter CreateFooterSource(IGuildUser user)
         => new()
         {

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System.Text.RegularExpressions;
+using Wiz.Common;
 
 namespace WizBot.Common;
 

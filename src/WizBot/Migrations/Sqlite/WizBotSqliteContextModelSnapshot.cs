@@ -15,7 +15,7 @@ namespace WizBot.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
                 {
@@ -286,6 +286,36 @@ namespace WizBot.Migrations
                 b.HasKey("Id");
 
                 b.ToTable("StreamOnlineMessages");
+            });
+            
+            modelBuilder.Entity("WizBot.Db.Models.XpShopOwnedItem", b =>
+            {
+                b.Property<int>("Id")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("INTEGER");
+
+                b.Property<DateTime?>("DateAdded")
+                 .HasColumnType("TEXT");
+
+                b.Property<bool>("IsUsing")
+                 .HasColumnType("INTEGER");
+
+                b.Property<string>("ItemKey")
+                 .IsRequired()
+                 .HasColumnType("TEXT");
+
+                b.Property<int>("ItemType")
+                 .HasColumnType("INTEGER");
+
+                b.Property<ulong>("UserId")
+                 .HasColumnType("INTEGER");
+
+                b.HasKey("Id");
+
+                b.HasIndex("UserId", "ItemType", "ItemKey")
+                 .IsUnique();
+
+                b.ToTable("XpShopOwnedItem");
             });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
@@ -1056,6 +1086,9 @@ namespace WizBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+                    
+                    b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

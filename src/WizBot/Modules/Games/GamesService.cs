@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
+using Wiz.Common;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.Acrophobia;

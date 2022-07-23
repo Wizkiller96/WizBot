@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using Wiz.Common;
+
 namespace WizBot.Modules.Administration.Services;
 
 public class PruneService : INService

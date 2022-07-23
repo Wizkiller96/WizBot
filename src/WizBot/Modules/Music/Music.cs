@@ -1,10 +1,10 @@
 #nullable disable
+using Wiz.Common;
 using WizBot.Modules.Music.Services;
 using WizBot.Services.Database.Models;
 
 namespace WizBot.Modules.Music;
 
-// [NoPublicBot]
 public sealed partial class Music : WizBotModule<IMusicService>
 {
     public enum All { All = -1 }
@@ -154,7 +154,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     // join vc
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Join()
+    public async Task Join()
     {
         var user = (IGuildUser)ctx.User;
 
@@ -172,7 +172,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     // leave vc (destroy)
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Destroy()
+    public async Task Destroy()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -185,36 +185,36 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(2)]
-    public partial Task Play()
+    public Task Play()
         => Next();
 
     // play - index = skip to that index
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public partial Task Play(int index)
+    public Task Play(int index)
         => MoveToIndex(index);
 
     // play - query = q(query)
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public partial Task Play([Leftover] string query)
+    public Task Play([Leftover] string query)
         => QueueByQuery(query);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public partial Task Queue([Leftover] string query)
+    public Task Queue([Leftover] string query)
         => QueueByQuery(query);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public partial Task QueueNext([Leftover] string query)
+    public Task QueueNext([Leftover] string query)
         => QueueByQuery(query, true);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Volume(int vol)
+    public async Task Volume(int vol)
     {
         if (vol is < 0 or > 100)
         {
@@ -232,7 +232,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Next()
+    public async Task Next()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -246,7 +246,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     // list queue, relevant page
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task ListQueue()
+    public async Task ListQueue()
     {
         // show page with the current track
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
@@ -261,7 +261,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     // list queue, specify page
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task ListQueue(int page)
+    public async Task ListQueue(int page)
     {
         if (--page < 0)
             return;
@@ -331,7 +331,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     // search
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task QueueSearch([Leftover] string query)
+    public async Task QueueSearch([Leftover] string query)
     {
         _ = ctx.Channel.TriggerTypingAsync();
 
@@ -384,7 +384,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public async partial Task TrackRemove(int index)
+    public async Task TrackRemove(int index)
     {
         if (index < 1)
         {
@@ -420,7 +420,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async partial Task TrackRemove(All _ = All.All)
+    public async Task TrackRemove(All _ = All.All)
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -438,7 +438,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Stop()
+    public async Task Stop()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -464,7 +464,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task QueueRepeat(InputRepeatType type = InputRepeatType.Queue)
+    public async Task QueueRepeat(InputRepeatType type = InputRepeatType.Queue)
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -482,7 +482,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Pause()
+    public async Task Pause()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -499,19 +499,19 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public partial Task Radio(string radioLink)
+    public Task Radio(string radioLink)
         => QueueByQuery(radioLink, false, MusicPlatform.Radio);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public partial Task Local([Leftover] string path)
+    public Task Local([Leftover] string path)
         => QueueByQuery(path, false, MusicPlatform.Local);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [OwnerOnly]
-    public async partial Task LocalPlaylist([Leftover] string dirPath)
+    public async Task LocalPlaylist([Leftover] string dirPath)
     {
         if (string.IsNullOrWhiteSpace(dirPath))
             return;
@@ -550,7 +550,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task TrackMove(int from, int to)
+    public async Task TrackMove(int from, int to)
     {
         if (--from < 0 || --to < 0 || from == to)
         {
@@ -591,12 +591,12 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public partial Task SoundCloudQueue([Leftover] string query)
+    public Task SoundCloudQueue([Leftover] string query)
         => QueueByQuery(query, false, MusicPlatform.SoundCloud);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task SoundCloudPl([Leftover] string playlist)
+    public async Task SoundCloudPl([Leftover] string playlist)
     {
         if (string.IsNullOrWhiteSpace(playlist))
             return;
@@ -621,7 +621,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task Playlist([Leftover] string playlistQuery)
+    public async Task Playlist([Leftover] string playlistQuery)
     {
         if (string.IsNullOrWhiteSpace(playlistQuery))
             return;
@@ -652,7 +652,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task NowPlaying()
+    public async Task NowPlaying()
     {
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
@@ -678,7 +678,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task PlaylistShuffle()
+    public async Task PlaylistShuffle()
     {
         var valid = await ValidateAsync();
         if (!valid)
@@ -698,7 +698,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
-    public async partial Task SetMusicChannel()
+    public async Task SetMusicChannel()
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
 
@@ -708,7 +708,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageMessages)]
-    public async partial Task UnsetMusicChannel()
+    public async Task UnsetMusicChannel()
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, null);
 
@@ -717,7 +717,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task AutoDisconnect()
+    public async Task AutoDisconnect()
     {
         var newState = await _service.ToggleAutoDisconnectAsync(ctx.Guild.Id);
 
@@ -730,7 +730,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task MusicQuality()
+    public async Task MusicQuality()
     {
         var quality = await _service.GetMusicQualityAsync(ctx.Guild.Id);
         await ReplyConfirmLocalizedAsync(strs.current_music_quality(Format.Bold(quality.ToString())));
@@ -739,7 +739,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
-    public async partial Task MusicQuality(QualityPreset preset)
+    public async Task MusicQuality(QualityPreset preset)
     {
         await _service.SetMusicQualityAsync(ctx.Guild.Id, preset);
         await ReplyConfirmLocalizedAsync(strs.music_quality_set(Format.Bold(preset.ToString())));
@@ -747,7 +747,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async partial Task QueueAutoPlay()
+    public async Task QueueAutoPlay()
     {
         var newValue = await _service.ToggleQueueAutoPlayAsync(ctx.Guild.Id);
         if (newValue)

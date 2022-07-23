@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Wiz.Common;
 using WizBot.Extensions;
 using WizBot.Services;
 using NUnit.Framework;

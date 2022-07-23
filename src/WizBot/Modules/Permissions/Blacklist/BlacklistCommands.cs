@@ -1,4 +1,5 @@
 #nullable disable
+using Wiz.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Services.Database.Models;
 
@@ -68,7 +69,7 @@ public partial class Permissions
 
         [Cmd]
         [AdminOnly]
-        public partial Task UserBlacklist(int page = 1)
+        public Task UserBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -78,7 +79,7 @@ public partial class Permissions
 
         [Cmd]
         [AdminOnly]
-        public partial Task ChannelBlacklist(int page = 1)
+        public Task ChannelBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -88,7 +89,7 @@ public partial class Permissions
 
         [Cmd]
         [AdminOnly]
-        public partial Task ServerBlacklist(int page = 1)
+        public Task ServerBlacklist(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -98,27 +99,27 @@ public partial class Permissions
 
         [Cmd]
         [AdminOnly]
-        public partial Task UserBlacklist(AddRemove action, ulong id)
+        public Task UserBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.User);
 
         [Cmd]
         [AdminOnly]
-        public partial Task UserBlacklist(AddRemove action, IUser usr)
+        public Task UserBlacklist(AddRemove action, IUser usr)
             => Blacklist(action, usr.Id, BlacklistType.User);
 
         [Cmd]
         [AdminOnly]
-        public partial Task ChannelBlacklist(AddRemove action, ulong id)
+        public Task ChannelBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Channel);
 
         [Cmd]
         [AdminOnly]
-        public partial Task ServerBlacklist(AddRemove action, ulong id)
+        public Task ServerBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Server);
 
         [Cmd]
         [AdminOnly]
-        public partial Task ServerBlacklist(AddRemove action, IGuild guild)
+        public Task ServerBlacklist(AddRemove action, IGuild guild)
             => Blacklist(action, guild.Id, BlacklistType.Server);
 
         private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)

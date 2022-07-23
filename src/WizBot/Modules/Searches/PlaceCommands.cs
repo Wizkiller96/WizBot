@@ -21,11 +21,11 @@ public partial class Searches
         private static readonly string _typesStr = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
 
         [Cmd]
-        public async partial Task Placelist()
+        public async Task Placelist()
             => await SendConfirmAsync(GetText(strs.list_of_place_tags(prefix)), _typesStr);
 
         [Cmd]
-        public async partial Task Place(PlaceType placeType, uint width = 0, uint height = 0)
+        public async Task Place(PlaceType placeType, uint width = 0, uint height = 0)
         {
             var url = string.Empty;
             switch (placeType)

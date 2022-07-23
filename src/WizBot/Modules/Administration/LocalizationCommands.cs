@@ -41,7 +41,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async partial Task LanguageSet()
+        public async Task LanguageSet()
             => await ReplyConfirmLocalizedAsync(strs.lang_set_show(Format.Bold(Culture.ToString()),
                 Format.Bold(Culture.NativeName)));
 
@@ -49,7 +49,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(1)]
-        public async partial Task LanguageSet(string name)
+        public async Task LanguageSet(string name)
         {
             try
             {
@@ -74,7 +74,7 @@ public partial class Administration
         }
 
         [Cmd]
-        public async partial Task LanguageSetDefault()
+        public async Task LanguageSetDefault()
         {
             var cul = _localization.DefaultCultureInfo;
             await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
@@ -82,7 +82,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task LanguageSetDefault(string name)
+        public async Task LanguageSetDefault(string name)
         {
             try
             {
@@ -108,7 +108,7 @@ public partial class Administration
         }
 
         [Cmd]
-        public async partial Task LanguagesList()
+        public async Task LanguagesList()
             => await ctx.Channel.EmbedAsync(_eb.Create()
                                                .WithOkColor()
                                                .WithTitle(GetText(strs.lang_list))

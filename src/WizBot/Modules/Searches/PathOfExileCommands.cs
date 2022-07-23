@@ -115,7 +115,7 @@ public partial class Searches
             => _httpFactory = httpFactory;
 
         [Cmd]
-        public async partial Task PathOfExile(string usr, string league = "", int page = 1)
+        public async Task PathOfExile(string usr, string league = "", int page = 1)
         {
             if (--page < 0)
                 return;
@@ -179,7 +179,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task PathOfExileLeagues()
+        public async Task PathOfExileLeagues()
         {
             var leagues = new List<Leagues>();
 
@@ -220,7 +220,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async partial Task PathOfExileCurrency(
+        public async Task PathOfExileCurrency(
             string leagueName,
             string currencyName,
             string convertName = "Chaos Orb")

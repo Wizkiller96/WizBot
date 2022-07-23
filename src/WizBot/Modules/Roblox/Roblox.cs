@@ -20,7 +20,7 @@ public partial class Roblox : WizBotModule<SearchesService>
     // This code can be redone and clean up if anyone willing to do it.
     [Cmd]
     [Ratelimit(10)]
-    public async partial Task RInfo([Remainder] string username)
+    public async Task RInfo([Remainder] string username)
     {
         if (string.IsNullOrWhiteSpace(username))
             return;

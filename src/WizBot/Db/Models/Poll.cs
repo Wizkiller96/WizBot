@@ -1,5 +1,4 @@
 #nullable disable
-using WizBot.Common.Collections;
 
 namespace WizBot.Services.Database.Models;
 

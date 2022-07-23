@@ -1,4 +1,5 @@
-﻿using WizBot.Db.Models;
+﻿using Wiz.Common;
+using WizBot.Db.Models;
 using WizBot.Modules.Searches.Common.StreamNotifications.Providers;
 
 namespace WizBot.Modules.Searches.Common.StreamNotifications;

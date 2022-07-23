@@ -14,7 +14,9 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Threading.Channels;
+using LinqToDB.EntityFrameworkCore;
 using Color = SixLabors.ImageSharp.Color;
+using Exception = System.Exception;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Xp.Services;
@@ -342,10 +344,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             }
             else // channel
             {
-                await ch.SendConfirmAsync(_eb,
-                    _strings.GetText(strs.level_up_channel(user.Mention,
-                            Format.Bold(newLevel.ToString())),
-                        guild.Id));
+                if (ch is not null)
+                {
+                    await ch.SendConfirmAsync(_eb,
+                        _strings.GetText(strs.level_up_channel(user.Mention,
+                                Format.Bold(newLevel.ToString())),
+                            guild.Id));
+                }
             }
         }
         else // global level
@@ -387,9 +392,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             template = JsonConvert.DeserializeObject<XpTemplate>(
                 File.ReadAllText(XP_TEMPLATE_PATH),
-                settings);
+                settings)!;
 
-            if (template!.Version < 1)
+            if (template.Version < 1)
             {
                 Log.Warning("Loaded default xp_template.json values as the old one was version 0. "
                             + "Old one was renamed to xp_template.json.old");
@@ -494,7 +499,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 Level = level,
                 RoleId = roleId,
-                Remove = remove
+                Remove = remove,
             });
         }
 
@@ -653,7 +658,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 Guild = channel.Guild,
                 User = user,
-                XpAmount = actualXp
+                XpAmount = actualXp,
+                Channel = channel
             });
         }
     }
@@ -721,6 +727,17 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     //     });
     // }
 
+    public async Task<int> AddXpToUsersAsync(ulong guildId, long amount, params ulong[] userIds)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<UserXpStats>()
+            .Where(x => x.GuildId == guildId && userIds.Contains(x.UserId))
+            .UpdateAsync(old => new()
+            {
+                Xp = old.Xp + amount
+            });
+    }
+    
     public void AddXp(ulong userId, ulong guildId, int amount)
     {
         using var uow = _db.GetDbContext();
@@ -862,25 +879,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public Task<(Stream Image, IImageFormat Format)> GenerateXpImageAsync(FullUserStats stats)
         => Task.Run(async () =>
         {
-            var usernameTextOptions = new TextGraphicsOptions
-            {
-                TextOptions = new()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center
-                }
-            }.WithFallbackFonts(_fonts.FallBackFonts);
+            var bgBytes = await GetXpBackgroundAsync(stats.User.UserId);
 
-            var clubTextOptions = new TextGraphicsOptions
+            if (bgBytes is null)
             {
-                TextOptions = new()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    VerticalAlignment = VerticalAlignment.Top
-                }
-            }.WithFallbackFonts(_fonts.FallBackFonts);
+                Log.Warning("Xp background image could not be loaded");
+                throw new ArgumentNullException(nameof(bgBytes));
+            }
 
-            using var img = Image.Load<Rgba32>(await GetXpBackgroundAsync(stats.User.UserId), out var imageFormat);
+            using var img = Image.Load<Rgba32>(bgBytes, out var imageFormat);
             if (template.User.Name.Show)
             {
                 var fontSize = (int)(template.User.Name.FontSize * 0.9);
@@ -894,11 +901,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 img.Mutate(x =>
                 {
-                    x.DrawText(usernameTextOptions,
+                    x.DrawText(new TextOptions(usernameFont)
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            FallbackFontFamilies = _fonts.FallBackFonts,
+                            Origin = new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8)
+                        },
                         "@" + username,
-                        usernameFont,
-                        template.User.Name.Color,
-                        new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8));
+                        template.User.Name.Color);
                 });
             }
 
@@ -910,11 +921,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 var clubFont = _fonts.NotoSans.CreateFont(template.Club.Name.FontSize, FontStyle.Regular);
 
-                img.Mutate(x => x.DrawText(clubTextOptions,
+                img.Mutate(x => x.DrawText(new TextOptions(clubFont)
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        FallbackFontFamilies = _fonts.FallBackFonts,
+                        Origin = new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)
+                    },
                     clubName,
-                    clubFont,
-                    template.Club.Name.Color,
-                    new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)));
+                    template.Club.Name.Color));
             }
 
             Font GetTruncatedFont(
@@ -989,37 +1004,29 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.Xp.Global.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new()
+                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold))
                     {
-                        TextOptions = new()
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center
-                        }
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Origin = new(template.User.Xp.Global.Pos.X, template.User.Xp.Global.Pos.Y),
                     },
                     $"{global.LevelXp}/{global.RequiredXp}",
-                    _fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Global.Color),
-                    pen,
-                    new(template.User.Xp.Global.Pos.X, template.User.Xp.Global.Pos.Y)));
+                    pen));
             }
 
             if (template.User.Xp.Guild.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new()
+                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold))
                     {
-                        TextOptions = new()
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center
-                        }
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Origin = new(template.User.Xp.Guild.Pos.X, template.User.Xp.Guild.Pos.Y)
                     },
                     $"{guild.LevelXp}/{guild.RequiredXp}",
-                    _fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Guild.Color),
-                    pen,
-                    new(template.User.Xp.Guild.Pos.X, template.User.Xp.Guild.Pos.Y)));
+                    pen));
             }
 
             if (stats.FullGuildStats.AwardedXp != 0 && template.User.Xp.Awarded.Show)
@@ -1083,14 +1090,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         using (var http = _httpFactory.CreateClient())
                         {
                             var avatarData = await http.GetByteArrayAsync(avatarUrl);
-                            using (var tempDraw = Image.Load(avatarData))
+                            using (var tempDraw = Image.Load<Rgba32>(avatarData))
                             {
                                 tempDraw.Mutate(x => x
                                                      .Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y)
                                                      .ApplyRoundedCorners(Math.Max(template.User.Icon.Size.X,
                                                                               template.User.Icon.Size.Y)
                                                                           / 2.0f));
-                                await using (var stream = tempDraw.ToStream())
+                                await using (var stream = await tempDraw.ToStreamAsync())
                                 {
                                     data = stream.ToArray();
                                 }
@@ -1131,21 +1138,48 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             return output;
         });
 
-    private async Task<byte[]> GetXpBackgroundAsync(ulong userId)
+    private async Task<byte[]?> GetXpBackgroundAsync(ulong userId)
     {
-        var img = await _images.GetXpBackgroundImageAsync();
-        return img;
+        var item = await GetItemInUse(userId, XpShopItemType.Background);
+        if (item is null)
+        {
+            return await _images.GetXpBackgroundImageAsync();
+        }
+        
+        var url = _xpConfig.Data.Shop.GetItemUrl(XpShopItemType.Background, item.ItemKey);
+        if (!string.IsNullOrWhiteSpace(url))
+        {
+            var data = await _images.GetImageDataAsync(new Uri(url));
+            return data;
+        }
+
+        return await _images.GetXpBackgroundImageAsync();
     }
 
     // #if GLOBAL_WIZBOT
     private async Task DrawFrame(Image<Rgba32> img, ulong userId)
     {
         var patron = await _ps.GetPatronAsync(userId);
-        Image frame = null;
-        if (patron.Tier == PatronTier.V)
-            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
-        else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
-            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+
+        var item = await GetItemInUse(userId, XpShopItemType.Frame);
+
+        Image? frame = null;
+        if (item is null)
+        {
+            if (patron.Tier == PatronTier.V)
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
+            else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+        }
+        else
+        {
+            var url = _xpConfig.Data.Shop.GetItemUrl(XpShopItemType.Frame, item.ItemKey);
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                var data = await _images.GetImageDataAsync(new Uri(url));
+                frame = Image.Load<Rgba32>(data);
+            }
+        }
 
         if (frame is not null)
             img.Mutate(x => x.DrawImage(frame, new Point(0, 0), new GraphicsOptions()));
@@ -1217,14 +1251,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             return;
 
                         var imgData = await temp.Content.ReadAsByteArrayAsync();
-                        using (var tempDraw = Image.Load(imgData))
+                        using (var tempDraw = Image.Load<Rgba32>(imgData))
                         {
                             tempDraw.Mutate(x => x
                                                  .Resize(template.Club.Icon.Size.X, template.Club.Icon.Size.Y)
                                                  .ApplyRoundedCorners(Math.Max(template.Club.Icon.Size.X,
                                                                           template.Club.Icon.Size.Y)
                                                                       / 2.0f));
-                            await using (var tds = tempDraw.ToStream())
+                            await using (var tds = await tempDraw.ToStreamAsync())
                             {
                                 data = tds.ToArray();
                             }
@@ -1278,9 +1312,174 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         await uow.SaveChangesAsync();
     }
 
-    private enum NotifOf
+    public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopBgs()
     {
-        Server,
-        Global
-    } // is it a server level-up or global level-up notification
+        var data = _xpConfig.Data;
+        if (!data.Shop.IsEnabled)
+            return new(default(Dictionary<string, XpConfig.ShopItemInfo>));
+
+        return new(_xpConfig.Data.Shop.Bgs?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
+    }
+    
+    public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopFrames()
+    {
+        var data = _xpConfig.Data;
+        if (!data.Shop.IsEnabled)
+            return new(default(Dictionary<string, XpConfig.ShopItemInfo>));
+        
+        return new(_xpConfig.Data.Shop.Frames?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
+    }
+
+    public async Task<BuyResult> BuyShopItemAsync(ulong userId, XpShopItemType type, string key)
+    {
+        var conf = _xpConfig.Data;
+
+        if (!conf.Shop.IsEnabled)
+            return BuyResult.UnknownItem;
+
+        if (conf.Shop.TierRequirement != PatronTier.None)
+        {
+            var patron = await _ps.GetPatronAsync(userId);
+
+            if ((int)patron.Tier < (int)conf.Shop.TierRequirement)
+                return BuyResult.InsufficientPatronTier;
+        }
+        
+        await using var ctx = _db.GetDbContext();
+        // await using var tran = await ctx.Database.BeginTransactionAsync();
+        try
+        {
+            if (await ctx.GetTable<XpShopOwnedItem>().AnyAsyncLinqToDB(x => x.UserId == userId && x.ItemKey == key && x.ItemType == type))
+                return BuyResult.AlreadyOwned;
+
+            var item = GetShopItem(type, key);
+
+            if (item is null || item.Price < 0)
+                return BuyResult.UnknownItem;
+
+            if (item.Price > 0 && !await _cs.RemoveAsync(userId, item.Price, new("xpshop", "buy", $"Background {key}")))
+                return BuyResult.InsufficientFunds;
+                
+
+            await ctx.GetTable<XpShopOwnedItem>()
+                .InsertAsync(() => new XpShopOwnedItem()
+                {
+                    UserId = userId,
+                    IsUsing = false,
+                    ItemKey = key,
+                    ItemType = type,
+                    DateAdded = DateTime.UtcNow,
+                });
+
+            return BuyResult.Success;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error buying shop item: {ErrorMessage}", ex.Message);
+            return BuyResult.UnknownItem;
+        }
+    }
+
+    private XpConfig.ShopItemInfo? GetShopItem(XpShopItemType type, string key)
+    {
+        var data = _xpConfig.Data;
+        if (type == XpShopItemType.Background)
+        {
+            if (data.Shop.Bgs is {} bgs && bgs.TryGetValue(key, out var item))
+                return item;
+            
+            return null;
+        }
+
+        if (type == XpShopItemType.Frame)
+        {
+            if (data.Shop.Frames is {} fs && fs.TryGetValue(key, out var item))
+                return item;
+            
+            return null;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(type));
+    }
+
+    public async Task<bool> OwnsItemAsync(ulong userId,
+        XpShopItemType itemType,
+        string key)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .AnyAsyncLinqToDB(x => x.UserId == userId
+                                   && x.ItemType == itemType
+                                   && x.ItemKey == key);
+    }
+    
+    
+    public async Task<XpShopOwnedItem?> GetUserItemAsync(ulong userId,
+        XpShopItemType itemType,
+        string key)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                              && x.ItemType == itemType
+                                              && x.ItemKey == key);
+    }
+    
+    public async Task<XpShopOwnedItem?> GetItemInUse(ulong userId,
+        XpShopItemType itemType)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                              && x.ItemType == itemType
+                                              && x.IsUsing);
+    }
+
+    public async Task<bool> UseShopItemAsync(ulong userId, XpShopItemType itemType, string key)
+    {
+        var data = _xpConfig.Data;
+        XpConfig.ShopItemInfo? item = null;
+        if (itemType == XpShopItemType.Background)
+        {
+            data.Shop.Bgs?.TryGetValue(key, out item);
+        }
+        else
+        {
+            data.Shop.Frames?.TryGetValue(key, out item);
+        }
+
+        if (item is null)
+            return false;
+
+        await using var ctx = _db.GetDbContext();
+
+        if (await OwnsItemAsync(userId, itemType, key))
+        {
+            await ctx.GetTable<XpShopOwnedItem>()
+                .Where(x => x.UserId == userId && x.ItemType == itemType)
+                .UpdateAsync(old => new()
+                {
+                    IsUsing = key == old.ItemKey
+                });
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public PatronTier GetXpShopTierRequirement()
+        => _xpConfig.Data.Shop.TierRequirement;
+
+    public bool IsShopEnabled()
+        => _xpConfig.Data.Shop.IsEnabled;
+}
+
+public enum BuyResult
+{
+    Success,
+    AlreadyOwned,
+    InsufficientFunds,
+    UnknownItem,
+    InsufficientPatronTier,
 }

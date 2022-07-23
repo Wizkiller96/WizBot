@@ -20,7 +20,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task GlobalPermList()
+        public async Task GlobalPermList()
         {
             var blockedModule = _service.BlockedModules;
             var blockedCommands = _service.BlockedCommands;
@@ -43,7 +43,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task GlobalModule(ModuleOrCrInfo module)
+        public async Task GlobalModule(ModuleOrCrInfo module)
         {
             var moduleName = module.Name.ToLowerInvariant();
 
@@ -60,7 +60,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task GlobalCommand(CommandOrExprInfo cmd)
+        public async Task GlobalCommand(CommandOrExprInfo cmd)
         {
             var commandName = cmd.Name.ToLowerInvariant();
             var added = _service.ToggleCommand(commandName);

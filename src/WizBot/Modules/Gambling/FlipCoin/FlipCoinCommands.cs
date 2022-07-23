@@ -1,4 +1,5 @@
 #nullable disable
+using Wiz.Common;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;
@@ -10,19 +11,19 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class FlipCoinCommands : GamblingSubmodule<GamblingService>
+    public partial class FlipCoinCommands : GamblingSubmodule<IGamblingService>
     {
-        public enum BetFlipGuess
+        public enum BetFlipGuess : byte
         {
-            H = 1,
-            Head = 1,
-            Heads = 1,
-            T = 2,
-            Tail = 2,
-            Tails = 2
+            H = 0,
+            Head = 0,
+            Heads = 0,
+            T = 1,
+            Tail = 1,
+            Tails = 1
         }
 
-        private static readonly WizBotRandom _rng = new();
+        private static readonly NadekoRandom _rng = new();
         private readonly IImageCache _images;
         private readonly ICurrencyService _cs;
         private readonly ImagesConfig _ic;
@@ -40,7 +41,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task Flip(int count = 1)
+        public async Task Flip(int count = 1)
         {
             if (count is > 10 or < 1)
             {
@@ -51,78 +52,86 @@ public partial class Gambling
             var headCount = 0;
             var tailCount = 0;
             var imgs = new Image<Rgba32>[count];
-            for (var i = 0; i < count; i++)
+            var headsArr = await _images.GetHeadsImageAsync();
+            var tailsArr = await _images.GetTailsImageAsync();
+
+            var result = await _service.FlipAsync(count);
+            
+            for (var i = 0; i < result.Length; i++)
             {
-                var headsArr = await _images.GetHeadsImageAsync();
-                var tailsArr = await _images.GetTailsImageAsync();
-                if (_rng.Next(0, 10) < 5)
+                if (result[i].Side == 0)
                 {
-                    imgs[i] = Image.Load(headsArr);
+                    imgs[i] = Image.Load<Rgba32>(headsArr);
                     headCount++;
                 }
                 else
                 {
-                    imgs[i] = Image.Load(tailsArr);
+                    imgs[i] = Image.Load<Rgba32>(tailsArr);
                     tailCount++;
                 }
             }
 
             using var img = imgs.Merge(out var format);
-            await using var stream = img.ToStream(format);
+            await using var stream = await img.ToStreamAsync(format);
             foreach (var i in imgs)
                 i.Dispose();
 
+            var imgName = $"coins.{format.FileExtensions.First()}";
+            
             var msg = count != 1
-                ? Format.Bold(ctx.User.ToString())
-                  + " "
-                  + GetText(strs.flip_results(count, headCount, tailCount))
-                : Format.Bold(ctx.User.ToString())
-                  + " "
-                  + GetText(strs.flipped(headCount > 0
-                      ? Format.Bold(GetText(strs.heads))
-                      : Format.Bold(GetText(strs.tails))));
+                ? Format.Bold(GetText(strs.flip_results(count, headCount, tailCount)))
+                : GetText(strs.flipped(headCount > 0
+                    ? Format.Bold(GetText(strs.heads))
+                    : Format.Bold(GetText(strs.tails))));
+            
+            var eb = _eb.Create(ctx)
+                .WithOkColor()
+                .WithAuthor(ctx.User)
+                .WithDescription(msg)
+                .WithImageUrl($"attachment://{imgName}");
 
-            await ctx.Channel.SendFileAsync(stream, $"{count} coins.{format.FileExtensions.First()}", msg);
+            await ctx.Channel.SendFileAsync(stream,
+                imgName,
+                embed: eb.Build());
         }
 
         [Cmd]
-        public async partial Task Betflip(ShmartNumber amount, BetFlipGuess guess)
+        public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
         {
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;
 
-            var removed = await _cs.RemoveAsync(ctx.User, amount, new("betflip", "bet"));
-            if (!removed)
+            var res = await _service.BetFlipAsync(ctx.User.Id, amount, (byte)guess);
+            if (!res.TryPickT0(out var result, out _))
             {
                 await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
             }
 
-            BetFlipGuess result;
             Uri imageToSend;
             var coins = _ic.Data.Coins;
-            if (_rng.Next(0, 1000) <= 499)
+            if (result.Side == 0)
             {
                 imageToSend = coins.Heads[_rng.Next(0, coins.Heads.Length)];
-                result = BetFlipGuess.Heads;
             }
             else
             {
                 imageToSend = coins.Tails[_rng.Next(0, coins.Tails.Length)];
-                result = BetFlipGuess.Tails;
             }
 
             string str;
-            if (guess == result)
+            var won = (long)result.Won;
+            if (won > 0)
             {
-                var toWin = (long)(amount * Config.BetFlip.Multiplier);
-                str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.flip_guess(N(toWin)));
-                await _cs.AddAsync(ctx.User, toWin, new("betflip", "win"));
+                str = Format.Bold(GetText(strs.flip_guess(N(won))));
             }
             else
-                str = Format.Bold(ctx.User.ToString()) + " " + GetText(strs.better_luck);
+            {
+                str = Format.Bold(GetText(strs.better_luck));
+            }
 
             await ctx.Channel.EmbedAsync(_eb.Create()
+                .WithAuthor(ctx.User)
                                             .WithDescription(str)
                                             .WithOkColor()
                                             .WithImageUrl(imageToSend.ToString()));

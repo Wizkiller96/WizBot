@@ -37,7 +37,7 @@ public partial class Utility
 
         [Cmd]
         [Priority(1)]
-        public async partial Task Remind(MeOrHere meorhere, [Leftover] string remindString)
+        public async Task Remind(MeOrHere meorhere, [Leftover] string remindString)
         {
             if (!_service.TryParseRemindMessage(remindString, out var remindData))
             {
@@ -58,7 +58,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public async partial Task Remind(ITextChannel channel, [Leftover] string remindString)
+        public async Task Remind(ITextChannel channel, [Leftover] string remindString)
         {
             var perms = ((IGuildUser)ctx.User).GetPermissions(channel);
             if (!perms.SendMessages || !perms.ViewChannel)
@@ -82,12 +82,12 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public partial Task RemindList(Server _, int page = 1)
+        public Task RemindList(Server _, int page = 1)
             => RemindListInternal(page, true);
 
         [Cmd]
         [Priority(1)]
-        public partial Task RemindList(int page = 1)
+        public Task RemindList(int page = 1)
             => RemindListInternal(page, false);
 
         private async Task RemindListInternal(int page, bool isServer)
@@ -134,12 +134,12 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public partial Task RemindDelete(Server _, int index)
+        public Task RemindDelete(Server _, int index)
             => RemindDelete(index, true);
 
         [Cmd]
         [Priority(1)]
-        public partial Task RemindDelete(int index)
+        public Task RemindDelete(int index)
             => RemindDelete(index, false);
 
         private async Task RemindDelete(int index, bool isServer)

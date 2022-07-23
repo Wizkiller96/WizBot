@@ -3,6 +3,7 @@ using WizBot.Common.Configs;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 using System.Collections.Immutable;
+using Wiz.Common;
 using ExecuteResult = Discord.Commands.ExecuteResult;
 using PreconditionResult = Discord.Commands.PreconditionResult;
 

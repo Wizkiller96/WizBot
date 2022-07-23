@@ -1,6 +1,7 @@
 #nullable disable
 using StackExchange.Redis;
 using System.Web;
+using Wiz.Common;
 
 namespace WizBot.Services;
 

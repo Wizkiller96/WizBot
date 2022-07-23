@@ -1,4 +1,4 @@
-﻿using WizBot.Common.Collections;
+﻿using Wiz.Common;
 using WizBot.Services.Database.Models;
 using NUnit.Framework;
 using System;

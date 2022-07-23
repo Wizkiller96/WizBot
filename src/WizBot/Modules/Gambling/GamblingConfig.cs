@@ -39,14 +39,14 @@ Set 0 for unlimited")]
     [Comment(@"How much will each user's owned currency decay over time.")]
     public DecayConfig Decay { get; set; }
 
-    [Comment(@"Settings for Wheel Of Fortune command.")]
-    public WheelOfFortuneSettings WheelOfFortune { get; set; }
+    [Comment(@"Settings for LuckyLadder command")]
+    public LuckyLadderSettings LuckyLadder { get; set; }
 
     [Comment(@"Settings related to waifus")]
     public WaifuConfig Waifu { get; set; }
 
     [Comment(@"Amount of currency selfhosters will get PER pledged dollar CENT.
-1 = 100 currency per $. Used almost exclusively on public wizbot.")]
+1 = 100 currency per $. Used almost exclusively on public WizBot.")]
     public decimal PatreonCurrencyPerCent { get; set; } = 1;
 
     [Comment(@"Currency reward per vote.
@@ -59,7 +59,6 @@ This will work only if you've set up VotesApi and correct credentials for topgg 
     public GamblingConfig()
     {
         BetRoll = new();
-        WheelOfFortune = new();
         Waifu = new();
         Currency = new();
         BetFlip = new();
@@ -67,6 +66,7 @@ This will work only if you've set up VotesApi and correct credentials for topgg 
         Timely = new();
         Decay = new();
         Slots = new();
+        LuckyLadder = new();
     }
 }
 
@@ -173,13 +173,13 @@ public partial class DecayConfig
 }
 
 [Cloneable]
-public partial class WheelOfFortuneSettings
+public partial class LuckyLadderSettings
 {
     [Comment(@"Self-Explanatory. Has to have 8 values, otherwise the command won't work.")]
     public decimal[] Multipliers { get; set; }
 
-    public WheelOfFortuneSettings()
-        => Multipliers = new[] { 1.7M, 1.5M, 0.2M, 0.1M, 0.3M, 0.5M, 1.2M, 2.4M };
+    public LuckyLadderSettings()
+        => Multipliers = new[] { 2.4M, 1.7M, 1.5M, 1.2M, 0.5M, 0.3M, 0.2M, 0.1M };
 }
 
 [Cloneable]

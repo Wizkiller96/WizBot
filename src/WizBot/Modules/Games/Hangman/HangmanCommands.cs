@@ -1,3 +1,4 @@
+using Wiz.Common;
 using WizBot.Modules.Games.Hangman;
 
 namespace WizBot.Modules.Games;
@@ -9,7 +10,7 @@ public partial class Games
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Hangmanlist()
+        public async Task Hangmanlist()
             => await SendConfirmAsync(GetText(strs.hangman_types(prefix)), _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
@@ -50,7 +51,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Hangman([Leftover] string? type = null)
+        public async Task Hangman([Leftover] string? type = null)
         {
             if (!_service.StartHangman(ctx.Channel.Id, type, out var hangman))
             {
@@ -65,7 +66,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task HangmanStop()
+        public async Task HangmanStop()
         {
             if (await _service.StopHangman(ctx.Channel.Id))
                 await ReplyConfirmLocalizedAsync(strs.hangman_stopped);

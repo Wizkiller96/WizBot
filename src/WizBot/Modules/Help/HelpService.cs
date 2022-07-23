@@ -1,5 +1,6 @@
 #nullable disable
 using CommandLine;
+using Wiz.Common;
 using WizBot.Medusa;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Administration.Services;

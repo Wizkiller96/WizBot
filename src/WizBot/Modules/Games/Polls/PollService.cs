@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using WizBot.Common.Collections;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 using WizBot.Modules.Games.Common;

@@ -4,11 +4,6 @@ using System.Diagnostics;
 
 namespace WizBot.Services.Database.Models;
 
-public interface IIndexed
-{
-    int Index { get; set; }
-}
-
 [DebuggerDisplay("{PrimaryTarget}{SecondaryTarget} {SecondaryTargetName} {State} {PrimaryTargetId}")]
 public class Permissionv2 : DbEntity, IIndexed
 {

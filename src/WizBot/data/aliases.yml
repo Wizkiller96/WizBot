@@ -58,6 +58,9 @@ repeat:
 repeatredundant:
   - repeatredun
   - repred
+repeatskip:
+  - repeatskip
+  - repski
 rotateplaying:
   - rotateplaying
   - ropl
@@ -342,6 +345,9 @@ flip:
 betflip:
   - betflip
   - bf
+betdraw:
+  - betdraw
+  - bd
 roll:
   - roll
 rolluo:
@@ -371,9 +377,11 @@ take:
 betroll:
   - betroll
   - br
-wheeloffortune:
-  - wheeloffortune
+luckyladder:
+  - luckyladder
+  - lula
   - wheel
+  - wof
 leaderboard:
   - leaderboard
   - lb
@@ -824,8 +832,8 @@ eventstart:
   - eventstart
 slotstats:
   - slotstats
-slottest:
-  - slottest
+bettest:
+  - bettest
 slot:
   - slot
   - slots
@@ -1054,6 +1062,8 @@ xpgloballeaderboard:
   - xpglb
 xpadd:
   - xpadd
+xpshop:
+  - xpshop
 clubcreate:
   - clubcreate
 clubtransfer:
@@ -1209,6 +1219,10 @@ imageonlychannel:
   - imageonlychannel
   - imageonly
   - imagesonly
+linkonlychannel:
+  - linkonlychannel
+  - linkonly
+  - linkssonly
 coordreload:
   - coordreload
 quotesexport:
@@ -1277,6 +1291,7 @@ deleteemptyservers:
   - deleteemptyservers
 stock:
   - stock
+# Medusa system
 medusaload:
   - medusaload
   - meload
@@ -1301,6 +1316,7 @@ bankbalance:
   - balance
   - b
   - bal
+# Patron
 patron:
   - patron
 patronmessage:
@@ -1308,6 +1324,7 @@ patronmessage:
   - patronmsg
 eval:
   - eval
+# WizNet System
 feedback:
   - feedback
   - fb

@@ -13,21 +13,21 @@ public partial class Administration
 
         [Cmd]
         [Priority(1)]
-        public async partial Task Prefix()
+        public async Task Prefix()
             => await ReplyConfirmLocalizedAsync(strs.prefix_current(Format.Code(_cmdHandler.GetPrefix(ctx.Guild))));
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public partial Task Prefix(Set _, [Leftover] string newPrefix)
+        public Task Prefix(Set _, [Leftover] string newPrefix)
             => Prefix(newPrefix);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
-        public async partial Task Prefix([Leftover] string toSet)
+        public async Task Prefix([Leftover] string toSet)
         {
             if (string.IsNullOrWhiteSpace(prefix))
                 return;
@@ -40,7 +40,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task DefPrefix([Leftover] string toSet = null)
+        public async Task DefPrefix([Leftover] string toSet = null)
         {
             if (string.IsNullOrWhiteSpace(toSet))
             {

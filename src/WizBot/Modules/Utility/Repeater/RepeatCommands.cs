@@ -12,7 +12,33 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task RepeatInvoke(int index)
+        public async Task RepeatSkip(int index)
+        {
+            if (--index < 0)
+                return;
+            
+            var result = await _service.ToggleSkipNextAsync(ctx.Guild.Id, index);
+            
+            if (result is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.index_out_of_range);
+                return;
+            }
+
+            if (result is true)
+            {
+                await ReplyConfirmLocalizedAsync(strs.repeater_skip_next);
+            }
+            else
+            {
+                await ReplyConfirmLocalizedAsync(strs.repeater_dont_skip_next);
+            }
+        }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        public async Task RepeatInvoke(int index)
         {
             if (--index < 0)
                 return;
@@ -25,7 +51,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task RepeatRemove(int index)
+        public async Task RepeatRemove(int index)
         {
             if (--index < 0)
                 return;
@@ -47,7 +73,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task RepeatRedundant(int index)
+        public async Task RepeatRedundant(int index)
         {
             if (--index < 0)
                 return;
@@ -70,28 +96,28 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(-1)]
-        public partial Task Repeat([Leftover] string message)
+        public Task Repeat([Leftover] string message)
             => Repeat(null, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public partial Task Repeat(StoopidTime interval, [Leftover] string message)
+        public Task Repeat(StoopidTime interval, [Leftover] string message)
             => Repeat(null, interval, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public partial Task Repeat(GuildDateTime dt, [Leftover] string message)
+        public Task Repeat(GuildDateTime dt, [Leftover] string message)
             => Repeat(dt, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(2)]
-        public async partial Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
+        public async Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
         {
             var startTimeOfDay = dt?.InputTimeUtc.TimeOfDay;
             // if interval not null, that means user specified it (don't change it)
@@ -134,7 +160,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task RepeatList()
+        public async Task RepeatList()
         {
             var repeaters = _service.GetRepeaters(ctx.Guild.Id);
             if (repeaters.Count == 0)
@@ -149,7 +175,7 @@ public partial class Utility
             foreach (var runner in repeaters.OrderBy(r => r.Repeater.Id))
             {
                 var description = GetRepeaterInfoString(runner);
-                var name = $"#`{++i}`";
+                var name = $"#`{++i}` {(_service.IsRepeaterSkipped(runner.Repeater.Id) ? "🦘" : "")}";
                 embed.AddField(name, description);
             }
 

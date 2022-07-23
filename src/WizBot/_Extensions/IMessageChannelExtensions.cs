@@ -1,3 +1,6 @@
+using Wiz.Common;
+using WizBot.Modules.Xp;
+
 namespace WizBot.Extensions;
 
 public static class MessageChannelExtensions
@@ -192,10 +195,25 @@ public static class MessageChannelExtensions
     private static readonly IEmote _arrowLeft = new Emoji("⬅️");
     private static readonly IEmote _arrowRight = new Emoji("➡️");
 
-    public static async Task SendPaginatedConfirmAsync(
+    public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
         Func<int, Task<IEmbedBuilder>> pageFunc,
+        int totalElements,
+        int itemsPerPage,
+        bool addPaginatedFooter = true)
+        => ctx.SendPaginatedConfirmAsync(currentPage,
+            pageFunc,
+            default(Func<int, ValueTask<SimpleInteraction<object>?>>),
+            totalElements,
+            itemsPerPage,
+            addPaginatedFooter);
+    
+    public static async Task SendPaginatedConfirmAsync<T>(
+        this ICommandContext ctx,
+        int currentPage,
+        Func<int, Task<IEmbedBuilder>> pageFunc,
+        Func<int, ValueTask<SimpleInteraction<T>?>>? interFactory,
         int totalElements,
         int itemsPerPage,
         bool addPaginatedFooter = true)
@@ -207,24 +225,56 @@ public static class MessageChannelExtensions
         if (addPaginatedFooter)
             embed.AddPaginatedFooter(currentPage, lastPage);
 
-        var component = new ComponentBuilder()
-                        .WithButton(new ButtonBuilder()
-                                    .WithStyle(ButtonStyle.Primary)
-                                    .WithCustomId(BUTTON_LEFT)
-                                    .WithDisabled(lastPage == 0)
-                                    .WithEmote(_arrowLeft))
-                        .WithButton(new ButtonBuilder()
-                                    .WithStyle(ButtonStyle.Primary)
-                                    .WithCustomId(BUTTON_RIGHT)
-                                    .WithDisabled(lastPage == 0)
-                                    .WithEmote(_arrowRight))
-                        .Build();
-        
-        var msg = await ctx.Channel.SendAsync(null, embed: embed.Build(), components: component);
-        
-        Task OnInteractionAsync(SocketInteraction si)
+        SimpleInteraction<T>? maybeInter = null;
+        async Task<ComponentBuilder> GetComponentBuilder()
         {
-            _ = Task.Run(async () =>
+            var cb = new ComponentBuilder();
+                
+            cb.WithButton(new ButtonBuilder()
+                .WithStyle(ButtonStyle.Primary)
+                .WithCustomId(BUTTON_LEFT)
+                .WithDisabled(lastPage == 0)
+                .WithEmote(_arrowLeft)
+                .WithDisabled(currentPage <= 0));
+
+            if (interFactory is not null)
+            {
+                maybeInter = await interFactory(currentPage);
+
+                if (maybeInter is not null)
+                    cb.WithButton(maybeInter.Button);
+            }
+
+            cb.WithButton(new ButtonBuilder()
+                .WithStyle(ButtonStyle.Primary)
+                .WithCustomId(BUTTON_RIGHT)
+                .WithDisabled(lastPage == 0 || currentPage >= lastPage)
+                .WithEmote(_arrowRight));
+
+            return cb;
+        }
+
+        async Task UpdatePageAsync(SocketMessageComponent smc)
+        {
+            var toSend = await pageFunc(currentPage);
+            if (addPaginatedFooter)
+                toSend.AddPaginatedFooter(currentPage, lastPage);
+            
+            var component = (await GetComponentBuilder()).Build();
+
+            await smc.ModifyOriginalResponseAsync(x =>
+            {
+                x.Embed = toSend.Build();
+                x.Components = component;
+            });
+        }
+        
+        var component = (await GetComponentBuilder()).Build();
+        var msg = await ctx.Channel.SendAsync(null, embed: embed.Build(), components: component);
+
+        async Task OnInteractionAsync(SocketInteraction si)
+        {
+            try
             {
                 if (si is not SocketMessageComponent smc)
                     return;
@@ -232,9 +282,6 @@ public static class MessageChannelExtensions
                 if (smc.Message.Id != msg.Id)
                     return;
 
-                if (smc.Data.CustomId != BUTTON_LEFT && smc.Data.CustomId != BUTTON_RIGHT)
-                    return;
-                
                 await si.DeferAsync();
                 if (smc.User.Id != ctx.User.Id)
                     return;
@@ -244,29 +291,30 @@ public static class MessageChannelExtensions
                     if (currentPage == 0)
                         return;
 
-                    var toSend = await pageFunc(--currentPage);
-                    if (addPaginatedFooter)
-                        toSend.AddPaginatedFooter(currentPage, lastPage);
-
-                    await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
+                    --currentPage;
+                    _ = UpdatePageAsync(smc);
                 }
                 else if (smc.Data.CustomId == BUTTON_RIGHT)
                 {
-                    if (lastPage > currentPage)
-                    {
-                        var toSend = await pageFunc(++currentPage);
-                        if (addPaginatedFooter)
-                            toSend.AddPaginatedFooter(currentPage, lastPage);
-
-                        await smc.ModifyOriginalResponseAsync(x => x.Embed = toSend.Build());
-                    }
+                    if (currentPage >= lastPage)
+                        return;
+                    
+                    ++currentPage;
+                    _ = UpdatePageAsync(smc);
                 }
-            });
-
-            return Task.CompletedTask;
+                else if (maybeInter is { } inter && inter.Button.CustomId == smc.Data.CustomId)
+                {
+                    await inter.TriggerAsync(smc);
+                    _ = UpdatePageAsync(smc);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
+            }
         }
 
-        if (lastPage == 0)
+        if (lastPage == 0 && interFactory is null)
             return;
 
         var client = (DiscordSocketClient)ctx.Client;

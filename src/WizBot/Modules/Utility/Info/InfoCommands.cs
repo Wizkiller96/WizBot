@@ -1,6 +1,7 @@
 #nullable disable
 using WizBot.Modules.Utility.Patronage;
 using System.Text;
+using Wiz.Common;
 
 namespace WizBot.Modules.Utility;
 
@@ -22,12 +23,12 @@ public partial class Utility
 
         [Cmd]
         [OwnerOnly]
-        public partial Task ServerInfo([Leftover] string guildName)
+        public Task ServerInfo([Leftover] string guildName)
             => InternalServerInfo(guildName);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task ServerInfo()
+        public Task ServerInfo()
             => InternalServerInfo();
 
         private async Task InternalServerInfo(string guildName = null)
@@ -80,7 +81,7 @@ public partial class Utility
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task ChannelInfo(ITextChannel channel = null)
+        public async Task ChannelInfo(ITextChannel channel = null)
         {
             var ch = channel ?? (ITextChannel)ctx.Channel;
             if (ch is null)
@@ -99,7 +100,7 @@ public partial class Utility
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task UserInfo(IGuildUser usr = null)
+        public async Task UserInfo(IGuildUser usr = null)
         {
             var user = usr ?? ctx.User as IGuildUser;
 
@@ -142,7 +143,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async partial Task Activity(int page = 1)
+        public async Task Activity(int page = 1)
         {
             const int activityPerPage = 10;
             page -= 1;

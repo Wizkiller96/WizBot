@@ -15,7 +15,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\WizBot\WizBot.csproj" />
+        <ProjectReference Include="..\Wiz.Common\Wiz.Common.csproj" />
+        <ProjectReference Include="..\Wiz.Econ\Wiz.Econ.csproj" />
+        <ProjectReference Include="..\WizBot\WizBot.csproj" />
     </ItemGroup>
 
 </Project>

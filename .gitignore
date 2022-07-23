@@ -1,5 +1,7 @@
 #Manually added files
 
+src/WizBot/data/last_known_version.txt
+
 # medusa stuff
 !src/WizBot/data/medusae/medusa.yml
 src/WizBot/data/medusae/**

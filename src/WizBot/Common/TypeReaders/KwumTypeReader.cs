@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using Wiz.Common;
+
 namespace WizBot.Common.TypeReaders;
 
 public sealed class KwumTypeReader : WizBotTypeReader<kwum>

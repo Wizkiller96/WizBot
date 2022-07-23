@@ -16,7 +16,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public partial Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
+        public Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
         {
             var m = _ytChannelRegex.Match(url);
             if (!m.Success)
@@ -30,7 +30,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task Feed(string url, [Leftover] ITextChannel channel = null)
+        public async Task Feed(string url, [Leftover] ITextChannel channel = null)
         {
             var success = Uri.TryCreate(url, UriKind.Absolute, out var uri)
                           && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
@@ -64,7 +64,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task FeedRemove(int index)
+        public async Task FeedRemove(int index)
         {
             if (_service.RemoveFeed(ctx.Guild.Id, --index))
                 await ReplyConfirmLocalizedAsync(strs.feed_removed);
@@ -75,7 +75,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async partial Task FeedList()
+        public async Task FeedList()
         {
             var feeds = _service.GetFeeds(ctx.Guild.Id);
 

@@ -1,5 +1,6 @@
 #nullable disable warnings
 using LinqToDB;
+using Wiz.Common;
 using WizBot.Modules.Nsfw.Common;
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json.Linq;

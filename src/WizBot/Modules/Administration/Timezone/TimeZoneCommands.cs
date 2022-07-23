@@ -10,7 +10,7 @@ public partial class Administration
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Timezones(int page = 1)
+        public async Task Timezones(int page = 1)
         {
             page--;
 
@@ -48,13 +48,13 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Timezone()
+        public async Task Timezone()
             => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id)));
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task Timezone([Leftover] string id)
+        public async Task Timezone([Leftover] string id)
         {
             TimeZoneInfo tz;
             try { tz = TimeZoneInfo.FindSystemTimeZoneById(id); }

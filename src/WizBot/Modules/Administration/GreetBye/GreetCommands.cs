@@ -8,7 +8,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task Boost()
+        public async Task Boost()
         {
             var enabled = await _service.ToggleBoost(ctx.Guild.Id, ctx.Channel.Id);
 
@@ -21,7 +21,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task BoostDel(int timer = 30)
+        public async Task BoostDel(int timer = 30)
         {
             if (timer is < 0 or > 600)
                 return;
@@ -37,7 +37,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task BoostMsg([Leftover] string? text = null)
+        public async Task BoostMsg([Leftover] string? text = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -56,7 +56,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task GreetDel(int timer = 30)
+        public async Task GreetDel(int timer = 30)
         {
             if (timer is < 0 or > 600)
                 return;
@@ -72,7 +72,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task Greet()
+        public async Task Greet()
         {
             var enabled = await _service.SetGreet(ctx.Guild.Id, ctx.Channel.Id);
 
@@ -85,7 +85,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task GreetMsg([Leftover] string? text = null)
+        public async Task GreetMsg([Leftover] string? text = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -105,7 +105,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task GreetDm()
+        public async Task GreetDm()
         {
             var enabled = await _service.SetGreetDm(ctx.Guild.Id);
 
@@ -118,7 +118,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task GreetDmMsg([Leftover] string? text = null)
+        public async Task GreetDmMsg([Leftover] string? text = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -137,7 +137,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task Bye()
+        public async Task Bye()
         {
             var enabled = await _service.SetBye(ctx.Guild.Id, ctx.Channel.Id);
 
@@ -150,7 +150,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task ByeMsg([Leftover] string? text = null)
+        public async Task ByeMsg([Leftover] string? text = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -169,7 +169,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async partial Task ByeDel(int timer = 30)
+        public async Task ByeDel(int timer = 30)
         {
             await _service.SetByeDel(ctx.Guild.Id, timer);
 
@@ -184,7 +184,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]
-        public async partial Task ByeTest([Leftover] IGuildUser? user = null)
+        public async Task ByeTest([Leftover] IGuildUser? user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
@@ -198,7 +198,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]
-        public async partial Task GreetTest([Leftover] IGuildUser? user = null)
+        public async Task GreetTest([Leftover] IGuildUser? user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
@@ -212,7 +212,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
         [Ratelimit(5)]
-        public async partial Task GreetDmTest([Leftover] IGuildUser? user = null)
+        public async Task GreetDmTest([Leftover] IGuildUser? user = null)
         {
             user ??= (IGuildUser)ctx.User;
 

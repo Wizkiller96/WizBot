@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
+using Wiz.Common;
 using RunMode = Discord.Commands.RunMode;
 
 namespace WizBot;
