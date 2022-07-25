@@ -2117,6 +2117,12 @@ xpreset:
   args:
     - "@Someone"
     - ""
+xpshop:
+  desc: "Access the xp shop (if enabled). You can purchase either xp card frames or backgrounds. You can optionally provide a page number"
+  args:
+    - "bgs"
+    - "frames"
+    - "bgs 3"
 bible:
   desc: "Shows bible verse. You need to supply book name and chapter:verse"
   args:

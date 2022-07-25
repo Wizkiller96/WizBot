@@ -1,9 +1,10 @@
-#nullable disable
+#nullable disable warnings
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Xp.Services;
 using NadekoBot.Services.Database.Models;
-using System.Diagnostics;
-using Nadeko.Common;
+using System.Globalization;
+using NadekoBot.Db.Models;
+using NadekoBot.Modules.Utility.Patronage;
 
 namespace NadekoBot.Modules.Xp;
 
@@ -313,6 +314,154 @@ public partial class Xp : NadekoModule<XpService>
         await ReplyConfirmLocalizedAsync(strs.reset_server);
     }
 
+    public enum XpShopInputType
+    {
+        F = 0,
+        Frs = 0,
+        Fs = 0,
+        Frames = 0,
+        B = 1,
+        Bg = 1,
+        Bgs = 1,
+        Backgrounds = 1
+    }
+
+    [Cmd]
+    public async Task XpShop()
+    {
+        await SendConfirmAsync(GetText(strs.available_commands), $@"`{prefix}xpshop bgs`
+`{prefix}xpshop frames`");
+    }
+    
+    [Cmd]
+    public async Task XpShop(XpShopInputType type, int page = 1)
+    {
+        --page;
+
+        if (page < 0)
+            return;
+        
+        var items = type == XpShopInputType.Backgrounds
+            ? await _service.GetShopBgs()
+            : await _service.GetShopFrames();
+
+        if (items is null)
+        {
+            await ReplyErrorLocalizedAsync(strs.xp_shop_disabled);
+            return;
+        }
+
+        if (items.Count == 0)
+        {
+            await ReplyErrorLocalizedAsync(strs.not_found);
+            return;
+        }
+        
+        var culture = (CultureInfo)Culture.Clone();
+        culture.NumberFormat.CurrencySymbol = _gss.Data.Currency.Sign;
+        culture.NumberFormat.CurrencyNegativePattern = 5;
+
+        await ctx.SendPaginatedConfirmAsync<(string, XpShopItemType)?>(page,
+            current =>
+            {
+                var (key, item) = items.Skip(current).First();
+
+                var eb = _eb.Create(ctx)
+                    .WithOkColor()
+                    .WithTitle(item.Name)
+                    .AddField(GetText(strs.price), Gambling.Gambling.N(item.Price, culture), true)
+                    // .AddField(GetText(strs.buy), $"{prefix}xpbuy {key}", true)
+                    .WithImageUrl(item.Url.ToString());
+
+                if (!string.IsNullOrWhiteSpace(item.Desc))
+                    eb.WithDescription(item.Desc);
+
+                var tier = _service.GetXpShopTierRequirement();
+                if (tier != PatronTier.None)
+                {
+                    eb.WithFooter(GetText(strs.feature_required_tier(tier.ToString())));
+                }
+
+                return Task.FromResult(eb);
+            },
+            async current =>
+            {
+
+                var (key, _) = items.Skip(current).First();
+
+                var itemType = type == XpShopInputType.Backgrounds
+                    ? XpShopItemType.Background
+                    : XpShopItemType.Frame;
+
+                var ownedItem = await _service.GetUserItemAsync(ctx.User.Id, itemType, key);
+                if (ownedItem is not null)
+                {
+                    var button = new ButtonBuilder(ownedItem.IsUsing
+                            ? GetText(strs.in_use)
+                            : GetText(strs.use),
+                        "XP_SHOP_USE",
+                        ButtonStyle.Primary,
+                        emote: Emoji.Parse("👐"),
+                        isDisabled: ownedItem.IsUsing);
+
+                    var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                        button,
+                        OnShopUse,
+                        (key, itemType));
+
+                    return inter;
+                }
+                else
+                {
+                    var button = new ButtonBuilder(GetText(strs.buy),
+                        "XP_SHOP_BUY",
+                        ButtonStyle.Primary,
+                        emote: Emoji.Parse("💰"));
+
+                    var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                        button,
+                        OnShopBuy,
+                        (key, itemType));
+
+                    return inter;
+                }
+            },
+            items.Count,
+            1,
+            addPaginatedFooter: false);
+    }
+    
+    private async Task OnShopUse(SocketMessageComponent smc, (string? key, XpShopItemType type)? maybeState)
+    {
+        if (maybeState is not { } state)
+            return;
+        
+        var (key, type) = state;
+        
+        var result = await _service.UseShopItemAsync(ctx.User.Id, type, key);
+
+
+        if (!result)
+        {
+            await ReplyConfirmLocalizedAsync(strs.xp_shop_item_cant_use);
+        }
+    }
+    
+    private async Task OnShopBuy(SocketMessageComponent smc, (string? key, XpShopItemType type)? maybeState)
+    {
+        if (maybeState is not { } state)
+            return;
+        
+        var (key, type) = state;
+        
+        var result = await _service.BuyShopItemAsync(ctx.User.Id, type, key);
+
+        if (result == BuyResult.InsufficientFunds)
+        {
+            await ReplyErrorLocalizedAsync(strs.not_enough(_gss.Data.Currency.Sign));
+        }
+    }
+
     private string GetNotifLocationString(XpNotificationLocation loc)
     {
         if (loc == XpNotificationLocation.Channel)
@@ -322,5 +471,24 @@ public partial class Xp : NadekoModule<XpService>
             return GetText(strs.xpn_notif_dm);
 
         return GetText(strs.xpn_notif_disabled);
+    }
+}
+
+public class SimpleInteraction<T>
+{
+    public ButtonBuilder Button { get; }
+    private readonly Func<SocketMessageComponent, T, Task> _onClick;
+    private readonly T? _state;
+
+    public SimpleInteraction(ButtonBuilder button, Func<SocketMessageComponent, T?, Task> onClick, T state = default)
+    {
+        Button = button;
+        _onClick = onClick;
+        _state = state;
+    }
+
+    public async Task TriggerAsync(SocketMessageComponent smc)
+    {
+        await _onClick(smc, _state);
     }
 }

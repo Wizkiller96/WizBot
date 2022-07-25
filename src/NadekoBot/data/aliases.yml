@@ -1059,6 +1059,8 @@ xpgloballeaderboard:
   - xpglb
 xpadd:
   - xpadd
+xpshop:
+  - xpshop
 clubcreate:
   - clubcreate
 clubtransfer:

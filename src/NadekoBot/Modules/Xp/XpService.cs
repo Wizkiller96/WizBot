@@ -13,7 +13,9 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Threading.Channels;
+using LinqToDB.EntityFrameworkCore;
 using Color = SixLabors.ImageSharp.Color;
+using Exception = System.Exception;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace NadekoBot.Modules.Xp.Services;
@@ -1124,21 +1126,48 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             return output;
         });
 
-    private async Task<byte[]?> GetXpBackgroundAsync(ulong _)
+    private async Task<byte[]?> GetXpBackgroundAsync(ulong userId)
     {
-        var img = await _images.GetXpBackgroundImageAsync();
-        return img;
+        var item = await GetItemInUse(userId, XpShopItemType.Background);
+        if (item is null)
+        {
+            return await _images.GetXpBackgroundImageAsync();
+        }
+        
+        var url = _xpConfig.Data.Shop.GetItemUrl(XpShopItemType.Background, item.ItemKey);
+        if (!string.IsNullOrWhiteSpace(url))
+        {
+            var data = await _images.GetImageDataAsync(new Uri(url));
+            return data;
+        }
+
+        return await _images.GetXpBackgroundImageAsync();
     }
 
     // #if GLOBAL_NADEKO
     private async Task DrawFrame(Image<Rgba32> img, ulong userId)
     {
         var patron = await _ps.GetPatronAsync(userId);
+
+        var item = await GetItemInUse(userId, XpShopItemType.Frame);
+
         Image? frame = null;
-        if (patron.Tier == PatronTier.V)
-            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
-        else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
-            frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+        if (item is null)
+        {
+            if (patron.Tier == PatronTier.V)
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
+            else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+        }
+        else
+        {
+            var url = _xpConfig.Data.Shop.GetItemUrl(XpShopItemType.Frame, item.ItemKey);
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                var data = await _images.GetImageDataAsync(new Uri(url));
+                frame = Image.Load<Rgba32>(data);
+            }
+        }
 
         if (frame is not null)
             img.Mutate(x => x.DrawImage(frame, new Point(0, 0), new GraphicsOptions()));
@@ -1270,4 +1299,171 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         uow.RemoveRange(guildConfig.XpSettings.CurrencyRewards);
         await uow.SaveChangesAsync();
     }
+
+    public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopBgs()
+    {
+        var data = _xpConfig.Data;
+        if (!data.Shop.IsEnabled)
+            return new(default(Dictionary<string, XpConfig.ShopItemInfo>));
+
+        return new(_xpConfig.Data.Shop.Bgs?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
+    }
+    
+    public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopFrames()
+    {
+        var data = _xpConfig.Data;
+        if (!data.Shop.IsEnabled)
+            return new(default(Dictionary<string, XpConfig.ShopItemInfo>));
+        
+        return new(_xpConfig.Data.Shop.Frames?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
+    }
+
+    public async Task<BuyResult> BuyShopItemAsync(ulong userId, XpShopItemType type, string key)
+    {
+        var conf = _xpConfig.Data;
+
+        if (!conf.Shop.IsEnabled)
+            return BuyResult.UnknownItem;
+
+        if (conf.Shop.TierRequirement != PatronTier.None)
+        {
+            var patron = await _ps.GetPatronAsync(userId);
+
+            if ((int)patron.Tier < (int)conf.Shop.TierRequirement)
+                return BuyResult.InsufficientPatronTier;
+        }
+        
+        await using var ctx = _db.GetDbContext();
+        // await using var tran = await ctx.Database.BeginTransactionAsync();
+        try
+        {
+            if (await ctx.GetTable<XpShopOwnedItem>().AnyAsyncLinqToDB(x => x.ItemKey == key && x.ItemType == type))
+                return BuyResult.AlreadyOwned;
+
+            var item = GetShopItem(type, key);
+
+            if (item is null || item.Price < 0)
+                return BuyResult.UnknownItem;
+
+            if (item.Price > 0 && !await _cs.RemoveAsync(userId, item.Price, new("xpshop", "buy", $"Background {key}")))
+                return BuyResult.InsufficientFunds;
+                
+
+            await ctx.GetTable<XpShopOwnedItem>()
+                .InsertAsync(() => new XpShopOwnedItem()
+                {
+                    UserId = userId,
+                    IsUsing = false,
+                    ItemKey = key,
+                    ItemType = type
+                });
+
+            return BuyResult.Success;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error buying shop item: {ErrorMessage}", ex.Message);
+            return BuyResult.UnknownItem;
+        }
+    }
+
+    private XpConfig.ShopItemInfo? GetShopItem(XpShopItemType type, string key)
+    {
+        var data = _xpConfig.Data;
+        if (type == XpShopItemType.Background)
+        {
+            if (data.Shop.Bgs is {} bgs && bgs.TryGetValue(key, out var item))
+                return item;
+            
+            return null;
+        }
+
+        if (type == XpShopItemType.Frame)
+        {
+            if (data.Shop.Frames is {} fs && fs.TryGetValue(key, out var item))
+                return item;
+            
+            return null;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(type));
+    }
+
+    public async Task<bool> OwnsItemAsync(ulong userId,
+        XpShopItemType itemType,
+        string key)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .AnyAsyncLinqToDB(x => x.UserId == userId
+                                   && x.ItemType == itemType
+                                   && x.ItemKey == key);
+    }
+    
+    
+    public async Task<XpShopOwnedItem?> GetUserItemAsync(ulong userId,
+        XpShopItemType itemType,
+        string key)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                              && x.ItemType == itemType
+                                              && x.ItemKey == key);
+    }
+    
+    public async Task<XpShopOwnedItem?> GetItemInUse(ulong userId,
+        XpShopItemType itemType)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<XpShopOwnedItem>()
+            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                              && x.ItemType == itemType
+                                              && x.IsUsing);
+    }
+
+    public async Task<bool> UseShopItemAsync(ulong userId, XpShopItemType itemType, string key)
+    {
+        var data = _xpConfig.Data;
+        XpConfig.ShopItemInfo? item = null;
+        if (itemType == XpShopItemType.Background)
+        {
+            data.Shop.Bgs?.TryGetValue(key, out item);
+        }
+        else
+        {
+            data.Shop.Frames?.TryGetValue(key, out item);
+        }
+
+        if (item is null)
+            return false;
+
+        await using var ctx = _db.GetDbContext();
+
+        if (await OwnsItemAsync(userId, itemType, key))
+        {
+            await ctx.GetTable<XpShopOwnedItem>()
+                .Where(x => x.UserId == userId && x.ItemType == itemType)
+                .UpdateAsync(old => new()
+                {
+                    IsUsing = key == old.ItemKey
+                });
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public PatronTier GetXpShopTierRequirement()
+        => _xpConfig.Data.Shop.TierRequirement;
+}
+
+public enum BuyResult
+{
+    Success,
+    AlreadyOwned,
+    InsufficientFunds,
+    UnknownItem,
+    InsufficientPatronTier,
 }

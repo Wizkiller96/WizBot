@@ -46,5 +46,13 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
                 c.XpFromImage = 0;
             });
         }
+        
+        if (data.Version < 3)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 3;
+            });
+        }
     }
 }
