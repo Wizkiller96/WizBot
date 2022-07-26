@@ -1012,5 +1012,6 @@
   "quotas": "<<< Quotas >>>",
   "patron_not_enabled": "Patron system is disabled.",
   "results_in": "{0} results in {1}s",
-  "patron_msg_sent": "Done sending messages to patrons at and above tier {1}. {1} successfully sent and {2} failed."
+  "patron_msg_sent": "Done sending messages to patrons at and above tier {1}. {1} successfully sent and {2} failed.",
+  "xpadd_users": "Added {0} server XP to {1} users."
 }

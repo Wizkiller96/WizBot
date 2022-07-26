@@ -1853,9 +1853,10 @@ xpgloballeaderboard:
   args:
     - ""
 xpadd:
-  desc: "Adds xp to a user on the server. This does not affect their global ranking. You can use negative values."
+  desc: "Adds server XP to a single user or all users role on this server. This does not affect their global ranking. You can use negative values."
   args:
     - "100 @Someone"
+    - "500 SomeRoleName"
 clubcreate:
   desc: "Creates a club. You must be at least level 5 and not be in the club already."
   args:

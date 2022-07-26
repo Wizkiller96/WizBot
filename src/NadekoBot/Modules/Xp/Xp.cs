@@ -252,6 +252,23 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
+    [Priority(2)]
+    public async Task XpAdd(long amount, [Remainder] SocketRole role)
+    {
+        if (amount == 0)
+            return;
+
+        if (role.IsManaged)
+            return;
+
+        var count = await _service.AddXpToUsersAsync(ctx.Guild.Id, amount, role.Members.Select(x => x.Id).ToArray());
+        await ReplyConfirmLocalizedAsync(strs.xpadd_users(Format.Bold(amount.ToString()), Format.Bold(count.ToString())));
+    }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.Administrator)]
+    [Priority(3)]
     public async Task XpAdd(int amount, ulong userId)
     {
         if (amount == 0)
@@ -265,6 +282,7 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
+    [Priority(4)]
     public Task XpAdd(int amount, [Leftover] IGuildUser user)
         => XpAdd(amount, user.Id);
 

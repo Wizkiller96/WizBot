@@ -726,6 +726,17 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     //     });
     // }
 
+    public async Task<int> AddXpToUsersAsync(ulong guildId, long amount, params ulong[] userIds)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<UserXpStats>()
+            .Where(x => x.GuildId == guildId && userIds.Contains(x.UserId))
+            .UpdateAsync(old => new()
+            {
+                Xp = old.Xp + amount
+            });
+    }
+    
     public void AddXp(ulong userId, ulong guildId, int amount)
     {
         using var uow = _db.GetDbContext();
