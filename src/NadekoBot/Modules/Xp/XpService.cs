@@ -1337,7 +1337,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         // await using var tran = await ctx.Database.BeginTransactionAsync();
         try
         {
-            if (await ctx.GetTable<XpShopOwnedItem>().AnyAsyncLinqToDB(x => x.ItemKey == key && x.ItemType == type))
+            if (await ctx.GetTable<XpShopOwnedItem>().AnyAsyncLinqToDB(x => x.UserId == userId && x.ItemKey == key && x.ItemType == type))
                 return BuyResult.AlreadyOwned;
 
             var item = GetShopItem(type, key);

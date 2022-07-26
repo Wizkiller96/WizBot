@@ -314,7 +314,7 @@ public static class MessageChannelExtensions
             }
         }
 
-        if (lastPage == 0)
+        if (lastPage == 0 && interFactory is null)
             return;
 
         var client = (DiscordSocketClient)ctx.Client;
