@@ -1355,7 +1355,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     UserId = userId,
                     IsUsing = false,
                     ItemKey = key,
-                    ItemType = type
+                    ItemType = type,
+                    DateAdded = DateTime.UtcNow,
                 });
 
             return BuyResult.Success;
