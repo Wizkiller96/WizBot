@@ -12,6 +12,32 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
+        public async Task RepeatSkip(int index)
+        {
+            if (--index < 0)
+                return;
+            
+            var result = await _service.ToggleSkipNextAsync(ctx.Guild.Id, index);
+            
+            if (result is null)
+            {
+                await ReplyErrorLocalizedAsync(strs.index_out_of_range);
+                return;
+            }
+
+            if (result is true)
+            {
+                await ReplyConfirmLocalizedAsync(strs.repeater_skip_next);
+            }
+            else
+            {
+                await ReplyConfirmLocalizedAsync(strs.repeater_dont_skip_next);
+            }
+        }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
         public async Task RepeatInvoke(int index)
         {
             if (--index < 0)
@@ -149,7 +175,7 @@ public partial class Utility
             foreach (var runner in repeaters.OrderBy(r => r.Repeater.Id))
             {
                 var description = GetRepeaterInfoString(runner);
-                var name = $"#`{++i}`";
+                var name = $"#`{++i}` {(_service.IsRepeaterSkipped(runner.Repeater.Id) ? "🦘" : "")}";
                 embed.AddField(name, description);
             }
 

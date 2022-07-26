@@ -13,6 +13,6 @@ public sealed class CmdAttribute : CommandAttribute
         MethodName = memberName.ToLowerInvariant();
         Aliases = CommandNameLoadHelper.GetAliasesFor(memberName);
         Remarks = memberName.ToLowerInvariant();
-        // Summary = memberName.ToLowerInvariant();
+        Summary = memberName.ToLowerInvariant();
     }
 }

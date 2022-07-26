@@ -58,6 +58,9 @@ repeat:
 repeatredundant:
   - repeatredun
   - repred
+repeatskip:
+  - repeatskip
+  - repski
 rotateplaying:
   - rotateplaying
   - ropl

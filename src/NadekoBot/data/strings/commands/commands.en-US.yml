@@ -128,6 +128,10 @@ repeatredundant:
   desc: "Specify repeater's index (use `{0}repli` to find it) to toggle whether that repeater's message should be reposted if the last message in the channel is the same repeater's message. This is useful if you want to remind everyone to be nice in the channel every so often, but don't want to have the bot spam the channel. This is NOT useful if you want to periodically ping someone."
   args:
     - "1"
+repeatskip:
+  desc: "Specify a repeater's ID to toggle whether the next trigger of the repeater will be skipped. This setting is not stored in the database and will get reset if the bot is restarted."
+  args:
+    - "3"
 rotateplaying:
   desc: "Toggles rotation of playing status of the dynamic strings you previously specified."
   args:
@@ -2160,6 +2164,12 @@ imageonlychannel:
   desc: |-
     Toggles whether the channel only allows images.
     Users who send more than a few non-image messages will be banned from using the channel. 
+  args:
+    - ""
+linksonlychannel:
+  desc: |-
+    Toggles whether the channel only allows links.
+    Users who send more than a few non-link messages will be banned from using the channel. 
   args:
     - ""
 coordreload:
