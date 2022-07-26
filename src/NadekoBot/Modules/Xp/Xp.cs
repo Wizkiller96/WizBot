@@ -379,7 +379,7 @@ public partial class Xp : NadekoModule<XpService>
                 var tier = _service.GetXpShopTierRequirement();
                 if (tier != PatronTier.None)
                 {
-                    eb.WithFooter(GetText(strs.feature_required_tier(tier.ToString())));
+                    eb.WithFooter(GetText(strs.xp_shop_buy_required_tier(tier.ToString())));
                 }
 
                 return Task.FromResult(eb);
