@@ -1,6 +1,11 @@
 # Ignore all files
 *
 
+# Don't ignore nugetconfig
+!./NuGet.Config
+# Don't ignore src projects
+!src/Nadeko.Econ/**
+!src/Nadeko.Common/**
 # Use Nadeko.Medusa project
 !src/Nadeko.Medusa/**
 # Use NadekoBot project
