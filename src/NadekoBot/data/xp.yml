@@ -15,13 +15,13 @@ shop:
 # Whether the xp shop is enabled
 # True -> Users can access the xp shop using .xpshop command
 # False -> Users can't access the xp shop
-  isEnabled: true
+  isEnabled: false
   # Which patron tier do users need in order to use the .xpshop command
   # Leave at 'None' if patron system is disabled or you don't want any restrictions
   tierRequirement: None
   # Frames available for sale. Keys are unique IDs.
   # Do not change keys as they are not publicly visible. Only change properties (name, price, id)
-  # Removing a key completely means all previous purchases will also be unusable.
+  # Removing a key which previously existed means that all previous purchases will also be unusable.
   # To remove an item from the shop, but keep previous purchases, set the price to -1
   frames:
     default:
@@ -35,7 +35,7 @@ shop:
       desc: 
   # Backgrounds available for sale. Keys are unique IDs.
   # Do not change keys as they are not publicly visible. Only change properties (name, price, id)
-  # Removing a key completely means all previous purchases will also be unusable.
+  # Removing a key which previously existed means that all previous purchases will also be unusable.
   # To remove an item from the shop, but keep previous purchases, set the price to -1
   bgs:
     default:

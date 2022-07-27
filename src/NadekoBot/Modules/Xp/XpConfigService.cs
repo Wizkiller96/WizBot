@@ -33,6 +33,11 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
             ConfigPrinters.ToString,
             x => x > 0);
 
+        AddParsedProp("shop.is_enabled",
+            conf => conf.Shop.IsEnabled,
+            bool.TryParse,
+            ConfigPrinters.ToString);
+
         Migrate();
     }
 

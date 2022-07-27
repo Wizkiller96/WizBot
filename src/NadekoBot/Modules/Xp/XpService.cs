@@ -1470,6 +1470,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     public PatronTier GetXpShopTierRequirement()
         => _xpConfig.Data.Shop.TierRequirement;
+
+    public bool IsShopEnabled()
+        => _xpConfig.Data.Shop.IsEnabled;
 }
 
 public enum BuyResult

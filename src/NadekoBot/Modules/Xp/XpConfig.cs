@@ -43,7 +43,7 @@ Leave at 'None' if patron system is disabled or you don't want any restrictions"
         
         [Comment(@"Frames available for sale. Keys are unique IDs.
 Do not change keys as they are not publicly visible. Only change properties (name, price, id)
-Removing a key compeltely means all previous purchases will also be unusable.
+Removing a key which previously existed means that all previous purchases will also be unusable.
 To remove an item from the shop, but keep previous purchases, set the price to -1")]
         public Dictionary<string, ShopItemInfo>? Frames { get; set; } = new()
         {
@@ -52,7 +52,7 @@ To remove an item from the shop, but keep previous purchases, set the price to -
 
         [Comment(@"Backgrounds available for sale. Keys are unique IDs. 
 Do not change keys as they are not publicly visible. Only change properties (name, price, id)
-Removing a key compeltely means all previous purchases will also be unusable.
+Removing a key which previously existed means that all previous purchases will also be unusable.
 To remove an item from the shop, but keep previous purchases, set the price to -1")]
         public Dictionary<string, ShopItemInfo>? Bgs { get; set; } = new()
         {

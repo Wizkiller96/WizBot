@@ -347,6 +347,12 @@ public partial class Xp : NadekoModule<XpService>
     [Cmd]
     public async Task XpShop()
     {
+        if (!_service.IsShopEnabled())
+        {
+            await ReplyErrorLocalizedAsync(strs.xp_shop_disabled);
+            return;
+        }
+        
         await SendConfirmAsync(GetText(strs.available_commands), $@"`{prefix}xpshop bgs`
 `{prefix}xpshop frames`");
     }
