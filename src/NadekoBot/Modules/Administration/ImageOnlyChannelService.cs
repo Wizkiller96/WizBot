@@ -86,7 +86,7 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         await using var uow = _db.GetDbContext();
         if (forceDisable || (_imageOnly.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
         {
-            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Link);
+            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Image);
         }
         else
         {
