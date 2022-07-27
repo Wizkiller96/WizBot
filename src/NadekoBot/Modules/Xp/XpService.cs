@@ -1,3 +1,4 @@
+#nullable disable warnings
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
@@ -391,9 +392,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             template = JsonConvert.DeserializeObject<XpTemplate>(
                 File.ReadAllText(XP_TEMPLATE_PATH),
-                settings);
+                settings)!;
 
-            if (template!.Version < 1)
+            if (template.Version < 1)
             {
                 Log.Warning("Loaded default xp_template.json values as the old one was version 0. "
                             + "Old one was renamed to xp_template.json.old");

@@ -2166,7 +2166,7 @@ imageonlychannel:
     Users who send more than a few non-image messages will be banned from using the channel. 
   args:
     - ""
-linksonlychannel:
+linkonlychannel:
   desc: |-
     Toggles whether the channel only allows links.
     Users who send more than a few non-link messages will be banned from using the channel. 

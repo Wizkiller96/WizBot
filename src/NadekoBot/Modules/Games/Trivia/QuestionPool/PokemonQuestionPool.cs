@@ -2,7 +2,7 @@ namespace NadekoBot.Modules.Games.Common.Trivia;
 
 public sealed class PokemonQuestionPool : IQuestionPool
 {
-    public int QuestionsCount => 721; // xd
+    public int QuestionsCount => 905; // xd
     private readonly NadekoRandom _rng;
     private readonly ILocalDataCache _cache;
 

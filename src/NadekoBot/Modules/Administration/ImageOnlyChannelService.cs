@@ -5,16 +5,18 @@ using NadekoBot.Common.ModuleBehaviors;
 using System.Net;
 using System.Threading.Channels;
 using Nadeko.Common;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public sealed class ImageOnlyChannelService : IExecOnMessage
+public sealed class SomethingOnlyChannelService : IExecOnMessage
 {
     public int Priority { get; } = 0;
     private readonly IMemoryCache _ticketCache;
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
-    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _enabledOn;
+    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _imageOnly;
+    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _linkOnly;
 
     private readonly Channel<IUserMessage> _deleteQueue = Channel.CreateBounded<IUserMessage>(
         new BoundedChannelOptions(100)
@@ -25,32 +27,39 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
         });
 
 
-    public ImageOnlyChannelService(IMemoryCache ticketCache, DiscordSocketClient client, DbService db)
+    public SomethingOnlyChannelService(IMemoryCache ticketCache, DiscordSocketClient client, DbService db)
     {
         _ticketCache = ticketCache;
         _client = client;
         _db = db;
 
         using var uow = _db.GetDbContext();
-        _enabledOn = uow.ImageOnlyChannels.ToList()
+        _imageOnly = uow.ImageOnlyChannels
+            .Where(x => x.Type == OnlyChannelType.Image)
+                        .ToList()
                         .GroupBy(x => x.GuildId)
                         .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
                         .ToConcurrent();
 
+        _linkOnly = uow.ImageOnlyChannels
+            .Where(x => x.Type == OnlyChannelType.Link)
+            .ToList()
+            .GroupBy(x => x.GuildId)
+            .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
+            .ToConcurrent();
+        
         _ = Task.Run(DeleteQueueRunner);
 
         _client.ChannelDestroyed += ClientOnChannelDestroyed;
     }
 
-    private Task ClientOnChannelDestroyed(SocketChannel ch)
+    private async Task ClientOnChannelDestroyed(SocketChannel ch)
     {
         if (ch is not IGuildChannel gch)
-            return Task.CompletedTask;
+            return;
 
-        if (_enabledOn.TryGetValue(gch.GuildId, out var channels) && channels.TryRemove(ch.Id))
-            ToggleImageOnlyChannel(gch.GuildId, ch.Id, true);
-
-        return Task.CompletedTask;
+        if (_imageOnly.TryGetValue(gch.GuildId, out var channels) && channels.TryRemove(ch.Id))
+            await ToggleImageOnlyChannelAsync(gch.GuildId, ch.Id, true);
     }
 
     private async Task DeleteQueueRunner()
@@ -66,31 +75,68 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
             catch (HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
                 // disable if bot can't delete messages in the channel
-                ToggleImageOnlyChannel(((ITextChannel)toDelete.Channel).GuildId, toDelete.Channel.Id, true);
+                await ToggleImageOnlyChannelAsync(((ITextChannel)toDelete.Channel).GuildId, toDelete.Channel.Id, true);
             }
         }
     }
 
-    public bool ToggleImageOnlyChannel(ulong guildId, ulong channelId, bool forceDisable = false)
+    public async Task<bool> ToggleImageOnlyChannelAsync(ulong guildId, ulong channelId, bool forceDisable = false)
     {
         var newState = false;
-        using var uow = _db.GetDbContext();
-        if (forceDisable || (_enabledOn.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
-            uow.ImageOnlyChannels.Delete(x => x.ChannelId == channelId);
+        await using var uow = _db.GetDbContext();
+        if (forceDisable || (_imageOnly.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
+        {
+            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Link);
+        }
         else
         {
+            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId);
             uow.ImageOnlyChannels.Add(new()
             {
                 GuildId = guildId,
-                ChannelId = channelId
+                ChannelId = channelId,
+                Type = OnlyChannelType.Image
             });
 
-            channels = _enabledOn.GetOrAdd(guildId, new ConcurrentHashSet<ulong>());
+            if (_linkOnly.TryGetValue(guildId, out var chs))
+                chs.TryRemove(channelId);
+            
+            channels = _imageOnly.GetOrAdd(guildId, new ConcurrentHashSet<ulong>());
             channels.Add(channelId);
             newState = true;
         }
 
-        uow.SaveChanges();
+        await uow.SaveChangesAsync();
+        return newState;
+    }
+    
+    public async Task<bool> ToggleLinkOnlyChannelAsync(ulong guildId, ulong channelId, bool forceDisable = false)
+    {
+        var newState = false;
+        await using var uow = _db.GetDbContext();
+        if (forceDisable || (_linkOnly.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
+        {
+            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Link);
+        }
+        else
+        {
+            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId);
+            uow.ImageOnlyChannels.Add(new()
+            {
+                GuildId = guildId,
+                ChannelId = channelId,
+                Type = OnlyChannelType.Link
+            });
+
+            if (_imageOnly.TryGetValue(guildId, out var chs))
+                chs.TryRemove(channelId);
+            
+            channels = _linkOnly.GetOrAdd(guildId, new ConcurrentHashSet<ulong>());
+            channels.Add(channelId);
+            newState = true;
+        }
+
+        await uow.SaveChangesAsync();
         return newState;
     }
 
@@ -99,12 +145,28 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
         if (msg.Channel is not ITextChannel tch)
             return false;
 
-        if (msg.Attachments.Any(x => x is { Height: > 0, Width: > 0 }))
-            return false;
+        if (_imageOnly.TryGetValue(tch.GuildId, out var chs) && chs.Contains(msg.Channel.Id))
+            return await HandleOnlyChannel(tch, msg, OnlyChannelType.Image);
+        
+        if (_linkOnly.TryGetValue(tch.GuildId, out chs) && chs.Contains(msg.Channel.Id))
+            return await HandleOnlyChannel(tch, msg, OnlyChannelType.Link);
 
-        if (!_enabledOn.TryGetValue(tch.GuildId, out var chs) || !chs.Contains(msg.Channel.Id))
-            return false;
+        return false;
+    }
 
+    private async Task<bool> HandleOnlyChannel(ITextChannel tch, IUserMessage msg, OnlyChannelType type)
+    {
+        if (type == OnlyChannelType.Image)
+        {
+            if (msg.Attachments.Any(x => x is { Height: > 0, Width: > 0 }))
+                return false;
+        }
+        else
+        {
+            if (msg.Content.TryGetUrlPath(out _))
+                return false;
+        }
+        
         var user = await tch.Guild.GetUserAsync(msg.Author.Id)
                    ?? await _client.Rest.GetGuildUserAsync(tch.GuildId, msg.Author.Id);
 
@@ -114,7 +176,7 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
         // ignore owner and admin
         if (user.Id == tch.Guild.OwnerId || user.GuildPermissions.Administrator)
         {
-            Log.Information("Image-Only: Ignoring owner od admin ({ChannelId})", msg.Channel.Id);
+            Log.Information("{Type}-Only Channel: Ignoring owner od admin ({ChannelId})", type, msg.Channel.Id);
             return false;
         }
 
@@ -125,7 +187,11 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
 
         if (!botUser.GetPermissions(tch).ManageChannel)
         {
-            ToggleImageOnlyChannel(tch.GuildId, tch.Id, true);
+            if(type == OnlyChannelType.Image)
+                await ToggleImageOnlyChannelAsync(tch.GuildId, tch.Id, true);
+            else
+                await ToggleImageOnlyChannelAsync(tch.GuildId, tch.Id, true);
+            
             return false;
         }
 
@@ -133,7 +199,8 @@ public sealed class ImageOnlyChannelService : IExecOnMessage
         if (shouldLock)
         {
             await tch.AddPermissionOverwriteAsync(msg.Author, new(sendMessages: PermValue.Deny));
-            Log.Warning("Image-Only: User {User} [{UserId}] has been banned from typing in the channel [{ChannelId}]",
+            Log.Warning("{Type}-Only Channel: User {User} [{UserId}] has been banned from typing in the channel [{ChannelId}]",
+                type,
                 msg.Author,
                 msg.Author.Id,
                 msg.Channel.Id);

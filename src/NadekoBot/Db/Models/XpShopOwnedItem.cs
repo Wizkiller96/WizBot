@@ -1,4 +1,5 @@
-﻿using NadekoBot.Services.Database.Models;
+﻿#nullable disable warnings
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Db.Models;
 

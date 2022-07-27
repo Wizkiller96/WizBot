@@ -1219,6 +1219,10 @@ imageonlychannel:
   - imageonlychannel
   - imageonly
   - imagesonly
+linkonlychannel:
+  - linkonlychannel
+  - linkonly
+  - linkssonly
 coordreload:
   - coordreload
 quotesexport:

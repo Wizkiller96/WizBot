@@ -32,10 +32,10 @@ public partial class Administration : NadekoModule<AdministrationService>
         Inherit
     }
 
-    private readonly ImageOnlyChannelService _imageOnly;
+    private readonly SomethingOnlyChannelService _somethingOnly;
 
-    public Administration(ImageOnlyChannelService imageOnly)
-        => _imageOnly = imageOnly;
+    public Administration(SomethingOnlyChannelService somethingOnly)
+        => _somethingOnly = somethingOnly;
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
@@ -43,11 +43,24 @@ public partial class Administration : NadekoModule<AdministrationService>
     [BotPerm(GuildPerm.ManageGuild)]
     public async Task ImageOnlyChannel(StoopidTime time = null)
     {
-        var newValue = _imageOnly.ToggleImageOnlyChannel(ctx.Guild.Id, ctx.Channel.Id);
+        var newValue = await _somethingOnly.ToggleImageOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
             await ReplyConfirmLocalizedAsync(strs.imageonly_enable);
         else
             await ReplyPendingLocalizedAsync(strs.imageonly_disable);
+    }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.Administrator)]
+    [BotPerm(GuildPerm.ManageGuild)]
+    public async Task LinkOnlyChannel(StoopidTime time = null)
+    {
+        var newValue = await _somethingOnly.ToggleLinkOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
+        if (newValue)
+            await ReplyConfirmLocalizedAsync(strs.linkonly_enable);
+        else
+            await ReplyPendingLocalizedAsync(strs.linkonly_disable);
     }
 
     [Cmd]
