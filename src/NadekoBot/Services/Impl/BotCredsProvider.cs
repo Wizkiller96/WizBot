@@ -18,11 +18,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private const string CREDS_FILE_NAME = "creds.yml";
     private const string CREDS_EXAMPLE_FILE_NAME = "creds_example.yml";
 
-    private string CredsPath
-        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_FILE_NAME);
+    private string CredsPath { get; }
 
-    private string CredsExamplePath
-        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_EXAMPLE_FILE_NAME);
+    private string CredsExamplePath { get; }
 
     private readonly int? _totalShards;
 
@@ -34,9 +32,21 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private readonly object _reloadLock = new();
     private readonly IDisposable _changeToken;
 
-    public BotCredsProvider(int? totalShards = null)
+    public BotCredsProvider(int? totalShards = null, string credPath = null)
     {
         _totalShards = totalShards;
+
+        if (!string.IsNullOrWhiteSpace(credPath))
+        {
+            CredsPath = credPath;
+            CredsExamplePath = Path.Combine(Path.GetDirectoryName(credPath), CREDS_EXAMPLE_FILE_NAME);
+        }
+        else
+        {
+            CredsPath = Path.Combine(Directory.GetCurrentDirectory(), CREDS_FILE_NAME);
+            CredsExamplePath = Path.Combine(Directory.GetCurrentDirectory(), CREDS_EXAMPLE_FILE_NAME);
+        }
+
         try
         {
             if (!File.Exists(CredsExamplePath))
@@ -60,7 +70,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("NadekoBot_")
                                             .Build();
-        
+
         _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
         Reload();
     }
@@ -122,13 +132,13 @@ public sealed class BotCredsProvider : IBotCredsProvider
         ymlData = Yaml.Serializer.Serialize(creds);
         File.WriteAllText(CREDS_FILE_NAME, ymlData);
     }
-    
+
     private string OldCredsJsonPath
         => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
 
     private string OldCredsJsonBackupPath
         => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
-    
+
     private void MigrateCredentials()
     {
         if (File.Exists(OldCredsJsonPath))
@@ -168,7 +178,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
             Log.Warning(
                 "Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
         }
-        
+
         if (File.Exists(CREDS_FILE_NAME))
         {
             var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));

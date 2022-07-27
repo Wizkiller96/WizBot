@@ -35,13 +35,13 @@ public sealed class Bot
     private readonly IBotCredsProvider _credsProvider;
     // private readonly InteractionService _interactionService;
 
-    public Bot(int shardId, int? totalShards)
+    public Bot(int shardId, int? totalShards, string credPath = null)
     {
         if (shardId < 0)
             throw new ArgumentOutOfRangeException(nameof(shardId));
 
         ShardId = shardId;
-        _credsProvider = new BotCredsProvider(totalShards);
+        _credsProvider = new BotCredsProvider(totalShards, credPath);
         _creds = _credsProvider.GetCreds();
 
         _db = new(_credsProvider);
