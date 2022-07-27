@@ -1391,6 +1391,10 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
                     b.HasKey("Id")
                         .HasName("pk_imageonlychannels");
 
