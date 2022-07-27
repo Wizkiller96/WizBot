@@ -26,7 +26,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async partial Task MuteRole([Leftover] IRole role = null)
+        public async Task MuteRole([Leftover] IRole role = null)
         {
             if (role is null)
             {
@@ -51,7 +51,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(0)]
-        public async partial Task Mute(IGuildUser target, [Leftover] string reason = "")
+        public async Task Mute(IGuildUser target, [Leftover] string reason = "")
         {
             try
             {
@@ -72,7 +72,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async partial Task Mute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task Mute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -95,7 +95,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
-        public async partial Task Unmute(IGuildUser user, [Leftover] string reason = "")
+        public async Task Unmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -112,7 +112,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async partial Task ChatMute(IGuildUser user, [Leftover] string reason = "")
+        public async Task ChatMute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -133,7 +133,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public async partial Task ChatMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task ChatMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -156,7 +156,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async partial Task ChatUnmute(IGuildUser user, [Leftover] string reason = "")
+        public async Task ChatUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -173,7 +173,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(0)]
-        public async partial Task VoiceMute(IGuildUser user, [Leftover] string reason = "")
+        public async Task VoiceMute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {
@@ -193,7 +193,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async partial Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
         {
             if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
                 return;
@@ -215,7 +215,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
-        public async partial Task VoiceUnmute(IGuildUser user, [Leftover] string reason = "")
+        public async Task VoiceUnmute(IGuildUser user, [Leftover] string reason = "")
         {
             try
             {

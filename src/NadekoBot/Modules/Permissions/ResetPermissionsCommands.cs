@@ -20,7 +20,7 @@ public partial class Permissions
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ResetPerms()
+        public async Task ResetPerms()
         {
             await _perms.Reset(ctx.Guild.Id);
             await ReplyConfirmLocalizedAsync(strs.perms_reset);
@@ -28,7 +28,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async partial Task ResetGlobalPerms()
+        public async Task ResetGlobalPerms()
         {
             await _gps.Reset();
             await ReplyConfirmLocalizedAsync(strs.global_perms_reset);

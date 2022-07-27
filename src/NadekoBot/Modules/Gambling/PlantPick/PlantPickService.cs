@@ -143,7 +143,10 @@ public class PlantPickService : INService, IExecNoCommand
         img.Mutate(x =>
         {
             // measure the size of the text to be drawing
-            var size = TextMeasurer.Measure(pass, new(font, new PointF(0, 0)));
+            var size = TextMeasurer.Measure(pass, new TextOptions(font)
+            {
+                Origin = new PointF(0, 0)
+            });
 
             // fill the background with black, add 5 pixels on each side to make it look better
             x.FillPolygon(Color.ParseHex("00000080"),
@@ -316,9 +319,10 @@ public class PlantPickService : INService, IExecNoCommand
                 return msg.Id;
             }
         }
-        catch
+        catch (Exception ex)
         {
             // if sending fails, return null as message id
+            Log.Warning(ex, "Sending plant message failed: {Message}", ex.Message);
             return null;
         }
     }

@@ -21,7 +21,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(TypingGame.Options))]
-        public async partial Task TypeStart(params string[] args)
+        public async Task TypeStart(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new TypingGame.Options(), args);
             var channel = (ITextChannel)ctx.Channel;
@@ -37,7 +37,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task TypeStop()
+        public async Task TypeStop()
         {
             if (_service.RunningContests.TryRemove(ctx.Guild.Id, out var game))
             {
@@ -52,7 +52,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async partial Task Typeadd([Leftover] string text)
+        public async Task Typeadd([Leftover] string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return;
@@ -64,7 +64,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Typelist(int page = 1)
+        public async Task Typelist(int page = 1)
         {
             if (page < 1)
                 return;
@@ -85,7 +85,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [OwnerOnly]
-        public async partial Task Typedel(int index)
+        public async Task Typedel(int index)
         {
             var removed = _service.RemoveTypingArticle(--index);
 

@@ -1,6 +1,6 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common.Collections;
+using Nadeko.Common;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
@@ -67,7 +67,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task Shop(int page = 1)
+        public Task Shop(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;
@@ -77,7 +77,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Buy(int index)
+        public async Task Buy(int index)
         {
             index -= 1;
             if (index < 0)
@@ -206,7 +206,7 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task ShopAdd(Role _, int price, [Leftover] IRole role)
+        public async Task ShopAdd(Role _, int price, [Leftover] IRole role)
         {
             if (price < 1)
                 return;
@@ -239,7 +239,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopAdd(List _, int price, [Leftover] string name)
+        public async Task ShopAdd(List _, int price, [Leftover] string name)
         {
             if (price < 1)
                 return;
@@ -271,7 +271,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopListAdd(int index, [Leftover] string itemText)
+        public async Task ShopListAdd(int index, [Leftover] string itemText)
         {
             index -= 1;
             if (index < 0)
@@ -313,7 +313,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopRemove(int index)
+        public async Task ShopRemove(int index)
         {
             index -= 1;
             if (index < 0)
@@ -343,7 +343,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopChangePrice(int index, int price)
+        public async Task ShopChangePrice(int index, int price)
         {
             if (--index < 0 || price <= 0)
                 return;
@@ -361,7 +361,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopChangeName(int index, [Leftover] string newName)
+        public async Task ShopChangeName(int index, [Leftover] string newName)
         {
             if (--index < 0 || string.IsNullOrWhiteSpace(newName))
                 return;
@@ -379,7 +379,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopSwap(int index1, int index2)
+        public async Task ShopSwap(int index1, int index2)
         {
             if (--index1 < 0 || --index2 < 0 || index1 == index2)
                 return;
@@ -397,7 +397,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task ShopMove(int fromIndex, int toIndex)
+        public async Task ShopMove(int fromIndex, int toIndex)
         {
             if (--fromIndex < 0 || --toIndex < 0 || fromIndex == toIndex)
                 return;

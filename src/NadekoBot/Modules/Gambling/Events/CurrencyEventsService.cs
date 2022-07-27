@@ -13,7 +13,6 @@ public class CurrencyEventsService : INService
 
     private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events = new();
 
-
     public CurrencyEventsService(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService configService)
     {
         _client = client;
@@ -29,7 +28,7 @@ public class CurrencyEventsService : INService
         Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embed)
     {
         var g = _client.GetGuild(guildId);
-        if (g?.GetChannel(channelId) is not SocketTextChannel ch)
+        if (g?.GetChannel(channelId) is not ITextChannel ch)
             return false;
 
         ICurrencyEvent ce;

@@ -12,7 +12,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task VcRoleRm(ulong vcId)
+        public async Task VcRoleRm(ulong vcId)
         {
             if (_service.RemoveVcRole(ctx.Guild.Id, vcId))
                 await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vcId.ToString())));
@@ -24,7 +24,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task VcRole([Leftover] IRole role = null)
+        public async Task VcRole([Leftover] IRole role = null)
         {
             var user = (IGuildUser)ctx.User;
 
@@ -50,7 +50,7 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task VcRoleList()
+        public async Task VcRoleList()
         {
             var guild = (SocketGuild)ctx.Guild;
             string text;

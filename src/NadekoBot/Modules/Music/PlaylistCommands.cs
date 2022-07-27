@@ -37,7 +37,7 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Playlists([Leftover] int num = 1)
+        public async Task Playlists([Leftover] int num = 1)
         {
             if (num <= 0)
                 return;
@@ -60,7 +60,7 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task DeletePlaylist([Leftover] int id)
+        public async Task DeletePlaylist([Leftover] int id)
         {
             var success = false;
             try
@@ -91,7 +91,7 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task PlaylistShow(int id, int page = 1)
+        public async Task PlaylistShow(int id, int page = 1)
         {
             if (page-- < 1)
                 return;
@@ -118,7 +118,7 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Save([Leftover] string name)
+        public async Task Save([Leftover] string name)
         {
             if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
             {
@@ -159,7 +159,7 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Load([Leftover] int id)
+        public async Task Load([Leftover] int id)
         {
             // expensive action, 1 at a time
             await _playlistLock.WaitAsync();

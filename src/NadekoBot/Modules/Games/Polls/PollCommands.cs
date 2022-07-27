@@ -18,7 +18,7 @@ public partial class Games
         [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Poll([Leftover] string arg)
+        public async Task Poll([Leftover] string arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
                 return;
@@ -48,7 +48,7 @@ public partial class Games
         [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task PollStats()
+        public async Task PollStats()
         {
             if (!_service.ActivePolls.TryGetValue(ctx.Guild.Id, out var pr))
                 return;
@@ -59,7 +59,7 @@ public partial class Games
         [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Pollend()
+        public async Task Pollend()
         {
             Poll p;
             if ((p = _service.StopPoll(ctx.Guild.Id)) is null)

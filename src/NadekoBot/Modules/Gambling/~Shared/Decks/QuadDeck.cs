@@ -1,4 +1,6 @@
-﻿namespace NadekoBot.Modules.Gambling.Common;
+﻿using Nadeko.Econ;
+
+namespace NadekoBot.Modules.Gambling.Common;
 
 public class QuadDeck : Deck
 {

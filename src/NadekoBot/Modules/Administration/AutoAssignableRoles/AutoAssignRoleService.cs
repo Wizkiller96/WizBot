@@ -5,6 +5,7 @@ using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;
 using System.Net;
 using System.Threading.Channels;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Administration.Services;
 

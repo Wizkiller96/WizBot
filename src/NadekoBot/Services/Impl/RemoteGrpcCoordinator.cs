@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Grpc.Core;
 using Grpc.Net.Client;
+using Nadeko.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Coordinator;
 

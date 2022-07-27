@@ -6,6 +6,7 @@ using NadekoBot.Modules.Utility.Common.Exceptions;
 using NadekoBot.Services.Database.Models;
 using System.Diagnostics;
 using System.Net;
+using Nadeko.Common;
 
 namespace NadekoBot.Modules.Utility.Services;
 

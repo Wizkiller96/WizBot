@@ -128,6 +128,10 @@ repeatredundant:
   desc: "Specify repeater's index (use `{0}repli` to find it) to toggle whether that repeater's message should be reposted if the last message in the channel is the same repeater's message. This is useful if you want to remind everyone to be nice in the channel every so often, but don't want to have the bot spam the channel. This is NOT useful if you want to periodically ping someone."
   args:
     - "1"
+repeatskip:
+  desc: "Specify a repeater's ID to toggle whether the next trigger of the repeater will be skipped. This setting is not stored in the database and will get reset if the bot is restarted."
+  args:
+    - "3"
 rotateplaying:
   desc: "Toggles rotation of playing status of the dynamic strings you previously specified."
   args:
@@ -653,7 +657,7 @@ rolluo:
     - "7"
     - "3d5"
 nroll:
-  desc: "Rolls in a given range. If you specify just one number instead of the range, it will role from 0 to that number."
+  desc: "Rolls in a given range. If you specify just one number instead of the range, it will roll from 0 to that number."
   args:
     - "5"
     - "5-15"
@@ -703,8 +707,8 @@ betroll:
   desc: "Bets a certain amount of currency and rolls a dice. Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10."
   args:
     - "5"
-wheeloffortune:
-  desc: "Bets a certain amount of currency on the wheel of fortune. Wheel can stop on one of many different multipliers. Won amount is rounded down to the nearest whole number."
+luckyladder:
+  desc: "Bets a certain amount of currency on the lucky ladder. You can stop on one of many different multipliers. Won amount is rounded down to the nearest whole number."
   args:
     - "10"
 leaderboard:
@@ -1853,9 +1857,10 @@ xpgloballeaderboard:
   args:
     - ""
 xpadd:
-  desc: "Adds xp to a user on the server. This does not affect their global ranking. You can use negative values."
+  desc: "Adds server XP to a single user or all users role on this server. This does not affect their global ranking. You can use negative values."
   args:
     - "100 @Someone"
+    - "500 SomeRoleName"
 clubcreate:
   desc: "Creates a club. You must be at least level 5 and not be in the club already."
   args:
@@ -2117,6 +2122,12 @@ xpreset:
   args:
     - "@Someone"
     - ""
+xpshop:
+  desc: "Access the xp shop (if enabled). You can purchase either xp card frames or backgrounds. You can optionally provide a page number"
+  args:
+    - "bgs"
+    - "frames"
+    - "bgs 3"
 bible:
   desc: "Shows bible verse. You need to supply book name and chapter:verse"
   args:
@@ -2153,6 +2164,12 @@ imageonlychannel:
   desc: |-
     Toggles whether the channel only allows images.
     Users who send more than a few non-image messages will be banned from using the channel. 
+  args:
+    - ""
+linkonlychannel:
+  desc: |-
+    Toggles whether the channel only allows links.
+    Users who send more than a few non-link messages will be banned from using the channel. 
   args:
     - ""
 coordreload:
@@ -2232,3 +2249,22 @@ eval:
     - "123 / 4.5f"
     - "await ctx.OkAsync();"
     - 'await ctx.SendConfirmAsync("uwu");'
+betdraw:
+  desc: |-
+    Bet on the card value and/or color. Specify the amount followed by your guess. 
+    You can specify `r` or `b` for red or black, and `h` or `l` for high or low.
+    You can specify only h/l or only r/b or both.
+    Returns are high but **7 always loses**.
+  args:
+    - "50 r"
+    - "200 b l"
+    - "1000 h"
+    - "38 hi black"
+bettest:
+  desc: |-
+    Tests a betting command by specifying the name followed by the number of tests. Some have multiple variations.
+    See the list of all tests by specifying no parameters.
+  args:
+    - ""
+    - "betflip 1000"
+    - "slot 2000"

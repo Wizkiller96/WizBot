@@ -17,7 +17,7 @@ namespace NadekoBot.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -376,6 +376,46 @@ namespace NadekoBot.Migrations.PostgreSql
                         .HasName("pk_streamonlinemessages");
 
                     b.ToTable("streamonlinemessages", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.XpShopOwnedItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("dateadded");
+
+                    b.Property<bool>("IsUsing")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isusing");
+
+                    b.Property<string>("ItemKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("itemkey");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("integer")
+                        .HasColumnName("itemtype");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_xpshopowneditem");
+
+                    b.HasIndex("UserId", "ItemType", "ItemKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+
+                    b.ToTable("xpshopowneditem", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
@@ -1416,6 +1456,10 @@ namespace NadekoBot.Migrations.PostgreSql
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.HasKey("Id")
                         .HasName("pk_imageonlychannels");

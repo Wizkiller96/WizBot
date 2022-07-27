@@ -18,19 +18,19 @@ public partial class Utility
 
         [Cmd]
         [Priority(2)]
-        public partial Task Patron()
+        public Task Patron()
             => InternalPatron(ctx.User);
 
         [Cmd]
         [Priority(0)]
         [OwnerOnly]
-        public partial Task Patron(IUser user)
+        public Task Patron(IUser user)
             => InternalPatron(user);
 
         [Cmd]
         [Priority(0)]
         [OwnerOnly]
-        public async partial Task PatronMessage(PatronTier tierAndHigher, string message)
+        public async Task PatronMessage(PatronTier tierAndHigher, string message)
         {
             _ = ctx.Channel.TriggerTypingAsync();
             var result = await _service.SendMessageToPatronsAsync(tierAndHigher, message);
@@ -43,7 +43,7 @@ public partial class Utility
 
         // [Cmd]
         // [OwnerOnly]
-        // public async partial Task PatronGift(IUser user, int amount)
+        // public async Task PatronGift(IUser user, int amount)
         // {
         //     // i can't figure out a good way to gift more than one month at the moment.
         //

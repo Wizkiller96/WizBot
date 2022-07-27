@@ -1,4 +1,4 @@
-﻿using NadekoBot.Common.Collections;
+﻿using Nadeko.Common;
 using NadekoBot.Services.Database.Models;
 using NUnit.Framework;
 using System;

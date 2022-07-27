@@ -7,6 +7,7 @@ using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
+using Nadeko.Common;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

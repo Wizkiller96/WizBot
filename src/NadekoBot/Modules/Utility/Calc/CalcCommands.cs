@@ -10,7 +10,7 @@ public partial class Utility
     public partial class CalcCommands : NadekoModule
     {
         [Cmd]
-        public async partial Task Calculate([Leftover] string expression)
+        public async Task Calculate([Leftover] string expression)
         {
             var expr = new Expression(expression, EvaluateOptions.IgnoreCase | EvaluateOptions.NoCache);
             expr.EvaluateParameter += Expr_EvaluateParameter;
@@ -35,7 +35,7 @@ public partial class Utility
         }
 
         [Cmd]
-        public async partial Task CalcOps()
+        public async Task CalcOps()
         {
             var selection = typeof(Math).GetTypeInfo()
                                         .GetMethods()

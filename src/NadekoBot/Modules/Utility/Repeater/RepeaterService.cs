@@ -15,6 +15,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
     private readonly DiscordSocketClient _client;
     private readonly LinkedList<RunningRepeater> _repeaterQueue;
     private readonly ConcurrentHashSet<int> _noRedundant;
+    private readonly ConcurrentHashSet<int> _skipNext = new();
 
     private readonly object _queueLocker = new();
 
@@ -81,7 +82,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
                 // execute
                 foreach (var chunk in toExecute.Chunk(5))
-                    await chunk.Select(Trigger).WhenAll();
+                    await chunk.Where(x => !_skipNext.TryRemove(x.Repeater.Id)).Select(Trigger).WhenAll();
 
                 // reinsert
                 foreach (var rep in toExecute)
@@ -395,6 +396,27 @@ public sealed class RepeaterService : IReadyExecutor, INService
         return newValue;
     }
 
+    public async Task<bool?> ToggleSkipNextAsync(ulong guildId, int index)
+    {
+        await using var ctx = _db.GetDbContext();
+        var toSkip = await ctx.Repeaters
+            .Where(x => x.GuildId == guildId)
+            .Skip(index)
+            .FirstOrDefaultAsyncEF();
+
+        if (toSkip is null)
+            return null;
+
+        if (_skipNext.Add(toSkip.Id))
+            return true;
+
+        _skipNext.TryRemove(toSkip.Id);
+        return false;
+    }
+
     public bool IsNoRedundant(int repeaterId)
         => _noRedundant.Contains(repeaterId);
+
+    public bool IsRepeaterSkipped(int repeaterId)
+        => _skipNext.Contains(repeaterId);
 }

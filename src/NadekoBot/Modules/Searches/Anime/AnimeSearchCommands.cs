@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using AngleSharp;
 using AngleSharp.Html.Dom;
+using Nadeko.Common;
 using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;
@@ -40,7 +41,7 @@ public partial class Searches
 
         [Cmd]
         [Priority(0)]
-        public async partial Task Mal([Leftover] string name)
+        public async Task Mal([Leftover] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return;
@@ -134,11 +135,11 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public partial Task Mal(IGuildUser usr)
+        public Task Mal(IGuildUser usr)
             => Mal(usr.Username);
 
         [Cmd]
-        public async partial Task Anime([Leftover] string query)
+        public async Task Anime([Leftover] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
                 return;
@@ -170,7 +171,7 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Manga([Leftover] string query)
+        public async Task Manga([Leftover] string query)
         {
             if (string.IsNullOrWhiteSpace(query))
                 return;

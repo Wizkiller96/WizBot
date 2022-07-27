@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 5
+version: 6
 # Currency settings
 currency:
 # What is the emoji/character which represents the currency
@@ -67,18 +67,18 @@ decay:
   minThreshold: 99
   # How often, in hours, does the decay run. Default is 24 hours
   hourInterval: 24
-# Settings for Wheel Of Fortune command.
-wheelOfFortune:
+# Settings for LuckyLadder command
+luckyLadder:
 # Self-Explanatory. Has to have 8 values, otherwise the command won't work.
   multipliers:
+    - 2.4
     - 1.7
     - 1.5
+    - 1.2
+    - 0.5
+    - 0.3
     - 0.2
     - 0.1
-    - 0.3
-    - 0.5
-    - 1.2
-    - 2.4
 # Settings related to waifus
 waifu:
 # Minimum price a waifu can have

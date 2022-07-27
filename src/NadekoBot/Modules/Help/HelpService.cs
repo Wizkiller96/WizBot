@@ -1,5 +1,6 @@
 #nullable disable
 using CommandLine;
+using Nadeko.Common;
 using Nadeko.Medusa;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Administration.Services;

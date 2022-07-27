@@ -13,7 +13,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [BotPerm(GuildPerm.ManageMessages)]
-        public async partial Task AdSarm()
+        public async Task AdSarm()
         {
             var newVal = _service.ToggleAdSarm(ctx.Guild.Id);
 
@@ -28,7 +28,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public partial Task Asar([Leftover] IRole role)
+        public Task Asar([Leftover] IRole role)
             => Asar(0, role);
 
         [Cmd]
@@ -36,7 +36,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async partial Task Asar(int group, [Leftover] IRole role)
+        public async Task Asar(int group, [Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -58,7 +58,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async partial Task Sargn(int group, [Leftover] string name = null)
+        public async Task Sargn(int group, [Leftover] string name = null)
         {
             var set = await _service.SetNameAsync(ctx.Guild.Id, group, name);
 
@@ -74,7 +74,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async partial Task Rsar([Leftover] IRole role)
+        public async Task Rsar([Leftover] IRole role)
         {
             var guser = (IGuildUser)ctx.User;
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
@@ -89,7 +89,7 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Lsar(int page = 1)
+        public async Task Lsar(int page = 1)
         {
             if (--page < 0)
                 return;
@@ -149,7 +149,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task Togglexclsar()
+        public async Task Togglexclsar()
         {
             var areExclusive = _service.ToggleEsar(ctx.Guild.Id);
             if (areExclusive)
@@ -162,7 +162,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task RoleLevelReq(int level, [Leftover] IRole role)
+        public async Task RoleLevelReq(int level, [Leftover] IRole role)
         {
             if (level < 0)
                 return;
@@ -181,7 +181,7 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Iam([Leftover] IRole role)
+        public async Task Iam([Leftover] IRole role)
         {
             var guildUser = (IGuildUser)ctx.User;
 
@@ -208,7 +208,7 @@ public partial class Administration
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Iamnot([Leftover] IRole role)
+        public async Task Iamnot([Leftover] IRole role)
         {
             var guildUser = (IGuildUser)ctx.User;
 

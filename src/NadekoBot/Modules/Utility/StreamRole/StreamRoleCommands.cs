@@ -12,7 +12,7 @@ public partial class Utility
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamRole(IRole fromRole, IRole addRole)
+        public async Task StreamRole(IRole fromRole, IRole addRole)
         {
             await _service.SetStreamRole(fromRole, addRole);
 
@@ -24,7 +24,7 @@ public partial class Utility
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamRole()
+        public async Task StreamRole()
         {
             await _service.StopStreamRole(ctx.Guild);
             await ReplyConfirmLocalizedAsync(strs.stream_role_disabled);
@@ -34,7 +34,7 @@ public partial class Utility
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamRoleKeyword([Leftover] string keyword = null)
+        public async Task StreamRoleKeyword([Leftover] string keyword = null)
         {
             var kw = await _service.SetKeyword(ctx.Guild, keyword);
 
@@ -48,7 +48,7 @@ public partial class Utility
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamRoleBlacklist(AddRemove action, [Leftover] IGuildUser user)
+        public async Task StreamRoleBlacklist(AddRemove action, [Leftover] IGuildUser user)
         {
             var success = await _service.ApplyListAction(StreamRoleListType.Blacklist,
                 ctx.Guild,
@@ -73,7 +73,7 @@ public partial class Utility
         [BotPerm(GuildPerm.ManageRoles)]
         [UserPerm(GuildPerm.ManageRoles)]
         [RequireContext(ContextType.Guild)]
-        public async partial Task StreamRoleWhitelist(AddRemove action, [Leftover] IGuildUser user)
+        public async Task StreamRoleWhitelist(AddRemove action, [Leftover] IGuildUser user)
         {
             var success = await _service.ApplyListAction(StreamRoleListType.Whitelist,
                 ctx.Guild,

@@ -31,6 +31,7 @@ public interface IImageCache
     Task<byte[]?> GetSlotBgAsync();
     Task<byte[]?> GetRipBgAsync();
     Task<byte[]?> GetRipOverlayAsync();
+    Task<byte[]?> GetImageDataAsync(Uri url);
 }
 
 public sealed class ImageCache : IImageCache, INService
@@ -54,7 +55,7 @@ public sealed class ImageCache : IImageCache, INService
     private static TypedKey<byte[]> GetImageKey(Uri url)
         => new($"image:{url}");
 
-    private async Task<byte[]?> GetImageDataAsync(Uri url)
+    public async Task<byte[]?> GetImageDataAsync(Uri url)
         => await _cache.GetOrAddAsync(
             GetImageKey(url),
             async () =>

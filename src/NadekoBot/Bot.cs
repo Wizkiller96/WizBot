@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
+using Nadeko.Common;
 using RunMode = Discord.Commands.RunMode;
 
 namespace NadekoBot;

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
@@ -34,7 +35,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptionsAttribute(typeof(RaceOptions))]
-        public partial Task Race(params string[] args)
+        public Task Race(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new RaceOptions(), args);
 
@@ -134,7 +135,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task JoinRace(ShmartNumber amount = default)
+        public async Task JoinRace(ShmartNumber amount = default)
         {
             if (!await CheckBetOptional(amount))
                 return;

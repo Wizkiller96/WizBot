@@ -17,7 +17,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task ReactionRoleAdd(
+        public async Task ReactionRoleAdd(
             ulong messageId,
             string emoteStr,
             IRole role,
@@ -67,7 +67,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task ReactionRolesList()
+        public async Task ReactionRolesList()
         {
             var reros = await _rero.GetReactionRolesAsync(ctx.Guild.Id);
 
@@ -109,7 +109,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task ReactionRolesRemove(ulong messageId)
+        public async Task ReactionRolesRemove(ulong messageId)
         {
             var succ = await _rero.RemoveReactionRoles(ctx.Guild.Id, messageId);
             if (succ)
@@ -122,7 +122,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async partial Task ReactionRolesDeleteAll()
+        public async Task ReactionRolesDeleteAll()
         {
             await _rero.RemoveAllReactionRoles(ctx.Guild.Id);
             await ctx.OkAsync();
@@ -133,7 +133,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Ratelimit(60)]
-        public async partial Task ReactionRolesTransfer(ulong fromMessageId, ulong toMessageId)
+        public async Task ReactionRolesTransfer(ulong fromMessageId, ulong toMessageId)
         {
             var msg = await ctx.Channel.GetMessageAsync(toMessageId);
 

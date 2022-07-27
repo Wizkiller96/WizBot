@@ -7,6 +7,7 @@ using NadekoBot.Modules.Permissions.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
+using Nadeko.Common;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;
@@ -65,7 +66,7 @@ public partial class Help : NadekoModule<HelpService>
     }
 
     [Cmd]
-    public async partial Task Modules(int page = 1)
+    public async Task Modules(int page = 1)
     {
         if (--page < 0)
             return;
@@ -170,7 +171,7 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     [NadekoOptions(typeof(CommandsOptions))]
-    public async partial Task Commands(string module = null, params string[] args)
+    public async Task Commands(string module = null, params string[] args)
     {
         module = module?.Trim().ToUpperInvariant();
         if (string.IsNullOrWhiteSpace(module))
@@ -282,7 +283,7 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     [Priority(0)]
-    public async partial Task H([Leftover] string fail)
+    public async Task H([Leftover] string fail)
     {
         var prefixless =
             _cmds.Commands.FirstOrDefault(x => x.Aliases.Any(cmdName => cmdName.ToLowerInvariant() == fail));
@@ -311,7 +312,7 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     [Priority(1)]
-    public async partial Task H([Leftover] CommandInfo com = null)
+    public async Task H([Leftover] CommandInfo com = null)
     {
         var channel = ctx.Channel;
 
@@ -341,7 +342,7 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     [OwnerOnly]
-    public async partial Task GenCmdList()
+    public async Task GenCmdList()
     {
         _ = ctx.Channel.TriggerTypingAsync();
 
@@ -463,7 +464,7 @@ public partial class Help : NadekoModule<HelpService>
     }
 
     [Cmd]
-    public async partial Task Guide()
+    public async Task Guide()
         => await ConfirmLocalizedAsync(strs.guide("https://nadeko.bot/commands",
             "https://nadekobot.readthedocs.io/en/latest/"));
 
@@ -481,7 +482,7 @@ public partial class Help : NadekoModule<HelpService>
 
     [Cmd]
     [OnlyPublicBot]
-    public async partial Task Donate()
+    public async Task Donate()
     {
         var selfhostInter = new DonateSelfhostingInteraction(_client, ctx.User.Id, SelfhostAction);
         

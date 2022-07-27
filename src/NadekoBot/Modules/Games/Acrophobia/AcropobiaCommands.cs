@@ -18,7 +18,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [NadekoOptions(typeof(AcrophobiaGame.Options))]
-        public async partial Task Acrophobia(params string[] args)
+        public async Task Acrophobia(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new AcrophobiaGame.Options(), args);
             var channel = (ITextChannel)ctx.Channel;

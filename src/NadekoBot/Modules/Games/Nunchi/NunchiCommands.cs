@@ -16,7 +16,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Nunchi()
+        public async Task Nunchi()
         {
             var newNunchi = new NunchiGame(ctx.User.Id, ctx.User.ToString());
             NunchiGame nunchi;

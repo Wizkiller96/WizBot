@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Nadeko.Common;
 using NadekoBot.Extensions;
 using NadekoBot.Services;
 using NUnit.Framework;

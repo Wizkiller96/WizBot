@@ -1,4 +1,5 @@
 #nullable disable
+using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Modules.Gambling.Services;
@@ -16,7 +17,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async partial Task WaifuReset()
+        public async Task WaifuReset()
         {
             var price = _service.GetResetPrice(ctx.User);
             var embed = _eb.Create()
@@ -37,7 +38,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task WaifuClaim(long amount, [Leftover] IUser target)
+        public async Task WaifuClaim(long amount, [Leftover] IUser target)
         {
             if (amount < Config.Waifu.MinPrice)
             {
@@ -77,7 +78,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async partial Task WaifuTransfer(ulong waifuId, IUser newOwner)
+        public async Task WaifuTransfer(ulong waifuId, IUser newOwner)
         {
             if (!await _service.WaifuTransfer(ctx.User, waifuId, newOwner))
             {
@@ -93,7 +94,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task WaifuTransfer(IUser waifu, IUser newOwner)
+        public async Task WaifuTransfer(IUser waifu, IUser newOwner)
         {
             if (!await _service.WaifuTransfer(ctx.User, waifu.Id, newOwner))
             {
@@ -109,7 +110,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(-1)]
-        public partial Task Divorce([Leftover] string target)
+        public Task Divorce([Leftover] string target)
         {
             var waifuUserId = _service.GetWaifuUserId(ctx.User.Id, target);
             if (waifuUserId == default)
@@ -121,13 +122,13 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public partial Task Divorce([Leftover] IGuildUser target)
+        public Task Divorce([Leftover] IGuildUser target)
             => Divorce(target.Id);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task Divorce([Leftover] ulong targetId)
+        public async Task Divorce([Leftover] ulong targetId)
         {
             if (targetId == ctx.User.Id)
                 return;
@@ -153,7 +154,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Affinity([Leftover] IGuildUser user = null)
+        public async Task Affinity([Leftover] IGuildUser user = null)
         {
             if (user?.Id == ctx.User.Id)
             {
@@ -189,7 +190,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task WaifuLb(int page = 1)
+        public async Task WaifuLb(int page = 1)
         {
             page--;
 
@@ -222,7 +223,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public partial Task WaifuInfo([Leftover] IUser target = null)
+        public Task WaifuInfo([Leftover] IUser target = null)
         {
             if (target is null)
                 target = ctx.User;
@@ -233,7 +234,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public partial Task WaifuInfo(ulong targetId)
+        public Task WaifuInfo(ulong targetId)
             => InternalWaifuInfo(targetId);
 
         private async Task InternalWaifuInfo(ulong targetId, string name = null)
@@ -286,7 +287,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async partial Task WaifuGift(int page = 1)
+        public async Task WaifuGift(int page = 1)
         {
             if (--page < 0 || page > (Config.Waifu.Items.Count - 1) / 9)
                 return;
@@ -316,7 +317,7 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async partial Task WaifuGift(string itemName, [Leftover] IUser waifu)
+        public async Task WaifuGift(string itemName, [Leftover] IUser waifu)
         {
             if (waifu.Id == ctx.User.Id)
                 return;

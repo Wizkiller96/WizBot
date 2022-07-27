@@ -454,6 +454,23 @@ public abstract class NadekoContext : DbContext
         });
 
         #endregion
+ 
+        #region Xp Item Shop
+
+        modelBuilder.Entity<XpShopOwnedItem>(
+            x =>
+            {
+                // user can own only one of each item
+                x.HasIndex(model => new
+                    {
+                        model.UserId,
+                        model.ItemType,
+                        model.ItemKey
+                    })
+                    .IsUnique();
+            });
+
+        #endregion
     }
 
 #if DEBUG

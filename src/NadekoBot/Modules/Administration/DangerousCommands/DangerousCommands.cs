@@ -32,7 +32,7 @@ namespace NadekoBot.Modules.Administration
             
             [Cmd]
             [OwnerOnly]
-            public partial Task SqlSelect([Leftover] string sql)
+            public Task SqlSelect([Leftover] string sql)
             {
                 var result = _service.SelectSql(sql);
 
@@ -56,7 +56,7 @@ namespace NadekoBot.Modules.Administration
 
             [Cmd]
             [OwnerOnly]
-            public async partial Task SqlExec([Leftover] string sql)
+            public async Task SqlExec([Leftover] string sql)
             {
                 try
                 {
@@ -78,37 +78,37 @@ namespace NadekoBot.Modules.Administration
 
             [Cmd]
             [OwnerOnly]
-            public partial Task DeleteWaifus()
+            public Task DeleteWaifus()
                 => ConfirmActionInternalAsync("Delete Waifus", () => _service.DeleteWaifus());
 
             [Cmd]
             [OwnerOnly]
-            public async partial Task DeleteWaifu(IUser user)
+            public async Task DeleteWaifu(IUser user)
                 => await DeleteWaifu(user.Id);
 
             [Cmd]
             [OwnerOnly]
-            public partial Task DeleteWaifu(ulong userId)
+            public Task DeleteWaifu(ulong userId)
                 => ConfirmActionInternalAsync($"Delete Waifu {userId}", () => _service.DeleteWaifu(userId));
 
             [Cmd]
             [OwnerOnly]
-            public partial Task DeleteCurrency()
+            public Task DeleteCurrency()
                 => ConfirmActionInternalAsync("Delete Currency", () => _service.DeleteCurrency());
 
             [Cmd]
             [OwnerOnly]
-            public partial Task DeletePlaylists()
+            public Task DeletePlaylists()
                 => ConfirmActionInternalAsync("Delete Playlists", () => _service.DeletePlaylists());
 
             [Cmd]
             [OwnerOnly]
-            public partial Task DeleteXp()
+            public Task DeleteXp()
                 => ConfirmActionInternalAsync("Delete Xp", () => _service.DeleteXp());
 
             [Cmd]
             [OwnerOnly]
-            public async partial Task PurgeUser(ulong userId)
+            public async Task PurgeUser(ulong userId)
             {
                 var embed = _eb.Create()
                                .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
@@ -122,7 +122,7 @@ namespace NadekoBot.Modules.Administration
 
             [Cmd]
             [OwnerOnly]
-            public partial Task PurgeUser([Leftover] IUser user)
+            public Task PurgeUser([Leftover] IUser user)
                 => PurgeUser(user.Id);
         }
     }

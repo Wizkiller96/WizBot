@@ -3,6 +3,7 @@ using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using System.Collections.Immutable;
+using Nadeko.Common;
 using ExecuteResult = Discord.Commands.ExecuteResult;
 using PreconditionResult = Discord.Commands.PreconditionResult;
 

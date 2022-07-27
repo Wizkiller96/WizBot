@@ -33,6 +33,11 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
             ConfigPrinters.ToString,
             x => x > 0);
 
+        AddParsedProp("shop.is_enabled",
+            conf => conf.Shop.IsEnabled,
+            bool.TryParse,
+            ConfigPrinters.ToString);
+
         Migrate();
     }
 
@@ -44,6 +49,14 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
             {
                 c.Version = 2;
                 c.XpFromImage = 0;
+            });
+        }
+        
+        if (data.Version < 3)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 3;
             });
         }
     }

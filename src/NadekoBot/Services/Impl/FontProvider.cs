@@ -24,8 +24,8 @@ public class FontProvider : INService
     {
         _fonts = new();
 
-        NotoSans = _fonts.Install("data/fonts/NotoSans-Bold.ttf");
-        UniSans = _fonts.Install("data/fonts/Uni Sans.ttf");
+        NotoSans = _fonts.Add("data/fonts/NotoSans-Bold.ttf");
+        UniSans = _fonts.Add("data/fonts/Uni Sans.ttf");
 
         FallBackFonts = new();
 
@@ -37,9 +37,9 @@ public class FontProvider : INService
             try
             {
                 var fontsfolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
-                FallBackFonts.Add(_fonts.Install(Path.Combine(fontsfolder, "seguiemj.ttf")));
-                FallBackFonts.AddRange(_fonts.InstallCollection(Path.Combine(fontsfolder, "msgothic.ttc")));
-                FallBackFonts.AddRange(_fonts.InstallCollection(Path.Combine(fontsfolder, "segoe.ttc")));
+                FallBackFonts.Add(_fonts.Add(Path.Combine(fontsfolder, "seguiemj.ttf")));
+                FallBackFonts.AddRange(_fonts.AddCollection(Path.Combine(fontsfolder, "msgothic.ttc")));
+                FallBackFonts.AddRange(_fonts.AddCollection(Path.Combine(fontsfolder, "segoe.ttc")));
             }
             catch { }
         }
@@ -49,9 +49,9 @@ public class FontProvider : INService
         foreach (var font in Directory.GetFiles(@"data/fonts"))
         {
             if (font.EndsWith(".ttf"))
-                FallBackFonts.Add(_fonts.Install(font));
+                FallBackFonts.Add(_fonts.Add(font));
             else if (font.EndsWith(".ttc"))
-                FallBackFonts.AddRange(_fonts.InstallCollection(font));
+                FallBackFonts.AddRange(_fonts.AddCollection(font));
         }
 
         RipFont = NotoSans.CreateFont(20, FontStyle.Bold);

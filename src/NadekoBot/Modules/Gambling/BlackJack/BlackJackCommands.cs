@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Blackjack;
 using NadekoBot.Modules.Gambling.Services;
@@ -29,7 +30,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task BlackJack(ShmartNumber amount)
+        public async Task BlackJack(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;
@@ -148,17 +149,17 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task Hit()
+        public Task Hit()
             => InternalBlackJack(BjAction.Hit);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task Stand()
+        public Task Stand()
             => InternalBlackJack(BjAction.Stand);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public partial Task Double()
+        public Task Double()
             => InternalBlackJack(BjAction.Double);
 
         private async Task InternalBlackJack(BjAction a)

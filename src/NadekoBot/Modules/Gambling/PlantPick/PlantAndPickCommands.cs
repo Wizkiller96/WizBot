@@ -1,4 +1,5 @@
 #nullable disable
+using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 
@@ -17,7 +18,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Pick(string pass = null)
+        public async Task Pick(string pass = null)
         {
             if (!string.IsNullOrWhiteSpace(pass) && !pass.IsAlphaNumeric())
                 return;
@@ -43,7 +44,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async partial Task Plant(ShmartNumber amount, string pass = null)
+        public async Task Plant(ShmartNumber amount, string pass = null)
         {
             if (amount < 1)
                 return;
@@ -74,7 +75,7 @@ public partial class Gambling
 #if GLOBAL_NADEKO
             [OwnerOnly]
 #endif
-        public async partial Task GenCurrency()
+        public async Task GenCurrency()
         {
             var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
@@ -87,7 +88,7 @@ public partial class Gambling
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [OwnerOnly]
-        public partial Task GenCurList(int page = 1)
+        public Task GenCurList(int page = 1)
         {
             if (--page < 0)
                 return Task.CompletedTask;

@@ -2,6 +2,7 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Nadeko.Common;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
 
@@ -177,7 +178,7 @@ public class ClubService : INService, IClubService
     public bool LeaveClub(IUser user)
     {
         using var uow = _db.GetDbContext();
-        var du = uow.GetOrCreateUser(user);
+        var du = uow.GetOrCreateUser(user, x => x.Include(u => u.Club));
         if (du.Club is null || du.Club.OwnerId == du.Id)
             return false;
 

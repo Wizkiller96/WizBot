@@ -13,7 +13,7 @@ public partial class Utility
         [BotPerm(ChannelPerm.CreateInstantInvite)]
         [UserPerm(ChannelPerm.CreateInstantInvite)]
         [NadekoOptions(typeof(InviteService.Options))]
-        public async partial Task InviteCreate(params string[] args)
+        public async Task InviteCreate(params string[] args)
         {
             var (opts, success) = OptionsParser.ParseFrom(new InviteService.Options(), args);
             if (!success)
@@ -29,7 +29,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
-        public async partial Task InviteList(int page = 1, [Leftover] ITextChannel ch = null)
+        public async Task InviteList(int page = 1, [Leftover] ITextChannel ch = null)
         {
             if (--page < 0)
                 return;
@@ -73,7 +73,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.ManageChannels)]
         [UserPerm(ChannelPerm.ManageChannels)]
-        public async partial Task InviteDelete(int index)
+        public async Task InviteDelete(int index)
         {
             if (--index < 0)
                 return;
