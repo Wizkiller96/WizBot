@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.ModuleBehaviors;
 using System.Net;
 using System.Threading.Channels;
-using Nadeko.Common;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
@@ -36,10 +35,10 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         using var uow = _db.GetDbContext();
         _imageOnly = uow.ImageOnlyChannels
             .Where(x => x.Type == OnlyChannelType.Image)
-                        .ToList()
-                        .GroupBy(x => x.GuildId)
-                        .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
-                        .ToConcurrent();
+            .ToList()
+            .GroupBy(x => x.GuildId)
+            .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
+            .ToConcurrent();
 
         _linkOnly = uow.ImageOnlyChannels
             .Where(x => x.Type == OnlyChannelType.Link)
