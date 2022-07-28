@@ -1,6 +1,4 @@
-﻿using Nadeko.Common;
-using NadekoBot.Common.TypeReaders;
-using NadekoBot.Modules.Gambling.Bank;
+﻿using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 

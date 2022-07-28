@@ -8,6 +8,17 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Check for updates will run once per hour as it was supposed to
 
+## [4.3.2] - 28.07.2022
+
+### Fixed
+
+- Fixed Reaction Roles not working properly with animated emojis
+- Fixed `.slot` alignment
+- Fixed `mysql` and `postgresql` reactionrole migration
+- Fixed repeat loop with `postgresql` db provider
+- Fixed `.bank withdraw <expression>` will now correctly use bank amount for calculation
+- [dev] Fixed medusa Reply*LocalizedAsync not working with placeholders
+
 ## [4.3.0] - 27.07.2022
 
 ### Added
