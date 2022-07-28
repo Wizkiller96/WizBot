@@ -663,7 +663,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         if (win > 0)
         {
             str = GetText(strs.br_win(N(win), result.Threshold + (result.Roll == 100 ? " 👑" : "")));
-            await _cs.AddAsync(ctx.User, win, new("betroll", "win"));
         }
         else
         {

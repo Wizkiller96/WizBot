@@ -1,4 +1,5 @@
 ﻿using Nadeko.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
@@ -35,7 +36,7 @@ public partial class Gambling
         }
         
         [Cmd]
-        public async Task BankWithdraw(ShmartNumber amount)
+        public async Task BankWithdraw(ShmartBankAmount amount)
         {
             if (amount <= 0)
                 return;

@@ -108,8 +108,8 @@ public static class DiscordUserExtensions
                 .Take(count)
                 .ToList();
 
-    public static long GetUserCurrency(this DbSet<DiscordUser> users, ulong userId)
-        => users.AsNoTracking().FirstOrDefault(x => x.UserId == userId)?.CurrencyAmount ?? 0;
+    public static async Task<long> GetUserCurrencyAsync(this DbSet<DiscordUser> users, ulong userId)
+        => (await users.FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId))?.CurrencyAmount ?? 0;
 
     public static void RemoveFromMany(this DbSet<DiscordUser> users, IEnumerable<ulong> ids)
     {
