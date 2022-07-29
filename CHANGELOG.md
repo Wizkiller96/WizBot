@@ -32,7 +32,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - They payouts are very good, but seven always loses
 - Added `.lula` command. Plays the same as `.wof` but looks much nicer, and is easily customizable from gambling.yml without any changes to the sourcecode needed.
 - Added `.repeatskip` command which makes the next repeat trigger not post anything
-- Added `.imageonly` which will make the bot only allow link posts in the channel. Exclusive with `.imageonly`
+- Added `.linkonly` which will make the bot only allow link posts in the channel. Exclusive with `.imageonly`
 - Added release notifications. Bot owners will now receive new release notifications in dms if they have `checkForUpdates` set to `true` in data/bot.yml
   - You can also configure it via `.conf bot checkforupdates <true/false>`
 - Added `.xpshop` which lets bot owners add xp backgrounds and xp frames for sale by configuring `data/xp.yml`
