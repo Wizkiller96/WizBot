@@ -2,12 +2,6 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [4.3.1] - 27.07.2022
-
-### Changed
-
-- Check for updates will run once per hour as it was supposed to
-
 ## [4.3.2] - 28.07.2022
 
 ### Fixed
@@ -18,6 +12,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed repeat loop with `postgresql` db provider
 - Fixed `.bank withdraw <expression>` will now correctly use bank amount for calculation
 - [dev] Fixed medusa Reply*LocalizedAsync not working with placeholders
+
+## [4.3.1] - 27.07.2022
+
+### Changed
+
+- Check for updates will run once per hour as it was supposed to
 
 ## [4.3.0] - 27.07.2022
 
