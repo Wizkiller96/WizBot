@@ -69,7 +69,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 ###### Prerequisites
 
-1. Nadeko requires redis to function
+1. (Optional) Installing Redis
     - ubuntu installation command: `sudo apt-get install redis-server`
 2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `youtube-dl` (which in turn requires python3)
     - ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
