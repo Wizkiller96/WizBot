@@ -235,7 +235,7 @@ public partial class Gambling
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     WrappingLength = 140,
-                    Origin = new(227, 92)
+                    Origin = new(298, 100)
                 },
                 ((long)result.Won).ToString(),
                 fontColor));
@@ -247,7 +247,7 @@ public partial class Gambling
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     WrappingLength = 135,
-                    Origin = new(129, 472)
+                    Origin = new(196, 480)
                 },
                 amount.ToString(),
                 fontColor));
@@ -257,7 +257,7 @@ public partial class Gambling
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     WrappingLength = 135,
-                    Origin = new(325, 472)
+                    Origin = new(393, 480)
                 },
                 ownedAmount.ToString(),
                 fontColor));
