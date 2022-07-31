@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.1] - 27.07.2022
+
+### Changed
+
+- Check for updates will run once per hour as it was supposed to
+
 ## [4.3.0] - 27.07.2022
 
 ### Added
