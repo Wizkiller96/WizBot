@@ -42,6 +42,7 @@ COPY docker-entrypoint.sh /usr/local/sbin
 
 ENV shard_id=0
 ENV total_shards=1
+ENV WizBot__creds=/app/data/creds.yml
 
 VOLUME [ "/app/data" ]
 ENTRYPOINT [ "/usr/local/sbin/docker-entrypoint.sh" ]

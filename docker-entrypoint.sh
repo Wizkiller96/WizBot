@@ -13,7 +13,15 @@ do
     fi
 done
 
-# fix folder permissions
+# creds.yml migration
+if [ -f /app/creds.yml ]; then
+    echo "Default location for creds.yml is now /app/data/creds.yml."
+    echo "Please move your creds.yml and update your docker-compose.yml accordingly."
+
+    export WizBot_creds=/app/creds.yml
+fi
+
+# ensure WizBot can write on /app/data
 chown -R wizbot:wizbot "$data"
 
 # drop to regular user and launch command

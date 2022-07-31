@@ -18,11 +18,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private const string CREDS_FILE_NAME = "creds.yml";
     private const string CREDS_EXAMPLE_FILE_NAME = "creds_example.yml";
 
-    private string CredsPath
-        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_FILE_NAME);
+    private string CredsPath { get; }
 
-    private string CredsExamplePath
-        => Path.Combine(Directory.GetCurrentDirectory(), CREDS_EXAMPLE_FILE_NAME);
+    private string CredsExamplePath { get; }
 
     private readonly int? _totalShards;
 
@@ -34,9 +32,21 @@ public sealed class BotCredsProvider : IBotCredsProvider
     private readonly object _reloadLock = new();
     private readonly IDisposable _changeToken;
 
-    public BotCredsProvider(int? totalShards = null)
+    public BotCredsProvider(int? totalShards = null, string credPath = null)
     {
         _totalShards = totalShards;
+
+        if (!string.IsNullOrWhiteSpace(credPath))
+        {
+            CredsPath = credPath;
+            CredsExamplePath = Path.Combine(Path.GetDirectoryName(credPath), CREDS_EXAMPLE_FILE_NAME);
+        }
+        else
+        {
+            CredsPath = Path.Combine(Directory.GetCurrentDirectory(), CREDS_FILE_NAME);
+            CredsExamplePath = Path.Combine(Directory.GetCurrentDirectory(), CREDS_EXAMPLE_FILE_NAME);
+        }
+
         try
         {
             if (!File.Exists(CredsExamplePath))
