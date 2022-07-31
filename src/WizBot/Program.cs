@@ -27,4 +27,4 @@ if (args.Length > 0 && args[0] != "run")
 LogSetup.SetupLogger(shardId);
 Log.Information("Pid: {ProcessId}", pid);
 
-await new Bot(shardId, totalShards, Environment.GetEnvironmentVariable("NadekoBot__creds")).RunAndBlockAsync();
+await new Bot(shardId, totalShards, Environment.GetEnvironmentVariable("WizBot__creds")).RunAndBlockAsync();
