@@ -19,7 +19,7 @@
 
 **Optional**
 
-- [Notepad++] (makes it easier to edit your credentials)
+- [Visual Studio Code](https://code.visualstudio.com/Download) (Highly suggested if you plan on editing files)
 - [Visual C++ 2010 (x86)] and [Visual C++ 2017 (x64)] (both are required if you want WizBot to play music - restart Windows after installation)
 
 #### Setup
