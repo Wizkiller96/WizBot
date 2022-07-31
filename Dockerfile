@@ -2,10 +2,13 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /source
 
 COPY src/WizBot.Medusa/*.csproj src/WizBot.Medusa/
+COPY src/Wiz.Econ/*.csproj src/Wiz.Econ/
+COPY src/Wiz.Common/*.csproj src/Wiz.Common/
 COPY src/WizBot/*.csproj src/WizBot/
 COPY src/WizBot.Coordinator/*.csproj src/WizBot.Coordinator/
 COPY src/WizBot.Generators/*.csproj src/WizBot.Generators/
 COPY src/ayu/Ayu.Discord.Voice/*.csproj src/ayu/Ayu.Discord.Voice/
+COPY NuGet.Config ./
 RUN dotnet restore src/WizBot/
 
 COPY . .

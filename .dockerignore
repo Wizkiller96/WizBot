@@ -1,6 +1,11 @@
 # Ignore all files
 *
 
+# Don't ignore nugetconfig
+!./NuGet.Config
+# Don't ignore src projects
+!src/Wiz.Econ/**
+!src/Wiz.Common/**
 # Use WizBot.Medusa project
 !src/WizBot.Medusa/**
 # Use WizBot project
