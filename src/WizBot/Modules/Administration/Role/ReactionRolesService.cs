@@ -58,7 +58,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     }
 
     private async Task<(IGuildUser, IRole)> GetUserAndRoleAsync(
-        SocketReaction r,
+        ulong userId,
         ReactionRoleV2 rero)
     {
         var guild = _client.GetGuild(rero.GuildId);
@@ -67,8 +67,8 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         if (role is null)
             return default;
 
-        var user = guild.GetUser(r.UserId) as IGuildUser
-                   ?? await _client.Rest.GetGuildUserAsync(guild.Id, r.UserId);
+        var user = guild.GetUser(userId) as IGuildUser
+                   ?? await _client.Rest.GetGuildUserAsync(guild.Id, userId);
 
         if (user is null)
             return default;
@@ -77,20 +77,23 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     }
 
     private Task ClientOnReactionRemoved(
-        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IUserMessage, ulong> cmsg,
         Cacheable<IMessageChannel, ulong> ch,
         SocketReaction r)
     {
-        if (!_cache.TryGetValue(msg.Id, out var reros))
+        if (!_cache.TryGetValue(cmsg.Id, out var reros))
             return Task.CompletedTask;
 
         _ = Task.Run(async () =>
         {
-            var rero = reros.FirstOrDefault(x => x.Emote == r.Emote.Name || x.Emote == r.Emote.ToString());
+            var emote = await GetFixedEmoteAsync(cmsg, r.Emote);
+            
+            var rero = reros.FirstOrDefault(x => x.Emote == emote.Name 
+                                                 || x.Emote == emote.ToString());
             if (rero is null)
                 return;
 
-            var (user, role) = await GetUserAndRoleAsync(r, rero);
+            var (user, role) = await GetUserAndRoleAsync(r.UserId, rero);
 
             if (user.IsBot)
                 return;
@@ -111,6 +114,24 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
 
         return Task.CompletedTask;
     }
+    
+    
+    // had to add this because for some reason, reactionremoved event's reaction doesn't have IsAnimated set,
+    // causing the .ToString() to be wrong on animated custom emotes
+    private async Task<IEmote> GetFixedEmoteAsync(
+        Cacheable<IUserMessage, ulong> cmsg,
+        IEmote inputEmote)
+    {
+        // this should only run for emote
+        if (inputEmote is not Emote e)
+            return inputEmote;
+
+        // try to get the message and pull
+        var msg = await cmsg.GetOrDownloadAsync();
+
+        var emote = msg.Reactions.Keys.FirstOrDefault(x => e.Equals(x));
+        return emote ?? inputEmote;
+    }
 
     private Task ClientOnReactionAdded(
         Cacheable<IUserMessage, ulong> msg,
@@ -126,7 +147,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
             if (rero is null)
                 return;
 
-            var (user, role) = await GetUserAndRoleAsync(r, rero);
+            var (user, role) = await GetUserAndRoleAsync(r.UserId, rero);
 
             if (user.IsBot)
                 return;
