@@ -875,11 +875,12 @@ public partial class Gambling : GamblingModule<GamblingService>
         public enum GambleTestTarget
         {
             Slot,
+            Betroll,
+            Betflip,
+            BetflipT,
             BetDraw,
             BetDrawHL,
             BetDrawRB,
-            Betflip,
-            BetflipT,
             Lula,
             Rps,
         }
@@ -920,6 +921,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                     GambleTestTarget.BetflipT => (await _gs.BetFlipAsync(ctx.User.Id, 0, 1)).AsT0.Multiplier,
                     GambleTestTarget.Lula => (await _gs.LulaAsync(ctx.User.Id, 0)).AsT0.Multiplier,
                     GambleTestTarget.Rps => (await _gs.RpsAsync(ctx.User.Id, 0, (byte)(i % 3))).AsT0.Multiplier,
+                    GambleTestTarget.Betroll => (await _gs.BetRollAsync(ctx.User.Id, 0)).AsT0.Multiplier,
                     _ => throw new ArgumentOutOfRangeException(nameof(target))
                 };
                 
