@@ -3,12 +3,10 @@
 public readonly struct ShmartNumber : IEquatable<ShmartNumber>
 {
     public long Value { get; }
-    public string? Input { get; }
 
-    public ShmartNumber(long val, string? input = null)
+    public ShmartNumber(long val)
     {
         Value = val;
-        Input = input;
     }
 
     public static implicit operator ShmartNumber(long num)

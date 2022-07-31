@@ -1,4 +1,5 @@
 ﻿using Wiz.Common;
+using WizBot.Common.TypeReaders;
 using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
@@ -35,7 +36,7 @@ public partial class Gambling
         }
         
         [Cmd]
-        public async Task BankWithdraw(ShmartNumber amount)
+        public async Task BankWithdraw(ShmartBankAmount amount)
         {
             if (amount <= 0)
                 return;

@@ -142,7 +142,7 @@ public class GamblingService : INService, IReadyExecutor
                 var onePercent = uow.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
                 decimal planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
                 var waifus = uow.WaifuInfo.GetTotalValue();
-                var bot = uow.DiscordUser.GetUserCurrency(_client.CurrentUser.Id);
+                var bot = await uow.DiscordUser.GetUserCurrencyAsync(_client.CurrentUser.Id);
                 decimal bank = await uow.GetTable<BankUser>()
                                         .SumAsyncLinqToDB(x => x.Balance);
 
