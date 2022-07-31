@@ -20,6 +20,8 @@ public sealed class PostgreSqlContext : WizBotContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        
         base.OnConfiguring(optionsBuilder);
         optionsBuilder
             .UseLowerCaseNamingConvention()
