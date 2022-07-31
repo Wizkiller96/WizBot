@@ -2,6 +2,17 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Added
+
+- Added `betroll` option to `.bettest` command
+
+### Fixed
+
+- Fixed very low payout rate on `.betroll`
+- Fixed an issue with youtube song resolver which caused invalid data to be cached
+
 ## [4.3.2] - 28.07.2022
 
 ### Fixed
@@ -34,7 +45,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.repeatskip` command which makes the next repeat trigger not post anything
 - Added `.linkonly` which will make the bot only allow link posts in the channel. Exclusive with `.imageonly`
 - Added release notifications. Bot owners will now receive new release notifications in dms if they have `checkForUpdates` set to `true` in data/bot.yml
-  - You can also configure it via `.conf bot checkforupdates <true/false>`
+  - You can also configure it via `.conf bot checkfor
+  - updates <true/false>`
 - Added `.xpshop` which lets bot owners add xp backgrounds and xp frames for sale by configuring `data/xp.yml`
   - You can also toggle xpshop feature via `.conf xp shop.is_enabled`
 
