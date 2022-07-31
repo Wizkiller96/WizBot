@@ -27,7 +27,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
         if (_client.ShardId != 0)
             return;
         
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         while (await timer.WaitForNextTickAsync())
         {
             var conf = _bcs.Data;
