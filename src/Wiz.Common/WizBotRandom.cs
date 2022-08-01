@@ -25,20 +25,6 @@ public class WizBotRandom : Random
         _rng.GetBytes(bytes);
         return Math.Abs(BitConverter.ToInt32(bytes, 0)) % maxValue;
     }
-    
-    public byte Next(byte minValue, byte maxValue)
-    {
-        if (minValue > maxValue)
-            throw new ArgumentOutOfRangeException(nameof(maxValue));
-        
-        if (minValue == maxValue)
-            return minValue;
-        
-        var bytes = new byte[1];
-        _rng.GetBytes(bytes);
-        
-        return (byte)((bytes[0] % (maxValue - minValue)) + minValue);
-    }
 
     public override int Next(int minValue, int maxValue)
     {

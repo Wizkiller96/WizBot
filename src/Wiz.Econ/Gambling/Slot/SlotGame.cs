@@ -8,9 +8,9 @@ public class SlotGame
     {
         var rolls = new[]
         {
-            _rng.Next(0, 6),
-            _rng.Next(0, 6),
-            _rng.Next(0, 6)
+            (byte)_rng.Next(0, 6),
+            (byte)_rng.Next(0, 6),
+            (byte)_rng.Next(0, 6)
         };
 
         ref var a = ref rolls[0];

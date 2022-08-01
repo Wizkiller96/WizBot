@@ -12,7 +12,7 @@ public sealed class BetflipGame
 
     public BetflipResult Flip(byte guess, decimal amount)
     {
-        var side = _rng.Next(0, 2);
+        var side = (byte)_rng.Next(0, 2);
         if (side == guess)
         {
             return new BetflipResult()

@@ -13,7 +13,7 @@ public sealed class BetrollGame
 
     public BetrollResult Roll(decimal amount = 0)
     {
-        var roll = _rng.Next(0, 101);
+        var roll = _rng.Next(1, 101);
 
         for (var i = 0; i < _thresholdPairs.Length; i++)
         {
