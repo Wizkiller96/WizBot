@@ -6,7 +6,7 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class PruneCommands : WizModule<PruneService>
+    public partial class PruneCommands : WizBotModule<PruneService>
     {
         private static readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
 

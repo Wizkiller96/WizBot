@@ -23,7 +23,7 @@ public partial class Gambling
             Tails = 1
         }
 
-        private static readonly NadekoRandom _rng = new();
+        private static readonly WizBotRandom _rng = new();
         private readonly IImageCache _images;
         private readonly ICurrencyService _cs;
         private readonly ImagesConfig _ic;

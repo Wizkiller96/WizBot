@@ -31,9 +31,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizBot.VotesApi", "src\WizB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WizBot.Medusa", "src\WizBot.Medusa\WizBot.Medusa.csproj", "{E685977E-31A4-46F4-A5D7-4E3E39E82E43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nadeko.Common", "src\Nadeko.Common\Nadeko.Common.csproj", "{A6022F5F-A764-4D3F-847B-36F0391FF659}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wiz.Common", "src\Wiz.Common\Wiz.Common.csproj", "{A6022F5F-A764-4D3F-847B-36F0391FF659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nadeko.Econ", "src\Nadeko.Econ\Nadeko.Econ.csproj", "{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wiz.Econ", "src\Wiz.Econ\Wiz.Econ.csproj", "{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

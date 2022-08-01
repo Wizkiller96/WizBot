@@ -244,7 +244,7 @@ public partial class Xp
 
         [Cmd]
         [Priority(0)]
-        public async Task ClubAccept([Leftover] string userName
+        public async Task ClubAccept([Leftover] string userName)
         {
             if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));

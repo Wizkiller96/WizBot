@@ -89,7 +89,7 @@ public readonly struct kwum : IEquatable<kwum>
         return new(chars);
     }
 
-    ppublic override bool Equals(object? obj)
+    public override bool Equals(object? obj)
         => obj is kwum kw && kw == this;
 
     public bool Equals(kwum other)

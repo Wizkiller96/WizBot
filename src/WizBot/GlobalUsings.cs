@@ -9,7 +9,7 @@ global using Humanizer;
 global using WizBot;
 global using WizBot.Services;
 global using Wiz.Common; // new project
-global using WizBot.Common; // old + nadekobot specific things
+global using WizBot.Common; // old + wizbot specific things
 global using WizBot.Common.Attributes;
 global using WizBot.Extensions;
 global using WizBot.Snake;

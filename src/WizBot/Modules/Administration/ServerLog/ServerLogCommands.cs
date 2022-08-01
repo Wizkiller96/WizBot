@@ -23,7 +23,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async partial Task LogIgnore()
+        public async Task LogIgnore()
         {
             var settings = _service.GetGuildLogSettings(ctx.Guild.Id);
 
