@@ -274,7 +274,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         Log.Information("Resolving youtube song by search term: {YoutubeQuery}", query);
 
         var cachedData = await _trackCacher.GetCachedDataByQueryAsync(query, MusicPlatform.Youtube);
-        if (cachedData is null)
+        if (cachedData is null || string.IsNullOrWhiteSpace(cachedData.Title))
         {
             var stringData = await _ytdlSearchOperation.GetDataAsync(query);
             var trackData = ResolveYtdlData(stringData);
