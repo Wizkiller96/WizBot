@@ -395,7 +395,9 @@ public partial class Xp : NadekoModule<XpService>
                     .WithTitle(item.Name)
                     .AddField(GetText(strs.price), Gambling.Gambling.N(item.Price, culture), true)
                     // .AddField(GetText(strs.buy), $"{prefix}xpbuy {key}", true)
-                    .WithImageUrl(item.Url.ToString());
+                    .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
+                        ? item.Url
+                        : item.Preview);
 
                 if (!string.IsNullOrWhiteSpace(item.Desc))
                     eb.WithDescription(item.Desc);
