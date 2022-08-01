@@ -1,6 +1,4 @@
-﻿using Wiz.Common;
-using WizBot.Common.TypeReaders;
-using WizBot.Modules.Gambling.Bank;
+﻿using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
 
