@@ -1351,7 +1351,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (!conf.Shop.IsEnabled)
             return BuyResult.UnknownItem;
 
-        if (conf.Shop.TierRequirement != PatronTier.None)
+        if (conf.Shop.TierRequirement != PatronTier.None && !_creds.IsOwner(userId))
         {
             var patron = await _ps.GetPatronAsync(userId);
 
