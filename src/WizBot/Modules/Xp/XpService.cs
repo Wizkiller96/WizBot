@@ -886,6 +886,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 Log.Warning("Xp background image could not be loaded");
                 throw new ArgumentNullException(nameof(bgBytes));
             }
+            
+            var outlinePen = new Pen(Color.Black, 1f);
 
             using var img = Image.Load<Rgba32>(bgBytes, out var imageFormat);
             if (template.User.Name.Show)
@@ -909,7 +911,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             Origin = new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8)
                         },
                         "@" + username,
-                        template.User.Name.Color);
+                        Brushes.Solid(template.User.Name.Color),
+                        outlinePen);
                 });
             }
 
@@ -929,7 +932,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         Origin = new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)
                     },
                     clubName,
-                    template.Club.Name.Color));
+                    Brushes.Solid(template.Club.Name.Color),
+                    outlinePen));
             }
 
             Font GetTruncatedFont(
@@ -986,8 +990,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         new(template.User.GuildLevel.Pos.X, template.User.GuildLevel.Pos.Y));
                 });
             }
-
-            var pen = new Pen(Color.Black, 1.25f);
+            
 
             var global = stats.Global;
             var guild = stats.Guild;
@@ -1012,7 +1015,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     },
                     $"{global.LevelXp}/{global.RequiredXp}",
                     Brushes.Solid(template.User.Xp.Global.Color),
-                    pen));
+                    outlinePen));
             }
 
             if (template.User.Xp.Guild.Show)
@@ -1026,7 +1029,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     },
                     $"{guild.LevelXp}/{guild.RequiredXp}",
                     Brushes.Solid(template.User.Xp.Guild.Color),
-                    pen));
+                    outlinePen));
             }
 
             if (stats.FullGuildStats.AwardedXp != 0 && template.User.Xp.Awarded.Show)
@@ -1038,10 +1041,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
                     _fonts.NotoSans.CreateFont(template.User.Xp.Awarded.FontSize, FontStyle.Bold),
                     Brushes.Solid(template.User.Xp.Awarded.Color),
-                    pen,
+                    outlinePen,
                     new(awX, awY)));
             }
 
+            var rankPen = new Pen(Color.White, 1);
             //ranking
             if (template.User.GlobalRank.Show)
             {
@@ -1054,10 +1058,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     globalRankStr,
                     68);
 
-                img.Mutate(x => x.DrawText(globalRankStr,
-                    globalRankFont,
-                    template.User.GlobalRank.Color,
-                    new(template.User.GlobalRank.Pos.X, template.User.GlobalRank.Pos.Y)));
+                img.Mutate(x => x.DrawText(
+                    new TextOptions(globalRankFont)
+                    {
+                        Origin = new(template.User.GlobalRank.Pos.X, template.User.GlobalRank.Pos.Y)
+                    },
+                    globalRankStr,
+                    Brushes.Solid(template.User.GlobalRank.Color),
+                    rankPen
+                ));
             }
 
             if (template.User.GuildRank.Show)
@@ -1071,10 +1080,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     guildRankStr,
                     43);
 
-                img.Mutate(x => x.DrawText(guildRankStr,
-                    guildRankFont,
-                    template.User.GuildRank.Color,
-                    new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)));
+                img.Mutate(x => x.DrawText(
+                    new TextOptions(guildRankFont)
+                    {
+                        Origin = new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)
+                    },
+                    guildRankStr,
+                    Brushes.Solid(template.User.GuildRank.Color),
+                    rankPen
+                ));
             }
 
             //avatar
@@ -1166,7 +1180,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         Image? frame = null;
         if (item is null)
         {
-            if (patron.Tier == PatronTier.V)
+            if (patron.Tier == PatronTier.V || _creds.IsAdmin(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
             else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
