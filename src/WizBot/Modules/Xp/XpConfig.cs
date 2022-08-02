@@ -10,7 +10,7 @@ namespace WizBot.Modules.Xp;
 public sealed partial class XpConfig : ICloneable<XpConfig>
 {
     [Comment(@"DO NOT CHANGE")]
-    public int Version { get; set; } = 3;
+    public int Version { get; set; } = 4;
 
     [Comment(@"How much XP will the users receive per message")]
     public int XpPerMessage { get; set; } = 3;
@@ -71,6 +71,9 @@ To remove an item from the shop, but keep previous purchases, set the price to -
         [Comment(@"Direct url to the .png image which will be applied to the user's XP card")]
         public string Url { get; set; }
         
+        [Comment(@"Optional preview url which will show instead of the real URL in the shop ")]
+        public string Preview { get; set; }
+
         [Comment(@"Optional description of the item")]
         public string Desc { get; set; }
     }
