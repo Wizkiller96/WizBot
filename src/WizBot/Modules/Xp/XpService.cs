@@ -1180,10 +1180,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         Image? frame = null;
         if (item is null)
         {
-            if (patron.Tier == PatronTier.V || _creds.IsAdmin(userId))
-                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
-            else if (patron.Tier >= PatronTier.X && _creds.IsAdmin(userId))
+            if (_creds.IsAdmin(userId) && patron.Tier >= PatronTier.X)
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+            else if (patron.Tier == PatronTier.V || _creds.IsAdmin(userId))
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
             else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
         }
