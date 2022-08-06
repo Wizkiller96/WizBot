@@ -2128,6 +2128,16 @@ xpshop:
     - "bgs"
     - "frames"
     - "bgs 3"
+xpshopbuy:
+  desc: "Buy an item from the xp shop by specifying the type and the key of the item."
+  args:
+    - "bg open_sea"
+    - "fr gold"
+xpshopuse:
+  desc: "Use a previously purchased item from the xp shop by specifying the type and the key of the item."
+  args:
+    - "bg synth"
+    - "fr default"
 bible:
   desc: "Shows bible verse. You need to supply book name and chapter:verse"
   args:
