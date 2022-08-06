@@ -623,7 +623,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         => !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
 
     private TypedKey<long> GetVoiceXpKey(ulong userId)
-        => new($"xp:vc_join:{userId}");
+        => new($"xp:{_client.CurrentUser.Id}:vc_join:{userId}");
     
     private async Task UserJoinedVoiceChannel(SocketGuildUser user)
     {
@@ -767,9 +767,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return Enumerable.Empty<ulong>();
     }
 
-    private static TypedKey<bool> GetUserRewKey(ulong userId)
-        => new($"xp:user_gain:{userId}");
-    
+    private TypedKey<bool> GetUserRewKey(ulong userId)
+        => new($"xp:{_client.CurrentUser.Id}:user_gain:{userId}");
+
     private async Task<bool> SetUserRewardedAsync(ulong userId)
         => await _c.AddAsync(GetUserRewKey(userId),
             true,
