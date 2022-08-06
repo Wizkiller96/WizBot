@@ -4,14 +4,27 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.3.3] - 06.08.2022
+
 ### Added
 
 - Added `betroll` option to `.bettest` command
+- Added `.xpshopbuy` and `.xpshopuse` convenience commands
+- Added an optional preview url to teh xp shop item config model which will be shown instead of the real Url
+
+### Changed
+
+- Updated position of Username and Club name on the .xp card
+- Improved text visibility on the .xp card
 
 ### Fixed
 
+- Possibly fixed .trivia not stopping bug
 - Fixed very low payout rate on `.betroll`
 - Fixed an issue with youtube song resolver which caused invalid data to be cached
+- Added client id to the cache key as a potential fix for VoiceXp 'bug'. The solution may be to use different redis instances for each bot, or to switch from botCache: from 'redis' to 'memory' in creds.yml
+- Bot owner should now be able to buy items from the xpshop when patron requirement is set
+- Fixed youtube-dl caching invalid data. Please use yt-dlp instead
 
 ## [4.3.2] - 28.07.2022
 
