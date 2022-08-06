@@ -1353,11 +1353,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (!conf.Shop.IsEnabled)
             return BuyResult.UnknownItem;
 
-        if (conf.Shop.TierRequirement != PatronTier.None && !_creds.IsOwner(userId))
+        var req = type == XpShopItemType.Background
+            ? conf.Shop.BgsTierRequirement
+            : conf.Shop.FramesTierRequirement;
+        
+        if (req != PatronTier.None && !_creds.IsOwner(userId))
         {
             var patron = await _ps.GetPatronAsync(userId);
 
-            if ((int)patron.Tier < (int)conf.Shop.TierRequirement)
+            if ((int)patron.Tier < (int)req)
                 return BuyResult.InsufficientPatronTier;
         }
         
@@ -1484,8 +1488,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return false;
     }
 
-    public PatronTier GetXpShopTierRequirement()
-        => _xpConfig.Data.Shop.TierRequirement;
+    public PatronTier GetXpShopTierRequirement(Xp.XpShopInputType type)
+        => type switch
+        {
+            Xp.XpShopInputType.F => _xpConfig.Data.Shop.FramesTierRequirement,
+            _ => _xpConfig.Data.Shop.BgsTierRequirement,
+        };
 
     public bool IsShopEnabled()
         => _xpConfig.Data.Shop.IsEnabled;

@@ -52,11 +52,11 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
             });
         }
         
-        if (data.Version < 4)
+        if (data.Version < 5)
         {
             ModifyConfig(c =>
             {
-                c.Version = 4;
+                c.Version = 5;
             });
         }
     }

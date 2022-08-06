@@ -10,7 +10,7 @@ namespace WizBot.Modules.Xp;
 public sealed partial class XpConfig : ICloneable<XpConfig>
 {
     [Comment(@"DO NOT CHANGE")]
-    public int Version { get; set; } = 4;
+    public int Version { get; set; } = 5;
 
     [Comment(@"How much XP will the users receive per message")]
     public int XpPerMessage { get; set; } = 3;
@@ -37,10 +37,14 @@ True -> Users can access the xp shop using .xpshop command
 False -> Users can't access the xp shop")]
         public bool IsEnabled { get; set; } = false;
 
-        [Comment(@"Which patron tier do users need in order to use the .xpshop command
+        [Comment(@"Which patron tier do users need in order to use the .xpshop bgs command
 Leave at 'None' if patron system is disabled or you don't want any restrictions")]
-        public PatronTier TierRequirement { get; set; } = PatronTier.None;
+        public PatronTier BgsTierRequirement { get; set; } = PatronTier.None;
         
+        [Comment(@"Which patron tier do users need in order to use the .xpshop frames command
+Leave at 'None' if patron system is disabled or you don't want any restrictions")]
+        public PatronTier FramesTierRequirement { get; set; } = PatronTier.None;
+
         [Comment(@"Frames available for sale. Keys are unique IDs.
 Do not change keys as they are not publicly visible. Only change properties (name, price, id)
 Removing a key which previously existed means that all previous purchases will also be unusable.

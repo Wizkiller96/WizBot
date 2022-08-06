@@ -1064,6 +1064,10 @@ xpadd:
   - xpadd
 xpshop:
   - xpshop
+xpshopbuy:
+  - xpshopbuy
+xpshopuse:
+  - xpshopuse
 clubcreate:
   - clubcreate
 clubtransfer:

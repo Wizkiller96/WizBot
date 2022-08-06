@@ -334,14 +334,15 @@ public partial class Xp : WizBotModule<XpService>
     
     public enum XpShopInputType
     {
-        F = 0,
-        Frs = 0,
-        Fs = 0,
-        Frames = 0,
+        Backgrounds = 1,
         B = 1,
         Bg = 1,
         Bgs = 1,
-        Backgrounds = 1
+        Frames = 0,
+        F = 0,
+        Fr = 0,
+        Frs = 0,
+        Fs = 0,
     }
 
     [Cmd]
@@ -353,8 +354,11 @@ public partial class Xp : WizBotModule<XpService>
             return;
         }
         
-        await SendConfirmAsync(GetText(strs.available_commands), $@"`{prefix}xpshop bgs`
-`{prefix}xpshop frames`");
+        await SendConfirmAsync(GetText(strs.available_commands),
+            $@"`{prefix}xpshop bgs`
+`{prefix}xpshop frames`
+
+*{GetText(strs.xpshop_website)}*");
     }
     
     [Cmd]
@@ -394,15 +398,18 @@ public partial class Xp : WizBotModule<XpService>
                     .WithOkColor()
                     .WithTitle(item.Name)
                     .AddField(GetText(strs.price), Gambling.Gambling.N(item.Price, culture), true)
-                    // .AddField(GetText(strs.buy), $"{prefix}xpbuy {key}", true)
                     .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
                         ? item.Url
                         : item.Preview);
 
                 if (!string.IsNullOrWhiteSpace(item.Desc))
-                    eb.WithDescription(item.Desc);
+                    eb.AddField(GetText(strs.desc), item.Desc);
 
-                var tier = _service.GetXpShopTierRequirement();
+                if (key == "default")
+                    eb.WithDescription(GetText(strs.xpshop_website));
+
+                
+                var tier = _service.GetXpShopTierRequirement(type);
                 if (tier != PatronTier.None)
                 {
                     eb.WithFooter(GetText(strs.xp_shop_buy_required_tier(tier.ToString())));
@@ -457,6 +464,42 @@ public partial class Xp : WizBotModule<XpService>
             addPaginatedFooter: false);
     }
     
+    [Cmd]
+    public async Task XpShopBuy(XpShopInputType type, string key)
+    {
+        var result = await _service.BuyShopItemAsync(ctx.User.Id, (XpShopItemType)type, key);
+
+        if (result != BuyResult.Success)
+        {
+            var _ = result switch
+            {
+                BuyResult.InsufficientFunds => await ReplyErrorLocalizedAsync(strs.not_enough(_gss.Data.Currency.Sign)),
+                BuyResult.AlreadyOwned => await ReplyErrorLocalizedAsync(strs.xpshop_already_owned),
+                BuyResult.UnknownItem => await ReplyErrorLocalizedAsync(strs.xpshop_item_not_found),
+                BuyResult.InsufficientPatronTier => await ReplyErrorLocalizedAsync(strs.patron_insuff_tier),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            return;
+        }
+
+        await ReplyConfirmLocalizedAsync(strs.xpshop_buy_success(type.ToString().ToLowerInvariant(),
+            key.ToLowerInvariant()));
+    }
+    
+    [Cmd]
+    public async Task XpShopUse(XpShopInputType type, string key)
+    {
+        var result = await _service.UseShopItemAsync(ctx.User.Id, (XpShopItemType)type, key);
+
+        if (!result)
+        {
+            await ReplyConfirmLocalizedAsync(strs.xp_shop_item_cant_use);
+            return;
+        }
+
+        await ctx.OkAsync();
+    }
+
     private async Task OnShopUse(SocketMessageComponent smc, (string? key, XpShopItemType type)? maybeState)
     {
         if (maybeState is not { } state)

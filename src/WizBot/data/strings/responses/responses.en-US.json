@@ -1006,7 +1006,7 @@
   "feature_limit_reached_you": "You've reached the limit of {0} for the {1} feature. You may be able to increase this limit by upgrading your patron tier.",
   "feature_limit_reached_owner": "Server owner has reached the limit of {0} for the {1} feature. Server owner may be able to upgrade this limit by upgrading patron tier.",
   "feature_limit_reached_either": "The limit of {0} for the {1} feature has been reached. Either you or the server owner may able to upgrade this limit by upgrading the patron tier.",
-  "xp_shop_buy_required_tier": "Buying items from the shop requires Patron Tier {0} or higher.",
+  "xp_shop_buy_required_tier": "Buying items from this shop requires Patron Tier {0} or higher.",
   "available_commands": "Available Commands",
   "tier": "Tier",
   "pledge": "Pledge",
@@ -1020,5 +1020,10 @@
   "patron_not_enabled": "Patron system is disabled.",
   "results_in": "{0} results in {1}s",
   "patron_msg_sent": "Done sending messages to patrons at and above tier {1}. {1} successfully sent and {2} failed.",
-  "xpadd_users": "Added {0} server XP to {1} users."
+  "xpadd_users": "Added {0} server XP to {1} users.",
+  "xpshop_buy_success": "Successfully purchased `{0}/{1}`",
+  "patron_insuff_tier": "Your Patron Tier insufficient to perform this action.",
+  "xpshop_already_owned": "You already own this item.",
+  "xpshop_item_not_found": "An item with that key doesn't exist.",
+  "xpshop_website": "You can see the list of all Xp Shop items here: Website Coming Soon"
 }
