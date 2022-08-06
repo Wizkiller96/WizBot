@@ -57,123 +57,133 @@ public sealed class TriviaGame
         // loop until game is stopped
         // each iteration is one round
         var firstRun = true;
-        while (!_isStopped)
+        try
         {
-            if (errorCount >= 5)
+            while (!_isStopped)
             {
-                Log.Warning("Trivia errored 5 times and will quit");
-                break;
-            }
-
-            // wait for 3 seconds before posting the next question
-            if (firstRun)
-            {
-                firstRun = false;
-            }
-            else
-            {
-                await Task.Delay(3000);
-            }
-
-            var maybeQuestion = await _questionPool.GetQuestionAsync();
-
-            if(!(maybeQuestion is TriviaQuestion question))
-            {
-                // if question is null (ran out of question, or other bugg ) - stop
-                break;
-            }
-
-            CurrentQuestion = question;
-            try
-            {
-                // clear out all of the past guesses
-                while (_inputs.Reader.TryRead(out _)) ;
-
-                await OnQuestion(this, question);
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Error executing OnQuestion: {Message}", ex.Message);
-                errorCount++;
-                continue;
-            }
-
-
-            // just keep looping through user inputs until someone guesses the answer
-            // or the timer expires
-            var halfGuessTimerTask = TimeOutFactory();
-            var hintSent = false;
-            var guessed = false;
-            while (true)
-            {
-                var readTask = _inputs.Reader.ReadAsync().AsTask();
-
-                // wait for either someone to attempt to guess
-                // or for timeout
-                var task = await Task.WhenAny(readTask, halfGuessTimerTask);
-
-                // if the task which completed is the timeout task
-                if (task == halfGuessTimerTask)
+                if (errorCount >= 5)
                 {
-                    // if hint is already sent, means time expired
-                    // break (end the round)
-                    if (hintSent)
-                        break;
+                    Log.Warning("Trivia errored 5 times and will quit");
+                    await OnEnded(this);
+                    break;
+                }
 
-                    // else, means half time passed, send a hint
-                    hintSent = true;
-                    // start a new countdown of the same length
-                    halfGuessTimerTask = TimeOutFactory();
-                    // send a hint out
-                    await OnHint(this, question);
+                // wait for 3 seconds before posting the next question
+                if (firstRun)
+                {
+                    firstRun = false;
+                }
+                else
+                {
+                    await Task.Delay(3000);
+                }
 
+                var maybeQuestion = await _questionPool.GetQuestionAsync();
+
+                if (!(maybeQuestion is TriviaQuestion question))
+                {
+                    // if question is null (ran out of question, or other bugg ) - stop
+                    break;
+                }
+
+                CurrentQuestion = question;
+                try
+                {
+                    // clear out all of the past guesses
+                    while (_inputs.Reader.TryRead(out _))
+                        ;
+
+                    await OnQuestion(this, question);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "Error executing OnQuestion: {Message}", ex.Message);
+                    errorCount++;
                     continue;
                 }
 
-                // otherwise, read task is successful, and we're gonna
-                // get the user input data
-                var (user, input) = await readTask;
 
-                // check the guess
-                if (question.IsAnswerCorrect(input))
+                // just keep looping through user inputs until someone guesses the answer
+                // or the timer expires
+                var halfGuessTimerTask = TimeOutFactory();
+                var hintSent = false;
+                var guessed = false;
+                while (true)
                 {
-                    // add 1 point to the user
-                    var val = _users.AddOrUpdate(user.Id, 1, (_, points) => ++points);
-                    guessed = true;
+                    var readTask = _inputs.Reader.ReadAsync().AsTask();
 
-                    // reset inactivity counter
-                    inactivity = 0;
+                    // wait for either someone to attempt to guess
+                    // or for timeout
+                    var task = await Task.WhenAny(readTask, halfGuessTimerTask);
 
-                    var isWin = false;
-                    // if user won the game, tell the game to stop
-                    if (val >= _opts.WinRequirement)
+                    // if the task which completed is the timeout task
+                    if (task == halfGuessTimerTask)
                     {
-                        _isStopped = true;
-                        isWin = true;
+                        // if hint is already sent, means time expired
+                        // break (end the round)
+                        if (hintSent)
+                            break;
+
+                        // else, means half time passed, send a hint
+                        hintSent = true;
+                        // start a new countdown of the same length
+                        halfGuessTimerTask = TimeOutFactory();
+                        // send a hint out
+                        await OnHint(this, question);
+
+                        continue;
                     }
 
-                    // call onguess
-                    await OnGuess(this, user, question, isWin);
-                    break;
-                }
-            }
+                    // otherwise, read task is successful, and we're gonna
+                    // get the user input data
+                    var (user, input) = await readTask;
 
-            if (!guessed)
-            {
-                await OnTimeout(this, question);
-                
-                if (_opts.Timeout != 0 && ++inactivity >= _opts.Timeout)
+                    // check the guess
+                    if (question.IsAnswerCorrect(input))
+                    {
+                        // add 1 point to the user
+                        var val = _users.AddOrUpdate(user.Id, 1, (_, points) => ++points);
+                        guessed = true;
+
+                        // reset inactivity counter
+                        inactivity = 0;
+
+                        var isWin = false;
+                        // if user won the game, tell the game to stop
+                        if (val >= _opts.WinRequirement)
+                        {
+                            _isStopped = true;
+                            isWin = true;
+                        }
+
+                        // call onguess
+                        await OnGuess(this, user, question, isWin);
+                        break;
+                    }
+                }
+
+                if (!guessed)
                 {
-                    Log.Information("Trivia game is stopping due to inactivity");
-                    break;
+                    await OnTimeout(this, question);
+
+                    if (_opts.Timeout != 0 && ++inactivity >= _opts.Timeout)
+                    {
+                        Log.Information("Trivia game is stopping due to inactivity");
+                        break;
+                    }
                 }
             }
         }
+        catch
+        {
 
-        // make sure game is set as ended
-        _isStopped = true;
-        
-        await OnEnded(this);
+        }
+        finally
+        {
+            // make sure game is set as ended
+            _isStopped = true;
+            _ = OnEnded(this);
+        }
     }
 
     public IReadOnlyList<(ulong User, int points)> GetLeaderboard()
