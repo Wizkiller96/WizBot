@@ -4,6 +4,12 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.3.4] - 07.08.2022
+
+### Fixed
+
+- Fixed users getting XP out of nowhere while voice xp is enabled
+
 ## [4.3.3] - 06.08.2022
 
 ### Added
