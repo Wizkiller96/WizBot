@@ -33,7 +33,7 @@ public static class MessageChannelExtensions
     public static async Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
         string? plainText,
-        NadekoButtonInteraction? inter,
+        NadekoInteraction? inter,
         Embed? embed = null,
         IReadOnlyCollection<Embed>? embeds = null,
         bool sanitizeAll = false)
@@ -72,7 +72,7 @@ public static class MessageChannelExtensions
         IEmbedBuilder? embed,
         string plainText = "",
         IReadOnlyCollection<IEmbedBuilder>? embeds = null,
-        NadekoButtonInteraction? inter = null)
+        NadekoInteraction? inter = null)
         => ch.SendAsync(plainText,
             inter,
             embed: embed?.Build(),
@@ -83,7 +83,7 @@ public static class MessageChannelExtensions
         IEmbedBuilderService eb,
         string text,
         MessageType type,
-        NadekoButtonInteraction? inter = null)
+        NadekoInteraction? inter = null)
     {
         var builder = eb.Create().WithDescription(text);
 

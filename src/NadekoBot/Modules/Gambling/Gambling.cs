@@ -99,38 +99,19 @@ public partial class Gambling : GamblingModule<GamblingService>
         PrettyName = "Timely"
     };
 
-    public class RemindMeInteraction : NInteraction
+    private async Task RemindTimelyAction(SocketMessageComponent smc, DateTime when)
     {
-        public RemindMeInteraction(
-            [NotNull] DiscordSocketClient client,
-            ulong userId,
-            [NotNull] Func<SocketMessageComponent, Task> action)
-            : base(client, userId, action)
-        {
-        }
+        var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
 
-        protected override NadekoInteractionData Data
-            => new NadekoInteractionData(
-                Emote: Emoji.Parse("⏰"),
-                CustomId: "timely:remind_me",
-                Text: "Remind me"
-            );
+        await _remind.AddReminderAsync(ctx.User.Id,
+            ctx.User.Id,
+            ctx.Guild.Id,
+            true,
+            when,
+            GetText(strs.timely_time));
+
+        await smc.RespondConfirmAsync(_eb, GetText(strs.remind_timely(tt)), ephemeral: true);
     }
-
-    private Func<SocketMessageComponent, Task> RemindTimelyAction(DateTime when)
-        => async smc =>
-        {
-            var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
-
-            await _remind.AddReminderAsync(ctx.User.Id,
-                ctx.User.Id,
-                ctx.Guild.Id,
-                true,
-                when,
-                GetText(strs.timely_time));
-
-            await smc.RespondConfirmAsync(_eb, GetText(strs.remind_timely(tt)), ephemeral: true);
-        };
 
     [Cmd]
     public async Task Timely()
@@ -157,11 +138,17 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        var inter = new RemindMeInteraction(_client,
-            ctx.User.Id,
-            RemindTimelyAction(DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
-        
-        await ReplyConfirmLocalizedAsync(strs.timely(N(val), period), inter.GetInteraction());
+        var inter = _inter
+            .Create(ctx.User.Id,
+                new SimpleInteraction<DateTime>(
+                    new ButtonBuilder(
+                        label: "Remind me",
+                        emote: Emoji.Parse("⏰"),
+                        customId: "timely:remind_me"),
+                    RemindTimelyAction,
+                    DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
+
+        await ReplyConfirmLocalizedAsync(strs.timely(N(val), period), inter);
     }
 
     [Cmd]
@@ -362,7 +349,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         await ReplyConfirmLocalizedAsync(strs.has(Format.Code(userId.ToString()), cur));
     }
 
-    private async Task BankAction(SocketMessageComponent smc)
+    private async Task BankAction(SocketMessageComponent smc, object _)
     {
         var balance = await _bank.GetBalanceAsync(ctx.User.Id);
 
@@ -372,8 +359,12 @@ public partial class Gambling : GamblingModule<GamblingService>
               .Pipe(text => smc.RespondConfirmAsync(_eb, text, ephemeral: true));
     }
 
-    private NadekoButtonInteraction CreateCashInteraction()
-        => new CashInteraction(_client, ctx.User.Id, BankAction).GetInteraction();
+    private NadekoInteraction CreateCashInteraction()
+        => _inter.Create<object>(ctx.User.Id,
+            new(new(
+                    customId: "cash:bank_show_balance", 
+                    emote: new Emoji("🏦")),
+                BankAction));
 
     [Cmd]
     [Priority(1)]

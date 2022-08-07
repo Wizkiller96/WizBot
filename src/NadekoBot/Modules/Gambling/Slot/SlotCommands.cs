@@ -73,16 +73,6 @@ public partial class Gambling
 
             await ctx.Channel.EmbedAsync(embed);
         }
-        public sealed class SlotInteraction : NInteraction
-        {
-            public SlotInteraction(DiscordSocketClient client, ulong userId, Func<SocketMessageComponent, Task> action) : base(client, userId, action)
-            {
-            }
-
-            protected override NadekoInteractionData Data { get; } = new(Emoji.Parse("🔁"),
-                "slot:again",
-                "Pull Again");
-        }
 
         [Cmd]
         public async Task Slot(ShmartNumber amount)
@@ -117,7 +107,7 @@ public partial class Gambling
                     .WithImageUrl($"attachment://result.png")
                     .WithOkColor();
                 
-                // var inter = slotInteraction.GetInteraction();
+                //new(Emoji.Parse("🔁"), "slot:again", "Pull Again");
                 await ctx.Channel.SendFileAsync(imgStream,
                     "result.png",
                     embed: eb.Build()

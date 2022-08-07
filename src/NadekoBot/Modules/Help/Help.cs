@@ -424,7 +424,7 @@ public partial class Help : NadekoModule<HelpService>
             }
             catch (Exception)
             {
-                Log.Information("No old version list found. Creating a new one.");
+                Log.Information("No old version list found. Creating a new one");
             }
 
             var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
@@ -469,7 +469,7 @@ public partial class Help : NadekoModule<HelpService>
             "https://nadekobot.readthedocs.io/en/latest/"));
 
 
-    private Task SelfhostAction(SocketMessageComponent smc)
+    private Task SelfhostAction(SocketMessageComponent smc, object _)
         => smc.RespondConfirmAsync(_eb,
             @"- In case you don't want or cannot Donate to NadekoBot project, but you 
 - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own ""selfhosted"" instance on your computer or server for free.
@@ -484,7 +484,13 @@ public partial class Help : NadekoModule<HelpService>
     [OnlyPublicBot]
     public async Task Donate()
     {
-        var selfhostInter = new DonateSelfhostingInteraction(_client, ctx.User.Id, SelfhostAction);
+        // => new NadekoInteractionData(new Emoji("🖥️"), "donate:selfhosting", "Selfhosting");
+        var selfhostInter = _inter.Create(ctx.User.Id,
+            new SimpleInteraction<object>(new ButtonBuilder(
+                    emote: new Emoji("🖥️"),
+                    customId: "donate:selfhosting",
+                    label: "Selfhosting"),
+                SelfhostAction));
         
         var eb = _eb.Create(ctx)
                     .WithOkColor()
@@ -525,7 +531,7 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
 
         try
         {
-            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter.GetInteraction());
+            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter);
             _ = ctx.OkAsync();
         }
         catch
