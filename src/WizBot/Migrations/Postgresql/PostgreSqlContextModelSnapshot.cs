@@ -36,7 +36,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("balance");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("UserId")
@@ -101,7 +101,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Description")
@@ -163,7 +163,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("currencyamount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Discriminator")
@@ -175,18 +175,6 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("isclubadmin");
-
-                    b.Property<DateTime>("LastLevelUp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastlevelup")
-                        .HasDefaultValueSql("timezone('utc', now())");
-
-                    b.Property<DateTime>("LastXpGain")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastxpgain")
-                        .HasDefaultValueSql("timezone('utc', now()) - interval '-1 year'");
 
                     b.Property<int>("NotifyOnLevelUp")
                         .ValueGeneratedOnAdd()
@@ -243,7 +231,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -322,7 +310,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("amountcents");
 
                     b.Property<DateTime>("LastCharge")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("lastcharge");
 
                     b.Property<string>("UniquePlatformUserId")
@@ -330,7 +318,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("uniqueplatformuserid");
 
                     b.Property<DateTime>("ValidThru")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("validthru");
 
                     b.HasKey("UserId")
@@ -342,81 +330,81 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("patrons", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.StreamOnlineMessage", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<decimal>("ChannelId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("channelid");
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("timestamp with time zone")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("dateadded");
 
-                b.Property<decimal>("MessageId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("messageid");
+                    b.Property<decimal>("MessageId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("messageid");
 
-                b.Property<string>("Name")
-                 .HasColumnType("text")
-                 .HasColumnName("name");
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                b.Property<int>("Type")
-                 .HasColumnType("integer")
-                 .HasColumnName("type");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
-                b.HasKey("Id")
-                 .HasName("pk_streamonlinemessages");
+                    b.HasKey("Id")
+                        .HasName("pk_streamonlinemessages");
 
-                b.ToTable("streamonlinemessages", (string)null);
-            });
-            
+                    b.ToTable("streamonlinemessages", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.XpShopOwnedItem", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("timestamp with time zone")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("dateadded");
 
-                b.Property<bool>("IsUsing")
-                 .HasColumnType("boolean")
-                 .HasColumnName("isusing");
+                    b.Property<bool>("IsUsing")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isusing");
 
-                b.Property<string>("ItemKey")
-                 .IsRequired()
-                 .HasColumnType("text")
-                 .HasColumnName("itemkey");
+                    b.Property<string>("ItemKey")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("itemkey");
 
-                b.Property<int>("ItemType")
-                 .HasColumnType("integer")
-                 .HasColumnName("itemtype");
+                    b.Property<int>("ItemType")
+                        .HasColumnType("integer")
+                        .HasColumnName("itemtype");
 
-                b.Property<decimal>("UserId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("userid");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
 
-                b.HasKey("Id")
-                 .HasName("pk_xpshopowneditem");
+                    b.HasKey("Id")
+                        .HasName("pk_xpshopowneditem");
 
-                b.HasIndex("UserId", "ItemType", "ItemKey")
-                 .IsUnique()
-                 .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+                    b.HasIndex("UserId", "ItemType", "ItemKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
 
-                b.ToTable("xpshopowneditem", (string)null);
-            });
+                    b.ToTable("xpshopowneditem", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
                 {
@@ -471,7 +459,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("action");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
@@ -518,7 +506,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.HasKey("Id")
@@ -544,7 +532,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("action");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
@@ -595,7 +583,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("commandtext");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal?>("GuildId")
@@ -642,7 +630,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -676,7 +664,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Source")
@@ -710,7 +698,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -741,7 +729,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("ItemId")
@@ -768,7 +756,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -806,7 +794,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("commandname");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -840,7 +828,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("amount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Extra")
@@ -890,7 +878,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -924,7 +912,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("command");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal?>("GuildId")
@@ -955,7 +943,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("ItemId")
@@ -993,7 +981,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
@@ -1028,7 +1016,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1054,7 +1042,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1088,7 +1076,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1118,7 +1106,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1148,7 +1136,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1174,7 +1162,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
@@ -1253,7 +1241,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("cleverbotenabled");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("DeleteMessageOnCommand")
@@ -1381,7 +1369,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("ItemType")
@@ -1420,7 +1408,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("LogSettingId")
@@ -1450,13 +1438,13 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
-                    
+
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasColumnName("type");
@@ -1493,7 +1481,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelupdatedid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -1515,14 +1503,14 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal?>("LogVoicePresenceTTSId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("logvoicepresencettsid");
-                    
+
                     b.Property<decimal?>("LogWarnsId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("logwarnsid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("logwarnsid");
 
                     b.Property<decimal?>("MessageDeletedId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("messagedeletedid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("messagedeletedid");
 
                     b.Property<decimal?>("MessageUpdatedId")
                         .HasColumnType("numeric(20,0)")
@@ -1629,7 +1617,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("authorid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Name")
@@ -1652,7 +1640,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1694,7 +1682,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("containsanywhere");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("DmResponse")
@@ -1733,7 +1721,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -1763,7 +1751,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -1825,7 +1813,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -1867,7 +1855,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("MusicPlaylistId")
@@ -1917,7 +1905,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -1948,7 +1936,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Index")
@@ -1982,7 +1970,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("PollId")
@@ -2025,7 +2013,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("authorname");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -2068,7 +2056,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Emote")
@@ -2123,7 +2111,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("IsPrivate")
@@ -2143,7 +2131,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("userid");
 
                     b.Property<DateTime>("When")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("when");
 
                     b.HasKey("Id")
@@ -2169,7 +2157,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("channelid");
 
                     b.Property<DateTime>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
@@ -2216,11 +2204,11 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("amountrewardedthismonth");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<DateTime>("LastReward")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("lastreward");
 
                     b.Property<string>("PlatformUserId")
@@ -2251,7 +2239,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Status")
@@ -2278,7 +2266,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Group")
@@ -2323,7 +2311,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("authorid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2373,7 +2361,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("ShopEntryId")
@@ -2403,7 +2391,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2433,7 +2421,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2463,7 +2451,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("StreamRoleSettingsId")
@@ -2501,7 +2489,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("addroleid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("Enabled")
@@ -2540,7 +2528,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("StreamRoleSettingsId")
@@ -2574,7 +2562,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2582,7 +2570,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("guildconfigid");
 
                     b.Property<DateTime>("UnbanAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("unbanat");
 
                     b.Property<decimal>("UserId")
@@ -2608,7 +2596,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2616,7 +2604,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("guildconfigid");
 
                     b.Property<DateTime>("UnmuteAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("unmuteat");
 
                     b.Property<decimal>("UserId")
@@ -2642,7 +2630,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2654,7 +2642,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("roleid");
 
                     b.Property<DateTime>("UnbanAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("unbanat");
 
                     b.Property<decimal>("UserId")
@@ -2684,18 +2672,12 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("awardedxp");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
-
-                    b.Property<DateTime>("LastLevelUp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("lastlevelup")
-                        .HasDefaultValueSql("timezone('utc', now())");
 
                     b.Property<int>("NotifyOnLevelUp")
                         .HasColumnType("integer")
@@ -2741,7 +2723,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -2783,7 +2765,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("claimerid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<long>("Price")
@@ -2823,7 +2805,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("ItemEmoji")
@@ -2857,7 +2839,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("NewId")
@@ -2901,7 +2883,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("Forgiven")
@@ -2963,7 +2945,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("count");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
@@ -3005,7 +2987,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("amount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Level")
@@ -3035,7 +3017,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Level")
@@ -3074,7 +3056,7 @@ namespace WizBot.Migrations.PostgreSql
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")

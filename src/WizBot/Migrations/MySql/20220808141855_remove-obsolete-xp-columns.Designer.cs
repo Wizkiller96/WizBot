@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,9 +11,10 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    partial class MysqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220808141855_remove-obsolete-xp-columns")]
+    partial class removeobsoletexpcolumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,10 +171,10 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnName("isclubadmin");
 
                     b.Property<int>("NotifyOnLevelUp")
-                     .ValueGeneratedOnAdd()
-                     .HasColumnType("int")
-                     .HasDefaultValue(0)
-                     .HasColumnName("notifyonlevelup");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("notifyonlevelup");
 
                     b.Property<long>("TotalXp")
                         .ValueGeneratedOnAdd()
@@ -320,77 +322,77 @@ namespace WizBot.Migrations.Mysql
 
                     b.ToTable("patrons", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.StreamOnlineMessage", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("int")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                b.Property<ulong>("ChannelId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("channelid");
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("datetime(6)")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
 
-                b.Property<ulong>("MessageId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("messageid");
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messageid");
 
-                b.Property<string>("Name")
-                 .HasColumnType("longtext")
-                 .HasColumnName("name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
 
-                b.Property<int>("Type")
-                 .HasColumnType("int")
-                 .HasColumnName("type");
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
 
-                b.HasKey("Id")
-                 .HasName("pk_streamonlinemessages");
+                    b.HasKey("Id")
+                        .HasName("pk_streamonlinemessages");
 
-                b.ToTable("streamonlinemessages", (string)null);
-            });
-            
+                    b.ToTable("streamonlinemessages", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.XpShopOwnedItem", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("int")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("datetime(6)")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
 
-                b.Property<bool>("IsUsing")
-                 .HasColumnType("tinyint(1)")
-                 .HasColumnName("isusing");
+                    b.Property<bool>("IsUsing")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("isusing");
 
-                b.Property<string>("ItemKey")
-                 .IsRequired()
-                 .HasColumnType("varchar(255)")
-                 .HasColumnName("itemkey");
+                    b.Property<string>("ItemKey")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("itemkey");
 
-                b.Property<int>("ItemType")
-                 .HasColumnType("int")
-                 .HasColumnName("itemtype");
+                    b.Property<int>("ItemType")
+                        .HasColumnType("int")
+                        .HasColumnName("itemtype");
 
-                b.Property<ulong>("UserId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("userid");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
 
-                b.HasKey("Id")
-                 .HasName("pk_xpshopowneditem");
+                    b.HasKey("Id")
+                        .HasName("pk_xpshopowneditem");
 
-                b.HasIndex("UserId", "ItemType", "ItemKey")
-                 .IsUnique()
-                 .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+                    b.HasIndex("UserId", "ItemType", "ItemKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
 
-                b.ToTable("xpshopowneditem", (string)null);
-            });
+                    b.ToTable("xpshopowneditem", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
                 {
@@ -1378,7 +1380,7 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong>("GuildId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
-                    
+
                     b.Property<int>("Type")
                         .HasColumnType("int")
                         .HasColumnName("type");
@@ -1435,14 +1437,14 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong?>("LogVoicePresenceTTSId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("logvoicepresencettsid");
-                    
+
                     b.Property<ulong?>("LogWarnsId")
-                     .HasColumnType("bigint unsigned")
-                     .HasColumnName("logwarnsid");
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("logwarnsid");
 
                     b.Property<ulong?>("MessageDeletedId")
-                     .HasColumnType("bigint unsigned")
-                     .HasColumnName("messagedeletedid");
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messagedeletedid");
 
                     b.Property<ulong?>("MessageUpdatedId")
                         .HasColumnType("bigint unsigned")
@@ -2554,8 +2556,8 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnName("guildid");
 
                     b.Property<int>("NotifyOnLevelUp")
-                     .HasColumnType("int")
-                     .HasColumnName("notifyonlevelup");
+                        .HasColumnType("int")
+                        .HasColumnName("notifyonlevelup");
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("bigint unsigned")
