@@ -432,7 +432,7 @@ public partial class Xp : WizBotModule<XpService>
                     var button = new ButtonBuilder(ownedItem.IsUsing
                             ? GetText(strs.in_use)
                             : GetText(strs.use),
-                        "XP_SHOP_USE",
+                        "xpshop:use",
                         emote: Emoji.Parse("👐"),
                         isDisabled: ownedItem.IsUsing);
 
@@ -446,7 +446,7 @@ public partial class Xp : WizBotModule<XpService>
                 else
                 {
                     var button = new ButtonBuilder(GetText(strs.buy),
-                        "XP_SHOP_BUY",
+                        "xpshop:buy",
                         emote: Emoji.Parse("💰"));
 
                     var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
@@ -467,12 +467,22 @@ public partial class Xp : WizBotModule<XpService>
     {
         var result = await _service.BuyShopItemAsync(ctx.User.Id, (XpShopItemType)type, key);
 
+        WizBotInteraction GetUseInteraction()
+        {
+            return _inter.Create(ctx.User.Id,
+                new SimpleInteraction<object>(
+                    new ButtonBuilder(label: "Use", customId: "xpshop:use_item", emote: Emoji.Parse("👐")),
+                    async (smc, _) => await XpShopUse(type, key)
+                ));
+        }
+
         if (result != BuyResult.Success)
         {
             var _ = result switch
             {
+                BuyResult.XpShopDisabled => await ReplyErrorLocalizedAsync(strs.xp_shop_disabled),
                 BuyResult.InsufficientFunds => await ReplyErrorLocalizedAsync(strs.not_enough(_gss.Data.Currency.Sign)),
-                BuyResult.AlreadyOwned => await ReplyErrorLocalizedAsync(strs.xpshop_already_owned),
+                BuyResult.AlreadyOwned => await ReplyErrorLocalizedAsync(strs.xpshop_already_owned, GetUseInteraction()),
                 BuyResult.UnknownItem => await ReplyErrorLocalizedAsync(strs.xpshop_item_not_found),
                 BuyResult.InsufficientPatronTier => await ReplyErrorLocalizedAsync(strs.patron_insuff_tier),
                 _ => throw new ArgumentOutOfRangeException()
@@ -481,7 +491,8 @@ public partial class Xp : WizBotModule<XpService>
         }
 
         await ReplyConfirmLocalizedAsync(strs.xpshop_buy_success(type.ToString().ToLowerInvariant(),
-            key.ToLowerInvariant()));
+                key.ToLowerInvariant()),
+            GetUseInteraction());
     }
     
     [Cmd]

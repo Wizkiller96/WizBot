@@ -8,10 +8,6 @@ public sealed class PostgreSqlContext : WizBotContext
 
     protected override string CurrencyTransactionOtherIdDefaultValue
         => "NULL";
-    protected override string DiscordUserLastXpGainDefaultValue
-        => "timezone('utc', now()) - interval '-1 year'";
-    protected override string LastLevelUpDefaultValue
-        => "timezone('utc', now())";
 
     public PostgreSqlContext(string connStr = "Host=localhost")
     {

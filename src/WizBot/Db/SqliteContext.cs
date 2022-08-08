@@ -9,10 +9,6 @@ public sealed class SqliteContext : WizBotContext
 
     protected override string CurrencyTransactionOtherIdDefaultValue
         => "NULL";
-    protected override string DiscordUserLastXpGainDefaultValue
-        => "datetime('now', '-1 years')";
-    protected override string LastLevelUpDefaultValue
-        => "datetime('now')";
 
     public SqliteContext(string connectionString = "Data Source=data/WizBot.db", int commandTimeout = 60)
     {

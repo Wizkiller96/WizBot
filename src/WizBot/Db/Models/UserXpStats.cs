@@ -8,7 +8,6 @@ public class UserXpStats : DbEntity
     public long Xp { get; set; }
     public long AwardedXp { get; set; }
     public XpNotificationLocation NotifyOnLevelUp { get; set; }
-    public DateTime LastLevelUp { get; set; } = DateTime.UtcNow;
 }
 
 public enum XpNotificationLocation { None, Dm, Channel }

@@ -64,9 +64,7 @@ public abstract class WizBotContext : DbContext
     #region Mandatory Provider-Specific Values
     
     protected abstract string CurrencyTransactionOtherIdDefaultValue { get; }
-    protected abstract string DiscordUserLastXpGainDefaultValue { get; }
-    protected abstract string LastLevelUpDefaultValue { get; }
-    
+
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -165,12 +163,6 @@ public abstract class WizBotContext : DbContext
             du.Property(x => x.NotifyOnLevelUp)
               .HasDefaultValue(XpNotificationLocation.None);
 
-            du.Property(x => x.LastXpGain)
-              .HasDefaultValueSql(DiscordUserLastXpGainDefaultValue);
-
-            du.Property(x => x.LastLevelUp)
-              .HasDefaultValueSql(LastLevelUpDefaultValue);
-
             du.Property(x => x.TotalXp)
               .HasDefaultValue(0);
 
@@ -211,9 +203,6 @@ public abstract class WizBotContext : DbContext
                x.GuildId
            })
            .IsUnique();
-
-        xps.Property(x => x.LastLevelUp)
-           .HasDefaultValueSql(LastLevelUpDefaultValue);
 
         xps.HasIndex(x => x.UserId);
         xps.HasIndex(x => x.GuildId);
