@@ -1,25 +1,30 @@
 ﻿namespace WizBot;
 
-public abstract class WizBotButtonInteraction
+public sealed class WizBotInteraction
 {
-    // improvements:
-    //  - state in OnAction
-    //  - configurable delay
-    //  - 
-    protected abstract string Name { get; }
-    protected abstract IEmote Emote { get; }
-    protected virtual string? Text { get; } = null;
-
+    private readonly ulong _authorId;
+    private readonly ButtonBuilder _button;
+    private readonly Func<SocketMessageComponent, Task> _onClick;
+    private readonly bool _onlyAuthor;
     public DiscordSocketClient Client { get; }
 
-    protected readonly TaskCompletionSource<bool> _interactionCompletedSource;
+    private readonly TaskCompletionSource<bool> _interactionCompletedSource;
 
-    protected IUserMessage message = null!;
+    private IUserMessage message = null!;
 
-    protected WizBotButtonInteraction(DiscordSocketClient client)
+    public WizBotInteraction(DiscordSocketClient client,
+        ulong authorId,
+        ButtonBuilder button,
+        Func<SocketMessageComponent, Task> onClick,
+        bool onlyAuthor)
     {
-        Client = client;
+        _authorId = authorId;
+        _button = button;
+        _onClick = onClick;
+        _onlyAuthor = onlyAuthor;
         _interactionCompletedSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        
+        Client = client;
     }
 
     public async Task RunAsync(IUserMessage msg)
@@ -27,13 +32,12 @@ public abstract class WizBotButtonInteraction
         message = msg;
 
         Client.InteractionCreated += OnInteraction;
-        await Task.WhenAny(Task.Delay(10_000), _interactionCompletedSource.Task);
+        await Task.WhenAny(Task.Delay(15_000), _interactionCompletedSource.Task);
         Client.InteractionCreated -= OnInteraction;
 
         await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
     }
-
-    protected abstract ValueTask<bool> Validate(SocketMessageComponent smc);
+    
     private async Task OnInteraction(SocketInteraction arg)
     {
         if (arg is not SocketMessageComponent smc)
@@ -42,14 +46,11 @@ public abstract class WizBotButtonInteraction
         if (smc.Message.Id != message.Id)
             return;
 
-        if (smc.Data.CustomId != Name)
+        if (_onlyAuthor && smc.User.Id != _authorId)
             return;
 
-        if (!await Validate(smc))
-        {
-            await smc.DeferAsync();
+        if (smc.Data.CustomId != _button.CustomId)
             return;
-        }
 
         _ = Task.Run(async () =>
         {
@@ -66,18 +67,14 @@ public abstract class WizBotButtonInteraction
     }
 
 
-    public virtual MessageComponent CreateComponent()
+    public MessageComponent CreateComponent()
     {
         var comp = new ComponentBuilder()
-            .WithButton(GetButtonBuilder());
+            .WithButton(_button);
 
         return comp.Build();
     }
-    
-    public ButtonBuilder GetButtonBuilder()
-        => new ButtonBuilder(style: ButtonStyle.Secondary, emote: Emote, customId: Name, label: Text);
 
-    public abstract Task ExecuteOnActionAsync(SocketMessageComponent smc);
+    public Task ExecuteOnActionAsync(SocketMessageComponent smc)
+        => _onClick(smc);
 }
-
-// this is all so wrong ...

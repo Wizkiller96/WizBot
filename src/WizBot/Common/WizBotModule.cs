@@ -18,6 +18,7 @@ public abstract class WizBotModule : ModuleBase
     public CommandHandler _cmdHandler { get; set; }
     public ILocalization _localization { get; set; }
     public IEmbedBuilderService _eb { get; set; }
+    public IWizBotInteractionService _inter { get; set; }
 
     protected string prefix
         => _cmdHandler.GetPrefix(ctx.Guild);
@@ -36,7 +37,7 @@ public abstract class WizBotModule : ModuleBase
         string error,
         string url = null,
         string footer = null, 
-        WizBotButtonInteraction inter = null)
+        WizBotInteraction inter = null)
         => ctx.Channel.SendErrorAsync(_eb, title, error, url, footer);
     
     public Task<IUserMessage> SendConfirmAsync(
@@ -47,32 +48,32 @@ public abstract class WizBotModule : ModuleBase
         => ctx.Channel.SendConfirmAsync(_eb, title, text, url, footer);
 
     // 
-    public Task<IUserMessage> SendErrorAsync(string text, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> SendErrorAsync(string text, WizBotInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MessageType.Error, inter);
-    public Task<IUserMessage> SendConfirmAsync(string text, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> SendConfirmAsync(string text, WizBotInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MessageType.Ok, inter);
-    public Task<IUserMessage> SendPendingAsync(string text, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> SendPendingAsync(string text, WizBotInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MessageType.Pending, inter);
 
     
     // localized normal
-    public Task<IUserMessage> ErrorLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> ErrorLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendErrorAsync(GetText(str), inter);
 
-    public Task<IUserMessage> PendingLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> PendingLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendPendingAsync(GetText(str), inter);
 
-    public Task<IUserMessage> ConfirmLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> ConfirmLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendConfirmAsync(GetText(str), inter);
 
     // localized replies
-    public Task<IUserMessage> ReplyErrorLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> ReplyErrorLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendErrorAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}", inter);
 
-    public Task<IUserMessage> ReplyPendingLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> ReplyPendingLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendPendingAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}", inter);
 
-    public Task<IUserMessage> ReplyConfirmLocalizedAsync(LocStr str, WizBotButtonInteraction inter = null)
+    public Task<IUserMessage> ReplyConfirmLocalizedAsync(LocStr str, WizBotInteraction inter = null)
         => SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} {GetText(str)}", inter);
 
     public async Task<bool> PromptUserConfirmAsync(IEmbedBuilder embed)

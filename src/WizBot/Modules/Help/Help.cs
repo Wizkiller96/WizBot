@@ -427,7 +427,7 @@ public partial class Help : WizBotModule<HelpService>
             }
             catch (Exception)
             {
-                Log.Information("No old version list found. Creating a new one.");
+                Log.Information("No old version list found. Creating a new one");
             }
 
             var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
@@ -576,7 +576,7 @@ public partial class Help : WizBotModule<HelpService>
             "https://wizbot.readthedocs.io/en/latest/"));
 
 
-    private Task SelfhostAction(SocketMessageComponent smc)
+    private Task SelfhostAction(SocketMessageComponent smc, object _)
         => smc.RespondConfirmAsync(_eb,
             @"- In case you don't want or cannot Donate to WizBot project, but you 
 - WizBot is a completely free and fully [open source](https://gitlab.com/WizNet/WizBot) project which means you can run your own ""selfhosted"" instance on your computer or server for free.
@@ -591,11 +591,17 @@ public partial class Help : WizBotModule<HelpService>
     [OnlyPublicBot]
     public async Task Donate()
         {
-        var selfhostInter = new DonateSelfhostingInteraction(_client, ctx.User.Id, SelfhostAction);
-        
-        var eb = _eb.Create(ctx)
-                    .WithOkColor()
-                    .WithTitle("Thank you for considering to donate to the WizBot project!");
+            // => new WizBotInteractionData(new Emoji("🖥️"), "donate:selfhosting", "Selfhosting");
+            var selfhostInter = _inter.Create(ctx.User.Id,
+                new SimpleInteraction<object>(new ButtonBuilder(
+                        emote: new Emoji("🖥️"),
+                        customId: "donate:selfhosting",
+                        label: "Selfhosting"),
+                    SelfhostAction));
+
+            var eb = _eb.Create(ctx)
+                        .WithOkColor()
+                        .WithTitle("Thank you for considering to donate to the WizBot project!");
 
         eb
             .WithDescription("WizBot relies on donations to keep the servers, services and APIs running.\n"
@@ -632,7 +638,7 @@ WizBot will DM you the welcome instructions, and you may start using the patron-
 
         try
         {
-            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter.GetInteraction());
+            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter);
             _ = ctx.OkAsync();
         }
         catch

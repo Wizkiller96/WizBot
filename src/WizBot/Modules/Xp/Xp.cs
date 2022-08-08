@@ -433,7 +433,6 @@ public partial class Xp : WizBotModule<XpService>
                             ? GetText(strs.in_use)
                             : GetText(strs.use),
                         "XP_SHOP_USE",
-                        ButtonStyle.Primary,
                         emote: Emoji.Parse("👐"),
                         isDisabled: ownedItem.IsUsing);
 
@@ -448,7 +447,6 @@ public partial class Xp : WizBotModule<XpService>
                 {
                     var button = new ButtonBuilder(GetText(strs.buy),
                         "XP_SHOP_BUY",
-                        ButtonStyle.Primary,
                         emote: Emoji.Parse("💰"));
 
                     var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
