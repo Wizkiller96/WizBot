@@ -593,12 +593,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         if (ShouldTrackVoiceChannel(channel))
         {
-            foreach (var user in channel.Users)
+            foreach (var user in channel.ConnectedUsers)
                 await ScanUserForVoiceXp(user, channel);
         }
         else
         {
-            foreach (var user in channel.Users)
+            foreach (var user in channel.ConnectedUsers)
                 await UserLeftVoiceChannel(user, channel);
         }
     }
@@ -617,7 +617,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     }
 
     private bool ShouldTrackVoiceChannel(SocketVoiceChannel channel)
-        => channel.Users.Where(UserParticipatingInVoiceChannel).Take(2).Count() >= 2;
+        => channel.ConnectedUsers.Where(UserParticipatingInVoiceChannel).Take(2).Count() >= 2;
 
     private bool UserParticipatingInVoiceChannel(SocketGuildUser user)
         => !user.IsDeafened && !user.IsMuted && !user.IsSelfDeafened && !user.IsSelfMuted;
@@ -634,6 +634,18 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
             overwrite: false);
     }
+    
+    // private void UserJoinedVoiceChannel(SocketGuildUser user)
+    // {
+    //     var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
+    //     var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    //
+    //     _cache.Redis.GetDatabase()
+    //         .StringSet(key,
+    //             value,
+    //             TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
+    //             when: When.NotExists);
+    // }
 
     private async Task UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
     {
@@ -654,6 +666,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
         if (actualXp > 0)
         {
+            Log.Information("Adding {Amount} voice xp to {User}", actualXp, user.ToString());
             await _xpGainQueue.Writer.WriteAsync(new()
             {
                 Guild = channel.Guild,
@@ -663,6 +676,38 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             });
         }
     }
+    
+    /*
+     * private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
+    {
+        var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
+        var value = _cache.Redis.GetDatabase().StringGet(key);
+        _cache.Redis.GetDatabase().KeyDelete(key);
+
+        // Allow for if this function gets called multiple times when a user leaves a channel.
+        if (value.IsNull)
+            return;
+
+        if (!value.TryParse(out long startUnixTime))
+            return;
+
+        var dateStart = DateTimeOffset.FromUnixTimeSeconds(startUnixTime);
+        var dateEnd = DateTimeOffset.UtcNow;
+        var minutes = (dateEnd - dateStart).TotalMinutes;
+        var xp = _xpConfig.Data.VoiceXpPerMinute * minutes;
+        var actualXp = (int)Math.Floor(xp);
+
+        if (actualXp > 0)
+        {
+            _addMessageXp.Enqueue(new()
+            {
+                Guild = channel.Guild,
+                User = user,
+                XpAmount = actualXp
+            });
+        }
+    }
+     */
 
     private bool ShouldTrackXp(SocketGuildUser user, ulong channelId)
     {
