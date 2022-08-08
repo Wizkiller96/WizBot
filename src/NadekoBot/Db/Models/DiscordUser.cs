@@ -17,8 +17,6 @@ public class DiscordUser : DbEntity
     public bool IsClubAdmin { get; set; }
 
     public long TotalXp { get; set; }
-    public DateTime LastLevelUp { get; set; } = DateTime.UtcNow;
-    public DateTime LastXpGain { get; set; } = DateTime.MinValue;
     public XpNotificationLocation NotifyOnLevelUp { get; set; }
 
     public long CurrencyAmount { get; set; }

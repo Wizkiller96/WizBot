@@ -1394,7 +1394,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var conf = _xpConfig.Data;
 
         if (!conf.Shop.IsEnabled)
-            return BuyResult.UnknownItem;
+            return BuyResult.XpShopDisabled;
 
         var req = type == XpShopItemType.Background
             ? conf.Shop.BgsTierRequirement
@@ -1545,6 +1545,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 public enum BuyResult
 {
     Success,
+    XpShopDisabled,
     AlreadyOwned,
     InsufficientFunds,
     UnknownItem,
