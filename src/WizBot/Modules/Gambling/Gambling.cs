@@ -128,7 +128,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             var now = DateTime.UtcNow;
             var relativeTag = TimestampTag.FromDateTime(now.Add(rem), TimestampTagStyles.Relative);
-            await ReplyErrorLocalizedAsync(strs.timely_already_claimed(relativeTag));
+            await ReplyPendingLocalizedAsync(strs.timely_already_claimed(relativeTag));
             return;
         }
 
