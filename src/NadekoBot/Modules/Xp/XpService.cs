@@ -188,6 +188,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             },
                             (_, n) => n);
 
+                    await ctx.Clubs
+                        .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
+                        .UpdateAsync(old => new()
+                        {
+                            Xp = old.Xp + (group.Key * old.Members.Count(m => group.Contains(m.UserId)))
+                        });
+                    
                     dus.AddRange(items);
                 }
 
