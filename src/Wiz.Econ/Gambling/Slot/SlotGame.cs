@@ -1,5 +1,8 @@
 ﻿namespace Wiz.Econ.Gambling;
 
+//here is a payout chart
+//https://lh6.googleusercontent.com/-i1hjAJy_kN4/UswKxmhrbPI/AAAAAAAAB1U/82wq_4ZZc-Y/DE6B0895-6FC1-48BE-AC4F-14D1B91AB75B.jpg
+//thanks to judge for helping me with this
 public class SlotGame
 {
     private static readonly WizBotRandom _rng = new WizBotRandom();
