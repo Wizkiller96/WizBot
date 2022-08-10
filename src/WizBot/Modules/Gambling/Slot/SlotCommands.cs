@@ -27,12 +27,6 @@ public partial class Gambling
         private static decimal totalBet;
         private static decimal totalPaidOut;
 
-        private static readonly ConcurrentHashSet<ulong> _runningUsers = new();
-
-        //here is a payout chart
-        //https://lh6.googleusercontent.com/-i1hjAJy_kN4/UswKxmhrbPI/AAAAAAAAB1U/82wq_4ZZc-Y/DE6B0895-6FC1-48BE-AC4F-14D1B91AB75B.jpg
-        //thanks to judge for helping me with this
-
         private readonly IImageCache _images;
         private readonly FontProvider _fonts;
         private readonly DbService _db;
@@ -84,43 +78,34 @@ public partial class Gambling
 
             await ctx.Channel.TriggerTypingAsync();
 
-            if (!_runningUsers.Add(ctx.User.Id))
+            if (await InternalSlotAsync(amount) is not SlotResult result)
+            {
+                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return;
-
-            try
-            {
-                if (await InternalSlotAsync(amount) is not SlotResult result)
-                {
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
-                    return;
-                }
-
-                var msg = GetSlotMessageInternal(result);
-
-                using var image = await GenerateSlotImageAsync(amount, result);
-                await using var imgStream = await image.ToStreamAsync();
-
-
-                var eb = _eb.Create(ctx)
-                    .WithAuthor(ctx.User)
-                    .WithDescription(Format.Bold(msg))
-                    .WithImageUrl($"attachment://result.png")
-                    .WithOkColor();
-                
-                //new(Emoji.Parse("🔁"), "slot:again", "Pull Again");
-                await ctx.Channel.SendFileAsync(imgStream,
-                    "result.png",
-                    embed: eb.Build()
-                    // components: inter.CreateComponent()
-                );
-
-                // await inter.RunAsync(resMsg);
             }
-            finally
-            {
-                await Task.Delay(1000);
-                _runningUsers.TryRemove(ctx.User.Id);
-            }
+
+            var text = GetSlotMessageTextInternal(result);
+
+            using var image = await GenerateSlotImageAsync(amount, result);
+            await using var imgStream = await image.ToStreamAsync();
+
+
+            var eb = _eb.Create(ctx)
+                .WithAuthor(ctx.User)
+                .WithDescription(Format.Bold(text))
+                .WithImageUrl($"attachment://result.png")
+                .WithOkColor();
+
+            var bb = new ButtonBuilder(emote: Emoji.Parse("🔁"), customId: "slot:again", label: "Pull Again");
+            var si = new SimpleInteraction<ShmartNumber>(bb, (_, amount) => Slot(amount), amount);
+
+            var inter = _inter.Create(ctx.User.Id, si);
+            var msg = await ctx.Channel.SendFileAsync(imgStream,
+                "result.png",
+                embed: eb.Build(),
+                components: inter.CreateComponent()
+            );
+            await inter.RunAsync(msg);
         }
 
         // private SlotInteraction CreateSlotInteractionIntenal(long amount)
@@ -171,7 +156,7 @@ public partial class Gambling
         //         });
         // }
 
-        private string GetSlotMessageInternal(SlotResult result)
+        private string GetSlotMessageTextInternal(SlotResult result)
         {
             var multi = result.Multiplier.ToString("0.##");
             var msg = result.WinType switch
@@ -191,7 +176,6 @@ public partial class Gambling
 
             if (!maybeResult.TryPickT0(out var result, out var error))
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
                 return null;
             }
             
@@ -246,8 +230,7 @@ public partial class Gambling
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
-                    WrappingLength = 135,
-                    Origin = new(393, 480)
+                    Origin = new(393, 480) 
                 },
                 ownedAmount.ToString(),
                 fontColor));
