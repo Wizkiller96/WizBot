@@ -719,6 +719,13 @@ showemojis:
 emojiadd:
   - emojiadd
   - ea
+emojiremove:
+  - emojiremove
+  - emojirm
+  - er
+  - ed
+  - emojidel
+  - emojidelete
 deckshuffle:
   - deckshuffle
   - dsh
