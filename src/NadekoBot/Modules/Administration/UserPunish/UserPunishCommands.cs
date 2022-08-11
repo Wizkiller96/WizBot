@@ -345,6 +345,10 @@ public partial class Administration
             if (punish is PunishmentAction.AddRole or PunishmentAction.Warn)
                 return;
 
+            // you must specify the time for timeout
+            if (punish is PunishmentAction.TimeOut && time is null)
+                return;
+
             var success = _service.WarnPunish(ctx.Guild.Id, number, punish, time);
 
             if (!success)

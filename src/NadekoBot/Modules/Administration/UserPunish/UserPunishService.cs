@@ -193,6 +193,9 @@ public class UserPunishService : INService, IReadyExecutor
             case PunishmentAction.Warn:
                 await Warn(guild, user.Id, mod, 1, reason);
                 break;
+            case PunishmentAction.TimeOut:
+                await user.SetTimeOutAsync(TimeSpan.FromMinutes(minutes));
+                break;
         }
     }
 
@@ -224,6 +227,8 @@ public class UserPunishService : INService, IReadyExecutor
                 return botUser.GuildPermissions.MuteMembers;
             case PunishmentAction.AddRole:
                 return botUser.GuildPermissions.ManageRoles;
+            case PunishmentAction.TimeOut:
+                return botUser.GuildPermissions.ModerateMembers;
             default:
                 return true;
         }
@@ -351,7 +356,7 @@ public class UserPunishService : INService, IReadyExecutor
             await uow.Warnings.ForgiveAll(guildId, userId, moderator);
         else
             toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
-        uow.SaveChanges();
+        await uow.SaveChangesAsync();
         return toReturn;
     }
 
@@ -370,6 +375,9 @@ public class UserPunishService : INService, IReadyExecutor
             return false;
 
         if (punish is PunishmentAction.AddRole && role is null)
+            return false;
+
+        if (punish is PunishmentAction.TimeOut && time is null)
             return false;
 
         using var uow = _db.GetDbContext();
