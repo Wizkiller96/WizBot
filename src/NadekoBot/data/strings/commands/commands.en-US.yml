@@ -2237,6 +2237,10 @@ bankbalance:
   desc: "Shows your current bank balance available for withdrawal."
   args:
     - ""
+banktake:
+  desc: "Takes the specified from a user's bank"
+  args:
+    - "500 @MoniLaunder"
 patron:
   desc: "Check your patronage status and command usage quota. Bot owners can check targeted user's patronage status."
   args:
