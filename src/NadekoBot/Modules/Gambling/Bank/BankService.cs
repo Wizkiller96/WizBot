@@ -15,6 +15,48 @@ public sealed class BankService : IBankService, INService
         _db = db;
     }
 
+    public async Task<bool> AwardAsync(ulong userId, long amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+
+        await using var ctx = _db.GetDbContext();
+        await ctx.BankUsers
+            .ToLinqToDBTable()
+            .InsertOrUpdateAsync(() => new()
+                {
+                    UserId = userId,
+                    Balance = amount
+                },
+                (old) => new()
+                {
+                    Balance = old.Balance + amount
+                },
+                () => new()
+                {
+                    UserId = userId
+                });
+
+        return true;
+    }
+    
+    public async Task<bool> TakeAsync(ulong userId, long amount)
+    {
+        if (amount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+        
+        await using var ctx = _db.GetDbContext();
+        var rows = await ctx.BankUsers
+            .ToLinqToDBTable()
+            .Where(x => x.UserId == userId && x.Balance >= amount)
+            .UpdateAsync((old) => new()
+            {
+                Balance = old.Balance - amount
+            });
+        
+        return rows > 0;
+    }
+
     public async Task<bool> DepositAsync(ulong userId, long amount)
     {
         if (amount <= 0)

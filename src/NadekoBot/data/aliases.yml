@@ -374,6 +374,7 @@ award:
   - award
 take:
   - take
+  - seize
 betroll:
   - betroll
   - br
@@ -1323,6 +1324,9 @@ bankbalance:
   - bal
 banktake:
   - take
+  - seize
+bankaward:
+  - award
 # Patron
 patron:
   - patron
