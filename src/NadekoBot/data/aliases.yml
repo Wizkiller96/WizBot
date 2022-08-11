@@ -217,6 +217,9 @@ serverinfo:
 channelinfo:
   - channelinfo
   - cinfo
+roleinfo:
+  - roleinfo
+  - rinfo
 userinfo:
   - userinfo
   - uinfo

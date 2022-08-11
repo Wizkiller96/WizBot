@@ -97,6 +97,33 @@ public partial class Utility
                            .WithOkColor();
             await ctx.Channel.EmbedAsync(embed);
         }
+        
+        [Cmd]
+        [RequireUserPermission(GuildPermission.ManageRoles)]
+        public async Task RoleInfo([Leftover] SocketRole role)
+        {
+            if (role.IsEveryone)
+                return;
+            
+            var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                .AddMilliseconds(role.Id >> 22);
+            var usercount = role.Members.LongCount();
+            var embed = _eb.Create()
+                .WithTitle(role.Name.TrimTo(128))
+                .WithDescription(role.Permissions.ToList().Join(" | "))
+                .AddField(GetText(strs.id), role.Id.ToString(), true)
+                .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                .AddField(GetText(strs.users), usercount.ToString(), true)
+                .AddField(GetText(strs.color), $"#{role.Color.R:X2}{role.Color.G:X2}{role.Color.B:X2}", true)
+                .AddField(GetText(strs.mentionable), role.IsMentionable.ToString(), true)
+                .AddField(GetText(strs.hoisted), role.IsHoisted.ToString(), true)
+                .WithOkColor();
+
+            if (!string.IsNullOrWhiteSpace(role.GetIconUrl()))
+                embed = embed.WithThumbnailUrl(role.GetIconUrl());
+            
+            await ctx.Channel.EmbedAsync(embed);
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]

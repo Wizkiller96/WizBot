@@ -423,6 +423,10 @@ channelinfo:
   desc: "Shows info about the channel. If no channel is supplied, it defaults to current one."
   args:
     - "#some-channel"
+roleinfo:
+  desc: "Shows info about the specified role."
+  args:
+    - "Gamers"
 userinfo:
   desc: "Shows info about the user. If no user is supplied, it defaults a user running the command."
   args:
