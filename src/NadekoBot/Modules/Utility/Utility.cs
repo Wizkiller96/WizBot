@@ -374,10 +374,15 @@ public partial class Utility : NadekoModule
     [Priority(0)]
     public async Task EmojiRemove(params Emote[] emotes)
     {
+        if (emotes.Length == 0)
+            return;
+        
+        var g = (SocketGuild)ctx.Guild;
+        
         var fails = new List<Emote>();
         foreach (var emote in emotes)
         {
-            var guildEmote = await ctx.Guild.GetEmoteAsync(emote.Id);
+            var guildEmote = g.Emotes.FirstOrDefault(x => x.Id == emote.Id);
             if (guildEmote is null)
             {
                 fails.Add(emote);
