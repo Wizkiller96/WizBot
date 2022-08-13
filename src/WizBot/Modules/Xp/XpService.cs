@@ -214,6 +214,41 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                 (_, n) => n);
 
                         gxps.AddRange(items);
+                        
+                        var missingUserIds = group.Where(userId => !items.Any(x => x.UserId == userId)).ToArray();
+                        foreach (var userId in missingUserIds)
+                        {
+                            await ctx
+                                  .UserXpStats
+                                  .ToLinqToDBTable()
+                                  .InsertOrUpdateAsync(() => new UserXpStats()
+                                      {
+                                          UserId = userId,
+                                          GuildId = guildId,
+                                          Xp = group.Key,
+                                          DateAdded = DateTime.UtcNow,
+                                          AwardedXp = 0,
+                                          NotifyOnLevelUp = XpNotificationLocation.None
+                                      },
+                                      _ => new()
+                                      {
+                                        
+                                      },
+                                      () => new()
+                                      {
+                                          UserId = userId
+                                      });
+                        }
+
+                        if (missingUserIds.Length > 0)
+                        {
+                            var missingItems = await ctx.UserXpStats
+                                                        .ToLinqToDBTable()
+                                                        .Where(x => missingUserIds.Contains(x.UserId))
+                                                        .ToArrayAsyncLinqToDB();
+                            
+                            gxps.AddRange(missingItems);
+                        }
                     }
                 }
             }
