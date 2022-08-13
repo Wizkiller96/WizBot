@@ -2288,6 +2288,14 @@ bettest:
     - ""
     - "betflip 1000"
     - "slot 2000"
+threadcreate:
+  desc: "Create a public thread with the specified title. You may optionally reply to a message to have it as a starting point."
+  args:
+    - "Q&A"
+threaddelete:
+  desc: "Delete a thread with the specified name in this channel. Case insensitive."
+  args:
+    - "Q&A"
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   args:
