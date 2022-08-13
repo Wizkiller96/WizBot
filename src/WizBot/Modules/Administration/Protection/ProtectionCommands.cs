@@ -37,11 +37,15 @@ public partial class Administration
 
             if (minAgeMinutes < 1 || punishTimeMinutes < 0)
                 return;
+            
+            var minutes = (int?)punishTime?.Time.TotalMinutes ?? 0;
+            if (action is PunishmentAction.TimeOut && minutes < 1)
+                minutes = 1;
 
             await _service.StartAntiAltAsync(ctx.Guild.Id,
                 minAgeMinutes,
                 action,
-                (int?)punishTime?.Time.TotalMinutes ?? 0);
+                minutes);
 
             await ctx.OkAsync();
         }
@@ -54,6 +58,9 @@ public partial class Administration
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
 
             if (minAgeMinutes < 1)
+                return;
+            
+            if (action == PunishmentAction.TimeOut)
                 return;
 
             await _service.StartAntiAltAsync(ctx.Guild.Id, minAgeMinutes, action, roleId: role.Id);
@@ -122,6 +129,9 @@ public partial class Administration
             var time = (int?)punishTime?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
                 return;
+            
+            if(action is PunishmentAction.TimeOut && time < 1)
+                return;
 
             var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds, action, time);
 
@@ -185,6 +195,9 @@ public partial class Administration
 
             var time = (int?)timeData?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
+                return;
+
+            if (action is PunishmentAction.TimeOut && time < 1)
                 return;
 
             var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id);
