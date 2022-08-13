@@ -66,6 +66,9 @@ public sealed class DiscordEmbedBuilderWrapper : IEmbedBuilder
             EmbedColor.Error => Wrap(embed.WithColor(_botConfig.Color.Error.ToDiscordColor())),
             _ => throw new ArgumentOutOfRangeException(nameof(color), "Unsupported EmbedColor type")
         };
+    
+    public IEmbedBuilder WithDiscordColor(Color color)
+        => Wrap(embed.WithColor(color));
 
     public Embed Build()
         => embed.Build();
