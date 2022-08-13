@@ -373,6 +373,36 @@ public partial class Utility : WizBotModule
 
         await ConfirmLocalizedAsync(strs.emoji_added(em.ToString()));
     }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [BotPerm(GuildPerm.ManageEmojisAndStickers)]
+    [UserPerm(GuildPerm.ManageEmojisAndStickers)]
+    [Priority(0)]
+    public async Task EmojiRemove(params Emote[] emotes)
+    {
+        var fails = new List<Emote>();
+        foreach (var emote in emotes)
+        {
+            var guildEmote = await ctx.Guild.GetEmoteAsync(emote.Id);
+            if (guildEmote is null)
+            {
+                fails.Add(emote);
+            }
+            else
+            {
+                await ctx.Guild.DeleteEmoteAsync(guildEmote);
+            }
+        }
+
+        if (fails.Count > 0)
+        {
+            await ReplyPendingLocalizedAsync(strs.emoji_not_removed(fails.Select(x => x.ToString()).Join(" ")));
+            return;
+        }
+
+        await ctx.OkAsync();
+    }
 
     [Cmd]
     [OwnerOnly]
