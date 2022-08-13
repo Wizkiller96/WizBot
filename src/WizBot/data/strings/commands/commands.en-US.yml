@@ -2240,9 +2240,13 @@ bankbalance:
   args:
     - ""
 banktake:
-  desc: "Takes the specified from a user's bank"
+  desc: "Takes the specified amount of currency from a user's bank"
   args:
     - "500 @MoniLaunder"
+bankaward:
+  desc: "Award the specified amount of currency to a user's bank"
+  args:
+    - "99999 @Bestie"
 patron:
   desc: "Check your patronage status and command usage quota. Bot owners can check targeted user's patronage status."
   args:

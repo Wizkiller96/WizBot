@@ -75,7 +75,21 @@ public partial class Gambling
         
         private async Task BankTakeInternalAsync(long amount, ulong userId)
         {
-            if (await _bank.WithdrawAsync(userId, amount))
+            if (await _bank.TakeAsync(userId, amount))
+            {
+                await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
+                    _client.GetUser(userId)?.ToString()
+                    ?? userId.ToString(),
+                    CurrencySign));
+                return;
+            }
+            
+            await ctx.OkAsync();
+        }
+        
+        private async Task BankAwardInternalAsync(long amount, ulong userId)
+        {
+            if (await _bank.AwardAsync(userId, amount))
             {
                 await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
                     _client.GetUser(userId)?.ToString()
@@ -89,7 +103,7 @@ public partial class Gambling
 
         [Cmd]
         [OwnerOnly]
-        [Priority(-1)]
+        [Priority(1)]
         public async Task BankTake(long amount, [Leftover] IUser user)
             => await BankTakeInternalAsync(amount, user.Id);
         
@@ -98,5 +112,10 @@ public partial class Gambling
         [Priority(0)]
         public async Task BankTake(long amount, ulong userId)
             => await BankTakeInternalAsync(amount, userId);
+        
+        [Cmd]
+        [OwnerOnly]
+        public async Task BankAward(long amount, [Leftover] IUser user)
+            => await BankAwardInternalAsync(amount, user.Id);
     }
 }
