@@ -1218,9 +1218,9 @@ emojiadd:
     - "MyEmojiName :someonesCustomEmoji:"
     - "owoNice https://cdn.discordapp.com/emojis/587930873811173386.png?size=128"
 emojiremove:
-  desc: "Removes the specified emoji from this server."
+  desc: "Removes the specified emoji or emojis from this server."
   args:
-    - ":someonesCustomEmoji:"
+    - ":eagleWarrior: :plumedArcher:"
 deckshuffle:
   desc: "Reshuffles all cards back into the deck."
   args:
