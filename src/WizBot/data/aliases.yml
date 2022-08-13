@@ -1308,6 +1308,7 @@ medusalist:
 medusainfo:
   - medusainfo
   - meinfo
+# Bank stuff
 bankdeposit:
   - deposit
   - d
@@ -1320,6 +1321,8 @@ bankbalance:
   - balance
   - b
   - bal
+banktake:
+  - take
 # Patron
 patron:
   - patron

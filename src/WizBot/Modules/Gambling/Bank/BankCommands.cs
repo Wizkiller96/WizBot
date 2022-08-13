@@ -11,10 +11,14 @@ public partial class Gambling
     public partial class BankCommands : GamblingModule<IBankService>
     {
         private readonly IBankService _bank;
+        private readonly DiscordSocketClient _client;
 
-        public BankCommands(GamblingConfigService gcs, IBankService bank) : base(gcs)
+        public BankCommands(GamblingConfigService gcs,
+            IBankService bank,
+            DiscordSocketClient client) : base(gcs)
         {
             _bank = bank;
+            _client = client;
         }
 
         [Cmd]
@@ -68,5 +72,31 @@ public partial class Gambling
                 await ReplyErrorLocalizedAsync(strs.cant_dm);
             }
         }
+        
+        private async Task BankTakeInternalAsync(long amount, ulong userId)
+        {
+            if (await _bank.WithdrawAsync(userId, amount))
+            {
+                await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
+                    _client.GetUser(userId)?.ToString()
+                    ?? userId.ToString(),
+                    CurrencySign));
+                return;
+            }
+            
+            await ctx.OkAsync();
+        }
+
+        [Cmd]
+        [OwnerOnly]
+        [Priority(-1)]
+        public async Task BankTake(long amount, [Leftover] IUser user)
+            => await BankTakeInternalAsync(amount, user.Id);
+        
+        [Cmd]
+        [OwnerOnly]
+        [Priority(0)]
+        public async Task BankTake(long amount, ulong userId)
+            => await BankTakeInternalAsync(amount, userId);
     }
 }
