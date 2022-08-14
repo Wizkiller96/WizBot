@@ -188,12 +188,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             },
                             (_, n) => n);
 
-                    await ctx.Clubs
-                        .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
-                        .UpdateAsync(old => new()
-                        {
-                            Xp = old.Xp + (group.Key * old.Members.Count(m => group.Contains(m.UserId)))
-                        });
+                    // await ctx.Clubs
+                    //     .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
+                    //     .UpdateAsync(old => new()
+                    //     {
+                    //         Xp = old.Xp + (group.Key * old.Members.Count(m => group.Contains(m.UserId)))
+                    //     });
                     
                     dus.AddRange(items);
                 }
@@ -215,40 +215,40 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         
                         gxps.AddRange(items);
                         
-                        var missingUserIds = group.Where(userId => !items.Any(x => x.UserId == userId)).ToArray();
-                        foreach (var userId in missingUserIds)
-                        {
-                            await ctx
-                                .UserXpStats
-                                .ToLinqToDBTable()
-                                .InsertOrUpdateAsync(() => new UserXpStats()
-                                    {
-                                        UserId = userId,
-                                        GuildId = guildId,
-                                        Xp = group.Key,
-                                        DateAdded = DateTime.UtcNow,
-                                        AwardedXp = 0,
-                                        NotifyOnLevelUp = XpNotificationLocation.None
-                                    },
-                                    _ => new()
-                                    {
-                                        
-                                    },
-                                    () => new()
-                                    {
-                                        UserId = userId
-                                    });
-                        }
-
-                        if (missingUserIds.Length > 0)
-                        {
-                            var missingItems = await ctx.UserXpStats
-                                .ToLinqToDBTable()
-                                .Where(x => missingUserIds.Contains(x.UserId))
-                                .ToArrayAsyncLinqToDB();
-                            
-                            gxps.AddRange(missingItems);
-                        }
+                        // var missingUserIds = group.Where(userId => !items.Any(x => x.UserId == userId)).ToArray();
+                        // foreach (var userId in missingUserIds)
+                        // {
+                        //     await ctx
+                        //         .UserXpStats
+                        //         .ToLinqToDBTable()
+                        //         .InsertOrUpdateAsync(() => new UserXpStats()
+                        //             {
+                        //                 UserId = userId,
+                        //                 GuildId = guildId,
+                        //                 Xp = group.Key,
+                        //                 DateAdded = DateTime.UtcNow,
+                        //                 AwardedXp = 0,
+                        //                 NotifyOnLevelUp = XpNotificationLocation.None
+                        //             },
+                        //             _ => new()
+                        //             {
+                        //                 
+                        //             },
+                        //             () => new()
+                        //             {
+                        //                 UserId = userId
+                        //             });
+                        // }
+                        //
+                        // if (missingUserIds.Length > 0)
+                        // {
+                        //     var missingItems = await ctx.UserXpStats
+                        //         .ToLinqToDBTable()
+                        //         .Where(x => missingUserIds.Contains(x.UserId))
+                        //         .ToArrayAsyncLinqToDB();
+                        //     
+                        //     gxps.AddRange(missingItems);
+                        // }
                     }
                 }
             }
