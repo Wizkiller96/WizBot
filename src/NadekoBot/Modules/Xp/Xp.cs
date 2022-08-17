@@ -334,15 +334,15 @@ public partial class Xp : NadekoModule<XpService>
 
     public enum XpShopInputType
     {
-        Backgrounds = 1,
-        B = 1,
-        Bg = 1,
-        Bgs = 1,
-        Frames = 0,
-        F = 0,
-        Fr = 0,
-        Frs = 0,
-        Fs = 0,
+        Backgrounds = 0,
+        B = 0,
+        Bg = 0,
+        Bgs = 0,
+        Frames = 1,
+        F = 1,
+        Fr = 1,
+        Frs = 1,
+        Fs = 1,
     }
 
     [Cmd]
