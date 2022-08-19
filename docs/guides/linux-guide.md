@@ -154,13 +154,27 @@ Using `tmux` is the simplest method, and is therefore recommended for most users
 
 1. Start a tmux session:
     - `tmux`
-2. Navigate to the project's root directory
-    - Project root directory location example: `/home/user/wizbot/`
-3. Enter the `output` directory:
-    - `cd output`
-4. Run the bot using:
-    - `dotnet WizBot.dll`
-5. Detatch the tmux session:
+2. Run the installer: `bash linuxAIO.sh`
+
+3. There are a few options when it comes to running WizBot.
+
+   - Run `3` to *Run the bot normally*
+   - Run `4` to *Run the bot with Auto Restart* (This is may or may not work)
+
+4. If option `4` was selected, you have the following options
+```
+1. Run Auto Restart and update WizBot.
+2. Run Auto Restart normally without updating WizBot.
+3. Exit
+
+Choose:
+[1] to Run WizBot with Auto Restart on "die" command without updating.
+[2] to Run with Auto Updating on restart after using "die" command.
+```
+- Run `1` to update the bot upon restart. (This is done using the `.die` command)
+- Run `2` to restart the bot without updating. (This is also done using the `.die` command)
+
+5. That's it! to detatch the tmux session:
     - Press `Ctrl` + `B`
     - Then press `D`
 
