@@ -4,6 +4,27 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.3.5] - 17.08.2022
+
+### Added
+
+- Added a 'Use' button when a user already owns an item
+- Added a 'Pull Again' button to slots
+- Added `.roleinfo` command
+- Added `.emojiremove` command
+- Added `.threadcreate` and `.threaddelete` commands
+- Added `.bank seize` / `.bank award` owner only commands
+
+### Changed
+
+- Running a .timely command early now shows a pending color
+- .xp system is once again no longer opt in for servers
+  - It's still opt-in for global and requires users to run .xp at least once in order to start gaining global xp
+
+### Fixed
+
+- Fixed users not getting club xp
+
 ## [4.3.4] - 07.08.2022
 
 ### Fixed
