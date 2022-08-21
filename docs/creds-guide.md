@@ -33,17 +33,17 @@ These are required for a number of features to function properly, and all should
 For a single owner, it should look like this:
 
 ```yml
-    OwnerIds:
-        - 105635576866156544
+OwnerIds:
+  - 105635576866156544
 ```
 
 For multiple owners, it should look like this:
 
 ```yml
-    OwnerIds:
-        - 105635123466156544
-        - 145521851676884992
-        - 341420590009417729
+OwnerIds:
+  - 105635123466156544
+  - 145521851676884992
+  - 341420590009417729
 ```
 
 
