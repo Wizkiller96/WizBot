@@ -163,8 +163,8 @@ Using `tmux` is the simplest method, and is therefore recommended for most users
 
 4. If option `4` was selected, you have the following options
 ```
-1. Run Auto Restart and update WizBot.
-2. Run Auto Restart normally without updating WizBot.
+1. Run Auto Restart normally without updating WizBot.
+2. Run Auto Restart and update WizBot.
 3. Exit
 
 Choose:
