@@ -169,8 +169,8 @@ The above command will create a new session named **nadeko** *(you can replace â
 
 4. If option `4` was selected, you have the following options
 ```
-1. Run Auto Restart and update NadekoBot.
-2. Run Auto Restart normally without updating NadekoBot.
+1. Run Auto Restart normally without updating NadekoBot.
+2. Run Auto Restart and update NadekoBot.
 3. Exit
 
 Choose:
