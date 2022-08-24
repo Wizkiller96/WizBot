@@ -38,19 +38,19 @@ public sealed class NadekoInteraction
         await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
     }
     
-    private async Task OnInteraction(SocketInteraction arg)
+    private Task OnInteraction(SocketInteraction arg)
     {
         if (arg is not SocketMessageComponent smc)
-            return;
+            return Task.CompletedTask;
 
         if (smc.Message.Id != message.Id)
-            return;
+            return Task.CompletedTask;
 
         if (_onlyAuthor && smc.User.Id != _authorId)
-            return;
+            return Task.CompletedTask;
 
         if (smc.Data.CustomId != _button.CustomId)
-            return;
+            return Task.CompletedTask;
 
         _ = Task.Run(async () =>
         {
@@ -64,6 +64,8 @@ public sealed class NadekoInteraction
                 await smc.DeferAsync();
             }
         });
+        
+        return Task.CompletedTask;
     }
 
 
