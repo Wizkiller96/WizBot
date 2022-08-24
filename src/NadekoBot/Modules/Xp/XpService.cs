@@ -277,8 +277,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 if (guildToAdd.TryGetValue(du.GuildId, out var users)
                     && users.TryGetValue(du.UserId, out var xpGainData))
                 {
-                    var oldLevel = new LevelStats(du.Xp - xpGainData.XpAmount);
-                    var newLevel = new LevelStats(du.Xp);
+                    var oldLevel = new LevelStats(du.Xp - xpGainData.XpAmount + du.AwardedXp);
+                    var newLevel = new LevelStats(du.Xp + du.AwardedXp);
 
                     if (oldLevel.Level < newLevel.Level)
                     {
