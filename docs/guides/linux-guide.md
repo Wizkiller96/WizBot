@@ -1,4 +1,4 @@
-# Setting up NadekoBot on Linux
+w# Setting up NadekoBot on Linux
 
 | Table of Contents                                   |
 | :-------------------------------------------------- |
@@ -160,15 +160,30 @@ If you are presented with the installer main menu, exit it by choosing Option `8
 
 The above command will create a new session named **nadeko** *(you can replace “nadeko” with anything you prefer, it's your session name)*.
 
-2. Navigate to the project's root directory
-    - Project root directory location example: `cd /home/user/nadekobot/`
-3. Enter the `output` directory:
-    - `cd output`
-4. Run the bot using:
-    - `dotnet NadekoBot.dll`
-5. Detatch the tmux session:
+2. Run the installer: `bash linuxAIO.sh`
+
+3. There are a few options when it comes to running Nadeko.
+
+    - Run `3` to *Run the bot normally*
+    - Run `4` to *Run the bot with Auto Restart* (This is may or may not work)
+
+4. If option `4` was selected, you have the following options
+```
+1. Run Auto Restart normally without updating NadekoBot.
+2. Run Auto Restart and update NadekoBot.
+3. Exit
+
+Choose:
+[1] to Run NadekoBot with Auto Restart on "die" command without updating.
+[2] to Run with Auto Updating on restart after using "die" command.
+```
+- Run `1` to update the bot upon restart. (This is done using the `.die` command)
+- Run `2` to restart the bot without updating. (This is also done using the `.die` command)
+
+5. That's it! to detatch the tmux session:
     - Press `Ctrl` + `B`
     - Then press `D`
+
 Now check your Discord server, the bot should be online. Nadeko should now be running in the background of your system. 
 
 To re-open the tmux session to either update, restart, or whatever, execute `tmux a -t nadeko`. *(Make sure to replace "nadeko" with your session name. If you didn't change it, leave it as it.)*
