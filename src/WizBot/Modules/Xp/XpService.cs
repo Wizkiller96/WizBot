@@ -176,6 +176,16 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             var gxps = new List<UserXpStats>(globalToAdd.Count);
             await using (var ctx = _db.GetDbContext())
             {
+                var conf = _xpConfig.Data;
+                if (conf.CurrencyPerXp > 0)
+                {
+                    foreach (var user in globalToAdd)
+                    {
+                        var amount = user.Value.XpAmount * conf.CurrencyPerXp;
+                        await _cs.AddAsync(user.Key, (long)(amount), null);
+                    }
+                }
+
                 // update global user xp in batches
                 // group by xp amount and update the same amounts at the same time
                 foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
