@@ -26,6 +26,9 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
 
     [Comment(@"The maximum amount of minutes the bot will keep track of a user in a voice channel")]
     public int VoiceMaxMinutes { get; set; } = 720;
+    
+    [Comment(@"The amount of currency users will receive for each point of global xp that they earn")]
+    public float CurrencyPerXp { get; set; } = 0;
 
     [Comment(@"Xp Shop config")]
     public ShopConfig Shop { get; set; } = new();

@@ -27,7 +27,7 @@ public class DefaultWallet : IWallet
                         .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> Take(long amount, TxData txData)
+    public async Task<bool> Take(long amount, TxData? txData)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount to take must be non negative.");
@@ -44,24 +44,27 @@ public class DefaultWallet : IWallet
 
         if (changed == 0)
             return false;
-        
-        await ctx
-              .GetTable<CurrencyTransaction>()
-              .InsertAsync(() => new()
-              {
-                  Amount = -amount,
-                  Note = txData.Note,
-                  UserId = userId,
-                  Type = txData.Type,
-                  Extra = txData.Extra,
-                  OtherId = txData.OtherId,
-                  DateAdded = DateTime.UtcNow
-              });
+
+        if (txData is not null)
+        {
+            await ctx
+                .GetTable<CurrencyTransaction>()
+                .InsertAsync(() => new()
+                {
+                    Amount = -amount,
+                    Note = txData.Note,
+                    UserId = userId,
+                    Type = txData.Type,
+                    Extra = txData.Extra,
+                    OtherId = txData.OtherId,
+                    DateAdded = DateTime.UtcNow
+                });
+        }
 
         return true;
     }
 
-    public async Task Add(long amount, TxData txData)
+    public async Task Add(long amount, TxData? txData)
     {
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
@@ -92,16 +95,19 @@ public class DefaultWallet : IWallet
             await tran.CommitAsync();
         }
 
-        await ctx.GetTable<CurrencyTransaction>()
-                 .InsertAsync(() => new()
-                 {
-                     Amount = amount,
-                     UserId = userId,
-                     Note = txData.Note,
-                     Type = txData.Type,
-                     Extra = txData.Extra,
-                     OtherId = txData.OtherId,
-                     DateAdded = DateTime.UtcNow
-                 });
+        if (txData is not null)
+        {
+            await ctx.GetTable<CurrencyTransaction>()
+                .InsertAsync(() => new()
+                {
+                    Amount = amount,
+                    UserId = userId,
+                    Note = txData.Note,
+                    Type = txData.Type,
+                    Extra = txData.Extra,
+                    OtherId = txData.OtherId,
+                    DateAdded = DateTime.UtcNow
+                });
+        }
     }
 }
