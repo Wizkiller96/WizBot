@@ -488,11 +488,27 @@ public partial class Help : WizBotModule<HelpService>
             if (string.IsNullOrWhiteSpace(message))
                 return;
 
-            if (rtypes.Contains(type))
+            if (rtypes.Contains(type) && type == "Suggestion")
             {
-                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).SendMessageAsync("<@99272781513920512>");
-                await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle($"New Bug/Suggestion Report")
+                var fbmsg = await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(_eb.Create().WithOkColor()
+                    .WithTitle($"New Suggestion")
+                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                    .AddField("Suggester", $"{ctx.User}", true)
+                    .AddField("Suggester ID:", $"{ctx.User.Id}", true)
+                    .AddField("Server Name:", $"{ctx.Guild.Name}", true)
+                    .AddField("Server ID:", $"{ctx.Guild.Id}", true)
+                    .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
+                    .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
+                    .AddField("Type:", type, false)
+                    .AddField("Suggestion:", $"{message}")).ConfigureAwait(false);
+                await fbmsg.AddReactionAsync(Emote.Parse("<:down_vote:1012571380144951346>"));
+                await fbmsg.AddReactionAsync(Emote.Parse("<:vote_up:1012571381126418432>"));
+
+                await ctx.Channel.SendMessageAsync("Suggestion has been sent to WizNet's Discord.").ConfigureAwait(false);
+            } else if (rtypes.Contains(type) && type == "Bug") {
+                await _client.GetGuild(99273784988557312).GetTextChannel(1012808771371794433).SendMessageAsync("<@99272781513920512>");
+                await _client.GetGuild(99273784988557312).GetTextChannel(1012808771371794433).EmbedAsync(_eb.Create().WithOkColor()
+                    .WithTitle($"New Bug Report")
                     .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
                     .AddField("Reporter", $"{ctx.User}", true)
                     .AddField("Reporter ID:", $"{ctx.User.Id}", true)
@@ -500,10 +516,10 @@ public partial class Help : WizBotModule<HelpService>
                     .AddField("Server ID:", $"{ctx.Guild.Id}", true)
                     .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
                     .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
-                    .AddField("Report Type:", type, false)
+                    .AddField("Type:", type, false)
                     .AddField("Message:", $"{message}")).ConfigureAwait(false);
 
-                await ctx.Channel.SendMessageAsync("🆗").ConfigureAwait(false);
+                await ctx.Channel.SendMessageAsync("Bug report has been sent to WizNet's Discord.").ConfigureAwait(false);
             }
             else
                 await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
@@ -515,7 +531,6 @@ public partial class Help : WizBotModule<HelpService>
             await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
                 .WithTitle("Command Restricted")
                 .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
-            
 #endif
         }
 
