@@ -28,6 +28,8 @@
   "banmsg_default": "No ban message set. Default behavior will be used.",
   "banned_pl": "banned",
   "banned_user": "User Banned",
+  "timeoutdm": "You have been timed out in {0} server.\nReason: {1}",
+  "timedout_user": "User Timed Out",
   "remove_roles_pl": "have had their roles removed",
   "bot_name": "Bot's name changed to {0}",
   "bot_status": "Bot status changed to {0}",

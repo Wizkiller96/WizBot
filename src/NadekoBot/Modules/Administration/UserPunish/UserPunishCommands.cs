@@ -722,6 +722,49 @@ public partial class Administration
 
             await ctx.Channel.EmbedAsync(toSend);
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ModerateMembers)]
+        [BotPerm(GuildPerm.ModerateMembers)]
+        [Priority(2)]
+        public async Task Timeout(IUser globalUser, StoopidTime time,  [Leftover] string msg = null)
+        {
+            var user = await ctx.Guild.GetUserAsync(globalUser.Id);
+
+            if (user is null)
+                return;
+            
+            if (!await CheckRoleHierarchy(user))
+                return;
+
+            var dmFailed = false;
+
+            try
+            {
+                var dmMessage = GetText(strs.timeoutdm(Format.Bold(ctx.Guild.Name), msg));
+                await user.EmbedAsync(_eb.Create(ctx)
+                        .WithPendingColor()
+                        .WithDescription(dmMessage));
+            }
+            catch
+            {
+                dmFailed = true;
+            }
+            
+            await user.SetTimeOutAsync(time.Time);
+
+            var toSend = _eb.Create()
+                .WithOkColor()
+                .WithTitle("⏳ " + GetText(strs.timedout_user))
+                .AddField(GetText(strs.username), user.ToString(), true)
+                .AddField("ID", user.Id.ToString(), true);
+
+            if (dmFailed)
+                toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
+
+            await ctx.Channel.EmbedAsync(toSend);
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
