@@ -312,6 +312,11 @@ kick:
   args:
     - "@Someone Get out!"
     - "\"Some Guy#1234\" Your behaviour is toxic."
+timeout:
+  desc: "Times the user out for the specified amount of time. You may optionally specify a reason, which will be sent to the user."
+  args:
+    - "@Someone 3h Shut up!"
+    - "@Someone 1h30m"
 mute:
   desc: "Mutes a mentioned user both from speaking and chatting. You can also specify time string for how long the user should be muted. You can optionally specify a reason."
   args:
