@@ -628,6 +628,10 @@ quotedelete:
   desc: "Deletes a quote with the specified ID. You have to either have the Manage Messages permission or be the creator of the quote to delete it."
   args:
     - "123456"
+quotedeleteauthor:
+  desc: "Deletes all quotes by the specified author. If the author is not you, then ManageMessage server permission is required."
+  args:
+    - "@QuoteSpammer"
 draw:
   desc: "Draws a card from this server's deck. You can draw up to 10 cards by supplying a number of cards to draw."
   args:

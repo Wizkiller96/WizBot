@@ -3,14 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
-using Nadeko.Common;
 using RunMode = Discord.Commands.RunMode;
 
 namespace NadekoBot;
