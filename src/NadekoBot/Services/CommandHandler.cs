@@ -279,6 +279,7 @@ public class CommandHandler : INService, IReadyExecutor
                 // if it errored
                 if (error is not null)
                 {
+                    error = HumanizeError(error);
                     LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
                     
                     if (guild is not null)
@@ -290,6 +291,15 @@ public class CommandHandler : INService, IReadyExecutor
         }
 
         await _behaviorHandler.RunOnNoCommandAsync(guild, usrMsg);
+    }
+
+    private string HumanizeError(string error)
+    {
+        if (error.Contains("parse int", StringComparison.OrdinalIgnoreCase)
+            || error.Contains("parse float"))
+            return "Invalid number specified. Make sure you're specifying parameters in the correct order.";
+
+        return error;
     }
 
     public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(
