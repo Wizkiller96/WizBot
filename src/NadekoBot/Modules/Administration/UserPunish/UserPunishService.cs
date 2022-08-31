@@ -1,5 +1,6 @@
 #nullable disable
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.TypeReaders.Models;
@@ -127,6 +128,7 @@ public class UserPunishService : INService, IReadyExecutor
         if (!await CheckPermission(guild, p))
             return;
 
+        int banPrune;
         switch (p)
         {
             case PunishmentAction.Mute:
@@ -151,13 +153,15 @@ public class UserPunishService : INService, IReadyExecutor
                 await user.KickAsync(reason);
                 break;
             case PunishmentAction.Ban:
+                banPrune = await GetBanPruneAsync(user.GuildId) ?? 7;
                 if (minutes == 0)
-                    await guild.AddBanAsync(user, reason: reason, pruneDays: 7);
+                    await guild.AddBanAsync(user, reason: reason, pruneDays: banPrune);
                 else
-                    await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason);
+                    await _mute.TimedBan(user.Guild, user, TimeSpan.FromMinutes(minutes), reason, banPrune);
                 break;
             case PunishmentAction.Softban:
-                await guild.AddBanAsync(user, 7, $"Softban | {reason}");
+                banPrune = await GetBanPruneAsync(user.GuildId) ?? 7;
+                await guild.AddBanAsync(user, banPrune, $"Softban | {reason}");
                 try
                 {
                     await guild.RemoveBanAsync(user);
@@ -487,6 +491,37 @@ public class UserPunishService : INService, IReadyExecutor
             template.Text = text;
 
         uow.SaveChanges();
+    }
+
+    public async Task SetBanPruneAsync(ulong guildId, int? pruneDays)
+    {
+        await using var ctx = _db.GetDbContext();
+        await ctx.BanTemplates
+            .ToLinqToDBTable()
+            .InsertOrUpdateAsync(() => new()
+                {
+                    GuildId = guildId,
+                    Text = null,
+                    DateAdded = DateTime.UtcNow,
+                    PruneDays = pruneDays
+                },
+                old => new()
+                {
+                    PruneDays = pruneDays
+                },
+                () => new()
+                {
+                    GuildId = guildId
+                });
+    }
+
+    public async Task<int?> GetBanPruneAsync(ulong guildId)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.BanTemplates
+            .Where(x => x.GuildId == guildId)
+            .Select(x => x.PruneDays)
+            .FirstOrDefaultAsyncLinqToDB();
     }
 
     public SmartText GetBanUserDmEmbed(

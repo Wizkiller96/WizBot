@@ -675,6 +675,10 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
+                    b.Property<int?>("PruneDays")
+                        .HasColumnType("int")
+                        .HasColumnName("prunedays");
+
                     b.Property<string>("Text")
                         .HasColumnType("longtext")
                         .HasColumnName("text");

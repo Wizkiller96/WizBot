@@ -963,6 +963,8 @@ banmessagetest:
   - banmsgtest
 banmsgreset:
   - banmsgreset
+banprune:
+  - banprune
 timeout:
   - timeout
 wait:
