@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Net;
 using WizBot.Modules.Searches.Services;
 
 namespace WizBot.Modules.Roblox;
@@ -30,7 +31,7 @@ public partial class Roblox : WizBotModule<SearchesService>
             // Make a checker to see if a Roblox account exist before showing info.
             JToken rInfo;
             JToken rAvatar;
-            JToken rDevForum;
+            /*JToken rDevForum;*/
             //JToken rUID;
             //JToken rStatus;
             //JToken rMT;
@@ -43,10 +44,10 @@ public partial class Roblox : WizBotModule<SearchesService>
                                               .GetStringAsync(
                                                   $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rInfo["userid"]}&size=720x720&format=png&isCircular=false")
                                               .ConfigureAwait(false));
-                rDevForum = JObject.Parse(await http
+                /*rDevForum = JObject.Parse(await http
                                                 .GetStringAsync(
                                                     $"https://devforum.roblox.com/u/by-external/{rInfo["userid"]}.json")
-                                                .ConfigureAwait(false));
+                                                .ConfigureAwait(false));*/
                 // rUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
                 // rStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{rInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                 // Roblox Membership Type Checker
@@ -65,7 +66,7 @@ public partial class Roblox : WizBotModule<SearchesService>
             } */
 
             // DevForum Trust Level
-            if ((int)rDevForum["user"]!["trust_level"]! == 1)
+            /*if ((int)rDevForum["user"]!["trust_level"]! == 1)
             {
                 rDevForum["user"]!["trust_level"] = "Member";
             }
@@ -84,7 +85,7 @@ public partial class Roblox : WizBotModule<SearchesService>
             else
             {
                 rDevForum["user"]!["trust_level"] = "Visitor";
-            }
+            }*/
 
             var pastNames = string.Join("\n", rInfo["oldNames"]!.Take(5));
             if (string.IsNullOrEmpty(pastNames))
@@ -123,7 +124,7 @@ public partial class Roblox : WizBotModule<SearchesService>
                      .ConfigureAwait(false);
 
             // Add a check incase user doesn't have a devforum account.
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            /*await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithAuthor($"{rInfo["username"]}'s DevForum Info",
                                                 "https://doy2mn9upadnk.cloudfront.net/uploads/default/original/3X/a/7/a7c93ee978f5f5326adb01270f17c287771fbe81.png",
@@ -139,7 +140,7 @@ public partial class Roblox : WizBotModule<SearchesService>
                                             .AddField("Bio", (string.IsNullOrEmpty($"{rDevForum["user"]!["bio_raw"]}")
                                                 ? none
                                                 : ($"{rDevForum["user"]!["bio_raw"]}".TrimTo(170)))!))
-                     .ConfigureAwait(false);
+                     .ConfigureAwait(false);*/
         }
         catch (Exception ex)
         {
