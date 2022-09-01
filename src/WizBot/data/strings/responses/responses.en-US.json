@@ -28,6 +28,8 @@
   "banmsg_default": "No ban message set. Default behavior will be used.",
   "banned_pl": "banned",
   "banned_user": "User Banned",
+  "ban_prune_disabled": "Banned user's messages will no longer be deleted.",
+  "ban_prune": "Bot will prune up to {0} day(s) worth of messages from banned user.",
   "timeoutdm": "You have been timed out in {0} server.\nReason: {1}",
   "timedout_user": "User Timed Out",
   "remove_roles_pl": "have had their roles removed",

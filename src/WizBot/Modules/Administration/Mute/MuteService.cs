@@ -358,9 +358,10 @@ public class MuteService : INService
         IGuild guild,
         IUser user,
         TimeSpan after,
-        string reason)
+        string reason,
+        int pruneDays)
     {
-        await guild.AddBanAsync(user.Id, 0, reason);
+        await guild.AddBanAsync(user.Id, pruneDays, reason);
         await using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.UnbanTimer));

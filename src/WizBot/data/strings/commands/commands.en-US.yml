@@ -789,10 +789,9 @@ linux:
   args:
     - "Spyware Windows"
 next:
-  desc: "Goes to the next song in the queue. You have to be in the same voice channel as the bot. You can skip multiple songs, but in that case songs will not be requeued if {0}rcs or {0}rpl is enabled."
+  desc: "Goes to the next song in the queue. You have to be in the same voice channel as the bot"
   args:
     - ""
-    - "5"
 play:
   desc: "If no parameters are specified, acts as `{0}next 1` command. If you specify a song number, it will jump to that song. If you specify a search query, acts as a `{0}q` command"
   args:
@@ -1681,6 +1680,13 @@ banmsgreset:
   desc: "Resets ban message to default. If you want to completely disable ban messages, use `{0}banmsg -`"
   args:
     - ""
+banprune:
+  desc: |-
+    Sets how many days of messages will be deleted when a user is banned.
+    Only works if the user is banned via the .ban command or punishment.
+    Allowed values: 0 - 7
+  args:
+    - "3"
 wait:
   desc: "Used only as a startup command. Waits a certain number of miliseconds before continuing the execution of the following startup commands."
   args:

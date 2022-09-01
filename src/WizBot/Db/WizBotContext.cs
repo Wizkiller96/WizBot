@@ -329,6 +329,10 @@ public abstract class WizBotContext : DbContext
         #region BanTemplate
 
         modelBuilder.Entity<BanTemplate>().HasIndex(x => x.GuildId).IsUnique();
+        modelBuilder.Entity<BanTemplate>()
+                    .Property(x => x.PruneDays)
+                    .HasDefaultValue(null)
+                    .IsRequired(false);
 
         #endregion
 
