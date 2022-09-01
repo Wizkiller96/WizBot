@@ -3,14 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using WizBot.Common.Configs;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
-using WizBot.Modules.Administration;
 using WizBot.Modules.Utility;
 using WizBot.Services.Database.Models;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
-using Wiz.Common;
 using RunMode = Discord.Commands.RunMode;
 
 namespace WizBot;

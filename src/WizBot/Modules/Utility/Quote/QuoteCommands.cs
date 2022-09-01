@@ -1,5 +1,4 @@
 #nullable disable warnings
-using Wiz.Common;
 using WizBot.Common.Yml;
 using WizBot.Db;
 using WizBot.Services.Database.Models;
@@ -22,23 +21,25 @@ public partial class Utility
 ";
 
         private static readonly ISerializer _exportSerializer = new SerializerBuilder()
-                                                                .WithEventEmitter(args
-                                                                    => new MultilineScalarFlowStyleEmitter(args))
-                                                                .WithNamingConvention(
-                                                                    CamelCaseNamingConvention.Instance)
-                                                                .WithIndentedSequences()
-                                                                .ConfigureDefaultValuesHandling(DefaultValuesHandling
-                                                                    .OmitDefaults)
-                                                                .DisableAliases()
-                                                                .Build();
+            .WithEventEmitter(args
+                => new MultilineScalarFlowStyleEmitter(args))
+            .WithNamingConvention(
+                CamelCaseNamingConvention.Instance)
+            .WithIndentedSequences()
+            .ConfigureDefaultValuesHandling(DefaultValuesHandling
+                .OmitDefaults)
+            .DisableAliases()
+            .Build();
 
         private readonly DbService _db;
         private readonly IHttpClientFactory _http;
+        private readonly IQuoteService _qs;
 
-        public QuoteCommands(DbService db, IHttpClientFactory http)
+        public QuoteCommands(DbService db, IQuoteService qs, IHttpClientFactory http)
         {
             _db = db;
             _http = http;
+            _qs = qs;
         }
 
         [Cmd]
@@ -108,7 +109,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async Task QuoteShow(int id)
         {
-            Quote quote;
+            Quote? quote;
             await using (var uow = _db.GetDbContext())
             {
                 quote = uow.Quotes.GetById(id);
@@ -127,13 +128,13 @@ public partial class Utility
 
         private async Task ShowQuoteData(Quote data)
             => await ctx.Channel.EmbedAsync(_eb.Create(ctx)
-                                               .WithOkColor()
-                                               .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
-                                               .AddField(GetText(strs.trigger), data.Keyword)
-                                               .AddField(GetText(strs.response),
-                                                   Format.Sanitize(data.Text).Replace("](", "]\\("))
-                                               .WithFooter(
-                                                   GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})"))));
+                .WithOkColor()
+                .WithTitle(GetText(strs.quote_id($"#{data.Id}")))
+                .AddField(GetText(strs.trigger), data.Keyword)
+                .AddField(GetText(strs.response),
+                    Format.Sanitize(data.Text).Replace("](", "]\\("))
+                .WithFooter(
+                    GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})"))));
 
         private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
         {
@@ -258,6 +259,28 @@ public partial class Utility
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
+        public Task QuoteDeleteAuthor(IUser user)
+            => QuoteDeleteAuthor(user.Id);
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public async Task QuoteDeleteAuthor(ulong userId)
+        {
+            var hasManageMessages = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
+
+            if (userId == ctx.User.Id || hasManageMessages)
+            {
+                var deleted = await _qs.DeleteAllAuthorQuotesAsync(ctx.Guild.Id, ctx.User.Id);
+                await ReplyConfirmLocalizedAsync(strs.quotes_deleted_count(deleted));
+            }
+            else
+            {
+                await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+            }
+        }
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task DelAllQuotes([Leftover] string keyword)
         {
@@ -288,7 +311,7 @@ public partial class Utility
             }
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
-                                  .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
+                .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
 
             var text = PREPEND_EXPORT + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
 
@@ -300,10 +323,10 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Ratelimit(300)]
-#if GLOBAL_WIZBOT
+#if GLOBAL_NADEKO
             [OwnerOnly]
 #endif
-        public async Task QuotesImport([Leftover] string input = null)
+        public async Task QuotesImport([Leftover] string? input = null)
         {
             input = input?.Trim();
 
@@ -357,14 +380,14 @@ public partial class Utility
             {
                 var keyword = entry.Key;
                 await uow.Quotes.AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
-                                                    .Select(quote => new Quote
-                                                    {
-                                                        GuildId = guildId,
-                                                        Keyword = keyword,
-                                                        Text = quote.Txt,
-                                                        AuthorId = quote.Aid,
-                                                        AuthorName = quote.An
-                                                    }));
+                    .Select(quote => new Quote
+                    {
+                        GuildId = guildId,
+                        Keyword = keyword,
+                        Text = quote.Txt,
+                        AuthorId = quote.Aid,
+                        AuthorName = quote.An
+                    }));
             }
 
             await uow.SaveChangesAsync();

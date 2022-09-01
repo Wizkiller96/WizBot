@@ -597,6 +597,7 @@
   "presence": "Presence",
   "presence_txt": "{0} Servers\n{1} Text Channels\n{2} Voice Channels",
   "quotes_deleted": "Deleted all quotes with {0} keyword.",
+  "quotes_deleted_count": "Deleted {0} quotes.",
   "quotes_page": "Page {0} of quotes",
   "quotes_page_none": "No quotes found on that page.",
   "quotes_remove_none": "No quotes found which you can remove.",
