@@ -159,14 +159,27 @@ public class RemindService : INService, IReadyExecutor
             if (ch is null)
                 return;
 
-            await ch.EmbedAsync(_eb.Create()
-                                   .WithOkColor()
-                                   .WithTitle("Reminder")
-                                   .AddField("Created At",
-                                       r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                                   .AddField("By",
-                                       (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
-                r.Message);
+            var st = SmartText.CreateFrom(r.Message);
+
+            if (st is SmartEmbedText set)
+            {
+                await ch.SendMessageAsync(null, embed: set.GetEmbed().Build());
+            }
+            else if (st is SmartEmbedTextArray seta)
+            {
+                await ch.SendMessageAsync(null, embeds: seta.GetEmbedBuilders().Map(x => x.Build()));
+            }
+            else
+            {
+                await ch.EmbedAsync(_eb.Create()
+                                       .WithOkColor()
+                                       .WithTitle("Reminder")
+                                       .AddField("Created At",
+                                           r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
+                                       .AddField("By",
+                                           (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
+                    r.Message);
+            }
         }
         catch (Exception ex)
         {
