@@ -14,7 +14,7 @@ public sealed class QuoteService : IQuoteService, INService
     {
         _db = db;
     }
-        
+    
     /// <summary>
     /// Delete all quotes created by the author in a guild
     /// </summary>

@@ -197,7 +197,11 @@ iamnot:
   args:
     - "Gamer"
 expradd:
-  desc: "Add an expression with a trigger and a response. Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <https://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
+  desc: "Add an expression with a trigger and a response. Bot will post a response whenever someone types the trigger word.  Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <https://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
+  args:
+    - "\"hello\" Hi there %user.mention%"
+expraddserver:
+  desc: "Add an expression with a trigger and a response in this server. Bot will post a response whenever someone types the trigger word. Guide here: <https://nadekobot.readthedocs.io/en/latest/custom-reactions/>"
   args:
     - "\"hello\" Hi there %user.mention%"
 exprlist:
