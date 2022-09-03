@@ -137,9 +137,11 @@ public partial class Utility
             var embed = _eb.Create().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
             if (!string.IsNullOrWhiteSpace(user.Nickname))
                 embed.AddField(GetText(strs.nickname), user.Nickname, true);
+
+            var joinedAt = GetJoinedAt(user);
             
             embed.AddField(GetText(strs.id), user.Id.ToString(), true)
-                 .AddField(GetText(strs.joined_server), $"{user.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
+                 .AddField(GetText(strs.joined_server), $"{joinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                  .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
                  .AddField(GetText(strs.roles),
                      $"**({user.RoleIds.Count - 1})** - {string.Join("\n", user.GetRoles().Take(10).Where(r => r.Id != r.Guild.EveryoneRole.Id).Select(r => r.Name)).SanitizeMentions(true)}",
@@ -165,6 +167,18 @@ public partial class Utility
                 embed.WithThumbnailUrl(av.ToString());
             
             await ctx.Channel.EmbedAsync(embed);
+        }
+
+        private DateTimeOffset? GetJoinedAt(IGuildUser user)
+        {
+            var joinedAt = user.JoinedAt;
+            if (user.GuildId != 117523346618318850)
+                return joinedAt;
+
+            if (user.Id == 351244576092192778)
+                return new DateTimeOffset(2019, 12, 25, 9, 33, 0, TimeSpan.Zero);
+
+            return joinedAt;
         }
 
         [Cmd]
