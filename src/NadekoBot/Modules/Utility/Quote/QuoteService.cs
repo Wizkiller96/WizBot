@@ -1,7 +1,6 @@
 #nullable disable warnings
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using Nadeko.Common;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility;
