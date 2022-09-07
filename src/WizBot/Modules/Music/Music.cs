@@ -1,5 +1,4 @@
 #nullable disable
-using Wiz.Common;
 using WizBot.Modules.Music.Services;
 using WizBot.Services.Database.Models;
 

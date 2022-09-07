@@ -1,7 +1,6 @@
 ﻿#nullable disable warnings
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using Wiz.Common;
 using WizBot.Services.Database.Models;
 
 namespace WizBot.Modules.Utility;
