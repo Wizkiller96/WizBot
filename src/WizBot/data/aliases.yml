@@ -37,7 +37,7 @@ boost:
 boostmsg:
   - boostmsg
 boostdel:
-  - boostdel
+  - boostde
 logserver:
   - logserver
 logignore:
@@ -1287,6 +1287,11 @@ expradd:
   - exadd
   - exa
   - acr
+expraddserver:
+  - expradds
+  - exadds
+  - exas
+  - expraddserver
 exprlist:
   - exprlist
   - exl

@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 # Most commands, when executed, have a small colored line
 # next to the response. The color depends whether the command
 # is completed, errored or in progress (pending)
@@ -18,6 +18,8 @@ defaultLocale: en-US
 # Style in which executed commands will show up in the console.
 # Allowed values: Simple, Normal, None
 consoleOutputType: Normal
+# Whether the bot will check for new releases every hour
+checkForUpdates: false
 # Do you want any messages sent by users in Bot's DM to be forwarded to the owner(s)?
 forwardMessages: false
 # Do you want the message to be forwarded only to the first owner specified in the list of owners (in creds.yml),

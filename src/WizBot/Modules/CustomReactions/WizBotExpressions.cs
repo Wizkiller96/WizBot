@@ -1,7 +1,5 @@
 ﻿#nullable disable
 
-using Wiz.Common;
-
 namespace WizBot.Modules.WizBotExpressions;
 
 [Name("Expressions")]
@@ -25,15 +23,10 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
         => (ctx.Guild is null && _creds.IsOwner(ctx.User))
            || (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
-    [Cmd]
-    public async Task ExprAdd(string key, [Leftover] string message)
+    private async Task ExprAddInternalAsync(string key, string message)
     {
         if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
-            return;
-
-        if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
             return;
         }
 
@@ -49,11 +42,42 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
     }
 
     [Cmd]
+    [UserPerm(GuildPerm.Administrator)]
+    public async Task ExprAddServer(string key, [Leftover] string message)
+    {
+        if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
+        {
+            return;
+        }
+
+        await ExprAddInternalAsync(key, message);
+    }
+
+    [Cmd]
+    public async Task ExprAdd(string key, [Leftover] string message)
+    {
+        if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
+        {
+            return;
+        }
+
+        if (!AdminInGuildOrOwnerInDm())
+        {
+            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            return;
+        }
+
+        await ExprAddInternalAsync(key, message);
+    }
+
+    [Cmd]
     public async Task ExprEdit(kwum id, [Leftover] string message)
     {
         var channel = ctx.Channel as ITextChannel;
         if (string.IsNullOrWhiteSpace(message) || id < 0)
+        {
             return;
+        }
 
         if ((channel is null && !_creds.IsOwner(ctx.User))
             || (channel is not null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
@@ -74,7 +98,9 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
                                                 message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
         }
         else
+        {
             await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+        }
     }
 
     [Cmd]
@@ -82,7 +108,9 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
     public async Task ExprList(int page = 1)
     {
         if (--page < 0 || page > 999)
+        {
             return;
+        }
 
         var expressions = _service.GetExpressionsFor(ctx.Guild?.Id);
 
@@ -153,7 +181,9 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
                                             .AddField(GetText(strs.response), ex.Response.TrimTo(1024)));
         }
         else
+        {
             await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+        }
     }
 
     [Cmd]
@@ -192,7 +222,9 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
                 succ.Add(emojiStr);
 
                 if (succ.Count >= 3)
+                {
                     break;
+                }
             }
             catch { }
         }
