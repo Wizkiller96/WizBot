@@ -2,7 +2,24 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.6] - 08.09.2022
+
+### Added
+
+- Added `.expraddserver` (.exas) which will server as a server-only alternative to '.exa' in case users want to override default Admin permissions with .dpo
+- Added .banprune command which sets how many days worth of messages will be pruned when bot (soft)bans a person either through a command or another punishment feature.
+- Added .qdelauth - Delete all quotes by the specified author on this server. If you target yourself - no permission required
+- Added `.timeout` command
+- Added an option to award currency based on received xp
+
+### Changed
+
+- Reminders now have embed support, but plaintext field is not supported.
+- User friendlier errors when parsing a number in a command fails
+
+### Fixed
+
+- Awarded xp is now correctly used in level up calculations
 
 ## [4.3.5] - 17.08.2022
 
@@ -18,7 +35,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Changed
 
 - Running a .timely command early now shows a pending color
-- .xp system is once again no longer opt in for servers 
+- .xp system is once again no longer opt in for servers
   - It's still opt-in for global and requires users to run .xp at least once in order to start gaining global xp
 
 ### Fixed
@@ -42,7 +59,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Changed
 
 - Updated position of Username and Club name on the .xp card
-- Improved text visibility on the .xp card 
+- Improved text visibility on the .xp card
 
 ### Fixed
 
@@ -115,7 +132,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - [dev] No longer using generator and partial methods for commands
 
 ### Fixed
- 
+
 - `.slot` will now show correct multipliers if they've been modified
 - Fix patron errors showing up even with permissions disabling the command
 - Fixed an issue with voice xp breaking xp gain.
@@ -170,14 +187,14 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Fixed
 
-- Fixed `.draw` command 
+- Fixed `.draw` command
 
 ## [4.2.10] - 29.06.2022
 
 - Fixed currency generation working only once
 
 ## [4.2.9] - 25.06.2022
-  
+
 ### Fixed
 
 - Fixed `creds_example.yml` misssing from output directory
@@ -337,7 +354,7 @@ Added `.patron` and `.patronmessage` commands
   - `ytdataapi` will use the official google api (requires `GoogleApiKey` specified in `creds.yml`) and YoutubeDataApi enabled in the dev console
   - `ytdl` will use `youtube-dl` program from the host machine. It must be downloaded and it's location must be added to path env variable.
   - `ytdlp` will use `yt-dlp` program from the host machine. Same as `youtube-dl` - must be in path env variable.
-  - `invidious` will use one of invidious instances specified in the `invidiousInstances` property. Very good. 
+  - `invidious` will use one of invidious instances specified in the `invidiousInstances` property. Very good.
 
 - `.google`, `.youtube` and `.image` moved to the new Search group
 
@@ -357,19 +374,19 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - `.feed` urls which error for more than 100 times will be automatically removed.
 - `.ve` is now enabled by default
 
-- [dev] nadeko interaction slightly improved to make it less nonsense (they still don't make sense)  
-- [dev] RewardedUsers table slightly changed to make it more general  
-- [dev] renamed `// todo`s which aren't planned soon to `// FUTURE`  
-- [dev] currency rewards have been reimplemented and moved to a separate service  
+- [dev] nadeko interaction slightly improved to make it less nonsense (they still don't make sense)
+- [dev] RewardedUsers table slightly changed to make it more general
+- [dev] renamed `// todo`s which aren't planned soon to `// FUTURE`
+- [dev] currency rewards have been reimplemented and moved to a separate service
 
 ### Fixed
- 
+
 - `.rh` no longer needs quotes for multi word roles
 - `.deletexp` will now properly delete server xp too
 - Fixed `.crypto` sparklines
 - [dev] added support for configs to properly parse enums without case sensitivity (ConfigParsers.InsensitiveEnum)
-- [dev] Fixed a bug in .gencmdlist  
-- [dev] small fixes to creds provider  
+- [dev] Fixed a bug in .gencmdlist
+- [dev] small fixes to creds provider
 
 ### Removed
 
@@ -402,7 +419,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ## [4.1.3] - 06.05.2022
 
-### Added 
+### Added
 
 - Added support for embed arrays in commands such as .say, .greet, .bye, etc...
   - Website to create them is live at eb.nadeko.bot (old one is moved to oldeb.nadeko.bot)
@@ -415,18 +432,18 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - Users can deposit, withdraw and check the balance of their currency in the bank.
   - Users can't check other user's bank balances.
 - Added a button on a .$ command which, when clicked, sends you a message with your bank balance that only you can see.
-- Added `.h <command group>`  
+- Added `.h <command group>`
   - Using this command will list all commands in the specified group
   - Atm only .bank is a proper group (`.h bank`)
 - Added "Bank Accounts" entry to `.economy`
 
 ### Changed
 
-- Reaction roles rewritten completely 
-  - Supports multiple exclusivity groups per message 
+- Reaction roles rewritten completely
+  - Supports multiple exclusivity groups per message
   - Supports level requirements
   - However they can only be added one by one
-  - Use the following commands for more information 
+  - Use the following commands for more information
     - `.h .reroa`
     - `.h .reroli`
     - `.h .rerot`
@@ -457,7 +474,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - To change the db nadeko will use, simply change the `db type` in `creds.yml`
   - There is no migration code right now, which means that if you want to switch to another system you'll either have to manually export/import your database or start fresh
 - Medusa system
-  - A massive new feature which allows developers to create custom modules/plugins/cogs 
+  - A massive new feature which allows developers to create custom modules/plugins/cogs
   - They can be load/unloaded/updated at runtime without restarting the bot
 
 ### Changed
@@ -493,7 +510,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 ### Fixed
 
 - Fixed the `id` which shows up when you add a new Expression
-- Fixed some strings which were still referring to "CustomReaction(s)" instead of "Expression(s)" 
+- Fixed some strings which were still referring to "CustomReaction(s)" instead of "Expression(s)"
 
 ## [4.0.3] - 04.03.2022
 
@@ -519,20 +536,20 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 ### Added
 - Added `.deleteemptyservers` command
 - Added `.curtr <id>` which lets you see full information about one of your own transactions with the specified id
-- Added trovo.live support for stream notifications (`.stadd`) 
+- Added trovo.live support for stream notifications (`.stadd`)
 - Added unclaimed waifu decay functionality
   - Added 3 new settings to `data/gambling.yml` to control it:
     - waifu.decay.percent - How much % to subtract from unclaimed waifu
-    - waifu.decay.hourInterval - How often to decay the price 
+    - waifu.decay.hourInterval - How often to decay the price
     - waifu.decay.minPrice - Unclaimed waifus with price lower than the one specified here will not be affected by the decay
 - Added `currency.transactionsLifetime` to `data/gambling.yml` Any transaction older than the number of days specified will be automatically deleted
 - Added `.stock` command to check stock prices and charts
-- Re-added `.qap / .queueautoplay` 
+- Re-added `.qap / .queueautoplay`
 
 ### Changed
 - CustomReactions module (and customreactions db table) has been renamed to Expressions.
-  - This was done to remove confusion about how it relates to discord Reactions (it doesn't, it was created and named before discord reactions existed) 
-  - Expression command now start with ex/expr and end with the name of the action or setting. 
+  - This was done to remove confusion about how it relates to discord Reactions (it doesn't, it was created and named before discord reactions existed)
+  - Expression command now start with ex/expr and end with the name of the action or setting.
   - For example `.exd` (`.dcr`) is expression delete, `.exa` (`.acr`)
   - Permissions (`.lp`) be automatically updated with "ACTUALEXPRESSIONS", "EXPRESSIONS" instead of "ACTUALCUSTOMREACTIONS" and "CUSTOMREACTIONS"
   - Permissions for `.ecr` (now `.exe`), `.scr` (now `.exs`), `.dcr` (now `.exd`), `.acr` (now `.exa`), `.lcr` (now `.exl`) will be automatically updated
@@ -549,8 +566,8 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - [dev] Added Type, Extra, OtherId fields to the database
 - [dev] CommandStrings will now use methodname as the key, and **not** the command name (first entry in aliases.yml)
   - In other words aliases.yml and commands.en-US.yml will use the same keys (once again)
-- [dev] Reorganized module and submodule folders  
-- [dev] Permissionv2 db table renamed to Permissions 
+- [dev] Reorganized module and submodule folders
+- [dev] Permissionv2 db table renamed to Permissions
 - [dev] Moved FilterWordsChannelId to a separate table
 
 ### Fixed
@@ -565,9 +582,9 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - Fixed embed color when disabling `.antialt`
 
 ### Removed
-- Removed `.bce` - use `.config` or `.config bot` specifically for bot config  
-- Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%  
-- Removed some obsolete commands and strings  
+- Removed `.bce` - use `.config` or `.config bot` specifically for bot config
+- Removed obsolete placeholders: %users% %servers% %userfull% %username% %userdiscrim% %useravatar% %id% %uid% %chname% %cid% %sid% %members% %server_time% %shardid% %time% %mention%
+- Removed some obsolete commands and strings
 - Removed code which migrated 2.x to v3 credentials, settings, etc...
 
 ## [3.0.13] - 14.01.2022
@@ -606,7 +623,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - Looks much nicer
     - Bot will now reply to user messages with a translation if `del` is disabled
     - Bot will make an embed with original and translated text with user avatar and name if `del` is enabled
-  - If the bot is unable to delete messages while having `del` enabled, it will reset back to the no-del behavior for the current session  
+  - If the bot is unable to delete messages while having `del` enabled, it will reset back to the no-del behavior for the current session
 
 ### Fixed
 - `.crypto` now supports top 5000 coins
@@ -620,7 +637,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 ### Fixed
 - `.xprewsreset` now has correct permissions
 
-### Removed 
+### Removed
 - Removed slot.numbers from `images.yml` as they're no longer used
 
 ## [3.0.9] - 21.11.2021
@@ -630,7 +647,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ### Added
 - Added `.emojiadd` with 3 overloads
-  - `.ea :customEmoji:` which copies another server's emoji 
+  - `.ea :customEmoji:` which copies another server's emoji
   - `.ea newName :customEmoji:` which copies emoji under a different name
   - `.ea emojiName <imagelink.png>` which creates a new emoji from the specified image
 - Patreon Access and Refresh Tokens should now be automatically updated once a month as long as the user has provided the necessary credentials in creds.yml file:
@@ -644,7 +661,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ## [3.0.8] - 03.11.2021
 
-### Added 
+### Added
 - Created VotesApi project nad re-worked vote rewards handling
   - Updated votes entries in creds.yml with explanations on how to set up vote links
 
@@ -669,10 +686,10 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - They are called negative gifts
   - They show up at the end of the `.gifts` page and are marked with a broken heart
   - They have a separate multiplier (`waifu.multi.negative_gift_effect` default 0.5, changeable via `.config gambling` or `data/gambling.yml`)
-  - When gifted, the waifu's price will be reduced by the `price * multiplier` 
+  - When gifted, the waifu's price will be reduced by the `price * multiplier`
   - Negative gifts don't show up in `.waifuinfo` nor is the record of them kept in the database
 
-### Fixed 
+### Fixed
 - Fixed `%users%` and `%shard.usercount%` placeholders not showing correct values
 
 ## [3.0.6] - 27.09.2021
@@ -713,7 +730,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - Possible fix for `.repeat` bug
   - Slight adjustment for repeater logic
   - Timer should no longer increase on some repeaters
-  - Repeaters should no longer have periods when they're missing from the list  
+  - Repeaters should no longer have periods when they're missing from the list
 - Fixed several commands which used error color for success confirmation messages
 
 ## [3.0.3] - 15.09.2021
@@ -774,7 +791,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - Explanations on how to get the keys are added as the comments
 - Code cleanup
   - Command attributes cleaned up
-    - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed 
+    - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed
   - There are 2 projects: NadekoBot and NadekoBot.Coordinator
     - You can directly run NadekoBot as the regular bot with one shard
     - Run NadekoBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
@@ -795,7 +812,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ## [2.46.2] - 14.07.2021
 
-### Fixed 
+### Fixed
 
 - Fixed .save for local songs
 - Fixed .lq for local songs if the song names are too long
@@ -866,7 +883,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ### Added
 
-- Added `.crsexport` and `.crsimport` 
+- Added `.crsexport` and `.crsimport`
   - Allows for quick export/import of server or global custom reactions
   - Requires admin permissions for server crs, and owner for global crs
   - Explanation of the fields is in the comment at the top of the `.crsexport` .yml file
@@ -899,7 +916,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 ### Added
 
 - Re-added `%music.playing%` and `%music.queued%` (#290)
-- Added `%music.servers%` which shows how many servers have a song queued up to play  
+- Added `%music.servers%` which shows how many servers have a song queued up to play
 ℹ️ ^ Only available to `.ropl` / `.adpl` feature atm
 - `.autodc` re-added
 - `.qrp`, `.vol`, `.smch` `.autodc` will now persist
@@ -919,7 +936,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - Removing last song in the queue will no longer reset queue index
 - Having `.rpl` disabled will now correctly stop after the last song, closes #292
 
-### Removed 
+### Removed
 
 - `.sad` removed. It's more or less useless. Use `.qrp` and `.autodc` now for similar effect
 
@@ -934,7 +951,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 - Minor perf improvement for filter checks
 
-### Fixed 
+### Fixed
 
 - `.qs` result urls are now valid
 - Custom reactions with "`-`" as a response should once again disable that custom reaction completely
@@ -950,8 +967,8 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - Much faster starting and skipping once the songs are in the queue
 - Higher quality audio (no stuttering too!)
 - Local tracks will now have durations if you have ffprobe installed (comes with ffmpeg)
-- Bot supports joining a different vc without skipping the song if you use `.j` 
-  - ⚠️ **DO NOT DRAG THE BOT** to another vc, as it's not properly supported atm, and you will have to do `.play` after dragging it) 
+- Bot supports joining a different vc without skipping the song if you use `.j`
+  - ⚠️ **DO NOT DRAG THE BOT** to another vc, as it's not properly supported atm, and you will have to do `.play` after dragging it)
 - `.j` makes the bot join your voice channel
 - `.p` is now alias of play, pause is `.pause`
 - `.qs` should work without google api key now for most users as it is using a custom loader

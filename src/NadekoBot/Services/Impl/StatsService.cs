@@ -7,7 +7,7 @@ namespace NadekoBot.Services;
 
 public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
-    public const string BOT_VERSION = "4.3.5";
+    public const string BOT_VERSION = "4.3.6";
 
     public string Author
         => "Kwoth#2452";
@@ -139,7 +139,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
         textChannels = guilds.Sum(static g => g.Channels.Count(static cx => cx is ITextChannel));
         voiceChannels = guilds.Sum(static g => g.Channels.Count(static cx => cx is IVoiceChannel));
     }
-    
+
     public async Task OnReadyAsync()
     {
         InitializeChannelCount();
