@@ -160,15 +160,8 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
                                             found.Response.TrimTo(1000).Replace("](", "]\\(")));
     }
 
-    [Cmd]
-    public async Task ExprDelete(kwum id)
+    public async Task ExprDeleteInternalAsync(kwum id)
     {
-        if (!AdminInGuildOrOwnerInDm())
-        {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
-            return;
-        }
-
         var ex = await _service.DeleteAsync(ctx.Guild?.Id, id);
 
         if (ex is not null)
@@ -184,6 +177,24 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         {
             await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
         }
+    }
+
+    [Cmd]
+    [UserPerm(GuildPerm.Administrator)]
+    [RequireContext(ContextType.Guild)]
+    public async Task ExprDeleteServer(kwum id)
+        => await ExprDeleteInternalAsync(id);
+
+    [Cmd]
+    public async Task ExprDelete(kwum id)
+    {
+        if (!AdminInGuildOrOwnerInDm())
+        {
+            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            return;
+        }
+
+        await ExprDeleteInternalAsync(id);
     }
 
     [Cmd]
