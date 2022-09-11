@@ -77,7 +77,7 @@ byetest:
     - ""
     - "@SomeoneElse"
 boost:
-  desc: "Toggles anouncements on the current channel when someone boosts the server."
+  desc: "Toggles announcements on the current channel when someone boosts the server."
   args:
     - ""
 boostmsg:
@@ -966,7 +966,7 @@ convertlist:
   args:
     - ""
 wowjoke:
-  desc: "Get one of Kwoth's penultimate WoW jokes."
+  desc: "Get one of penultimate WoW jokes."
   args:
     - ""
 calculate:
@@ -1696,7 +1696,7 @@ banprune:
   args:
     - "3"
 wait:
-  desc: "Used only as a startup command. Waits a certain number of miliseconds before continuing the execution of the following startup commands."
+  desc: "Used only as a startup command. Waits a certain number of milliseconds before continuing the execution of the following startup commands."
   args:
     - "3000"
 warnexpire:
