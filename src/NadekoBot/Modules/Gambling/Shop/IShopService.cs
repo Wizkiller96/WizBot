@@ -38,4 +38,6 @@ public interface IShopService
     /// <param name="toIndex">Destination index of the entry</param>
     /// <returns>Whether swap was successful</returns>
     Task<bool> MoveEntryAsync(ulong guildId, int fromIndex, int toIndex);
+
+    Task<bool> SetItemRoleRequirementAsync(ulong guildId, int index, ulong? roleId);
 }

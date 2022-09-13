@@ -98,6 +98,23 @@ public partial class Gambling
                 return;
             }
 
+            if (entry.RoleRequirement is ulong reqRoleId)
+            {
+                var role = ctx.Guild.GetRole(reqRoleId);
+                if (role is null)
+                {
+                    await ReplyErrorLocalizedAsync(strs.shop_item_req_role_not_found);
+                    return;
+                }
+
+                var guser = (IGuildUser)ctx.User;
+                if (!guser.RoleIds.Contains(reqRoleId))
+                {
+                    await ReplyErrorLocalizedAsync(strs.shop_item_req_role_unfulfilled(Format.Bold(role.ToString())));
+                    return;
+                }
+            }
+
             if (entry.Type == ShopEntryType.Role)
             {
                 var guser = (IGuildUser)ctx.User;
@@ -412,6 +429,27 @@ public partial class Gambling
                 await ctx.ErrorAsync();
         }
 
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public async Task ShopReq(int itemIndex, [Leftover] IRole role = null)
+        {
+            if (--itemIndex < 0)
+                return;
+
+            var succ = await _service.SetItemRoleRequirementAsync(ctx.Guild.Id, itemIndex, role?.Id);
+            if (!succ)
+            {
+                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
+                return;
+            }
+
+            if (role is null)
+                await ReplyConfirmLocalizedAsync(strs.shop_item_role_no_req(itemIndex));
+            else
+                await ReplyConfirmLocalizedAsync(strs.shop_item_role_req(itemIndex + 1, role));
+        }
+
         public IEmbedBuilder EntryToEmbed(ShopEntry entry)
         {
             var embed = _eb.Create().WithOkColor();
@@ -443,11 +481,17 @@ public partial class Gambling
 
         public string EntryToString(ShopEntry entry)
         {
+            var prepend = string.Empty;
+            if (entry.RoleRequirement is not null)
+                prepend = Format.Italics(GetText(strs.shop_item_requires_role($"<@&{entry.RoleRequirement}>")))
+                          + Environment.NewLine;
+
             if (entry.Type == ShopEntryType.Role)
-                return GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")));
+                return prepend
+                       + GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")));
             if (entry.Type == ShopEntryType.List)
-                return GetText(strs.unique_items_left(entry.Items.Count)) + "\n" + entry.Name;
-            return "";
+                return prepend + GetText(strs.unique_items_left(entry.Items.Count)) + "\n" + entry.Name;
+            return prepend;
         }
     }
 }

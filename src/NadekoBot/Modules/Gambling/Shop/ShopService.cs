@@ -94,4 +94,20 @@ public class ShopService : IShopService, INService
         await uow.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> SetItemRoleRequirementAsync(ulong guildId, int index, ulong? roleId)
+    {
+        await using var uow = _db.GetDbContext();
+        var entries = GetEntriesInternal(uow, guildId);
+
+        if (index >= entries.Count)
+            return false;
+
+        var entry = entries[index];
+
+        entry.RoleRequirement = roleId;
+
+        await uow.SaveChangesAsync();
+        return true;
+    }
 }

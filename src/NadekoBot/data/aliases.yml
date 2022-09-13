@@ -1003,7 +1003,10 @@ shopswap:
 shopmove:
   - shopmove
 buy:
+  - shopbuy
   - buy
+shopreq:
+  - shopreq
 gamevoicechannel:
   - gamevoicechannel
   - gvc
