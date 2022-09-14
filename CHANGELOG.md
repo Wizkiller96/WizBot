@@ -2,11 +2,21 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.7]
 
 ### Added
 
 - Added `.exprdelserv` (.exds) to completement .exas. Deletes an expression on the current server and is susceptible to .dpo, unlike .exd
+- Added `.shopreq` which lets you set role requirement for specific shop items
+- Added `.shopbuy` alias to `.buy`
+
+### Fixed
+
+- Fixed `.convertlist` showing currencies twice (this may not apply to existing users and it may require you to manually remove all currencies from units.json)
+
+### Removed
+
+- Removed `Viewer` field from stream online notification as it is (almost?) always 0.
 
 ## [4.3.6] - 08.09.2022
 
