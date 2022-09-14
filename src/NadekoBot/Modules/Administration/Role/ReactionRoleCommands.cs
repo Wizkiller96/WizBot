@@ -67,42 +67,52 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task ReactionRolesList()
+        public async Task ReactionRolesList(int page = 1)
         {
+            if (--page < 0)
+                return;
+            
             var reros = await _rero.GetReactionRolesAsync(ctx.Guild.Id);
 
-            var embed = _eb.Create(ctx)
-                           .WithOkColor();
-
-            var content = string.Empty;
-            foreach (var g in reros.GroupBy(x => x.MessageId).OrderBy(x => x.Key))
+            await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
-                var messageId = g.Key;
-                content +=
-                    $"[{messageId}](https://discord.com/channels/{ctx.Guild.Id}/{g.First().ChannelId}/{g.Key})\n";
+                var embed = _eb.Create(ctx)
+                               .WithOkColor();
 
-                var groupGroups = g.GroupBy(x => x.Group);
-
-                foreach (var ggs in groupGroups)
+                var content = string.Empty;
+                foreach (var g in reros.OrderBy(x => x.Group)
+                                       .Skip(curPage * 10)
+                                       .GroupBy(x => x.MessageId)
+                                       .OrderBy(x => x.Key))
                 {
-                    content += $"`< {(g.Key == 0 ? ("Not Exclusive (Group 0)") : ($"Group {ggs.Key}"))} >`\n";
+                    var messageId = g.Key;
+                    content +=
+                        $"[{messageId}](https://discord.com/channels/{ctx.Guild.Id}/{g.First().ChannelId}/{g.Key})\n";
 
-                    foreach (var rero in ggs)
+                    var groupGroups = g.GroupBy(x => x.Group);
+
+                    foreach (var ggs in groupGroups)
                     {
-                        content += $"\t{rero.Emote} -> {(ctx.Guild.GetRole(rero.RoleId)?.Mention ?? "<missing role>")}";
-                        if (rero.LevelReq > 0)
-                            content += $" (lvl {rero.LevelReq}+)";
-                        content += '\n';
+                        content += $"`< {(g.Key == 0 ? ("Not Exclusive (Group 0)") : ($"Group {ggs.Key}"))} >`\n";
+
+                        foreach (var rero in ggs)
+                        {
+                            content +=
+                                $"\t{rero.Emote} -> {(ctx.Guild.GetRole(rero.RoleId)?.Mention ?? "<missing role>")}";
+                            if (rero.LevelReq > 0)
+                                content += $" (lvl {rero.LevelReq}+)";
+                            content += '\n';
+                        }
                     }
+
                 }
 
-            }
+                embed.WithDescription(string.IsNullOrWhiteSpace(content)
+                    ? "There are no reaction roles on this server"
+                    : content);
 
-            embed.WithDescription(string.IsNullOrWhiteSpace(content)
-                ? "There are no reaction roles on this server"
-                : content);
-
-            await ctx.Channel.EmbedAsync(embed);
+                return embed;
+            }, reros.Count, 10);
         }
 
         [Cmd]
