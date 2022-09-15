@@ -27,7 +27,7 @@ greetdel:
     - "0"
     - "30"
 greet:
-  desc: "Toggles anouncements on the current channel when someone joins the server."
+  desc: "Toggles announcements on the current channel when someone joins the server."
   args:
     - ""
 greetmsg:
@@ -40,7 +40,7 @@ greetmsg:
   args:
     - "Welcome, %user.mention%."
 bye:
-  desc: "Toggles anouncements on the current channel when someone leaves the server."
+  desc: "Toggles announcements on the current channel when someone leaves the server."
   args:
     - ""
 byemsg:
@@ -910,7 +910,7 @@ playlists:
   args:
     - "1"
 playlistshow:
-  desc: "Lists all songs in a playlist spepcified by its id. Paginated, 20 per page."
+  desc: "Lists all songs in a playlist specified by its id. Paginated, 20 per page."
   args:
     - "1"
 deleteplaylist:
@@ -996,7 +996,7 @@ pokemonability:
   args:
     - "overgrow"
 memelist:
-  desc: "Shows a list of template keys (and their repspective names) used for `{0}memegen`."
+  desc: "Shows a list of template keys (and their respective names) used for `{0}memegen`."
   args:
     - ""
 memegen:
@@ -1101,7 +1101,7 @@ wiki:
   args:
     - "query"
 color:
-  desc: "Shows you pictures of colors which correspond to the inputed hex values. Max 10."
+  desc: "Shows you pictures of colors which correspond to the inputted hex values. Max 10."
   args:
     - "00ff00"
     - "f00 0f0 00f"
