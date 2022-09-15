@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Added
+
+- Added `.exprdelserv` (.exds) to completement .exas. Deletes an expression on the current server and is susceptible to .dpo, unlike .exd
+
 ## [4.3.6] - 08.09.2022
 
 ### Added

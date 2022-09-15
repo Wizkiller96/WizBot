@@ -217,13 +217,17 @@ exprlist:
     - "1"
     - "all"
 exprshow:
-  desc: "Shows a expression's response on a given ID."
+  desc: "Shows an expression's response on a given ID."
   args:
     - "1"
 exprdelete:
-  desc: "Deletes a expression on a specific index. If ran in DM, it is bot owner only and deletes a global expression. If ran in a server, it requires Administration privileges and removes server expression."
+  desc: "Deletes an expression on a specific index. If ran in DM, it is bot owner only and deletes a global expression. If ran in a server, it requires Administration privileges and removes server expression."
   args:
     - "5"
+exprdeleteserver:
+  desc: "Deletes an expression on a specific index on this server."
+  args:
+    - "5c"
 exprclear:
   desc: "Deletes all expression on this server."
   args:

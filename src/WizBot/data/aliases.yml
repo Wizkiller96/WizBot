@@ -1309,6 +1309,10 @@ exprdelete:
   - exd
   - exdel
   - dcr
+exprdeleteserver:
+  - exprdelserv
+  - exds
+  - exdelserv
 exprclear:
   - exprclear
   - exc
