@@ -1743,6 +1743,11 @@ shopremove:
   desc: "Removes an item from the shop by its ID."
   args:
     - "1"
+shopreq:
+  desc: "Sets a role which will be required to buy the item on the specified index. Specify only index to remove the requirement."
+  args:
+    - "2 Gamers"
+    - "2"
 shopchangename:
   desc: "Change the name of a shop entry at the specified index. Only works for non-role items"
   args:

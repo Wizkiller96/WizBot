@@ -704,7 +704,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
-                    
+
                     b.Property<int?>("PruneDays")
                         .HasColumnType("integer")
                         .HasColumnName("prunedays");
@@ -2341,6 +2341,10 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<string>("RoleName")
                         .HasColumnType("text")
                         .HasColumnName("rolename");
+
+                    b.Property<decimal?>("RoleRequirement")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("rolerequirement");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer")
