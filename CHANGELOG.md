@@ -2,7 +2,24 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.6] - 08.09.2022
+
+### Added
+
+- Added `.expraddserver` (.exas) which will server as a server-only alternative to `.exa` in case users want to override default Admin permissions with `.dpo`
+- Added `.banprune` command which sets how many days worth of messages will be pruned when bot (soft)bans a person either through a command or another punishment feature.
+- Added `.qdelauth` - Delete all quotes by the specified author on this server. If you target yourself - no permission required
+- Added `.timeout` command
+- Added an option to award currency based on received xp
+
+### Changed
+
+- Reminders now have embed support, but plaintext field is not supported.
+- User friendlier errors when parsing a number in a command fails
+
+### Fixed
+
+- Awarded xp is now correctly used in level up calculations
 
 ## [4.3.5] - 17.08.2022
 
