@@ -1372,3 +1372,5 @@ patronmessage:
   - patronmsg
 eval:
   - eval
+autopublish:
+  - autopublish

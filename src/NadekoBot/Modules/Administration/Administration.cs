@@ -33,9 +33,13 @@ public partial class Administration : NadekoModule<AdministrationService>
     }
 
     private readonly SomethingOnlyChannelService _somethingOnly;
+    private readonly AutoPublishService _autoPubService;
 
-    public Administration(SomethingOnlyChannelService somethingOnly)
-        => _somethingOnly = somethingOnly;
+    public Administration(SomethingOnlyChannelService somethingOnly, AutoPublishService autoPubService)
+    {
+        _somethingOnly = somethingOnly;
+        _autoPubService = autoPubService;
+    }
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
@@ -375,5 +379,27 @@ public partial class Administration : NadekoModule<AdministrationService>
         
         await t.DeleteAsync();
         await ctx.OkAsync();
+    }
+
+    [Cmd]
+    [UserPerm(ChannelPerm.ManageMessages)]
+    public async Task AutoPublish()
+    {
+        if (ctx.Channel.GetChannelType() != ChannelType.News)
+        {
+            await ReplyErrorLocalizedAsync(strs.req_announcement_channel);
+            return;
+        }
+
+        var newState = await _autoPubService.ToggleAutoPublish(ctx.Guild.Id, ctx.Channel.Id);
+
+        if (newState)
+        {
+            await ReplyConfirmLocalizedAsync(strs.autopublish_enable);
+        }
+        else
+        {
+            await ReplyConfirmLocalizedAsync(strs.autopublish_disable);
+        }
     }
 }

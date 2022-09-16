@@ -22,6 +22,37 @@ namespace NadekoBot.Migrations.PostgreSql
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoPublishChannel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("dateadded");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_autopublishchannel");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_autopublishchannel_guildid");
+
+                    b.ToTable("autopublishchannel", (string)null);
+                });
+
             modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
                 {
                     b.Property<int>("Id")
