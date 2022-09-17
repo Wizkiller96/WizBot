@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using Nadeko.Common;
-
 namespace NadekoBot.Modules.Administration.Services;
 
 public class PruneService : INService
@@ -13,7 +11,7 @@ public class PruneService : INService
     public PruneService(ILogCommandService logService)
         => _logService = logService;
 
-    public async Task PruneWhere(ITextChannel channel, int amount, Func<IMessage, bool> predicate)
+    public async Task PruneWhere(ITextChannel channel, int amount, Func<IMessage, bool> predicate, ulong? after = null)
     {
         ArgumentNullException.ThrowIfNull(channel, nameof(channel));
 
@@ -28,7 +26,14 @@ public class PruneService : INService
             var now = DateTime.UtcNow;
             IMessage[] msgs;
             IMessage lastMessage = null;
-            msgs = (await channel.GetMessagesAsync(50).FlattenAsync()).Where(predicate).Take(amount).ToArray();
+            var dled = await channel.GetMessagesAsync(50).FlattenAsync();
+            
+            msgs = dled
+                .Where(predicate)
+                .Where(x => after is ulong a ? x.Id > a : true)
+                .Take(amount)
+                .ToArray();
+            
             while (amount > 0 && msgs.Any())
             {
                 lastMessage = msgs[^1];
@@ -62,10 +67,13 @@ public class PruneService : INService
                 amount -= 50;
                 if (amount > 0)
                 {
-                    msgs = (await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync())
-                           .Where(predicate)
-                           .Take(amount)
-                           .ToArray();
+                    dled = await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync();
+
+                    msgs = dled
+                        .Where(predicate)
+                        .Where(x => after is ulong a ? x.Id > a : true)
+                        .Take(amount)
+                        .ToArray();
                 }
             }
         }
