@@ -1372,6 +1372,8 @@ patronmessage:
   - patronmsg
 eval:
   - eval
+autopublish:
+  - autopublish
 # WizNet System
 feedback:
   - feedback

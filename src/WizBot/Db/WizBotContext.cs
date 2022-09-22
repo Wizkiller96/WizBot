@@ -462,6 +462,14 @@ public abstract class WizBotContext : DbContext
             });
 
         #endregion
+        
+        #region AutoPublish
+
+        modelBuilder.Entity<AutoPublishChannel>(apc => apc
+                                                       .HasIndex(x => x.GuildId)
+                                                       .IsUnique());
+
+        #endregion
     }
 
 #if DEBUG

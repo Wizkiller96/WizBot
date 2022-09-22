@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Added
+
+- Added `.autopublish` command which will automatically publish messages posted in the channel.
+
 ## [4.3.7] - 13.09.2022
 
 ### Added

@@ -2332,6 +2332,10 @@ threaddelete:
   desc: "Delete a thread with the specified name in this channel. Case insensitive."
   args:
     - "Q&A"
+autopublish:
+  desc: "Make the bot automatically publish all messages posted in the news channel this command was executed in."
+  args:
+    - ""
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   args:

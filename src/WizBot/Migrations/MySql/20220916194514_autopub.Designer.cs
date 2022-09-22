@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,9 +11,10 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    partial class MysqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220916194514_autopub")]
+    partial class autopub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,34 +22,34 @@ namespace WizBot.Migrations.Mysql
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("WizBot.Db.Models.AutoPublishChannel", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("int")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                b.Property<ulong>("ChannelId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("channelid");
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("datetime(6)")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
 
-                b.Property<ulong>("GuildId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("guildid");
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
 
-                b.HasKey("Id")
-                 .HasName("pk_autopublishchannel");
+                    b.HasKey("Id")
+                        .HasName("pk_autopublishchannel");
 
-                b.HasIndex("GuildId")
-                 .IsUnique()
-                 .HasDatabaseName("ix_autopublishchannel_guildid");
+                    b.HasIndex("GuildId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_autopublishchannel_guildid");
 
-                b.ToTable("autopublishchannel", (string)null);
-            });
-            
+                    b.ToTable("autopublishchannel", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
                 {
                     b.Property<int>("Id")
