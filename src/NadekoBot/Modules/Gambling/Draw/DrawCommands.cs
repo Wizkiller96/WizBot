@@ -145,6 +145,9 @@ public partial class Gambling
         
         public async Task BetDrawInternal(long amount, InputValueGuess? val, InputColorGuess? col)
         {
+            if (amount <= 0)
+                return;
+            
             var res = await _service.BetDrawAsync(ctx.User.Id,
                 amount,
                 (byte?)val,
