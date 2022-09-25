@@ -307,6 +307,27 @@ This method is similar to the one above, but requires one extra step, with the a
 
 If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84) (by using this link, you will get **$10 credit** and also support WizBot)
 
+To set up the VPS, please select the options below
+```
+These are the min requirements you must follow:
+
+OS: Any between Ubuntu, Fedora, and Debian
+
+Plan: Basic
+
+CPU options: regular with SSD
+1 GB / 1 CPU
+25 GB SSD Disk
+1000 GB transfer
+
+Note: You can select the cheapest option with 512 MB /1 CPU but this has been a hit or miss.
+
+Datacenter region: Choose one depending on where you are located.
+
+Authentication: Password or SSH 
+(Select SSH if you know what you are doing, otherwise choose password)
+```
+
 **Setting up WizBot**
 Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
 
