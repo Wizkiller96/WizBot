@@ -7,6 +7,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Added
 
 - Added `.autopublish` command which will automatically publish messages posted in the channel.
+- Added `--after <messageid>` option to prune which will make prune only delete messages after the specified message id.
+
+### Changed
+
+- prune `--after` and `--safe` are now proper command options, and will show in .h helps
 
 ## [4.3.7] - 13.09.2022
 
