@@ -78,7 +78,7 @@ public class CurrencyConfig
     [Comment(@"What is the name of the currency")]
     public string Name { get; set; } = "Nadeko Flower";
 
-    [Comment(@"For how long will the transactions be kept in the database (curtrs)
+    [Comment(@"For how long (in days) will the transactions be kept in the database (curtrs)
 Set 0 to disable cleanup (keep transactions forever)")]
     public int TransactionsLifetime { get; set; } = 0;
 }

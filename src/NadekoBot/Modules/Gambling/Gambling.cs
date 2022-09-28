@@ -249,7 +249,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         List<CurrencyTransaction> trs;
         await using (var uow = _db.GetDbContext())
         {
-            trs = uow.CurrencyTransactions.GetPageFor(userId, page);
+            trs = await uow.CurrencyTransactions.GetPageFor(userId, page);
         }
 
         var embed = _eb.Create()

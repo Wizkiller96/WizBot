@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database.Models;
 
@@ -6,12 +7,14 @@ namespace NadekoBot.Db;
 
 public static class CurrencyTransactionExtensions
 {
-    public static List<CurrencyTransaction> GetPageFor(this DbSet<CurrencyTransaction> set, ulong userId, int page)
-        => set.AsQueryable()
-              .AsNoTracking()
-              .Where(x => x.UserId == userId)
-              .OrderByDescending(x => x.DateAdded)
-              .Skip(15 * page)
-              .Take(15)
-              .ToList();
+    public static Task<List<CurrencyTransaction>> GetPageFor(
+        this DbSet<CurrencyTransaction> set,
+        ulong userId,
+        int page)
+        => set.ToLinqToDBTable()
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.DateAdded)
+            .Skip(15 * page)
+            .Take(15)
+            .ToListAsyncLinqToDB();
 }
