@@ -116,10 +116,6 @@ public sealed class Bot
                                           // cache
                                           .AddCache(_creds);
         
-        // admin
-#if GLOBAL_NADEKO
-        svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
-#endif
 
         svcs.AddHttpClient();
         svcs.AddHttpClient("memelist")
