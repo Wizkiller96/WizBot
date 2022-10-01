@@ -111,10 +111,7 @@ public sealed class Bot
                                           .AddMusic()
                                           // cache
                                           .AddCache(_creds);
-        // admin
-//#if GLOBAL_WIZBOT
-        //svcs.AddSingleton<ILogCommandService, DummyLogCommandService>();
-//#endif
+        
 
         svcs.AddHttpClient();
         svcs.AddHttpClient("memelist")
