@@ -4,7 +4,7 @@ namespace NadekoBot.Modules.Administration;
 
 public sealed class DummyLogCommandService : ILogCommandService
 #if GLOBAL_NADEKO
-, INservice
+, INService
 #endif
 {
     public void AddDeleteIgnore(ulong xId)
