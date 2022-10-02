@@ -4,6 +4,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+## [4.3.8] - 02.10.2022
+
 ### Added
 
 - Added `.autopublish` command which will automatically publish messages posted in the channel.
@@ -13,13 +15,15 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.prune` options `--after` and `--safe` are now proper command options, and will show in .h help
 - `.cmdcd` code mostly rewritten, slight QoL improvements.
+- Clarified `.remind` permission requirements in help text
+- `.cmdcds` looks a little better, and is paginated
 
 ### Fixed
 
 - Fixed trivia bugs
 - Fixed `.yun` not working with channels with underscore in the name
 
-## [4.3.7]
+## [4.3.7] - 14.09.2022
 
 ### Added
 
