@@ -1,4 +1,5 @@
 ﻿using System.Threading.Channels;
+using Exception = System.Exception;
 
 namespace NadekoBot.Modules.Games.Common.Trivia;
 
@@ -64,7 +65,6 @@ public sealed class TriviaGame
                 if (errorCount >= 5)
                 {
                     Log.Warning("Trivia errored 5 times and will quit");
-                    await OnEnded(this);
                     break;
                 }
 
@@ -80,7 +80,7 @@ public sealed class TriviaGame
 
                 var maybeQuestion = await _questionPool.GetQuestionAsync();
 
-                if (!(maybeQuestion is TriviaQuestion question))
+                if (maybeQuestion is not { } question)
                 {
                     // if question is null (ran out of question, or other bugg ) - stop
                     break;
@@ -110,7 +110,8 @@ public sealed class TriviaGame
                 var guessed = false;
                 while (true)
                 {
-                    var readTask = _inputs.Reader.ReadAsync().AsTask();
+                    using var readCancel = new CancellationTokenSource();
+                    var readTask = _inputs.Reader.ReadAsync(readCancel.Token).AsTask();
 
                     // wait for either someone to attempt to guess
                     // or for timeout
@@ -119,6 +120,8 @@ public sealed class TriviaGame
                     // if the task which completed is the timeout task
                     if (task == halfGuessTimerTask)
                     {
+                        readCancel.Cancel();
+                        
                         // if hint is already sent, means time expired
                         // break (end the round)
                         if (hintSent)
@@ -130,7 +133,7 @@ public sealed class TriviaGame
                         halfGuessTimerTask = TimeOutFactory();
                         // send a hint out
                         await OnHint(this, question);
-
+                        
                         continue;
                     }
 
@@ -147,6 +150,7 @@ public sealed class TriviaGame
 
                         // reset inactivity counter
                         inactivity = 0;
+                        errorCount = 0;
 
                         var isWin = false;
                         // if user won the game, tell the game to stop
@@ -174,9 +178,9 @@ public sealed class TriviaGame
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-
+            Log.Error(ex, "Fatal error in trivia game: {ErrorMessage}", ex.Message);
         }
         finally
         {

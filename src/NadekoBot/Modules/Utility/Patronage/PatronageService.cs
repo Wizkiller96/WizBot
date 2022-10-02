@@ -286,8 +286,7 @@ public sealed class PatronageService
         }
     }
 
-    public async Task<bool> ExecPreCommandAsync(
-        ICommandContext ctx,
+    public async Task<bool> ExecPreCommandAsync(ICommandContext ctx,
         string moduleName,
         CommandInfo command)
     {

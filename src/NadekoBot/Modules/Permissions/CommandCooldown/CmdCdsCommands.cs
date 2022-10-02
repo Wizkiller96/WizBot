@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using Humanizer.Localisation;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Db;
@@ -12,12 +13,6 @@ public partial class Permissions
     [Group]
     public partial class CmdCdsCommands : NadekoModule
     {
-        private ConcurrentDictionary<ulong, ConcurrentHashSet<CommandCooldown>> CommandCooldowns
-            => _service.CommandCooldowns;
-
-        private ConcurrentDictionary<ulong, ConcurrentHashSet<ActiveCooldown>> ActiveCooldowns
-            => _service.ActiveCooldowns;
-
         private readonly DbService _db;
         private readonly CmdCdService _service;
 
@@ -40,12 +35,10 @@ public partial class Permissions
             await using (var uow = _db.GetDbContext())
             {
                 var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.CommandCooldowns));
-                var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
 
                 var toDelete = config.CommandCooldowns.FirstOrDefault(cc => cc.CommandName == name);
                 if (toDelete is not null)
                     uow.Set<CommandCooldown>().Remove(toDelete);
-                localSet.RemoveWhere(cc => cc.CommandName == name);
                 if (secs != 0)
                 {
                     var cc = new CommandCooldown
@@ -54,7 +47,7 @@ public partial class Permissions
                         Seconds = secs
                     };
                     config.CommandCooldowns.Add(cc);
-                    localSet.Add(cc);
+                    _service.AddCooldown(channel.Guild.Id, name, secs);
                 }
 
                 await uow.SaveChangesAsync();
@@ -62,8 +55,7 @@ public partial class Permissions
 
             if (secs == 0)
             {
-                var activeCds = ActiveCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<ActiveCooldown>());
-                activeCds.RemoveWhere(ac => ac.Command == name);
+                _service.ClearCooldowns(ctx.Guild.Id, cmdName);
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_cleared(Format.Bold(name)));
             }
             else
@@ -84,19 +76,29 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AllCmdCooldowns()
+        public async Task AllCmdCooldowns(int page = 1)
         {
+            if (--page < 0)
+                return;
+            
             var channel = (ITextChannel)ctx.Channel;
-            var localSet = CommandCooldowns.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<CommandCooldown>());
+            var localSet = _service.GetCommandCooldowns(ctx.Guild.Id);
 
             if (!localSet.Any())
                 await ReplyConfirmLocalizedAsync(strs.cmdcd_none);
             else
             {
-                await channel.SendTableAsync("",
-                    localSet.Select(c => c.CommandName + ": " + c.Seconds + GetText(strs.sec)),
-                    s => $"{s,-30}",
-                    2);
+                await ctx.SendPaginatedConfirmAsync(page, curPage =>
+                {
+                    var items = localSet.Skip(curPage * 15)
+                        .Take(15)
+                        .Select(x => $"{Format.Code(x.CommandName)}: {x.Seconds.Seconds().Humanize(maxUnit: TimeUnit.Second, culture: Culture)}");
+
+                    return _eb.Create(ctx)
+                        .WithOkColor()
+                        .WithDescription(items.Join("\n"));
+
+                }, localSet.Count, 15);
             }
         }
     }
