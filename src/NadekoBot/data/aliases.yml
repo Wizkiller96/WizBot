@@ -852,8 +852,8 @@ antispamignore:
   - antispamignore
 eventstart:
   - eventstart
-slotstats:
-  - slotstats
+betstats:
+  - betstats
 bettest:
   - bettest
 slot:

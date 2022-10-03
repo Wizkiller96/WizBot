@@ -4,12 +4,16 @@ using NadekoBot.Services.Currency;
 
 namespace NadekoBot.Services;
 
-public class CurrencyService : ICurrencyService, INService
+public sealed class CurrencyService : ICurrencyService, INService
 {
     private readonly DbService _db;
+    private readonly ITxTracker _txTracker;
 
-    public CurrencyService(DbService db)
-        => _db = db;
+    public CurrencyService(DbService db, ITxTracker txTracker)
+    {
+        _db = db;
+        _txTracker = txTracker;
+    }
 
     public Task<IWallet> GetWalletAsync(ulong userId, CurrencyType type = CurrencyType.Default)
     {
@@ -32,7 +36,7 @@ public class CurrencyService : ICurrencyService, INService
                 var wallet = await GetWalletAsync(userId);
                 await wallet.Add(amount, txData);
             }
-            
+
             return;
         }
 
@@ -49,13 +53,13 @@ public class CurrencyService : ICurrencyService, INService
         {
             await using var ctx = _db.GetDbContext();
             await ctx.DiscordUser
-                     .Where(x => userIds.Contains(x.UserId))
-                     .UpdateAsync(du => new()
-                     {
-                         CurrencyAmount = du.CurrencyAmount >= amount
-                             ? du.CurrencyAmount - amount
-                             : 0
-                     });
+                .Where(x => userIds.Contains(x.UserId))
+                .UpdateAsync(du => new()
+                {
+                    CurrencyAmount = du.CurrencyAmount >= amount
+                        ? du.CurrencyAmount - amount
+                        : 0
+                });
             await ctx.SaveChangesAsync();
             return;
         }
@@ -70,16 +74,14 @@ public class CurrencyService : ICurrencyService, INService
     {
         var wallet = await GetWalletAsync(userId);
         await wallet.Add(amount, txData);
+        await _txTracker.TrackAdd(amount, txData);
     }
 
     public async Task AddAsync(
         IUser user,
         long amount,
         TxData txData)
-    {
-        var wallet = await GetWalletAsync(user.Id);
-        await wallet.Add(amount, txData);
-    }
+        => await AddAsync(user.Id, amount, txData);
 
     public async Task<bool> RemoveAsync(
         ulong userId,
@@ -87,15 +89,14 @@ public class CurrencyService : ICurrencyService, INService
         TxData txData)
     {
         var wallet = await GetWalletAsync(userId);
-        return await wallet.Take(amount, txData);
+        var result = await wallet.Take(amount, txData);
+        await _txTracker.TrackRemove(amount, txData);
+        return result;
     }
 
     public async Task<bool> RemoveAsync(
         IUser user,
         long amount,
         TxData txData)
-    {
-        var wallet = await GetWalletAsync(user.Id);
-        return await wallet.Take(amount, txData);
-    }
+        => await RemoveAsync(user.Id, amount, txData);
 }

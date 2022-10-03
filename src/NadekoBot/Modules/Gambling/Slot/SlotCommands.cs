@@ -48,27 +48,6 @@ public partial class Gambling
             => Task.CompletedTask;
 
         [Cmd]
-        [OwnerOnly]
-        public async Task SlotStats()
-        {
-            //i remembered to not be a moron
-            var paid = totalPaidOut;
-            var bet = totalBet;
-
-            if (bet <= 0)
-                bet = 1;
-
-            var embed = _eb.Create()
-                           .WithOkColor()
-                           .WithTitle("Slot Stats")
-                           .AddField("Total Bet", N(bet), true)
-                           .AddField("Paid Out", N(paid), true)
-                           .WithFooter($"Payout Rate: {paid * 1.0M / bet * 100:f4}%");
-
-            await ctx.Channel.EmbedAsync(embed);
-        }
-
-        [Cmd]
         public async Task Slot(ShmartNumber amount)
         {
             if (!await CheckBetMandatory(amount))
