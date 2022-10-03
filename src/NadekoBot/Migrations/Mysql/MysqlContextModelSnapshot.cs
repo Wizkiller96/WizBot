@@ -1101,6 +1101,39 @@ namespace NadekoBot.Migrations.Mysql
                     b.ToTable("filterwordschannelid", (string)null);
                 });
 
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.GamblingStats", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Bet")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("bet");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("feature");
+
+                    b.Property<decimal>("PaidOut")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("paidout");
+
+                    b.HasKey("Id")
+                        .HasName("pk_gamblingstats");
+
+                    b.HasIndex("Feature")
+                        .IsUnique()
+                        .HasDatabaseName("ix_gamblingstats_feature");
+
+                    b.ToTable("gamblingstats", (string)null);
+                });
+
             modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
