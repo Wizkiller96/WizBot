@@ -4,6 +4,14 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## Unreleased
 
+### Added 
+
+- `.betstats` shows sum of all bets, payouts and the payout rate in %. Updates once an hour
+
+### Removed
+
+- `.slotstats` Superseeded by .betstats
+
 ## [4.3.8] - 02.10.2022
 
 ### Added
