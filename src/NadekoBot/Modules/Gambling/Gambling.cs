@@ -80,7 +80,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         foreach (var stat in stats)
         {
             var perc = (stat.PaidOut / stat.Bet).ToString("P2", Culture);
-            str += $"{stat.Feature, 8} | {stat.Bet, 15} | {stat.PaidOut, 15} | {perc}\n";
+            str += $"`{stat.Feature}` | {N(stat.Bet)} | {N(stat.PaidOut)} | {perc}\n";
         }
 
         eb.WithDescription(str);
