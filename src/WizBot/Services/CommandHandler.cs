@@ -2,8 +2,6 @@
 using WizBot.Common.Configs;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
-using System.Collections.Immutable;
-using Wiz.Common;
 using ExecuteResult = Discord.Commands.ExecuteResult;
 using PreconditionResult = Discord.Commands.PreconditionResult;
 
@@ -219,7 +217,7 @@ public class CommandHandler : INService, IReadyExecutor
             try
             {
 #if !GLOBAL_WIZBOT
-                // track how many messagges each user is sending
+                // track how many messages each user is sending
                 UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (_, old) => ++old);
 #endif
 
@@ -254,7 +252,7 @@ public class CommandHandler : INService, IReadyExecutor
         var prefix = GetPrefix(guild?.Id);
         var isPrefixCommand = messageContent.StartsWith(".prefix", StringComparison.InvariantCultureIgnoreCase);
         // execute the command and measure the time it took
-        if (messageContent.StartsWith(prefix, StringComparison.InvariantCulture) || isPrefixCommand)
+        if (isPrefixCommand || messageContent.StartsWith(prefix, StringComparison.InvariantCulture))
         {
             var context = new CommandContext(_client, usrMsg);
             var (success, error, info) = await ExecuteCommandAsync(context,
@@ -262,6 +260,7 @@ public class CommandHandler : INService, IReadyExecutor
                 isPrefixCommand ? 1 : prefix.Length,
                 _services,
                 MultiMatchHandling.Best);
+            
             startTime = Environment.TickCount - startTime;
 
             // if a command is found
@@ -348,11 +347,10 @@ public class CommandHandler : INService, IReadyExecutor
                 switch (multiMatchHandling)
                 {
                     case MultiMatchHandling.Best:
-                        argList = parseResult.ArgValues.Select(x => x.Values.OrderByDescending(y => y.Score).First())
-                                             .ToImmutableArray();
+                        argList = parseResult.ArgValues
+                                             .Map(x => x.Values.MaxBy(y => y.Score));
                         paramList = parseResult.ParamValues
-                                               .Select(x => x.Values.OrderByDescending(y => y.Score).First())
-                                               .ToImmutableArray();
+                                               .Map(x => x.Values.MaxBy(y => y.Score));
                         parseResult = ParseResult.FromSuccess(argList, paramList);
                         break;
                 }

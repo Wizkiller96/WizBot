@@ -11,7 +11,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Changed
 
-- prune `--after` and `--safe` are now proper command options, and will show in .h helps
+- `.prune` options `--after` and `--safe` are now proper command options, and will show in .h help
+- `.cmdcd` code mostly rewritten, slight QoL improvements.
+
+### Fixed
+
+- Fixed trivia bugs
+- Fixed `.yun` not working with channels with underscore in the name
 
 ## [4.3.7] - 13.09.2022
 

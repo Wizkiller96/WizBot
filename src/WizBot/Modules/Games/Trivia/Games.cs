@@ -112,25 +112,25 @@ public partial class Games
         
         private void RegisterEvents(TriviaGame trivia)
         {
-            trivia.OnQuestion += OnTriviaOnOnQuestion;
-            trivia.OnHint += OnTriviaOnOnHint;
-            trivia.OnGuess += OnTriviaOnOnGuess;
-            trivia.OnEnded += OnTriviaOnOnEnded;
-            trivia.OnStats += OnTriviaOnOnStats;
-            trivia.OnTimeout += OnTriviaOnOnTimeout;
+            trivia.OnQuestion += OnTriviaQuestion;
+            trivia.OnHint += OnTriviaHint;
+            trivia.OnGuess += OnTriviaGuess;
+            trivia.OnEnded += OnTriviaEnded;
+            trivia.OnStats += OnTriviaStats;
+            trivia.OnTimeout += OnTriviaTimeout;
         }
         
         private void UnregisterEvents(TriviaGame trivia)
         {
-            trivia.OnQuestion -= OnTriviaOnOnQuestion;
-            trivia.OnHint -= OnTriviaOnOnHint;
-            trivia.OnGuess -= OnTriviaOnOnGuess;
-            trivia.OnEnded -= OnTriviaOnOnEnded;
-            trivia.OnStats -= OnTriviaOnOnStats;
-            trivia.OnTimeout -= OnTriviaOnOnTimeout;
+            trivia.OnQuestion -= OnTriviaQuestion;
+            trivia.OnHint -= OnTriviaHint;
+            trivia.OnGuess -= OnTriviaGuess;
+            trivia.OnEnded -= OnTriviaEnded;
+            trivia.OnStats -= OnTriviaStats;
+            trivia.OnTimeout -= OnTriviaTimeout;
         }
 
-        private async Task OnTriviaOnOnHint(TriviaGame game, TriviaQuestion question)
+        private async Task OnTriviaHint(TriviaGame game, TriviaQuestion question)
         {
             try
             {
@@ -150,11 +150,11 @@ public partial class Games
             }
             catch (Exception ex)
             {
-                Log.Warning(ex, "Error editing triva message");
+                Log.Warning(ex, "Error editing trivia message");
             }
         }
 
-        private async Task OnTriviaOnOnQuestion(TriviaGame game, TriviaQuestion question)
+        private async Task OnTriviaQuestion(TriviaGame game, TriviaQuestion question)
         {
             try
             {
@@ -173,19 +173,16 @@ public partial class Games
 
                 questionMessage = await ctx.Channel.EmbedAsync(questionEmbed);
             }
-            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden or HttpStatusCode.BadRequest)
+            catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden
+                                               or HttpStatusCode.BadRequest)
             {
                 Log.Warning("Unable to send trivia questions. Stopping immediately");
                 game.Stop();
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Error sending trivia embed");
-                await Task.Delay(2000);
+                throw;
             }
         }
 
-        private async Task OnTriviaOnOnTimeout(TriviaGame _, TriviaQuestion question)
+        private async Task OnTriviaTimeout(TriviaGame _, TriviaQuestion question)
         {
             try
             {
@@ -205,7 +202,7 @@ public partial class Games
             }
         }
 
-        private async Task OnTriviaOnOnStats(TriviaGame game)
+        private async Task OnTriviaStats(TriviaGame game)
         {
             try
             {
@@ -217,7 +214,7 @@ public partial class Games
             }
         }
 
-        private async Task OnTriviaOnOnEnded(TriviaGame game)
+        private async Task OnTriviaEnded(TriviaGame game)
         {
             try
             {
@@ -237,10 +234,9 @@ public partial class Games
             }
 
             UnregisterEvents(game);
-            await Task.Delay(1000);
         }
 
-        private async Task OnTriviaOnOnGuess(TriviaGame _, TriviaUser user, TriviaQuestion question, bool isWin)
+        private async Task OnTriviaGuess(TriviaGame _, TriviaUser user, TriviaQuestion question, bool isWin)
         {
             try
             {
