@@ -2,7 +2,7 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.8] - 02.10.2022
 
 ### Added
 
@@ -13,13 +13,15 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.prune` options `--after` and `--safe` are now proper command options, and will show in .h help
 - `.cmdcd` code mostly rewritten, slight QoL improvements.
+- Clarified `.remind` permission requirements in help text
+- `.cmdcds` looks a little better, and is paginated
 
 ### Fixed
 
 - Fixed trivia bugs
 - Fixed `.yun` not working with channels with underscore in the name
 
-## [4.3.7] - 13.09.2022
+## [4.3.7] - 14.09.2022
 
 ### Added
 
