@@ -1156,6 +1156,41 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("filterwordschannelid", (string)null);
                 });
+            
+            modelBuilder.Entity("WizBot.Services.Database.Models.GamblingStats", b =>
+            {
+                b.Property<int>("Id")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("integer")
+                 .HasColumnName("id");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<decimal>("Bet")
+                 .HasColumnType("numeric")
+                 .HasColumnName("bet");
+
+                b.Property<DateTime?>("DateAdded")
+                 .HasColumnType("timestamp without time zone")
+                 .HasColumnName("dateadded");
+
+                b.Property<string>("Feature")
+                 .HasColumnType("text")
+                 .HasColumnName("feature");
+
+                b.Property<decimal>("PaidOut")
+                 .HasColumnType("numeric")
+                 .HasColumnName("paidout");
+
+                b.HasKey("Id")
+                 .HasName("pk_gamblingstats");
+
+                b.HasIndex("Feature")
+                 .IsUnique()
+                 .HasDatabaseName("ix_gamblingstats_feature");
+
+                b.ToTable("gamblingstats", (string)null);
+            });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.GCChannelId", b =>
                 {
