@@ -1458,8 +1458,8 @@ eventstart:
   args:
     - "reaction"
     - "reaction -d 1 -a 50 --pot-size 1500"
-slotstats:
-  desc: "Shows the total stats of the slot command for this bot's session."
+betstats:
+  desc: "Shows the total stats of several gambling features. Updates once an hour."
   args:
     - ""
 slottest:

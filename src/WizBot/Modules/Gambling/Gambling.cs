@@ -29,6 +29,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly IBankService _bank;
     private readonly IPatronageService _ps;
     private readonly RemindService _remind;
+    private readonly GamblingTxTracker _gamblingTxTracker;
 
     private IUserMessage rdMsg;
 
@@ -41,7 +42,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         GamblingConfigService configService,
         IBankService bank,
         IPatronageService ps,
-        RemindService remind)
+        RemindService remind,
+        GamblingTxTracker gamblingTxTracker)
         : base(configService)
     {
         _gs = gs;
@@ -51,6 +53,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _bank = bank;
         _ps = ps;
         _remind = remind;
+        _gamblingTxTracker = gamblingTxTracker;
 
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
@@ -63,6 +66,26 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var bal = await _cs.GetBalanceAsync(userId);
         return N(bal);
+    }
+    
+    [Cmd]
+    public async Task BetStats()
+    {
+        var stats = await _gamblingTxTracker.GetAllAsync();
+
+        var eb = _eb.Create(ctx)
+                    .WithOkColor();
+
+        var str = "**Feature |      Bet      |   Paid  Out   | Payout %** \n";
+        foreach (var stat in stats)
+        {
+            var perc = (stat.PaidOut / stat.Bet).ToString("P2", Culture);
+            str += $"{stat.Feature, 8} | {stat.Bet, 15} | {stat.PaidOut, 15} | {perc}\n";
+        }
+
+        eb.WithDescription(str);
+
+        await ctx.Channel.EmbedAsync(eb);
     }
 
     [Cmd]

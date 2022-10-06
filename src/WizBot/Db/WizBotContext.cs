@@ -470,6 +470,14 @@ public abstract class WizBotContext : DbContext
                                                        .IsUnique());
 
         #endregion
+        
+        #region GamblingStats
+
+        modelBuilder.Entity<GamblingStats>(gs => gs
+                                                 .HasIndex(x => x.Feature)
+                                                 .IsUnique());
+
+        #endregion
     }
 
 #if DEBUG
