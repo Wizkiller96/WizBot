@@ -25,13 +25,13 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
     public Task<bool> ExecPreCommandAsync(ICommandContext context, string moduleName, CommandInfo command)
         => TryBlock(context.Guild, context.User, command.Name.ToLowerInvariant());
 
-    public async Task<bool> TryBlock(IGuild guild, IUser user, string commandName)
+    public Task<bool> TryBlock(IGuild guild, IUser user, string commandName)
     {
         if (!_settings.TryGetValue(guild.Id, out var cooldownSettings))
-            return false;
+            return Task.FromResult(false);
 
         if (!cooldownSettings.TryGetValue(commandName, out var cdSeconds))
-            return false;
+            return Task.FromResult(false);
 
         var cooldowns = _activeCooldowns.GetOrAdd(
             (guild.Id, commandName),
@@ -40,7 +40,7 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
         // if user is not already on cooldown, add 
         if (cooldowns.TryAdd(user.Id, DateTime.UtcNow))
         {
-            return false;
+            return Task.FromResult(false);
         }
 
         // if there is an entry, maybe it expired. Try to check if it expired and don't fail if it did
@@ -51,11 +51,11 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
             if (diff.Seconds > cdSeconds)
             {
                 if (cooldowns.TryUpdate(user.Id, DateTime.UtcNow, oldValue))
-                    return false;
+                    return Task.FromResult(false);
             }
         }
 
-        return true;
+        return Task.FromResult(true);
     }
 
     public async Task OnReadyAsync()
