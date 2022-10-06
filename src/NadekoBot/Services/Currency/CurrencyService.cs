@@ -90,7 +90,8 @@ public sealed class CurrencyService : ICurrencyService, INService
     {
         var wallet = await GetWalletAsync(userId);
         var result = await wallet.Take(amount, txData);
-        await _txTracker.TrackRemove(amount, txData);
+        if(result) 
+            await _txTracker.TrackRemove(amount, txData);
         return result;
     }
 
