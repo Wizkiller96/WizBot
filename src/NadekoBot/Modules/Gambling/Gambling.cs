@@ -83,6 +83,16 @@ public partial class Gambling : GamblingModule<GamblingService>
             str += $"`{stat.Feature}` | {N(stat.Bet)} | {N(stat.PaidOut)} | {perc}\n";
         }
 
+        var bet = stats.Sum(x => x.Bet);
+        var paidOut = stats.Sum(x => x.PaidOut);
+
+        if (bet == 0)
+            bet = 1;
+
+        var tPerc = (paidOut / bet).ToString("P2", Culture);
+        str += "--------------------------------------------\n";
+        str += $"**TOTAL** | {N(bet)} | {N(paidOut)} | {tPerc}";
+
         eb.WithDescription(str);
 
         await ctx.Channel.EmbedAsync(eb);

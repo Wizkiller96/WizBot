@@ -1,10 +1,13 @@
 ﻿#nullable disable
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
+using NadekoBot.Db;
 
 namespace NadekoBot.Modules.Permissions.Services;
 
 public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
 {
+    private readonly DbService _db;
     private readonly ConcurrentDictionary<ulong, ConcurrentDictionary<string, int>> _settings = new();
 
     private readonly ConcurrentDictionary<(ulong, string), ConcurrentDictionary<ulong, DateTime>> _activeCooldowns =
@@ -12,11 +15,13 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
 
     public int Priority => 0;
 
-    public CmdCdService(Bot bot)
+    public CmdCdService(Bot bot, DbService db)
     {
+        _db = db;
         _settings = bot
             .AllGuildConfigs
             .ToDictionary(x => x.GuildId, x => x.CommandCooldowns
+                .DistinctBy(x => x.CommandName.ToLowerInvariant())
                 .ToDictionary(c => c.CommandName, c => c.Seconds)
                 .ToConcurrent())
             .ToConcurrent();
@@ -97,16 +102,34 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
             dict.TryRemove(cmdName, out _);
 
         _activeCooldowns.TryRemove((guildId, cmdName), out _);
+        
+        using var ctx = _db.GetDbContext();
+        var gc = ctx.GuildConfigsForId(guildId, x => x.Include(x => x.CommandCooldowns));
+        gc.CommandCooldowns.RemoveWhere(x => x.CommandName == cmdName);
+        ctx.SaveChanges();
     }
 
     public void AddCooldown(ulong guildId, string name, int secs)
     {
+        if (secs <= 0)
+            throw new ArgumentOutOfRangeException(nameof(secs));
+        
         var sett = _settings.GetOrAdd(guildId, static _ => new());
         sett[name] = secs;
 
         // force cleanup 
         if (_activeCooldowns.TryGetValue((guildId, name), out var dict))
             Cleanup(dict, secs);
+        
+        using var ctx = _db.GetDbContext();
+        var gc = ctx.GuildConfigsForId(guildId, x => x.Include(x => x.CommandCooldowns));
+        gc.CommandCooldowns.RemoveWhere(x => x.CommandName == name);
+        gc.CommandCooldowns.Add(new()
+        {
+            Seconds = secs,
+            CommandName = name
+        });
+        ctx.SaveChanges();
     }
 
     public IReadOnlyCollection<(string CommandName, int Seconds)> GetCommandCooldowns(ulong guildId)
