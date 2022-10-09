@@ -231,10 +231,16 @@ public partial class Xp
                 return;
             }
 
-            if (_service.ApplyToClub(ctx.User, club))
+            var result = _service.ApplyToClub(ctx.User, club);
+            if (result == ClubApplyResult.Success)
                 await ReplyConfirmLocalizedAsync(strs.club_applied(Format.Bold(club.ToString())));
-            else
-                await ReplyErrorLocalizedAsync(strs.club_apply_error);
+            else if (result == ClubApplyResult.Banned)
+                await ReplyErrorLocalizedAsync(strs.club_join_banned);
+            else if (result == ClubApplyResult.InsufficientLevel)
+                await ReplyErrorLocalizedAsync(strs.club_insuff_lvl);
+            else if (result == ClubApplyResult.AlreadyInAClub)
+                await ReplyErrorLocalizedAsync(strs.club_already_in);
+            
         }
 
         [Cmd]

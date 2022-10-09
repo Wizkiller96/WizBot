@@ -118,18 +118,22 @@ public class ClubService : INService, IClubService
         return club is not null;
     }
 
-    public bool ApplyToClub(IUser user, ClubInfo club)
+    public ClubApplyResult ApplyToClub(IUser user, ClubInfo club)
     {
         using var uow = _db.GetDbContext();
         var du = uow.GetOrCreateUser(user);
         uow.SaveChanges();
 
-        if (du.Club is not null
-            || club.Bans.Any(x => x.UserId == du.Id)
-            || club.Applicants.Any(x => x.UserId == du.Id))
-            //user banned or a member of a club, or already applied,
-            // or doesn't min minumum level requirement, can't apply
-            return false;
+        //user banned or a member of a club, or already applied,
+        // or doesn't min minumum level requirement, can't apply
+        if (du.Club is not null)
+            return ClubApplyResult.AlreadyInAClub;
+        
+        if (club.Bans.Any(x => x.UserId == du.Id))
+            return ClubApplyResult.Banned;
+        
+        if (club.Applicants.Any(x => x.UserId == du.Id))
+            return ClubApplyResult.InsufficientLevel;
 
         var app = new ClubApplicants
         {
@@ -138,9 +142,8 @@ public class ClubService : INService, IClubService
         };
 
         uow.Set<ClubApplicants>().Add(app);
-
         uow.SaveChanges();
-        return true;
+        return ClubApplyResult.Success;
     }
 
     public bool AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)

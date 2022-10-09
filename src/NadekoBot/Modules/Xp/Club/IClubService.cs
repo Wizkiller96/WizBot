@@ -10,7 +10,7 @@ public interface IClubService
     ClubInfo? GetClubByMember(IUser user);
     Task<bool> SetClubIconAsync(ulong ownerUserId, string? url);
     bool GetClubByName(string clubName, out ClubInfo club);
-    bool ApplyToClub(IUser user, ClubInfo club);
+    ClubApplyResult ApplyToClub(IUser user, ClubInfo club);
     bool AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser);
     ClubInfo? GetClubWithBansAndApplications(ulong ownerUserId);
     bool LeaveClub(IUser user);
@@ -20,4 +20,13 @@ public interface IClubService
     bool UnBan(ulong ownerUserId, string userName, out ClubInfo club);
     bool Kick(ulong kickerId, string userName, out ClubInfo club);
     List<ClubInfo> GetClubLeaderboardPage(int page);
+}
+
+public enum ClubApplyResult
+{
+    Success,
+
+    AlreadyInAClub,
+    Banned,
+    InsufficientLevel
 }
