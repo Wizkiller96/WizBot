@@ -138,7 +138,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _remind.AddReminderAsync(ctx.User.Id,
             ctx.User.Id,
-            ctx.Guild.Id,
+            ctx.Guild?.Id,
             true,
             when,
             GetText(strs.timely_time));
