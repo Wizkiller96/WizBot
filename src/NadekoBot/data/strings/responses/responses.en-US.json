@@ -879,7 +879,6 @@
   "start_event_fail": "Event failed to start. Another event is running, or there was an error starting the event.",
   "event_title": "{0} event started!",
   "poll_closed": "Poll Closed!",
-  "club_not_exists_owner": "You are not the owner or the admin of the club.",
   "club_admin_add": "{0} is now a club admin.",
   "club_admin_remove": "{0} is no longer club admin.",
   "club_admin_error": "Error. You are either not the owner of the club, or that user is not in your club.",

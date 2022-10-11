@@ -175,14 +175,16 @@ public partial class Xp
 
             var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
             if (club is null)
-                return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
+                return ReplyErrorLocalizedAsync(strs.club_admin_perms);
 
             var bans = club.Bans.Select(x => x.User).ToArray();
 
             return ctx.SendPaginatedConfirmAsync(page,
                 _ =>
                 {
-                    var toShow = string.Join("\n", bans.Skip(page * 10).Take(10).Select(x => x.ToString()));
+                    var toShow = string.Join("\n", bans
+                        .Skip(page * 10).Take(10)
+                        .Select(x => x.ToString()));
 
                     return _eb.Create()
                               .WithTitle(GetText(strs.club_bans_for(club.ToString())))
@@ -201,7 +203,7 @@ public partial class Xp
 
             var club = _service.GetClubWithBansAndApplications(ctx.User.Id);
             if (club is null)
-                return ReplyErrorLocalizedAsync(strs.club_not_exists_owner);
+                return ReplyErrorLocalizedAsync(strs.club_admin_perms);
 
             var apps = club.Applicants.Select(x => x.User).ToArray();
 
