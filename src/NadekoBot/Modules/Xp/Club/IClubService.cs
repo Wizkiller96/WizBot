@@ -16,8 +16,8 @@ public interface IClubService
     bool LeaveClub(IUser user);
     bool SetDescription(ulong userId, string? desc);
     bool Disband(ulong userId, out ClubInfo club);
-    bool Ban(ulong bannerId, string userName, out ClubInfo club);
-    bool UnBan(ulong ownerUserId, string userName, out ClubInfo club);
+    ClubBanResult Ban(ulong bannerId, string userName, out ClubInfo club);
+    ClubUnbanResult UnBan(ulong ownerUserId, string userName, out ClubInfo club);
     bool Kick(ulong kickerId, string userName, out ClubInfo club);
     List<ClubInfo> GetClubLeaderboardPage(int page);
 }

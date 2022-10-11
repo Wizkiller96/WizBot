@@ -294,13 +294,20 @@ public partial class Xp
         [Priority(0)]
         public Task ClubBan([Leftover] string userName)
         {
-            if (_service.Ban(ctx.User.Id, userName, out var club))
+            var result = _service.Ban(ctx.User.Id, userName, out var club);
+            if (result == ClubBanResult.Success)
             {
                 return ReplyConfirmLocalizedAsync(strs.club_user_banned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
             }
 
-            return ReplyErrorLocalizedAsync(strs.club_user_ban_fail);
+            if (result == ClubBanResult.Unbannable)
+                return ReplyErrorLocalizedAsync(strs.club_ban_fail_unbannable);
+
+            if (result == ClubBanResult.WrongUser)
+                return ReplyErrorLocalizedAsync(strs.club_ban_fail_user_not_found);
+
+            return ReplyErrorLocalizedAsync(strs.club_admin_perms);
         }
 
         [Cmd]
@@ -312,13 +319,20 @@ public partial class Xp
         [Priority(0)]
         public Task ClubUnBan([Leftover] string userName)
         {
-            if (_service.UnBan(ctx.User.Id, userName, out var club))
+            var result = _service.UnBan(ctx.User.Id, userName, out var club);
+            
+            if (result == ClubUnbanResult.Success)
             {
                 return ReplyConfirmLocalizedAsync(strs.club_user_unbanned(Format.Bold(userName),
                     Format.Bold(club.ToString())));
             }
 
-            return ReplyErrorLocalizedAsync(strs.club_user_unban_fail);
+            if (result == ClubUnbanResult.WrongUser)
+            {
+                return ReplyErrorLocalizedAsync(strs.club_unban_fail_user_not_found);
+            }
+
+            return ReplyErrorLocalizedAsync(strs.club_admin_perms);
         }
 
         [Cmd]
