@@ -69,7 +69,7 @@ public class FeedsService : INService
                 // reset the error counter
                 ClearErrors(url);
             }
-            
+
             return newValue;
         }
         catch (Exception ex)
@@ -207,7 +207,7 @@ public class FeedsService : INService
                   .ToList();
     }
 
-    public bool AddFeed(ulong guildId, ulong channelId, string rssFeed)
+    public FeedAddResult AddFeed(ulong guildId, ulong channelId, string rssFeed)
     {
         ArgumentNullException.ThrowIfNull(rssFeed, nameof(rssFeed));
 
@@ -221,9 +221,9 @@ public class FeedsService : INService
         var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs));
 
         if (gc.FeedSubs.Any(x => x.Url.ToLower() == fs.Url.ToLower()))
-            return false;
+            return FeedAddResult.Duplicate;
         if (gc.FeedSubs.Count >= 10)
-            return false;
+            return FeedAddResult.LimitReached;
 
         gc.FeedSubs.Add(fs);
         uow.SaveChanges();
@@ -242,7 +242,7 @@ public class FeedsService : INService
                 });
         }
 
-        return true;
+        return FeedAddResult.Success;
     }
 
     public bool RemoveFeed(ulong guildId, int index)
@@ -270,4 +270,12 @@ public class FeedsService : INService
 
         return true;
     }
+}
+
+public enum FeedAddResult
+{
+    Success,
+    LimitReached,
+    Invalid,
+    Duplicate,
 }
