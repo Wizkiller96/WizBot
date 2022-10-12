@@ -88,11 +88,11 @@ public partial class Help : NadekoModule<HelpService>
                     embed = embed.WithOkColor().WithDescription(GetText(strs.module_page_empty));
                     return embed;
                 }
-
+                
                 localModules.OrderBy(module => module.Name)
                             .ToList()
                             .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
-                                GetText(GetModuleLocStr(module.Name))
+                                GetModuleDescription(module.Name)
                                 + "\n"
                                 + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
                                 true));
@@ -104,6 +104,25 @@ public partial class Help : NadekoModule<HelpService>
             false);
     }
 
+    private string GetModuleDescription(string moduleName)
+    {
+        var key = GetModuleLocStr(moduleName);
+
+        if (key.Key == strs.module_description_missing.Key)
+        {
+            var desc = _medusae
+                .GetLoadedMedusae(Culture)
+                .FirstOrDefault(m => m.Sneks
+                    .Any(x => x.Name.Equals(moduleName, StringComparison.InvariantCultureIgnoreCase)))
+                ?.Description;
+
+            if (desc is not null)
+                return desc;
+        }
+
+        return GetText(key);
+    }
+    
     private LocStr GetModuleLocStr(string moduleName)
     {
         switch (moduleName.ToLowerInvariant())
