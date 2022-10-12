@@ -24,7 +24,7 @@ public static class StringExtensions
     {
         var spaces = length - str.Length;
         var padLeft = (spaces / 2) + str.Length;
-        return str.PadLeft(padLeft, '_').PadRight(length, '_');
+        return str.PadLeft(padLeft, ' ').PadRight(length, ' ');
     }
 
     public static T? MapJson<T>(this string str)
