@@ -142,7 +142,6 @@ public class ClubService : INService, IClubService
         };
 
         uow.Set<ClubApplicants>().Add(app);
-
         uow.SaveChanges();
         return ClubApplyResult.Success;
     }
@@ -217,23 +216,23 @@ public class ClubService : INService, IClubService
         return true;
     }
 
-    public bool Ban(ulong bannerId, string userName, out ClubInfo club)
+    public ClubBanResult Ban(ulong bannerId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
         club = uow.Clubs.GetByOwnerOrAdmin(bannerId);
         if (club is null)
-            return false;
+            return ClubBanResult.NotOwnerOrAdmin;
 
         var usr = club.Members.FirstOrDefault(x => x.ToString().ToUpperInvariant() == userName.ToUpperInvariant())
                   ?? club.Applicants
                          .FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant())
                          ?.User;
         if (usr is null)
-            return false;
+            return ClubBanResult.WrongUser;
 
         if (club.OwnerId == usr.Id
             || (usr.IsClubAdmin && club.Owner.UserId != bannerId)) // can't ban the owner kek, whew
-            return false;
+            return ClubBanResult.Unbannable;
 
         club.Bans.Add(new()
         {
@@ -248,24 +247,24 @@ public class ClubService : INService, IClubService
 
         uow.SaveChanges();
 
-        return true;
+        return ClubBanResult.Success;
     }
 
-    public bool UnBan(ulong ownerUserId, string userName, out ClubInfo club)
+    public ClubUnbanResult UnBan(ulong ownerUserId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
         club = uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
         if (club is null)
-            return false;
+            return ClubUnbanResult.NotOwnerOrAdmin;
 
         var ban = club.Bans.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
         if (ban is null)
-            return false;
+            return ClubUnbanResult.WrongUser;
 
         club.Bans.Remove(ban);
         uow.SaveChanges();
 
-        return true;
+        return ClubUnbanResult.Success;
     }
 
     public bool Kick(ulong kickerId, string userName, out ClubInfo club)
@@ -299,4 +298,20 @@ public class ClubService : INService, IClubService
         using var uow = _db.GetDbContext();
         return uow.Clubs.GetClubLeaderboardPage(page);
     }
+}
+
+public enum ClubUnbanResult
+{
+   Success,
+   NotOwnerOrAdmin,
+   WrongUser
+}
+
+public enum ClubBanResult
+{
+    Success,
+    NotOwnerOrAdmin,
+    WrongUser,
+    Unbannable,
+    
 }
