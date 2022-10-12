@@ -104,7 +104,7 @@ publish-medusa-package:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
   script:
     - LAST_TAG=$(git describe --tags --abbrev=0)
-    - if [ $CI_COMMIT_TAG ];then MEDUSA_VERSION="$CI_COMMIT_TAG"; else MEDUSA_VERSION="$LAST_TAG-$CI_COMMIT_SHA"; fi
+    - if [ $CI_COMMIT_TAG ];then MEDUSA_VERSION="$CI_COMMIT_TAG"; else MEDUSA_VERSION="$LAST_TAG-$CI_COMMIT_SHORT_SHA"; fi
     - cd src/Nadeko.Medusa/
     - dotnet pack -c Release /p:Version=$MEDUSA_VERSION -o bin/Release/packed
     - dotnet nuget push bin/Release/packed/ --source https://www.myget.org/F/nadeko/api/v2/package --api-key "$MYGET_API_KEY"

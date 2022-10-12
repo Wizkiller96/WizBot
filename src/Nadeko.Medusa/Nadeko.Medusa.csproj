@@ -17,4 +17,7 @@
       <PackageReference Include="YamlDotNet" Version="11.2.1" />
     </ItemGroup>
 
+    <PropertyGroup Condition=" '$(Version)' == '' ">
+        <Version>5.0.0</Version>
+    </PropertyGroup>
 </Project>
