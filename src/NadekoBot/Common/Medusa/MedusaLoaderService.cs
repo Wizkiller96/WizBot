@@ -186,7 +186,6 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             return MedusaLoadResult.AlreadyLoaded;
         
         var safeName = Uri.EscapeDataString(name);
-        name = name.ToLowerInvariant();
 
         await _lock.WaitAsync();
         try
@@ -525,7 +524,6 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private async Task<MedusaUnloadResult> InternalUnloadAsync(string name)
     {
-        name = name.ToLowerInvariant();
         if (!_resolved.Remove(name, out var lsi))
             return MedusaUnloadResult.NotLoaded;
 
