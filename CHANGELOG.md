@@ -2,15 +2,29 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.9] - 12.10.2022
 
 ### Added
 
 - `.betstats` shows sum of all bets, payouts and the payout rate in %. Updates once an hour
 
+### Changed
+
+- `.betstats` looks way better (except on Mac)
+- `.feedadd` errors clarified and separated in individual error messages for each issue.
+- `.clubban` and `.clubunban` errors clarified and separated in individual error messages for each issue.
+- `.clubapply` better error messages
+
+### Fixed
+
+- `.timely` 'Remind' button fixed in DMs
+- `.cmdcd` database bugs fixed
+- Fixed bugged mysql and postgresql migrations
+- Fixed issues with loading medusae due to strict versioning
+
 ### Removed
 
-- `.slotstats` Superseeded by .betstats
+- `.slotstats` Superseded by `.betstats`
 
 ## [4.3.8] - 02.10.2022
 
