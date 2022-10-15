@@ -2,7 +2,6 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Wiz.Common;
 using WizBot.Db;
 using WizBot.Db.Models;
 
@@ -19,6 +18,14 @@ public class ClubService : INService, IClubService
         _httpFactory = httpFactory;
     }
 
+    public enum CLubCreateResult
+    {
+        Success,
+        AlreadyInAClub,
+        NameTaken,
+        InsufficientLevel,
+    }
+    
     public async Task<bool?> CreateClubAsync(IUser user, string clubName)
     {
         //must be lvl 5 and must not be in a club already
@@ -48,6 +55,12 @@ public class ClubService : INService, IClubService
         return true;
     }
 
+    public enum ClubTransferError
+    {
+        NotOwner,
+        TargetNotMember
+    }
+    
     public ClubInfo TransferClub(IUser from, IUser newOwner)
     {
         using var uow = _db.GetDbContext();
@@ -64,6 +77,14 @@ public class ClubService : INService, IClubService
         return club;
     }
 
+    public enum ToggleAdminResult
+    {
+        AddedAdmin,
+        RemovedAdmin,
+        TargetNotMember,
+        CanTargetThyself,
+    }
+    
     public async Task<bool?> ToggleAdminAsync(IUser owner, IUser toAdmin)
     {
         await using var uow = _db.GetDbContext();
@@ -88,6 +109,14 @@ public class ClubService : INService, IClubService
         return member;
     }
 
+    public enum SetClubIconResult
+    {
+        Success,
+        InvalidFiletype,
+        TooLarge,
+        NotOwner,
+    }
+    
     public async Task<bool> SetClubIconAsync(ulong ownerUserId, string url)
     {
         if (url is not null)
@@ -146,6 +175,13 @@ public class ClubService : INService, IClubService
         return ClubApplyResult.Success;
     }
 
+    public enum ClubAcceptResult
+    {
+        Accepted,
+        NotOwnerOrAdmin,
+        NoSuchApplicant,
+    }
+    
     public bool AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)
     {
         discordUser = null;
@@ -269,6 +305,14 @@ public class ClubService : INService, IClubService
         return ClubUnbanResult.Success;
     }
 
+    public enum ClubKickResult
+    {
+        Success,
+        NotOwnerOrAdmin,
+        TargetNotAMember,
+        Hierarchy
+    }
+    
     public bool Kick(ulong kickerId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
