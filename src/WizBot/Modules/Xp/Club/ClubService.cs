@@ -178,17 +178,19 @@ public class ClubService : INService, IClubService
         return uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
     }
 
-    public bool LeaveClub(IUser user)
+    public ClubLeaveResult LeaveClub(IUser user)
     {
         using var uow = _db.GetDbContext();
         var du = uow.GetOrCreateUser(user, x => x.Include(u => u.Club));
-        if (du.Club is null || du.Club.OwnerId == du.Id)
-            return false;
+        if (du.Club is null)
+            return ClubLeaveResult.NotInAClub; 
+        if (du.Club.OwnerId == du.Id)
+            return ClubLeaveResult.OwnerCantLeave;
 
         du.Club = null;
         du.IsClubAdmin = false;
         uow.SaveChanges();
-        return true;
+        return ClubLeaveResult.Success;
     }
 
     public bool SetDescription(ulong userId, string desc)
@@ -298,20 +300,4 @@ public class ClubService : INService, IClubService
         using var uow = _db.GetDbContext();
         return uow.Clubs.GetClubLeaderboardPage(page);
     }
-}
-
-public enum ClubUnbanResult
-{
-   Success,
-   NotOwnerOrAdmin,
-   WrongUser
-}
-
-public enum ClubBanResult
-{
-    Success,
-    NotOwnerOrAdmin,
-    WrongUser,
-    Unbannable,
-    
 }
