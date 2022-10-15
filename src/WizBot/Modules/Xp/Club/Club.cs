@@ -74,6 +74,7 @@ public partial class Xp
             if (result == ClubCreateResult.InsufficientLevel)
             {
                 await ReplyErrorLocalizedAsync(strs.club_create_insuff_lvl);
+                return;
             }
 
             if (result == ClubCreateResult.AlreadyInAClub)
