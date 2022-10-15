@@ -17,11 +17,14 @@ public partial class Xp
         [Cmd]
         public async Task ClubTransfer([Leftover] IUser newOwner)
         {
-            var club = _service.TransferClub(ctx.User, newOwner);
+            var result = _service.TransferClub(ctx.User, newOwner);
 
-            if (club is null)
+            if (!result.TryPickT0(out var club, out var error))
             {
-                await ReplyErrorLocalizedAsync(strs.club_transfer_failed);
+                if(error == ClubTransferError.NotOwner)
+                    await ReplyErrorLocalizedAsync(strs.club_owner_only);
+                else 
+                    await ReplyErrorLocalizedAsync(strs.club_target_not_member);
             }
             else
             {
@@ -37,14 +40,18 @@ public partial class Xp
         [Cmd]
         public async Task ClubAdmin([Leftover] IUser toAdmin)
         {
-            var admin = await _service.ToggleAdminAsync(ctx.User, toAdmin);
+            var result = await _service.ToggleAdminAsync(ctx.User, toAdmin);
 
-            if (admin is null)
-                await ReplyErrorLocalizedAsync(strs.club_admin_error);
-            else if (admin is true)
+            if (result == ToggleAdminResult.AddedAdmin)
                 await ReplyConfirmLocalizedAsync(strs.club_admin_add(Format.Bold(toAdmin.ToString())));
-            else
+            else if (result == ToggleAdminResult.RemovedAdmin)
                 await ReplyConfirmLocalizedAsync(strs.club_admin_remove(Format.Bold(toAdmin.ToString())));
+            else if (result == ToggleAdminResult.NotOwner)
+                await ReplyErrorLocalizedAsync(strs.club_owner_only);
+            else if (result == ToggleAdminResult.CantTargetThyself)
+                await ReplyErrorLocalizedAsync(strs.club_admin_invalid_target);
+            else if (result == ToggleAdminResult.TargetNotMember)
+                await ReplyErrorLocalizedAsync(strs.club_target_not_member);
         }
 
         [Cmd]
@@ -56,17 +63,22 @@ public partial class Xp
                 return;
             }
 
-            var succ = await _service.CreateClubAsync(ctx.User, clubName);
+            var result = await _service.CreateClubAsync(ctx.User, clubName);
 
-            if (succ is null)
+            if (result == ClubCreateResult.NameTaken)
             {
                 await ReplyErrorLocalizedAsync(strs.club_create_error_name);
                 return;
             }
 
-            if (succ is false)
+            if (result == ClubCreateResult.InsufficientLevel)
             {
-                await ReplyErrorLocalizedAsync(strs.club_create_error);
+                await ReplyErrorLocalizedAsync(strs.club_create_insuff_lvl);
+            }
+
+            if (result == ClubCreateResult.AlreadyInAClub)
+            {
+                await ReplyErrorLocalizedAsync(strs.club_already_in);
                 return;
             }
 
@@ -76,14 +88,21 @@ public partial class Xp
         [Cmd]
         public async Task ClubIcon([Leftover] string url = null)
         {
-            if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url is not null)
-                || !await _service.SetClubIconAsync(ctx.User.Id, url))
+            if ((!Uri.IsWellFormedUriString(url, UriKind.Absolute) && url is not null))
             {
-                await ReplyErrorLocalizedAsync(strs.club_icon_error);
+                await ReplyErrorLocalizedAsync(strs.club_icon_url_format);
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.club_icon_set);
+            var result = await _service.SetClubIconAsync(ctx.User.Id, url);
+            if(result == SetClubIconResult.Success)
+                await ReplyConfirmLocalizedAsync(strs.club_icon_set);
+            else if (result == SetClubIconResult.NotOwner)
+                await ReplyErrorLocalizedAsync(strs.club_owner_only);
+            else if (result == SetClubIconResult.TooLarge)
+                await ReplyErrorLocalizedAsync(strs.club_icon_too_large);
+            else if (result == SetClubIconResult.InvalidFileType)
+                await ReplyErrorLocalizedAsync(strs.club_icon_invalid_filetype);
         }
 
         private async Task InternalClubInfoAsync(ClubInfo club)
@@ -254,14 +273,17 @@ public partial class Xp
         [Priority(0)]
         public async Task ClubAccept([Leftover] string userName)
         {
-            if (_service.AcceptApplication(ctx.User.Id, userName, out var discordUser))
+            var result = _service.AcceptApplication(ctx.User.Id, userName, out var discordUser);
+            if (result == ClubAcceptResult.Accepted)
                 await ReplyConfirmLocalizedAsync(strs.club_accepted(Format.Bold(discordUser.ToString())));
-            else
-                await ReplyErrorLocalizedAsync(strs.club_accept_error);
+            else if(result == ClubAcceptResult.NoSuchApplicant)
+                await ReplyErrorLocalizedAsync(strs.club_accept_invalid_applicant);
+            else if(result == ClubAcceptResult.NotOwnerOrAdmin)
+                await ReplyErrorLocalizedAsync(strs.club_admin_perms);
         }
 
         [Cmd]
-        public async Task Clubleave()
+        public async Task ClubLeave()
         {
             var res = _service.LeaveClub(ctx.User);
 
@@ -282,13 +304,20 @@ public partial class Xp
         [Priority(0)]
         public Task ClubKick([Leftover] string userName)
         {
-            if (_service.Kick(ctx.User.Id, userName, out var club))
+            var result = _service.Kick(ctx.User.Id, userName, out var club);
+            if(result == ClubKickResult.Success)
             {
                 return ReplyConfirmLocalizedAsync(strs.club_user_kick(Format.Bold(userName),
                     Format.Bold(club.ToString())));
             }
 
-            return ReplyErrorLocalizedAsync(strs.club_user_kick_fail);
+            if (result == ClubKickResult.Hierarchy)
+                return ReplyErrorLocalizedAsync(strs.club_kick_hierarchy);
+
+            if (result == ClubKickResult.NotOwnerOrAdmin)
+                return ReplyErrorLocalizedAsync(strs.club_admin_perms);
+            
+            return ReplyErrorLocalizedAsync(strs.club_target_not_member);
         }
 
         [Cmd]
