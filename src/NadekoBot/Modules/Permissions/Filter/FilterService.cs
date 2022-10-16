@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using AngleSharp.Dom;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -221,5 +222,21 @@ public sealed class FilterService : IExecOnMessage
         }
 
         return false;
+    }
+
+    public async Task<ServerFilterSettings> GetFilterSettings(ulong guildId)
+    {
+        await using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set
+            .Include(x => x.FilterInvitesChannelIds)
+            .Include(x => x.FilterLinksChannelIds));
+
+        return new()
+        {
+            FilterInvitesChannels = gc.FilterInvitesChannelIds.Map(x => x.ChannelId),
+            FilterLinksChannels = gc.FilterLinksChannelIds.Map(x => x.ChannelId),
+            FilterInvitesEnabled = gc.FilterInvites,
+            FilterLinksEnabled = gc.FilterLinks,
+        };
     }
 }

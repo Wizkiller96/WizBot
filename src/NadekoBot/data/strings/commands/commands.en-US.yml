@@ -236,6 +236,10 @@ fwclear:
   desc: "Deletes all filtered words on this server."
   args:
     - ""
+filterlist:
+  desc: "Lists invite and link filter channels and status."
+  args:
+    - ""
 aliasesclear:
   desc: "Deletes all aliases on this server."
   args:

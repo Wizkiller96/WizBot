@@ -27,6 +27,47 @@ public partial class Permissions
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
+        public async Task FilterList()
+        {
+            var embed = _eb.Create(ctx)
+                .WithOkColor()
+                .WithTitle("Server filter settings");
+
+            var config = await _service.GetFilterSettings(ctx.Guild.Id);
+
+            string GetEnabledEmoji(bool value)
+                => value ? "\\🟢" : "\\🔴";
+
+            async Task<string> GetChannelListAsync(IReadOnlyCollection<ulong> channels)
+            {
+                var toReturn = (await channels
+                        .Select(async cid =>
+                        {
+                            var ch = await ctx.Guild.GetChannelAsync(cid);
+                            return ch is null
+                                ? $"{cid} *missing*"
+                                : $"<#{cid}>";
+                        })
+                        .WhenAll())
+                    .Join('\n');
+
+                if (string.IsNullOrWhiteSpace(toReturn))
+                    return GetText(strs.no_channel_found);
+
+                return toReturn;
+            }
+
+            embed.AddField($"{GetEnabledEmoji(config.FilterLinksEnabled)} Filter Links",
+                await GetChannelListAsync(config.FilterLinksChannels));
+
+            embed.AddField($"{GetEnabledEmoji(config.FilterInvitesEnabled)} Filter Invites",
+                await GetChannelListAsync(config.FilterInvitesChannels));
+
+            await ctx.Channel.EmbedAsync(embed);
+        }
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
         public async Task SrvrFilterInv()
         {
             var channel = (ITextChannel)ctx.Channel;

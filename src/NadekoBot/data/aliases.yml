@@ -246,6 +246,9 @@ roles:
 channeltopic:
   - channeltopic
   - ct
+filterlist:
+  - filterlist
+  - fl
 chnlfilterinv:
   - chnlfilterinv
   - cfi
