@@ -85,12 +85,12 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         await using var uow = _db.GetDbContext();
 
         autoCommands = uow.AutoCommands.AsNoTracking()
-                          .Where(x => x.Interval >= 5)
-                          .AsEnumerable()
-                          .GroupBy(x => x.GuildId)
-                          .ToDictionary(x => x.Key,
-                              y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
-                          .ToConcurrent();
+            .Where(x => x.Interval >= 5)
+            .AsEnumerable()
+            .GroupBy(x => x.GuildId)
+            .ToDictionary(x => x.Key,
+                y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
+            .ToConcurrent();
 
         var startupCommands = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
         foreach (var cmd in startupCommands)
@@ -169,18 +169,18 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     private async Task LoadOwnerChannels()
     {
         var channels = await _creds.OwnerIds.Select(id =>
-                                   {
-                                       var user = _client.GetUser(id);
-                                       if (user is null)
-                                           return Task.FromResult<IDMChannel>(null);
+            {
+                var user = _client.GetUser(id);
+                if (user is null)
+                    return Task.FromResult<IDMChannel>(null);
 
-                                       return user.CreateDMChannelAsync();
-                                   })
-                                   .WhenAll();
+                return user.CreateDMChannelAsync();
+            })
+            .WhenAll();
 
         ownerChannels = channels.Where(x => x is not null)
-                                .ToDictionary(x => x.Recipient.Id, x => x)
-                                .ToImmutableDictionary();
+            .ToDictionary(x => x.Recipient.Id, x => x)
+            .ToImmutableDictionary();
 
         if (!ownerChannels.Any())
         {
@@ -202,7 +202,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
     {
         var bs = _bss.Data;
-        if (msg.Channel is IDMChannel && bs.ForwardMessages && ownerChannels.Any())
+        if (msg.Channel is IDMChannel && bs.ForwardMessages && (ownerChannels.Any() || bs.ForwardToChannel is not null))
         {
             var title = _strings.GetText(strs.dm_from) + $" [{msg.Author}]({msg.Author.Id})";
 
@@ -230,6 +230,18 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                     {
                         Log.Warning("Can't contact owner with id {OwnerId}", ownerCh.Recipient.Id);
                     }
+                }
+            }
+            else if (bs.ForwardToChannel is ulong cid)
+            {
+                try
+                {
+                    if (_client.GetChannel(cid) is ITextChannel ch)
+                        await ch.SendConfirmAsync(_eb, title, toSend);
+                }
+                catch
+                {
+                    Log.Warning("Error forwarding message to the channel");
                 }
             }
             else
@@ -331,6 +343,20 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         var isToAll = false;
         _bss.ModifyConfig(config => { isToAll = config.ForwardToAllOwners = !config.ForwardToAllOwners; });
         return isToAll;
+    }
+
+    public bool ForwardToChannel(ulong? channelId)
+    {
+        using var uow = _db.GetDbContext();
+
+        _bss.ModifyConfig(config =>
+        {
+            config.ForwardToChannel = channelId == config.ForwardToChannel
+                ? null
+                : channelId;
+        });
+
+        return channelId is not null;
     }
 
     private void HandleStatusChanges()

@@ -68,6 +68,8 @@
   "fwall_stop": "I will forward DMs only to the first owner.",
   "fwdm_start": "I will forward DMs from now on.",
   "fwdm_stop": "I will stop forwarding DMs from now on.",
+  "fwch_start": "Any message sent to bot's DMs will be forwarded to this channel.",
+  "fwch_stop": "Messages sent to bot's DMs will no longer be forwarded to this channel.",
   "greetdel_off": "Automatic deletion of greet messages has been disabled.",
   "greetdel_on": "Greet messages will be deleted after {0} seconds.",
   "greetdmmsg_cur": "Current DM greet message: {0}",

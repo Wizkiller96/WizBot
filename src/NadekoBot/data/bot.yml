@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 4
+version: 5
 # Most commands, when executed, have a small colored line
 # next to the response. The color depends whether the command
 # is completed, errored or in progress (pending)
@@ -25,6 +25,9 @@ forwardMessages: false
 # Do you want the message to be forwarded only to the first owner specified in the list of owners (in creds.yml),
 # or all owners? (this might cause the bot to lag if there's a lot of owners specified)
 forwardToAllOwners: false
+# Any messages sent by users in Bot's DM to be forwarded to the specified channel.
+# This option will only work when ForwardToAllOwners is set to false
+forwardToChannel: 
 # When a user DMs the bot with a message which is not a command
 # they will receive this message. Leave empty for no response. The string which will be sent whenever someone DMs the bot.
 # Supports embeds. How it looks: https://puu.sh/B0BLV.png

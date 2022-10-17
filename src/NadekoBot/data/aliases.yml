@@ -744,6 +744,10 @@ forwardmessages:
 forwardtoall:
   - forwardtoall
   - fwtoall
+forwardtochannel:
+  - forwardtochannel
+  - fwtoch
+  - fwtochannel
 resetperms:
   - resetperms
 antiraid:

@@ -231,6 +231,19 @@ public partial class Administration
         }
 
         [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public async Task ForwardToChannel()
+        {
+            var enabled = _service.ForwardToChannel(ctx.Channel.Id);
+
+            if (enabled)
+                await ReplyConfirmLocalizedAsync(strs.fwch_start);
+            else
+                await ReplyPendingLocalizedAsync(strs.fwch_stop);
+        }
+
+        [Cmd]
         public async Task ShardStats(int page = 1)
         {
             if (--page < 0)

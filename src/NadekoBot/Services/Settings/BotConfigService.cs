@@ -56,5 +56,11 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
                 c.Version = 4;
                 c.CheckForUpdates = true;
             });
+        
+        if(data.Version < 5)
+            ModifyConfig(c =>
+            {
+                c.Version = 5;
+            });
     }
 }

@@ -1257,6 +1257,10 @@ forwardtoall:
   desc: "Toggles whether messages will be forwarded to all bot owners or only to the first one specified in the creds.yml file"
   args:
     - ""
+forwardtochannel:
+  desc: "Toggles forwarding of non-command messages sent to bot's DM to the current channel"
+  args:
+    - ""
 resetperms:
   desc: "Resets the bot's permissions module on this server to the default value."
   args:
