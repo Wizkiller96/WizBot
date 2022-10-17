@@ -7,7 +7,7 @@ Open Terminal (if you don't know how to, click on the magnifying glass on the to
 ###### Homebrew/wget  
 *Skip this step if you already have homebrew installed*
 - Copy and paste this command, then press Enter:  
-    - `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`  
+    - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`  
 - Install wget  
     - `brew install wget`  
     

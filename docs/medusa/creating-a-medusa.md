@@ -155,7 +155,7 @@ This section will guide you through how to create a simple custom medusa. You ca
     <ItemGroup>
         <!-- Base medusa package. You MUST reference this in order to have a working medusa -->
         <!-- Also, this package comes from MyGet, which requires you to have a NuGet.Config file next to your .csproj -->
-        <PackageReference Include="Nadeko.Medusa" Version="1.0.1">
+        <PackageReference Include="Nadeko.Medusa" Version="4.3.9">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 
