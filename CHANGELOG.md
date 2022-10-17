@@ -2,6 +2,12 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Added
+
+- `.filterlist` / `.fl` command which lists link and invite filtering channels and status
+
 ## [4.3.9] - 12.10.2022
 
 ### Added
