@@ -1,24 +1,24 @@
 ﻿#nullable disable
+using System.Globalization;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.Text.RegularExpressions;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Utility.Services;
 
 public class RemindService : INService, IReadyExecutor
 {
     private readonly Regex _regex =
-        new(
-            @"^(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
+        new(@"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
             RegexOptions.Compiled | RegexOptions.Multiline);
-
+    
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
     private readonly IBotCredentials _creds;
     private readonly IEmbedBuilderService _eb;
+    private readonly CultureInfo _culture;
 
     public RemindService(
         DiscordSocketClient client,
@@ -30,6 +30,15 @@ public class RemindService : INService, IReadyExecutor
         _db = db;
         _creds = creds;
         _eb = eb;
+
+        try
+        {
+            _culture = new CultureInfo("en-GB");
+        }
+        catch
+        {
+            _culture = CultureInfo.InvariantCulture;
+        }
     }
 
     public async Task OnReadyAsync()
@@ -105,32 +114,57 @@ public class RemindService : INService, IReadyExecutor
             return false;
         }
 
-        foreach (var groupName in _regex.GetGroupNames())
+        TimeSpan ts;
+
+        var dateString = m.Groups["date"].Value;
+        if (!string.IsNullOrWhiteSpace(dateString))
         {
-            if (groupName is "0" or "what")
-                continue;
-            if (string.IsNullOrWhiteSpace(m.Groups[groupName].Value))
+            var now = DateTime.UtcNow;
+            
+            if (!DateTime.TryParse(dateString, _culture, DateTimeStyles.None, out var dt))
             {
-                values[groupName] = 0;
-                continue;
-            }
-
-            if (!int.TryParse(m.Groups[groupName].Value, out var value))
-            {
-                Log.Warning("Reminder regex group {GroupName} has invalid value", groupName);
+                Log.Warning("Invalid remind datetime format");
                 return false;
             }
 
-            if (value < 1)
+            if (now >= dt)
             {
-                Log.Warning("Reminder time value has to be an integer greater than 0");
+                Log.Warning("That remind time has already passed");
                 return false;
             }
 
-            values[groupName] = value;
+            ts = dt - now;
+        }
+        else
+        {
+            foreach (var groupName in _regex.GetGroupNames())
+            {
+                if (groupName is "0" or "what")
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(m.Groups[groupName].Value))
+                {
+                    values[groupName] = 0;
+                    continue;
+                }
+
+                if (!int.TryParse(m.Groups[groupName].Value, out var value))
+                {
+                    Log.Warning("Reminder regex group {GroupName} has invalid value", groupName);
+                    return false;
+                }
+
+                if (value < 1)
+                {
+                    Log.Warning("Reminder time value has to be an integer greater than 0");
+                    return false;
+                }
+
+                values[groupName] = value;
+            }
+            ts = new TimeSpan((30 * values["mo"]) + (7 * values["w"]) + values["d"], values["h"], values["m"], 0);
         }
 
-        var ts = new TimeSpan((30 * values["mo"]) + (7 * values["w"]) + values["d"], values["h"], values["m"], 0);
 
         obj = new()
         {
