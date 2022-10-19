@@ -313,8 +313,27 @@ public sealed class Bot
         await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
         // await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
         IsReady = true;
+
+        await EnsureBotOwnershipAsync();
         _ = Task.Run(ExecuteReadySubscriptions);
         Log.Information("Shard {ShardId} ready", Client.ShardId);
+    }
+
+    private async ValueTask EnsureBotOwnershipAsync()
+    {
+        try
+        {
+            if (_creds.OwnerIds.Count != 0)
+                return;
+
+            Log.Information("Initializing Owner Id...");
+            var info = await Client.GetApplicationInfoAsync();
+            _credsProvider.ModifyCredsFile(x => x.OwnerIds = new[] { info.Owner.Id });
+        }
+        catch (Exception ex)
+        {
+            Log.Warning("Getting application info failed: {ErrorMessage}", ex.Message);
+        }
     }
 
     private Task ExecuteReadySubscriptions()
