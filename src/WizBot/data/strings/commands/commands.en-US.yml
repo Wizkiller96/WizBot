@@ -1266,14 +1266,14 @@ resetperms:
   args:
     - ""
 antiraid:
-  desc: "Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles"
+  desc: "Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut"
   args:
     - "5 20 Kick"
     - "7 9 Ban"
     - "10 10 Ban 6h30m"
     - ""
 antispam:
-  desc: "Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Max message count is 10. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles"
+  desc: "Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Max message count is 10. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles, Warn, TimeOut"
   args:
     - "3 Mute"
     - "5 Ban"
