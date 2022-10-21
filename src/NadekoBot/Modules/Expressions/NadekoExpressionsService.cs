@@ -7,6 +7,7 @@ using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
 using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
+using LinqToDB.EntityFrameworkCore;
 using Nadeko.Common;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -56,8 +57,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     // 1. expressions are almost never added (compared to how many times they are being looped through)
     // 2. only need write locks for this as we'll rebuild+replace the array on every edit
     // 3. there's never many of them (at most a thousand, usually < 100)
-    private NadekoExpression[] globalReactions;
-    private ConcurrentDictionary<ulong, NadekoExpression[]> newGuildReactions;
+    private NadekoExpression[] globalExpressions;
+    private ConcurrentDictionary<ulong, NadekoExpression[]> newguildExpressions;
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -72,6 +73,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private readonly Random _rng;
 
     private bool ready;
+    private ConcurrentHashSet<ulong> _disabledGlobalExpressionGuilds;
 
     public NadekoExpressionsService(
         PermissionService perms,
@@ -113,7 +115,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                                   .Where(x => allGuildIds.Contains(x.GuildId.Value))
                                   .ToListAsync();
 
-        newGuildReactions = guildItems.GroupBy(k => k.GuildId!.Value)
+        newguildExpressions = guildItems.GroupBy(k => k.GuildId!.Value)
                                       .ToDictionary(g => g.Key,
                                           g => g.Select(x =>
                                                 {
@@ -122,6 +124,11 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                                                 })
                                                 .ToArray())
                                       .ToConcurrent();
+
+        _disabledGlobalExpressionGuilds = new (await uow.GuildConfigs
+            .Where(x => x.DisableGlobalExpressions)
+            .Select(x => x.GuildId)
+            .ToListAsyncLinqToDB());
 
         lock (_gexprWriteLock)
         {
@@ -135,7 +142,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                                  })
                                  .ToArray();
 
-            globalReactions = globalItems;
+            globalExpressions = globalItems;
         }
 
         ready = true;
@@ -151,14 +158,17 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
         var content = umsg.Content.Trim().ToLowerInvariant();
 
-        if (newGuildReactions.TryGetValue(channel.Guild.Id, out var reactions) && reactions.Length > 0)
+        if (newguildExpressions.TryGetValue(channel.Guild.Id, out var expressions) && expressions.Length > 0)
         {
-            var expr = MatchExpressions(content, reactions);
+            var expr = MatchExpressions(content, expressions);
             if (expr is not null)
                 return expr;
         }
 
-        var localGrs = globalReactions;
+        if (_disabledGlobalExpressionGuilds.Contains(channel.Guild.Id))
+            return null;
+        
+        var localGrs = globalExpressions;
 
         return MatchExpressions(content, localGrs);
     }
@@ -345,7 +355,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     {
         if (maybeGuildId is { } guildId)
         {
-            newGuildReactions.AddOrUpdate(guildId,
+            newguildExpressions.AddOrUpdate(guildId,
                 new[] { expr },
                 (_, old) =>
                 {
@@ -363,7 +373,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         {
             lock (_gexprWriteLock)
             {
-                var exprs = globalReactions;
+                var exprs = globalExpressions;
                 for (var i = 0; i < exprs.Length; i++)
                 {
                     if (exprs[i].Id == expr.Id)
@@ -379,7 +389,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         expr.Trigger = expr.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
 
         if (maybeGuildId is { } guildId)
-            newGuildReactions.AddOrUpdate(guildId, new[] { expr }, (_, old) => old.With(expr));
+            newguildExpressions.AddOrUpdate(guildId, new[] { expr }, (_, old) => old.With(expr));
         else
             return _pubSub.Pub(_gexprAddedKey, expr);
 
@@ -390,7 +400,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     {
         if (maybeGuildId is { } guildId)
         {
-            newGuildReactions.AddOrUpdate(guildId,
+            newguildExpressions.AddOrUpdate(guildId,
                 Array.Empty<NadekoExpression>(),
                 (key, old) => DeleteInternal(old, id, out _));
 
@@ -399,7 +409,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
         lock (_gexprWriteLock)
         {
-            var expr = Array.Find(globalReactions, item => item.Id == id);
+            var expr = Array.Find(globalExpressions, item => item.Id == id);
             if (expr is not null)
                 return _pubSub.Pub(_gexprDeletedkey, expr.Id);
         }
@@ -492,7 +502,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         var count = uow.Expressions.ClearFromGuild(guildId);
         uow.SaveChanges();
 
-        newGuildReactions.TryRemove(guildId, out _);
+        newguildExpressions.TryRemove(guildId, out _);
 
         return count;
     }
@@ -562,10 +572,10 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     {
         lock (_gexprWriteLock)
         {
-            var newGlobalReactions = new NadekoExpression[globalReactions.Length + 1];
-            Array.Copy(globalReactions, newGlobalReactions, globalReactions.Length);
-            newGlobalReactions[globalReactions.Length] = c;
-            globalReactions = newGlobalReactions;
+            var newGlobalReactions = new NadekoExpression[globalExpressions.Length + 1];
+            Array.Copy(globalExpressions, newGlobalReactions, globalExpressions.Length);
+            newGlobalReactions[globalExpressions.Length] = c;
+            globalExpressions = newGlobalReactions;
         }
 
         return default;
@@ -575,11 +585,11 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     {
         lock (_gexprWriteLock)
         {
-            for (var i = 0; i < globalReactions.Length; i++)
+            for (var i = 0; i < globalExpressions.Length; i++)
             {
-                if (globalReactions[i].Id == c.Id)
+                if (globalExpressions[i].Id == c.Id)
                 {
-                    globalReactions[i] = c;
+                    globalExpressions[i] = c;
                     return default;
                 }
             }
@@ -596,8 +606,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     {
         lock (_gexprWriteLock)
         {
-            var newGlobalReactions = DeleteInternal(globalReactions, id, out _);
-            globalReactions = newGlobalReactions;
+            var newGlobalReactions = DeleteInternal(globalExpressions, id, out _);
+            globalExpressions = newGlobalReactions;
         }
 
         return default;
@@ -612,7 +622,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
     private Task OnLeftGuild(SocketGuild arg)
     {
-        newGuildReactions.TryRemove(arg.Id, out _);
+        newguildExpressions.TryRemove(arg.Id, out _);
 
         return Task.CompletedTask;
     }
@@ -622,7 +632,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         await using var uow = _db.GetDbContext();
         var exprs = await uow.Expressions.AsNoTracking().Where(x => x.GuildId == gc.GuildId).ToArrayAsync();
 
-        newGuildReactions[gc.GuildId] = exprs;
+        newguildExpressions[gc.GuildId] = exprs;
     }
 
     #endregion
@@ -702,10 +712,25 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     public NadekoExpression[] GetExpressionsFor(ulong? maybeGuildId)
     {
         if (maybeGuildId is { } guildId)
-            return newGuildReactions.TryGetValue(guildId, out var exprs) ? exprs : Array.Empty<NadekoExpression>();
+            return newguildExpressions.TryGetValue(guildId, out var exprs) ? exprs : Array.Empty<NadekoExpression>();
 
-        return globalReactions;
+        return globalExpressions;
     }
 
     #endregion
+
+    public async Task<bool> ToggleGlobalExpressionsAsync(ulong guildId)
+    {
+        await using var ctx = _db.GetDbContext();
+        var gc = ctx.GuildConfigsForId(guildId, set => set);
+        var toReturn = gc.DisableGlobalExpressions = !gc.DisableGlobalExpressions;
+        await ctx.SaveChangesAsync();
+        
+        if (toReturn)
+            _disabledGlobalExpressionGuilds.Add(guildId);
+        else
+            _disabledGlobalExpressionGuilds.TryRemove(guildId);
+        
+        return toReturn;
+    }
 }

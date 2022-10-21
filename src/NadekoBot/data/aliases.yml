@@ -1274,6 +1274,9 @@ quotesimport:
 showembed:
   - showembed
 # NadekoExpressions
+exprtoggleglobal:
+  - exprtoggleglobal
+  - extg
 exprreact:
   - exreact
   - exr

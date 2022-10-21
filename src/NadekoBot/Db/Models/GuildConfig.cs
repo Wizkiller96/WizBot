@@ -95,6 +95,8 @@ public class GuildConfig : DbEntity
     public int WarnExpireHours { get; set; }
     public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;
 
+    public bool DisableGlobalExpressions { get; set; } = false;
+
     #region Boost Message
 
     public bool SendBoostMessage { get; set; }

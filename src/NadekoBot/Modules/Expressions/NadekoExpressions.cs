@@ -43,6 +43,17 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
     [Cmd]
     [UserPerm(GuildPerm.Administrator)]
+    public async Task ExprToggleGlobal()
+    {
+        var result = await _service.ToggleGlobalExpressionsAsync(ctx.Guild.Id);
+        if (result)
+            await ReplyConfirmLocalizedAsync(strs.expr_global_disabled);
+        else
+            await ReplyConfirmLocalizedAsync(strs.expr_global_enabled);
+    }
+    
+    [Cmd]
+    [UserPerm(GuildPerm.Administrator)]
     public async Task ExprAddServer(string key, [Leftover] string message)
     {
         if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))

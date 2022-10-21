@@ -1322,6 +1322,10 @@ namespace NadekoBot.Migrations.PostgreSql
                         .HasColumnType("boolean")
                         .HasColumnName("deletestreamonlinemessage");
 
+                    b.Property<bool>("DisableGlobalExpressions")
+                        .HasColumnType("boolean")
+                        .HasColumnName("disableglobalexpressions");
+
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("text")
                         .HasColumnName("dmgreetmessagetext");
