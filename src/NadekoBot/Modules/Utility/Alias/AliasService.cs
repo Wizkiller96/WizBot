@@ -6,15 +6,14 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility.Services;
 
-public class CommandMapService : IInputTransformer, INService
+public class AliasService : IInputTransformer, INService
 {
     public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new();
     private readonly IEmbedBuilderService _eb;
 
     private readonly DbService _db;
 
-    //commandmap
-    public CommandMapService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
+    public AliasService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
     {
         _eb = eb;
 
@@ -66,7 +65,10 @@ public class CommandMapService : IInputTransformer, INService
                 }
                 else if (input.StartsWith(k + ' ', StringComparison.OrdinalIgnoreCase))
                 {
-                    newInput = v + ' ' + input[k.Length..];
+                    if (v.Contains("%target%"))
+                        newInput = v.Replace("%target%", input[k.Length..]);
+                    else
+                        newInput = v + ' ' + input[k.Length..];
                 }
 
                 if (newInput is not null)
@@ -74,17 +76,11 @@ public class CommandMapService : IInputTransformer, INService
                     try
                     {
                         var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
-                        _ = Task.Run(async () =>
-                        {
-                            await Task.Delay(1500);
-                            await toDelete.DeleteAsync(new()
-                            {
-                                RetryMode = RetryMode.AlwaysRetry
-                            });
-                        });
+                        toDelete.DeleteAfter(1.5f);
                     }
                     catch
                     {
+                        // ignored
                     }
 
                     return newInput;
@@ -92,34 +88,6 @@ public class CommandMapService : IInputTransformer, INService
             }
 
             return null;
-
-            // var keys = maps.Keys.OrderByDescending(x => x.Length);
-            // foreach (var k in keys)
-            // {
-            //     string newInput;
-            //     if (input.StartsWith(k + " ", StringComparison.InvariantCultureIgnoreCase))
-            //         newInput = maps[k] + input.Substring(k.Length, input.Length - k.Length);
-            //     else if (input.Equals(k, StringComparison.InvariantCultureIgnoreCase))
-            //         newInput = maps[k];
-            //     else
-            //         continue;
-            //
-            //     try
-            //     {
-            //         var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
-            //         _ = Task.Run(async () =>
-            //         {
-            //             await Task.Delay(1500);
-            //             await toDelete.DeleteAsync(new()
-            //             {
-            //                 RetryMode = RetryMode.AlwaysRetry
-            //             });
-            //         });
-            //     }
-            //     catch { }
-            //
-            //     return newInput;
-            // }
         }
 
         return null;
