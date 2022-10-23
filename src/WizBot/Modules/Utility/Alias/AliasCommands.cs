@@ -9,7 +9,7 @@ namespace WizBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class CommandMapCommands : WizBotModule<CommandMapService>
+    public partial class CommandMapCommands : WizBotModule<AliasService>
     {
         private readonly DbService _db;
         private readonly DiscordSocketClient _client;
