@@ -1581,6 +1581,10 @@ rategirl:
   desc: "Use the universal hot-crazy wife zone matrix to determine the girl's worth. It is everything young men need to know about women. At any moment in time, any woman you have previously located on this chart can vanish from that location and appear anywhere else on the chart."
   args:
     - "@SomeGurl"
+exprtoggleglobal:
+  desc: "Toggles whether global expressions are usable on this server."
+  args:
+    - ""
 exprreact:
   desc: "Sets or resets reactions (up to 3) which will be added to the response message of the Expression with the specified ID. Provide no emojis to reset."
   args:

@@ -985,9 +985,12 @@ namespace WizBot.Migrations
 
                     b.Property<bool>("DeleteStreamOnlineMessage")
                         .HasColumnType("INTEGER");
+                    
+                    b.Property<bool>("DisableGlobalExpressions")
+                     .HasColumnType("INTEGER");
 
                     b.Property<string>("DmGreetMessageText")
-                        .HasColumnType("TEXT");
+                     .HasColumnType("TEXT");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("INTEGER");
@@ -1291,7 +1294,7 @@ namespace WizBot.Migrations
                     b.ToTable("MutedUserId");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.WizExpression", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.WizBotExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

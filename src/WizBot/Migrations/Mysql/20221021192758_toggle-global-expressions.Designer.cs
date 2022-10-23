@@ -11,15 +11,73 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    [Migration("20220428044612_stondel")]
-    partial class stondel
+    [Migration("20221021192758_toggle-global-expressions")]
+    partial class toggleglobalexpressions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("WizBot.Db.Models.AutoPublishChannel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_autopublishchannel");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_autopublishchannel_guildid");
+
+                    b.ToTable("autopublishchannel", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.BankUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bankusers");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bankusers_userid");
+
+                    b.ToTable("bankusers", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
@@ -141,28 +199,16 @@ namespace WizBot.Migrations.Mysql
                         .HasDefaultValue(false)
                         .HasColumnName("isclubadmin");
 
-                    b.Property<DateTime>("LastLevelUp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("lastlevelup")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
-                    b.Property<DateTime>("LastXpGain")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("lastxpgain")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP - INTERVAL 1 year)");
-
                     b.Property<int>("NotifyOnLevelUp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("notifyonlevelup");
 
-                    b.Property<int>("TotalXp")
+                    b.Property<long>("TotalXp")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
                         .HasColumnName("totalxp");
 
                     b.Property<ulong>("UserId")
@@ -236,6 +282,145 @@ namespace WizBot.Migrations.Mysql
                         .HasDatabaseName("ix_followedstream_guildconfigid");
 
                     b.ToTable("followedstream", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.PatronQuota", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("FeatureType")
+                        .HasColumnType("int")
+                        .HasColumnName("featuretype");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("feature");
+
+                    b.Property<uint>("DailyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("dailycount");
+
+                    b.Property<uint>("HourlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("hourlycount");
+
+                    b.Property<uint>("MonthlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("monthlycount");
+
+                    b.HasKey("UserId", "FeatureType", "Feature")
+                        .HasName("pk_patronquotas");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_patronquotas_userid");
+
+                    b.ToTable("patronquotas", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("int")
+                        .HasColumnName("amountcents");
+
+                    b.Property<DateTime>("LastCharge")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("lastcharge");
+
+                    b.Property<string>("UniquePlatformUserId")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("uniqueplatformuserid");
+
+                    b.Property<DateTime>("ValidThru")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("validthru");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_patrons");
+
+                    b.HasIndex("UniquePlatformUserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+
+                    b.ToTable("patrons", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.StreamOnlineMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messageid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_streamonlinemessages");
+
+                    b.ToTable("streamonlinemessages", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.XpShopOwnedItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<bool>("IsUsing")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("isusing");
+
+                    b.Property<string>("ItemKey")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("itemkey");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("int")
+                        .HasColumnName("itemtype");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_xpshopowneditem");
+
+                    b.HasIndex("UserId", "ItemType", "ItemKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+
+                    b.ToTable("xpshopowneditem", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.AntiAltSetting", b =>
@@ -520,6 +705,10 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong>("GuildId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
+
+                    b.Property<int?>("PruneDays")
+                        .HasColumnType("int")
+                        .HasColumnName("prunedays");
 
                     b.Property<string>("Text")
                         .HasColumnType("longtext")
@@ -914,6 +1103,39 @@ namespace WizBot.Migrations.Mysql
                     b.ToTable("filterwordschannelid", (string)null);
                 });
 
+            modelBuilder.Entity("WizBot.Services.Database.Models.GamblingStats", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<decimal>("Bet")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("bet");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("feature");
+
+                    b.Property<decimal>("PaidOut")
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("paidout");
+
+                    b.HasKey("Id")
+                        .HasName("pk_gamblingstats");
+
+                    b.HasIndex("Feature")
+                        .IsUnique()
+                        .HasDatabaseName("ix_gamblingstats_feature");
+
+                    b.ToTable("gamblingstats", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Services.Database.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
@@ -1038,6 +1260,10 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("deletestreamonlinemessage");
 
+                    b.Property<bool>("DisableGlobalExpressions")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("disableglobalexpressions");
+
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("longtext")
                         .HasColumnName("dmgreetmessagetext");
@@ -1111,7 +1337,9 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnName("timezoneid");
 
                     b.Property<bool>("VerboseErrors")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
                         .HasColumnName("verboseerrors");
 
                     b.Property<bool>("VerbosePermissions")
@@ -1223,6 +1451,10 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
                     b.HasKey("Id")
                         .HasName("pk_imageonlychannels");
 
@@ -1275,6 +1507,10 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong?>("LogVoicePresenceTTSId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("logvoicepresencettsid");
+
+                    b.Property<ulong?>("LogWarnsId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("logwarnsid");
 
                     b.Property<ulong?>("MessageDeletedId")
                         .HasColumnType("bigint unsigned")
@@ -1786,39 +2022,7 @@ namespace WizBot.Migrations.Mysql
                     b.ToTable("quotes", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("EmoteName")
-                        .HasColumnType("longtext")
-                        .HasColumnName("emotename");
-
-                    b.Property<int?>("ReactionRoleMessageId")
-                        .HasColumnType("int")
-                        .HasColumnName("reactionrolemessageid");
-
-                    b.Property<ulong>("RoleId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("roleid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_reactionrole");
-
-                    b.HasIndex("ReactionRoleMessageId")
-                        .HasDatabaseName("ix_reactionrole_reactionrolemessageid");
-
-                    b.ToTable("reactionrole", (string)null);
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
+            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleV2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1833,29 +2037,42 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<bool>("Exclusive")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("exclusive");
+                    b.Property<string>("Emote")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("emote");
 
-                    b.Property<int>("GuildConfigId")
+                    b.Property<int>("Group")
                         .HasColumnType("int")
-                        .HasColumnName("guildconfigid");
+                        .HasColumnName("group");
 
-                    b.Property<int>("Index")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.Property<int>("LevelReq")
                         .HasColumnType("int")
-                        .HasColumnName("index");
+                        .HasColumnName("levelreq");
 
                     b.Property<ulong>("MessageId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("messageid");
 
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("roleid");
+
                     b.HasKey("Id")
-                        .HasName("pk_reactionrolemessage");
+                        .HasName("pk_reactionroles");
 
-                    b.HasIndex("GuildConfigId")
-                        .HasDatabaseName("ix_reactionrolemessage_guildconfigid");
+                    b.HasIndex("GuildId")
+                        .HasDatabaseName("ix_reactionroles_guildid");
 
-                    b.ToTable("reactionrolemessage", (string)null);
+                    b.HasIndex("MessageId", "Emote")
+                        .IsUnique()
+                        .HasDatabaseName("ix_reactionroles_messageid_emote");
+
+                    b.ToTable("reactionroles", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.Reminder", b =>
@@ -1954,8 +2171,8 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("AmountRewardedThisMonth")
-                        .HasColumnType("int")
+                    b.Property<long>("AmountRewardedThisMonth")
+                        .HasColumnType("bigint")
                         .HasColumnName("amountrewardedthismonth");
 
                     b.Property<DateTime?>("DateAdded")
@@ -1966,9 +2183,9 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("lastreward");
 
-                    b.Property<string>("PatreonUserId")
+                    b.Property<string>("PlatformUserId")
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("patreonuserid");
+                        .HasColumnName("platformuserid");
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("bigint unsigned")
@@ -1977,9 +2194,9 @@ namespace WizBot.Migrations.Mysql
                     b.HasKey("Id")
                         .HasName("pk_rewardedusers");
 
-                    b.HasIndex("PatreonUserId")
+                    b.HasIndex("PlatformUserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_rewardedusers_patreonuserid");
+                        .HasDatabaseName("ix_rewardedusers_platformuserid");
 
                     b.ToTable("rewardedusers", (string)null);
                 });
@@ -2086,6 +2303,10 @@ namespace WizBot.Migrations.Mysql
                     b.Property<string>("RoleName")
                         .HasColumnType("longtext")
                         .HasColumnName("rolename");
+
+                    b.Property<ulong?>("RoleRequirement")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("rolerequirement");
 
                     b.Property<int>("Type")
                         .HasColumnType("int")
@@ -2396,8 +2617,8 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("AwardedXp")
-                        .HasColumnType("int")
+                    b.Property<long>("AwardedXp")
+                        .HasColumnType("bigint")
                         .HasColumnName("awardedxp");
 
                     b.Property<DateTime?>("DateAdded")
@@ -2408,12 +2629,6 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
-                    b.Property<DateTime>("LastLevelUp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("lastlevelup")
-                        .HasDefaultValueSql("(UTC_TIMESTAMP)");
-
                     b.Property<int>("NotifyOnLevelUp")
                         .HasColumnType("int")
                         .HasColumnName("notifyonlevelup");
@@ -2422,8 +2637,8 @@ namespace WizBot.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
-                    b.Property<int>("Xp")
-                        .HasColumnType("int")
+                    b.Property<long>("Xp")
+                        .HasColumnType("bigint")
                         .HasColumnName("xp");
 
                     b.HasKey("Id")
@@ -3081,27 +3296,6 @@ namespace WizBot.Migrations.Mysql
                         .HasConstraintName("fk_pollvote_poll_pollid");
                 });
 
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRole", b =>
-                {
-                    b.HasOne("WizBot.Services.Database.Models.ReactionRoleMessage", null)
-                        .WithMany("ReactionRoles")
-                        .HasForeignKey("ReactionRoleMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_reactionrole_reactionrolemessage_reactionrolemessageid");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.HasOne("WizBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("ReactionRoleMessages")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_reactionrolemessage_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntry", b =>
                 {
                     b.HasOne("WizBot.Services.Database.Models.GuildConfig", null)
@@ -3351,8 +3545,6 @@ namespace WizBot.Migrations.Mysql
 
                     b.Navigation("Permissions");
 
-                    b.Navigation("ReactionRoleMessages");
-
                     b.Navigation("SelfAssignableRoleGroupNames");
 
                     b.Navigation("ShopEntries");
@@ -3391,11 +3583,6 @@ namespace WizBot.Migrations.Mysql
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
-                });
-
-            modelBuilder.Entity("WizBot.Services.Database.Models.ReactionRoleMessage", b =>
-                {
-                    b.Navigation("ReactionRoles");
                 });
 
             modelBuilder.Entity("WizBot.Services.Database.Models.ShopEntry", b =>

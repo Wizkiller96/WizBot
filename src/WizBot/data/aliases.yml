@@ -1274,6 +1274,9 @@ quotesimport:
 showembed:
   - showembed
 # WizBotExpressions
+exprtoggleglobal:
+  - exprtoggleglobal
+  - extg
 exprreact:
   - exreact
   - exr

@@ -94,6 +94,8 @@ public class GuildConfig : DbEntity
     public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
     public int WarnExpireHours { get; set; }
     public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;
+    
+    public bool DisableGlobalExpressions { get; set; } = false;
 
     #region Boost Message
 

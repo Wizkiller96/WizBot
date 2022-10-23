@@ -40,6 +40,17 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
                                         .AddField(GetText(strs.response),
                                             message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
     }
+    
+    [Cmd]
+    [UserPerm(GuildPerm.Administrator)]
+    public async Task ExprToggleGlobal()
+    {
+        var result = await _service.ToggleGlobalExpressionsAsync(ctx.Guild.Id);
+        if (result)
+            await ReplyConfirmLocalizedAsync(strs.expr_global_disabled);
+        else
+            await ReplyConfirmLocalizedAsync(strs.expr_global_enabled);
+    }
 
     [Cmd]
     [UserPerm(GuildPerm.Administrator)]
