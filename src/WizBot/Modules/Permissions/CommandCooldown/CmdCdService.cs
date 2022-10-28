@@ -1,5 +1,4 @@
-﻿#nullable disable
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db;
 
@@ -53,7 +52,7 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
         if (cooldowns.TryGetValue(user.Id, out var oldValue))
         {
             var diff = DateTime.UtcNow - oldValue;
-            if (diff.Seconds > cdSeconds)
+            if (diff.TotalSeconds > cdSeconds)
             {
                 if (cooldowns.TryUpdate(user.Id, DateTime.UtcNow, oldValue))
                     return Task.FromResult(false);
@@ -69,7 +68,6 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
 
         while (await timer.WaitForNextTickAsync())
         {
-            var now = DateTime.UtcNow;
             // once per hour delete expired entries
             foreach (var ((guildId, commandName), dict) in _activeCooldowns)
             {
@@ -90,7 +88,7 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
     private void Cleanup(ConcurrentDictionary<ulong, DateTime> dict, int cdSeconds)
     {
         var now = DateTime.UtcNow;
-        foreach (var (key, _) in dict.Where(x => (now - x.Value).Seconds > cdSeconds).ToArray())
+        foreach (var (key, _) in dict.Where(x => (now - x.Value).TotalSeconds > cdSeconds).ToArray())
         {
             dict.TryRemove(key, out _);
         }
