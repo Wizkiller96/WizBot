@@ -72,7 +72,7 @@ public partial class Administration
         [BotPerm(ChannelPerm.ManageMessages)]
         [WizBotOptions(typeof(PruneOptions))]
         [Priority(0)]
-        public Task Prune(IGuildUser user, int count = 100, string args = null)
+        public Task Prune(IGuildUser user, int count = 100, params string[] args)
             => Prune(user.Id, count, args);
 
         //prune userid [x]
