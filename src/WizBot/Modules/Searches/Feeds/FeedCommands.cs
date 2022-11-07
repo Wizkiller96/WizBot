@@ -32,8 +32,8 @@ public partial class Searches
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task Feed(string url, [Leftover] ITextChannel channel = null)
         {
-            if (Uri.TryCreate(url, UriKind.Absolute, out var uri)
-                && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) 
+                || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 await ReplyErrorLocalizedAsync(strs.feed_invalid_url);
                 return;
