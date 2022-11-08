@@ -29,8 +29,11 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
     public Task<bool> ExecPreCommandAsync(ICommandContext context, string moduleName, CommandInfo command)
         => TryBlock(context.Guild, context.User, command.Name.ToLowerInvariant());
 
-    public Task<bool> TryBlock(IGuild guild, IUser user, string commandName)
+    public Task<bool> TryBlock(IGuild? guild, IUser user, string commandName)
     {
+        if (guild is null)
+            return Task.FromResult(false);
+        
         if (!_settings.TryGetValue(guild.Id, out var cooldownSettings))
             return Task.FromResult(false);
 
