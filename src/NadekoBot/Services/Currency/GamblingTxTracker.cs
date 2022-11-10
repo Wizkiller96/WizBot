@@ -71,8 +71,11 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
         }
     }
 
-    public Task TrackAdd(long amount, TxData txData)
+    public Task TrackAdd(long amount, TxData? txData)
     {
+        if (txData is null)
+            return Task.CompletedTask;
+        
         if (_gamblingTypes.Contains(txData.Type))
         {
             _stats.AddOrUpdate(txData.Type,
@@ -83,8 +86,11 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    public Task TrackRemove(long amount, TxData txData)
+    public Task TrackRemove(long amount, TxData? txData)
     {
+        if (txData is null)
+            return Task.CompletedTask;
+        
         if (_gamblingTypes.Contains(txData.Type))
         {
             _stats.AddOrUpdate(txData.Type,
