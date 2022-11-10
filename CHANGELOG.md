@@ -2,11 +2,32 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [4.3.10] - 10.11.2022
 
 ### Added 
 
 - `.filterlist` / `.fl` command which lists link and invite filtering channels and status
+- Added support for `%target%` placeholder in `.alias` command
+- Added .forwardtochannel which will forward messages to the current channel. It has lower priority than fwtoall
+- Added .exprtoggleglobal / .extg  which can be used to toggle usage of global expressions on the server
+
+### Changed
+
+- .meload and .meunload are now case sensitive. Previously loaded medusae may need to be reloaded or data/medusae/medusa.yml may need to be edited manually 
+- Several club related command have their error messages improved
+- Updated help text for .antispam and .antiraid
+- You can now specify time and date (time is optional) in `.remind` command instead of relative time, in the format `HH:mm dd.MM.YYYY`
+- OwnerId will be automatically added to `creds.yml` at bot startup if it's missing 
+
+### Fixed 
+
+- Fixed `.cmdcd` console error
+- Fixed an error when currency is add per xp
+- Fixed an issue preventing execution of expressions starting with @Bot when cleverbot is enabled on the server
+- Fixed `.feedadd`
+- Fixed `.prune @target` not working
+- Medusa modules (sneks) should now inherit medusa description when listed in .mdls command
+- Fixed command cooldown calculation
 
 ## [4.3.9] - 12.10.2022
 
