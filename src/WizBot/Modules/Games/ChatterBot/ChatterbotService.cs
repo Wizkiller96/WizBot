@@ -126,7 +126,7 @@ public class ChatterBotService : IExecOnMessage
                     Log.Information("{PermissionMessage}", returnMsg);
                 }
 
-                return true;
+                return false;
             }
 
             if (await _ccs.TryBlock(sg, usrMsg.Author, CleverBotResponseStr.CLEVERBOT_RESPONSE))
