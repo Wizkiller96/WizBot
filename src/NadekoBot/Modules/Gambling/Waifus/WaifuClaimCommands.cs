@@ -244,7 +244,6 @@ public partial class Gambling
 
             var waifuItems = _service.GetWaifuItems().ToDictionary(x => x.ItemEmoji, x => x);
 
-
             var nobody = GetText(strs.nobody);
             var itemsStr = !wi.Items.Any()
                 ? "-"
@@ -256,7 +255,17 @@ public partial class Gambling
                       .Chunk(2)
                       .Select(x => string.Join(" ", x)));
 
-            var fansStr = wi.Fans.Shuffle().Take(30).Select(x => wi.Claims.Contains(x) ? $"{x} 💞" : x).Join('\n');
+            var claimsNames = (await _service.GetBulkWaifuNames(wi.Claims));
+            var claimsStr = claimsNames
+                .Shuffle()
+                .Take(30)
+                .Join('\n');
+            
+            var fansStr = (await _service.GetBulkWaifuNames(wi.Fans
+                .Shuffle()
+                .Take(30)))
+                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x).Join('\n');
+
 
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
@@ -277,7 +286,7 @@ public partial class Gambling
                            .AddField("\u200B", "\u200B", true)
                            .AddField(GetText(strs.fans(wi.Fans.Count)), fansStr, true)
                            .AddField($"Waifus ({wi.ClaimCount})",
-                               wi.ClaimCount == 0 ? nobody : string.Join("\n", wi.Claims.Shuffle().Take(30)),
+                               wi.ClaimCount == 0 ? nobody : claimsStr,
                                true)
                            .AddField(GetText(strs.gifts), itemsStr, true);
 

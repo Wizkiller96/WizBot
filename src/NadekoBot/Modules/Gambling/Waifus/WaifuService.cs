@@ -557,4 +557,13 @@ public class WaifuService : INService, IReadyExecutor
             }
         }
     }
+
+    public async Task<IReadOnlyCollection<string>> GetBulkWaifuNames(IEnumerable<int> take)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<DiscordUser>()
+            .Where(x => take.Contains(x.Id))
+            .Select(x => $"{x.Username}#{x.Discriminator}")
+            .ToListAsyncLinqToDB();
+    }
 }
