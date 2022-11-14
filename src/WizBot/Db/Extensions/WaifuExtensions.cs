@@ -18,8 +18,8 @@ public class WaifuInfoStats
     public int DivorceCount { get; init; }
     public int ClaimCount { get; init; }
     public List<WaifuItem> Items { get; init; }
-    public List<string> Claims { get; init; }
-    public List<string> Fans { get; init; }
+    public List<int> Claims { get; init; }
+    public List<int> Fans { get; init; }
 }
 
 public static class WaifuExtensions
@@ -134,17 +134,19 @@ public static class WaifuExtensions
                                      .Count(x => x.OldId == w.WaifuId
                                                  && x.NewId == null
                                                  && x.UpdateType == WaifuUpdateType.Claimed),
+                              
                               Price = w.Price,
-                              Claims = ctx.WaifuInfo.AsQueryable()
-                                          .Include(x => x.Waifu)
+                              
+                              Claims = ctx.WaifuInfo
                                           .Where(x => x.ClaimerId == w.WaifuId)
-                                          .Select(x => x.Waifu.Username + "#" + x.Waifu.Discriminator)
+                                          .Select(x => x.WaifuId)
                                           .ToList(),
-                              Fans = ctx.WaifuInfo.AsQueryable()
-                                        .Include(x => x.Waifu)
+                              
+                              Fans = ctx.WaifuInfo
                                         .Where(x => x.AffinityId == w.WaifuId)
-                                        .Select(x => x.Waifu.Username + "#" + x.Waifu.Discriminator)
+                                        .Select(x => x.WaifuId)
                                         .ToList(),
+                              
                               Items = w.Items
                           })
                           .FirstOrDefault();
