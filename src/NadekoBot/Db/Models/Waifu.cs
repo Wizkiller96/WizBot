@@ -7,7 +7,7 @@ public class WaifuInfo : DbEntity
 {
     public int WaifuId { get; set; }
     public DiscordUser Waifu { get; set; }
-
+    
     public int? ClaimerId { get; set; }
     public DiscordUser Claimer { get; set; }
 
