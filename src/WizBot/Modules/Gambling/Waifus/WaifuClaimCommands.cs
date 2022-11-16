@@ -243,29 +243,30 @@ public partial class Gambling
             var affInfo = _service.GetAffinityTitle(wi.AffinityCount);
 
             var waifuItems = _service.GetWaifuItems().ToDictionary(x => x.ItemEmoji, x => x);
-            
+
             var nobody = GetText(strs.nobody);
-            var itemsStr = !wi.Items.Any()
+            var itemList = await _service.GetItems(wi.WaifuId);
+            var itemsStr = !itemList.Any()
                 ? "-"
                 : string.Join("\n",
-                    wi.Items.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
-                      .OrderBy(x => waifuItems[x.ItemEmoji].Price)
-                      .GroupBy(x => x.ItemEmoji)
-                      .Select(x => $"{x.Key} x{x.Count(),-3}")
-                      .Chunk(2)
-                      .Select(x => string.Join(" ", x)));
+                    itemList.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
+                        .OrderBy(x => waifuItems[x.ItemEmoji].Price)
+                        .GroupBy(x => x.ItemEmoji)
+                        .Select(x => $"{x.Key} x{x.Count(),-3}")
+                        .Chunk(2)
+                        .Select(x => string.Join(" ", x)));
 
-            var claimsNames = (await _service.GetBulkWaifuNames(wi.Claims));
+            var claimsNames = (await _service.GetClaimNames(wi.WaifuId));
             var claimsStr = claimsNames
-                            .Shuffle()
-                            .Take(30)
-                            .Join('\n');
-            
-            var fansStr = (await _service.GetBulkWaifuNames(wi.Fans
-                                                              .Shuffle()
-                                                              .Take(30)))
-                          .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x).Join('\n');
+                .Shuffle()
+                .Take(30)
+                .Join('\n');
 
+            var fansList = await _service.GetFansNames(wi.WaifuId);
+            var fansStr = fansList
+                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x).Join('\n');
+
+            
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
 
@@ -283,7 +284,7 @@ public partial class Gambling
                            .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
                            .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
                            .AddField("\u200B", "\u200B", true)
-                           .AddField(GetText(strs.fans(wi.Fans.Count)), fansStr, true)
+                           .AddField(GetText(strs.fans(fansList.Count)), fansStr, true)
                            .AddField($"Waifus ({wi.ClaimCount})",
                                wi.ClaimCount == 0 ? nobody : claimsStr,
                                true)

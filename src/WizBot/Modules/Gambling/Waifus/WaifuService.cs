@@ -414,24 +414,13 @@ public class WaifuService : INService, IReadyExecutor
                 AffinityName = null,
                 ClaimCount = 0,
                 ClaimerName = null,
-                Claims = new(),
-                Fans = new(),
                 DivorceCount = 0,
                 FullName = null,
-                Items = new(),
                 Price = 1
             };
         }
 
         return wi;
-    }
-
-    public async Task<WaifuInfoStats> GetFullWaifuInfoAsync(IGuildUser target)
-    {
-        await using var uow = _db.GetDbContext();
-        _ = uow.GetOrCreateUser(target);
-
-        return await GetFullWaifuInfoAsync(target.Id);
     }
 
     public string GetClaimTitle(int count)
@@ -557,13 +546,38 @@ public class WaifuService : INService, IReadyExecutor
             }
         }
     }
-    
-    public async Task<IReadOnlyCollection<string>> GetBulkWaifuNames(IEnumerable<int> take)
+
+    public async Task<IReadOnlyCollection<string>> GetClaimNames(int waifuId)
     {
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<DiscordUser>()
-                        .Where(x => take.Contains(x.Id))
-                        .Select(x => $"{x.Username}#{x.Discriminator}")
-                        .ToListAsyncLinqToDB();
+            .Where(x => ctx.GetTable<WaifuInfo>()
+                .Where(wi => wi.ClaimerId == waifuId)
+                .Select(wi => wi.WaifuId)
+                .Contains(x.Id))
+            .Select(x => $"{x.Username}#{x.Discriminator}")
+            .ToListAsyncEF();
+    }
+    public async Task<IReadOnlyCollection<string>> GetFansNames(int waifuId)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<DiscordUser>()
+            .Where(x => ctx.GetTable<WaifuInfo>()
+                .Where(wi => wi.AffinityId == waifuId)
+                .Select(wi => wi.WaifuId)
+                .Contains(x.Id))
+            .Select(x => $"{x.Username}#{x.Discriminator}")
+            .ToListAsyncEF();
+    }
+
+    public async Task<IReadOnlyCollection<WaifuItem>> GetItems(int waifuId)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<WaifuItem>()
+            .Where(x => x.WaifuInfoId == ctx.GetTable<WaifuInfo>()
+                .Where(x => x.WaifuId == waifuId)
+                .Select(x => x.Id)
+                .FirstOrDefault())
+            .ToListAsyncEF();
     }
 }

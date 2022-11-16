@@ -10,6 +10,7 @@ namespace WizBot.Db;
 
 public class WaifuInfoStats
 {
+    public int WaifuId { get; init; }
     public string FullName { get; init; }
     public long Price { get; init; }
     public string ClaimerName { get; init; }
@@ -17,9 +18,6 @@ public class WaifuInfoStats
     public int AffinityCount { get; init; }
     public int DivorceCount { get; init; }
     public int ClaimCount { get; init; }
-    public List<WaifuItem> Items { get; init; }
-    public List<int> Claims { get; init; }
-    public List<int> Fans { get; init; }
 }
 
 public static class WaifuExtensions
@@ -103,6 +101,7 @@ public static class WaifuExtensions
                                             .FirstOrDefault())
                           .Select(w => new WaifuInfoStats
                           {
+                              WaifuId = w.WaifuId,
                               FullName =
                                   ctx.Set<DiscordUser>()
                                      .AsQueryable()
@@ -134,20 +133,7 @@ public static class WaifuExtensions
                                      .Count(x => x.OldId == w.WaifuId
                                                  && x.NewId == null
                                                  && x.UpdateType == WaifuUpdateType.Claimed),
-                              
                               Price = w.Price,
-                              
-                              Claims = ctx.WaifuInfo
-                                          .Where(x => x.ClaimerId == w.WaifuId)
-                                          .Select(x => x.WaifuId)
-                                          .ToList(),
-                              
-                              Fans = ctx.WaifuInfo
-                                        .Where(x => x.AffinityId == w.WaifuId)
-                                        .Select(x => x.WaifuId)
-                                        .ToList(),
-                              
-                              Items = w.Items
                           })
                           .FirstOrDefault();
 
