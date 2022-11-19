@@ -36,6 +36,26 @@ public partial class Administration
         }
 
         [Cmd]
+        [OwnerOnly]
+        public async Task DoAs(IUser user, [Leftover] string message)
+        {
+            if (ctx.User is not IGuildUser { GuildPermissions.Administrator: true })
+                return;
+
+            if (ctx.Guild is SocketGuild sg && ctx.Channel is ISocketMessageChannel ch
+                && ctx.Message is SocketUserMessage msg)
+            {
+                var fakeMessage = new DoAsUserMessage(msg, user, message);
+                
+                await _cmdHandler.TryRunCommand(sg, ch, fakeMessage);
+            }
+            else
+            {
+                await ReplyErrorLocalizedAsync(strs.error_occured);
+            }
+        }
+
+        [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [OwnerOnly]

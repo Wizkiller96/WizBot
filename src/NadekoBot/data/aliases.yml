@@ -1384,3 +1384,6 @@ eval:
   - eval
 autopublish:
   - autopublish
+doas:
+  - doas
+  - execas 
