@@ -19,6 +19,10 @@ public class LogSetting : DbEntity
     public ulong? ChannelCreatedId { get; set; }
     public ulong? ChannelDestroyedId { get; set; }
     public ulong? ChannelUpdatedId { get; set; }
+    
+    
+    public ulong? ThreadDeletedId { get; set; }
+    public ulong? ThreadCreatedId { get; set; }
 
     public ulong? UserMutedId { get; set; }
 
