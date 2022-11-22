@@ -975,6 +975,10 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext")
+                        .HasColumnName("message");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
