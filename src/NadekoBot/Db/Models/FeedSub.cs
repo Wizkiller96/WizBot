@@ -8,6 +8,8 @@ public class FeedSub : DbEntity
 
     public ulong ChannelId { get; set; }
     public string Url { get; set; }
+    
+    public string Message { get; set; }
 
     public override int GetHashCode()
         => Url.GetHashCode(StringComparison.InvariantCulture) ^ GuildConfigId.GetHashCode();
