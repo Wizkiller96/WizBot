@@ -1384,6 +1384,9 @@ eval:
   - eval
 autopublish:
   - autopublish
+doas:
+  - doas
+  - execas
 # WizNet System
 feedback:
   - feedback

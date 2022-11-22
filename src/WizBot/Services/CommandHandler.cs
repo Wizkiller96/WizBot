@@ -302,7 +302,7 @@ public class CommandHandler : INService, IReadyExecutor
     }
 
     public Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommandAsync(
-        CommandContext context,
+        ICommandContext context,
         string input,
         int argPos,
         IServiceProvider serviceProvider,
@@ -311,7 +311,7 @@ public class CommandHandler : INService, IReadyExecutor
 
 
     public async Task<(bool Success, string Error, CommandInfo Info)> ExecuteCommand(
-        CommandContext context,
+        ICommandContext context,
         string input,
         IServiceProvider services,
         MultiMatchHandling multiMatchHandling = MultiMatchHandling.Exception)

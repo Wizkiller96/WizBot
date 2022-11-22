@@ -2348,6 +2348,10 @@ autopublish:
   desc: "Make the bot automatically publish all messages posted in the news channel this command was executed in."
   args:
     - ""
+doas:
+  desc: "Execute the command as if you were the target user. Requires bot ownership and server administrator permission."
+  args:
+    - "@Thief .give all @Admin"
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   args:
