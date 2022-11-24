@@ -162,7 +162,6 @@ public class FeedsService : INService
                             }
                         }
 
-
                         embed.WithTitle(title.TrimTo(256));
 
                         var desc = feedItem.Description?.StripHtml();
@@ -171,15 +170,15 @@ public class FeedsService : INService
 
                         //send the created embed to all subscribed channels
                         var feedSendTasks = kvp.Value
-                                               .Where(x => x.GuildConfig is not null)
-                                               .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
-                                                                   ?.GetTextChannel(x.ChannelId))
-                                               .Where(x => x is not null)
-                                               .Select(x => x.EmbedAsync(embed));
+                            .Where(x => x.GuildConfig is not null)
+                            .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
+                                ?.GetTextChannel(x.ChannelId)
+                                ?.EmbedAsync(embed, x.Message))
+                            .Where(x => x is not null);
 
                         allSendTasks.Add(feedSendTasks.WhenAll());
 
-                        // as data retrieval was sucessful, reset error counter
+                        // as data retrieval was successful, reset error counter
                         ClearErrors(rssUrl);
                     }
                 }
@@ -207,7 +206,7 @@ public class FeedsService : INService
                   .ToList();
     }
 
-    public FeedAddResult AddFeed(ulong guildId, ulong channelId, string rssFeed)
+    public FeedAddResult AddFeed(ulong guildId, ulong channelId, string rssFeed, string message)
     {
         ArgumentNullException.ThrowIfNull(rssFeed, nameof(rssFeed));
 

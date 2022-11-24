@@ -16,7 +16,7 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public Task YtUploadNotif(string url, [Leftover] ITextChannel channel = null)
+        public Task YtUploadNotif(string url, ITextChannel channel = null, [Leftover] string message = null)
         {
             var m = _ytChannelRegex.Match(url);
             if (!m.Success)
@@ -24,13 +24,13 @@ public partial class Searches
 
             var channelId = m.Groups["channelid"].Value;
 
-            return Feed("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId, channel);
+            return Feed("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId, channel, message);
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task Feed(string url, [Leftover] ITextChannel channel = null)
+        public async Task Feed(string url, ITextChannel channel = null, [Leftover] string message = null)
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) 
                 || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
@@ -51,7 +51,10 @@ public partial class Searches
                 return;
             }
 
-            var result = _service.AddFeed(ctx.Guild.Id, channel.Id, url);
+            if (ctx.User is not IGuildUser gu || !gu.GuildPermissions.Administrator)
+                message = message?.SanitizeMentions(true);
+            
+            var result = _service.AddFeed(ctx.Guild.Id, channel.Id, url, message);
             if (result == FeedAddResult.Success)
             {
                 await ReplyConfirmLocalizedAsync(strs.feed_added);

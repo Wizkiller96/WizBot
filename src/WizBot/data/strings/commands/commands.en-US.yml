@@ -1992,13 +1992,22 @@ ytuploadnotif:
   desc: |-
     Subscribe to a youtube channel's upload rss feed.
     Shortcut for `.feed https://www.youtube.com/feeds/videos.xml?channel_id=%3Cyoutube_channel_id`
+    You can optionally specify a message which will be posted with an update.
   args:
     - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"
+    - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow New video is posted"
 feed:
-  desc: "Subscribes to a feed. Bot will post an update up to once every 10 seconds. You can have up to 10 feeds on one server. All feeds must have unique URLs. Set a channel as a second optional parameter to specify where to send the updates."
+  desc: |-
+    Subscribes to a feed.
+    Bot will post an update up to once every 10 seconds.
+    You can have up to 10 feeds on one server.
+    All feeds must have unique URLs.
+    Set a channel as a second optional parameter to specify where to send the updates.
+    You can optionally specify a message after the channel name which will be posted with an update.
   args:
     - "https://blog.playstation.com/feed/"
     - "https://blog.playstation.com/feed/ #updates"
+    - "https://blog.playstation.com/feed/ #updates New playstation rss feed post!"
 feedremove:
   desc: "Stops tracking a feed on the given index. Use `{0}feeds` command to see a list of feeds and their indexes."
   args:

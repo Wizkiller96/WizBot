@@ -1022,11 +1022,15 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("integer")
                         .HasColumnName("guildconfigid");
+                    
+                    b.Property<string>("Message")
+                     .HasColumnType("text")
+                     .HasColumnName("message");
 
                     b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("url");
+                     .IsRequired()
+                     .HasColumnType("text")
+                     .HasColumnName("url");
 
                     b.HasKey("Id")
                         .HasName("pk_feedsub");
