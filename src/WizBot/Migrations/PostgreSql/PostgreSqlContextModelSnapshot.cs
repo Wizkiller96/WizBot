@@ -1589,10 +1589,18 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal?>("MessageUpdatedId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("messageupdatedid");
+                    
+                    b.Property<decimal?>("ThreadCreatedId")
+                     .HasColumnType("numeric(20,0)")
+                     .HasColumnName("threadcreatedid");
+
+                    b.Property<decimal?>("ThreadDeletedId")
+                     .HasColumnType("numeric(20,0)")
+                     .HasColumnName("threaddeletedid");
 
                     b.Property<decimal?>("UserBannedId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("userbannedid");
+                     .HasColumnType("numeric(20,0)")
+                     .HasColumnName("userbannedid");
 
                     b.Property<decimal?>("UserJoinedId")
                         .HasColumnType("numeric(20,0)")

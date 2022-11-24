@@ -29,4 +29,7 @@ public enum LogType
     VoicePresenceTts,
     UserMuted,
     UserWarned,
+    
+    ThreadDeleted,
+    ThreadCreated
 }

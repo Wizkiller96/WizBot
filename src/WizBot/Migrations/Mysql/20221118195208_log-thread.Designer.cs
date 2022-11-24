@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 
@@ -10,9 +11,10 @@ using WizBot.Services.Database;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    partial class MysqlContextModelSnapshot : ModelSnapshot
+    [Migration("20221118195208_log-thread")]
+    partial class logthread
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1517,18 +1519,18 @@ namespace WizBot.Migrations.Mysql
                     b.Property<ulong?>("MessageUpdatedId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("messageupdatedid");
-                    
+
                     b.Property<ulong?>("ThreadCreatedId")
-                     .HasColumnType("bigint unsigned")
-                     .HasColumnName("threadcreatedid");
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("threadcreatedid");
 
                     b.Property<ulong?>("ThreadDeletedId")
-                     .HasColumnType("bigint unsigned")
-                     .HasColumnName("threaddeletedid");
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("threaddeletedid");
 
                     b.Property<ulong?>("UserBannedId")
-                     .HasColumnType("bigint unsigned")
-                     .HasColumnName("userbannedid");
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userbannedid");
 
                     b.Property<ulong?>("UserJoinedId")
                         .HasColumnType("bigint unsigned")

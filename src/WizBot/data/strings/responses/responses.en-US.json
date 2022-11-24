@@ -1054,5 +1054,7 @@
   "patron_insuff_tier": "Your Patron Tier insufficient to perform this action.",
   "xpshop_already_owned": "You already own this item.",
   "xpshop_item_not_found": "An item with that key doesn't exist.",
-  "xpshop_website": "You can see the list of all Xp Shop items here: Website Coming Soon"
+  "xpshop_website": "You can see the list of all Xp Shop items here: Website Coming Soon",
+  "thread_deleted": "Thread Deleted",
+  "thread_created": "Thread Created"
 }

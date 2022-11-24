@@ -79,6 +79,9 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _client.ChannelDestroyed += _client_ChannelDestroyed;
         _client.ChannelUpdated += _client_ChannelUpdated;
         _client.RoleDeleted += _client_RoleDeleted;
+        
+        _client.ThreadCreated += _client_ThreadCreated;
+        _client.ThreadDeleted += _client_ThreadDeleted;
 
         _mute.UserMuted += MuteCommands_UserMuted;
         _mute.UserUnmuted += MuteCommands_UserUnmuted;
@@ -86,6 +89,72 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
         
         _punishService.OnUserWarned += PunishServiceOnOnUserWarned;
+    }
+    
+    private async Task _client_ThreadDeleted(Cacheable<SocketThreadChannel, ulong> sch)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                if (sch.HasValue || sch.Value is not IGuildChannel ch)
+                    return;
+
+                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
+                    || logSetting.ThreadDeletedId is null)
+                    return;
+
+                ITextChannel? logChannel;
+                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ThreadDeleted)) is null)
+                    return;
+
+                var title = GetText(logChannel.Guild, strs.thread_deleted);
+
+                await logChannel.EmbedAsync(_eb.Create()
+                    .WithOkColor()
+                    .WithTitle("🆕 " + title)
+                    .WithDescription($"{ch.Name} | {ch.Id}")
+                    .WithFooter(CurrentTime(ch.Guild)));
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        });
+    }
+
+    private Task _client_ThreadCreated(SocketThreadChannel sch)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                if (sch.Guild is not IGuildChannel ch)
+                    return;
+
+                if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
+                    || logSetting.ThreadCreatedId is null)
+                    return;
+
+                ITextChannel? logChannel;
+                if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ThreadCreated)) is null)
+                    return;
+                
+                var title = GetText(logChannel.Guild, strs.thread_created);
+
+                await logChannel.EmbedAsync(_eb.Create()
+                    .WithOkColor()
+                    .WithTitle("🆕 " + title)
+                    .WithDescription($"{ch.Name} | {ch.Id}")
+                    .WithFooter(CurrentTime(ch.Guild)));
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        });
+
+        return Task.CompletedTask;
     }
 
     public async Task OnReadyAsync()
@@ -726,6 +795,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 ITextChannel? logChannel;
                 if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)) is null)
                     return;
+                
                 string title;
                 if (ch is IVoiceChannel)
                     title = GetText(logChannel.Guild, strs.voice_chan_destroyed);
