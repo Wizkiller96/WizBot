@@ -457,6 +457,7 @@ public class ProtectionService : INService
             case PunishmentAction.ChatMute:
             case PunishmentAction.VoiceMute:
             case PunishmentAction.AddRole:
+            case PunishmentAction.TimeOut:
                 return true;
             default:
                 return false;

@@ -90,7 +90,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _punishService.OnUserWarned += PunishServiceOnOnUserWarned;
     }
 
-    private async Task _client_ThreadDeleted(Cacheable<SocketThreadChannel, ulong> sch)
+    private Task _client_ThreadDeleted(Cacheable<SocketThreadChannel, ulong> sch)
     {
         _ = Task.Run(async () =>
         {
@@ -120,6 +120,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 // ignored
             }
         });
+        return Task.CompletedTask;
     }
 
     private Task _client_ThreadCreated(SocketThreadChannel sch)

@@ -19,38 +19,38 @@ public sealed class DoAsUserMessage : IUserMessage
 
     public DateTimeOffset CreatedAt => _msg.CreatedAt;
 
-    public Task DeleteAsync(RequestOptions options = null)
+    public Task DeleteAsync(RequestOptions? options = null)
     {
         return _msg.DeleteAsync(options);
     }
 
-    public Task AddReactionAsync(IEmote emote, RequestOptions options = null)
+    public Task AddReactionAsync(IEmote emote, RequestOptions? options = null)
     {
         return _msg.AddReactionAsync(emote, options);
     }
 
-    public Task RemoveReactionAsync(IEmote emote, IUser user, RequestOptions options = null)
+    public Task RemoveReactionAsync(IEmote emote, IUser user, RequestOptions? options = null)
     {
         return _msg.RemoveReactionAsync(emote, user, options);
     }
 
-    public Task RemoveReactionAsync(IEmote emote, ulong userId, RequestOptions options = null)
+    public Task RemoveReactionAsync(IEmote emote, ulong userId, RequestOptions? options = null)
     {
         return _msg.RemoveReactionAsync(emote, userId, options);
     }
 
-    public Task RemoveAllReactionsAsync(RequestOptions options = null)
+    public Task RemoveAllReactionsAsync(RequestOptions? options = null)
     {
         return _msg.RemoveAllReactionsAsync(options);
     }
 
-    public Task RemoveAllReactionsForEmoteAsync(IEmote emote, RequestOptions options = null)
+    public Task RemoveAllReactionsForEmoteAsync(IEmote emote, RequestOptions? options = null)
     {
         return _msg.RemoveAllReactionsForEmoteAsync(emote, options);
     }
 
     public IAsyncEnumerable<IReadOnlyCollection<IUser>> GetReactionUsersAsync(IEmote emoji, int limit,
-        RequestOptions options = null)
+        RequestOptions? options = null)
     {
         return _msg.GetReactionUsersAsync(emoji, limit, options);
     }
@@ -107,22 +107,22 @@ public sealed class DoAsUserMessage : IUserMessage
 
     public IMessageInteraction Interaction => _msg.Interaction;
 
-    public Task ModifyAsync(Action<MessageProperties> func, RequestOptions options = null)
+    public Task ModifyAsync(Action<MessageProperties> func, RequestOptions? options = null)
     {
         return _msg.ModifyAsync(func, options);
     }
 
-    public Task PinAsync(RequestOptions options = null)
+    public Task PinAsync(RequestOptions? options = null)
     {
         return _msg.PinAsync(options);
     }
 
-    public Task UnpinAsync(RequestOptions options = null)
+    public Task UnpinAsync(RequestOptions? options = null)
     {
         return _msg.UnpinAsync(options);
     }
 
-    public Task CrosspostAsync(RequestOptions options = null)
+    public Task CrosspostAsync(RequestOptions? options = null)
     {
         return _msg.CrosspostAsync(options);
     }
