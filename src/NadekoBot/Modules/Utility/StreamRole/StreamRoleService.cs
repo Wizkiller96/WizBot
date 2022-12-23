@@ -1,12 +1,9 @@
-﻿#nullable disable
-using NadekoBot.Common.ModuleBehaviors;
+﻿using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;
 using NadekoBot.Services.Database.Models;
-using System.Diagnostics;
 using System.Net;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Utility.Services;
 
@@ -31,12 +28,12 @@ public class StreamRoleService : IReadyExecutor, INService
         _queueRunner = new QueueRunner();
     }
 
-    private Task OnPresenceUpdate(SocketUser user, SocketPresence oldPresence, SocketPresence newPresence)
+    private Task OnPresenceUpdate(SocketUser user, SocketPresence? oldPresence, SocketPresence? newPresence)
     {
         
         _ = Task.Run(async () =>
         {
-            if (oldPresence.Activities.Count != newPresence.Activities.Count)
+            if (oldPresence?.Activities?.Count != newPresence?.Activities?.Count)
             {
                 var guildUsers = _client.Guilds
                                         .Select(x => x.GetUser(user.Id))
@@ -132,7 +129,7 @@ public class StreamRoleService : IReadyExecutor, INService
     /// <param name="guild">Guild Id</param>
     /// <param name="keyword">Keyword to set</param>
     /// <returns>The keyword set</returns>
-    public async Task<string> SetKeyword(IGuild guild, string keyword)
+    public async Task<string?> SetKeyword(IGuild guild, string? keyword)
     {
         keyword = keyword?.Trim().ToLowerInvariant();
 
@@ -222,15 +219,15 @@ public class StreamRoleService : IReadyExecutor, INService
             await RescanUsers(guild);
     }
 
-    private async ValueTask RescanUser(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
+    private async ValueTask RescanUser(IGuildUser user, StreamRoleSettings setting, IRole? addRole = null)
         => await _queueRunner.EnqueueAsync(() => RescanUserInternal(user, setting, addRole));
 
-    private async Task RescanUserInternal(IGuildUser user, StreamRoleSettings setting, IRole addRole = null)
+    private async Task RescanUserInternal(IGuildUser user, StreamRoleSettings setting, IRole? addRole = null)
     {
         if (user.IsBot)
             return;
 
-        var g = (StreamingGame)user.Activities.FirstOrDefault(a
+        var g = (StreamingGame?)user.Activities.FirstOrDefault(a
             => a is StreamingGame
                && (string.IsNullOrWhiteSpace(setting.Keyword)
                    || a.Name.ToUpperInvariant().Contains(setting.Keyword.ToUpperInvariant())
