@@ -39,7 +39,8 @@ public class StreamRoleService : IReadyExecutor, INService
             if (oldPresence.Activities.Count != newPresence.Activities.Count)
             {
                 var guildUsers = _client.Guilds
-                                        .Select(x => x.GetUser(user.Id));
+                                        .Select(x => x.GetUser(user.Id))
+                                        .Where(x => x is not null);
 
                 foreach (var guildUser in guildUsers)
                 {
