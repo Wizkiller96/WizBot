@@ -270,7 +270,7 @@ public partial class Utility
 
             if (userId == ctx.User.Id || hasManageMessages)
             {
-                var deleted = await _qs.DeleteAllAuthorQuotesAsync(ctx.Guild.Id, ctx.User.Id);
+                var deleted = await _qs.DeleteAllAuthorQuotesAsync(ctx.Guild.Id, userId);
                 await ReplyConfirmLocalizedAsync(strs.quotes_deleted_count(deleted));
             }
             else
