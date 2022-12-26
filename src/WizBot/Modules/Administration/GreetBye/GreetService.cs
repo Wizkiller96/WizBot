@@ -191,7 +191,7 @@ public class GreetService : INService, IReadyExecutor
             if (conf.AutoDeleteByeMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex, "Missing permissions to send a bye message, the bye message will be disabled on server: {GuildId}", channel.GuildId);
             await SetBye(channel.GuildId, channel.Id, false);
@@ -224,7 +224,7 @@ public class GreetService : INService, IReadyExecutor
             if (conf.AutoDeleteGreetMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex, "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}", channel.GuildId);
             await SetGreet(channel.GuildId, channel.Id, false);
