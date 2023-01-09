@@ -431,7 +431,8 @@ public abstract class NadekoContext : DbContext
         modelBuilder.Entity<PatronUser>(pu =>
         {
             pu.HasIndex(x => x.UniquePlatformUserId).IsUnique();
-            pu.HasKey(x => x.UserId);
+            pu.HasKey(x => x.Id);
+            pu.HasIndex(x => x.UserId).IsUnique(false);
         });
 
         // quotes are per user id

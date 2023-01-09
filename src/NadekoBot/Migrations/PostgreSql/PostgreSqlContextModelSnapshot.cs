@@ -331,10 +331,12 @@ namespace NadekoBot.Migrations.PostgreSql
 
             modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
                 {
-                    b.Property<decimal>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("userid");
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AmountCents")
                         .HasColumnType("integer")
@@ -348,16 +350,23 @@ namespace NadekoBot.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("uniqueplatformuserid");
 
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
+
                     b.Property<DateTime>("ValidThru")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("validthru");
 
-                    b.HasKey("UserId")
+                    b.HasKey("Id")
                         .HasName("pk_patrons");
 
                     b.HasIndex("UniquePlatformUserId")
                         .IsUnique()
                         .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_patrons_userid");
 
                     b.ToTable("patrons", (string)null);
                 });

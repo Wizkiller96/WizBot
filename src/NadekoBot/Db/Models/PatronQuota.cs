@@ -27,6 +27,7 @@ public enum FeatureType
 
 public class PatronUser
 {
+    public int Id { get; set; }
     public string UniquePlatformUserId { get; set; }
     public ulong UserId { get; set; }
     public int AmountCents { get; set; }

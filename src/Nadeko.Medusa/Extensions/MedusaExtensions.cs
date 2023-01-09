@@ -10,7 +10,7 @@ public static class MedusaExtensions
             embed: embed.Build(),
             options: new()
             {
-                RetryMode = RetryMode.AlwaysRetry
+                RetryMode = RetryMode.Retry502
             });
 
     // unlocalized

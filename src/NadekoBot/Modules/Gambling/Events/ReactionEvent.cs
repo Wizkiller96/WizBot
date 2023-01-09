@@ -79,10 +79,6 @@ public class ReactionEvent : ICurrencyEvent
                 await msg.ModifyAsync(m =>
                     {
                         m.Embed = GetEmbed(PotSize).Build();
-                    },
-                    new()
-                    {
-                        RetryMode = RetryMode.AlwaysRetry
                     });
             }
 
