@@ -16,13 +16,13 @@ w# Setting up NadekoBot on Linux
 It is recommended that you use **Ubuntu 20.04**, as there have been nearly no problems with it. Also, **32-bit systems are incompatible**.
 
 
-### Ubuntu 22.04 is ruled as incompatible so double check which ubuntu version you are using.
+### Ubuntu 22.04 is ruled as incompatible so double check which ubuntu version you are using. 
 
 ##### Compatible operating systems:
 
 - Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10
 - Mint: 19, 20
-- Debian: 9, 10
+- Debian: 10, 11
 - CentOS: 7
 - openSUSE
 - Fedora: 33, 34, 35
