@@ -728,6 +728,9 @@ showemojis:
 emojiadd:
   - emojiadd
   - ea
+stickeradd:
+  - stickeradd
+  - sa
 emojiremove:
   - emojiremove
   - emojirm
