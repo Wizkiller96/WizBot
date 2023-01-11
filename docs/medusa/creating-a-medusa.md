@@ -147,6 +147,7 @@ This section will guide you through how to create a simple custom medusa. You ca
         <!-- Use latest .net features -->
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
+        <GenerateRequiresPreviewFeaturesAttribute>true</GenerateRequiresPreviewFeaturesAttribute>
         
         <!-- tell .net that this library will be used as a plugin -->
         <EnableDynamicLoading>true</EnableDynamicLoading>
