@@ -1245,6 +1245,10 @@ emojiremove:
   desc: "Removes the specified emoji or emojis from this server."
   args:
     - ":eagleWarrior: :plumedArcher:"
+stickeradd:
+  desc: "Adds the sticker from your message to this server. Send the sticker along with this command (in the same message)."
+  args:
+    - "optionalname \"optional description\" tag1 tag2 tagN"
 deckshuffle:
   desc: "Reshuffles all cards back into the deck."
   args:

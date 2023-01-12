@@ -408,6 +408,98 @@ public partial class Utility : WizBotModule
 
         await ctx.OkAsync();
     }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [BotPerm(GuildPerm.ManageEmojisAndStickers)]
+    [UserPerm(GuildPerm.ManageEmojisAndStickers)]
+    public async Task StickerAdd(string name = null, string description = null, params string[] tags)
+    {
+        string format;
+        Stream stream;
+
+        if (ctx.Message.Stickers.Count is 1 && ctx.Message.Stickers.First() is SocketSticker ss)
+        {
+            name ??= ss.Name;
+            description = ss.Description;
+            format = FormatToExtension(ss.Format);
+
+            using var http = _httpFactory.CreateClient();
+            stream = await http.GetStreamAsync(ss.GetStickerUrl());
+        }
+        // else if (ctx.Message.Attachments.FirstOrDefault() is { } attachment)
+        // {
+        //     var url = attachment?.Url;
+        //
+        //     if (url is null)
+        //         return;
+        //
+        //     if (name is null)
+        //     {
+        //         await ReplyErrorLocalizedAsync(strs.sticker_missing_name);
+        //         return;
+        //     }
+        //
+        //     format = Path.GetExtension(attachment.Filename);
+        //
+        //     if (attachment is not { Width: 300, Height: 300 })
+        //     {
+        //         await ReplyErrorLocalizedAsync(strs.sticker_invalid_size);
+        //         return;
+        //     }
+        //
+        //     using var http = _httpFactory.CreateClient();
+        //     
+        //     using var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+        //     if (res.GetContentLength() > 512.Kilobytes().Bytes)
+        //     {
+        //         await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);
+        //         return;
+        //     }
+        //
+        //     stream = await res.Content.ReadAsStreamAsync();
+        // }
+        else
+        {
+            await ReplyErrorLocalizedAsync(strs.sticker_error);
+            return;
+        }
+        
+        try
+        {
+            await ctx.Guild.CreateStickerAsync(name,
+                string.IsNullOrWhiteSpace(description) ? "Missing description" : description,
+                tags,
+                stream,
+                $"{name}.{format}");
+
+            await ctx.OkAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error occurred while adding a sticker: {Message}", ex.Message);
+            await ReplyErrorLocalizedAsync(strs.error_occured);
+        }
+        finally
+        {
+            await stream.DisposeAsync();
+        }
+    }
+    
+    private static string FormatToExtension(StickerFormatType format)
+    {
+      switch (format)
+      {
+        case StickerFormatType.None:
+        case StickerFormatType.Png:
+        case StickerFormatType.Apng:
+          return "png";
+        case StickerFormatType.Lottie:
+          return "lottie";
+        default:
+          throw new ArgumentException(nameof (format));
+      }
+    }
 
     [Cmd]
     [OwnerOnly]
