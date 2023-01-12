@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Services.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    partial class PostgreSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20230109010058_patron-fix")]
+    partial class patronfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,15 +334,15 @@ namespace WizBot.Migrations.PostgreSql
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
                     b.Property<int>("Id")
-                     .ValueGeneratedOnAdd()
-                     .HasColumnType("integer")
-                     .HasColumnName("id");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AmountCents")
-                     .HasColumnType("integer")
-                     .HasColumnName("amountcents");
+                        .HasColumnType("integer")
+                        .HasColumnName("amountcents");
 
                     b.Property<DateTime>("LastCharge")
                         .HasColumnType("timestamp without time zone")
@@ -349,24 +351,24 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<string>("UniquePlatformUserId")
                         .HasColumnType("text")
                         .HasColumnName("uniqueplatformuserid");
-                    
+
                     b.Property<decimal>("UserId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("userid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userid");
 
                     b.Property<DateTime>("ValidThru")
-                     .HasColumnType("timestamp without time zone")
-                     .HasColumnName("validthru");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("validthru");
 
                     b.HasKey("Id")
-                     .HasName("pk_patrons");
+                        .HasName("pk_patrons");
 
                     b.HasIndex("UniquePlatformUserId")
                         .IsUnique()
                         .HasDatabaseName("ix_patrons_uniqueplatformuserid");
-                    
+
                     b.HasIndex("UserId")
-                     .HasDatabaseName("ix_patrons_userid");
+                        .HasDatabaseName("ix_patrons_userid");
 
                     b.ToTable("patrons", (string)null);
                 });
@@ -1031,15 +1033,15 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("integer")
                         .HasColumnName("guildconfigid");
-                    
+
                     b.Property<string>("Message")
-                     .HasColumnType("text")
-                     .HasColumnName("message");
+                        .HasColumnType("text")
+                        .HasColumnName("message");
 
                     b.Property<string>("Url")
-                     .IsRequired()
-                     .HasColumnType("text")
-                     .HasColumnName("url");
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
 
                     b.HasKey("Id")
                         .HasName("pk_feedsub");
@@ -1602,18 +1604,18 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal?>("MessageUpdatedId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("messageupdatedid");
-                    
+
                     b.Property<decimal?>("ThreadCreatedId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("threadcreatedid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("threadcreatedid");
 
                     b.Property<decimal?>("ThreadDeletedId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("threaddeletedid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("threaddeletedid");
 
                     b.Property<decimal?>("UserBannedId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("userbannedid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("userbannedid");
 
                     b.Property<decimal?>("UserJoinedId")
                         .HasColumnType("numeric(20,0)")

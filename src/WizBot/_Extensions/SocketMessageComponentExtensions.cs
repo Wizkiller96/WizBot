@@ -23,11 +23,7 @@ public static class SocketMessageComponentExtensions
                 ? null
                 : embeds as Embed[] ?? embeds.ToArray(),
             components: components,
-            ephemeral: ephemeral,
-            options: new()
-            {
-                RetryMode = RetryMode.AlwaysRetry
-            });
+            ephemeral: ephemeral);
     }
 
     public static Task RespondAsync(

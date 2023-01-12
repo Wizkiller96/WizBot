@@ -199,7 +199,7 @@ public sealed class PatronageService
                 }
                 else
                 {
-                    if (dbPatron.LastCharge.Month < lastChargeUtc.Month)
+                    if (dbPatron.LastCharge.Month < lastChargeUtc.Month || dbPatron.LastCharge.Year < lastChargeUtc.Year)
                     {
                         // user is charged again for this month
                         // if his sub would end in teh future, extend it by one month.

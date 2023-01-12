@@ -319,14 +319,14 @@ namespace WizBot.Migrations.Mysql
 
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
-                    b.Property<ulong>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
+                    b.Property<int>("Id")
+                     .ValueGeneratedOnAdd()
+                     .HasColumnType("int")
+                     .HasColumnName("id");
 
                     b.Property<int>("AmountCents")
-                        .HasColumnType("int")
-                        .HasColumnName("amountcents");
+                     .HasColumnType("int")
+                     .HasColumnName("amountcents");
 
                     b.Property<DateTime>("LastCharge")
                         .HasColumnType("datetime(6)")
@@ -335,17 +335,24 @@ namespace WizBot.Migrations.Mysql
                     b.Property<string>("UniquePlatformUserId")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("uniqueplatformuserid");
+                    
+                    b.Property<ulong>("UserId")
+                     .HasColumnType("bigint unsigned")
+                     .HasColumnName("userid");
 
                     b.Property<DateTime>("ValidThru")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("validthru");
+                     .HasColumnType("datetime(6)")
+                     .HasColumnName("validthru");
 
-                    b.HasKey("UserId")
-                        .HasName("pk_patrons");
+                    b.HasKey("Id")
+                     .HasName("pk_patrons");
 
                     b.HasIndex("UniquePlatformUserId")
                         .IsUnique()
                         .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+                    
+                    b.HasIndex("UserId")
+                     .HasDatabaseName("ix_patrons_userid");
 
                     b.ToTable("patrons", (string)null);
                 });

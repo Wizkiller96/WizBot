@@ -74,11 +74,7 @@ public class TypingGame
 
             var time = _options.StartTime;
 
-            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...",
-                options: new()
-                {
-                    RetryMode = RetryMode.AlwaysRetry
-                });
+            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...");
 
             do
             {

@@ -23,11 +23,7 @@ public static class MessageChannelExtensions
             embeds: embeds is null
                 ? null
                 : embeds as Embed[] ?? embeds.ToArray(),
-            components: components,
-            options: new()
-            {
-                RetryMode = RetryMode.AlwaysRetry
-            });
+            components: components);
     }
 
     public static async Task<IUserMessage> SendAsync(
