@@ -331,12 +331,10 @@ namespace WizBot.Migrations.PostgreSql
 
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<decimal>("UserId")
                      .ValueGeneratedOnAdd()
-                     .HasColumnType("integer")
-                     .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                     .HasColumnType("numeric(20,0)")
+                     .HasColumnName("userid");
 
                     b.Property<int>("AmountCents")
                      .HasColumnType("integer")
@@ -349,24 +347,17 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<string>("UniquePlatformUserId")
                         .HasColumnType("text")
                         .HasColumnName("uniqueplatformuserid");
-                    
-                    b.Property<decimal>("UserId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("userid");
 
                     b.Property<DateTime>("ValidThru")
                      .HasColumnType("timestamp without time zone")
                      .HasColumnName("validthru");
 
-                    b.HasKey("Id")
+                    b.HasKey("UserId")
                      .HasName("pk_patrons");
 
                     b.HasIndex("UniquePlatformUserId")
                         .IsUnique()
                         .HasDatabaseName("ix_patrons_uniqueplatformuserid");
-                    
-                    b.HasIndex("UserId")
-                     .HasDatabaseName("ix_patrons_userid");
 
                     b.ToTable("patrons", (string)null);
                 });

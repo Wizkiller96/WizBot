@@ -429,8 +429,7 @@ public abstract class WizBotContext : DbContext
         modelBuilder.Entity<PatronUser>(pu =>
         {
             pu.HasIndex(x => x.UniquePlatformUserId).IsUnique();
-            pu.HasKey(x => x.Id);
-            pu.HasIndex(x => x.UserId).IsUnique(false);
+            pu.HasKey(x => x.UserId);
         });
 
         // quotes are per user id
