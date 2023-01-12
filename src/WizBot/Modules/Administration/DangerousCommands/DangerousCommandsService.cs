@@ -78,6 +78,7 @@ public class DangerousCommandsService : INService
 
         await ctx.CurrencyTransactions.DeleteAsync();
         await ctx.PlantedCurrency.DeleteAsync();
+        await ctx.BankUsers.DeleteAsync();
         await ctx.SaveChangesAsync();
     }
 
