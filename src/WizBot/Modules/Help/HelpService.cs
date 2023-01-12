@@ -45,7 +45,7 @@ public class HelpService : IExecNoCommand, INService
 
             // only send dm help text if it contains one of the keywords, if they're specified
             // if they're not, then reply to every DM
-            if (settings.DmHelpTextKeywords.Any() && !settings.DmHelpTextKeywords.Any(k => msg.Content.Contains(k)))
+            if (settings.DmHelpTextKeywords is not null && !settings.DmHelpTextKeywords.Any(k => msg.Content.Contains(k)))
                 return Task.CompletedTask;
 
             var rep = new ReplacementBuilder().WithOverride("%prefix%", () => _bss.Data.Prefix)
