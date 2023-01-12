@@ -21,7 +21,7 @@ It is recommended that you use **Ubuntu 20.04**, as there have been nearly no pr
 
 - Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10
 - Mint: 19, 20
-- Debian: 9, 10
+- Debian: 10, 11
 - CentOS: 7
 - openSUSE
 - Fedora: 33, 34, 35
