@@ -418,6 +418,14 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             foreach (var f in cmd.Filters)
                 cb.AddPrecondition(new FilterAdapter(f, strings));
 
+            foreach (var up in cmd.UserPerms)
+            {
+                if (up.GuildPerm is { } gp)
+                    cb.AddPrecondition(new UserPermAttribute(gp));
+                else if (up.ChannelPerm is { } cp)
+                    cb.AddPrecondition(new UserPermAttribute(cp));
+            }
+
             cb.WithPriority(cmd.Priority);
             
             // using summary to save method name
@@ -760,6 +768,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         foreach (var method in methodInfos)
         {
             var filters = method.GetCustomAttributes<FilterAttribute>(true).ToArray();
+            var userPerms = method.GetCustomAttributes<user_permAttribute>(false).ToArray();
             var prio = method.GetCustomAttribute<prioAttribute>(true)?.Priority ?? 0;
 
             var paramInfos = method.GetParameters();
@@ -847,6 +856,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                 method,
                 instance,
                 filters,
+                userPerms,
                 cmdContext,
                 diParams,
                 cmdParams,
