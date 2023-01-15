@@ -5,8 +5,10 @@ public sealed class DmContextAdapter : DmContext
     public override IMedusaStrings Strings { get; }
     public override IDMChannel Channel { get; }
     public override IUserMessage Message { get; }
+    public override ISelfUser Bot { get; }
     public override IUser User
         => Message.Author;
+    
     
     private readonly IServiceProvider _services;
     private readonly Lazy<IEmbedBuilderService> _ebs;
@@ -26,6 +28,7 @@ public sealed class DmContextAdapter : DmContext
 
         Channel = ch;
         Message = ctx.Message;
+        Bot = ctx.Client.CurrentUser;
         
         
         _ebs = new(_services.GetRequiredService<IEmbedBuilderService>());
