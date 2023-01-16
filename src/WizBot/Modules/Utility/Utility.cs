@@ -422,6 +422,7 @@ public partial class Utility : WizBotModule
         {
             name ??= ss.Name;
             description = ss.Description;
+            tags = tags is null or { Length: 0 } ? ss.Tags.ToArray() : tags;
             format = FormatToExtension(ss.Format);
 
             using var http = _httpFactory.CreateClient();
@@ -467,6 +468,9 @@ public partial class Utility : WizBotModule
         
         try
         {
+            if (tags.Length == 0)
+                tags = new[] { name };
+
             await ctx.Guild.CreateStickerAsync(name,
                 string.IsNullOrWhiteSpace(description) ? "Missing description" : description,
                 tags,
