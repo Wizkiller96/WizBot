@@ -22,8 +22,6 @@ public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedu
 
     public void AddLoadedMedusa(string name)
     {
-        name = name.Trim().ToLowerInvariant();
-        
         ModifyConfig(conf =>
         {
             if (conf.Loaded is null)
@@ -36,8 +34,6 @@ public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedu
     
     public void RemoveLoadedMedusa(string name)
     {
-        name = name.Trim().ToLowerInvariant();
-        
         ModifyConfig(conf =>
         {
             if (conf.Loaded is null)
