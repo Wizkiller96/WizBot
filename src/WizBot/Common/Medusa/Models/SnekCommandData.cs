@@ -11,6 +11,7 @@ public sealed class SnekCommandData
         MethodInfo methodInfo,
         Snek module,
         FilterAttribute[] filters,
+        user_permAttribute[] userPerms,
         CommandContextType contextType,
         IReadOnlyList<Type> injectedParams,
         IReadOnlyList<ParamData> parameters,
@@ -21,6 +22,7 @@ public sealed class SnekCommandData
         MethodInfo = methodInfo;
         Module = module;
         Filters = filters;
+        UserPerms = userPerms;
         ContextType = contextType;
         InjectedParams = injectedParams;
         Parameters = parameters;
@@ -28,6 +30,8 @@ public sealed class SnekCommandData
         OptionalStrings = strings;
     }
 
+    public user_permAttribute[] UserPerms { get; set; }
+    
     public CommandStrings OptionalStrings { get; set; }
 
     public IReadOnlyCollection<string> Aliases { get; }
