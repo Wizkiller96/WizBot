@@ -418,12 +418,22 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             foreach (var f in cmd.Filters)
                 cb.AddPrecondition(new FilterAdapter(f, strings));
             
-            foreach (var up in cmd.UserPerms)
+            foreach (var ubp in cmd.UserAndBotPerms)
             {
-                if (up.GuildPerm is { } gp)
-                    cb.AddPrecondition(new UserPermAttribute(gp));
-                else if (up.ChannelPerm is { } cp)
-                    cb.AddPrecondition(new UserPermAttribute(cp));
+                if (ubp is user_permAttribute up)
+                {
+                    if (up.GuildPerm is { } gp)
+                        cb.AddPrecondition(new UserPermAttribute(gp));
+                    else if (up.ChannelPerm is { } cp)
+                        cb.AddPrecondition(new UserPermAttribute(cp));
+                }
+                else if (ubp is bot_permAttribute bp)
+                {
+                    if (bp.GuildPerm is { } gp)
+                        cb.AddPrecondition(new BotPermAttribute(gp));
+                    else if (bp.ChannelPerm is { } cp)
+                        cb.AddPrecondition(new BotPermAttribute(cp));
+                }
             }
 
             cb.WithPriority(cmd.Priority);
@@ -768,7 +778,8 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         foreach (var method in methodInfos)
         {
             var filters = method.GetCustomAttributes<FilterAttribute>(true).ToArray();
-            var userPerms = method.GetCustomAttributes<user_permAttribute>(false).ToArray();
+            var userAndBotPerms = method.GetCustomAttributes<MedusaPermAttribute>(true)
+                                        .ToArray();
             var prio = method.GetCustomAttribute<prioAttribute>(true)?.Priority ?? 0;
 
             var paramInfos = method.GetParameters();
@@ -856,7 +867,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                 method,
                 instance,
                 filters,
-                userPerms,
+                userAndBotPerms,
                 cmdContext,
                 diParams,
                 cmdParams,
