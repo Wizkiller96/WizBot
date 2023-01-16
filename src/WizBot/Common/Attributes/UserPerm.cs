@@ -3,7 +3,7 @@ using WizBot.Modules.Administration.Services;
 
 namespace Discord;
 
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class UserPermAttribute : RequireUserPermissionAttribute
 {
     public UserPermAttribute(GuildPerm permission)
