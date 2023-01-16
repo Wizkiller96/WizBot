@@ -2,7 +2,7 @@
 
 namespace WizBot.Snake;
 
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public sealed class user_permAttribute : Attribute
 {
     public GuildPermission? GuildPerm { get; }
