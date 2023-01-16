@@ -22,6 +22,11 @@ public abstract class AnyContext
     /// The user who invoked the command
     /// </summary>
     public abstract IUser User { get; }
+    
+    /// <summary>
+    /// Bot user
+    /// </summary>
+    public abstract ISelfUser Bot { get; }
 
     /// <summary>
     /// Provides access to strings used by this medusa

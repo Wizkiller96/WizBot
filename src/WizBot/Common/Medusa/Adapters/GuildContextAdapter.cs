@@ -11,6 +11,7 @@ public sealed class GuildContextAdapter : GuildContext
     public override IMedusaStrings Strings { get; }
     public override IGuild Guild { get; }
     public override ITextChannel Channel { get; }
+    public override ISelfUser Bot { get; }
     public override IUserMessage Message
         => _ctx.Message;
 
@@ -28,6 +29,7 @@ public sealed class GuildContextAdapter : GuildContext
 
         Strings = strings;
         User = (IGuildUser)ctx.User;
+        Bot = ctx.Client.CurrentUser;
 
         _services = services;
         _ebs = new(_services.GetRequiredService<IEmbedBuilderService>());
