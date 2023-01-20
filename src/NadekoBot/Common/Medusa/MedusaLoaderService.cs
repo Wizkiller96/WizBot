@@ -434,6 +434,10 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     else if (bp.ChannelPerm is { } cp)
                         cb.AddPrecondition(new BotPermAttribute(cp));
                 }
+                else if (ubp is bot_owner_onlyAttribute)
+                {
+                    cb.AddPrecondition(new OwnerOnlyAttribute());
+                }
             }
 
             cb.WithPriority(cmd.Priority);

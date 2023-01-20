@@ -88,6 +88,9 @@ public sealed class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
     {
+        if (amount == 0)
+            return true;
+        
         var wallet = await GetWalletAsync(userId);
         var result = await wallet.Take(amount, txData);
         if(result) 
