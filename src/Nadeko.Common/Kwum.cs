@@ -5,9 +5,9 @@ namespace Nadeko.Common;
 // needs proper invalid input check (character array input out of range)
 // needs negative number support
 // ReSharper disable once InconsistentNaming
-#pragma warning disable IDE1006
+#pragma warning disable CS8981
 public readonly struct kwum : IEquatable<kwum>
-#pragma warning restore IDE1006
+#pragma warning restore CS8981
 {
     private const string VALID_CHARACTERS = "23456789abcdefghijkmnpqrstuvwxyz";
     private readonly int _value;

@@ -1,10 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <EnablePreviewFeatures>true</EnablePreviewFeatures>
         <ImplicitUsings>true</ImplicitUsings>
 
         <!-- Output/build -->
@@ -15,7 +13,7 @@
         <!-- Analysis/Warnings -->
         <!--    <AnalysisMode>Recommended</AnalysisMode>-->
         <!--    <AnalysisModeGlobalization>None</AnalysisModeGlobalization>-->
-        <NoWarn>CS1066</NoWarn>
+        <NoWarn>CS1066;CS8981</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -124,7 +122,7 @@
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">
-        <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">4.0.0</VersionPrefix>
+        <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">5.0.0</VersionPrefix>
         <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix).$(VersionSuffix)</Version>
         <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
     </PropertyGroup>
