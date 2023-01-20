@@ -151,27 +151,6 @@ public static class MessageChannelExtensions
         string? footer = null)
         => ch.SendAsync(eb, MessageType.Error, title, text, url, footer);
 
-    // weird stuff
-    
-    public static Task<IUserMessage> SendTableAsync<T>(
-        this IMessageChannel ch,
-        string seed,
-        IEnumerable<T> items,
-        Func<T, string> howToPrint,
-        int columns = 3)
-        => ch.SendMessageAsync($@"{seed}```xl
-{items.Chunk(columns)
-      .Select(ig => string.Concat(ig.Select(howToPrint)))
-      .Join("\n")}
-```");
-
-    public static Task<IUserMessage> SendTableAsync<T>(
-        this IMessageChannel ch,
-        IEnumerable<T> items,
-        Func<T, string> howToPrint,
-        int columns = 3)
-        => ch.SendTableAsync("", items, howToPrint, columns);
-
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
