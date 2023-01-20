@@ -159,7 +159,7 @@ public static class MessageChannelExtensions
         IEnumerable<T> items,
         Func<T, string> howToPrint,
         int columns = 3)
-        => ch.SendMessageAsync($@"{seed}```css
+        => ch.SendMessageAsync($@"{seed}```xl
 {items.Chunk(columns)
       .Select(ig => string.Concat(ig.Select(howToPrint)))
       .Join("\n")}

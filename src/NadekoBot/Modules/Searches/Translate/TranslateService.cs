@@ -220,5 +220,5 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
     }
 
     public IEnumerable<string> GetLanguages()
-        => _google.Languages.Select(x => x.Key);
+        => _google.Languages.GroupBy(x => x.Value).Select(x => $"{x.AsEnumerable().Select(y => y.Key).Join(", ")}");
 }
