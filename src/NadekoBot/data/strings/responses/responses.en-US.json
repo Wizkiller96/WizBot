@@ -1056,5 +1056,6 @@
   "sticker_error": "You must either send a sticker along with this command, or upload a 300x300 .png or .apng image.",
   "sticker_missing_name": "Please specify a name for the sticker.",
   "thread_deleted": "Thread Deleted",
-  "thread_created": "Thread Created"
+  "thread_created": "Thread Created",
+  "supported_languages": "Supported Languages"
 }

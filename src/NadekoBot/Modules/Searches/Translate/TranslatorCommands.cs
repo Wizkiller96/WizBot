@@ -81,7 +81,7 @@ public partial class Searches
             var langs = _service.GetLanguages().ToList();
             
             var eb = _eb.Create()
-                        .WithTitle($"Supported {prefix}translate Languages")
+                        .WithTitle(GetText(strs.supported_languages))
                         .WithOkColor();
 
             foreach (var chunk in langs.Chunk(15))
