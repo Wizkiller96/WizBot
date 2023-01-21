@@ -364,26 +364,27 @@ public sealed class Bot
 
         if (arg.Exception is { InnerException: WebSocketClosedException { CloseCode: 4014 } })
         {
-            Log.Error(@"
-Login failed.
-
-*** Please enable privileged intents ***
-
-Certain Nadeko features require Discord's privileged gateway intents.
-These include greeting and goodbye messages, as well as creating the Owner message channels for DM forwarding.
-
-How to enable privileged intents:
-1. Head over to the Discord Developer Portal https://discord.com/developers/applications/
-2. Select your Application.
-3. Click on `Bot` in the left side navigation panel, and scroll down to the intents section.
-4. Enable all intents.
-5. Restart your bot.
-
-Read this only if your bot is in 100 or more servers:
-
-You'll need to apply to use the intents with Discord, but for small selfhosts, all that is required is enabling the intents in the developer portal.
-Yes, this is a new thing from Discord, as of October 2020. No, there's nothing we can do about it. Yes, we're aware it worked before.
-While waiting for your bot to be accepted, you can change the 'usePrivilegedIntents' inside your creds.yml to 'false', although this will break many of the nadeko's features");
+            Log.Error("""
+                Login failed.
+                
+                *** Please enable privileged intents ***
+                
+                Certain Nadeko features require Discord's privileged gateway intents.
+                These include greeting and goodbye messages, as well as creating the Owner message channels for DM forwarding.
+                
+                How to enable privileged intents:
+                1. Head over to the Discord Developer Portal https://discord.com/developers/applications/
+                2. Select your Application.
+                3. Click on `Bot` in the left side navigation panel, and scroll down to the intents section.
+                4. Enable all intents.
+                5. Restart your bot.
+                
+                Read this only if your bot is in 100 or more servers:
+                
+                You'll need to apply to use the intents with Discord, but for small selfhosts, all that is required is enabling the intents in the developer portal.
+                Yes, this is a new thing from Discord, as of October 2020. No, there's nothing we can do about it. Yes, we're aware it worked before.
+                While waiting for your bot to be accepted, you can change the 'usePrivilegedIntents' inside your creds.yml to 'false', although this will break many of the nadeko's features
+                """);
             return Task.CompletedTask;
         }
         

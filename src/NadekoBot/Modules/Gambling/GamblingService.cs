@@ -96,9 +96,12 @@ public class GamblingService : INService, IReadyExecutor
                     continue;
                 }
 
-                Log.Information(@"Decaying users' currency - decay: {ConfigDecayPercent}% 
-                                    | max: {MaxDecay} 
-                                    | threshold: {DecayMinTreshold}",
+                Log.Information("""
+                    --- Decaying users' currency ---
+                    | decay: {ConfigDecayPercent}% 
+                    | max: {MaxDecay} 
+                    | threshold: {DecayMinTreshold}
+                    """,
                     config.Decay.Percent * 100,
                     maxDecay,
                     config.Decay.MinThreshold);

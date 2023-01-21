@@ -43,7 +43,7 @@ public partial class Xp
                                      .OrderBy(x => x.Level)
                                      .Select(x =>
                                      {
-                                         var sign = !x.Remove ? @"✅ " : @"❌ ";
+                                         var sign = !x.Remove ? "✅ " : "❌ ";
 
                                          var str = ctx.Guild.GetRole(x.RoleId)?.ToString();
 

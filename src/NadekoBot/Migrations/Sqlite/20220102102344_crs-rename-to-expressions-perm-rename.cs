@@ -50,24 +50,30 @@ namespace NadekoBot.Migrations
                 principalTable: "GuildConfigs",
                 principalColumn: "Id");
 
-            migrationBuilder.Sql(@"UPDATE Permissions
-SET SecondaryTargetName='ACTUALEXPRESSIONS'
-WHERE SecondaryTargetName='ActualCustomReactions' COLLATE NOCASE;");
+            migrationBuilder.Sql("""
+                UPDATE Permissions
+                SET SecondaryTargetName='ACTUALEXPRESSIONS'
+                WHERE SecondaryTargetName='ActualCustomReactions' COLLATE NOCASE;
+                """);
 
-            migrationBuilder.Sql(@"UPDATE Permissions
-SET SecondaryTargetName='EXPRESSIONS'
-WHERE SecondaryTargetName='CustomReactions' COLLATE NOCASE;");
+            migrationBuilder.Sql("""
+                UPDATE Permissions
+                SET SecondaryTargetName='EXPRESSIONS'
+                WHERE SecondaryTargetName='CustomReactions' COLLATE NOCASE;
+                """);
 
-            migrationBuilder.Sql(@"UPDATE Permissions
-SET SecondaryTargetName= case lower(SecondaryTargetName) 
-    WHEN 'editcustreact' THEN 'expredit'
-    WHEN 'delcustreact' THEN 'exprdel'
-    WHEN 'listcustreact' THEN 'exprlist'
-    WHEN 'addcustreact' THEN 'expradd'
-    WHEN 'showcustreact' THEN 'exprshow'
-ELSE SecondaryTargetName
-END
-WHERE lower(SecondaryTargetName) in ('editcustreact', 'delcustreact', 'listcustreact', 'addcustreact', 'showcustreact');");
+            migrationBuilder.Sql("""
+                UPDATE Permissions
+                SET SecondaryTargetName= case lower(SecondaryTargetName) 
+                    WHEN 'editcustreact' THEN 'expredit'
+                    WHEN 'delcustreact' THEN 'exprdel'
+                    WHEN 'listcustreact' THEN 'exprlist'
+                    WHEN 'addcustreact' THEN 'expradd'
+                    WHEN 'showcustreact' THEN 'exprshow'
+                ELSE SecondaryTargetName
+                END
+                WHERE lower(SecondaryTargetName) in ('editcustreact', 'delcustreact', 'listcustreact', 'addcustreact', 'showcustreact');
+                """);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -14,13 +14,15 @@ public partial class Games
             => await SendConfirmAsync(GetText(strs.hangman_types(prefix)), _service.GetHangmanTypes().Join('\n'));
 
         private static string Draw(HangmanGame.State state)
-            => $@". ┌─────┐
-.┃...............┋
-.┃...............┋
-.┃{(state.Errors > 0 ? ".............😲" : "")}
-.┃{(state.Errors > 1 ? "............./" : "")} {(state.Errors > 2 ? "|" : "")} {(state.Errors > 3 ? "\\" : "")}
-.┃{(state.Errors > 4 ? "............../" : "")} {(state.Errors > 5 ? "\\" : "")}
-/-\";
+            => $"""
+            . ┌─────┐
+            .┃...............┋
+            .┃...............┋
+            .┃{(state.Errors > 0 ? ".............😲" : "")}
+            .┃{(state.Errors > 1 ? "............./" : "")} {(state.Errors > 2 ? "|" : "")} {(state.Errors > 3 ? "\\" : "")}
+            .┃{(state.Errors > 4 ? "............../" : "")} {(state.Errors > 5 ? "\\" : "")}
+            /-\
+            """;
 
         public static IEmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
         {

@@ -78,13 +78,13 @@ public class TriviaQuestion
     private static string Clean(string str)
     {
         str = " " + str.ToLowerInvariant() + " ";
-        str = Regex.Replace(str, "\\s+", " ");
-        str = Regex.Replace(str, "[^\\w\\d\\s]", "");
+        str = Regex.Replace(str, @"\s+", " ");
+        str = Regex.Replace(str, @"[^\w\d\s]", "");
         //Here's where custom modification can be done
-        str = Regex.Replace(str, "\\s(a|an|the|of|in|for|to|as|at|be)\\s", " ");
+        str = Regex.Replace(str, @"\s(a|an|the|of|in|for|to|as|at|be)\s", " ");
         //End custom mod and cleanup whitespace
-        str = Regex.Replace(str, "^\\s+", "");
-        str = Regex.Replace(str, "\\s+$", "");
+        str = Regex.Replace(str, @"^\s+", "");
+        str = Regex.Replace(str, @"\s+$", "");
         //Trim the really long answers
         str = str.Length <= MAX_STRING_LENGTH ? str : str[..MAX_STRING_LENGTH];
         return str;

@@ -13,7 +13,7 @@ namespace NadekoBot.Services;
 public sealed partial class GoogleApiService : IGoogleApiService, INService
 {
     private static readonly Regex
-        _plRegex = new("(?:youtu\\.be\\/|list=)(?<id>[\\da-zA-Z\\-_]*)", RegexOptions.Compiled);
+        _plRegex = new(@"(?:youtu\.be\/|list=)(?<id>[\da-zA-Z\-_]*)", RegexOptions.Compiled);
 
 
     private readonly YouTubeService _yt;

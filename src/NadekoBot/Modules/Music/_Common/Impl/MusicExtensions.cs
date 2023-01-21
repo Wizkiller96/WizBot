@@ -39,9 +39,9 @@ public static class MusicExtensions
         if (trackInfo.Duration == TimeSpan.MaxValue)
             return "∞";
         if (trackInfo.Duration.TotalHours >= 1)
-            return trackInfo.Duration.ToString(@"hh\:mm\:ss");
+            return trackInfo.Duration.ToString("""hh\:mm\:ss""");
 
-        return trackInfo.Duration.ToString(@"mm\:ss");
+        return trackInfo.Duration.ToString("""mm\:ss""");
     }
 
     public static ICachableTrackData ToCachedData(this ITrackInfo trackInfo, string id)

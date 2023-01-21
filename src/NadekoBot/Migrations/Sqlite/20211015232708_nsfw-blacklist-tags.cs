@@ -28,14 +28,16 @@ namespace NadekoBot.Migrations
                 table: "NsfwBlacklistedTags",
                 column: "GuildId");
 
-            migrationBuilder.Sql(@"INSERT INTO NsfwBlacklistedTags(Id, GuildId, Tag, DateAdded)
-SELECT 
-    Id,
-    (SELECT GuildId From GuildConfigs WHERE Id=GuildConfigId),
-    Tag,
-    DateAdded
-FROM NsfwBlacklitedTag
-WHERE GuildConfigId in (SELECT Id from GuildConfigs);");
+            migrationBuilder.Sql("""
+                INSERT INTO NsfwBlacklistedTags(Id, GuildId, Tag, DateAdded)
+                SELECT 
+                    Id,
+                    (SELECT GuildId From GuildConfigs WHERE Id=GuildConfigId),
+                    Tag,
+                    DateAdded
+                FROM NsfwBlacklitedTag
+                WHERE GuildConfigId in (SELECT Id from GuildConfigs);
+                """);
             
             migrationBuilder.DropTable(
                 name: "NsfwBlacklitedTag");

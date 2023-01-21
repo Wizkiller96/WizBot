@@ -490,13 +490,15 @@ public partial class Help : NadekoModule<HelpService>
 
     private Task SelfhostAction(SocketMessageComponent smc, object _)
         => smc.RespondConfirmAsync(_eb,
-            @"- In case you don't want or cannot Donate to NadekoBot project, but you 
-- NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own ""selfhosted"" instance on your computer or server for free.
-
-*Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
-
-- You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
-- If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/nadekobot) to keep the development going :)",
+            """
+                - In case you don't want or cannot Donate to NadekoBot project, but you 
+                - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer or server for free.
+                
+                *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
+                
+                - You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
+                - If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/nadekobot) to keep the development going :)
+                """,
             true);
 
     [Cmd]
@@ -541,12 +543,14 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
 🎉 **Enjoy!** 🎉
 ")
             .AddField("Troubleshooting",
-                @"
-*In case you didn't receive the rewards within 5 minutes:*
-`1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
-`2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
-`3.` Make sure your payment has been processed and not declined by Patreon.
-`4.` If any of the previous steps don't help, you can join the nadeko support server <https://discord.nadeko.bot> and ask for help in the #help channel");
+                """
+                    
+                    *In case you didn't receive the rewards within 5 minutes:*
+                    `1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
+                    `2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
+                    `3.` Make sure your payment has been processed and not declined by Patreon.
+                    `4.` If any of the previous steps don't help, you can join the nadeko support server <https://discord.nadeko.bot> and ask for help in the #help channel
+                    """);
 
         try
         {

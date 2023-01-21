@@ -69,7 +69,7 @@ public class TypingGame
         try
         {
             await Channel.SendConfirmAsync(_eb,
-                $@":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.");
+                $":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.");
 
 
             var time = _options.StartTime;

@@ -187,11 +187,13 @@ public class ChatterBotService : IExecOnMessage
                 // , footer: counter > 0 ? counter.ToString() : null
                 );
 
-            Log.Information(@"CleverBot Executed
-Server: {GuildName} [{GuildId}]
-Channel: {ChannelName} [{ChannelId}]
-UserId: {Author} [{AuthorId}]
-Message: {Content}",
+            Log.Information("""
+                CleverBot Executed
+                Server: {GuildName} [{GuildId}]
+                Channel: {ChannelName} [{ChannelId}]
+                UserId: {Author} [{AuthorId}]
+                Message: {Content}
+                """,
                 guild.Name,
                 guild.Id,
                 usrMsg.Channel?.Name,

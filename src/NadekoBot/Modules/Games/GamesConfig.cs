@@ -110,8 +110,10 @@ public sealed partial class TriviaConfig
     [Comment("The amount of currency awarded to the winner of the trivia game.")]
     public long CurrencyReward { get; set; }
 
-    [Comment(@"Users won't be able to start trivia games which have 
-a smaller win requirement than the one specified by this setting.")]
+    [Comment("""
+        Users won't be able to start trivia games which have 
+        a smaller win requirement than the one specified by this setting.
+        """)]
     public int MinimumWinReq { get; set; } = 1;
 }
 

@@ -10,50 +10,58 @@ namespace NadekoBot.Modules.Gambling.Common;
 [Cloneable]
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
-    [Comment(@"DO NOT CHANGE")]
+    [Comment("""DO NOT CHANGE""")]
     public int Version { get; set; } = 2;
 
-    [Comment(@"Currency settings")]
+    [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
 
-    [Comment(@"Minimum amount users can bet (>=0)")]
+    [Comment("""Minimum amount users can bet (>=0)""")]
     public int MinBet { get; set; } = 0;
 
-    [Comment(@"Maximum amount users can bet
-Set 0 for unlimited")]
+    [Comment("""
+        Maximum amount users can bet
+        Set 0 for unlimited
+        """)]
     public int MaxBet { get; set; } = 0;
 
-    [Comment(@"Settings for betflip command")]
+    [Comment("""Settings for betflip command""")]
     public BetFlipConfig BetFlip { get; set; }
 
-    [Comment(@"Settings for betroll command")]
+    [Comment("""Settings for betroll command""")]
     public BetRollConfig BetRoll { get; set; }
 
-    [Comment(@"Automatic currency generation settings.")]
+    [Comment("""Automatic currency generation settings.""")]
     public GenerationConfig Generation { get; set; }
 
-    [Comment(@"Settings for timely command 
-(letting people claim X amount of currency every Y hours)")]
+    [Comment("""
+        Settings for timely command 
+        (letting people claim X amount of currency every Y hours)
+        """)]
     public TimelyConfig Timely { get; set; }
 
-    [Comment(@"How much will each user's owned currency decay over time.")]
+    [Comment("""How much will each user's owned currency decay over time.""")]
     public DecayConfig Decay { get; set; }
 
-    [Comment(@"Settings for LuckyLadder command")]
+    [Comment("""Settings for LuckyLadder command""")]
     public LuckyLadderSettings LuckyLadder { get; set; }
 
-    [Comment(@"Settings related to waifus")]
+    [Comment("""Settings related to waifus""")]
     public WaifuConfig Waifu { get; set; }
 
-    [Comment(@"Amount of currency selfhosters will get PER pledged dollar CENT.
-1 = 100 currency per $. Used almost exclusively on public nadeko.")]
+    [Comment("""
+        Amount of currency selfhosters will get PER pledged dollar CENT.
+        1 = 100 currency per $. Used almost exclusively on public nadeko.
+        """)]
     public decimal PatreonCurrencyPerCent { get; set; } = 1;
 
-    [Comment(@"Currency reward per vote.
-This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting")]
+    [Comment("""
+        Currency reward per vote.
+        This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting
+        """)]
     public long VoteReward { get; set; } = 100;
 
-    [Comment(@"Slot config")]
+    [Comment("""Slot config""")]
     public SlotsConfig Slots { get; set; }
 
     public GamblingConfig()
@@ -72,42 +80,50 @@ This will work only if you've set up VotesApi and correct credentials for topgg 
 
 public class CurrencyConfig
 {
-    [Comment(@"What is the emoji/character which represents the currency")]
+    [Comment("""What is the emoji/character which represents the currency""")]
     public string Sign { get; set; } = "🌸";
 
-    [Comment(@"What is the name of the currency")]
+    [Comment("""What is the name of the currency""")]
     public string Name { get; set; } = "Nadeko Flower";
 
-    [Comment(@"For how long (in days) will the transactions be kept in the database (curtrs)
-Set 0 to disable cleanup (keep transactions forever)")]
+    [Comment("""
+        For how long (in days) will the transactions be kept in the database (curtrs)
+        Set 0 to disable cleanup (keep transactions forever)
+        """)]
     public int TransactionsLifetime { get; set; } = 0;
 }
 
 [Cloneable]
 public partial class TimelyConfig
 {
-    [Comment(@"How much currency will the users get every time they run .timely command
-setting to 0 or less will disable this feature")]
+    [Comment("""
+        How much currency will the users get every time they run .timely command
+        setting to 0 or less will disable this feature
+        """)]
     public int Amount { get; set; } = 0;
 
-    [Comment(@"How often (in hours) can users claim currency with .timely command
-setting to 0 or less will disable this feature")]
+    [Comment("""
+        How often (in hours) can users claim currency with .timely command
+        setting to 0 or less will disable this feature
+        """)]
     public int Cooldown { get; set; } = 24;
 }
 
 [Cloneable]
 public partial class BetFlipConfig
 {
-    [Comment(@"Bet multiplier if user guesses correctly")]
+    [Comment("""Bet multiplier if user guesses correctly""")]
     public decimal Multiplier { get; set; } = 1.95M;
 }
 
 [Cloneable]
 public partial class BetRollConfig
 {
-    [Comment(@"When betroll is played, user will roll a number 0-100.
-This setting will describe which multiplier is used for when the roll is higher than the given number.
-Doesn't have to be ordered.")]
+    [Comment("""
+        When betroll is played, user will roll a number 0-100.
+        This setting will describe which multiplier is used for when the roll is higher than the given number.
+        Doesn't have to be ordered.
+        """)]
     public BetRollPair[] Pairs { get; set; } = Array.Empty<BetRollPair>();
 
     public BetRollConfig()
@@ -134,48 +150,56 @@ Doesn't have to be ordered.")]
 [Cloneable]
 public partial class GenerationConfig
 {
-    [Comment(@"when currency is generated, should it also have a random password
-associated with it which users have to type after the .pick command
-in order to get it")]
+    [Comment("""
+        when currency is generated, should it also have a random password
+        associated with it which users have to type after the .pick command
+        in order to get it
+        """)]
     public bool HasPassword { get; set; } = true;
 
-    [Comment(@"Every message sent has a certain % chance to generate the currency
-specify the percentage here (1 being 100%, 0 being 0% - for example
-default is 0.02, which is 2%")]
+    [Comment("""
+        Every message sent has a certain % chance to generate the currency
+        specify the percentage here (1 being 100%, 0 being 0% - for example
+        default is 0.02, which is 2%
+        """)]
     public decimal Chance { get; set; } = 0.02M;
 
-    [Comment(@"How many seconds have to pass for the next message to have a chance to spawn currency")]
+    [Comment("""How many seconds have to pass for the next message to have a chance to spawn currency""")]
     public int GenCooldown { get; set; } = 10;
 
-    [Comment(@"Minimum amount of currency that can spawn")]
+    [Comment("""Minimum amount of currency that can spawn""")]
     public int MinAmount { get; set; } = 1;
 
-    [Comment(@"Maximum amount of currency that can spawn.
- Set to the same value as MinAmount to always spawn the same amount")]
+    [Comment("""
+        Maximum amount of currency that can spawn.
+         Set to the same value as MinAmount to always spawn the same amount
+        """)]
     public int MaxAmount { get; set; } = 1;
 }
 
 [Cloneable]
 public partial class DecayConfig
 {
-    [Comment(@"Percentage of user's current currency which will be deducted every 24h. 
-0 - 1 (1 is 100%, 0.5 50%, 0 disabled)")]
+    [Comment("""
+        Percentage of user's current currency which will be deducted every 24h. 
+        0 - 1 (1 is 100%, 0.5 50%, 0 disabled)
+        """)]
     public decimal Percent { get; set; } = 0;
 
-    [Comment(@"Maximum amount of user's currency that can decay at each interval. 0 for unlimited.")]
+    [Comment("""Maximum amount of user's currency that can decay at each interval. 0 for unlimited.""")]
     public int MaxDecay { get; set; } = 0;
 
-    [Comment(@"Only users who have more than this amount will have their currency decay.")]
+    [Comment("""Only users who have more than this amount will have their currency decay.""")]
     public int MinThreshold { get; set; } = 99;
 
-    [Comment(@"How often, in hours, does the decay run. Default is 24 hours")]
+    [Comment("""How often, in hours, does the decay run. Default is 24 hours""")]
     public int HourInterval { get; set; } = 24;
 }
 
 [Cloneable]
 public partial class LuckyLadderSettings
 {
-    [Comment(@"Self-Explanatory. Has to have 8 values, otherwise the command won't work.")]
+    [Comment("""Self-Explanatory. Has to have 8 values, otherwise the command won't work.""")]
     public decimal[] Multipliers { get; set; }
 
     public LuckyLadderSettings()
@@ -185,17 +209,21 @@ public partial class LuckyLadderSettings
 [Cloneable]
 public sealed partial class WaifuConfig
 {
-    [Comment(@"Minimum price a waifu can have")]
+    [Comment("""Minimum price a waifu can have""")]
     public long MinPrice { get; set; } = 50;
 
     public MultipliersData Multipliers { get; set; } = new();
 
-    [Comment(@"Settings for periodic waifu price decay.
-Waifu price decays only if the waifu has no claimer.")]
+    [Comment("""
+        Settings for periodic waifu price decay.
+        Waifu price decays only if the waifu has no claimer.
+        """)]
     public WaifuDecayConfig Decay { get; set; } = new();
 
-    [Comment(@"List of items available for gifting.
-If negative is true, gift will instead reduce waifu value.")]
+    [Comment("""
+        List of items available for gifting.
+        If negative is true, gift will instead reduce waifu value.
+        """)]
     public List<WaifuItemModel> Items { get; set; } = new();
 
     public WaifuConfig()
@@ -241,16 +269,20 @@ If negative is true, gift will instead reduce waifu value.")]
 
     public class WaifuDecayConfig
     {
-        [Comment(@"Percentage (0 - 100) of the waifu value to reduce.
-Set 0 to disable
-For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)")]
+        [Comment("""
+            Percentage (0 - 100) of the waifu value to reduce.
+            Set 0 to disable
+            For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
+            """)]
         public int Percent { get; set; } = 0;
 
-        [Comment(@"How often to decay waifu values, in hours")]
+        [Comment("""How often to decay waifu values, in hours""")]
         public int HourInterval { get; set; } = 24;
 
-        [Comment(@"Minimum waifu price required for the decay to be applied.
-For example if this value is set to 300, any waifu with the price 300 or less will not experience decay.")]
+        [Comment("""
+            Minimum waifu price required for the decay to be applied.
+            For example if this value is set to 300, any waifu with the price 300 or less will not experience decay.
+            """)]
         public long MinPrice { get; set; } = 300;
     }
 }
@@ -258,47 +290,61 @@ For example if this value is set to 300, any waifu with the price 300 or less wi
 [Cloneable]
 public sealed partial class MultipliersData
 {
-    [Comment(@"Multiplier for waifureset. Default 150.
-Formula (at the time of writing this): 
-price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up")]
+    [Comment("""
+        Multiplier for waifureset. Default 150.
+        Formula (at the time of writing this): 
+        price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up
+        """)]
     public int WaifuReset { get; set; } = 150;
 
-    [Comment(@"The minimum amount of currency that you have to pay 
-in order to buy a waifu who doesn't have a crush on you.
-Default is 1.1
-Example: If a waifu is worth 100, you will have to pay at least 100 * NormalClaim currency to claim her.
-(100 * 1.1 = 110)")]
+    [Comment("""
+        The minimum amount of currency that you have to pay 
+        in order to buy a waifu who doesn't have a crush on you.
+        Default is 1.1
+        Example: If a waifu is worth 100, you will have to pay at least 100 * NormalClaim currency to claim her.
+        (100 * 1.1 = 110)
+        """)]
     public decimal NormalClaim { get; set; } = 1.1m;
 
-    [Comment(@"The minimum amount of currency that you have to pay 
-in order to buy a waifu that has a crush on you.
-Default is 0.88
-Example: If a waifu is worth 100, you will have to pay at least 100 * CrushClaim currency to claim her.
-(100 * 0.88 = 88)")]
+    [Comment("""
+        The minimum amount of currency that you have to pay 
+        in order to buy a waifu that has a crush on you.
+        Default is 0.88
+        Example: If a waifu is worth 100, you will have to pay at least 100 * CrushClaim currency to claim her.
+        (100 * 0.88 = 88)
+        """)]
     public decimal CrushClaim { get; set; } = 0.88M;
 
-    [Comment(@"When divorcing a waifu, her new value will be her current value multiplied by this number.
-Default 0.75 (meaning will lose 25% of her value)")]
+    [Comment("""
+        When divorcing a waifu, her new value will be her current value multiplied by this number.
+        Default 0.75 (meaning will lose 25% of her value)
+        """)]
     public decimal DivorceNewValue { get; set; } = 0.75M;
 
-    [Comment(@"All gift prices will be multiplied by this number.
-Default 1 (meaning no effect)")]
+    [Comment("""
+        All gift prices will be multiplied by this number.
+        Default 1 (meaning no effect)
+        """)]
     public decimal AllGiftPrices { get; set; } = 1.0M;
 
-    [Comment(@"What percentage of the value of the gift will a waifu gain when she's gifted.
-Default 0.95 (meaning 95%)
-Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)")]
+    [Comment("""
+        What percentage of the value of the gift will a waifu gain when she's gifted.
+        Default 0.95 (meaning 95%)
+        Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)
+        """)]
     public decimal GiftEffect { get; set; } = 0.95M;
 
-    [Comment(@"What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
-Default 0.5 (meaning 50%)
-Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)")]
+    [Comment("""
+        What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
+        Default 0.5 (meaning 50%)
+        Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)
+        """)]
     public decimal NegativeGiftEffect { get; set; } = 0.50M;
 }
 
 public sealed class SlotsConfig
 {
-    [Comment(@"Hex value of the color which the numbers on the slot image will have.")]
+    [Comment("""Hex value of the color which the numbers on the slot image will have.""")]
     public Rgba32 CurrencyFontColor { get; set; } = Color.Red;
 }
 

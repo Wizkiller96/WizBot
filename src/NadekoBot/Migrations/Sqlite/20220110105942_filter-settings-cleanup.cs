@@ -42,13 +42,15 @@ namespace NadekoBot.Migrations
                 table: "FilterWordsChannelId",
                 column: "GuildConfigId");
 
-            migrationBuilder.Sql(@"INSERT INTO FilterWordsChannelId(Id, ChannelId, GuildConfigId, DateAdded)
-SELECT Id, ChannelId, GuildConfigId1, DateAdded 
-FROM FilterChannelId
-WHERE GuildConfigId1 is not null;
--- Remove them after moving them to a different table
-DELETE FROM FilterChannelId
-WHERE GuildConfigId is null;");
+            migrationBuilder.Sql("""
+                INSERT INTO FilterWordsChannelId(Id, ChannelId, GuildConfigId, DateAdded)
+                SELECT Id, ChannelId, GuildConfigId1, DateAdded 
+                FROM FilterChannelId
+                WHERE GuildConfigId1 is not null;
+                -- Remove them after moving them to a different table
+                DELETE FROM FilterChannelId
+                WHERE GuildConfigId is null;
+                """);
 
             migrationBuilder.DropColumn(
                 name: "GuildConfigId1",

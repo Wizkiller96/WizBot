@@ -52,7 +52,7 @@ public partial class Utility
                         var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
                             ? "∞"
                             : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow).ToString(
-                                @"d\.hh\:mm\:ss");
+                                """d\.hh\:mm\:ss""");
                         var creator = inv.Inviter.ToString().TrimTo(25);
                         var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
 

@@ -13,12 +13,14 @@ public partial class Utility
     public partial class QuoteCommands : NadekoModule
     {
         private const string PREPEND_EXPORT =
-            @"# Keys are keywords, Each key has a LIST of quotes in the following format:
-# - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
-#   an: Author name 
-#   aid: Author id 
-#   txt: Quote text
-";
+            """
+                # Keys are keywords, Each key has a LIST of quotes in the following format:
+                # - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
+                #   an: Author name 
+                #   aid: Author id 
+                #   txt: Quote text
+
+                """;
 
         private static readonly ISerializer _exportSerializer = new SerializerBuilder()
             .WithEventEmitter(args

@@ -304,7 +304,7 @@ public partial class Searches
 
         private static string ShortLeagueName(string str)
         {
-            var league = Regex.Replace(str, "Hardcore", "HC", RegexOptions.IgnoreCase);
+            var league = str.Replace("Hardcore", "HC", StringComparison.InvariantCultureIgnoreCase);
 
             return league;
         }

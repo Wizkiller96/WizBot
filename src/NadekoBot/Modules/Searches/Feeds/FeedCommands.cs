@@ -24,7 +24,7 @@ public partial class Searches
 
             var channelId = m.Groups["channelid"].Value;
 
-            return Feed("https://www.youtube.com/feeds/videos.xml?channel_id=" + channelId, channel, message);
+            return Feed($"https://www.youtube.com/feeds/videos.xml?channel_id={channelId}", channel, message);
         }
 
         [Cmd]

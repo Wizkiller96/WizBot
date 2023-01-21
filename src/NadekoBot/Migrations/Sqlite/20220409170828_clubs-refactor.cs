@@ -9,19 +9,21 @@ namespace NadekoBot.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"UPDATE Clubs
-SET Name = Name || '#' || Discrim
-WHERE Discrim <> 1;
-
-UPDATE Clubs as co
-SET Name =
-	CASE (select count(*) from Clubs as ci where co.Name == ci.Name) = 1
-		WHEN true
-			THEN Name
-		ELSE
-			Name || '#' || Discrim
-    END
- WHERE Discrim = 1;");
+            migrationBuilder.Sql("""
+                UPDATE Clubs
+                SET Name = Name || '#' || Discrim
+                WHERE Discrim <> 1;
+                
+                UPDATE Clubs as co
+                SET Name =
+                	CASE (select count(*) from Clubs as ci where co.Name == ci.Name) = 1
+                		WHEN true
+                			THEN Name
+                		ELSE
+                			Name || '#' || Discrim
+                    END
+                 WHERE Discrim = 1;
+                """);
             
             migrationBuilder.DropForeignKey(
                 name: "FK_Clubs_DiscordUser_OwnerId",

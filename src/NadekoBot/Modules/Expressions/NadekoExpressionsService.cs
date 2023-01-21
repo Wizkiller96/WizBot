@@ -19,19 +19,21 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private const string MENTION_PH = "%bot.mention%";
 
     private const string PREPEND_EXPORT =
-        @"# Keys are triggers, Each key has a LIST of expressions in the following format:
-# - res: Response string
-#   id: Alphanumeric id used for commands related to the expression. (Note, when using .exprsimport, a new id will be generated.)
-#   react: 
-#     - <List
-#     -  of
-#     - reactions>
-#   at: Whether expression allows targets (see .h .exprat) 
-#   ca: Whether expression expects trigger anywhere (see .h .exprca) 
-#   dm: Whether expression DMs the response (see .h .exprdm) 
-#   ad: Whether expression automatically deletes triggering message (see .h .exprad) 
+        """
+            # Keys are triggers, Each key has a LIST of expressions in the following format:
+            # - res: Response string
+            #   id: Alphanumeric id used for commands related to the expression. (Note, when using .exprsimport, a new id will be generated.)
+            #   react: 
+            #     - <List
+            #     -  of
+            #     - reactions>
+            #   at: Whether expression allows targets (see .h .exprat) 
+            #   ca: Whether expression expects trigger anywhere (see .h .exprca) 
+            #   dm: Whether expression DMs the response (see .h .exprdm) 
+            #   ad: Whether expression automatically deletes triggering message (see .h .exprad) 
+            
 
-";
+            """;
 
     private static readonly ISerializer _exportSerializer = new SerializerBuilder()
                                                             .WithEventEmitter(args

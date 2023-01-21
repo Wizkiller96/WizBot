@@ -10,29 +10,35 @@ public static class MigrationQueries
         if (migrationBuilder.IsMySql())
         {
             migrationBuilder.Sql(
-                @"INSERT IGNORE into reactionroles(guildid, channelid, messageid, emote, roleid, `group`, levelreq, dateadded)
-select guildid, channelid, messageid, emotename, roleid, exclusive, 0, reactionrolemessage.dateadded
-from reactionrole
-left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
-left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;");
+                """
+                    INSERT IGNORE into reactionroles(guildid, channelid, messageid, emote, roleid, `group`, levelreq, dateadded)
+                    select guildid, channelid, messageid, emotename, roleid, exclusive, 0, reactionrolemessage.dateadded
+                    from reactionrole
+                    left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
+                    left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;
+                    """);
         }
         else if (migrationBuilder.IsSqlite())
         {
             migrationBuilder.Sql(
-                @"insert or ignore into reactionroles(guildid, channelid, messageid, emote, roleid, 'group', levelreq, dateadded)
-select guildid, channelid, messageid, emotename, roleid, exclusive, 0, reactionrolemessage.dateadded
-from reactionrole
-left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
-left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;");
+                """
+                    insert or ignore into reactionroles(guildid, channelid, messageid, emote, roleid, 'group', levelreq, dateadded)
+                    select guildid, channelid, messageid, emotename, roleid, exclusive, 0, reactionrolemessage.dateadded
+                    from reactionrole
+                    left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
+                    left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;
+                    """);
         }
         else if (migrationBuilder.IsNpgsql())
         {
-            migrationBuilder.Sql(@"insert into reactionroles(guildid, channelid, messageid, emote, roleid, ""group"", levelreq, dateadded)
-            select guildid, channelid, messageid, emotename, roleid, exclusive::int, 0, reactionrolemessage.dateadded
-                from reactionrole
-                left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
-            left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id
-            ON CONFLICT DO NOTHING;");
+            migrationBuilder.Sql("""
+                insert into reactionroles(guildid, channelid, messageid, emote, roleid, "group", levelreq, dateadded)
+                            select guildid, channelid, messageid, emotename, roleid, exclusive::int, 0, reactionrolemessage.dateadded
+                                from reactionrole
+                                left join reactionrolemessage on reactionrolemessage.id = reactionrole.reactionrolemessageid
+                            left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id
+                            ON CONFLICT DO NOTHING;
+                """);
         }
         else
         {

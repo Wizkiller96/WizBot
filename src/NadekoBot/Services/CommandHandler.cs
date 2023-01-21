@@ -147,11 +147,13 @@ public class CommandHandler : INService, IReadyExecutor
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
-            Log.Information(@"Command Executed after {ExecTime}s
-	User: {User}
-	Server: {Server}
-	Channel: {Channel}
-	Message: {Message}",
+            Log.Information("""
+                Command Executed after {ExecTime}s
+                	User: {User}
+                	Server: {Server}
+                	Channel: {Channel}
+                	Message: {Message}
+                """,
                 string.Join("/", execPoints.Select(x => (x * ONE_THOUSANDTH).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
                 channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
@@ -178,12 +180,14 @@ public class CommandHandler : INService, IReadyExecutor
     {
         if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
-            Log.Warning(@"Command Errored after {ExecTime}s
-	User: {User}
-	Server: {Guild}
-	Channel: {Channel}
-	Message: {Message}
-	Error: {ErrorMessage}",
+            Log.Warning("""
+                Command Errored after {ExecTime}s
+                	User: {User}
+                	Server: {Guild}
+                	Channel: {Channel}
+                	Message: {Message}
+                	Error: {ErrorMessage}
+                """,
                 string.Join("/", execPoints.Select(x => (x * ONE_THOUSANDTH).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
                 channel is null ? "DM" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
@@ -193,8 +197,10 @@ public class CommandHandler : INService, IReadyExecutor
         }
         else
         {
-            Log.Warning(@"Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
-	Err: {ErrorMessage}",
+            Log.Warning("""
+                Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
+                	Err: {ErrorMessage}
+                """,
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
                 usrMsg.Author.Id,
