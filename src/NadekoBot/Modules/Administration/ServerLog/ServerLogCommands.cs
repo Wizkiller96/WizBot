@@ -97,7 +97,7 @@ public partial class Administration
         {
             var logSetting = _service.GetGuildLogSettings(ctx.Guild.Id);
             var str = string.Join("\n",
-                Enum.GetNames(typeof(LogType))
+                Enum.GetNames<LogType>()
                     .Select(x =>
                     {
                         var val = logSetting is null ? null : GetLogProperty(logSetting, Enum.Parse<LogType>(x));

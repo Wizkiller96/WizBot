@@ -20,7 +20,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NadekoOptionsAttribute(typeof(TypingGame.Options))]
+        [NadekoOptions<TypingGame.Options>]
         public async Task TypeStart(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new TypingGame.Options(), args);

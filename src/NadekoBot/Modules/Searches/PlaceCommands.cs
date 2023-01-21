@@ -18,7 +18,7 @@ public partial class Searches
             Xoart //http://xoart.link
         }
 
-        private static readonly string _typesStr = string.Join(", ", Enum.GetNames(typeof(PlaceType)));
+        private static readonly string _typesStr = string.Join(", ", Enum.GetNames<PlaceType>());
 
         [Cmd]
         public async Task Placelist()

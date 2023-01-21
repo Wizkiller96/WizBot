@@ -86,7 +86,7 @@ public class HelpService : IExecNoCommand, INService
           .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
           .WithOkColor();
 
-        var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(x => x is NadekoOptionsAttribute))?.OptionType;
+        var opt = GetNadekoOptionType(com.Attributes);
         if (opt is not null)
         {
             var hs = GetCommandOptionHelp(opt);
@@ -96,6 +96,14 @@ public class HelpService : IExecNoCommand, INService
 
         return em;
     }
+
+    public static Type GetNadekoOptionType(IEnumerable<Attribute> attributes)
+        => attributes
+           .Select(a => a.GetType())
+           .Where(a => a.IsGenericType
+                       && a.GetGenericTypeDefinition() == typeof(NadekoOptionsAttribute<>))
+           .Select(a => a.GenericTypeArguments[0])
+           .FirstOrDefault();
 
     public static string GetCommandOptionHelp(Type opt)
     {

@@ -44,7 +44,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NadekoOptionsAttribute(typeof(Connect4Game.Options))]
+        [NadekoOptions<Connect4Game.Options>]
         public async Task Connect4(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new Connect4Game.Options(), args);

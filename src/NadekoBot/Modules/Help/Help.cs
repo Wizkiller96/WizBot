@@ -88,7 +88,7 @@ public partial class Help : NadekoModule<HelpService>
                     embed = embed.WithOkColor().WithDescription(GetText(strs.module_page_empty));
                     return embed;
                 }
-                
+
                 localModules.OrderBy(module => module.Name)
                             .ToList()
                             .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
@@ -111,10 +111,11 @@ public partial class Help : NadekoModule<HelpService>
         if (key.Key == strs.module_description_missing.Key)
         {
             var desc = _medusae
-                .GetLoadedMedusae(Culture)
-                .FirstOrDefault(m => m.Sneks
-                    .Any(x => x.Name.Equals(moduleName, StringComparison.InvariantCultureIgnoreCase)))
-                ?.Description;
+                       .GetLoadedMedusae(Culture)
+                       .FirstOrDefault(m => m.Sneks
+                                             .Any(x => x.Name.Equals(moduleName,
+                                                 StringComparison.InvariantCultureIgnoreCase)))
+                       ?.Description;
 
             if (desc is not null)
                 return desc;
@@ -122,7 +123,7 @@ public partial class Help : NadekoModule<HelpService>
 
         return GetText(key);
     }
-    
+
     private LocStr GetModuleLocStr(string moduleName)
     {
         switch (moduleName.ToLowerInvariant())
@@ -189,7 +190,7 @@ public partial class Help : NadekoModule<HelpService>
     }
 
     [Cmd]
-    [NadekoOptions(typeof(CommandsOptions))]
+    [NadekoOptions<CommandsOptions>]
     public async Task Commands(string module = null, params string[] args)
     {
         module = module?.Trim().ToUpperInvariant();
@@ -374,9 +375,8 @@ public partial class Help : NadekoModule<HelpService>
                                      .Select(com =>
                                      {
                                          List<string> optHelpStr = null;
-                                         var opt = ((NadekoOptionsAttribute)com.Attributes.FirstOrDefault(static x
-                                                 => x is NadekoOptionsAttribute))
-                                             ?.OptionType;
+                                         
+                                         var opt = HelpService.GetNadekoOptionType(com.Attributes);
                                          if (opt is not null)
                                              optHelpStr = HelpService.GetCommandOptionHelpList(opt);
 
@@ -512,7 +512,7 @@ public partial class Help : NadekoModule<HelpService>
                     customId: "donate:selfhosting",
                     label: "Selfhosting"),
                 SelfhostAction));
-        
+
         var eb = _eb.Create(ctx)
                     .WithOkColor()
                     .WithTitle("Thank you for considering to donate to the NadekoBot project!");

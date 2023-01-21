@@ -17,7 +17,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NadekoOptions(typeof(AcrophobiaGame.Options))]
+        [NadekoOptions<AcrophobiaGame.Options>]
         public async Task Acrophobia(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new AcrophobiaGame.Options(), args);

@@ -710,13 +710,13 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    [NadekoOptions(typeof(LbOpts))]
+    [NadekoOptions<LbOpts>]
     [Priority(0)]
     public Task Leaderboard(params string[] args)
         => Leaderboard(1, args);
 
     [Cmd]
-    [NadekoOptions(typeof(LbOpts))]
+    [NadekoOptions<LbOpts>]
     [Priority(1)]
     public async Task Leaderboard(int page = 1, params string[] args)
     {

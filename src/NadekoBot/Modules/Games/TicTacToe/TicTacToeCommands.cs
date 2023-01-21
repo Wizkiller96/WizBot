@@ -17,7 +17,7 @@ public partial class Games
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NadekoOptions(typeof(TicTacToe.Options))]
+        [NadekoOptions<TicTacToe.Options>]
         public async Task TicTacToe(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new TicTacToe.Options(), args);

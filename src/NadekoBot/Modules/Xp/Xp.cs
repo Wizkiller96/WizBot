@@ -155,14 +155,14 @@ public partial class Xp : NadekoModule<XpService>
     }
 
     [Cmd]
-    [NadekoOptions(typeof(LbOpts))]
+    [NadekoOptions<LbOpts>]
     [Priority(0)]
     [RequireContext(ContextType.Guild)]
     public Task XpLeaderboard(params string[] args)
         => XpLeaderboard(1, args);
 
     [Cmd]
-    [NadekoOptions(typeof(LbOpts))]
+    [NadekoOptions<LbOpts>]
     [Priority(1)]
     [RequireContext(ContextType.Guild)]
     public async Task XpLeaderboard(int page = 1, params string[] args)

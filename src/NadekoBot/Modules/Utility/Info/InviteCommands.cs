@@ -12,7 +12,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [BotPerm(ChannelPerm.CreateInstantInvite)]
         [UserPerm(ChannelPerm.CreateInstantInvite)]
-        [NadekoOptions(typeof(InviteService.Options))]
+        [NadekoOptions<InviteService.Options>]
         public async Task InviteCreate(params string[] args)
         {
             var (opts, success) = OptionsParser.ParseFrom(new InviteService.Options(), args);

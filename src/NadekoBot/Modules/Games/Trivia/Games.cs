@@ -30,7 +30,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        [NadekoOptions(typeof(TriviaOptions))]
+        [NadekoOptions<TriviaOptions>]
         public async Task Trivia(params string[] args)
         {
             var (opts, _) = OptionsParser.ParseFrom(new TriviaOptions(), args);

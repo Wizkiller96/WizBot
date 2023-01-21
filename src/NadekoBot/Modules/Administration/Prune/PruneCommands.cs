@@ -27,10 +27,10 @@ public partial class Administration
         //deletes her own messages, no perm required
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        [NadekoOptions(typeof(PruneOptions))]
+        [NadekoOptions<PruneOptions>]
         public async Task Prune(params string[] args)
         {
-            var (opts, _) = OptionsParser.ParseFrom<PruneOptions>(new PruneOptions(), args);
+            var (opts, _) = OptionsParser.ParseFrom(new PruneOptions(), args);
             
             var user = await ctx.Guild.GetCurrentUserAsync();
 
@@ -47,7 +47,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
-        [NadekoOptions(typeof(PruneOptions))]
+        [NadekoOptions<PruneOptions>]
         [Priority(1)]
         public async Task Prune(int count, params string[] args)
         {
@@ -70,7 +70,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
-        [NadekoOptions(typeof(PruneOptions))]
+        [NadekoOptions<PruneOptions>]
         [Priority(0)]
         public Task Prune(IGuildUser user, int count = 100, params string[] args)
             => Prune(user.Id, count, args);
@@ -80,7 +80,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPerm.ManageMessages)]
         [BotPerm(ChannelPerm.ManageMessages)]
-        [NadekoOptions(typeof(PruneOptions))]
+        [NadekoOptions<PruneOptions>]
         [Priority(0)]
         public async Task Prune(ulong userId, int count = 100, params string[] args)
         {
