@@ -1,6 +1,7 @@
 #nullable disable
 using NadekoBot.Modules.Gambling.Services;
 using System.Globalization;
+using System.Numerics;
 
 namespace NadekoBot.Modules.Gambling.Common;
 
@@ -39,16 +40,12 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         return true;
     }
 
-    public static string N(long cur, IFormatProvider format)
+    public static string N<T>(T cur, IFormatProvider format)
+        where T : INumber<T>
         => cur.ToString("C0", format);
-    
-    public static string N(decimal cur, IFormatProvider format)
-        => cur.ToString("C0", format);
-    
-    protected string N(long cur)
-        => N(cur, GetFlowersCiInternal());
 
-    protected string N(decimal cur)
+    protected string N<T>(T cur)
+        where T : INumber<T>
         => N(cur, GetFlowersCiInternal());
 
     protected IFormatProvider GetFlowersCiInternal()

@@ -1,4 +1,6 @@
-﻿namespace Nadeko.Common;
+﻿using System.Numerics;
+
+namespace Nadeko.Common;
 
 public readonly struct ShmartNumber : IEquatable<ShmartNumber>
 {

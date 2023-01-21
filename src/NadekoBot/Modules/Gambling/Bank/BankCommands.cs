@@ -29,7 +29,7 @@ public partial class Gambling
             
             if (await _bank.DepositAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_deposited(N(amount)));
+                await ReplyConfirmLocalizedAsync(strs.bank_deposited(N(amount.Value)));
             }
             else
             {
@@ -45,7 +45,7 @@ public partial class Gambling
             
             if (await _bank.WithdrawAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_withdrew(N(amount)));
+                await ReplyConfirmLocalizedAsync(strs.bank_withdrew(N(amount.Amount)));
             }
             else
             {

@@ -435,7 +435,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount)))
+        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount.Value)))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
@@ -744,7 +744,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             await ctx.Channel.TriggerTypingAsync();
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
-            var sg = (SocketGuild)ctx.Guild;
+            var sg = (SocketGuild)ctx.Guild!;
             cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
         }
         else
@@ -920,10 +920,11 @@ public partial class Gambling : GamblingModule<GamblingService>
     [OwnerOnly]
     public async Task BetTest()
     {
-        await SendConfirmAsync(GetText(strs.available_tests),
-            Enum.GetValues<GambleTestTarget>()
-                .Select(x => $"`{x}`")
-                .Join(", "));
+        var values = Enum.GetValues<GambleTestTarget>()
+                         .Select(x => $"`{x}`")
+                         .Join(", ");
+        
+        await SendConfirmAsync(GetText(strs.available_tests), values);
     }
 
     [Cmd]
