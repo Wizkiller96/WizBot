@@ -77,6 +77,19 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task Translangs()
-            => await ctx.Channel.SendTableAsync(_service.GetLanguages(), str => $"{str,-15}");
+        {
+            var langs = _service.GetLanguages().ToList();
+            
+            var eb = _eb.Create()
+                        .WithTitle($"Supported {prefix}translate Languages")
+                        .WithOkColor();
+
+            foreach (var chunk in langs.Chunk(15))
+            {
+                eb.AddField("󠀁", chunk.Join("\n"), isInline: true);
+            }
+
+            await ctx.Channel.EmbedAsync(eb);
+        }
     }
 }
