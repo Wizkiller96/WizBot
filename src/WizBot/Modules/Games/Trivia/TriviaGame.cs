@@ -131,8 +131,11 @@ public sealed class TriviaGame
                         hintSent = true;
                         // start a new countdown of the same length
                         halfGuessTimerTask = TimeOutFactory();
-                        // send a hint out
-                        await OnHint(this, question);
+                        if (!_opts.NoHint)
+                        {
+                            // send a hint out
+                            await OnHint(this, question);
+                        }
 
                         continue;
                     }
