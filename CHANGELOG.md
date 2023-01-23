@@ -2,6 +2,38 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.11] - 21.01.2023
+
+### Added
+
+- Added `.doas` Bot owner only command
+- Added `.stickeradd` command
+
+### Changed
+
+- `.waifuinfo` optimized
+- You can now specify an optional custom message in `.feed` and `.yun` which will be posted along with an update
+- Greet/bye messages will now get disabled if they're set to a deleted/unknown channel
+- Updated response strings
+- `.translate` now supports many more languages
+- `.translangs` prettier output
+
+### Fixed
+
+- Added logging for thread events
+- Fixed a bug for `.quotedeleteauthor` causing the executing user to delete own messages
+- Fixed TimeOut punishment not allowing duration
+- Fixed a nullref in streamrole service
+- Fixed some potential causes for ratelimit due to default message retry settings
+- Fixed a patron rewards bug caused by monthly donation checking not accounting for year increase
+- Fixed a patron rewards bug for users who connected the same discord account with multiple patreon accounts
+- `.deletecurrency` will now also reset banked currency
+- Fixed DMHelpText reply
+- `.h` command show now properly show both channel and server user permission requirements
+- Many fixes and improvements to medusa system
+- Fixed trivia --nohint
+- `.joinrace` will no longer fail if the user isn't in the database yet
+
 ## [4.3.10] - 10.11.2022
 
 ### Added
