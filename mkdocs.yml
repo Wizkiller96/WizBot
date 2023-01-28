@@ -5,7 +5,7 @@ repo_url: 'https://github.com/Wizkiller96/WizBot'
 site_author: 'Kwoth & Wizkiller96'
 edit_uri: 'edit/v4/docs/'
 
-copyright: © Copyright 2022 WizNet - All Rights Reserved.
+copyright: © Copyright 2023 WizNet - All Rights Reserved.
 
 theme:
   name: material
@@ -15,6 +15,26 @@ theme:
     - navigation.instant
     - navigation.expand
     - navigation.top
+    # - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    - navigation.footer
+    - navigation.indexes
+    # - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
   font:
     text: Source Sans Pro
     code: Source Code Pro
@@ -36,34 +56,52 @@ extra_css:
 plugins:
   - git-revision-date-localized:
       type: date
-  - search
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
 
 markdown_extensions:
+  - abbr
+  - admonition
   - attr_list
-  - codehilite:
-      guess_lang: false
+  - def_list
+  - footnotes
+  - md_in_html
+  - meta
   - toc:
       permalink: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.betterem:
       smart_enable: all
-  - admonition
-  - meta
-  - footnotes
-  - pymdownx.highlight:
-      anchor_linenums: true
+  - pymdownx.caret
   - pymdownx.details
-  - pymdownx.inlinehilite
-  - pymdownx.superfences
-  - pymdownx.tabbed
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
       options:
         custom_icons:
           - docs/overrides/.icons
-
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: wizkiller96
+      repo: wizbot
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - codehilite:
+      guess_lang: false
+      
 nav:
   - Home: index.md
   - Guides:
