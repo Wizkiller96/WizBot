@@ -1,15 +1,15 @@
 [data-md-color-scheme="wizbot-dark"] {
 	/* Default color shades */
 	--md-primary-fg-color: #590074;
-	--md-primary-fg-color--light: #590074;
-	--md-primary-fg-color--dark: #590074;
+	--md-primary-fg-color--light: #964aad;
+	--md-primary-fg-color--dark: #964aad;
 	--md-default-bg-color: #0b0b0b;
 	--md-default-bg-color--light: #e8e8e8;
 	--md-default-fg-color: hsla(0, 75%, 95%, 1);
 	--md-default-fg-color--light: hsla(0, 0%, 100%, 0.849);
 	--md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
 	--md-default-fg-color--lightest: hsla(0, 0%, 100%, 0.12);
-	--md-accent-fg-color: #590074 !important;
+	--md-accent-fg-color: #964aad !important;
 	--md-typeset-color: var(--md-default-fg-color);
 	--md-typeset-a-color: #964aad !important;
 	--md-typeset-mark-color: #448aff;
@@ -17,6 +17,7 @@
 	--md-typeset-kbd-accent-color: hsla(220, 10%, 94%, 0.2);
 	--md-typeset-kbd-border-color: hsla(220, 10%, 14%, 1);
 	--md-admonition-bg-color: hsla(220, 10%, 100%, 0.025);
+	--md-admonition-fg-color: hsla(0, 75%, 95%, 1);
 
 	/* Code Color Shade */
 	--md-code-fg-color: rgb(255, 255, 255);
