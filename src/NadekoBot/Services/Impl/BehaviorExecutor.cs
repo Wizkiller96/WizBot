@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.ModuleBehaviors;
+using Ninject;
 
 namespace NadekoBot.Services;
 

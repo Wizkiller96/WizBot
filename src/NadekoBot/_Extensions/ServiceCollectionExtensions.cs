@@ -1,76 +1,128 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NadekoBot.Modules.Music;
 using NadekoBot.Modules.Music.Resolvers;
 using NadekoBot.Modules.Music.Services;
+using Ninject;
+using Ninject.Extensions.Conventions;
 using StackExchange.Redis;
+using System.Net;
 using System.Reflection;
 
 namespace NadekoBot.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddBotStringsServices(this IServiceCollection services, BotCacheImplemenation botCache)
-        => botCache == BotCacheImplemenation.Memory
-            ? services.AddSingleton<IStringsSource, LocalFileStringsSource>()
-                      .AddSingleton<IBotStringsProvider, MemoryBotStringsProvider>()
-                      .AddSingleton<IBotStrings, BotStrings>()
-            : services.AddSingleton<IStringsSource, LocalFileStringsSource>()
-                      .AddSingleton<IBotStringsProvider, RedisBotStringsProvider>()
-                      .AddSingleton<IBotStrings, BotStrings>();
-
-    public static IServiceCollection AddConfigServices(this IServiceCollection services)
+    public static IKernel AddBotStringsServices(this IKernel kernel, BotCacheImplemenation botCache)
     {
-        services.Scan(x => x.FromCallingAssembly()
-                            .AddClasses(f => f.AssignableTo(typeof(ConfigServiceBase<>)))
-                            .AsSelfWithInterfaces());
+        if (botCache == BotCacheImplemenation.Memory)
+        {
+            kernel.Bind<IStringsSource>().To<LocalFileStringsSource>().InSingletonScope();
+            kernel.Bind<IBotStringsProvider>().To<MemoryBotStringsProvider>().InSingletonScope();
+            kernel.Bind<IBotStrings>().To<BotStrings>().InSingletonScope();
+        }
+        else
+        {
+            kernel.Bind<IStringsSource>().To<LocalFileStringsSource>().InSingletonScope();
+            kernel.Bind<IBotStringsProvider>().To<RedisBotStringsProvider>().InSingletonScope();
+            kernel.Bind<IBotStrings>().To<BotStrings>().InSingletonScope();
+        }
 
-        return services;
+        return kernel;
     }
 
-    public static IServiceCollection AddConfigMigrators(this IServiceCollection services)
-        => services.AddSealedSubclassesOf(typeof(IConfigMigrator));
-
-    public static IServiceCollection AddMusic(this IServiceCollection services)
-        => services.AddSingleton<IMusicService, MusicService>()
-                   .AddSingleton<ITrackResolveProvider, TrackResolveProvider>()
-                   .AddSingleton<IYoutubeResolver, YtdlYoutubeResolver>()
-                   .AddSingleton<ISoundcloudResolver, SoundcloudResolver>()
-                   .AddSingleton<ILocalTrackResolver, LocalTrackResolver>()
-                   .AddSingleton<IRadioResolver, RadioResolver>()
-                   .AddSingleton<ITrackCacher, TrackCacher>()
-                   .AddSingleton<YtLoader>()
-                   .AddSingleton<IPlaceholderProvider>(svc => svc.GetRequiredService<IMusicService>());
-
-    // consider using scrutor, because slightly different versions
-    // of this might be needed in several different places
-    public static IServiceCollection AddSealedSubclassesOf(this IServiceCollection services, Type baseType)
+    public static IKernel AddConfigServices(this IKernel kernel)
     {
-        var subTypes = Assembly.GetCallingAssembly()
-                               .ExportedTypes.Where(type => type.IsSealed && baseType.IsAssignableFrom(type));
+        kernel.Bind(x =>
+        {
+            var configs = x.FromThisAssembly()
+                           .SelectAllClasses()
+                           .Where(f => f.IsAssignableToGenericType(typeof(ConfigServiceBase<>)));
 
-        foreach (var subType in subTypes)
-            services.AddSingleton(baseType, subType);
+            // todo check for duplicates
+            configs.BindToSelf()
+                   .Configure(c => c.InSingletonScope());
+            configs.BindAllInterfaces()
+                   .Configure(c => c.InSingletonScope());
+        });
 
-        return services;
+        return kernel;
     }
 
-    public static IServiceCollection AddCache(this IServiceCollection services, IBotCredentials creds)
+    public static IKernel AddConfigMigrators(this IKernel kernel)
+        => kernel.AddSealedSubclassesOf(typeof(IConfigMigrator));
+
+    public static IKernel AddMusic(this IKernel kernel)
+    {
+        kernel.Bind<IMusicService, IPlaceholderProvider>()
+              .To<MusicService>()
+              .InSingletonScope();
+
+        kernel.Bind<ITrackResolveProvider>().To<TrackResolveProvider>().InSingletonScope();
+        kernel.Bind<IYoutubeResolver>().To<YtdlYoutubeResolver>().InSingletonScope();
+        kernel.Bind<ISoundcloudResolver>().To<SoundcloudResolver>().InSingletonScope();
+        kernel.Bind<ILocalTrackResolver>().To<LocalTrackResolver>().InSingletonScope();
+        kernel.Bind<IRadioResolver>().To<RadioResolver>().InSingletonScope();
+        kernel.Bind<ITrackCacher>().To<TrackCacher>().InSingletonScope();
+        kernel.Bind<YtLoader>().ToSelf().InSingletonScope();
+
+        return kernel;
+    }
+
+    public static IKernel AddSealedSubclassesOf(this IKernel kernel, Type baseType)
+    {
+        kernel.Bind(x =>
+        {
+            var classes = x.FromThisAssembly()
+                           .SelectAllClasses()
+                           .Where(c => c.IsPublic && c.IsNested && baseType.IsAssignableFrom(baseType));
+
+            classes.BindAllInterfaces().Configure(x => x.InSingletonScope());
+            classes.BindToSelf().Configure(x => x.InSingletonScope());
+        });
+
+        return kernel;
+    }
+
+    public static IKernel AddCache(this IKernel kernel, IBotCredentials creds)
     {
         if (creds.BotCache == BotCacheImplemenation.Redis)
         {
             var conf = ConfigurationOptions.Parse(creds.RedisOptions);
-            services.AddSingleton(ConnectionMultiplexer.Connect(conf))
-                    .AddSingleton<IBotCache, RedisBotCache>()
-                    .AddSingleton<IPubSub, RedisPubSub>();
+            kernel.Bind<ConnectionMultiplexer>().ToConstant(ConnectionMultiplexer.Connect(conf)).InSingletonScope();
+            kernel.Bind<IBotCache>().To<RedisBotCache>().InSingletonScope();
+            kernel.Bind<IPubSub>().To<RedisPubSub>().InSingletonScope();
         }
         else
         {
-            services.AddSingleton<IBotCache, MemoryBotCache>()
-                    .AddSingleton<IPubSub, EventPubSub>();
-
+            kernel.Bind<IBotCache>().To<MemoryBotCache>().InSingletonScope();
+            kernel.Bind<IPubSub>().To<EventPubSub>().InSingletonScope();
         }
 
-        return services
+        return kernel
             .AddBotStringsServices(creds.BotCache);
+    }
+
+    public static IKernel AddHttpClients(this IKernel kernel)
+    {
+        IServiceCollection svcs = new ServiceCollection();
+        svcs.AddHttpClient();
+        svcs.AddHttpClient("memelist")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
+
+        svcs.AddHttpClient("google:search")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
+
+        var prov = svcs.BuildServiceProvider();
+        kernel.Bind<IHttpClientFactory>().ToMethod(_ => prov.GetRequiredService<IHttpClientFactory>());
+        kernel.Bind<HttpClient>().ToMethod(_ => prov.GetRequiredService<HttpClient>());
+
+        return kernel;
     }
 }

@@ -47,8 +47,14 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
         <PackageReference Include="MorseCode.ITask" Version="2.0.3" />
         <PackageReference Include="NetEscapades.Configuration.Yaml" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+        
+        <!-- DI -->
+        <PackageReference Include="Ninject" Version="3.3.6" />
+        <PackageReference Include="Ninject.Extensions.Conventions" Version="3.3.0" />
+<!--        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />-->
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+<!--        <PackageReference Include="Scrutor" Version="4.2.0" />-->
+        
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
@@ -56,7 +62,6 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="NonBlocking" Version="2.1.1" />
         <PackageReference Include="OneOf" Version="3.0.223" />
-        <PackageReference Include="Scrutor" Version="4.2.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
         <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta17" />

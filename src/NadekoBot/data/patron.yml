@@ -4,7 +4,7 @@ version: 2
 isEnabled: false
 # List of patron only features and relevant quota data
 quotas:
-# Dictionary of feature names with their respective limits. Set to null for unlimited
+  # Dictionary of feature names with their respective limits. Set to null for unlimited
   features:
     timely:extra_percent:
       V: 10

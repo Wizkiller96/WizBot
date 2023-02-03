@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/dotnet/sdk:6.0
+image: mcr.microsoft.com/dotnet/sdk:7.0
 
 stages:
   - build
@@ -69,8 +69,8 @@ publish-windows:
     - if: "$CI_COMMIT_TAG"
   image: scottyhardy/docker-wine
   before_script:
-    - choco install dotnet-6.0-runtime --version=6.0.4 -y
-    - choco install dotnet-6.0-sdk --version=6.0.202 -y
+    - choco install dotnet-runtime --version=7.0.2 -y
+    - choco install dotnet-sdk --version=7.0.102 -y
     - choco install innosetup -y
   artifacts:
     paths:

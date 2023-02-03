@@ -1,13 +1,16 @@
 #nullable disable
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Services.Database.Models;
+using Ninject;
+using Ninject.Extensions.Conventions;
+using Ninject.Infrastructure.Language;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Net;
 using System.Reflection;
 using RunMode = Discord.Commands.RunMode;
 
@@ -20,7 +23,7 @@ public sealed class Bot
     public DiscordSocketClient Client { get; }
     public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
 
-    private IServiceProvider Services { get; set; }
+    private IKernel Services { get; set; }
 
     public string Mention { get; private set; }
     public bool IsReady { get; private set; }
@@ -51,9 +54,9 @@ public sealed class Bot
             50;
 #endif
 
-        if(!_creds.UsePrivilegedIntents)
+        if (!_creds.UsePrivilegedIntents)
             Log.Warning("You are not using privileged intents. Some features will not work properly");
-        
+
         Client = new(new()
         {
             MessageCacheSize = messageCacheSize,
@@ -99,67 +102,69 @@ public sealed class Bot
             AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
 
-        var svcs = new ServiceCollection().AddTransient(_ => _credsProvider.GetCreds()) // bot creds
-                                          .AddSingleton(_credsProvider)
-                                          .AddSingleton(_db) // database
-                                          .AddSingleton(Client) // discord socket client
-                                          .AddSingleton(_commandService)
-                                          // .AddSingleton(_interactionService)
-                                          .AddSingleton(this)
-                                          .AddSingleton<ISeria, JsonSeria>()
-                                          .AddSingleton<IConfigSeria, YamlSeria>()
-                                          .AddConfigServices()
-                                          .AddConfigMigrators()
-                                          .AddMemoryCache()
-                                          // music
-                                          .AddMusic()
-                                          // cache
-                                          .AddCache(_creds);
-        
+        var kernel = new StandardKernel();
 
-        svcs.AddHttpClient();
-        svcs.AddHttpClient("memelist")
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                AllowAutoRedirect = false
-            });
-        
-        svcs.AddHttpClient("google:search")
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
+        kernel.Bind<IBotCredentials>().ToMethod(_ => _credsProvider.GetCreds()).InTransientScope();
+
+        kernel.Bind<IBotCredsProvider>().ToConstant(_credsProvider).InSingletonScope();
+        kernel.Bind<DbService>().ToConstant(_db).InSingletonScope();
+        kernel.Bind<DiscordSocketClient>().ToConstant(Client).InSingletonScope();
+        kernel.Bind<CommandService>().ToConstant(_commandService).InSingletonScope();
+        kernel.Bind<Bot>().ToConstant(this).InSingletonScope();
+
+        kernel.Bind<ISeria>().To<JsonSeria>().InSingletonScope();
+        kernel.Bind<IConfigSeria>().To<YamlSeria>().InSingletonScope();
+        kernel.Bind<IMemoryCache>().ToConstant(new MemoryCache(new MemoryCacheOptions())).InSingletonScope();
+
+        kernel.AddConfigServices()
+              .AddConfigMigrators()
+              .AddMusic()
+              .AddCache(_creds)
+              .AddHttpClients();
+
 
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
-            svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
+        {
+            kernel.Bind<ICoordinator>().To<SingleProcessCoordinator>().InSingletonScope();
+        }
         else
         {
-            svcs.AddSingleton<RemoteGrpcCoordinator>()
-                .AddSingleton<ICoordinator>(x => x.GetRequiredService<RemoteGrpcCoordinator>())
-                .AddSingleton<IReadyExecutor>(x => x.GetRequiredService<RemoteGrpcCoordinator>());
+            kernel.Bind<ICoordinator, IReadyExecutor>().To<RemoteGrpcCoordinator>().InSingletonScope();
         }
 
-        svcs.Scan(scan => scan.FromAssemblyOf<IReadyExecutor>()
-                              .AddClasses(classes => classes.AssignableToAny(
-                                      // services
-                                      typeof(INService),
-
-                                      // behaviours
-                                      typeof(IExecOnMessage),
-                                      typeof(IInputTransformer),
-                                      typeof(IExecPreCommand),
-                                      typeof(IExecPostCommand),
-                                      typeof(IExecNoCommand))
-                                                .WithoutAttribute<DontAddToIocContainerAttribute>()
+        kernel.Bind(scan =>
+        {
+            var classes = scan.FromThisAssembly()
+                              .SelectAllClasses()
+                              .Where(c => (c.IsAssignableTo(typeof(INService))
+                                           || c.IsAssignableTo(typeof(IExecOnMessage))
+                                           || c.IsAssignableTo(typeof(IInputTransformer))
+                                           || c.IsAssignableTo(typeof(IExecPreCommand))
+                                           || c.IsAssignableTo(typeof(IExecPostCommand))
+                                           || c.IsAssignableTo(typeof(IExecNoCommand)))
+                                          && !c.HasAttribute<DontAddToIocContainerAttribute>()
 #if GLOBAL_NADEKO
-                                                .WithoutAttribute<NoPublicBotAttribute>()
+                                                && !c.HasAttribute<NoPublicBotAttribute>()
 #endif
-                              )
-                              .AsSelfWithInterfaces()
-                              .WithSingletonLifetime());
+                              );
+            classes
+                .BindAllInterfaces()
+                .Configure(c => c.InSingletonScope());
+
+            classes.BindToSelf()
+                   .Configure(c => c.InSingletonScope());
+        });
+
+        kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
+
+        var services = kernel.GetServices(typeof(INService));
+        foreach (var s in services)
+        {
+            Console.WriteLine(s.GetType().FullName);
+        }
 
         //initialize Services
-        Services = svcs.BuildServiceProvider();
+        Services = kernel;
         Services.GetRequiredService<IBehaviorHandler>().Initialize();
         Services.GetRequiredService<CurrencyRewardService>();
 
@@ -169,7 +174,7 @@ public sealed class Bot
         _ = LoadTypeReaders(typeof(Bot).Assembly);
 
         sw.Stop();
-        Log.Information( "All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
+        Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
     }
 
     private void ApplyConfigMigrations()
@@ -249,10 +254,10 @@ public sealed class Bot
             LoginErrorHandler.Handle(ex);
             Helpers.ReadErrorAndExit(4);
         }
-        
+
         await clientReady.Task.ConfigureAwait(false);
         Client.Ready -= SetClientReady;
-        
+
         Client.JoinedGuild += Client_JoinedGuild;
         Client.LeftGuild += Client_LeftGuild;
 
@@ -286,7 +291,7 @@ public sealed class Bot
     {
         if (ShardId == 0)
             await _db.SetupAsync();
-        
+
         var sw = Stopwatch.StartNew();
 
         await LoginAsync(_creds.Token);
@@ -387,7 +392,7 @@ public sealed class Bot
                 """);
             return Task.CompletedTask;
         }
-        
+
 #if GLOBAL_NADEKO || DEBUG
         if (arg.Exception is not null)
             Log.Warning(arg.Exception, "{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
