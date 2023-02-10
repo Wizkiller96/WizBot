@@ -1377,7 +1377,7 @@ listservers:
   args:
     - "3"
 cleverbot:
-  desc: "Toggles cleverbot session. When enabled, the bot will reply to messages starting with bot mention in the server. Expressions starting with %bot.mention% won't work if cleverbot is enabled."
+  desc: "Toggles cleverbot/chatgpt session. When enabled, the bot will reply to messages starting with bot mention in the server. Expressions starting with %bot.mention% won't work if cleverbot/chatgpt is enabled."
   args:
     - ""
 shorten:

@@ -70,9 +70,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
         _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                             .AddEnvironmentVariables("WizBot_")
                                             .Build();
-        
-        _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
 
+        _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
         Reload();
     }
 
@@ -81,7 +80,6 @@ public sealed class BotCredsProvider : IBotCredsProvider
         lock (_reloadLock)
         {
             _creds.OwnerIds.Clear();
-            _creds.AdminIds.Clear();
             _config.Bind(_creds);
 
             if (string.IsNullOrWhiteSpace(_creds.Token))
@@ -134,13 +132,13 @@ public sealed class BotCredsProvider : IBotCredsProvider
         ymlData = Yaml.Serializer.Serialize(creds);
         File.WriteAllText(CREDS_FILE_NAME, ymlData);
     }
-    
+
     private string OldCredsJsonPath
         => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
 
     private string OldCredsJsonBackupPath
         => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
-    
+
     private void MigrateCredentials()
     {
         if (File.Exists(OldCredsJsonPath))
@@ -181,14 +179,17 @@ public sealed class BotCredsProvider : IBotCredsProvider
             Log.Warning(
                 "Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
         }
-        
+
         if (File.Exists(CREDS_FILE_NAME))
         {
             var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));
             if (creds.Version <= 5)
             {
-                creds.Version = 6;
                 creds.BotCache = BotCacheImplemenation.Redis;
+            }
+            if (creds.Version <= 6)
+            {
+                creds.Version = 7;
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }

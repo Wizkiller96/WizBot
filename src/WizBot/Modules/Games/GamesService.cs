@@ -23,7 +23,6 @@ public class GamesService : INService, IReadyExecutor
 
     //channelId, game
     public ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new();
-    public ConcurrentDictionary<ulong, TriviaGame> RunningTrivias { get; } = new();
     public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new();
     public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new();
     public ConcurrentDictionary<ulong, NunchiGame> NunchiGames { get; } = new();

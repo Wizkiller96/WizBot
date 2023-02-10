@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
+using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.ChatterBot;
 using WizBot.Modules.Permissions;
 using WizBot.Modules.Permissions.Common;
@@ -27,6 +28,7 @@ public class ChatterBotService : IExecOnMessage
     private readonly IHttpClientFactory _httpFactory;
     private readonly IPatronageService _ps;
     private readonly CmdCdService _ccs;
+    private readonly GamesConfigService _gcs;
 
     public ChatterBotService(
         DiscordSocketClient client,
@@ -38,7 +40,8 @@ public class ChatterBotService : IExecOnMessage
         IBotCredentials creds,
         IEmbedBuilderService eb,
         IPatronageService ps,
-        CmdCdService cmdCdService)
+        CmdCdService cmdCdService,
+        GamesConfigService gcs)
     {
         _client = client;
         _perms = perms;
@@ -49,6 +52,7 @@ public class ChatterBotService : IExecOnMessage
         _httpFactory = factory;
         _ps = ps;
         _ccs = cmdCdService;
+        _gcs = gcs;
 
         _flKey = new FeatureLimitKey()
         {
@@ -64,11 +68,26 @@ public class ChatterBotService : IExecOnMessage
 
     public IChatterBotSession CreateSession()
     {
-        if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
-            return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
+        switch (_gcs.Data.ChatBot)
+        {
+            case ChatBotImplementation.Cleverbot:
+                if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
+                    return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
 
-        Log.Information("Cleverbot will not work as the api key is missing.");
-        return null;
+                Log.Information("Cleverbot will not work as the api key is missing.");
+                return null;
+            case ChatBotImplementation.Gpt3:
+                if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
+                    return new OfficialGpt3Session(_creds.Gpt3ApiKey,
+                        _gcs.Data.ChatGpt.Model,
+                        _gcs.Data.ChatGpt.MaxTokens,
+                        _httpFactory);
+
+                Log.Information("Gpt3 will not work as the api key is missing.");
+                return null;
+            default:
+                return null;
+        }
     }
 
     public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
