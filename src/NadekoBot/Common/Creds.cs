@@ -53,6 +53,9 @@ go to https://www.patreon.com/portal -> my clients -> create client")]
 
     [Comment(@"Official cleverbot api key.")]
     public string CleverbotApiKey { get; set; }
+
+    [Comment(@"Official GPT-3 api key.")]
+    public string Gpt3ApiKey { get; set; }
     
     [Comment(@"Which cache implementation should bot use.
 'memory' - Cache will be in memory of the bot's process itself. Only use this on bots with a single shard. When the bot is restarted the cache is reset. 
@@ -118,7 +121,7 @@ Windows default
 
     public Creds()
     {
-        Version = 6;
+        Version = 7;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
@@ -128,6 +131,7 @@ Windows default
         Patreon = new(string.Empty, string.Empty, string.Empty, string.Empty);
         BotListToken = string.Empty;
         CleverbotApiKey = string.Empty;
+        Gpt3ApiKey = string.Empty;
         BotCache = BotCacheImplemenation.Memory;
         RedisOptions = "localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=";
         Db = new()

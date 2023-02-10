@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db.Models;
+using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.ChatterBot;
 using NadekoBot.Modules.Permissions;
 using NadekoBot.Modules.Permissions.Common;
@@ -27,6 +28,7 @@ public class ChatterBotService : IExecOnMessage
     private readonly IHttpClientFactory _httpFactory;
     private readonly IPatronageService _ps;
     private readonly CmdCdService _ccs;
+    private readonly GamesConfigService _gcs;
 
     public ChatterBotService(
         DiscordSocketClient client,
@@ -38,7 +40,8 @@ public class ChatterBotService : IExecOnMessage
         IBotCredentials creds,
         IEmbedBuilderService eb,
         IPatronageService ps,
-        CmdCdService cmdCdService)
+        CmdCdService cmdCdService,
+        GamesConfigService gcs)
     {
         _client = client;
         _perms = perms;
@@ -49,6 +52,7 @@ public class ChatterBotService : IExecOnMessage
         _httpFactory = factory;
         _ps = ps;
         _ccs = cmdCdService;
+        _gcs = gcs;
 
         _flKey = new FeatureLimitKey()
         {
@@ -64,11 +68,26 @@ public class ChatterBotService : IExecOnMessage
 
     public IChatterBotSession CreateSession()
     {
-        if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
-            return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
+        switch (_gcs.Data.ChatBot)
+        {
+            case ChatBotImplementation.Cleverbot:
+                if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
+                    return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
 
-        Log.Information("Cleverbot will not work as the api key is missing.");
-        return null;
+                Log.Information("Cleverbot will not work as the api key is missing.");
+                return null;
+            case ChatBotImplementation.Gpt3:
+                if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
+                    return new OfficialGpt3Session(_creds.Gpt3ApiKey,
+                        _gcs.Data.ChatGpt.Model,
+                        _gcs.Data.ChatGpt.MaxTokens,
+                        _httpFactory);
+
+                Log.Information("Gpt3 will not work as the api key is missing.");
+                return null;
+            default:
+                return null;
+        }
     }
 
     public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
@@ -102,7 +121,7 @@ public class ChatterBotService : IExecOnMessage
     {
         if (guild is not SocketGuild sg)
             return false;
-        
+
         try
         {
             var message = PrepareMessage(usrMsg, out var cbs);
@@ -147,7 +166,7 @@ public class ChatterBotService : IExecOnMessage
                 uint? monthly = quota.Quota is int mVal and >= 0
                     ? (uint)mVal
                     : null;
-                
+
                 var maybeLimit = await _ps.TryIncrementQuotaCounterAsync(sg.OwnerId,
                     sg.OwnerId == usrMsg.Author.Id,
                     FeatureType.Limit,
@@ -155,7 +174,7 @@ public class ChatterBotService : IExecOnMessage
                     null,
                     daily,
                     monthly);
-                
+
                 if (maybeLimit.TryPickT1(out var ql, out var counters))
                 {
                     if (ql.Quota == 0)
@@ -166,7 +185,7 @@ public class ChatterBotService : IExecOnMessage
                             "In order to use the cleverbot feature, the owner of this server should be [Patron Tier X](https://patreon.com/join/nadekobot) on patreon.",
                             footer:
                             "You may disable the cleverbot feature, and this message via '.cleverbot' command");
-                        
+
                         return true;
                     }
 
@@ -174,7 +193,7 @@ public class ChatterBotService : IExecOnMessage
                         null!,
                         $"You've reached your quota limit of **{ql.Quota}** responses {ql.QuotaPeriod.ToFullName()} for the cleverbot feature.",
                         footer: "You may wait for the quota reset or .");
-                    
+
                     return true;
                 }
             }
@@ -185,7 +204,7 @@ public class ChatterBotService : IExecOnMessage
                 title: null,
                 response.SanitizeMentions(true)
                 // , footer: counter > 0 ? counter.ToString() : null
-                );
+            );
 
             Log.Information(@"CleverBot Executed
 Server: {GuildName} [{GuildId}]

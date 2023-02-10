@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 6
+version: 7
 # Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/
 token: ''
 # List of Ids of the users who have bot owner permissions
@@ -56,6 +56,8 @@ patreon:
 botListToken: ''
 # Official cleverbot api key.
 cleverbotApiKey: ''
+# Official GPT-3 api key.
+gpt3ApiKey: ''
 # Which cache implementation should bot use.
 # 'memory' - Cache will be in memory of the bot's process itself. Only use this on bots with a single shard. When the bot is restarted the cache is reset.
 # 'redis' - Uses redis (which needs to be separately downloaded and installed). The cache will persist through bot restarts. You can configure connection string in creds.yml

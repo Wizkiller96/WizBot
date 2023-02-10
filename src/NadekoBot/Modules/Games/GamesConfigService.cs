@@ -28,6 +28,20 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
             long.TryParse,
             ConfigPrinters.ToString,
             val => val >= 0);
+        
+        AddParsedProp("chatbot",
+            gs => gs.ChatBot,
+            ConfigParsers.InsensitiveEnum,
+            ConfigPrinters.ToString);
+        AddParsedProp("gpt.model",
+            gs => gs.ChatGpt.Model,
+            ConfigParsers.InsensitiveEnum,
+            ConfigPrinters.ToString);
+        AddParsedProp("gpt.max_tokens",
+            gs => gs.ChatGpt.MaxTokens,
+            int.TryParse,
+            ConfigPrinters.ToString,
+            val => val > 0);
 
         Migrate();
     }
@@ -43,6 +57,15 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
                 {
                     CurrencyReward = 0
                 };
+            });
+        }
+
+        if (data.Version < 2)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 2;
+                c.ChatBot = ChatBotImplementation.Cleverbot;  
             });
         }
     }
