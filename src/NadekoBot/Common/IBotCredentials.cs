@@ -14,6 +14,7 @@ public interface IBotCredentials
     int TotalShards { get; }
     Creds.PatreonSettings Patreon { get; }
     string CleverbotApiKey { get; }
+    string Gpt3ApiKey { get; }
     RestartConfig RestartCommand { get; }
     Creds.VotesSettings Votes { get; }
     string BotListToken { get; }
