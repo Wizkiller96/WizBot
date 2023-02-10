@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 1
+version: 2
 # Hangman related settings (.hangman command)
 hangman:
 # The amount of currency awarded to the winner of a hangman game
@@ -8,8 +8,8 @@ hangman:
 trivia:
 # The amount of currency awarded to the winner of the trivia game.
   currencyReward: 0
-  # Users won't be able to start trivia games which have 
-# a smaller win requirement than the one specified by this setting.
+  # Users won't be able to start trivia games which have
+  # a smaller win requirement than the one specified by this setting.
   minimumWinReq: 1
 # List of responses for the .8ball command. A random one will be selected every time
 eightBallResponses:
@@ -54,3 +54,17 @@ raceAnimals:
     name: Crab
   - icon: "🦄"
     name: Unicorn
+# Which chatbot API should bot use.
+# 'cleverbot' - bot will use Cleverbot API.
+# 'gpt3' - bot will use GPT-3 API
+chatBot: gpt3
+
+chatGpt:
+  # Which GPT-3 Model should bot use.
+  # 'ada001' - cheapest and fastest
+  # 'babbage001' - 2nd option
+  # 'curie001' - 3rd option
+  # 'davinci003' - Most expensive, slowest
+  model: davinci003
+  # The maximum number of tokens to use per GPT-3 API call
+  maxTokens: 100
