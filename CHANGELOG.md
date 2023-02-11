@@ -2,6 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.12] - 11.02.2023
+
+### Fixed
+
+- Fixed `.betstats` not working on european locales
+- Timed `.ban` will work on users who are not in the server
+- Fixed some bugs in the medusa system 
+
 ## [4.3.11] - 21.01.2023
 
 ### Added

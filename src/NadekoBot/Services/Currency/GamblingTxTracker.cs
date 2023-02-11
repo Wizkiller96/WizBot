@@ -104,8 +104,7 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
     public async Task<IReadOnlyCollection<GamblingStats>> GetAllAsync()
     {
         await using var ctx = _db.GetDbContext();
-        return await ctx
-            .GetTable<GamblingStats>()
-            .ToListAsync();
+        return await ctx.Set<GamblingStats>()
+            .ToListAsyncEF();
     }
 }
