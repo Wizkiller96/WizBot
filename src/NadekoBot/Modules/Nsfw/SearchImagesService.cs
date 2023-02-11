@@ -19,17 +19,15 @@ public class SearchImagesService : ISearchImagesService, INService
     private readonly SearchImageCacher _cache;
     private readonly IHttpClientFactory _httpFactory;
     private readonly DbService _db;
-    private readonly INhentaiService _nh;
 
     private readonly object _taglock = new();
 
     public SearchImagesService(
         DbService db,
         SearchImageCacher cacher,
-        IHttpClientFactory httpFactory,
-        INhentaiService nh)
+        IHttpClientFactory httpFactory
+        )
     {
-        _nh = nh;
         _db = db;
         _rng = new NadekoRandom();
         _cache = cacher;
@@ -277,6 +275,7 @@ public class SearchImagesService : ISearchImagesService, INService
         }
     }
 
+    /*
     #region Nhentai
 
     public Task<Gallery?> GetNhentaiByIdAsync(uint id)
@@ -294,4 +293,5 @@ public class SearchImagesService : ISearchImagesService, INService
     }
 
     #endregion
+    */
 }
