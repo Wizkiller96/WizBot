@@ -8,6 +8,8 @@ using Ninject.Extensions.Conventions;
 using StackExchange.Redis;
 using System.Net;
 using System.Reflection;
+using NadekoBot.Common.ModuleBehaviors;
+using Ninject.Infrastructure.Language;
 
 namespace NadekoBot.Extensions;
 
@@ -122,6 +124,33 @@ public static class ServiceCollectionExtensions
         var prov = svcs.BuildServiceProvider();
         kernel.Bind<IHttpClientFactory>().ToMethod(_ => prov.GetRequiredService<IHttpClientFactory>());
         kernel.Bind<HttpClient>().ToMethod(_ => prov.GetRequiredService<HttpClient>());
+
+        return kernel;
+    }
+
+    public static IKernel AddLifetimeServices(this IKernel kernel)
+    {
+        
+        Assembly.GetExecutingAssembly()
+            .ExportedTypes
+            .Where(x => x.IsPublic && x.IsClass && !x.IsAbstract)
+            .Where(c => (c.IsAssignableTo(typeof(INService))
+                             || c.IsAssignableTo(typeof(IExecOnMessage))
+                             || c.IsAssignableTo(typeof(IInputTransformer))
+                             || c.IsAssignableTo(typeof(IExecPreCommand))
+                             || c.IsAssignableTo(typeof(IExecPostCommand))
+                             || c.IsAssignableTo(typeof(IExecNoCommand)))
+                            && !c.HasAttribute<DontAddToIocContainerAttribute>()
+#if GLOBAL_NADEKO
+                                                && !c.HasAttribute<NoPublicBotAttribute>()
+#endif
+                );
+        
+            /*
+            classes.BindToSelf()
+                .Configure(c => c.InSingletonScope());
+                */
+        });
 
         return kernel;
     }

@@ -36,7 +36,7 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
         
         - `invidious` - recommended advanced, uses invidious api. Requires at least one invidious instance specified in the `invidiousInstances` property
         """)]
-    public YoutubeSearcher YtProvider { get; set; } = YoutubeSearcher.Ytdl;
+    public YoutubeSearcher YtProvider { get; set; } = YoutubeSearcher.Ytdlp;
 
     [Comment("""
         Set the searx instance urls in case you want to use 'searx' for either img or web search.

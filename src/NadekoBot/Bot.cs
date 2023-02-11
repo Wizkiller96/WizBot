@@ -132,36 +132,9 @@ public sealed class Bot
             kernel.Bind<ICoordinator, IReadyExecutor>().To<RemoteGrpcCoordinator>().InSingletonScope();
         }
 
-        kernel.Bind(scan =>
-        {
-            var classes = scan.FromThisAssembly()
-                              .SelectAllClasses()
-                              .Where(c => (c.IsAssignableTo(typeof(INService))
-                                           || c.IsAssignableTo(typeof(IExecOnMessage))
-                                           || c.IsAssignableTo(typeof(IInputTransformer))
-                                           || c.IsAssignableTo(typeof(IExecPreCommand))
-                                           || c.IsAssignableTo(typeof(IExecPostCommand))
-                                           || c.IsAssignableTo(typeof(IExecNoCommand)))
-                                          && !c.HasAttribute<DontAddToIocContainerAttribute>()
-#if GLOBAL_NADEKO
-                                                && !c.HasAttribute<NoPublicBotAttribute>()
-#endif
-                              );
-            classes
-                .BindAllInterfaces()
-                .Configure(c => c.InSingletonScope());
-
-            classes.BindToSelf()
-                   .Configure(c => c.InSingletonScope());
-        });
+        kernel.AddLifetimeServices(); 
 
         kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
-
-        var services = kernel.GetServices(typeof(INService));
-        foreach (var s in services)
-        {
-            Console.WriteLine(s.GetType().FullName);
-        }
 
         //initialize Services
         Services = kernel;
@@ -348,6 +321,7 @@ public sealed class Bot
         {
             try
             {
+                Console.WriteLine(toExec.GetType().FullName);
                 await toExec.OnReadyAsync();
             }
             catch (Exception ex)

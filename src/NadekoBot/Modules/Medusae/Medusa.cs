@@ -150,9 +150,10 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
             var cmdCount = found.Sneks.Sum(x => x.Commands.Count);
             var cmdNames = found.Sneks
-                                .SelectMany(x => x.Commands)
-                                   .Select(x => Format.Code(x.Name))
-                                   .Join(" | ");
+                                   .SelectMany(x => Format.Code(string.IsNullOrWhiteSpace(x.Prefix)
+                                       ? x.Name
+                                       : $"{x.Prefix} {x.Name}"))
+                                   .Join("\n");
 
             var eb = _eb.Create(ctx)
                         .WithOkColor()

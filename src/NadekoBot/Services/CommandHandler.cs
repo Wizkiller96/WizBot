@@ -55,10 +55,13 @@ public class CommandHandler : INService, IReadyExecutor
         _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix is not null)
                        .ToDictionary(x => x.GuildId, x => x.Prefix)
                        .ToConcurrent();
+
+        Console.WriteLine("Command handler created");
     }
 
     public async Task OnReadyAsync()
     {
+        Log.Information("Command handler runnning on ready");
         // clear users on short cooldown every GLOBAL_COMMANDS_COOLDOWN miliseconds
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(GLOBAL_COMMANDS_COOLDOWN));
         while (await timer.WaitForNextTickAsync())
