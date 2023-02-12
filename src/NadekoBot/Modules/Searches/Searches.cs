@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Modules.Searches.Common;
@@ -325,7 +325,7 @@ public partial class Searches : NadekoModule<SearchesService>
                             return _eb.Create()
                                       .WithOkColor()
                                       .WithUrl(item.Permalink)
-                                      .WithAuthor(item.Word)
+                                      .WithTitle(item.Word)
                                       .WithDescription(item.Definition);
                         },
                         items.Length,
