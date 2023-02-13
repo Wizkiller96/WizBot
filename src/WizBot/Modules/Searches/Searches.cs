@@ -325,7 +325,7 @@ public partial class Searches : WizBotModule<SearchesService>
                             return _eb.Create()
                                       .WithOkColor()
                                       .WithUrl(item.Permalink)
-                                      .WithAuthor(item.Word)
+                                      .WithTitle(item.Word)
                                       .WithDescription(item.Definition);
                         },
                         items.Length,
