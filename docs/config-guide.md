@@ -23,7 +23,12 @@ The list below is not complete. Use commands above to see up-to-date list for yo
 ## Games  
 
 `trivia.min_win_req` - Restricts a user's ability to make a trivia game with a win requirement less than the set value.   
-`trivia.currency_reward` - Sets the amount of currency a user will win if they place first in a completed trivia game.  
+`trivia.currency_reward` - Sets the amount of currency a user will win if they place first in a completed trivia game.
+`hangman.currency_reward` - Sets the amount of currency a user will win if they win a game of hangman.
+`chatbot` - Sets which chatbot API the bot should use, values: `chatgpt`, `cleverbot`.
+`gpt.model` - Sets which GPT-3 model the bot should use, values: `ada001`, `babbage001`, `curie001`, `davinci003`.
+`gpt.max_tokens` - Sets the limit of tokens GPT-3 can use per call.
+Each token is approximately 4 characters, and it counts both the request and the response characters.
 
 *more settings may be available in `data/games.yml` file*
 
