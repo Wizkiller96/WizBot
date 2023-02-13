@@ -1117,11 +1117,6 @@ hentai:
   desc: "Shows a hentai image from a random website (gelbooru, danbooru, konachan or yandere) with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags. Only 1 tag allowed."
   args:
     - "yuri"
-nhentai:
-  desc: "Shows basic information about a hentai with the specified id, or a valid nhentai search query."
-  args:
-    - "273426"
-    - "cute girl"
 autohentai:
   desc: "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Max 2 tags per group. 20 seconds minimum. Provide no parameters to disable."
   args:
