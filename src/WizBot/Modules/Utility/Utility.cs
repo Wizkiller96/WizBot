@@ -642,10 +642,10 @@ public partial class Utility : WizBotModule
     }
 
     [Cmd]
+    [OnlyPublicBot]
     public async Task Donators()
     {
-#if GLOBAL_WIZBOT
-            // Make it so it wont error when no users are found.
+        // Make it so it wont error when no users are found.
             var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
             var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
 
@@ -660,22 +660,13 @@ public partial class Utility : WizBotModule
                 .WithDescription("List of users who have donated through WizNet's Patreon.")
                 .AddField("Patreon Donators:", string.Join("\n", pusers), false))
                 .ConfigureAwait(false);
-
-#else
-        await ctx.Channel.EmbedAsync(_eb.Create()
-                                        .WithErrorColor()
-                                        .WithTitle("Command Restricted")
-                                        .WithDescription("This command is disabled on self-host bots."))
-                 .ConfigureAwait(false);
-
-#endif
     }
 
     [Cmd]
+    [OnlyPublicBot]
     public async Task WizNet()
     {
-#if GLOBAL_WIZBOT
-            // Make it so it wont error when no users are found.
+        // Make it so it wont error when no users are found.
             var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
             var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
 
@@ -688,13 +679,5 @@ public partial class Utility : WizBotModule
                 .AddField("WizNet Staff", string.Join("\n", wnstaff), false)
                 .AddField("WizBot Staff", string.Join("\n", wbstaff), false)
                 .WithFooter("Note: Not all staff are listed here.")).ConfigureAwait(false);
-
-#else
-        await ctx.Channel.EmbedAsync(_eb.Create()
-                                        .WithErrorColor()
-                                        .WithTitle("Command Restricted")
-                                        .WithDescription("This command is disabled on self-host bots."))
-                 .ConfigureAwait(false);
-#endif
     }
 }

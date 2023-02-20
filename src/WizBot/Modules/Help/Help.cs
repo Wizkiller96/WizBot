@@ -484,124 +484,139 @@ public partial class Help : WizBotModule<HelpService>
         await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
     }
-    
+
     [Cmd]
-        public async Task Feedback(string type, [Remainder] string message)
+    [OnlyPublicBot]
+    public async Task Feedback(string type, [Remainder] string message)
+    {
+        string[] rtypes = { "Bug", "Suggestion", "bug", "suggestion" };
+
+        if (type == "Bug" || type == "bug")
         {
-        
-#if GLOBAL_WIZBOT
-
-            string[] rtypes = { "Bug", "Suggestion", "bug", "suggestion" };
-
-            if (type == "Bug" || type == "bug")
-            {
-                type = "Bug";
-            } else if (type == "Suggestion" || type == "suggestion")
-            {
-                type = "Suggestion";
-            }        
-
-            if (string.IsNullOrWhiteSpace(type))
-                return;
-
-            if (string.IsNullOrWhiteSpace(message))
-                return;
-
-            if (rtypes.Contains(type) && type == "Suggestion")
-            {
-                var fbmsg = await _client.GetGuild(99273784988557312).GetTextChannel(566998481177280512).EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle($"New Suggestion")
-                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
-                    .AddField("Suggester", $"{ctx.User}", true)
-                    .AddField("Suggester ID:", $"{ctx.User.Id}", true)
-                    .AddField("Server Name:", $"{ctx.Guild.Name}", true)
-                    .AddField("Server ID:", $"{ctx.Guild.Id}", true)
-                    .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
-                    .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
-                    .AddField("Type:", type, false)
-                    .AddField("Suggestion:", $"{message}")).ConfigureAwait(false);
-                await fbmsg.AddReactionAsync(Emote.Parse("<:down_vote:1012571380144951346>"));
-                await fbmsg.AddReactionAsync(Emote.Parse("<:vote_up:1012571381126418432>"));
-
-                await ctx.Channel.SendMessageAsync("Suggestion has been sent to WizNet's Discord.").ConfigureAwait(false);
-            } else if (rtypes.Contains(type) && type == "Bug") {
-                await _client.GetGuild(99273784988557312).GetTextChannel(1012808771371794433).SendMessageAsync("<@99272781513920512>");
-                await _client.GetGuild(99273784988557312).GetTextChannel(1012808771371794433).EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle($"New Bug Report")
-                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
-                    .AddField("Reporter", $"{ctx.User}", true)
-                    .AddField("Reporter ID:", $"{ctx.User.Id}", true)
-                    .AddField("Server Name:", $"{ctx.Guild.Name}", true)
-                    .AddField("Server ID:", $"{ctx.Guild.Id}", true)
-                    .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
-                    .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
-                    .AddField("Type:", type, false)
-                    .AddField("Message:", $"{message}")).ConfigureAwait(false);
-
-                await ctx.Channel.SendMessageAsync("Bug report has been sent to WizNet's Discord.").ConfigureAwait(false);
-            }
-            else
-                await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithTitle($"Error: Report not sent.")
-                    .WithDescription("Please make sure you used the correct report types listed below.")
-                    .AddField("Report Types:", "`Bug`, `Suggestion`")).ConfigureAwait(false);
-#else
-
-            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                .WithTitle("Command Restricted")
-                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
-#endif
+            type = "Bug";
+        }
+        else if (type == "Suggestion" || type == "suggestion")
+        {
+            type = "Suggestion";
         }
 
+        if (string.IsNullOrWhiteSpace(type))
+            return;
+
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        if (rtypes.Contains(type) && type == "Suggestion")
+        {
+            var fbmsg = await _client.GetGuild(99273784988557312)
+                                     .GetTextChannel(566998481177280512)
+                                     .EmbedAsync(_eb.Create()
+                                                    .WithOkColor()
+                                                    .WithTitle($"New Suggestion")
+                                                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                                                    .AddField("Suggester", $"{ctx.User}", true)
+                                                    .AddField("Suggester ID:", $"{ctx.User.Id}", true)
+                                                    .AddField("Server Name:", $"{ctx.Guild.Name}", true)
+                                                    .AddField("Server ID:", $"{ctx.Guild.Id}", true)
+                                                    .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
+                                                    .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
+                                                    .AddField("Type:", type, false)
+                                                    .AddField("Suggestion:", $"{message}"))
+                                     .ConfigureAwait(false);
+            await fbmsg.AddReactionAsync(Emote.Parse("<:down_vote:1012571380144951346>"));
+            await fbmsg.AddReactionAsync(Emote.Parse("<:vote_up:1012571381126418432>"));
+
+            await ctx.Channel.SendMessageAsync("Suggestion has been sent to WizNet's Discord.").ConfigureAwait(false);
+        }
+        else if (rtypes.Contains(type) && type == "Bug")
+        {
+            await _client.GetGuild(99273784988557312)
+                         .GetTextChannel(1012808771371794433)
+                         .SendMessageAsync("<@99272781513920512>");
+            await _client.GetGuild(99273784988557312)
+                         .GetTextChannel(1012808771371794433)
+                         .EmbedAsync(_eb.Create()
+                                        .WithOkColor()
+                                        .WithTitle($"New Bug Report")
+                                        .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                                        .AddField("Reporter", $"{ctx.User}", true)
+                                        .AddField("Reporter ID:", $"{ctx.User.Id}", true)
+                                        .AddField("Server Name:", $"{ctx.Guild.Name}", true)
+                                        .AddField("Server ID:", $"{ctx.Guild.Id}", true)
+                                        .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
+                                        .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
+                                        .AddField("Type:", type, false)
+                                        .AddField("Message:", $"{message}"))
+                         .ConfigureAwait(false);
+
+            await ctx.Channel.SendMessageAsync("Bug report has been sent to WizNet's Discord.").ConfigureAwait(false);
+        }
+        else
+            await ctx.Channel.EmbedAsync(_eb.Create()
+                                            .WithErrorColor()
+                                            .WithTitle($"Error: Report not sent.")
+                                            .WithDescription(
+                                                "Please make sure you used the correct report types listed below.")
+                                            .AddField("Report Types:", "`Bug`, `Suggestion`"))
+                     .ConfigureAwait(false);
+    }
+
         [Cmd]
+        [OnlyPublicBot]
         public async Task Report(IGuildUser ruser, [Remainder] string rexplaination)
         {
-            
-#if GLOBAL_WIZBOT
-
             var user = ruser ?? ctx.User as IGuildUser;
 
             if (((user == null)) && (string.IsNullOrEmpty(rexplaination)))
             {
-                await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithTitle($"Error: Abuse report not sent.")
-                    .WithDescription("Please make sure you filled out all the fields correctly.")).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithTitle($"Error: Abuse report not sent.")
+                                                .WithDescription(
+                                                    "Please make sure you filled out all the fields correctly."))
+                         .ConfigureAwait(false);
             }
             else if (user == null)
             {
-                await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithTitle($"Error: Abuse report not sent.")
-                    .WithDescription("Please make sure you provided the username of the person you are reporting.")).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithTitle($"Error: Abuse report not sent.")
+                                                .WithDescription(
+                                                    "Please make sure you provided the username of the person you are reporting."))
+                         .ConfigureAwait(false);
             }
             else if (string.IsNullOrEmpty(rexplaination))
             {
-                await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                    .WithTitle($"Error: Abuse report not sent.")
-                    .WithDescription("Please make sure you provided and explaination in your report.")).ConfigureAwait(false);
+                await ctx.Channel.EmbedAsync(_eb.Create()
+                                                .WithErrorColor()
+                                                .WithTitle($"Error: Abuse report not sent.")
+                                                .WithDescription(
+                                                    "Please make sure you provided and explaination in your report."))
+                         .ConfigureAwait(false);
             }
             else
-                await _client.GetGuild(99273784988557312).GetTextChannel(590829242690961408).SendMessageAsync("<@&367646195889471499>");
-                await _client.GetGuild(99273784988557312).GetTextChannel(590829242690961408).EmbedAsync(_eb.Create().WithOkColor()
-                    .WithTitle($"Abuse Report")
-                    .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
-                    .AddField("Reporter:", $"{ctx.User}", true)
-                    .AddField("Reporter ID:", $"{ctx.User.Id}", true)
-                    .AddField("Server Name:", $"{ctx.Guild.Name}", true)
-                    .AddField("Server ID:", $"{ctx.Guild.Id}", true)
-                    .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
-                    .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
-                    .AddField("Reported User:", $"**{user.Username}**#{user.Discriminator} | {user.Id.ToString()}", false)
-                    .AddField("Explaination/Proof:", $"{rexplaination}")).ConfigureAwait(false);
+                await _client.GetGuild(99273784988557312)
+                             .GetTextChannel(590829242690961408)
+                             .SendMessageAsync("<@&367646195889471499>");
 
-                await ctx.Channel.SendMessageAsync("Report sent to WizBot's Staff.").ConfigureAwait(false);
+            await _client.GetGuild(99273784988557312)
+                         .GetTextChannel(590829242690961408)
+                         .EmbedAsync(_eb.Create()
+                                        .WithOkColor()
+                                        .WithTitle($"Abuse Report")
+                                        .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
+                                        .AddField("Reporter:", $"{ctx.User}", true)
+                                        .AddField("Reporter ID:", $"{ctx.User.Id}", true)
+                                        .AddField("Server Name:", $"{ctx.Guild.Name}", true)
+                                        .AddField("Server ID:", $"{ctx.Guild.Id}", true)
+                                        .AddField("Channel Name:", $"{ctx.Channel.Name}", true)
+                                        .AddField("Channel ID:", $"{ctx.Channel.Id}", true)
+                                        .AddField("Reported User:",
+                                            $"**{user.Username}**#{user.Discriminator} | {user.Id.ToString()}", false)
+                                        .AddField("Explaination/Proof:", $"{rexplaination}"))
+                         .ConfigureAwait(false);
 
-#else
-
-            await ctx.Channel.EmbedAsync(_eb.Create().WithErrorColor()
-                .WithTitle("Command Restricted")
-                .WithDescription("This command is disabled on self-host bots.")).ConfigureAwait(false);
-            
-#endif
+            await ctx.Channel.SendMessageAsync("Report sent to WizBot's Staff.").ConfigureAwait(false);
         }
 
     [Cmd]
