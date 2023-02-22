@@ -19,7 +19,7 @@ It is recommended that you use **Ubuntu 20.04**, as there have been nearly no pr
 
 ##### Compatible operating systems:
 
-- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10
+- Ubuntu: 16.04, 18.04, 20.04
 - Mint: 19, 20
 - Debian: 10, 11
 - CentOS: 7
