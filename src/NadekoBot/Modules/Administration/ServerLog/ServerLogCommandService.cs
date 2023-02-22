@@ -311,7 +311,8 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             logSetting.UserLeftId = logSetting.UserBannedId = logSetting.UserUnbannedId = logSetting.UserUpdatedId =
                 logSetting.ChannelCreatedId = logSetting.ChannelDestroyedId = logSetting.ChannelUpdatedId =
                     logSetting.LogUserPresenceId = logSetting.LogVoicePresenceId = logSetting.UserMutedId =
-                        logSetting.LogVoicePresenceTTSId = value ? channelId : null;
+                        logSetting.LogVoicePresenceTTSId = logSetting.ThreadCreatedId = logSetting.ThreadDeletedId
+                            = logSetting.LogWarnsId = value ? channelId : null;
         await uow.SaveChangesAsync();
         GuildLogSettings.AddOrUpdate(guildId, _ => logSetting, (_, _) => logSetting);
     }
