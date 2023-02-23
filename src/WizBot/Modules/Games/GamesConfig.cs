@@ -108,10 +108,10 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
 public sealed partial class ChatGptConfig
 {
     [Comment(@"Which GPT-3 Model should bot use.
-'ada' - cheapest and fastest 
-'babbage' - 2nd option
-'curie' - 3rd option
-'davinci' - Most expensive, slowest")]
+'ada001' - cheapest and fastest 
+'babbage001' - 2nd option
+'curie001' - 3rd option
+'davinci003' - Most expensive, slowest")]
     public Gpt3Model Model { get; set; } = Gpt3Model.Ada001;
 
     [Comment(@"The maximum number of tokens to use per GPT-3 API call")]
