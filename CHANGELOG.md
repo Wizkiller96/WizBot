@@ -2,7 +2,15 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [4.3.12] - 11.02.2023
+## [4.3.13] - 20.02.2023
+
+### Fixed
+
+- Fixed `.log userpresence`
+- `.q` will now use `yt-dlp` if anything other than `ytProvider: Ytdl` is set in `data/searches.yml`
+- Fixed Title links on some embeds
+
+## [4.3.12] - 12.02.2023
 
 ### Fixed
 
