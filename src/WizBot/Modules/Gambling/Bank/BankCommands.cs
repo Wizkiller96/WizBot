@@ -102,19 +102,19 @@ public partial class Gambling
         }
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(1)]
         public async Task BankTake(long amount, [Leftover] IUser user)
             => await BankTakeInternalAsync(amount, user.Id);
         
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         [Priority(0)]
         public async Task BankTake(long amount, ulong userId)
             => await BankTakeInternalAsync(amount, userId);
         
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public async Task BankAward(long amount, [Leftover] IUser user)
             => await BankAwardInternalAsync(amount, user.Id);
     }

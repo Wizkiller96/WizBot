@@ -268,13 +268,13 @@ public partial class Gambling : GamblingModule<GamblingService>
         => InternalCurrencyTransactions(ctx.User.Id, page);
 
     [Cmd]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(0)]
     public Task CurrencyTransactions([Leftover] IUser usr)
         => InternalCurrencyTransactions(usr.Id, 1);
 
     [Cmd]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(1)]
     public Task CurrencyTransactions(IUser usr, int page)
         => InternalCurrencyTransactions(usr.Id, page);
@@ -452,20 +452,20 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(0)]
     public Task Award(long amount, IGuildUser usr, [Leftover] string msg)
         => Award(amount, usr.Id, msg);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(1)]
     public Task Award(long amount, [Leftover] IGuildUser usr)
         => Award(amount, usr.Id);
 
     [Cmd]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(2)]
     public async Task Award(long amount, ulong usrId, [Leftover] string msg = null)
     {
@@ -488,7 +488,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(3)]
     public async Task Award(long amount, [Leftover] IRole role)
     {
@@ -505,7 +505,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(0)]
     public async Task Take(long amount, [Leftover] IRole role)
     {
@@ -522,7 +522,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    [OwnerOnly]
+    [AdminOnly]
     [Priority(1)]
     public async Task Take(long amount, [Leftover] IGuildUser user)
     {
@@ -544,7 +544,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    [OwnerOnly]
+    [AdminOnly]
     public async Task Take(long amount, [Leftover] ulong usrId)
     {
         if (amount <= 0)
