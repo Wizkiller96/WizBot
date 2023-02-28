@@ -12,10 +12,4 @@ public static class WizBotExpressionExtensions
 
     public static IEnumerable<WizBotExpression> ForId(this DbSet<WizBotExpression> exprs, ulong id)
         => exprs.AsNoTracking().AsQueryable().Where(x => x.GuildId == id).ToList();
-
-    public static WizBotExpression GetByGuildIdAndInput(
-        this DbSet<WizBotExpression> exprs,
-        ulong? guildId,
-        string input)
-        => exprs.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpper() == input);
 }

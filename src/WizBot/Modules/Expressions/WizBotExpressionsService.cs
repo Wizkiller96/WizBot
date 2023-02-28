@@ -57,8 +57,8 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
     // 1. expressions are almost never added (compared to how many times they are being looped through)
     // 2. only need write locks for this as we'll rebuild+replace the array on every edit
     // 3. there's never many of them (at most a thousand, usually < 100)
-    private WizBotExpression[] globalExpressions;
-    private ConcurrentDictionary<ulong, WizBotExpression[]> newguildExpressions;
+    private WizBotExpression[] globalExpressions = Array.Empty<WizBotExpression>();
+    private ConcurrentDictionary<ulong, WizBotExpression[]> newguildExpressions = new();
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
