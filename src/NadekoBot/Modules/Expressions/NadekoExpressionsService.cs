@@ -57,8 +57,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     // 1. expressions are almost never added (compared to how many times they are being looped through)
     // 2. only need write locks for this as we'll rebuild+replace the array on every edit
     // 3. there's never many of them (at most a thousand, usually < 100)
-    private NadekoExpression[] globalExpressions;
-    private ConcurrentDictionary<ulong, NadekoExpression[]> newguildExpressions;
+    private NadekoExpression[] globalExpressions = Array.Empty<NadekoExpression>();
+    private ConcurrentDictionary<ulong, NadekoExpression[]> newguildExpressions = new();
 
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
