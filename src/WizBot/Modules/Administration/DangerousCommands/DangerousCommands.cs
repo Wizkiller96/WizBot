@@ -1,12 +1,12 @@
 ﻿#nullable disable
 using WizBot.Modules.Administration.Services;
 
-#if !GLOBAL_WIZBOT
 namespace WizBot.Modules.Administration
 {
     public partial class Administration
     {
         [Group]
+        [NoPublicBot]
         [OwnerOnly]
         public partial class DangerousCommands : WizBotModule<DangerousCommandsService>
         {
@@ -31,6 +31,7 @@ namespace WizBot.Modules.Administration
             }
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task SqlSelect([Leftover] string sql)
             {
@@ -55,6 +56,7 @@ namespace WizBot.Modules.Administration
             }
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public async Task SqlExec([Leftover] string sql)
             {
@@ -77,36 +79,43 @@ namespace WizBot.Modules.Administration
             }
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task DeleteWaifus()
                 => ConfirmActionInternalAsync("Delete Waifus", () => _service.DeleteWaifus());
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public async Task DeleteWaifu(IUser user)
                 => await DeleteWaifu(user.Id);
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task DeleteWaifu(ulong userId)
                 => ConfirmActionInternalAsync($"Delete Waifu {userId}", () => _service.DeleteWaifu(userId));
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task DeleteCurrency()
                 => ConfirmActionInternalAsync("Delete Currency", () => _service.DeleteCurrency());
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task DeletePlaylists()
                 => ConfirmActionInternalAsync("Delete Playlists", () => _service.DeletePlaylists());
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task DeleteXp()
                 => ConfirmActionInternalAsync("Delete Xp", () => _service.DeleteXp());
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public async Task PurgeUser(ulong userId)
             {
@@ -121,10 +130,10 @@ namespace WizBot.Modules.Administration
             }
 
             [Cmd]
+            [NoPublicBot]
             [OwnerOnly]
             public Task PurgeUser([Leftover] IUser user)
                 => PurgeUser(user.Id);
         }
     }
 }
-#endif
