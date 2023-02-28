@@ -46,9 +46,7 @@ public sealed class CommandOrExprTypeReader : NadekoTypeReader<CommandOrExprInfo
 
     public override async ValueTask<TypeReaderResult<CommandOrExprInfo>> ReadAsync(ICommandContext ctx, string input)
     {
-        input = input.ToUpperInvariant();
-
-        if (_exprs.ExpressionExists(ctx.Guild?.Id, input) || _exprs.ExpressionExists(null, input))
+        if (_exprs.ExpressionExists(ctx.Guild?.Id, input))
             return TypeReaderResult.FromSuccess(new CommandOrExprInfo(input, CommandOrExprInfo.Type.Custom));
 
         var cmd = await new CommandTypeReader(_commandHandler, _cmds).ReadAsync(ctx, input);
