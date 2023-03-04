@@ -39,7 +39,7 @@ public partial class Searches
         [Cmd]
         public async Task MagicItem()
         {
-            if (!_service.WowJokes.Any())
+            if (!_service.MagicItems.Any())
             {
                 await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded);
                 return;
