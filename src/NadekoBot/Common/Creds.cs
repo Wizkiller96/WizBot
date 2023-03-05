@@ -63,6 +63,9 @@ public sealed class Creds : IBotCredentials
 
     [Comment("""Official cleverbot api key.""")]
     public string CleverbotApiKey { get; set; }
+
+    [Comment(@"Official GPT-3 api key.")]
+    public string Gpt3ApiKey { get; set; }
     
     [Comment("""
         Which cache implementation should bot use.
@@ -144,7 +147,7 @@ public sealed class Creds : IBotCredentials
 
     public Creds()
     {
-        Version = 6;
+        Version = 7;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
@@ -154,6 +157,7 @@ public sealed class Creds : IBotCredentials
         Patreon = new(string.Empty, string.Empty, string.Empty, string.Empty);
         BotListToken = string.Empty;
         CleverbotApiKey = string.Empty;
+        Gpt3ApiKey = string.Empty;
         BotCache = BotCacheImplemenation.Memory;
         RedisOptions = "localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=";
         Db = new()

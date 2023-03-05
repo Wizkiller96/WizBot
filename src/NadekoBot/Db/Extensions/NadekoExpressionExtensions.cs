@@ -12,10 +12,4 @@ public static class NadekoExpressionExtensions
 
     public static IEnumerable<NadekoExpression> ForId(this DbSet<NadekoExpression> exprs, ulong id)
         => exprs.AsNoTracking().AsQueryable().Where(x => x.GuildId == id).ToList();
-
-    public static NadekoExpression GetByGuildIdAndInput(
-        this DbSet<NadekoExpression> exprs,
-        ulong? guildId,
-        string input)
-        => exprs.FirstOrDefault(x => x.GuildId == guildId && x.Trigger.ToUpper() == input);
 }

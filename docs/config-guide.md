@@ -24,6 +24,10 @@ The list below is not complete. Use commands above to see up-to-date list for yo
 
 `trivia.min_win_req` - Restricts a user's ability to make a trivia game with a win requirement less than the set value.   
 `trivia.currency_reward` - Sets the amount of currency a user will win if they place first in a completed trivia game.  
+`hangman.currency_reward` - Sets the amount of currency a user will win if they win a game of hangman.  
+`chatbot` - Sets which chatbot API the bot should use, values: `gpt3`, `cleverbot`.  
+`gpt.model` - Sets which GPT-3 model the bot should use, values: `ada001`, `babbage001`, `curie001`, `davinci003`.  
+`gpt.max_tokens` - Sets the limit of tokens GPT-3 can use per call. Find out more about tokens [here](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them).
 
 *more settings may be available in `data/games.yml` file*
 

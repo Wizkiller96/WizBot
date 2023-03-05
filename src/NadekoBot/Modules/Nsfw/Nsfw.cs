@@ -360,67 +360,65 @@ public partial class NSFW : NadekoModule<ISearchImagesService>
         }
     }
 
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    [RequireNsfw(Group = "nsfw_or_dm")]
-    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-    [Priority(1)]
-    public async Task Nhentai(uint id)
-    {
-        var g = await _service.GetNhentaiByIdAsync(id);
-
-        if (g is null)
-        {
-            await ReplyErrorLocalizedAsync(strs.not_found);
-            return;
-        }
-
-        await SendNhentaiGalleryInternalAsync(g);
-    }
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    [RequireNsfw(Group = "nsfw_or_dm")]
-    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-    [Priority(0)]
-    public async Task Nhentai([Leftover] string query)
-    {
-        var g = await _service.GetNhentaiBySearchAsync(query);
-
-        if (g is null)
-        {
-            await ReplyErrorLocalizedAsync(strs.not_found);
-            return;
-        }
-
-        await SendNhentaiGalleryInternalAsync(g);
-    }
-
-    private async Task SendNhentaiGalleryInternalAsync(Gallery g)
-    {
-        var count = 0;
-        var tagString = g.Tags.Shuffle()
-                         .Select(tag => $"[{tag.Name}]({tag.Url})")
-                         .TakeWhile(tag => (count += tag.Length) < 1000)
-                         .Join(" ");
-
-        var embed = _eb.Create()
-            .WithTitle(g.Title)
-            .WithDescription(g.FullTitle)
-            .WithImageUrl(g.Thumbnail)
-            .WithUrl(g.Url)
-            .AddField(GetText(strs.favorites), g.Likes, true)
-            .AddField(GetText(strs.pages), g.PageCount, true)
-            .AddField(GetText(strs.tags),
-                string.IsNullOrWhiteSpace(tagString)
-                    ? "?"
-                    : tagString,
-                true)
-            .WithFooter(g.UploadedAt.ToString("f"))
-            .WithOkColor();
-
-        await ctx.Channel.EmbedAsync(embed);
-    }
+    // [RequireNsfw(Group = "nsfw_or_dm")]
+    // [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    // [Priority(1)]
+    // public async Task Nhentai(uint id)
+    // {
+    //     var g = await _service.GetNhentaiByIdAsync(id);
+    //
+    //     if (g is null)
+    //     {
+    //         await ReplyErrorLocalizedAsync(strs.not_found);
+    //         return;
+    //     }
+    //
+    //     await SendNhentaiGalleryInternalAsync(g);
+    // }
+    //
+    // [Cmd]
+    // [RequireContext(ContextType.Guild)]
+    // [RequireNsfw(Group = "nsfw_or_dm")]
+    // [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    // [Priority(0)]
+    // public async Task Nhentai([Leftover] string query)
+    // {
+    //     var g = await _service.GetNhentaiBySearchAsync(query);
+    //
+    //     if (g is null)
+    //     {
+    //         await ReplyErrorLocalizedAsync(strs.not_found);
+    //         return;
+    //     }
+    //
+    //     await SendNhentaiGalleryInternalAsync(g);
+    // }
+    //
+    // private async Task SendNhentaiGalleryInternalAsync(Gallery g)
+    // {
+    //     var count = 0;
+    //     var tagString = g.Tags.Shuffle()
+    //                      .Select(tag => $"[{tag.Name}]({tag.Url})")
+    //                      .TakeWhile(tag => (count += tag.Length) < 1000)
+    //                      .Join(" ");
+    //
+    //     var embed = _eb.Create()
+    //         .WithTitle(g.Title)
+    //         .WithDescription(g.FullTitle)
+    //         .WithImageUrl(g.Thumbnail)
+    //         .WithUrl(g.Url)
+    //         .AddField(GetText(strs.favorites), g.Likes, true)
+    //         .AddField(GetText(strs.pages), g.PageCount, true)
+    //         .AddField(GetText(strs.tags),
+    //             string.IsNullOrWhiteSpace(tagString)
+    //                 ? "?"
+    //                 : tagString,
+    //             true)
+    //         .WithFooter(g.UploadedAt.ToString("f"))
+    //         .WithOkColor();
+    //
+    //     await ctx.Channel.EmbedAsync(embed);
+    // }
 
     private async Task InternalDapiCommand(
         string[] tags,

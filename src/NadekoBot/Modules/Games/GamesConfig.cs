@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Games.Common;
 public sealed partial class GamesConfig : ICloneable<GamesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; }
+    public int Version { get; set; } = 2;
 
     [Comment("Hangman related settings (.hangman command)")]
     public HangmanConfig Hangman { get; set; } = new()
@@ -95,6 +95,27 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
             Name = "Unicorn"
         }
     };
+
+    [Comment(@"Which chatbot API should bot use.
+'cleverbot' - bot will use Cleverbot API. 
+'gpt3' - bot will use GPT-3 API")]
+    public ChatBotImplementation ChatBot { get; set; } = ChatBotImplementation.Gpt3;
+
+    public ChatGptConfig ChatGpt { get; set; } = new();
+}
+
+[Cloneable]
+public sealed partial class ChatGptConfig
+{
+    [Comment(@"Which GPT-3 Model should bot use.
+'ada001' - cheapest and fastest 
+'babbage001' - 2nd option
+'curie001' - 3rd option
+'davinci003' - Most expensive, slowest")]
+    public Gpt3Model Model { get; set; } = Gpt3Model.Ada001;
+
+    [Comment(@"The maximum number of tokens to use per GPT-3 API call")]
+    public int MaxTokens { get; set; } = 100;
 }
 
 [Cloneable]
@@ -122,4 +143,18 @@ public sealed partial class RaceAnimal
 {
     public string Icon { get; set; }
     public string Name { get; set; }
+}
+
+public enum ChatBotImplementation
+{
+    Cleverbot,
+    Gpt3
+}
+
+public enum Gpt3Model
+{
+    Ada001,
+    Babbage001,
+    Curie001,
+    Davinci003
 }

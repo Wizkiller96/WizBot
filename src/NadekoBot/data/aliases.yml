@@ -664,8 +664,6 @@ avatar:
   - av
 hentai:
   - hentai
-nhentai:
-  - nhentai
 danbooru:
   - danbooru
 derpibooru:
@@ -807,6 +805,7 @@ hentaibomb:
   - hentaibomb
 cleverbot:
   - cleverbot
+  - chatgpt
 shorten:
   - shorten
 wikia:

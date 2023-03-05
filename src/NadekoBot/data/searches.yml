@@ -18,7 +18,7 @@ imgSearchEngine: Google
 # - `ytdlp` - recommended easy, uses `yt-dlp`. Requires `yt-dlp` to be installed and it's path added to env variables
 # 
 # - `invidious` - recommended advanced, uses invidious api. Requires at least one invidious instance specified in the `invidiousInstances` property
-ytProvider: Ytdl
+ytProvider: Ytdlp
 # Set the searx instance urls in case you want to use 'searx' for either img or web search.
 # Nadeko will use a random one for each request.
 # Use a fully qualified url. Example: `https://my-searx-instance.mydomain.com`

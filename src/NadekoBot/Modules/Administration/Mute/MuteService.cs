@@ -356,24 +356,24 @@ public class MuteService : INService
 
     public async Task TimedBan(
         IGuild guild,
-        IUser user,
+        ulong userId,
         TimeSpan after,
         string reason,
         int pruneDays)
     {
-        await guild.AddBanAsync(user.Id, pruneDays, reason);
+        await guild.AddBanAsync(userId, pruneDays, reason);
         await using (var uow = _db.GetDbContext())
         {
             var config = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.UnbanTimer));
             config.UnbanTimer.Add(new()
             {
-                UserId = user.Id,
+                UserId = userId,
                 UnbanAt = DateTime.UtcNow + after
             }); // add teh unmute timer to the database
-            uow.SaveChanges();
+            await uow.SaveChangesAsync();
         }
 
-        StartUn_Timer(guild.Id, user.Id, after, TimerType.Ban); // start the timer
+        StartUn_Timer(guild.Id, userId, after, TimerType.Ban); // start the timer
     }
 
     public async Task TimedRole(

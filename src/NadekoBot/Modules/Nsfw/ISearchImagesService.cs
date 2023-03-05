@@ -22,6 +22,6 @@ public interface ISearchImagesService
     ValueTask<bool> ToggleBlacklistTag(ulong guildId, string tag);
     ValueTask<string[]> GetBlacklistedTags(ulong guildId);
     Task<UrlReply> Butts();
-    Task<Gallery> GetNhentaiByIdAsync(uint id);
-    Task<Gallery> GetNhentaiBySearchAsync(string search);
+    // Task<Gallery> GetNhentaiByIdAsync(uint id);
+    // Task<Gallery> GetNhentaiBySearchAsync(string search);
 }

@@ -472,6 +472,9 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             pb.WithIsMultiple(paramData.IsParams)
               .WithIsOptional(paramData.IsOptional)
               .WithIsRemainder(paramData.IsLeftover);
+
+            if (paramData.IsOptional)
+                pb.WithDefault(paramData.DefaultValue);
         };
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -800,6 +803,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
 
                 var leftoverAttribute = pi.GetCustomAttribute<leftoverAttribute>(true);
                 var hasDefaultValue = pi.HasDefaultValue;
+                var defaultValue = pi.DefaultValue;
                 var isLeftover = leftoverAttribute != null;
                 var isParams = pi.GetCustomAttribute<ParamArrayAttribute>() is not null;
                 var paramType = pi.ParameterType;
@@ -838,7 +842,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     continue;
                 }
 
-                canInject = false;
+                canInject = false;                                                                                           
 
                 if (isParams)
                 {
@@ -859,7 +863,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     throw new ArgumentException("Leftover attribute error.");
                 }
 
-                cmdParams.Add(new ParamData(paramType, paramName, hasDefaultValue, isLeftover, isParams));
+                cmdParams.Add(new ParamData(paramType, paramName, hasDefaultValue, defaultValue, isLeftover, isParams));
             }
 
 

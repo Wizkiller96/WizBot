@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using NadekoBot.Modules.Searches;
 
 namespace NadekoBot.Modules.Music;
 
@@ -27,10 +28,11 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
 
     private readonly IGoogleApiService _google;
 
-    public YtdlYoutubeResolver(ITrackCacher trackCacher, IGoogleApiService google)
+    public YtdlYoutubeResolver(ITrackCacher trackCacher, IGoogleApiService google, SearchesConfigService scs)
     {
         _trackCacher = trackCacher;
         _google = google;
+        
 
         _ytdlPlaylistOperation = new("-4 "
                                      + "--geo-bypass "
@@ -44,7 +46,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                      + "--no-check-certificate "
                                      + "-i "
                                      + "--yes-playlist "
-                                     + "-- \"{0}\"");
+                                     + "-- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
 
         _ytdlIdOperation = new("-4 "
                                + "--geo-bypass "
@@ -56,7 +58,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                + "--get-thumbnail "
                                + "--get-duration "
                                + "--no-check-certificate "
-                               + "-- \"{0}\"");
+                               + "-- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
 
         _ytdlSearchOperation = new("-4 "
                                    + "--geo-bypass "
@@ -69,7 +71,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                    + "--get-duration "
                                    + "--no-check-certificate "
                                    + "--default-search "
-                                   + "\"ytsearch:\" -- \"{0}\"");
+                                   + "\"ytsearch:\" -- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
     }
 
     private YtTrackData ResolveYtdlData(string ytdlOutputString)

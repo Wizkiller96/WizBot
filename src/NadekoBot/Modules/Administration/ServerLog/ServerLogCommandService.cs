@@ -9,9 +9,9 @@ using NadekoBot.Services.Database.Models;
 namespace NadekoBot.Modules.Administration;
 
 public sealed class LogCommandService : ILogCommandService, IReadyExecutor
-    #if !GLOBAL_NADEKO
-    , INService // don't load this service on global nadeko
-    #endif
+#if !GLOBAL_NADEKO
+        , INService // don't load this service on global nadeko
+#endif
 {
     public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 
@@ -49,15 +49,15 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _prot = prot;
         _tz = tz;
         _punishService = punishService;
-        
+
         using (var uow = db.GetDbContext())
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
             var configs = uow.LogSettings.AsQueryable()
-                             .AsNoTracking()
-                             .Where(x => guildIds.Contains(x.GuildId))
-                             .Include(ls => ls.LogIgnores)
-                             .ToList();
+                .AsNoTracking()
+                .Where(x => guildIds.Contains(x.GuildId))
+                .Include(ls => ls.LogIgnores)
+                .ToList();
 
             GuildLogSettings = configs.ToDictionary(ls => ls.GuildId).ToConcurrent();
         }
@@ -73,12 +73,13 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated;
         _client.UserVoiceStateUpdated += _client_UserVoiceStateUpdated_TTS;
         _client.GuildMemberUpdated += _client_GuildUserUpdated;
+        _client.PresenceUpdated += _client_PresenceUpdated;
         _client.UserUpdated += _client_UserUpdated;
         _client.ChannelCreated += _client_ChannelCreated;
         _client.ChannelDestroyed += _client_ChannelDestroyed;
         _client.ChannelUpdated += _client_ChannelUpdated;
         _client.RoleDeleted += _client_RoleDeleted;
-        
+
         _client.ThreadCreated += _client_ThreadCreated;
         _client.ThreadDeleted += _client_ThreadDeleted;
 
@@ -86,8 +87,61 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         _mute.UserUnmuted += MuteCommands_UserUnmuted;
 
         _prot.OnAntiProtectionTriggered += TriggeredAntiProtection;
-        
+
         _punishService.OnUserWarned += PunishServiceOnOnUserWarned;
+    }
+
+    private async Task _client_PresenceUpdated(SocketUser user, SocketPresence? before, SocketPresence? after)
+    {
+        if (user is not SocketGuildUser gu)
+            return;
+
+        if (!GuildLogSettings.TryGetValue(gu.Guild.Id, out var logSetting)
+            || before is null
+            || after is null)
+            return;
+
+        ITextChannel? logChannel;
+
+        if (!user.IsBot
+            && logSetting.LogUserPresenceId is not null
+            && (logChannel =
+                await TryGetLogChannel(gu.Guild, logSetting, LogType.UserPresence)) is not null)
+        {
+            if (before.Status != after.Status)
+            {
+                var str = "🎭"
+                          + Format.Code(PrettyCurrentTime(gu.Guild))
+                          + GetText(logChannel.Guild,
+                              strs.user_status_change("👤" + Format.Bold(gu.Username),
+                                  Format.Bold(after.Status.ToString())));
+                PresenceUpdates.AddOrUpdate(logChannel,
+                    new List<string>
+                    {
+                        str
+                    },
+                    (_, list) =>
+                    {
+                        list.Add(str);
+                        return list;
+                    });
+            }
+            else if (before.Activities.FirstOrDefault()?.Name != after.Activities.FirstOrDefault()?.Name)
+            {
+                var str =
+                    $"👾`{PrettyCurrentTime(gu.Guild)}`👤__**{gu.Username}**__ is now playing **{after.Activities.FirstOrDefault()?.Name ?? "-"}**.";
+                PresenceUpdates.AddOrUpdate(logChannel,
+                    new List<string>
+                    {
+                        str
+                    },
+                    (_, list) =>
+                    {
+                        list.Add(str);
+                        return list;
+                    });
+            }
+        }
     }
 
     private Task _client_ThreadDeleted(Cacheable<SocketThreadChannel, ulong> sch)
@@ -139,7 +193,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 ITextChannel? logChannel;
                 if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ThreadCreated)) is null)
                     return;
-                
+
                 var title = GetText(logChannel.Guild, strs.thread_created);
 
                 await logChannel.EmbedAsync(_eb.Create()
@@ -177,22 +231,24 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var keys = PresenceUpdates.Keys.ToList();
 
                 await keys.Select(key =>
-                          {
-                              if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
-                                  return Task.CompletedTask;
+                    {
+                        if (!((SocketGuild)key.Guild).CurrentUser.GetPermissions(key).SendMessages)
+                            return Task.CompletedTask;
 
-                              if (PresenceUpdates.TryRemove(key, out var msgs))
-                              {
-                                  var title = GetText(key.Guild, strs.presence_updates);
-                                  var desc = string.Join(Environment.NewLine, msgs);
-                                  return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
-                              }
+                        if (PresenceUpdates.TryRemove(key, out var msgs))
+                        {
+                            var title = GetText(key.Guild, strs.presence_updates);
+                            var desc = string.Join(Environment.NewLine, msgs);
+                            return key.SendConfirmAsync(_eb, title, desc.TrimTo(2048)!);
+                        }
 
-                              return Task.CompletedTask;
-                          })
-                          .WhenAll();
+                        return Task.CompletedTask;
+                    })
+                    .WhenAll();
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
 
@@ -255,35 +311,35 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
             logSetting.UserLeftId = logSetting.UserBannedId = logSetting.UserUnbannedId = logSetting.UserUpdatedId =
                 logSetting.ChannelCreatedId = logSetting.ChannelDestroyedId = logSetting.ChannelUpdatedId =
                     logSetting.LogUserPresenceId = logSetting.LogVoicePresenceId = logSetting.UserMutedId =
-                        logSetting.LogVoicePresenceTTSId = value ? channelId : null;
+                        logSetting.LogVoicePresenceTTSId = logSetting.ThreadCreatedId = logSetting.ThreadDeletedId
+                            = logSetting.LogWarnsId = value ? channelId : null;
         await uow.SaveChangesAsync();
         GuildLogSettings.AddOrUpdate(guildId, _ => logSetting, (_, _) => logSetting);
     }
 
-    
 
     private async Task PunishServiceOnOnUserWarned(Warning arg)
     {
         if (!GuildLogSettings.TryGetValue(arg.GuildId, out var logSetting) || logSetting.LogWarnsId is null)
             return;
-        
+
         var g = _client.GetGuild(arg.GuildId);
-        
+
         ITextChannel? logChannel;
         if ((logChannel = await TryGetLogChannel(g, logSetting, LogType.UserWarned)) is null)
             return;
 
         var embed = _eb.Create()
-                       .WithOkColor()
-                       .WithTitle($"⚠️ User Warned")
-                       .WithDescription($"<@{arg.UserId}> | {arg.UserId}")
-                       .AddField("Mod", arg.Moderator)
-                       .AddField("Reason", string.IsNullOrWhiteSpace(arg.Reason) ? "-" : arg.Reason, true)
-                       .WithFooter(CurrentTime(g));
+            .WithOkColor()
+            .WithTitle($"⚠️ User Warned")
+            .WithDescription($"<@{arg.UserId}> | {arg.UserId}")
+            .AddField("Mod", arg.Moderator)
+            .AddField("Reason", string.IsNullOrWhiteSpace(arg.Reason) ? "-" : arg.Reason, true)
+            .WithFooter(CurrentTime(g));
 
         await logChannel.EmbedAsync(embed);
     }
-    
+
     private Task _client_UserUpdated(SocketUser before, SocketUser uAfter)
     {
         _ = Task.Run(async () =>
@@ -307,18 +363,18 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if (before.Username != after.Username)
                 {
                     embed.WithTitle("👥 " + GetText(g, strs.username_changed))
-                         .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
-                         .AddField("Old Name", $"{before.Username}", true)
-                         .AddField("New Name", $"{after.Username}", true)
-                         .WithFooter(CurrentTime(g))
-                         .WithOkColor();
+                        .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
+                        .AddField("Old Name", $"{before.Username}", true)
+                        .AddField("New Name", $"{after.Username}", true)
+                        .WithFooter(CurrentTime(g))
+                        .WithOkColor();
                 }
                 else if (before.AvatarId != after.AvatarId)
                 {
                     embed.WithTitle("👥" + GetText(g, strs.avatar_changed))
-                         .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
-                         .WithFooter(CurrentTime(g))
-                         .WithOkColor();
+                        .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
+                        .WithFooter(CurrentTime(g))
+                        .WithOkColor();
 
                     var bav = before.RealAvatarUrl();
                     if (bav.IsAbsoluteUri)
@@ -482,10 +538,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 }
 
                 var embed = _eb.Create()
-                               .WithAuthor(mutes)
-                               .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                               .WithFooter(CurrentTime(usr.Guild))
-                               .WithOkColor();
+                    .WithAuthor(mutes)
+                    .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
+                    .WithFooter(CurrentTime(usr.Guild))
+                    .WithOkColor();
 
                 await logChannel.EmbedAsync(embed);
             }
@@ -529,10 +585,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 }
 
                 var embed = _eb.Create()
-                               .WithAuthor(mutes)
-                               .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
-                               .WithFooter($"{CurrentTime(usr.Guild)}")
-                               .WithOkColor();
+                    .WithAuthor(mutes)
+                    .WithTitle($"{usr.Username}#{usr.Discriminator} | {usr.Id}")
+                    .WithFooter($"{CurrentTime(usr.Guild)}")
+                    .WithOkColor();
 
                 if (!string.IsNullOrWhiteSpace(reason))
                     embed.WithDescription(reason);
@@ -583,11 +639,11 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 }
 
                 var embed = _eb.Create()
-                               .WithAuthor($"🛡 Anti-{protection}")
-                               .WithTitle(GetText(logChannel.Guild, strs.users) + " " + punishment)
-                               .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
-                               .WithFooter(CurrentTime(logChannel.Guild))
-                               .WithOkColor();
+                    .WithAuthor($"🛡 Anti-{protection}")
+                    .WithTitle(GetText(logChannel.Guild, strs.users) + " " + punishment)
+                    .WithDescription(string.Join("\n", users.Select(u => u.ToString())))
+                    .WithFooter(CurrentTime(logChannel.Guild))
+                    .WithOkColor();
 
                 await logChannel.EmbedAsync(embed);
             }
@@ -636,16 +692,16 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     && (logChannel = await TryGetLogChannel(before.Guild, logSetting, LogType.UserUpdated)) is not null)
                 {
                     var embed = _eb.Create()
-                                   .WithOkColor()
-                                   .WithFooter(CurrentTime(before.Guild))
-                                   .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
+                        .WithOkColor()
+                        .WithFooter(CurrentTime(before.Guild))
+                        .WithTitle($"{before.Username}#{before.Discriminator} | {before.Id}");
                     if (before.Nickname != after.Nickname)
                     {
                         embed.WithAuthor("👥 " + GetText(logChannel.Guild, strs.nick_change))
-                             .AddField(GetText(logChannel.Guild, strs.old_nick),
-                                 $"{before.Nickname}#{before.Discriminator}")
-                             .AddField(GetText(logChannel.Guild, strs.new_nick),
-                                 $"{after.Nickname}#{after.Discriminator}");
+                            .AddField(GetText(logChannel.Guild, strs.old_nick),
+                                $"{before.Nickname}#{before.Discriminator}")
+                            .AddField(GetText(logChannel.Guild, strs.new_nick),
+                                $"{after.Nickname}#{after.Discriminator}");
 
                         await logChannel.EmbedAsync(embed);
                     }
@@ -655,7 +711,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                         {
                             var diffRoles = after.Roles.Where(r => !before.Roles.Contains(r)).Select(r => r.Name);
                             embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_add))
-                                 .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+                                .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                             await logChannel.EmbedAsync(embed);
                         }
@@ -663,57 +719,17 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                         {
                             await Task.Delay(1000);
                             var diffRoles = before.Roles.Where(r => !after.Roles.Contains(r) && !IsRoleDeleted(r.Id))
-                                                  .Select(r => r.Name)
-                                                  .ToList();
+                                .Select(r => r.Name)
+                                .ToList();
 
                             if (diffRoles.Any())
                             {
                                 embed.WithAuthor("⚔ " + GetText(logChannel.Guild, strs.user_role_rem))
-                                     .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
+                                    .WithDescription(string.Join(", ", diffRoles).SanitizeMentions());
 
                                 await logChannel.EmbedAsync(embed);
                             }
                         }
-                    }
-                }
-
-                if (!before.IsBot
-                    && logSetting.LogUserPresenceId is not null
-                    && (logChannel =
-                        await TryGetLogChannel(before.Guild, logSetting, LogType.UserPresence)) is not null)
-                {
-                    if (before.Status != after.Status)
-                    {
-                        var str = "🎭"
-                                  + Format.Code(PrettyCurrentTime(after.Guild))
-                                  + GetText(logChannel.Guild,
-                                      strs.user_status_change("👤" + Format.Bold(after.Username),
-                                          Format.Bold(after.Status.ToString())));
-                        PresenceUpdates.AddOrUpdate(logChannel,
-                            new List<string>
-                            {
-                                str
-                            },
-                            (_, list) =>
-                            {
-                                list.Add(str);
-                                return list;
-                            });
-                    }
-                    else if (before.Activities.FirstOrDefault()?.Name != after.Activities.FirstOrDefault()?.Name)
-                    {
-                        var str =
-                            $"👾`{PrettyCurrentTime(after.Guild)}`👤__**{after.Username}**__ is now playing **{after.Activities.FirstOrDefault()?.Name ?? "-"}**.";
-                        PresenceUpdates.AddOrUpdate(logChannel,
-                            new List<string>
-                            {
-                                str
-                            },
-                            (_, list) =>
-                            {
-                                list.Add(str);
-                                return list;
-                            });
                     }
                 }
             }
@@ -754,15 +770,15 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if (before.Name != after.Name)
                 {
                     embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_name_change))
-                         .WithDescription($"{after} | {after.Id}")
-                         .AddField(GetText(logChannel.Guild, strs.ch_old_name), before.Name);
+                        .WithDescription($"{after} | {after.Id}")
+                        .AddField(GetText(logChannel.Guild, strs.ch_old_name), before.Name);
                 }
                 else if (beforeTextChannel?.Topic != afterTextChannel?.Topic)
                 {
                     embed.WithTitle("ℹ️ " + GetText(logChannel.Guild, strs.ch_topic_change))
-                         .WithDescription($"{after} | {after.Id}")
-                         .AddField(GetText(logChannel.Guild, strs.old_topic), beforeTextChannel?.Topic ?? "-")
-                         .AddField(GetText(logChannel.Guild, strs.new_topic), afterTextChannel?.Topic ?? "-");
+                        .WithDescription($"{after} | {after.Id}")
+                        .AddField(GetText(logChannel.Guild, strs.old_topic), beforeTextChannel?.Topic ?? "-")
+                        .AddField(GetText(logChannel.Guild, strs.new_topic), afterTextChannel?.Topic ?? "-");
                 }
                 else
                     return;
@@ -795,7 +811,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 ITextChannel? logChannel;
                 if ((logChannel = await TryGetLogChannel(ch.Guild, logSetting, LogType.ChannelDestroyed)) is null)
                     return;
-                
+
                 string title;
                 if (ch is IVoiceChannel)
                     title = GetText(logChannel.Guild, strs.voice_chan_destroyed);
@@ -803,10 +819,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     title = GetText(logChannel.Guild, strs.text_chan_destroyed);
 
                 await logChannel.EmbedAsync(_eb.Create()
-                                               .WithOkColor()
-                                               .WithTitle("🆕 " + title)
-                                               .WithDescription($"{ch.Name} | {ch.Id}")
-                                               .WithFooter(CurrentTime(ch.Guild)));
+                    .WithOkColor()
+                    .WithTitle("🆕 " + title)
+                    .WithDescription($"{ch.Name} | {ch.Id}")
+                    .WithFooter(CurrentTime(ch.Guild)));
             }
             catch
             {
@@ -815,7 +831,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         });
         return Task.CompletedTask;
     }
-    
+
     private Task _client_ChannelCreated(IChannel ich)
     {
         _ = Task.Run(async () =>
@@ -839,10 +855,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     title = GetText(logChannel.Guild, strs.text_chan_created);
 
                 await logChannel.EmbedAsync(_eb.Create()
-                                               .WithOkColor()
-                                               .WithTitle("🆕 " + title)
-                                               .WithDescription($"{ch.Name} | {ch.Id}")
-                                               .WithFooter(CurrentTime(ch.Guild)));
+                    .WithOkColor()
+                    .WithTitle("🆕 " + title)
+                    .WithDescription($"{ch.Name} | {ch.Id}")
+                    .WithFooter(CurrentTime(ch.Guild)));
             }
             catch (Exception)
             {
@@ -942,11 +958,11 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserLeft)) is null)
                     return;
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("❌ " + GetText(logChannel.Guild, strs.user_left))
-                               .WithDescription(usr.ToString())
-                               .AddField("Id", usr.Id.ToString())
-                               .WithFooter(CurrentTime(guild));
+                    .WithOkColor()
+                    .WithTitle("❌ " + GetText(logChannel.Guild, strs.user_left))
+                    .WithDescription(usr.ToString())
+                    .AddField("Id", usr.Id.ToString())
+                    .WithFooter(CurrentTime(guild));
 
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -975,17 +991,17 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     return;
 
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("✅ " + GetText(logChannel.Guild, strs.user_joined))
-                               .WithDescription($"{usr.Mention} `{usr}`")
-                               .AddField("Id", usr.Id.ToString())
-                               .AddField(GetText(logChannel.Guild, strs.joined_server),
-                                   $"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}",
-                                   true)
-                               .AddField(GetText(logChannel.Guild, strs.joined_discord),
-                                   $"{usr.CreatedAt:dd.MM.yyyy HH:mm}",
-                                   true)
-                               .WithFooter(CurrentTime(usr.Guild));
+                    .WithOkColor()
+                    .WithTitle("✅ " + GetText(logChannel.Guild, strs.user_joined))
+                    .WithDescription($"{usr.Mention} `{usr}`")
+                    .AddField("Id", usr.Id.ToString())
+                    .AddField(GetText(logChannel.Guild, strs.joined_server),
+                        $"{usr.JoinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}",
+                        true)
+                    .AddField(GetText(logChannel.Guild, strs.joined_discord),
+                        $"{usr.CreatedAt:dd.MM.yyyy HH:mm}",
+                        true)
+                    .WithFooter(CurrentTime(usr.Guild));
 
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -1016,11 +1032,11 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if ((logChannel = await TryGetLogChannel(guild, logSetting, LogType.UserUnbanned)) is null)
                     return;
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("♻️ " + GetText(logChannel.Guild, strs.user_unbanned))
-                               .WithDescription(usr.ToString()!)
-                               .AddField("Id", usr.Id.ToString())
-                               .WithFooter(CurrentTime(guild));
+                    .WithOkColor()
+                    .WithTitle("♻️ " + GetText(logChannel.Guild, strs.user_unbanned))
+                    .WithDescription(usr.ToString()!)
+                    .AddField("Id", usr.Id.ToString())
+                    .WithFooter(CurrentTime(guild));
 
                 if (Uri.IsWellFormedUriString(usr.GetAvatarUrl(), UriKind.Absolute))
                     embed.WithThumbnailUrl(usr.GetAvatarUrl());
@@ -1060,16 +1076,15 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 }
                 catch
                 {
-                    
                 }
-                
+
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("🚫 " + GetText(logChannel.Guild, strs.user_banned))
-                               .WithDescription(usr.ToString()!)
-                               .AddField("Id", usr.Id.ToString())
-                               .AddField("Reason", string.IsNullOrWhiteSpace(reason) ? "-" : reason)
-                               .WithFooter(CurrentTime(guild));
+                    .WithOkColor()
+                    .WithTitle("🚫 " + GetText(logChannel.Guild, strs.user_banned))
+                    .WithDescription(usr.ToString()!)
+                    .AddField("Id", usr.Id.ToString())
+                    .AddField("Reason", string.IsNullOrWhiteSpace(reason) ? "-" : reason)
+                    .WithFooter(CurrentTime(guild));
 
                 var avatarUrl = usr.GetAvatarUrl();
 
@@ -1115,14 +1130,14 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 var resolvedMessage = msg.Resolve(TagHandling.FullName);
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("🗑 "
-                                          + GetText(logChannel.Guild, strs.msg_del(((ITextChannel)msg.Channel).Name)))
-                               .WithDescription(msg.Author.ToString()!)
-                               .AddField(GetText(logChannel.Guild, strs.content),
-                                   string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
-                               .AddField("Id", msg.Id.ToString())
-                               .WithFooter(CurrentTime(channel.Guild));
+                    .WithOkColor()
+                    .WithTitle("🗑 "
+                               + GetText(logChannel.Guild, strs.msg_del(((ITextChannel)msg.Channel).Name)))
+                    .WithDescription(msg.Author.ToString()!)
+                    .AddField(GetText(logChannel.Guild, strs.content),
+                        string.IsNullOrWhiteSpace(resolvedMessage) ? "-" : resolvedMessage)
+                    .AddField("Id", msg.Id.ToString())
+                    .WithFooter(CurrentTime(channel.Guild));
                 if (msg.Attachments.Any())
                 {
                     embed.AddField(GetText(logChannel.Guild, strs.attachments),
@@ -1175,19 +1190,19 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     return;
 
                 var embed = _eb.Create()
-                               .WithOkColor()
-                               .WithTitle("📝 "
-                                          + GetText(logChannel.Guild,
-                                              strs.msg_update(((ITextChannel)after.Channel).Name)))
-                               .WithDescription(after.Author.ToString()!)
-                               .AddField(GetText(logChannel.Guild, strs.old_msg),
-                                   string.IsNullOrWhiteSpace(before.Content)
-                                       ? "-"
-                                       : before.Resolve(TagHandling.FullName))
-                               .AddField(GetText(logChannel.Guild, strs.new_msg),
-                                   string.IsNullOrWhiteSpace(after.Content) ? "-" : after.Resolve(TagHandling.FullName))
-                               .AddField("Id", after.Id.ToString())
-                               .WithFooter(CurrentTime(channel.Guild));
+                    .WithOkColor()
+                    .WithTitle("📝 "
+                               + GetText(logChannel.Guild,
+                                   strs.msg_update(((ITextChannel)after.Channel).Name)))
+                    .WithDescription(after.Author.ToString()!)
+                    .AddField(GetText(logChannel.Guild, strs.old_msg),
+                        string.IsNullOrWhiteSpace(before.Content)
+                            ? "-"
+                            : before.Resolve(TagHandling.FullName))
+                    .AddField(GetText(logChannel.Guild, strs.new_msg),
+                        string.IsNullOrWhiteSpace(after.Content) ? "-" : after.Resolve(TagHandling.FullName))
+                    .AddField("Id", after.Id.ToString())
+                    .WithFooter(CurrentTime(channel.Guild));
 
                 await logChannel.EmbedAsync(embed);
             }
