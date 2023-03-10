@@ -7,9 +7,6 @@ using NadekoBot.Db;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Services.Database.Models;
 using Ninject;
-using Ninject.Extensions.Conventions;
-using Ninject.Extensions.Conventions.Syntax;
-using Ninject.Infrastructure.Language;
 using Ninject.Planning;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -140,24 +137,7 @@ public sealed class Bot
             kernel.Bind<ICoordinator, IReadyExecutor>().To<RemoteGrpcCoordinator>().InSingletonScope();
         }
 
-        kernel.Bind(scan =>
-        {
-            scan.FromThisAssembly()
-                .SelectAllClasses()
-                .Where(c => (c.IsAssignableTo(typeof(INService))
-                             || c.IsAssignableTo(typeof(IExecOnMessage))
-                             || c.IsAssignableTo(typeof(IInputTransformer))
-                             || c.IsAssignableTo(typeof(IExecPreCommand))
-                             || c.IsAssignableTo(typeof(IExecPostCommand))
-                             || c.IsAssignableTo(typeof(IExecNoCommand)))
-                            && !c.HasAttribute<DontAddToIocContainerAttribute>()
-#if GLOBAL_NADEK
-                            && !c.HasAttribute<NoPublicBotAttribute>()
-#endif
-                )
-                .BindToSelfWithInterfaces()
-                .Configure(c => c.InSingletonScope());
-        });
+        kernel.AddLifetimeServices(); 
 
         kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
 
@@ -339,6 +319,7 @@ public sealed class Bot
         {
             try
             {
+                Console.WriteLine(toExec.GetType().FullName);
                 await toExec.OnReadyAsync();
             }
             catch (Exception ex)

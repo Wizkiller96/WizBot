@@ -17,7 +17,8 @@ public sealed record MedusaStats(string Name,
     string? Description,
     IReadOnlyCollection<SnekStats> Sneks);
     
-public sealed record SnekStats(string Name, 
+public sealed record SnekStats(string Name,
+    string? Prefix,
     IReadOnlyCollection<SnekCommandStats> Commands);
 
 public sealed record SnekCommandStats(string Name);

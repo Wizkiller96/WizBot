@@ -79,7 +79,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     commands.Add(new SnekCommandStats(command.Aliases.First()));
                 }
 
-                sneks.Add(new SnekStats(snekInfos.Name, commands));
+                sneks.Add(new SnekStats(snekInfos.Name, snekInfos.Instance.Prefix, commands));
             }
 
             toReturn.Add(new MedusaStats(name, resolvedData.Strings.GetDescription(culture), sneks));

@@ -10,11 +10,9 @@
 
 *Note: If you want to make changes to Nadeko's source code, please follow the [From Source](#windows-from-source) guide instead.*
 
-*If you have Windows 7 or a 32-bit system, please refer to the [From Source](#windows-from-source)) guide.*
-
 #### Prerequisites
 
-- Windows 8 or later (64-bit)
+- Windows 10 or later (64-bit)
 - [Create a Discord Bot application and invite the bot to your server](../creds-guide.md)
 
 **Optional**
@@ -31,10 +29,8 @@
  ![Create a new bot](https://i.imgur.com/JxtRk9e.png "Create a new bot")
 - Click on **`DOWNLOAD`** at the lower right
  ![Bot Setup](https://i.imgur.com/HqAl36p.png "Bot Setup")
-- Click on **`Install`** next to **`Redis`**. 
-- **(Note: Redis is optional unless you are are using the bot on 2000+ servers)**
-- Note: If Redis fails to install, install Redis manually here: [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) Download and run the **`.msi`** file.
-- If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DL`**.
+- **Note: Redis is optional. install Redis manually here: [Redis] Download and run the **`.msi`** file.**
+- If you will use the music module, click on **`Install`** next to **`FFMPEG`** and **`Youtube-DLP`**.
 - If any dependencies fail to install, you can temporarily disable your Windows Defender/AV until you install them. If you don't want to, then read [the last section of this guide](#Manual-Prerequisite-Installation).
 - When installation is finished, click on **`CREDS`** to the left of **`RUN`** at the lower right.
 - Follow the guide on how to [Set up the creds.yml](../../creds-guide) file.
@@ -60,9 +56,9 @@
 
 You can still install them manually:
 
-- [Redis Installer](https://github.com/MicrosoftArchive/redis/releases/tag/win-3.0.504) - Download and run the **`.msi`** file
+- [Redis] (OPTIONAL) - Download and run the **`.msi`** file
 - [ffmpeg-32bit] | [ffmpeg-64bit] - Download the **appropriate version** for your system (32 bit if you're running a 32 bit OS, or 64 if you're running a 64bit OS). Unzip it, and move `ffmpeg.exe` to a path that's in your PATH environment variable. If you don't know what that is, then just move the `ffmpeg.exe` file to NadekoBot/system
-- [youtube-dl] - Click to download the file. Then put `youtube-dl.exe` in a path that's in your PATH environment variable. If you don't know what that is, then just move the `youtube-dl.exe` file to NadekoBot/system
+- [youtube-dlp] - Click to download the `yt-dlp.exe` file then put `yt-dlp.exe` in a path that's in your PATH environment variable. If you don't know what that is, then just move the `yt-dlp.exe` file to NadekoBot/system
 
 ## **⚠ IF YOU ARE FOLLOWING THE GUIDE ABOVE, IGNORE THIS SECTION ⚠**
 
@@ -71,15 +67,15 @@ You can still install them manually:
 ##### Prerequisites
 
 **Install these before proceeding or your bot will not work!**
-- [.net 6](https://dotnet.microsoft.com/download/dotnet/6.0)  - needed to compile and run the bot
+- [.net 7](https://dotnet.microsoft.com/en-us/download)  - needed to compile and run the bot
 - [git](https://git-scm.com/downloads) - needed to clone the repository (you can also download the zip manually and extract it, but this guide assumes you're using git)
-- [redis](https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi) - to cache things needed by some features and persist through restarts
+- [Redis] (OPTIONAL)- to cache things needed by some features and persist through restarts
 
 ##### Installation Instructions
 
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up; alternatively, right click the start menu and select Windows PowerShell), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)  
 
-1. `git clone https://gitlab.com/kwoth/nadekobot -b v4 --depth 1`
+1. `git clone https://gitlab.com/kwoth/nadekobot -b v5 --depth 1`
 2. `cd nadekobot`
 3. `dotnet publish -c Release -o output/ src/NadekoBot/`
 4. `cd output`
@@ -119,16 +115,14 @@ Open PowerShell as described above and run the following commands:
 🎉 Enjoy
 
 #### Music prerequisites  
-In order to use music commands, you need ffmpeg and youtube-dl installed.
+In order to use music commands, you need ffmpeg and yt-dlp installed.
 - [ffmpeg-32bit] | [ffmpeg-64bit] - Download the **appropriate version** for your system (32 bit if you're running a 32 bit OS, or 64 if you're running a 64bit OS). Unzip it, and move `ffmpeg.exe` to a path that's in your PATH environment variable. If you don't know what that is, just move the `ffmpeg.exe` file to `NadekoBot/output`.
-- [youtube-dl] - Click to download the file, then move `youtube-dl.exe` to a path that's in your PATH environment variable. If you don't know what that is, just move the `youtube-dl.exe` file to `NadekoBot/system`.
+- [youtube-dlp] - Click to download the `yt-dlp.exe` file, then move `yt-dlp.exe` to a path that's in your PATH environment variable. If you don't know what that is, just move the `yt-dlp.exe` file to `NadekoBot/system`.
 
 [Updater]: https://dl.nadeko.bot/
-[Notepad++]: https://notepad-plus-plus.org/
-[.net]: https://dotnet.microsoft.com/download/dotnet/5.0
 [Redis]: https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi
 [Visual C++ 2010 (x86)]: https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe
 [Visual C++ 2017 (x64)]: https://aka.ms/vs/15/release/vc_redist.x64.exe
 [ffmpeg-32bit]: https://cdn.nadeko.bot/dl/ffmpeg-32.zip
 [ffmpeg-64bit]: https://cdn.nadeko.bot/dl/ffmpeg-64.zip
-[youtube-dl]: https://yt-dl.org/downloads/latest/youtube-dl.exe
+[youtube-dlp]: https://github.com/yt-dlp/yt-dlp/releases
