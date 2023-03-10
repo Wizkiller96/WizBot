@@ -9,7 +9,8 @@ public sealed record ResolvedMedusa(
     IImmutableList<SnekInfo> SnekInfos,
     IMedusaStrings Strings,
     Dictionary<Type, TypeReader> TypeReaders,
-    IReadOnlyCollection<ICustomBehavior> Execs,
-    INinjectModule KernelModule)
+    IReadOnlyCollection<ICustomBehavior> Execs
+)
 {
+    public INinjectModule KernelModule { get; set; }
 }

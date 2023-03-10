@@ -3,34 +3,33 @@ using System.Runtime.Loader;
 
 namespace Nadeko.Medusa;
 
-public sealed class MedusaAssemblyLoadContext : AssemblyLoadContext
+public class MedusaAssemblyLoadContext : AssemblyLoadContext
 {
-    private readonly AssemblyDependencyResolver _depResolver;
+    private readonly AssemblyDependencyResolver _resolver;
+    
+    public MedusaAssemblyLoadContext(string folderPath) : base(isCollectible: true)
+        => _resolver = new(folderPath);
 
-    public MedusaAssemblyLoadContext(string pluginPath) : base(isCollectible: true)
-    {
-        _depResolver = new(pluginPath);
-    }
+    // public Assembly MainAssembly { get; private set; }
 
     protected override Assembly? Load(AssemblyName assemblyName)
     {
-        var assemblyPath = _depResolver.ResolveAssemblyToPath(assemblyName);
+        var assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
         if (assemblyPath != null)
         {
-            return LoadFromAssemblyPath(assemblyPath);
+            Assembly assembly = LoadFromAssemblyPath(assemblyPath);
+            LoadDependencies(assembly);
+            return assembly;
         }
 
         return null;
     }
 
-    protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+    public void LoadDependencies(Assembly assembly)
     {
-        var libraryPath = _depResolver.ResolveUnmanagedDllToPath(unmanagedDllName);
-        if (libraryPath != null)
+        foreach (var reference in assembly.GetReferencedAssemblies())
         {
-            return LoadUnmanagedDllFromPath(libraryPath);
+            Load(reference);
         }
-
-        return IntPtr.Zero;
     }
 }

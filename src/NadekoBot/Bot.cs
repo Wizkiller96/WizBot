@@ -8,7 +8,9 @@ using NadekoBot.Modules.Utility;
 using NadekoBot.Services.Database.Models;
 using Ninject;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Conventions.Syntax;
 using Ninject.Infrastructure.Language;
+using Ninject.Planning;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
@@ -102,7 +104,14 @@ public sealed class Bot
             AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
 
-        var kernel = new StandardKernel();
+        var kernel = new StandardKernel(new NinjectSettings()
+        {
+            ThrowOnGetServiceNotFound = true,
+            ActivationCacheDisabled = true,
+        });
+
+        kernel.Components.Remove<IPlanner, Planner>();
+        kernel.Components.Add<IPlanner, RemovablePlanner>();
 
         kernel.Bind<IBotCredentials>().ToMethod(_ => _credsProvider.GetCreds()).InTransientScope();
 
@@ -122,7 +131,6 @@ public sealed class Bot
               .AddCache(_creds)
               .AddHttpClients();
 
-
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
         {
             kernel.Bind<ICoordinator>().To<SingleProcessCoordinator>().InSingletonScope();
@@ -134,34 +142,24 @@ public sealed class Bot
 
         kernel.Bind(scan =>
         {
-            var classes = scan.FromThisAssembly()
-                              .SelectAllClasses()
-                              .Where(c => (c.IsAssignableTo(typeof(INService))
-                                           || c.IsAssignableTo(typeof(IExecOnMessage))
-                                           || c.IsAssignableTo(typeof(IInputTransformer))
-                                           || c.IsAssignableTo(typeof(IExecPreCommand))
-                                           || c.IsAssignableTo(typeof(IExecPostCommand))
-                                           || c.IsAssignableTo(typeof(IExecNoCommand)))
-                                          && !c.HasAttribute<DontAddToIocContainerAttribute>()
-#if GLOBAL_NADEKO
-                                                && !c.HasAttribute<NoPublicBotAttribute>()
+            scan.FromThisAssembly()
+                .SelectAllClasses()
+                .Where(c => (c.IsAssignableTo(typeof(INService))
+                             || c.IsAssignableTo(typeof(IExecOnMessage))
+                             || c.IsAssignableTo(typeof(IInputTransformer))
+                             || c.IsAssignableTo(typeof(IExecPreCommand))
+                             || c.IsAssignableTo(typeof(IExecPostCommand))
+                             || c.IsAssignableTo(typeof(IExecNoCommand)))
+                            && !c.HasAttribute<DontAddToIocContainerAttribute>()
+#if GLOBAL_NADEK
+                            && !c.HasAttribute<NoPublicBotAttribute>()
 #endif
-                              );
-            classes
-                .BindAllInterfaces()
+                )
+                .BindToSelfWithInterfaces()
                 .Configure(c => c.InSingletonScope());
-
-            classes.BindToSelf()
-                   .Configure(c => c.InSingletonScope());
         });
 
         kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
-
-        var services = kernel.GetServices(typeof(INService));
-        foreach (var s in services)
-        {
-            Console.WriteLine(s.GetType().FullName);
-        }
 
         //initialize Services
         Services = kernel;
@@ -187,16 +185,7 @@ public sealed class Bot
 
     private IEnumerable<object> LoadTypeReaders(Assembly assembly)
     {
-        Type[] allTypes;
-        try
-        {
-            allTypes = assembly.GetTypes();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            Log.Warning(ex.LoaderExceptions[0], "Error getting types");
-            return Enumerable.Empty<object>();
-        }
+        var allTypes = assembly.GetTypes();
 
         var filteredTypes = allTypes.Where(x => x.IsSubclassOf(typeof(TypeReader))
                                                 && x.BaseType?.GetGenericArguments().Length > 0
@@ -205,10 +194,12 @@ public sealed class Bot
         var toReturn = new List<object>();
         foreach (var ft in filteredTypes)
         {
-            var x = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var baseType = ft.BaseType;
             if (baseType is null)
                 continue;
+            
+            var x = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
+
             var typeArgs = baseType.GetGenericArguments();
             _commandService.AddTypeReader(typeArgs[0], x);
             toReturn.Add(x);

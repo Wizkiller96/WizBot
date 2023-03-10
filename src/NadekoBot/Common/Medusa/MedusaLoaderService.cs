@@ -237,8 +237,10 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     SnekInfos: snekData.ToImmutableArray(),
                     strings,
                     typeReaders,
-                    execs,
-                    kernelModule);
+                    execs)
+                {
+                    KernelModule = kernelModule
+                };
 
 
                 _medusaConfig.AddLoadedMedusa(safeName);
@@ -319,18 +321,28 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         ctxWr = null;
         snekData = null;
 
-        var path = $"{BASE_DIR}/{safeName}/{safeName}.dll";
-        strings = MedusaStrings.CreateDefault($"{BASE_DIR}/{safeName}");
+        var path = Path.GetFullPath($"{BASE_DIR}/{safeName}/{safeName}.dll");
+        var dir = Path.GetFullPath($"{BASE_DIR}/{safeName}");
+
+        if (!Directory.Exists(dir))
+            throw new DirectoryNotFoundException($"Medusa folder not found: {dir}");
+        
+        if (!File.Exists(path))
+            throw new FileNotFoundException($"Medusa dll not found: {path}");
+
+        strings = MedusaStrings.CreateDefault(dir);
         var ctx = new MedusaAssemblyLoadContext(Path.GetDirectoryName(path)!);
         var a = ctx.LoadFromAssemblyPath(Path.GetFullPath(path));
+        ctx.LoadDependencies(a);
 
         // load services
-        ninjectModule = new MedusaIoCKernelModule(safeName, a);
+        ninjectModule = new MedusaNinjectModule(a, safeName);
         _kernel.Load(ninjectModule);
         
         var sis = LoadSneksFromAssembly(safeName, a);
         typeReaders = LoadTypeReadersFromAssembly(a, strings);
-
+        
+        // todo allow this
         if (sis.Count == 0)
         {
             _kernel.Unload(safeName);
@@ -590,8 +602,14 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             await DisposeSnekInstances(lsi);
 
             var lc = lsi.LoadContext;
-
-            // lsi.KernelModule = null!;
+            var km = lsi.KernelModule;
+            lsi.KernelModule = null!;
+           
+            _kernel.Unload(km.Name);
+            
+            if (km is IDisposable d)
+                d.Dispose();
+            
             lsi = null;
 
             _medusaConfig.RemoveLoadedMedusa(name);
@@ -650,7 +668,9 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
     private void UnloadContext(WeakReference<MedusaAssemblyLoadContext> lsiLoadContext)
     {
         if (lsiLoadContext.TryGetTarget(out var ctx))
+        {
             ctx.Unload();
+        }
     }
 
     private void GcCleanup()

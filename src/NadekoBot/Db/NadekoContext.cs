@@ -482,10 +482,10 @@ public abstract class NadekoContext : DbContext
         #endregion
     }
 
-#if DEBUG
-    private static readonly ILoggerFactory _debugLoggerFactory = LoggerFactory.Create(x => x.AddConsole());
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
-#endif
+// #if DEBUG
+//     private static readonly ILoggerFactory _debugLoggerFactory = LoggerFactory.Create(x => x.AddConsole());
+//
+//     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//         => optionsBuilder.UseLoggerFactory(_debugLoggerFactory);
+// #endif
 }

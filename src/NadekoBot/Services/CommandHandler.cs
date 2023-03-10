@@ -55,6 +55,7 @@ public class CommandHandler : INService, IReadyExecutor
         _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix is not null)
                        .ToDictionary(x => x.GuildId, x => x.Prefix)
                        .ToConcurrent();
+
     }
 
     public async Task OnReadyAsync()

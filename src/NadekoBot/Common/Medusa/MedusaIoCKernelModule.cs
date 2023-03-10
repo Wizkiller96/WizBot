@@ -1,50 +1,95 @@
-﻿using Ninject.Modules;
-using Ninject.Extensions.Conventions;
-using System.Reflection;
+﻿using System.Reflection;
+using Ninject;
+using Ninject.Activation;
+using Ninject.Activation.Caching;
+using Ninject.Modules;
+using Ninject.Planning;
+using System.Text.Json;
 
-namespace Nadeko.Medusa;
-
-public sealed class MedusaIoCKernelModule : NinjectModule
+public sealed class MedusaNinjectModule : NinjectModule
 {
-    private Assembly _a;
     public override string Name { get; }
+    private volatile bool _isLoaded = false;
+    private readonly Dictionary<Type, Type[]> _types;
 
-    public MedusaIoCKernelModule(string name, Assembly a)
+    public MedusaNinjectModule(Assembly assembly, string name)
     {
         Name = name;
-        _a = a;
+        _types = assembly.GetExportedTypes()
+            .Where(t => t.IsClass)
+            .Where(t => t.GetCustomAttribute<svcAttribute>() is not null)
+            .ToDictionary(x => x,
+                type => type.GetInterfaces().ToArray());
     }
 
     public override void Load()
     {
-        // todo cehck for duplicate registrations with ninject.extensions.convention
-        Kernel.Bind(conf =>
-        {
-            var transient = conf.From(_a)
-                                .SelectAllClasses()
-                                .WithAttribute<svcAttribute>(x => x.Lifetime == Lifetime.Transient);
-            
-            transient.BindAllInterfaces().Configure(x => x.InTransientScope());
-            transient.BindToSelf().Configure(x => x.InTransientScope());
+        if (_isLoaded)
+            return;
 
-            var singleton = conf.From(_a)
-                                .SelectAllClasses()
-                                .WithAttribute<svcAttribute>(x => x.Lifetime == Lifetime.Singleton);
+        foreach (var (type, data) in _types)
+        {
+            var attribute = type.GetCustomAttribute<svcAttribute>()!;
+            var scope = GetScope(attribute.Lifetime);
+
+            Bind(type)
+                .ToSelf()
+                .InScope(scope);
             
-            singleton.BindAllInterfaces().Configure(x => x.InSingletonScope());
-            singleton.BindToSelf().Configure(x => x.InSingletonScope());
-        });
+            foreach (var inter in data)
+            {
+                Bind(inter)
+                    .ToMethod(x => x.Kernel.Get(type))
+                    .InScope(scope);
+            }
+        }
+
+        _isLoaded = true;
     }
+
+    private Func<IContext, object?> GetScope(Lifetime lt)
+        => _ => lt switch
+        {
+            Lifetime.Singleton => this,
+            Lifetime.Transient => null,
+        };
 
     public override void Unload()
     {
-        // todo implement unload
-        // Kernel.Unbind();
-    }
+        if (!_isLoaded)
+            return;
 
-    public override void Dispose(bool disposing)
-    {
-        _a = null!;
-        base.Dispose(disposing);
+        var planner = (RemovablePlanner)Kernel.Components.Get<IPlanner>();
+        var cache = Kernel.Components.Get<ICache>();
+        foreach (var binding in this.Bindings)
+        {
+            Kernel.RemoveBinding(binding);
+        }
+
+        foreach (var type in _types.SelectMany(x => x.Value).Concat(_types.Keys))
+        {
+            var binds = Kernel.GetBindings(type);
+
+            if (!binds.Any())
+            {
+                Unbind(type);
+                
+                planner.RemovePlan(type);
+            }
+        }
+
+
+        Bindings.Clear();
+
+        cache.Clear(this);
+        _types.Clear();
+        
+        // in case the library uses System.Text.Json
+        var assembly = typeof(JsonSerializerOptions).Assembly;
+        var updateHandlerType = assembly.GetType("System.Text.Json.JsonSerializerOptionsUpdateHandler");
+        var clearCacheMethod = updateHandlerType?.GetMethod("ClearCache", BindingFlags.Static | BindingFlags.Public);
+        clearCacheMethod?.Invoke(null, new object?[] { null }); 
+        
+        _isLoaded = false;
     }
 }

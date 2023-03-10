@@ -5,6 +5,7 @@ using NadekoBot.Modules.Music.Resolvers;
 using NadekoBot.Modules.Music.Services;
 using Ninject;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Conventions.Syntax;
 using StackExchange.Redis;
 using System.Net;
 using System.Reflection;
@@ -39,10 +40,7 @@ public static class ServiceCollectionExtensions
                            .SelectAllClasses()
                            .Where(f => f.IsAssignableToGenericType(typeof(ConfigServiceBase<>)));
 
-            // todo check for duplicates
-            configs.BindToSelf()
-                   .Configure(c => c.InSingletonScope());
-            configs.BindAllInterfaces()
+            configs.BindToSelfWithInterfaces()
                    .Configure(c => c.InSingletonScope());
         });
 
@@ -64,7 +62,7 @@ public static class ServiceCollectionExtensions
         kernel.Bind<ILocalTrackResolver>().To<LocalTrackResolver>().InSingletonScope();
         kernel.Bind<IRadioResolver>().To<RadioResolver>().InSingletonScope();
         kernel.Bind<ITrackCacher>().To<TrackCacher>().InSingletonScope();
-        kernel.Bind<YtLoader>().ToSelf().InSingletonScope();
+        // kernel.Bind<YtLoader>().ToSelf().InSingletonScope();
 
         return kernel;
     }
@@ -77,8 +75,7 @@ public static class ServiceCollectionExtensions
                            .SelectAllClasses()
                            .Where(c => c.IsPublic && c.IsNested && baseType.IsAssignableFrom(baseType));
 
-            classes.BindAllInterfaces().Configure(x => x.InSingletonScope());
-            classes.BindToSelf().Configure(x => x.InSingletonScope());
+            classes.BindToSelfWithInterfaces().Configure(x => x.InSingletonScope());
         });
 
         return kernel;
@@ -125,4 +122,7 @@ public static class ServiceCollectionExtensions
 
         return kernel;
     }
+
+    public static IConfigureSyntax BindToSelfWithInterfaces(this IJoinExcludeIncludeBindSyntax matcher)
+        => matcher.BindSelection((type, types) => types.Append(type));
 }
