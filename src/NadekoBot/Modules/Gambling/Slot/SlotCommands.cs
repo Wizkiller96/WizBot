@@ -9,6 +9,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Text;
 using Nadeko.Econ.Gambling;
+using NadekoBot.Common.TypeReaders;
 using Color = SixLabors.ImageSharp.Color;
 using Image = SixLabors.ImageSharp.Image;
 
@@ -48,7 +49,7 @@ public partial class Gambling
             => Task.CompletedTask;
 
         [Cmd]
-        public async Task Slot(ShmartNumber amount)
+        public async Task Slot([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
         {
             if (!await CheckBetMandatory(amount))
                 return;
@@ -76,7 +77,7 @@ public partial class Gambling
                 .WithOkColor();
 
             var bb = new ButtonBuilder(emote: Emoji.Parse("🔁"), customId: "slot:again", label: "Pull Again");
-            var si = new SimpleInteraction<ShmartNumber>(bb, (_, amount) => Slot(amount), amount);
+            var si = new SimpleInteraction<long>(bb, (_, amount) => Slot(amount), amount);
 
             var inter = _inter.Create(ctx.User.Id, si);
             var msg = await ctx.Channel.SendFileAsync(imgStream,

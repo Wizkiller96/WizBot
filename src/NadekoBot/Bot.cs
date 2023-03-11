@@ -149,7 +149,7 @@ public sealed class Bot
         if (Client.ShardId == 0)
             ApplyConfigMigrations();
 
-        _ = LoadTypeReaders(typeof(Bot).Assembly);
+        LoadTypeReaders(typeof(Bot).Assembly);
 
         sw.Stop();
         Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
@@ -163,29 +163,23 @@ public sealed class Bot
             migrator.EnsureMigrated();
     }
 
-    private IEnumerable<object> LoadTypeReaders(Assembly assembly)
+    private void LoadTypeReaders(Assembly assembly)
     {
-        var allTypes = assembly.GetTypes();
-
-        var filteredTypes = allTypes.Where(x => x.IsSubclassOf(typeof(TypeReader))
-                                                && x.BaseType?.GetGenericArguments().Length > 0
-                                                && !x.IsAbstract);
-
-        var toReturn = new List<object>();
+        var filteredTypes = assembly.GetTypes()
+            .Where(x => x.IsSubclassOf(typeof(TypeReader))
+                        && x.BaseType?.GetGenericArguments().Length > 0
+                        && !x.IsAbstract);
+ 
         foreach (var ft in filteredTypes)
         {
             var baseType = ft.BaseType;
             if (baseType is null)
                 continue;
-            
-            var x = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
-
+             
+            var typeReader = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var typeArgs = baseType.GetGenericArguments();
-            _commandService.AddTypeReader(typeArgs[0], x);
-            toReturn.Add(x);
+            _commandService.AddTypeReader(typeArgs[0], typeReader);
         }
-
-        return toReturn;
     }
 
     private async Task LoginAsync(string token)
@@ -319,7 +313,6 @@ public sealed class Bot
         {
             try
             {
-                Console.WriteLine(toExec.GetType().FullName);
                 await toExec.OnReadyAsync();
             }
             catch (Exception ex)

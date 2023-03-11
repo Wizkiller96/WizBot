@@ -1,4 +1,5 @@
-﻿using NadekoBot.Modules.Gambling.Bank;
+﻿using NadekoBot.Common.TypeReaders;
+using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 
@@ -22,14 +23,14 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async Task BankDeposit(ShmartNumber amount)
+        public async Task BankDeposit([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
         {
             if (amount <= 0)
                 return;
             
             if (await _bank.DepositAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_deposited(N(amount.Value)));
+                await ReplyConfirmLocalizedAsync(strs.bank_deposited(N(amount)));
             }
             else
             {
@@ -38,14 +39,14 @@ public partial class Gambling
         }
         
         [Cmd]
-        public async Task BankWithdraw(ShmartBankAmount amount)
+        public async Task BankWithdraw([OverrideTypeReader(typeof(BankBalanceTypeReader))] long amount)
         {
             if (amount <= 0)
                 return;
             
             if (await _bank.WithdrawAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_withdrew(N(amount.Amount)));
+                await ReplyConfirmLocalizedAsync(strs.bank_withdrew(N(amount)));
             }
             else
             {

@@ -1,5 +1,6 @@
 #nullable disable
 using Nadeko.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 
@@ -44,7 +45,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Plant(ShmartNumber amount, string pass = null)
+        public async Task Plant([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, string pass = null)
         {
             if (amount < 1)
                 return;

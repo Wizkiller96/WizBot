@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Nadeko.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
@@ -135,7 +136,7 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task JoinRace(ShmartNumber amount = default)
+        public async Task JoinRace([OverrideTypeReader(typeof(BalanceTypeReader))] long amount = default)
         {
             if (!await CheckBetOptional(amount))
                 return;

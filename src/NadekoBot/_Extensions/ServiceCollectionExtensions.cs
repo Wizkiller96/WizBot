@@ -130,21 +130,24 @@ public static class ServiceCollectionExtensions
 
     public static IKernel AddLifetimeServices(this IKernel kernel)
     {
-        Assembly.GetExecutingAssembly()
-                .ExportedTypes
-                .Where(x => x.IsPublic && x.IsClass && !x.IsAbstract)
+        kernel.Bind(scan =>
+        {
+            scan.FromThisAssembly()
+                .SelectAllClasses()
                 .Where(c => (c.IsAssignableTo(typeof(INService))
                              || c.IsAssignableTo(typeof(IExecOnMessage))
                              || c.IsAssignableTo(typeof(IInputTransformer))
                              || c.IsAssignableTo(typeof(IExecPreCommand))
                              || c.IsAssignableTo(typeof(IExecPostCommand))
                              || c.IsAssignableTo(typeof(IExecNoCommand)))
-                            && !c.HasAttribute<DontAddToIocContainerAttribute>()
-#if GLOBAL_NADEKO
-                                                && !c.HasAttribute<NoPublicBotAttribute>()
+                            && !c.HasAttribute<DIIgnoreAttribute>()
+#if GLOBAL_NADEK
+                            && !c.HasAttribute<NoPublicBotAttribute>()
 #endif
-                );
-
+                )
+                .BindToSelfWithInterfaces()
+                .Configure(c => c.InSingletonScope());
+        });
 
         return kernel;
     }

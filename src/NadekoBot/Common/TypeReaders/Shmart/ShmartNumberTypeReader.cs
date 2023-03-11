@@ -1,29 +1,57 @@
 ﻿#nullable disable
+using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Common.TypeReaders;
 
-public sealed class ShmartNumberTypeReader : NadekoTypeReader<ShmartNumber>
+public sealed class BalanceTypeReader : TypeReader
 {
     private readonly BaseShmartInputAmountReader _tr;
 
-    public ShmartNumberTypeReader(DbService db, GamblingConfigService gambling)
+    public BalanceTypeReader(DbService db, GamblingConfigService gambling)
     {
-        _tr = new BaseShmartInputAmountReader(db, gambling);
+        _tr = new BaseShmartInputAmountReader(db, gambling); 
     }
-
-    public override async ValueTask<TypeReaderResult<ShmartNumber>> ReadAsync(ICommandContext ctx, string input)
+    
+    public override async Task<Discord.Commands.TypeReaderResult> ReadAsync(
+        ICommandContext context,
+        string input,
+        IServiceProvider services)
     {
-        if (string.IsNullOrWhiteSpace(input))
-            return TypeReaderResult.FromError<ShmartNumber>(CommandError.ParseFailed, "Input is empty.");
 
-        var result = await _tr.ReadAsync(ctx, input);
+        var result = await _tr.ReadAsync(context, input);
 
         if (result.TryPickT0(out var val, out var err))
         {
-            return TypeReaderResult.FromSuccess<ShmartNumber>(new(val));
+            return Discord.Commands.TypeReaderResult.FromSuccess(val);
         }
+        
+        return Discord.Commands.TypeReaderResult.FromError(CommandError.Unsuccessful, err.Value);
+    }
+}
 
-        return TypeReaderResult.FromError<ShmartNumber>(CommandError.Unsuccessful, err.Value);
+public sealed class BankBalanceTypeReader : TypeReader
+{
+    private readonly ShmartBankInputAmountReader _tr;
+
+    public BankBalanceTypeReader(IBankService bank, DbService db, GamblingConfigService gambling)
+    {
+        _tr = new ShmartBankInputAmountReader(bank, db, gambling);
+    }
+    
+    public override async Task<Discord.Commands.TypeReaderResult> ReadAsync(
+        ICommandContext context,
+        string input,
+        IServiceProvider services)
+    {
+
+        var result = await _tr.ReadAsync(context, input);
+
+        if (result.TryPickT0(out var val, out var err))
+        {
+            return Discord.Commands.TypeReaderResult.FromSuccess(val);
+        }
+        
+        return Discord.Commands.TypeReaderResult.FromError(CommandError.Unsuccessful, err.Value);
     }
 }

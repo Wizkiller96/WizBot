@@ -2,6 +2,11 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.0.0] - ??.??.????
+
+- Big internal changes
+
+
 ## [4.3.13] - 20.02.2023
 
 ### Fixed

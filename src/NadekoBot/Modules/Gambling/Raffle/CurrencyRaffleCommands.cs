@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Nadeko.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 
@@ -19,13 +20,13 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public Task RaffleCur(Mixed _, ShmartNumber amount)
+        public Task RaffleCur(Mixed _, [OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
             => RaffleCur(amount, true);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public async Task RaffleCur(ShmartNumber amount, bool mixed = false)
+        public async Task RaffleCur([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, bool mixed = false)
         {
             if (!await CheckBetMandatory(amount))
                 return;

@@ -14,6 +14,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
 using Nadeko.Econ.Gambling.Rps;
+using NadekoBot.Common.TypeReaders;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -428,26 +429,26 @@ public partial class Gambling : GamblingModule<GamblingService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async Task Give(ShmartNumber amount, IGuildUser receiver, [Leftover] string msg)
+    public async Task Give([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, IGuildUser receiver, [Leftover] string msg)
     {
         if (amount <= 0 || ctx.User.Id == receiver.Id || receiver.IsBot)
         {
             return;
         }
 
-        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount.Value)))
+        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount)))
         {
             await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             return;
         }
 
-        await ReplyConfirmLocalizedAsync(strs.gifted(N(amount.Value), Format.Bold(receiver.ToString())));
+        await ReplyConfirmLocalizedAsync(strs.gifted(N(amount), Format.Bold(receiver.ToString())));
     }
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public Task Give(ShmartNumber amount, [Leftover] IGuildUser receiver)
+    public Task Give([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, [Leftover] IGuildUser receiver)
         => Give(amount, receiver, null);
 
     [Cmd]
@@ -583,7 +584,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RollDuel(ShmartNumber amount, IUser u)
+    public async Task RollDuel([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, IUser u)
     {
         if (ctx.User.Id == u.Id)
         {
@@ -622,7 +623,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
             await ReplyConfirmLocalizedAsync(strs.roll_duel_challenge(Format.Bold(ctx.User.ToString()),
                 Format.Bold(u.ToString()),
-                Format.Bold(N(amount.Value))));
+                Format.Bold(N(amount))));
         }
 
         async Task GameOnGameTick(RollDuelGame arg)
@@ -674,7 +675,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    public async Task BetRoll(ShmartNumber amount)
+    public async Task BetRoll([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
     {
         if (!await CheckBetMandatory(amount))
         {
@@ -804,7 +805,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    public async Task Rps(InputRpsPick pick, ShmartNumber amount = default)
+    public async Task Rps(InputRpsPick pick, [OverrideTypeReader(typeof(BalanceTypeReader))] long amount = default)
     {
         static string GetRpsPick(InputRpsPick p)
         {
@@ -840,7 +841,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         else if (result.Result == RpsResultType.Win)
         {
             if ((long)result.Won > 0)
-                embed.AddField(GetText(strs.won), N(amount.Value));
+                embed.AddField(GetText(strs.won), N(amount));
 
             msg = GetText(strs.rps_win(ctx.User.Mention,
                 GetRpsPick(pick),
@@ -864,7 +865,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
     [Cmd]
-    public async Task LuckyLadder(ShmartNumber amount)
+    public async Task LuckyLadder([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
     {
         if (!await CheckBetMandatory(amount))
             return;

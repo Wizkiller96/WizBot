@@ -97,10 +97,6 @@
         <PackageReference Include="TwitchLib.Api" Version="3.4.1" />
 
         <!-- Uncomment to check for disposable issues -->
-<!--        <PackageReference Include="IDisposableAnalyzers" Version="4.0.2">-->
-<!--            <PrivateAssets>all</PrivateAssets>-->
-<!--            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
-<!--        </PackageReference>-->
         
         <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
 
@@ -129,6 +125,18 @@
         </None>
         <None Update="creds.yml;creds_example.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\lib\libsodium.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="data\lib\opus.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="data\lib\libsodium.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="data\lib\libopus.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

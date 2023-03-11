@@ -6,6 +6,13 @@ namespace NadekoBot.Modules;
 [OwnerOnly]
 public partial class Medusa : NadekoModule<IMedusaLoaderService>
 {
+    private readonly IMedusaeRepositoryService _repo;
+
+    public Medusa(IMedusaeRepositoryService repo)
+    {
+        _repo = repo;
+    }
+    
     [Cmd]
     [OwnerOnly]
     public async Task MedusaLoad(string? name = null)
@@ -190,13 +197,34 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 foreach (var medusa in medusae.Skip(page * 9).Take(9))
                 {
                     eb.AddField(medusa.Name,
-                        $@"`Sneks:` {medusa.Sneks.Count}
-`Commands:` {medusa.Sneks.Sum(x => x.Commands.Count)}
---
-{medusa.Description}");
+                        $"""
+                            `Sneks:` {medusa.Sneks.Count}
+                            `Commands:` {medusa.Sneks.Sum(x => x.Commands.Count)}
+                            --
+                            {medusa.Description}
+                            """);
                 }
 
                 return eb;
             }, medusae.Count, 9);
+    }
+
+    [Cmd]
+    [OwnerOnly]
+    public async Task MedusaSearch()
+    {
+        var eb = _eb.Create()
+                    .WithTitle(GetText(strs.list_of_medusae))
+                    .WithOkColor();
+        
+        foreach (var item in await _repo.GetModuleItemsAsync())
+        {
+            eb.AddField(item.Name, $"""
+                {item.Description}
+                `{item.Command}`
+                """, true);
+        }
+
+        await ctx.Channel.EmbedAsync(eb);
     }
 }

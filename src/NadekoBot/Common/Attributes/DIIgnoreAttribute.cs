@@ -5,7 +5,7 @@ namespace NadekoBot.Common;
 /// Classed marked with this attribute will not be added to the service provider 
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public class DontAddToIocContainerAttribute : Attribute
+public class DIIgnoreAttribute : Attribute
 {
     
 }

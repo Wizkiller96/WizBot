@@ -1,5 +1,6 @@
 #nullable disable
 using Nadeko.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;
@@ -96,7 +97,7 @@ public partial class Gambling
         }
 
         [Cmd]
-        public async Task Betflip(ShmartNumber amount, BetFlipGuess guess)
+        public async Task Betflip([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, BetFlipGuess guess)
         {
             if (!await CheckBetMandatory(amount) || amount == 1)
                 return;

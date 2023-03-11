@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-[DontAddToIocContainer]
+[DIIgnore]
 public sealed class BehaviorAdapter : ICustomBehavior
 {
     private readonly WeakReference<Snek> _snekWr;

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Nadeko.Econ;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using SixLabors.ImageSharp;
@@ -135,12 +136,12 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task BetDraw(ShmartNumber amount, InputValueGuess val, InputColorGuess? col = null)
+        public Task BetDraw([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, InputValueGuess val, InputColorGuess? col = null)
             => BetDrawInternal(amount, val, col);
         
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task BetDraw(ShmartNumber amount, InputColorGuess col, InputValueGuess? val = null)
+        public Task BetDraw([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, InputColorGuess col, InputValueGuess? val = null)
             => BetDrawInternal(amount, val, col);
         
         public async Task BetDrawInternal(long amount, InputValueGuess? val, InputColorGuess? col)
