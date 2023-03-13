@@ -1,7 +1,7 @@
 ﻿using OneOf.Types;
 using OneOf;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public static class OneOfExtensions
 {

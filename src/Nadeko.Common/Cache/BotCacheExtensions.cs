@@ -1,7 +1,7 @@
 ﻿using OneOf;
 using OneOf.Types;
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public static class BotCacheExtensions
 {

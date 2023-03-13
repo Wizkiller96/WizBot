@@ -4,7 +4,7 @@ using OneOf.Types;
 
 // ReSharper disable InconsistentlySynchronizedField
 
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public sealed class MemoryBotCache : IBotCache
 {

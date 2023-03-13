@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nadeko.Common", "src\Nadeko
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nadeko.Econ", "src\Nadeko.Econ\Nadeko.Econ.csproj", "{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nadeko.Cache", "src\Nadeko.Cache\Nadeko.Cache.csproj", "{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NadekoBot.Modules.Expresssions", "src\NadekoBot.Modules.Expresssions\NadekoBot.Modules.Expresssions.csproj", "{92E239B9-C230-4475-9506-BED20174FD20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +100,18 @@ Global
 		{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}.GlobalNadeko|Any CPU.Build.0 = Debug|Any CPU
 		{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.GlobalNadeko|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.GlobalNadeko|Any CPU.Build.0 = Debug|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.GlobalNadeko|Any CPU.ActiveCfg = Debug|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.GlobalNadeko|Any CPU.Build.0 = Debug|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92E239B9-C230-4475-9506-BED20174FD20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +127,8 @@ Global
 		{E685977E-31A4-46F4-A5D7-4E3E39E82E43} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 		{A6022F5F-A764-4D3F-847B-36F0391FF659} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 		{4F4FBF7C-74F0-4AE4-B451-9E60BDCA9C37} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
+		{7CD45BAA-72BF-466E-AFD8-E1224A6DDC05} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
+		{92E239B9-C230-4475-9506-BED20174FD20} = {04929013-5BAB-42B0-B9B2-8F2BB8F16AF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F3F555C-855F-4BE8-B526-D062D3E8ACA4}

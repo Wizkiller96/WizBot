@@ -1,4 +1,4 @@
-namespace NadekoBot.Common;
+namespace Nadeko.Common;
 
 public readonly struct TypedKey<TData>
 {
