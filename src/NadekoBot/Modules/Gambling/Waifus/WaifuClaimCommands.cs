@@ -3,6 +3,7 @@ using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -214,10 +215,29 @@ public partial class Gambling
             foreach (var w in waifus)
             {
                 var j = i++;
-                embed.AddField("#" + ((page * 9) + j + 1) + " - " + N(w.Price), w.ToString());
+                embed.AddField("#" + ((page * 9) + j + 1) + " - " + N(w.Price), GetLbString(w));
             }
 
             await ctx.Channel.EmbedAsync(embed);
+        }
+
+        private string GetLbString(WaifuLbResult w)
+        {
+            var claimer = "no one";
+            var status = string.Empty;
+
+            var waifuUsername = w.Username.TrimTo(20);
+            var claimerUsername = w.Claimer?.TrimTo(20);
+
+            if (w.Claimer is not null)
+                claimer = $"{claimerUsername}#{w.ClaimerDiscrim}";
+            if (w.Affinity is null)
+                status = $"... but {waifuUsername}'s heart is empty";
+            else if (w.Affinity + w.AffinityDiscrim == w.Claimer + w.ClaimerDiscrim)
+                status = $"... and {waifuUsername} likes {claimerUsername} too <3";
+            else
+                status = $"... but {waifuUsername}'s heart belongs to {w.Affinity.TrimTo(20)}#{w.AffinityDiscrim}";
+            return $"**{waifuUsername}#{w.Discrim}** - claimed by **{claimer}**\n\t{status}";
         }
 
         [Cmd]
@@ -250,23 +270,24 @@ public partial class Gambling
                 ? "-"
                 : string.Join("\n",
                     itemList.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
-                        .OrderBy(x => waifuItems[x.ItemEmoji].Price)
-                        .GroupBy(x => x.ItemEmoji)
-                        .Select(x => $"{x.Key} x{x.Count(),-3}")
-                        .Chunk(2)
-                        .Select(x => string.Join(" ", x)));
+                            .OrderBy(x => waifuItems[x.ItemEmoji].Price)
+                            .GroupBy(x => x.ItemEmoji)
+                            .Select(x => $"{x.Key} x{x.Count(),-3}")
+                            .Chunk(2)
+                            .Select(x => string.Join(" ", x)));
 
             var claimsNames = (await _service.GetClaimNames(wi.WaifuId));
             var claimsStr = claimsNames
-                .Shuffle()
-                .Take(30)
-                .Join('\n');
+                            .Shuffle()
+                            .Take(30)
+                            .Join('\n');
 
             var fansList = await _service.GetFansNames(wi.WaifuId);
             var fansStr = fansList
-                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x).Join('\n');
+                          .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
+                          .Join('\n');
 
-            
+
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
 

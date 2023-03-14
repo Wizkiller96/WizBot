@@ -6,13 +6,6 @@ using Newtonsoft.Json;
 
 namespace NadekoBot.Services;
 
-public interface IBotCredsProvider
-{
-    public void Reload();
-    public IBotCredentials GetCreds();
-    public void ModifyCredsFile(Action<Creds> func);
-}
-
 public sealed class BotCredsProvider : IBotCredsProvider
 {
     private const string CREDS_FILE_NAME = "creds.yml";
@@ -94,7 +87,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
             {
                 if (Environment.OSVersion.Platform == PlatformID.Unix)
                 {
-                    _creds.RestartCommand = new()
+                    _creds.RestartCommand = new RestartConfig()
                     {
                         Args = "dotnet",
                         Cmd = "NadekoBot.dll -- {0}"
@@ -102,7 +95,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 }
                 else
                 {
-                    _creds.RestartCommand = new()
+                    _creds.RestartCommand = new RestartConfig()
                     {
                         Args = "NadekoBot.exe",
                         Cmd = "{0}"
@@ -122,7 +115,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
         }
     }
 
-    public void ModifyCredsFile(Action<Creds> func)
+    public void ModifyCredsFile(Action<IBotCredentials> func)
     {
         var ymlData = File.ReadAllText(CREDS_FILE_NAME);
         var creds = Yaml.Deserializer.Deserialize<Creds>(ymlData);
@@ -163,8 +156,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 OsuApiKey = oldCreds.OsuApiKey,
                 CleverbotApiKey = oldCreds.CleverbotApiKey,
                 TotalShards = oldCreds.TotalShards <= 1 ? 1 : oldCreds.TotalShards,
-                Patreon = new(oldCreds.PatreonAccessToken, null, null, oldCreds.PatreonCampaignId),
-                Votes = new(oldCreds.VotesUrl, oldCreds.VotesToken, string.Empty, string.Empty),
+                Patreon = new Creds.PatreonSettings(oldCreds.PatreonAccessToken, null, null, oldCreds.PatreonCampaignId),
+                Votes = new Creds.VotesSettings(oldCreds.VotesUrl, oldCreds.VotesToken, string.Empty, string.Empty),
                 BotListToken = oldCreds.BotListToken,
                 RedisOptions = oldCreds.RedisOptions,
                 LocationIqApiKey = oldCreds.LocationIqApiKey,

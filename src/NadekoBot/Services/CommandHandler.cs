@@ -7,7 +7,7 @@ using PreconditionResult = Discord.Commands.PreconditionResult;
 
 namespace NadekoBot.Services;
 
-public class CommandHandler : INService, IReadyExecutor
+public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 {
     private const int GLOBAL_COMMANDS_COOLDOWN = 750;
 

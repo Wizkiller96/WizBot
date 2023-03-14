@@ -101,7 +101,9 @@ public class BotStrings : IBotStrings
         => _stringsProvider.Reload();
 }
 
-public class CommandStrings
+
+public sealed class CommandStrings
+    : ICommandStrings
 {
     [YamlMember(Alias = "desc")]
     public string Desc { get; set; }

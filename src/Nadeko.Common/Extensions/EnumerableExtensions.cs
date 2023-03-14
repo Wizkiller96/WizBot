@@ -37,7 +37,9 @@ public static class EnumerableExtensions
     /// </returns>
     public static string Join<T>(this IEnumerable<T> data, string separator, Func<T, string>? func = null)
         => string.Join(separator, data.Select(func ?? (x => x?.ToString() ?? string.Empty)));
-
+    
+    
+    // todo have 2 different shuffles
     /// <summary>
     ///     Randomize element order by performing the Fisher-Yates shuffle
     /// </summary>

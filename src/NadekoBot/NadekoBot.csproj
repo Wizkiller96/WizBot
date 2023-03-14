@@ -28,7 +28,6 @@
         <PackageReference Include="CodeHollow.FeedReader" Version="1.2.4" />
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
-        <PackageReference Include="Discord.Net" Version="3.104.0" />
         <PackageReference Include="CoreCLR-NCalc" Version="2.2.110" />
         <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
         <PackageReference Include="Google.Apis.YouTube.v3" Version="1.58.0.2874" />
@@ -92,13 +91,12 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.2" />        
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+
+        <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
         
         <!-- Used by stream notifications -->
         <PackageReference Include="TwitchLib.Api" Version="3.4.1" />
 
-        <!-- Uncomment to check for disposable issues -->
-        
-        <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
 
     </ItemGroup>
 
@@ -139,9 +137,6 @@
         <None Update="data\lib\libopus.so">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Modules\Expressions" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

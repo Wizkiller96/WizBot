@@ -47,16 +47,16 @@ public sealed class Creds : IBotCredentials
             
             Do all steps again but enable image search for the ImageSearchId
             """)]
-    public GoogleApiConfig Google { get; set; }
+    public IGoogleApiConfig Google { get; set; }
 
     [Comment("""Settings for voting system for discordbots. Meant for use on global Nadeko.""")]
-    public VotesSettings Votes { get; set; }
+    public IVotesSettings Votes { get; set; }
 
     [Comment("""
         Patreon auto reward system settings.
         go to https://www.patreon.com/portal -> my clients -> create client
         """)]
-    public PatreonSettings Patreon { get; set; }
+    public IPatreonSettings Patreon { get; set; }
 
     [Comment("""Api key for sending stats to DiscordBotList.""")]
     public string BotListToken { get; set; }
@@ -81,7 +81,7 @@ public sealed class Creds : IBotCredentials
     public string RedisOptions { get; set; }
 
     [Comment("""Database options. Don't change if you don't know what you're doing. Leave null for default values""")]
-    public DbOptions Db { get; set; }
+    public IDbOptions Db { get; set; }
 
     [Comment("""
         Address and port of the coordinator endpoint. Leave empty for default.
@@ -143,7 +143,7 @@ public sealed class Creds : IBotCredentials
             cmd: NadekoBot.exe
             args: "{0}"
         """)]
-    public RestartConfig RestartCommand { get; set; }
+    public IRestartConfig RestartCommand { get; set; }
 
     public Creds()
     {
@@ -153,14 +153,14 @@ public sealed class Creds : IBotCredentials
         OwnerIds = new List<ulong>();
         TotalShards = 1;
         GoogleApiKey = string.Empty;
-        Votes = new(string.Empty, string.Empty, string.Empty, string.Empty);
-        Patreon = new(string.Empty, string.Empty, string.Empty, string.Empty);
+        Votes = new VotesSettings(string.Empty, string.Empty, string.Empty, string.Empty);
+        Patreon = new PatreonSettings(string.Empty, string.Empty, string.Empty, string.Empty);
         BotListToken = string.Empty;
         CleverbotApiKey = string.Empty;
         Gpt3ApiKey = string.Empty;
         BotCache = BotCacheImplemenation.Memory;
         RedisOptions = "localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=";
-        Db = new()
+        Db = new DbOptions()
         {
             Type = "sqlite",
             ConnectionString = "Data Source=data/NadekoBot.db"
@@ -168,12 +168,12 @@ public sealed class Creds : IBotCredentials
 
         CoordinatorUrl = "http://localhost:3442";
 
-        RestartCommand = new();
-        Google = new();
+        RestartCommand = new RestartConfig();
+        Google = new GoogleApiConfig();
     }
-
-
+    
     public class DbOptions
+        : IDbOptions
     {
         [Comment("""
             Database type. "sqlite", "mysql" and "postgresql" are supported.
@@ -191,7 +191,7 @@ public sealed class Creds : IBotCredentials
         public string ConnectionString { get; set; }
     }
 
-    public sealed record PatreonSettings
+    public sealed record PatreonSettings : IPatreonSettings
     {
         public string ClientId { get; set; }
         public string AccessToken { get; set; }
@@ -219,7 +219,7 @@ public sealed class Creds : IBotCredentials
         }
     }
 
-    public sealed record VotesSettings
+    public sealed record VotesSettings : IVotesSettings
     {
         [Comment("""
             top.gg votes service url
@@ -265,14 +265,11 @@ public sealed class Creds : IBotCredentials
     }
 }
 
-public class GoogleApiConfig
+public class GoogleApiConfig : IGoogleApiConfig
 {
     public string SearchId { get; init; }
     public string ImageSearchId { get; init; }
 }
 
-public enum BotCacheImplemenation
-{
-    Memory,
-    Redis
-}
+
+

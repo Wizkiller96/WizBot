@@ -916,20 +916,3 @@ Command: {m.Name}
 ParamName: {pi.Name}
 ParamType: {pi.ParameterType.Name}";
 }
-
-public enum MedusaLoadResult
-{
-    Success,
-    NotFound,
-    AlreadyLoaded,
-    Empty,
-    UnknownError,
-}
-
-public enum MedusaUnloadResult
-{
-    Success,
-    NotLoaded,
-    PossiblyUnable,
-    NotFound,
-}
