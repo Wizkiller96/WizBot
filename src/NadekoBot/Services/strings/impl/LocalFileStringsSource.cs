@@ -40,11 +40,11 @@ public class LocalFileStringsSource : IStringsSource
         return outputDict;
     }
 
-    public Dictionary<string, Dictionary<string, ICommandStrings>> GetCommandStrings()
+    public Dictionary<string, Dictionary<string, CommandStrings>> GetCommandStrings()
     {
         var deserializer = new DeserializerBuilder().Build();
 
-        var outputDict = new Dictionary<string, Dictionary<string, CommandStrings>>().;
+        var outputDict = new Dictionary<string, Dictionary<string, CommandStrings>>();
         foreach (var file in Directory.GetFiles(_commandsPath))
         {
             try

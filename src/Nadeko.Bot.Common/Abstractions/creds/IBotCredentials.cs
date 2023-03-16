@@ -5,7 +5,7 @@ public interface IBotCredentials
 {
     string Token { get; }
     string GoogleApiKey { get; }
-    ICollection<ulong> OwnerIds { get; }
+    ICollection<ulong> OwnerIds { get; set; }
     bool UsePrivilegedIntents { get; }
     string RapidApiKey { get; }
 

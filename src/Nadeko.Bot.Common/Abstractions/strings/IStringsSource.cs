@@ -1,4 +1,5 @@
 #nullable disable
+
 namespace NadekoBot.Services;
 
 /// <summary>
@@ -12,5 +13,5 @@ public interface IStringsSource
     /// <returns>Dictionary(localename, Dictionary(key, response))</returns>
     Dictionary<string, Dictionary<string, string>> GetResponseStrings();
 
-    Dictionary<string, Dictionary<string, ICommandStrings>> GetCommandStrings();
+    Dictionary<string, Dictionary<string, CommandStrings>> GetCommandStrings();
 }

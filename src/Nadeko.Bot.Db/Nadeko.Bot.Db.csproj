@@ -25,12 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-    
       <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="Migrations\MigrationQueries.cs" />
     </ItemGroup>
 
 </Project>

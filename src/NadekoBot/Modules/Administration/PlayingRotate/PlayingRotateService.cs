@@ -57,7 +57,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                     : rotatingStatuses[index++];
 
                 var statusText = _rep.Replace(playingStatus.Status);
-                await _selfService.SetGameAsync(statusText, playingStatus.Type);
+                await _selfService.SetGameAsync(statusText, (ActivityType)playingStatus.Type);
             }
             catch (Exception ex)
             {
@@ -82,13 +82,13 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         return toRemove.Status;
     }
 
-    public async Task AddPlaying(ActivityType t, string status)
+    public async Task AddPlaying(ActivityType activityType, string status)
     {
         await using var uow = _db.GetDbContext();
         var toAdd = new RotatingPlayingStatus
         {
             Status = status,
-            Type = t
+            Type = (Nadeko.Bot.Db.ActivityType)activityType
         };
         uow.Add(toAdd);
         await uow.SaveChangesAsync();

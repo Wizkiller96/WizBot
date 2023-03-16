@@ -77,7 +77,7 @@ public class HelpService : IExecNoCommand, INService
                     .AddField(str, $"{com.RealSummary(_strings, _medusae, culture,  prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
-        var reqs = GetCommandRequirements(com, overrides);
+        var reqs = GetCommandRequirements(com, (GuildPermission?)overrides);
         if (reqs.Any())
             em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 

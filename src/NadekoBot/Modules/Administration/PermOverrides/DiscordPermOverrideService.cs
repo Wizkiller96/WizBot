@@ -25,7 +25,7 @@ public class DiscordPermOverrideService : INService, IExecPreCommand
                         .ToConcurrent();
     }
 
-    public bool TryGetOverrides(ulong guildId, string commandName, out GuildPerm? perm)
+    public bool TryGetOverrides(ulong guildId, string commandName, out Nadeko.Bot.Db.GuildPerm? perm)
     {
         commandName = commandName.ToLowerInvariant();
         if (_overrides.TryGetValue((guildId, commandName), out var dpo))
@@ -62,12 +62,12 @@ public class DiscordPermOverrideService : INService, IExecPreCommand
                .Add(over = new()
                {
                    Command = commandName,
-                   Perm = perm,
+                   Perm = (Nadeko.Bot.Db.GuildPerm)perm,
                    GuildId = guildId
                });
         }
         else
-            over.Perm = perm;
+            over.Perm = (Nadeko.Bot.Db.GuildPerm)perm;
 
         _overrides[(guildId, commandName)] = over;
 

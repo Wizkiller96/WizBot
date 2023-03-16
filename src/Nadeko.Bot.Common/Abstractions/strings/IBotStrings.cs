@@ -12,6 +12,6 @@ public interface IBotStrings
     string GetText(string key, ulong? guildId = null, params object[] data);
     string GetText(string key, CultureInfo locale, params object[] data);
     void Reload();
-    ICommandStrings GetCommandStrings(string commandName, ulong? guildId = null);
-    ICommandStrings GetCommandStrings(string commandName, CultureInfo cultureInfo);
+    CommandStrings GetCommandStrings(string commandName, ulong? guildId = null);
+    CommandStrings GetCommandStrings(string commandName, CultureInfo cultureInfo);
 }

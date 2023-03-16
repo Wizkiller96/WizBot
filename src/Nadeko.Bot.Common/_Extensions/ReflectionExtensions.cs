@@ -15,7 +15,7 @@ public static class ReflectionExtensions
         if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
             return true;
 
-        Type baseType = givenType.BaseType;
+        var baseType = givenType.BaseType;
         if (baseType == null) return false;
 
         return IsAssignableToGenericType(baseType, genericType);

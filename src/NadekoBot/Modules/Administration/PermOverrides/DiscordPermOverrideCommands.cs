@@ -1,5 +1,6 @@
 #nullable disable
 using Nadeko.Common;
+using Nadeko.Bot.Db;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Administration.Services;
 

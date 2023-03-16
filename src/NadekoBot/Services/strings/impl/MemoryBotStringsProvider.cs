@@ -27,7 +27,7 @@ public class MemoryBotStringsProvider : IBotStringsProvider
         commandStrings = _source.GetCommandStrings();
     }
 
-    public ICommandStrings GetCommandStrings(string localeName, string commandName)
+    public CommandStrings GetCommandStrings(string localeName, string commandName)
     {
         if (commandStrings.TryGetValue(localeName, out var langStrings)
             && langStrings.TryGetValue(commandName, out var strings))

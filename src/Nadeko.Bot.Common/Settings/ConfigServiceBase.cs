@@ -2,7 +2,6 @@ using NadekoBot.Common.Configs;
 using NadekoBot.Common.Yml;
 using System.Linq.Expressions;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common;
 
 namespace NadekoBot.Services;

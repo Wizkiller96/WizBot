@@ -1,6 +1,6 @@
 #nullable disable
-using NadekoBot.Modules.Administration.Services;
 using System.Text.RegularExpressions;
+using NonBlocking;
 
 namespace NadekoBot.Common;
 
@@ -59,19 +59,20 @@ public class ReplacementBuilder
         _reps.TryAdd("%server.members%", () => g is { } sg ? sg.MemberCount.ToString() : "?");
         _reps.TryAdd("%server.boosters%", () => g.PremiumSubscriptionCount.ToString());
         _reps.TryAdd("%server.boost_level%", () => ((int)g.PremiumTier).ToString());
-        _reps.TryAdd("%server.time%",
-            () =>
-            {
-                var to = TimeZoneInfo.Local;
-                if (g is not null)
-                {
-                    if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
-                        to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
-                }
-
-                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ")
-                       + to.StandardName.GetInitials();
-            });
+        // todo fix
+        // _reps.TryAdd("%server.time%",
+        //     () =>
+        //     {
+        //         var to = TimeZoneInfo.Local;
+        //         if (g is not null)
+        //         {
+        //             if (GuildTimezoneService.AllServices.TryGetValue(client.CurrentUser.Id, out var tz))
+        //                 to = tz.GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
+        //         }
+        //
+        //         return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ")
+        //                + to.StandardName.GetInitials();
+        //     });
         return this;
     }
 

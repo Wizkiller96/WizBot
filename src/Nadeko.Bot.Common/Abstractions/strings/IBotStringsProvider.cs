@@ -24,5 +24,5 @@ public interface IBotStringsProvider
     /// </summary>
     /// <param name="localeName">Language name</param>
     /// <param name="commandName">Command name</param>
-    ICommandStrings GetCommandStrings(string localeName, string commandName);
+    CommandStrings GetCommandStrings(string localeName, string commandName);
 }

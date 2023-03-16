@@ -41,7 +41,7 @@
         <PackageReference Include="Html2Markdown" Version="5.1.0.703" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.4.0" />
         
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.*" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 
@@ -102,15 +102,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
-        <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
+<!--        <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />-->
         <ProjectReference Include="..\Nadeko.Econ\Nadeko.Econ.csproj" />
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\NadekoBot.Modules.Expresssions\NadekoBot.Modules.Expresssions.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="data\strings\responses\responses.en-US.json" />
+<!--        <ProjectReference Include="..\NadekoBot.Modules.Expresssions\NadekoBot.Modules.Expresssions.csproj" />-->
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="..\NadekoBot.Coordinator\Protos\coordinator.proto" GrpcServices="Client">
@@ -119,23 +116,11 @@
         <None Update="data\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Update="nadeko_icon.ico;libopus.so;libsodium.so;libsodium.dll;opus.dll">
+        <None Update="nadeko_icon.ico">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="creds.yml;creds_example.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="data\lib\libsodium.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="data\lib\opus.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="data\lib\libsodium.so">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="data\lib\libopus.so">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

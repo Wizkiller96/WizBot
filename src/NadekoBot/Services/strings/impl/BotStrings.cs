@@ -1,6 +1,5 @@
 #nullable disable
 using System.Globalization;
-using YamlDotNet.Serialization;
 
 namespace NadekoBot.Services;
 
@@ -80,7 +79,7 @@ public class BotStrings : IBotStrings
                 Log.Warning("'{CommandName}' doesn't exist in 'en-US' command strings. Please report this",
                     commandName);
 
-                return new()
+                return new CommandStrings()
                 {
                     Args = new[] { "" },
                     Desc = "?"
@@ -99,15 +98,4 @@ public class BotStrings : IBotStrings
 
     public void Reload()
         => _stringsProvider.Reload();
-}
-
-
-public sealed class CommandStrings
-    : ICommandStrings
-{
-    [YamlMember(Alias = "desc")]
-    public string Desc { get; set; }
-
-    [YamlMember(Alias = "args")]
-    public string[] Args { get; set; }
 }

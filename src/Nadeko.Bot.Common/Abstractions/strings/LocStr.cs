@@ -1,13 +1,13 @@
-﻿namespace NadekoBot.Common;
-
-public readonly struct LocStr
-{
-    public readonly string Key;
-    public readonly object[] Params;
-
-    public LocStr(string key, params object[] data)
-    {
-        Key = key;
-        Params = data;
-    }
-}
+﻿// namespace NadekoBot.Common;
+//
+// public readonly struct LocStr
+// {
+//     public readonly string Key;
+//     public readonly object[] Params;
+//
+//     public LocStr(string key, params object[] data)
+//     {
+//         Key = key;
+//         Params = data;
+//     }
+// }

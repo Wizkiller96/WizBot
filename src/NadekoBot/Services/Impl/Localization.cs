@@ -11,7 +11,10 @@ public class Localization : ILocalization, INService
         JsonConvert.DeserializeObject<Dictionary<string, CommandData>>(
             File.ReadAllText("./data/strings/commands/commands.en-US.json"));
 
-    public ConcurrentDictionary<ulong, CultureInfo> GuildCultureInfos { get; }
+    private readonly ConcurrentDictionary<ulong, CultureInfo> _guildCultureInfos;
+
+    public IDictionary<ulong, CultureInfo> GuildCultureInfos
+        => _guildCultureInfos;
 
     public CultureInfo DefaultCultureInfo
         => _bss.Data.DefaultLocale;
@@ -26,21 +29,22 @@ public class Localization : ILocalization, INService
 
         var cultureInfoNames = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.Locale);
 
-        GuildCultureInfos = new(cultureInfoNames.ToDictionary(x => x.Key,
-                                                    x =>
-                                                    {
-                                                        CultureInfo cultureInfo = null;
-                                                        try
-                                                        {
-                                                            if (x.Value is null)
-                                                                return null;
-                                                            cultureInfo = new(x.Value);
-                                                        }
-                                                        catch { }
+        _guildCultureInfos = new(cultureInfoNames
+                                 .ToDictionary(x => x.Key,
+                                     x =>
+                                     {
+                                         CultureInfo cultureInfo = null;
+                                         try
+                                         {
+                                             if (x.Value is null)
+                                                 return null;
+                                             cultureInfo = new(x.Value);
+                                         }
+                                         catch { }
 
-                                                        return cultureInfo;
-                                                    })
-                                                .Where(x => x.Value is not null));
+                                         return cultureInfo;
+                                     })
+                                 .Where(x => x.Value is not null));
     }
 
     public void SetGuildCulture(IGuild guild, CultureInfo ci)
@@ -61,7 +65,7 @@ public class Localization : ILocalization, INService
             uow.SaveChanges();
         }
 
-        GuildCultureInfos.AddOrUpdate(guildId, ci, (_, _) => ci);
+        _guildCultureInfos.AddOrUpdate(guildId, ci, (_, _) => ci);
     }
 
     public void RemoveGuildCulture(IGuild guild)
@@ -69,7 +73,7 @@ public class Localization : ILocalization, INService
 
     public void RemoveGuildCulture(ulong guildId)
     {
-        if (GuildCultureInfos.TryRemove(guildId, out _))
+        if (_guildCultureInfos.TryRemove(guildId, out _))
         {
             using var uow = _db.GetDbContext();
             var gc = uow.GuildConfigsForId(guildId, set => set);

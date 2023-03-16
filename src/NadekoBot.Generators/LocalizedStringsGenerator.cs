@@ -26,20 +26,20 @@ namespace NadekoBot.Generators
     [Generator]
     public class LocalizedStringsGenerator : ISourceGenerator
     {
-//         private const string LOC_STR_SOURCE = @"namespace NadekoBot
-// {
-//     public readonly struct LocStr
-//     {
-//         public readonly string Key;
-//         public readonly object[] Params;
-//         
-//         public LocStr(string key, params object[] data)
-//         {
-//             Key = key;
-//             Params = data;
-//         }
-//     }
-// }";
+        private const string LOC_STR_SOURCE = @"namespace NadekoBot
+{
+    public readonly struct LocStr
+    {
+        public readonly string Key;
+        public readonly object[] Params;
+        
+        public LocStr(string key, params object[] data)
+        {
+            Key = key;
+            Params = data;
+        }
+    }
+}";
 
         public void Initialize(GeneratorInitializationContext context)
         {
@@ -106,7 +106,7 @@ namespace NadekoBot.Generators
                 context.AddSource("strs.g.cs", stringWriter.ToString());
             }
 
-            // context.AddSource("LocStr.g.cs", LOC_STR_SOURCE);
+            context.AddSource("LocStr.g.cs", LOC_STR_SOURCE);
         }
 
         private List<TranslationPair> GetFields(string? dataText)

@@ -4,7 +4,6 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,5 +24,14 @@
             <Publish>True</Publish>
         </PackageReference>
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
+        
+        <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="data\**\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <AdditionalFiles Include="data\strings\responses\responses.en-US.json" />
     </ItemGroup>
 </Project>
