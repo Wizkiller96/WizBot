@@ -108,7 +108,8 @@ public class PermissionService : IExecPreCommand, INService
         var resetCommand = commandName == "resetperms";
 
         var pc = GetCacheFor(guild.Id);
-        if (!resetCommand && !pc.Permissions.CheckPermissions(msg, commandName, moduleName, out var index))
+        if (!resetCommand
+            && !pc.Permissions.CheckPermissions(msg.Author, msg.Channel, commandName, moduleName, out var index))
         {
             if (pc.Verbose)
             {

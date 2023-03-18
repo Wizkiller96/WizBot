@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using NadekoBot.Common;
+
 namespace NadekoBot;
 
 public interface IBotCredentials
@@ -9,14 +11,14 @@ public interface IBotCredentials
     bool UsePrivilegedIntents { get; }
     string RapidApiKey { get; }
 
-    IDbOptions Db { get; }
+    Creds.DbOptions Db { get; }
     string OsuApiKey { get; }
     int TotalShards { get; }
-    IPatreonSettings Patreon { get; }
+    Creds.PatreonSettings Patreon { get; }
     string CleverbotApiKey { get; }
     string Gpt3ApiKey { get; }
-    IRestartConfig RestartCommand { get; }
-    IVotesSettings Votes { get; }
+    RestartConfig RestartCommand { get; }
+    Creds.VotesSettings Votes { get; }
     string BotListToken { get; }
     string RedisOptions { get; }
     string LocationIqApiKey { get; }
@@ -26,7 +28,7 @@ public interface IBotCredentials
     string CoordinatorUrl { get; set; }
     string TwitchClientId { get; set; }
     string TwitchClientSecret { get; set; }
-    IGoogleApiConfig Google { get; set; }
+    GoogleApiConfig Google { get; set; }
     BotCacheImplemenation BotCache { get; set; }
 }
 

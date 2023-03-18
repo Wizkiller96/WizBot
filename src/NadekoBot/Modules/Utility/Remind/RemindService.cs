@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Utility.Services;
 
-public class RemindService : INService, IReadyExecutor
+public class RemindService : INService, IReadyExecutor, IRemindService
 {
     private readonly Regex _regex =
         new(@"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",

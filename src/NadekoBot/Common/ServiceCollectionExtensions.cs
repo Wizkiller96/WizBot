@@ -34,11 +34,11 @@ public static class ServiceCollectionExtensions
         return kernel;
     }
 
-    public static IKernel AddConfigServices(this IKernel kernel)
+    public static IKernel AddConfigServices(this IKernel kernel, Assembly a)
     {
         kernel.Bind(x =>
         {
-            var configs = x.FromThisAssembly()
+            var configs = x.From(a)
                            .SelectAllClasses()
                            .Where(f => f.IsAssignableToGenericType(typeof(ConfigServiceBase<>)));
 
@@ -49,8 +49,8 @@ public static class ServiceCollectionExtensions
         return kernel;
     }
 
-    public static IKernel AddConfigMigrators(this IKernel kernel)
-        => kernel.AddSealedSubclassesOf(typeof(IConfigMigrator));
+    public static IKernel AddConfigMigrators(this IKernel kernel, Assembly a)
+        => kernel.AddSealedSubclassesOf(typeof(IConfigMigrator), a);
 
     public static IKernel AddMusic(this IKernel kernel)
     {
@@ -69,11 +69,11 @@ public static class ServiceCollectionExtensions
         return kernel;
     }
 
-    public static IKernel AddSealedSubclassesOf(this IKernel kernel, Type baseType)
+    public static IKernel AddSealedSubclassesOf(this IKernel kernel, Type baseType, Assembly a)
     {
         kernel.Bind(x =>
         {
-            var classes = x.FromThisAssembly()
+            var classes = x.From(a)
                            .SelectAllClasses()
                            .Where(c => c.IsPublic && c.IsNested && baseType.IsAssignableFrom(baseType));
 
@@ -128,11 +128,11 @@ public static class ServiceCollectionExtensions
     public static IConfigureSyntax BindToSelfWithInterfaces(this IJoinExcludeIncludeBindSyntax matcher)
         => matcher.BindSelection((type, types) => types.Append(type));
 
-    public static IKernel AddLifetimeServices(this IKernel kernel)
+    public static IKernel AddLifetimeServices(this IKernel kernel, Assembly a)
     {
         kernel.Bind(scan =>
         {
-            scan.FromThisAssembly()
+            scan.From(a)
                 .SelectAllClasses()
                 .Where(c => (c.IsAssignableTo(typeof(INService))
                              || c.IsAssignableTo(typeof(IExecOnMessage))

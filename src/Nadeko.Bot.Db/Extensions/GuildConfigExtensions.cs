@@ -54,7 +54,7 @@ public static class GuildConfigExtensions
 
     public static IEnumerable<GuildConfig> GetAllGuildConfigs(
         this DbSet<GuildConfig> configs,
-        List<ulong> availableGuilds)
+        IReadOnlyList<ulong> availableGuilds)
         => configs.IncludeEverything().AsNoTracking().Where(x => availableGuilds.Contains(x.GuildId)).ToList();
 
     /// <summary>

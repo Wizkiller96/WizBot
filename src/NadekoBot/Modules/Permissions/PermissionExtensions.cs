@@ -7,7 +7,8 @@ public static class PermissionExtensions
 {
     public static bool CheckPermissions(
         this IEnumerable<Permissionv2> permsEnumerable,
-        IUserMessage message,
+        IUser user,
+        IMessageChannel message,
         string commandName,
         string moduleName,
         out int permIndex)
@@ -18,7 +19,7 @@ public static class PermissionExtensions
         {
             var perm = perms[i];
 
-            var result = perm.CheckPermission(message, commandName, moduleName);
+            var result = perm.CheckPermission(user, message, commandName, moduleName);
 
             if (result is null)
                 continue;
@@ -35,7 +36,8 @@ public static class PermissionExtensions
     //false = applicable, not allowed
     public static bool? CheckPermission(
         this Permissionv2 perm,
-        IUserMessage message,
+        IUser user,
+        IMessageChannel channel,
         string commandName,
         string moduleName)
     {
@@ -46,16 +48,16 @@ public static class PermissionExtensions
               || perm.SecondaryTarget == SecondaryPermissionType.AllModules))
             return null;
 
-        var guildUser = message.Author as IGuildUser;
+        var guildUser = user as IGuildUser;
 
         switch (perm.PrimaryTarget)
         {
             case PrimaryPermissionType.User:
-                if (perm.PrimaryTargetId == message.Author.Id)
+                if (perm.PrimaryTargetId == user.Id)
                     return perm.State;
                 break;
             case PrimaryPermissionType.Channel:
-                if (perm.PrimaryTargetId == message.Channel.Id)
+                if (perm.PrimaryTargetId == channel.Id)
                     return perm.State;
                 break;
             case PrimaryPermissionType.Role:

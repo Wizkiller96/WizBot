@@ -6,7 +6,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public class DiscordPermOverrideService : INService, IExecPreCommand
+public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPermOverrideService
 {
     public int Priority { get; } = int.MaxValue;
     private readonly DbService _db;

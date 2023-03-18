@@ -11,6 +11,12 @@ namespace NadekoBot.Extensions;
 
 public static class Extensions
 {
+    public static DateOnly ToDateOnly(this DateTime dateTime)
+        => DateOnly.FromDateTime(dateTime);
+
+    public static bool IsBeforeToday(this DateTime date)
+        => date < DateTime.UtcNow.Date;
+
     private static readonly Regex _urlRegex =
         new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
@@ -40,7 +46,7 @@ public static class Extensions
 
     public static ulong[] GetGuildIds(this DiscordSocketClient client)
         => client.Guilds
-                 .Map(x => x.Id);
+            .Map(x => x.Id);
 
     /// <summary>
     ///     Generates a string in the format HHH:mm if timespan is &gt;= 2m.
@@ -98,7 +104,7 @@ public static class Extensions
         {
             description = strings.GetCommandStrings(cmd.Summary, culture).Desc;
         }
-        
+
         return string.Format(description, prefix);
     }
 
@@ -123,7 +129,7 @@ public static class Extensions
         {
             args = strings.GetCommandStrings(cmd.Summary, culture).Args;
         }
-        
+
         return args.Map(arg => GetFullUsage(cmd.Aliases.First(), arg, prefix));
     }
 
@@ -154,8 +160,13 @@ public static class Extensions
             if (logService is not null)
                 logService.AddDeleteIgnore(msg.Id);
 
-            try { await msg.DeleteAsync(); }
-            catch { }
+            try
+            {
+                await msg.DeleteAsync();
+            }
+            catch
+            {
+            }
         });
         return msg;
     }

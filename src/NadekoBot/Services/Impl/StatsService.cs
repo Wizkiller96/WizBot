@@ -7,13 +7,10 @@ namespace NadekoBot.Services;
 
 public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
-    public const string BOT_VERSION = "4.3.13";
+    public const string BOT_VERSION = "5.0.0-alpha1";
 
     public string Author
         => "Kwoth#2452";
-
-    public string Library
-        => "Discord.Net";
 
     public double MessagesPerSecond
         => MessageCounter / GetUptime().TotalSeconds;

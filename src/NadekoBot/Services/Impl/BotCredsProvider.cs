@@ -60,9 +60,16 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 CredsExamplePath);
         }
 
-        _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
-                                            .AddEnvironmentVariables("NadekoBot_")
-                                            .Build();
+        try
+        {
+            _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
+                                                .AddEnvironmentVariables("NadekoBot_")
+                                                .Build();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
 
         _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
         Reload();

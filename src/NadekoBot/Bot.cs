@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
+using NadekoBot.Modules.NadekoExpressions;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Services.Database.Models;
 using Ninject;
@@ -15,15 +16,16 @@ using RunMode = Discord.Commands.RunMode;
 
 namespace NadekoBot;
 
-public sealed class Bot
+public sealed class Bot : IBot
 {
     public event Func<GuildConfig, Task> JoinedGuild = delegate { return Task.CompletedTask; };
 
     public DiscordSocketClient Client { get; }
-    public ImmutableArray<GuildConfig> AllGuildConfigs { get; private set; }
+    public IReadOnlyCollection<GuildConfig> AllGuildConfigs { get; private set; }
 
     private IKernel Services { get; set; }
 
+    // todo remove
     public string Mention { get; private set; }
     public bool IsReady { get; private set; }
     public int ShardId { get; set; }
@@ -33,6 +35,8 @@ public sealed class Bot
     private readonly DbService _db;
 
     private readonly IBotCredsProvider _credsProvider;
+
+    private readonly Assembly[] _moduleAssemblies;
     // private readonly InteractionService _interactionService;
 
     public Bot(int shardId, int? totalShards, string credPath = null)
@@ -83,10 +87,18 @@ public sealed class Bot
         // _interactionService = new(Client.Rest);
 
         Client.Log += Client_Log;
+        _moduleAssemblies = new[]
+        {
+            typeof(Bot).Assembly, // bot
+            typeof(Creds).Assembly, // bot.common
+
+            // modules
+            typeof(NadekoExpressions).Assembly,
+        };
     }
 
 
-    public List<ulong> GetCurrentGuildIds()
+    public IReadOnlyList<ulong> GetCurrentGuildIds()
         => Client.Guilds.Select(x => x.Id).ToList();
 
     private void AddServices()
@@ -117,14 +129,21 @@ public sealed class Bot
         kernel.Bind<DiscordSocketClient>().ToConstant(Client).InSingletonScope();
         kernel.Bind<CommandService>().ToConstant(_commandService).InSingletonScope();
         kernel.Bind<Bot>().ToConstant(this).InSingletonScope();
+        kernel.Bind<IBot>().ToConstant(this).InSingletonScope();
 
         kernel.Bind<ISeria>().To<JsonSeria>().InSingletonScope();
         kernel.Bind<IConfigSeria>().To<YamlSeria>().InSingletonScope();
         kernel.Bind<IMemoryCache>().ToConstant(new MemoryCache(new MemoryCacheOptions())).InSingletonScope();
 
-        kernel.AddConfigServices()
-              .AddConfigMigrators()
-              .AddMusic()
+
+        foreach (var a in _moduleAssemblies)
+        {
+            kernel.AddConfigServices(a)
+                  .AddConfigMigrators(a)
+                  .AddLifetimeServices(a);
+        }
+
+        kernel.AddMusic()
               .AddCache(_creds)
               .AddHttpClients();
 
@@ -137,8 +156,6 @@ public sealed class Bot
             kernel.Bind<ICoordinator, IReadyExecutor>().To<RemoteGrpcCoordinator>().InSingletonScope();
         }
 
-        kernel.AddLifetimeServices(); 
-
         kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
 
         //initialize Services
@@ -149,7 +166,10 @@ public sealed class Bot
         if (Client.ShardId == 0)
             ApplyConfigMigrations();
 
-        LoadTypeReaders(typeof(Bot).Assembly);
+        foreach (var a in _moduleAssemblies)
+        {
+            LoadTypeReaders(a);
+        }
 
         sw.Stop();
         Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
@@ -166,16 +186,16 @@ public sealed class Bot
     private void LoadTypeReaders(Assembly assembly)
     {
         var filteredTypes = assembly.GetTypes()
-            .Where(x => x.IsSubclassOf(typeof(TypeReader))
-                        && x.BaseType?.GetGenericArguments().Length > 0
-                        && !x.IsAbstract);
- 
+                                    .Where(x => x.IsSubclassOf(typeof(TypeReader))
+                                                && x.BaseType?.GetGenericArguments().Length > 0
+                                                && !x.IsAbstract);
+
         foreach (var ft in filteredTypes)
         {
             var baseType = ft.BaseType;
             if (baseType is null)
                 continue;
-             
+
             var typeReader = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var typeArgs = baseType.GetGenericArguments();
             _commandService.AddTypeReader(typeArgs[0], typeReader);
@@ -280,7 +300,11 @@ public sealed class Bot
         // start handling messages received in commandhandler
         await commandHandler.StartHandling();
 
-        await _commandService.AddModulesAsync(typeof(Bot).Assembly, Services);
+        foreach (var a in _moduleAssemblies)
+        {
+            await _commandService.AddModulesAsync(a, Services);
+        }
+
         // await _interactionService.AddModulesAsync(typeof(Bot).Assembly, Services);
         IsReady = true;
 

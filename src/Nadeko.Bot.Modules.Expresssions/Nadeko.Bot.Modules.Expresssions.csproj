@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>NadekoBot.Modules.Expresssions</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
+      <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
+      <ProjectReference Include="..\Nadeko.Bot.Db\Nadeko.Bot.Db.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Discord.Net" Version="3.104.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="strs\" />
+    </ItemGroup>
+
+</Project>

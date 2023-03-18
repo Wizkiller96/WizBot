@@ -14,11 +14,6 @@ public interface IStatsService
     long CommandsRan { get; }
 
     /// <summary>
-    ///     The Discord framework used by the bot.
-    /// </summary>
-    string Library { get; }
-
-    /// <summary>
     ///     The amount of messages seen by the bot since startup.
     /// </summary>
     long MessageCounter { get; }

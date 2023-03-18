@@ -41,7 +41,7 @@
         <PackageReference Include="Html2Markdown" Version="5.1.0.703" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.4.0" />
         
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 
@@ -56,8 +56,8 @@
 <!--        <PackageReference Include="Scrutor" Version="4.2.0" />-->
         
         <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
         <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="NonBlocking" Version="2.1.1" />
@@ -107,7 +107,9 @@
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
         <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
-<!--        <ProjectReference Include="..\NadekoBot.Modules.Expresssions\NadekoBot.Modules.Expresssions.csproj" />-->
+        
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Expresssions\Nadeko.Bot.Modules.Expresssions.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Gambling\Nadeko.Bot.Modules.Gambling.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Protobuf Include="..\NadekoBot.Coordinator\Protos\coordinator.proto" GrpcServices="Client">
@@ -122,6 +124,12 @@
         <None Update="creds.yml;creds_example.yml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Common\Cache\" />
+      <Folder Include="Common\TypeReaders\Shmart\" />
+      <Folder Include="Modules\Games\" />
+      <Folder Include="Modules\Utility\Patronage\_common\" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

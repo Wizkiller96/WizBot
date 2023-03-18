@@ -836,9 +836,3 @@ public sealed class PatronageService
     public PatronConfigData GetConfig()
         => _pConf.Data;
 }
-
-public readonly struct FeatureLimitKey
-{
-    public string PrettyName { get; init; }
-    public string Key { get; init; }
-}
