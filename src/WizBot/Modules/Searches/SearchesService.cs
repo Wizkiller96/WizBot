@@ -296,8 +296,8 @@ public class SearchesService : INService
     public async Task<string> GetChuckNorrisJoke()
     {
         using var http = _httpFactory.CreateClient();
-        var response = await http.GetStringAsync(new Uri("http://api.icndb.com/jokes/random/"));
-        return JObject.Parse(response)["value"]["joke"] + " 😆";
+        var response = await http.GetStringAsync(new Uri("https://api.chucknorris.io/jokes/random"));
+        return JObject.Parse(response)["value"] + " 😆";
     }
 
     public async Task<MtgData> GetMtgCardAsync(string search)
