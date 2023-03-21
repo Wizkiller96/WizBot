@@ -10,6 +10,6 @@ public enum Booru
     Gelbooru,
     Konachan,
     Yandere,
-    Danbooru,
+    // Danbooru,
     Sankaku
 }

@@ -9,7 +9,7 @@ public interface ISearchImagesService
     ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; }
     ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; }
     Task<UrlReply> Gelbooru(ulong? guildId, bool forceExplicit, string[] tags);
-    Task<UrlReply> Danbooru(ulong? guildId, bool forceExplicit, string[] tags);
+    // Task<UrlReply> Danbooru(ulong? guildId, bool forceExplicit, string[] tags);
     Task<UrlReply> Konachan(ulong? guildId, bool forceExplicit, string[] tags);
     Task<UrlReply> Yandere(ulong? guildId, bool forceExplicit, string[] tags);
     Task<UrlReply> Rule34(ulong? guildId, bool forceExplicit, string[] tags);
