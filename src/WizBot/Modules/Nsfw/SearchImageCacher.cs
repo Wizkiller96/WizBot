@@ -193,8 +193,8 @@ public class SearchImageCacher : INService
         // make sure tags are proper
         tags = tags.Where(x => x is not null).Select(tag => tag.ToLowerInvariant().Trim()).Distinct().ToArray();
 
-        if (tags.Length > 2 && type == Booru.Danbooru)
-            tags = tags[..2];
+        // if (tags.Length > 2 && type == Booru.Danbooru)
+        //     tags = tags[..2];
 
         // use both tags banned by discord and tags banned on the server 
         if (blacklistedTags.Overlaps(tags) || _defaultTagBlacklist.Overlaps(tags))

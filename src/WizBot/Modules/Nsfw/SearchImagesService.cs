@@ -126,8 +126,8 @@ public class SearchImagesService : ISearchImagesService, INService
     public Task<UrlReply> Gelbooru(ulong? guildId, bool forceExplicit, string[] tags)
         => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Gelbooru);
 
-    public Task<UrlReply> Danbooru(ulong? guildId, bool forceExplicit, string[] tags)
-        => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Danbooru);
+    // public Task<UrlReply> Danbooru(ulong? guildId, bool forceExplicit, string[] tags)
+    //     => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Danbooru);
 
     public Task<UrlReply> Konachan(ulong? guildId, bool forceExplicit, string[] tags)
         => GetNsfwImageAsync(guildId, forceExplicit, tags, Booru.Konachan);
@@ -152,7 +152,7 @@ public class SearchImagesService : ISearchImagesService, INService
 
     public async Task<UrlReply> Hentai(ulong? guildId, bool forceExplicit, string[] tags)
     {
-        var providers = new[] { Booru.Danbooru, Booru.Konachan, Booru.Gelbooru, Booru.Yandere };
+        var providers = new[] { Booru.Konachan, Booru.Gelbooru, Booru.Yandere };
 
         using var cancelSource = new CancellationTokenSource();
 
