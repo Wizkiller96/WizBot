@@ -14,10 +14,11 @@ public class ImageData : IComparable<ImageData>
         string[] tags,
         string rating)
     {
-        if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            FileUrl = "https://danbooru.donmai.us" + url;
-        else
-            FileUrl = url.StartsWith("http", StringComparison.InvariantCulture) ? url : "https:" + url;
+        // if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(url, UriKind.Absolute))
+        //     FileUrl = "https://danbooru.donmai.us" + url;
+        // else
+             FileUrl = url.StartsWith("http", StringComparison.InvariantCulture) ? url : "https:" + url;
+        
 
         SearchType = type;
         FileUrl = url;

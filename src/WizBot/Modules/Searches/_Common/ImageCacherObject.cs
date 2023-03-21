@@ -12,14 +12,14 @@ public class ImageCacherObject : IComparable<ImageCacherObject>
 
     public ImageCacherObject(DapiImageObject obj, Booru type)
     {
-        if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(obj.FileUrl, UriKind.Absolute))
-            FileUrl = "https://danbooru.donmai.us" + obj.FileUrl;
-        else
-        {
+        // if (type == Booru.Danbooru && !Uri.IsWellFormedUriString(obj.FileUrl, UriKind.Absolute))
+        //     FileUrl = "https://danbooru.donmai.us" + obj.FileUrl;
+        // else
+        // {
             FileUrl = obj.FileUrl.StartsWith("http", StringComparison.InvariantCulture)
                 ? obj.FileUrl
                 : "https:" + obj.FileUrl;
-        }
+        // }
 
         SearchType = type;
         Rating = obj.Rating;
