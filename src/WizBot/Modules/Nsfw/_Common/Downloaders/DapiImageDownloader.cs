@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿/*#nullable disable
 using System.Net.Http.Json;
 using Wiz.Common;
 
@@ -50,4 +50,4 @@ public abstract class DapiImageDownloader : ImageDownloader<DapiImageObject>
             return new();
         return imageObjects.Where(x => x.FileUrl is not null).ToList();
     }
-}
+}*/

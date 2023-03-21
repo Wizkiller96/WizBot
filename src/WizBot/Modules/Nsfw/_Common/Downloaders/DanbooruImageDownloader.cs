@@ -1,4 +1,4 @@
-#nullable disable
+/*#nullable disable
 using System.Net.Http.Json;
 
 namespace WizBot.Modules.Nsfw.Common;
@@ -10,7 +10,7 @@ public sealed class DanbooruImageDownloader : DapiImageDownloader
     private static readonly ConcurrentDictionary<string, bool> _nonexistentTags = new();
 
     public DanbooruImageDownloader(IHttpClientFactory http)
-        : base(Booru.Danbooru, http, "http://danbooru.donmai.us")
+        : base(Booru.Danbooru, http, "https://danbooru.donmai.us")
     {
     }
 
@@ -32,4 +32,4 @@ public sealed class DanbooruImageDownloader : DapiImageDownloader
 
         return _nonexistentTags[tag] = false;
     }
-}
+}*/

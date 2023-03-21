@@ -11,7 +11,7 @@ public class SearchImagesService : ISearchImagesService, INService
 {
     private ConcurrentDictionary<ulong, HashSet<string>> BlacklistedTags { get; }
 
-    public ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new();
+    // public ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; } = new();
     public ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; } = new();
     public ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; } = new();
     

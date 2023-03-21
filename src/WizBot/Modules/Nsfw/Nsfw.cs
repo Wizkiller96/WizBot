@@ -120,59 +120,59 @@ public partial class NSFW : WizBotModule<ISearchImagesService>
             }
         }
 
-    [Cmd]
-    [RequireNsfw]
-    [RequireContext(ContextType.Guild)]
-    [UserPerm(ChannelPerm.ManageMessages)]
-    public async Task AutoHentai(int interval = 0, [Leftover] string tags = null)
-    {
-        Timer t;
-
-        if (interval == 0)
-        {
-            if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t))
-                return;
-
-            t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
-            await ReplyConfirmLocalizedAsync(strs.stopped);
-            return;
-        }
-
-        if (interval < 20)
-            return;
-
-        t = new(async _ =>
-            {
-                try
-                {
-                    if (tags is null || tags.Length == 0)
-                        await InternalDapiCommand(null, true, _service.Hentai);
-                    else
-                    {
-                        var groups = tags.Split('|');
-                        var group = groups[_rng.Next(0, groups.Length)];
-                        await InternalDapiCommand(group.Split(' '), true, _service.Hentai);
-                    }
-                }
-                catch
-                {
-                    // ignored
-                }
-            },
-            null,
-            interval * 1000,
-            interval * 1000);
-
-        _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id,
-            t,
-            (_, old) =>
-            {
-                old.Change(Timeout.Infinite, Timeout.Infinite);
-                return t;
-            });
-
-        await SendConfirmAsync($"Autohentai started. Interval: {interval}, Tags: {string.Join(", ", tags)}");
-    }
+    // [Cmd]
+    // [RequireNsfw]
+    // [RequireContext(ContextType.Guild)]
+    // [UserPerm(ChannelPerm.ManageMessages)]
+    // public async Task AutoHentai(int interval = 0, [Leftover] string tags = null)
+    // {
+    //     Timer t;
+    //
+    //     if (interval == 0)
+    //     {
+    //         if (!_service.AutoHentaiTimers.TryRemove(ctx.Channel.Id, out t))
+    //             return;
+    //
+    //         t.Change(Timeout.Infinite, Timeout.Infinite); //proper way to disable the timer
+    //         await ReplyConfirmLocalizedAsync(strs.stopped);
+    //         return;
+    //     }
+    //
+    //     if (interval < 20)
+    //         return;
+    //
+    //     t = new(async _ =>
+    //         {
+    //             try
+    //             {
+    //                 if (tags is null || tags.Length == 0)
+    //                     await InternalDapiCommand(null, true, _service.Hentai);
+    //                 else
+    //                 {
+    //                     var groups = tags.Split('|');
+    //                     var group = groups[_rng.Next(0, groups.Length)];
+    //                     await InternalDapiCommand(group.Split(' '), true, _service.Hentai);
+    //                 }
+    //             }
+    //             catch
+    //             {
+    //                 // ignored
+    //             }
+    //         },
+    //         null,
+    //         interval * 1000,
+    //         interval * 1000);
+    //
+    //     _service.AutoHentaiTimers.AddOrUpdate(ctx.Channel.Id,
+    //         t,
+    //         (_, old) =>
+    //         {
+    //             old.Change(Timeout.Infinite, Timeout.Infinite);
+    //             return t;
+    //         });
+    //
+    //     await SendConfirmAsync($"Autohentai started. Interval: {interval}, Tags: {string.Join(", ", tags)}");
+    // }
 
     [Cmd]
     [RequireNsfw]
@@ -284,7 +284,7 @@ public partial class NSFW : WizBotModule<ISearchImagesService>
         try
         {
             var images = await Task.WhenAll(_service.Yandere(ctx.Guild?.Id, true, tags),
-                _service.Danbooru(ctx.Guild?.Id, true, tags),
+                // _service.Danbooru(ctx.Guild?.Id, true, tags),
                 _service.Konachan(ctx.Guild?.Id, true, tags),
                 _service.Gelbooru(ctx.Guild?.Id, true, tags));
 
@@ -333,11 +333,11 @@ public partial class NSFW : WizBotModule<ISearchImagesService>
     public Task Rule34(params string[] tags)
         => InternalDapiCommand(tags, false, _service.Rule34);
 
-    [Cmd]
-    [RequireNsfw(Group = "nsfw_or_dm")]
-    [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
-    public Task Danbooru(params string[] tags)
-        => InternalDapiCommand(tags, false, _service.Danbooru);
+    // [Cmd]
+    // [RequireNsfw(Group = "nsfw_or_dm")]
+    // [RequireContext(ContextType.DM, Group = "nsfw_or_dm")]
+    // public Task Danbooru(params string[] tags)
+    //     => InternalDapiCommand(tags, false, _service.Danbooru);
 
     [Cmd]
     [RequireNsfw(Group = "nsfw_or_dm")]

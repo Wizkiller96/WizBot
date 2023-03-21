@@ -5,7 +5,7 @@ namespace WizBot.Modules.Nsfw;
 
 public interface ISearchImagesService
 {
-    ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; }
+    // ConcurrentDictionary<ulong, Timer> AutoHentaiTimers { get; }
     ConcurrentDictionary<ulong, Timer> AutoBoobTimers { get; }
     ConcurrentDictionary<ulong, Timer> AutoButtTimers { get; }
     Task<UrlReply> Gelbooru(ulong? guildId, bool forceExplicit, string[] tags);

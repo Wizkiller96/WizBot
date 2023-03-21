@@ -268,7 +268,7 @@ public class SearchImageCacher : INService
     private IImageDownloader GetImageDownloader(Booru booru)
         => booru switch
         {
-            Booru.Danbooru => new DanbooruImageDownloader(_httpFactory),
+            // Booru.Danbooru => new DanbooruImageDownloader(_httpFactory),
             Booru.Yandere => new YandereImageDownloader(_httpFactory),
             Booru.Konachan => new KonachanImageDownloader(_httpFactory),
             Booru.Safebooru => new SafebooruImageDownloader(_httpFactory),
