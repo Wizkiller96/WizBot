@@ -77,14 +77,14 @@ public partial class Gambling
         {
             if (await _bank.TakeAsync(userId, amount))
             {
-                await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
-                    _client.GetUser(userId)?.ToString()
-                    ?? userId.ToString(),
-                    CurrencySign));
+                await ctx.OkAsync();
                 return;
             }
-            
-            await ctx.OkAsync();
+
+            await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
+                _client.GetUser(userId)?.ToString()
+                ?? userId.ToString(),
+                CurrencySign));
         }
         
         private async Task BankAwardInternalAsync(long amount, ulong userId)
