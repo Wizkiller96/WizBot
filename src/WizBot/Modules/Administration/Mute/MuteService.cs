@@ -19,6 +19,7 @@ public class MuteService : INService
 
     private static readonly OverwritePermissions _denyOverwrite = new(addReactions: PermValue.Deny,
         sendMessages: PermValue.Deny,
+        sendMessagesInThreads: PermValue.Deny,
         attachFiles: PermValue.Deny);
 
     public event Action<IGuildUser, IUser, MuteType, string> UserMuted = delegate { };
