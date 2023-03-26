@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Nadeko.Bot.Modules.Administration\Nadeko.Bot.Modules.Administration.csproj" />
       <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
       <ProjectReference Include="..\Nadeko.Econ\Nadeko.Econ.csproj" />
       <ProjectReference Include="..\NadekoBot\NadekoBot.csproj" />

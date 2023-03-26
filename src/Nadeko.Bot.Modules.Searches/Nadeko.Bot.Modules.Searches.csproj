@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Db\Nadeko.Bot.Db.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AngleSharp" Version="1.0.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="CsvHelper" Version="30.0.1" />
+        <PackageReference Include="MorseCode.ITask" Version="2.0.3" />
+        
+        <!-- Stream Notifications -->
+        <PackageReference Include="TwitchLib.Api" Version="3.4.1" />
+
+        <!-- Feeds, ... ? -->
+        <PackageReference Include="CodeHollow.FeedReader" Version="1.2.4" />
+        
+        <!-- .hs, nothing else -->
+        <PackageReference Include="Html2Markdown" Version="5.1.0.703" />
+    </ItemGroup>
+
+</Project>

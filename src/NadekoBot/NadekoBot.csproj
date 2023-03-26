@@ -27,7 +27,6 @@
         <PackageReference Include="AWSSDK.S3" Version="3.7.101.58" />
         <PackageReference Include="CodeHollow.FeedReader" Version="1.2.4" />
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="CoreCLR-NCalc" Version="2.2.110" />
         <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
         <PackageReference Include="Google.Apis.YouTube.v3" Version="1.58.0.2874" />
@@ -102,6 +101,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Music\Nadeko.Bot.Modules.Music.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Permisssions\Nadeko.Bot.Modules.Permisssions.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Utility\Nadeko.Bot.Modules.Utility.csproj" />
 <!--        <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />-->
         <ProjectReference Include="..\Nadeko.Econ\Nadeko.Econ.csproj" />
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
@@ -126,10 +128,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Common\Cache\" />
-      <Folder Include="Common\TypeReaders\Shmart\" />
-      <Folder Include="Modules\Games\" />
-      <Folder Include="Modules\Utility\Patronage\_common\" />
+      <Folder Include="Common\TypeReaders\" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

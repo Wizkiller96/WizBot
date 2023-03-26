@@ -3,6 +3,7 @@ using NadekoBot.Modules.Gambling.Services;
 using System.Globalization;
 using System.Numerics;
 using Discord;
+using Nadeko.Bot.Common;
 using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling.Common;
@@ -42,21 +43,9 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
         return true;
     }
 
-    public static string N<T>(T cur, IFormatProvider format)
-        where T : INumber<T>
-        => cur.ToString("C0", format);
-
     protected string N<T>(T cur)
         where T : INumber<T>
-        => N(cur, GetFlowersCiInternal());
-
-    protected IFormatProvider GetFlowersCiInternal()
-    {
-        var flowersCi = (CultureInfo)Culture.Clone();
-        flowersCi.NumberFormat.CurrencySymbol = CurrencySign;
-        flowersCi.NumberFormat.CurrencyNegativePattern = 5;
-        return flowersCi;
-    }
+        => CurrencyHelper.N(cur, Culture, CurrencySign);
 
     protected Task<bool> CheckBetMandatory(long amount)
     {

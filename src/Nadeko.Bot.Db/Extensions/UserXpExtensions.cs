@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
@@ -60,4 +61,12 @@ public static class UserXpExtensions
 
     public static void ResetGuildXp(this DbSet<UserXpStats> xps, ulong guildId)
         => xps.Delete(x => x.GuildId == guildId);
+    
+    public static async Task<LevelStats> GetLevelDataFor(this ITable<UserXpStats> userXp, ulong guildId, ulong userId)
+            => await userXp
+                     .Where(x => x.GuildId == guildId && x.UserId == userId)
+                     .FirstOrDefaultAsyncLinqToDB() is UserXpStats uxs
+                ? new(uxs.Xp + uxs.AwardedXp)
+                : new(0);
+    
 }

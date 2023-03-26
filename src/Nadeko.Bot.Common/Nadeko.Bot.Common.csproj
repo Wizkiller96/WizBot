@@ -25,6 +25,9 @@
             <PrivateAssets>all</PrivateAssets>
             <Publish>True</Publish>
         </PackageReference>
+        
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
         
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
