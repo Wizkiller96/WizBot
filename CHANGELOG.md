@@ -2,6 +2,16 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.14] - 02.04.2023
+
+### Fixed
+
+- Fixed voice hearbeat issue
+- `.banktake` had ok/error responses flipped. No functional change
+- PermRole should deny messages in threads todo
+- Fixed chucknorris jokes
+- `.logserver` will now
+
 ## [4.3.13] - 20.02.2023
 
 ### Fixed
@@ -16,7 +26,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Fixed `.betstats` not working on european locales
 - Timed `.ban` will work on users who are not in the server
-- Fixed some bugs in the medusa system 
+- Fixed some bugs in the medusa system
 
 ## [4.3.11] - 21.01.2023
 
@@ -52,7 +62,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## [4.3.10] - 10.11.2022
 
-### Added 
+### Added
 
 - `.filterlist` / `.fl` command which lists link and invite filtering channels and status
 - Added support for `%target%` placeholder in `.alias` command
@@ -61,13 +71,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Changed
 
-- .meload and .meunload are now case sensitive. Previously loaded medusae may need to be reloaded or data/medusae/medusa.yml may need to be edited manually 
+- .meload and .meunload are now case sensitive. Previously loaded medusae may need to be reloaded or data/medusae/medusa.yml may need to be edited manually
 - Several club related command have their error messages improved
 - Updated help text for .antispam and .antiraid
 - You can now specify time and date (time is optional) in `.remind` command instead of relative time, in the format `HH:mm dd.MM.YYYY`
-- OwnerId will be automatically added to `creds.yml` at bot startup if it's missing 
+- OwnerId will be automatically added to `creds.yml` at bot startup if it's missing
 
-### Fixed 
+### Fixed
 
 - Fixed `.cmdcd` console error
 - Fixed an error when currency is add per xp
@@ -79,7 +89,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ## [4.3.9] - 12.10.2022
 
-### Added 
+### Added
 
 - `.betstats` shows sum of all bets, payouts and the payout rate in %. Updates once an hour
 
