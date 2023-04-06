@@ -90,7 +90,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         return strs;
     }
 
-    public static Type GetNadekoOptionType(IEnumerable<Attribute> attributes)
+    public static Type? GetNadekoOptionType(IEnumerable<Attribute> attributes)
         => attributes
             .Select(a => a.GetType())
             .Where(a => a.IsGenericType
