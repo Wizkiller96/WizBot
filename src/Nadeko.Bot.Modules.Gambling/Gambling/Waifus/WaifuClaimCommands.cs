@@ -1,5 +1,4 @@
 #nullable disable
-using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Modules.Gambling.Services;

@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using Html2Markdown;
-using Nadeko.Common;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

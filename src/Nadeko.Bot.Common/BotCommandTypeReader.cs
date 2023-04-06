@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using NadekoBot.Services;
-
 namespace NadekoBot.Common.TypeReaders;
 
 public sealed class CommandTypeReader : NadekoTypeReader<CommandInfo>

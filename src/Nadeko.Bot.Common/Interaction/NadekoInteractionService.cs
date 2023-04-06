@@ -1,6 +1,4 @@
-﻿using NadekoBot.Services;
-
-namespace NadekoBot;
+﻿namespace NadekoBot;
 
 public class NadekoInteractionService : INadekoInteractionService, INService
 {

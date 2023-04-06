@@ -1,7 +1,6 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using Nadeko.Common;
 
 namespace NadekoBot.Services.Database.Models;
 

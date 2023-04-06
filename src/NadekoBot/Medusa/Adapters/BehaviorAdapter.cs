@@ -1,9 +1,5 @@
 ﻿#nullable enable
 
-using Nadeko.Snake;
-using NadekoBot.Common;
-using NadekoBot.Services;
-
 [DIIgnore]
 public sealed class BehaviorAdapter : ICustomBehavior
 {
@@ -11,6 +7,8 @@ public sealed class BehaviorAdapter : ICustomBehavior
     private readonly IMedusaStrings _strings;
     private readonly IServiceProvider _services;
     private readonly string _name;
+
+    public string Name => _name;
 
     // unused
     public int Priority
@@ -53,7 +51,7 @@ public sealed class BehaviorAdapter : ICustomBehavior
     {
         if (!_snekWr.TryGetTarget(out var snek))
             return null;
-        
+
         return await snek.ExecInputTransformAsync(guild, channel, user, input);
     }
 
@@ -69,7 +67,7 @@ public sealed class BehaviorAdapter : ICustomBehavior
     {
         if (!_snekWr.TryGetTarget(out var snek))
             return;
-        
+
         await snek.ExecPostCommandAsync(ContextAdapterFactory.CreateNew(context, _strings, _services),
             moduleName,
             commandName);

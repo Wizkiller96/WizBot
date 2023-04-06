@@ -1,6 +1,5 @@
 #nullable disable
 using CommandLine;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Help.Common;
 

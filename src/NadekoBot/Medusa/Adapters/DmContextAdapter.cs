@@ -1,8 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Nadeko.Snake;
-using NadekoBot;
-using NadekoBot.Common;
-using NadekoBot.Services;
 
 public sealed class DmContextAdapter : DmContext
 {

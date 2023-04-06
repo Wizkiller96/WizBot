@@ -14,8 +14,6 @@ public class GamblingService : INService, IReadyExecutor
     public ConcurrentDictionary<(ulong, ulong), RollDuelGame> Duels { get; } = new();
     public ConcurrentDictionary<ulong, Connect4Game> Connect4Games { get; } = new();
     private readonly DbService _db;
-    private readonly ICurrencyService _cs;
-    private readonly IBot _bot;
     private readonly DiscordSocketClient _client;
     private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
@@ -24,13 +22,11 @@ public class GamblingService : INService, IReadyExecutor
 
     public GamblingService(
         DbService db,
-        ICurrencyService cs,
         DiscordSocketClient client,
         IBotCache cache,
         GamblingConfigService gss)
     {
         _db = db;
-        _cs = cs;
         _client = client;
         _cache = cache;
         _gss = gss;
@@ -57,7 +53,7 @@ public class GamblingService : INService, IReadyExecutor
                 var days = TimeSpan.FromDays(lifetime);
                 await using var uow = _db.GetDbContext();
                 await uow.CurrencyTransactions
-                         .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
+                    .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
             }
             catch (Exception ex)
             {
@@ -67,7 +63,7 @@ public class GamblingService : INService, IReadyExecutor
             }
         }
     }
-    
+
     private async Task CurrencyDecayLoopAsync()
     {
         if (_client.ShardId != 0)
@@ -84,7 +80,7 @@ public class GamblingService : INService, IReadyExecutor
                     continue;
 
                 var now = DateTime.UtcNow;
-                
+
                 await using var uow = _db.GetDbContext();
                 var result = await _cache.GetAsync(_curDecayKey);
 
@@ -109,14 +105,14 @@ public class GamblingService : INService, IReadyExecutor
 
                 var decay = (double)config.Decay.Percent;
                 await uow.DiscordUser
-                         .Where(x => x.CurrencyAmount > config.Decay.MinThreshold && x.UserId != _client.CurrentUser.Id)
-                         .UpdateAsync(old => new()
-                         {
-                             CurrencyAmount =
-                                 maxDecay > Sql.Round((old.CurrencyAmount * decay) - 0.5)
-                                     ? (long)(old.CurrencyAmount - Sql.Round((old.CurrencyAmount * decay) - 0.5))
-                                     : old.CurrencyAmount - maxDecay 
-                         });
+                    .Where(x => x.CurrencyAmount > config.Decay.MinThreshold && x.UserId != _client.CurrentUser.Id)
+                    .UpdateAsync(old => new()
+                    {
+                        CurrencyAmount =
+                            maxDecay > Sql.Round((old.CurrencyAmount * decay) - 0.5)
+                                ? (long)(old.CurrencyAmount - Sql.Round((old.CurrencyAmount * decay) - 0.5))
+                                : old.CurrencyAmount - maxDecay
+                    });
 
                 await uow.SaveChangesAsync();
 
@@ -145,7 +141,7 @@ public class GamblingService : INService, IReadyExecutor
                 var waifus = uow.WaifuInfo.GetTotalValue();
                 var bot = await uow.DiscordUser.GetUserCurrencyAsync(_client.CurrentUser.Id);
                 decimal bank = await uow.GetTable<BankUser>()
-                                        .SumAsyncLinqToDB(x => x.Balance);
+                    .SumAsyncLinqToDB(x => x.Balance);
 
                 var result = new EconomyResult
                 {
@@ -165,10 +161,11 @@ public class GamblingService : INService, IReadyExecutor
     }
 
 
-    private static readonly SemaphoreSlim _timelyLock = new (1, 1);
+    private static readonly SemaphoreSlim _timelyLock = new(1, 1);
 
     private static TypedKey<Dictionary<ulong, long>> _timelyKey
         = new("timely:claims");
+
     public async Task<TimeSpan?> ClaimTimelyAsync(ulong userId, int period)
     {
         if (period == 0)
@@ -196,7 +193,7 @@ public class GamblingService : INService, IReadyExecutor
                 // update the cache
                 dict[userId] = nowB;
                 await _cache.AddAsync(_timelyKey, dict);
-                
+
                 return null;
             }
             else

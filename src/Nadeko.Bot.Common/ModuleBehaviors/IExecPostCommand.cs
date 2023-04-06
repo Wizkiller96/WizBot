@@ -5,7 +5,7 @@ namespace NadekoBot.Common.ModuleBehaviors;
 /// ***There is no support for this method in NadekoBot services.***
 /// It is only meant to be used in medusa system
 /// </summary>
-public interface IExecPostCommand
+public interface IExecPostCommand : IBehavior
 {
     /// <summary>
     /// Executed after a command was successfully executed

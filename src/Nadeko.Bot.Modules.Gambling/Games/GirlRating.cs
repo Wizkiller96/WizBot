@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Nadeko.Common;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;

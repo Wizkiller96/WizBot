@@ -44,7 +44,7 @@ public sealed class Bot : IBot
 
     private readonly IBotCredsProvider _credsProvider;
 
-    private readonly Assembly[] _moduleAssemblies;
+    private readonly Assembly[] _loadedAssemblies;
     // private readonly InteractionService _interactionService;
 
     public Bot(int shardId, int? totalShards, string credPath = null)
@@ -95,22 +95,15 @@ public sealed class Bot : IBot
         // _interactionService = new(Client.Rest);
 
         Client.Log += Client_Log;
-        _moduleAssemblies = new[]
+        _loadedAssemblies = new[]
         {
             typeof(Bot).Assembly, // bot
             typeof(Creds).Assembly, // bot.common
 
             // modules
-            typeof(NadekoExpressions).Assembly,
-            typeof(Administration).Assembly,
-            typeof(Gambling).Assembly,
-            typeof(Help).Assembly,
-            typeof(Music).Assembly,
-            typeof(Patronage).Assembly,
-            typeof(Permissions).Assembly,
-            typeof(Searches).Assembly,
-            typeof(Utility).Assembly,
-            typeof(Xp).Assembly,
+            typeof(NadekoExpressions).Assembly, typeof(Administration).Assembly, typeof(Gambling).Assembly,
+            typeof(Help).Assembly, typeof(Music).Assembly, typeof(Patronage).Assembly, typeof(Permissions).Assembly,
+            typeof(Searches).Assembly, typeof(Utility).Assembly, typeof(Xp).Assembly,
         };
     }
 
@@ -130,59 +123,62 @@ public sealed class Bot : IBot
             AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
 
-        var kernel = new StandardKernel(new NinjectSettings()
+        var svcs = new StandardKernel(new NinjectSettings()
         {
             ThrowOnGetServiceNotFound = true,
             ActivationCacheDisabled = true,
         });
 
-        kernel.Components.Remove<IPlanner, Planner>();
-        kernel.Components.Add<IPlanner, RemovablePlanner>();
+        // this is required in order for medusa unloading to work
+        svcs.Components.Remove<IPlanner, Planner>();
+        svcs.Components.Add<IPlanner, RemovablePlanner>();
 
-        kernel.Bind<IBotCredentials>().ToMethod(_ => _credsProvider.GetCreds()).InTransientScope();
+        svcs.AddSingleton<IBotCredentials, IBotCredentials>(_ => _credsProvider.GetCreds());
+        svcs.AddSingleton<DbService, DbService>(_db);
+        svcs.AddSingleton<IBotCredsProvider>(_credsProvider);
+        svcs.AddSingleton<DiscordSocketClient>(Client);
+        svcs.AddSingleton<CommandService>(_commandService);
+        svcs.AddSingleton<Bot>(this);
+        svcs.AddSingleton<IBot>(this);
 
-        kernel.Bind<IBotCredsProvider>().ToConstant(_credsProvider).InSingletonScope();
-        kernel.Bind<DbService>().ToConstant(_db).InSingletonScope();
-        kernel.Bind<DiscordSocketClient>().ToConstant(Client).InSingletonScope();
-        kernel.Bind<CommandService>().ToConstant(_commandService).InSingletonScope();
-        kernel.Bind<Bot>().ToConstant(this).InSingletonScope();
-        kernel.Bind<IBot>().ToConstant(this).InSingletonScope();
-
-        kernel.Bind<ISeria>().To<JsonSeria>().InSingletonScope();
-        kernel.Bind<IConfigSeria>().To<YamlSeria>().InSingletonScope();
-        kernel.Bind<IMemoryCache>().ToConstant(new MemoryCache(new MemoryCacheOptions())).InSingletonScope();
+        svcs.AddSingleton<ISeria, JsonSeria>();
+        svcs.AddSingleton<IConfigSeria, YamlSeria>();
+        svcs.AddSingleton<IMemoryCache, MemoryCache>(new MemoryCache(new MemoryCacheOptions()));
+        svcs.AddSingleton<IBehaviorHandler, BehaviorHandler>();
 
 
-        foreach (var a in _moduleAssemblies)
+        foreach (var a in _loadedAssemblies)
         {
-            kernel.AddConfigServices(a)
-                  .AddConfigMigrators(a)
-                  .AddLifetimeServices(a);
+            svcs.AddConfigServices(a)
+                .AddConfigMigrators(a)
+                .AddLifetimeServices(a);
         }
 
-        kernel.AddMusic()
-              .AddCache(_creds)
-              .AddHttpClients();
+        svcs.AddMusic()
+            .AddCache(_creds)
+            .AddHttpClients();
 
         if (Environment.GetEnvironmentVariable("NADEKOBOT_IS_COORDINATED") != "1")
         {
-            kernel.Bind<ICoordinator>().To<SingleProcessCoordinator>().InSingletonScope();
+            svcs.AddSingleton<ICoordinator, SingleProcessCoordinator>();
         }
         else
         {
-            kernel.Bind<ICoordinator, IReadyExecutor>().To<RemoteGrpcCoordinator>().InSingletonScope();
+            svcs.AddSingleton<RemoteGrpcCoordinator>();
+            svcs.AddSingleton<ICoordinator>(_ => svcs.GetRequiredService<RemoteGrpcCoordinator>());
+            svcs.AddSingleton<IReadyExecutor>(_ => svcs.GetRequiredService<RemoteGrpcCoordinator>());
         }
 
-        kernel.Bind<IServiceProvider>().ToConstant(kernel).InSingletonScope();
+        svcs.AddSingleton<IServiceProvider>(svcs);
 
         //initialize Services
-        Services = kernel;
+        Services = svcs;
         Services.GetRequiredService<IBehaviorHandler>().Initialize();
 
         if (Client.ShardId == 0)
             ApplyConfigMigrations();
 
-        foreach (var a in _moduleAssemblies)
+        foreach (var a in _loadedAssemblies)
         {
             LoadTypeReaders(a);
         }
@@ -316,7 +312,7 @@ public sealed class Bot : IBot
         // start handling messages received in commandhandler
         await commandHandler.StartHandling();
 
-        foreach (var a in _moduleAssemblies)
+        foreach (var a in _loadedAssemblies)
         {
             await _commandService.AddModulesAsync(a, Services);
         }

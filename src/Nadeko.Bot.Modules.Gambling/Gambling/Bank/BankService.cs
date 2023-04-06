@@ -1,6 +1,5 @@
 ﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling.Bank;
 

@@ -1,8 +1,4 @@
-﻿using Nadeko.Common;
-using NadekoBot.Common;
-using NadekoBot.Services;
-
-namespace NadekoBot.Extensions;
+﻿namespace NadekoBot.Extensions;
 
 public static class SocketMessageComponentExtensions
 {

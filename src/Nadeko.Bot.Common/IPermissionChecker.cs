@@ -1,6 +1,4 @@
-﻿using NadekoBot;
-using NadekoBot.Services;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
 
 namespace Nadeko.Bot.Common;

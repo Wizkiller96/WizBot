@@ -3,7 +3,7 @@ namespace NadekoBot.Common.ModuleBehaviors;
 /// <summary>
 /// Implemented by services which may transform input before a command is searched for
 /// </summary>
-public interface IInputTransformer
+public interface IInputTransformer : IBehavior
 {
     /// <summary>
     /// Ran after a non-bot message was received

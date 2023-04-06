@@ -1,6 +1,4 @@
-﻿using Nadeko.Snake;
-
-internal class ContextAdapterFactory
+﻿internal class ContextAdapterFactory
 {
     public static AnyContext CreateNew(ICommandContext context, IMedusaStrings strings, IServiceProvider services)
         => context.Guild is null

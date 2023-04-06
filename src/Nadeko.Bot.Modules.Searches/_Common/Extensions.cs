@@ -1,5 +1,4 @@
 ﻿using NadekoBot.Db.Models;
-using NadekoBot.Modules.Searches.Common;
 
 namespace NadekoBot.Modules.Searches.Common;
 

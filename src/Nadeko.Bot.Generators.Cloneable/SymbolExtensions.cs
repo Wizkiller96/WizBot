@@ -1,8 +1,7 @@
 ﻿// Code temporarily yeeted from
 // https://github.com/mostmand/Cloneable/blob/master/Cloneable/CloneableGenerator.cs
 // because of NRT issue
-using System.Collections.Generic;
-using System.Linq;
+
 using Microsoft.CodeAnalysis;
 
 namespace Cloneable

@@ -1,8 +1,6 @@
 ﻿#nullable disable
-using Nadeko.Common;
 using NadekoBot.Common.Configs;
 using NadekoBot.Modules.Gambling.Common;
-using NadekoBot.Services;
 
 namespace NadekoBot.Modules.Gambling.Services;
 

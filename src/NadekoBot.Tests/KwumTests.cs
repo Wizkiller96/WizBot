@@ -1,5 +1,4 @@
 ﻿using Nadeko.Common;
-using NadekoBot.Common;
 using NUnit.Framework;
 
 namespace NadekoBot.Tests

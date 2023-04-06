@@ -7,7 +7,6 @@ using NadekoBot.Services.Database.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;
 using Nadeko.Bot.Common;
-using Nadeko.Common;
 using NadekoBot.Services;
 using Serilog;
 using YamlDotNet.Serialization;

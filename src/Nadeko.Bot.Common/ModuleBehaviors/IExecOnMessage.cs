@@ -3,7 +3,7 @@ namespace NadekoBot.Common.ModuleBehaviors;
 /// <summary>
 ///     Implemented by modules to handle non-bot messages received
 /// </summary>
-public interface IExecOnMessage
+public interface IExecOnMessage : IBehavior
 {
     int Priority { get; }
 

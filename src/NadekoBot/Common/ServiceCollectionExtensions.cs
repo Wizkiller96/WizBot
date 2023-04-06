@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NadekoBot.Modules.Music;
 using NadekoBot.Modules.Music.Resolvers;
 using NadekoBot.Modules.Music.Services;

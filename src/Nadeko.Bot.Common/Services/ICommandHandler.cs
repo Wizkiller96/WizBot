@@ -1,7 +1,4 @@
-﻿using NadekoBot.Modules.Administration;
-using NonBlocking;
-
-namespace NadekoBot.Services;
+﻿namespace NadekoBot.Services;
 
 public interface ICommandHandler
 {

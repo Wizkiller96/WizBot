@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using NadekoBot.Common.Pokemon;
 using NadekoBot.Modules.Searches.Services;
 
 namespace NadekoBot.Modules.Searches;

@@ -6,7 +6,6 @@ using Discord.Commands;
 using NadekoBot.Common;
 using NadekoBot.Common.Attributes;
 using NadekoBot.Services;
-using NadekoBot.Modules;
 
 namespace NadekoBot.Tests
 {

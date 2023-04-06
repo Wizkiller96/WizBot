@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.Reflection;
+﻿using System.Reflection;
 using CommandStrings = Nadeko.Snake.CommandStrings;
 
 namespace Nadeko.Medusa;

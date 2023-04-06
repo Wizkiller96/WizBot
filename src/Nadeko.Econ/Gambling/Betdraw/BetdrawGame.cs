@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace Nadeko.Econ.Gambling.Betdraw;
+﻿namespace Nadeko.Econ.Gambling.Betdraw;
 
 public sealed class BetdrawGame
 {

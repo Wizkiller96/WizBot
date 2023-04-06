@@ -1,6 +1,5 @@
 #nullable disable
 using System.Text.RegularExpressions;
-using NonBlocking;
 
 namespace NadekoBot.Common;
 

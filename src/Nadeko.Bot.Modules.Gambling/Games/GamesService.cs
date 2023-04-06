@@ -1,11 +1,9 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
-using Nadeko.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.Acrophobia;
 using NadekoBot.Modules.Games.Common.Nunchi;
-using NadekoBot.Modules.Games.Common.Trivia;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Games.Services;

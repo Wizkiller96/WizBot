@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Music.Resolvers;
 

@@ -3,7 +3,7 @@ namespace NadekoBot.Common.ModuleBehaviors;
 /// <summary>
 ///     Executed if no command was found for this message
 /// </summary>
-public interface IExecNoCommand
+public interface IExecNoCommand : IBehavior
 {
     /// <summary>
     /// Executed at the end of the lifecycle if no command was found

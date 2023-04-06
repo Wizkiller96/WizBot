@@ -1,12 +1,11 @@
 ﻿#nullable disable
 using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.ModuleBehaviors;
-using Ninject;
 
 namespace NadekoBot.Services;
 
 // should be renamed to handler as it's not only executing
-public sealed class BehaviorHandler : IBehaviorHandler, INService
+public sealed class BehaviorHandler : IBehaviorHandler 
 {
     private readonly IServiceProvider _services;
     
@@ -152,10 +151,8 @@ public sealed class BehaviorHandler : IBehaviorHandler, INService
         return false;
     }
 
-    private string GetExecName(object exec)
-        => exec is BehaviorAdapter ba
-            ? ba.ToString()
-            : exec.GetType().Name;
+    private string GetExecName(IBehavior exec)
+        => exec.Name;
 
     public async Task<bool> RunPreCommandAsync(ICommandContext ctx, CommandInfo cmd)
     {

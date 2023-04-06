@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Administration.Services;
 

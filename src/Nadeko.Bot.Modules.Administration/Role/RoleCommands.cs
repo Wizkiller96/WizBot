@@ -1,8 +1,5 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Services.Database.Models;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Net;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Administration;

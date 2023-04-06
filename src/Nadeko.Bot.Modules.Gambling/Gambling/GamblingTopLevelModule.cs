@@ -1,10 +1,7 @@
 #nullable disable
 using NadekoBot.Modules.Gambling.Services;
-using System.Globalization;
 using System.Numerics;
-using Discord;
 using Nadeko.Bot.Common;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.Gambling.Common;
 

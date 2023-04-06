@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Nadeko.Common;
 using NadekoBot.Modules.Gambling.Common.AnimalRacing.Exceptions;
 using NadekoBot.Modules.Games.Common;
 

@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Nadeko.Common;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Nadeko.Common;
-using NadekoBot.Common;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 

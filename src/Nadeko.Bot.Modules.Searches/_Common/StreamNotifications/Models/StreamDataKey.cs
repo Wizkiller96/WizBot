@@ -1,6 +1,5 @@
 #nullable disable
 using NadekoBot.Db.Models;
-using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Searches.Common;
 

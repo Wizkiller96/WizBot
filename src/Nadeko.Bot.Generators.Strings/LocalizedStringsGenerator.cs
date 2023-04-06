@@ -1,10 +1,6 @@
 ﻿#nullable enable
-using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
@@ -43,7 +39,6 @@ namespace NadekoBot.Generators
 
         public void Initialize(GeneratorInitializationContext context)
         {
-
         }
 
         public void Execute(GeneratorExecutionContext context)
@@ -55,6 +50,7 @@ namespace NadekoBot.Generators
             using (var stringWriter = new StringWriter())
             using (var sw = new IndentedTextWriter(stringWriter))
             {
+                sw.WriteLine("#pragma warning disable CS8981");
                 sw.WriteLine("namespace NadekoBot;");
                 sw.WriteLine();
 

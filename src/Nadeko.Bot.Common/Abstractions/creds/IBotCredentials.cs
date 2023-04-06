@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using NadekoBot.Common;
-
 namespace NadekoBot;
 
 public interface IBotCredentials

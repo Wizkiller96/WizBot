@@ -1,7 +1,3 @@
-using NadekoBot.Common;
-using NadekoBot.Services;
-using Serilog;
-
 namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions

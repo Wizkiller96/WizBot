@@ -4,8 +4,6 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Nadeko.Medusa;
-using NadekoBot.Common;
-using Serilog;
 
 namespace NadekoBot.Extensions;
 

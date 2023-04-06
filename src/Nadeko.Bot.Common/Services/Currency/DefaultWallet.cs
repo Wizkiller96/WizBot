@@ -1,6 +1,5 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Services.Currency;

@@ -4,7 +4,7 @@ namespace NadekoBot.Common.ModuleBehaviors;
 /// This interface's method is executed after a command was found but before it was executed.
 /// Able to block further processing of a command
 /// </summary>
-public interface IExecPreCommand
+public interface IExecPreCommand : IBehavior
 {
     public int Priority { get; }
 

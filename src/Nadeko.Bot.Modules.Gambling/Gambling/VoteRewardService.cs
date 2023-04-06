@@ -2,9 +2,6 @@
 using NadekoBot.Common.ModuleBehaviors;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Discord.WebSocket;
-using NadekoBot.Services;
-using Serilog;
 
 namespace NadekoBot.Modules.Gambling.Services;
 

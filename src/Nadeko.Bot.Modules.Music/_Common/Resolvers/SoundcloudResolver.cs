@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Music.Resolvers;
 

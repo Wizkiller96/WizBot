@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using Nadeko.Common;
-
 namespace NadekoBot.Common.TypeReaders;
 
 public sealed class KwumTypeReader : NadekoTypeReader<kwum>

@@ -1,6 +1,5 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
 

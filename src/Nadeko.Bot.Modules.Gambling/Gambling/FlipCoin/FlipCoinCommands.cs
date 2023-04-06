@@ -1,5 +1,4 @@
 #nullable disable
-using Nadeko.Common;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;

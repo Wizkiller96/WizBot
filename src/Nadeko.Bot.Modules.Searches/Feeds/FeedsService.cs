@@ -4,7 +4,6 @@ using CodeHollow.FeedReader.Feeds;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Nadeko.Common;
 using NadekoBot.Db;
 using NadekoBot.Services.Database.Models;
 

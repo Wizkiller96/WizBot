@@ -1,6 +1,4 @@
 #nullable disable
-using Nadeko.Common;
-
 namespace NadekoBot.Services.Database.Models;
 
 public enum ShopEntryType

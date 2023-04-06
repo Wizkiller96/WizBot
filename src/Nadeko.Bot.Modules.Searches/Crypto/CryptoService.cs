@@ -8,7 +8,6 @@ using System.Globalization;
 using System.Net.Http.Json;
 using System.Xml;
 using Color = SixLabors.ImageSharp.Color;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 using StringExtensions = NadekoBot.Extensions.StringExtensions;
 
 namespace NadekoBot.Modules.Searches.Services;
