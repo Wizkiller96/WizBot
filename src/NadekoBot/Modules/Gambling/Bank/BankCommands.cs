@@ -91,14 +91,10 @@ public partial class Gambling
         {
             if (await _bank.AwardAsync(userId, amount))
             {
-                await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
-                    _client.GetUser(userId)?.ToString()
-                    ?? userId.ToString(),
-                    CurrencySign));
+                await ctx.OkAsync();
                 return;
             }
-            
-            await ctx.OkAsync();
+
         }
 
         [Cmd]
