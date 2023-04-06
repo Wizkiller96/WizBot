@@ -8,13 +8,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj"/>
-        <ProjectReference Include="..\Nadeko.Bot.Db\Nadeko.Bot.Db.csproj"/>
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Gambling\Nadeko.Bot.Modules.Gambling.csproj"/>
 
         <ProjectReference Include="..\Nadeko.Bot.Generators.Cloneable\Nadeko.Bot.Generators.Cloneable.csproj" OutputItemType="Analyzer"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Discord.Net.Core" Version="3.104.0"/>
     </ItemGroup>
 
 </Project>

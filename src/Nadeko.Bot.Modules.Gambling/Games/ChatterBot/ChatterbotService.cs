@@ -4,8 +4,8 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Common.ChatterBot;
+using NadekoBot.Modules.Patronage;
 using NadekoBot.Modules.Permissions;
-using NadekoBot.Modules.Utility.Patronage;
 
 namespace NadekoBot.Modules.Games.Services;
 

@@ -4,8 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
+using NadekoBot.Modules.Administration;
+using NadekoBot.Modules.Gambling;
+using NadekoBot.Modules.Help;
+using NadekoBot.Modules.Music;
 using NadekoBot.Modules.NadekoExpressions;
+using NadekoBot.Modules.Patronage;
+using NadekoBot.Modules.Permissions;
+using NadekoBot.Modules.Searches;
 using NadekoBot.Modules.Utility;
+using NadekoBot.Modules.Xp;
 using NadekoBot.Services.Database.Models;
 using Ninject;
 using Ninject.Planning;
@@ -94,6 +102,15 @@ public sealed class Bot : IBot
 
             // modules
             typeof(NadekoExpressions).Assembly,
+            typeof(Administration).Assembly,
+            typeof(Gambling).Assembly,
+            typeof(Help).Assembly,
+            typeof(Music).Assembly,
+            typeof(Patronage).Assembly,
+            typeof(Permissions).Assembly,
+            typeof(Searches).Assembly,
+            typeof(Utility).Assembly,
+            typeof(Xp).Assembly,
         };
     }
 
@@ -161,7 +178,6 @@ public sealed class Bot : IBot
         //initialize Services
         Services = kernel;
         Services.GetRequiredService<IBehaviorHandler>().Initialize();
-        Services.GetRequiredService<CurrencyRewardService>();
 
         if (Client.ShardId == 0)
             ApplyConfigMigrations();

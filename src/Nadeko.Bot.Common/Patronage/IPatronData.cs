@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Modules.Utility;
+﻿namespace NadekoBot.Modules.Patronage;
 
 public interface ISubscriberData
 {

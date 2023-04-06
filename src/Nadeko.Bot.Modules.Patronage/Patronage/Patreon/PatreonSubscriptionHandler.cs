@@ -1,15 +1,13 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Utility.Patronage;
-
-namespace NadekoBot.Modules.Utility;
+namespace NadekoBot.Modules.Patronage;
 
 /// <summary>
 /// Service tasked with handling pledges on patreon
 /// </summary>
 public sealed class PatreonSubscriptionHandler : ISubscriptionHandler, INService
 {
-    private readonly IBotCredsProvider _credsProvider;
-    private readonly PatreonClient _patreonClient;
+        private readonly IBotCredsProvider _credsProvider;
+        private readonly PatreonClient _patreonClient;
 
     public PatreonSubscriptionHandler(IBotCredsProvider credsProvider)
     {

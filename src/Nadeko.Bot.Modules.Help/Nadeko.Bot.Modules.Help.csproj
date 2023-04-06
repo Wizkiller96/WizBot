@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj"/>
+
+        <ProjectReference Include="..\Nadeko.Bot.Generators.Cloneable\Nadeko.Bot.Generators.Cloneable.csproj" OutputItemType="Analyzer"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.101.58" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.101.58"/>
     </ItemGroup>
 
 </Project>

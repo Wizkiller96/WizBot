@@ -1,4 +1,6 @@
-﻿namespace NadekoBot.Modules;
+﻿using NadekoBot.Modules;
+
+namespace NadekoBot.Modules;
 
 public interface IMedusaeRepositoryService
 {

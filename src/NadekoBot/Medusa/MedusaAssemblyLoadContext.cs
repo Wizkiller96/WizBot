@@ -17,7 +17,7 @@ public class MedusaAssemblyLoadContext : AssemblyLoadContext
         var assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
         if (assemblyPath != null)
         {
-            Assembly assembly = LoadFromAssemblyPath(assemblyPath);
+            var assembly = LoadFromAssemblyPath(assemblyPath);
             LoadDependencies(assembly);
             return assembly;
         }

@@ -1,5 +1,5 @@
 ﻿#nullable disable
-namespace NadekoBot.Modules.Utility;
+namespace NadekoBot.Modules.Patronage;
 
 /// <summary>
 /// Services implementing this interface are handling pledges/subscriptions/payments coming

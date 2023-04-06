@@ -6,7 +6,7 @@ using OneOf;
 using OneOf.Types;
 using CommandInfo = Discord.Commands.CommandInfo;
 
-namespace NadekoBot.Modules.Utility.Patronage;
+namespace NadekoBot.Modules.Patronage;
 
 /// <inheritdoc cref="IPatronageService"/>
 public sealed class PatronageService

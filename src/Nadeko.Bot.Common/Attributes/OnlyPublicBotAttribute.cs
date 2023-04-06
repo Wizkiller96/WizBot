@@ -12,7 +12,7 @@ public sealed class OnlyPublicBotAttribute : PreconditionAttribute
         CommandInfo command,
         IServiceProvider services)
     {
-#if GLOBAL_NADEKO || DEBUG
+#if GLOBAL_NADEKO 
         return Task.FromResult(PreconditionResult.FromSuccess());
 #else
         return Task.FromResult(PreconditionResult.FromError("Only available on the public bot."));

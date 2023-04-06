@@ -6,10 +6,12 @@ using Ninject.Modules;
 using Ninject.Planning;
 using System.Text.Json;
 
+namespace Nadeko.Medusa;
+
 public sealed class MedusaNinjectModule : NinjectModule
 {
     public override string Name { get; }
-    private volatile bool _isLoaded = false;
+    private volatile bool isLoaded = false;
     private readonly Dictionary<Type, Type[]> _types;
 
     public MedusaNinjectModule(Assembly assembly, string name)
@@ -24,7 +26,7 @@ public sealed class MedusaNinjectModule : NinjectModule
 
     public override void Load()
     {
-        if (_isLoaded)
+        if (isLoaded)
             return;
 
         foreach (var (type, data) in _types)
@@ -44,7 +46,7 @@ public sealed class MedusaNinjectModule : NinjectModule
             }
         }
 
-        _isLoaded = true;
+        isLoaded = true;
     }
 
     private Func<IContext, object?> GetScope(Lifetime lt)
@@ -52,14 +54,15 @@ public sealed class MedusaNinjectModule : NinjectModule
         {
             Lifetime.Singleton => this,
             Lifetime.Transient => null,
+            _ => null,
         };
 
     public override void Unload()
     {
-        if (!_isLoaded)
+        if (!isLoaded)
             return;
 
-        var planner = (RemovablePlanner)Kernel.Components.Get<IPlanner>();
+        var planner = (RemovablePlanner)Kernel!.Components.Get<IPlanner>();
         var cache = Kernel.Components.Get<ICache>();
         foreach (var binding in this.Bindings)
         {
@@ -90,6 +93,6 @@ public sealed class MedusaNinjectModule : NinjectModule
         var clearCacheMethod = updateHandlerType?.GetMethod("ClearCache", BindingFlags.Static | BindingFlags.Public);
         clearCacheMethod?.Invoke(null, new object?[] { null }); 
         
-        _isLoaded = false;
+        isLoaded = false;
     }
 }

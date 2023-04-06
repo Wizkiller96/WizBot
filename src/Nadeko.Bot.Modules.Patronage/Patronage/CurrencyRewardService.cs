@@ -1,20 +1,18 @@
 ﻿#nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Modules.Utility.Patronage;
-using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Services;
+using NadekoBot.Modules.Patronage;
 using NadekoBot.Services.Currency;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Utility;
 
-public class CurrencyRewardService : INService, IDisposable
+public sealed class CurrencyRewardService : INService, IDisposable
 {
     private readonly ICurrencyService _cs;
     private readonly IPatronageService _ps;
     private readonly DbService _db;
-    private readonly IBankService _bs;
     private readonly IEmbedBuilderService _eb;
     private readonly GamblingConfigService _config;
     private readonly DiscordSocketClient _client;
@@ -23,7 +21,6 @@ public class CurrencyRewardService : INService, IDisposable
         ICurrencyService cs,
         IPatronageService ps,
         DbService db,
-        IBankService bs,
         IEmbedBuilderService eb,
         GamblingConfigService config,
         DiscordSocketClient client)
@@ -31,7 +28,6 @@ public class CurrencyRewardService : INService, IDisposable
         _cs = cs;
         _ps = ps;
         _db = db;
-        _bs = bs;
         _eb = eb;
         _config = config;
         _client = client;

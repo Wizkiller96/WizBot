@@ -3,7 +3,6 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
-using NadekoBot.Modules.Utility.Patronage;
 using NadekoBot.Modules.Gambling.Bank;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
@@ -15,6 +14,7 @@ using System.Globalization;
 using System.Text;
 using Nadeko.Econ.Gambling.Rps;
 using NadekoBot.Common.TypeReaders;
+using NadekoBot.Modules.Patronage;
 
 namespace NadekoBot.Modules.Gambling;
 

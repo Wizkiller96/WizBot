@@ -1,5 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace NadekoBot.Modules.Utility.Patronage;
+namespace NadekoBot.Modules.Patronage;
 
 public enum PatronTier
 {

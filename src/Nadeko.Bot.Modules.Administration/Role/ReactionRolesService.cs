@@ -3,7 +3,7 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
-using NadekoBot.Modules.Utility.Patronage;
+using NadekoBot.Modules.Patronage;
 using NadekoBot.Services.Database.Models;
 using OneOf.Types;
 using OneOf;

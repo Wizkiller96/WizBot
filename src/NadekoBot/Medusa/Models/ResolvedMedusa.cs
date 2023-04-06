@@ -12,5 +12,5 @@ public sealed record ResolvedMedusa(
     IReadOnlyCollection<ICustomBehavior> Execs
 )
 {
-    public INinjectModule KernelModule { get; set; }
+    public required INinjectModule KernelModule { get; set; }
 }

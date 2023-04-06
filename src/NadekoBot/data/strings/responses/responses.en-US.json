@@ -989,6 +989,7 @@
   "module_description_searches": "Search for jokes, images of animals, anime and manga",
   "module_description_xp": "Gain xp based on chat activity, check users' xp cards",
   "module_description_medusa": "**Bot Owner only.** Load, unload and handle dynamic modules. Read more [here](https://nadekobot.readthedocs.io/en/latest/medusa/creating-a-medusa/)",
+  "module_description_patronage": "Commands related to supporting the bot",
   "module_description_missing": "Description is missing for this module.",
   "purge_user_confirm": "Are you sure that you want to purge {0} from the database?",
   "expr_import_no_input": "Invalid input. No valid file upload or input text found.",

@@ -7,13 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
-      <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
-      <ProjectReference Include="..\Nadeko.Bot.Modules.Searches\Nadeko.Bot.Modules.Searches.csproj" />
+        <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj"/>
+        <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj"/>
+        <ProjectReference Include="..\Nadeko.Bot.Modules.Searches\Nadeko.Bot.Modules.Searches.csproj"/>
+
+        <ProjectReference Include="..\Nadeko.Bot.Generators.Cloneable\Nadeko.Bot.Generators.Cloneable.csproj" OutputItemType="Analyzer"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
     </ItemGroup>
 
 </Project>

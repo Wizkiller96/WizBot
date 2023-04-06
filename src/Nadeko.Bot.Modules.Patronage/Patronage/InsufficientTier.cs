@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Db.Models;
 
-namespace NadekoBot.Modules.Utility.Patronage;
+namespace NadekoBot.Modules.Patronage;
 
 public readonly struct InsufficientTier
 {

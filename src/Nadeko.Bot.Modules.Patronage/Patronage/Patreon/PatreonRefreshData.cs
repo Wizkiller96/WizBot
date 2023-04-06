@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using System.Text.Json.Serialization;
 
-namespace NadekoBot.Modules.Utility;
+namespace NadekoBot.Modules.Patronage;
 
 public sealed class PatreonRefreshData
 {

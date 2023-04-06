@@ -2,7 +2,7 @@
 using Cloneable;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db.Models;
-using NadekoBot.Modules.Utility.Patronage;
+using NadekoBot.Modules.Patronage;
 
 namespace NadekoBot.Modules.Xp;
 

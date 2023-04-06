@@ -7,12 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="linq2db.EntityFrameworkCore" Version="7.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+        <PackageReference Include="linq2db.EntityFrameworkCore" Version="7.3.0"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
-      <ProjectReference Include="..\Nadeko.Bot.Db\Nadeko.Bot.Db.csproj" />
+        <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj"/>
+        <ProjectReference Include="..\Nadeko.Bot.Db\Nadeko.Bot.Db.csproj"/>
+
+
+        <ProjectReference Include="..\Nadeko.Bot.Generators.Cloneable\Nadeko.Bot.Generators.Cloneable.csproj" OutputItemType="Analyzer"/>
     </ItemGroup>
 </Project>

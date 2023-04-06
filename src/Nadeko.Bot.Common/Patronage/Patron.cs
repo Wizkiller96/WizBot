@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Modules.Utility.Patronage;
+﻿namespace NadekoBot.Modules.Patronage;
 
 public readonly struct Patron
 {

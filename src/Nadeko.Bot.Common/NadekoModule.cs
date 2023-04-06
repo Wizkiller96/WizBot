@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using System.Globalization;
-using NadekoBot.Services;
 
 // ReSharper disable InconsistentNaming
 

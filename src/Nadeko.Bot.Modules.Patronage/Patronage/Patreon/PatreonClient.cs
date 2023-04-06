@@ -1,11 +1,10 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Utility.Common.Patreon;
 using OneOf;
 using OneOf.Types;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace NadekoBot.Modules.Utility;
+namespace NadekoBot.Modules.Patronage;
 
 public class PatreonClient : IDisposable
 {

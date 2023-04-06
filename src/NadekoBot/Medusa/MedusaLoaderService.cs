@@ -16,7 +16,6 @@ namespace Nadeko.Medusa;
 public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, INService
 {
     private readonly CommandService _cmdService;
-    private readonly IServiceProvider _botServices;
     private readonly IBehaviorHandler _behHandler;
     private readonly IPubSub _pubSub;
     private readonly IMedusaConfigService _medusaConfig;

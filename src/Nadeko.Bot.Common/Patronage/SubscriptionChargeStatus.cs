@@ -1,5 +1,5 @@
 ﻿#nullable disable
-namespace NadekoBot.Modules.Utility;
+namespace NadekoBot.Modules.Patronage;
 
 public enum SubscriptionChargeStatus
 {

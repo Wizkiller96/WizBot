@@ -4,7 +4,7 @@ using Nadeko.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 
-namespace NadekoBot.Modules.Administration.Services;
+namespace NadekoBot.Services;
 
 public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPermOverrideService
 {

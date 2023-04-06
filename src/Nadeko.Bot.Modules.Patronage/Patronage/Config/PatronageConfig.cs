@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Common.Configs;
 
-namespace NadekoBot.Modules.Utility.Patronage;
+namespace NadekoBot.Modules.Patronage;
 
 public class PatronageConfig : ConfigServiceBase<PatronConfigData>
 {
@@ -8,7 +8,7 @@ public class PatronageConfig : ConfigServiceBase<PatronConfigData>
         => "patron";
 
     private static readonly TypedKey<PatronConfigData> _changeKey
-        = new TypedKey<PatronConfigData>("config.patron.updated");
+        = new("config.patron.updated");
 
     private const string FILE_PATH = "data/patron.yml";
 

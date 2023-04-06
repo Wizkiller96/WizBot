@@ -24,10 +24,12 @@ public sealed class PermissionChecker : IPermissionChecker, INService
         IMessageChannel channel,
         IUser author,
         string module,
-        string cmd)
+        string? cmd)
     {
+        module = module.ToLowerInvariant();
+        cmd = cmd?.ToLowerInvariant();
         // todo add proper string
-        if (await _cmdCds.TryBlock(guild, author, cmd))
+        if (cmd is not null && await _cmdCds.TryBlock(guild, author, cmd))
             return new Error<LocStr>(new());
 
         try

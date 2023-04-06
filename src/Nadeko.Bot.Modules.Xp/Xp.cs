@@ -1,11 +1,10 @@
 #nullable disable warnings
 using NadekoBot.Modules.Xp.Services;
 using NadekoBot.Services.Database.Models;
-using System.Globalization;
 using Nadeko.Bot.Common;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
-using NadekoBot.Modules.Utility.Patronage;
+using NadekoBot.Modules.Patronage;
 
 namespace NadekoBot.Modules.Xp;
 

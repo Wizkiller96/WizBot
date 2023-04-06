@@ -4,7 +4,7 @@ using NadekoBot.Modules.Gambling.Services;
 namespace NadekoBot.Modules.Gambling;
 
 // todo do we need both currencyprovider and currencyservice
-public sealed class CurrencyProvider : ICurrencyProvider
+public sealed class CurrencyProvider : ICurrencyProvider, INService
 {
     private readonly GamblingConfigService _cs;
 

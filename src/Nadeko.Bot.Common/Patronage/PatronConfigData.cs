@@ -1,7 +1,7 @@
 ﻿using NadekoBot.Common.Yml;
 using Cloneable;
 
-namespace NadekoBot.Modules.Utility.Patronage;
+namespace NadekoBot.Modules.Patronage;
 
 [Cloneable]
 public partial class PatronConfigData : ICloneable<PatronConfigData>

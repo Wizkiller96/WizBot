@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using NadekoBot.Db;
-using NadekoBot.Modules.Help.Services;
 
 namespace NadekoBot.Modules.Utility.Services;
 
@@ -9,13 +8,13 @@ public class VerboseErrorsService : INService
     private readonly ConcurrentHashSet<ulong> _guildsDisabled;
     private readonly DbService _db;
     private readonly CommandHandler _ch;
-    private readonly HelpService _hs;
+    private readonly ICommandsUtilityService _hs;
 
     public VerboseErrorsService(
         IBot bot,
         DbService db,
         CommandHandler ch,
-        HelpService hs)
+        ICommandsUtilityService hs)
     {
         _db = db;
         _ch = ch;

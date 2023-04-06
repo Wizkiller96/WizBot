@@ -10,7 +10,7 @@
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
         <PackageReference Include="NonBlocking" Version="2.1.1" />
-        <PackageReference Include="OneOf" Version="3.0.223" />
+        <PackageReference Include="OneOf" Version="3.0.243" />
 
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
     </ItemGroup>
