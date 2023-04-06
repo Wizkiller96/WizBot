@@ -123,7 +123,7 @@ In order to use music commands, you need ffmpeg and youtube-dl installed.
 - [ffmpeg-32bit] | [ffmpeg-64bit] - Download the **appropriate version** for your system (32 bit if you're running a 32 bit OS, or 64 if you're running a 64bit OS). Unzip it, and move `ffmpeg.exe` to a path that's in your PATH environment variable. If you don't know what that is, just move the `ffmpeg.exe` file to `NadekoBot/output`.
 - [youtube-dl] - Click to download the file, then move `youtube-dl.exe` to a path that's in your PATH environment variable. If you don't know what that is, just move the `youtube-dl.exe` file to `NadekoBot/system`.
 
-[Updater]: https://dl.nadeko.bot/
+[Updater]: https://dl.nadeko.bot/v3/
 [Notepad++]: https://notepad-plus-plus.org/
 [.net]: https://dotnet.microsoft.com/download/dotnet/5.0
 [Redis]: https://github.com/MicrosoftArchive/redis/releases/download/win-3.0.504/Redis-x64-3.0.504.msi
