@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace NadekoBot.Migrations.PostgreSql
+namespace NadekoBot.Db.Migrations
 {
-    public partial class mysqlinit : Migration
+    /// <inheritdoc />
+    public partial class init_v5 : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -23,11 +26,26 @@ namespace NadekoBot.Migrations.PostgreSql
                     voicechannelid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     voicechannelname = table.Column<string>(type: "text", nullable: true),
                     interval = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_autocommands", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "autopublishchannel",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_autopublishchannel", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,11 +57,26 @@ namespace NadekoBot.Migrations.PostgreSql
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     autodelete = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_autotranslatechannels", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "bankusers",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    balance = table.Column<long>(type: "bigint", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_bankusers", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -54,7 +87,8 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     text = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    prunedays = table.Column<int>(type: "integer", nullable: true),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,7 +103,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     itemid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,7 +122,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     type = table.Column<string>(type: "text", nullable: false),
                     extra = table.Column<string>(type: "text", nullable: false),
                     otherid = table.Column<decimal>(type: "numeric(20,0)", nullable: true, defaultValueSql: "NULL"),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,7 +138,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     perm = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     command = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -125,11 +159,27 @@ namespace NadekoBot.Migrations.PostgreSql
                     containsanywhere = table.Column<bool>(type: "boolean", nullable: false),
                     allowtarget = table.Column<bool>(type: "boolean", nullable: false),
                     reactions = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_expressions", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "gamblingstats",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    feature = table.Column<string>(type: "text", nullable: true),
+                    bet = table.Column<decimal>(type: "numeric", nullable: false),
+                    paidout = table.Column<decimal>(type: "numeric", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_gamblingstats", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,15 +215,17 @@ namespace NadekoBot.Migrations.PostgreSql
                     timezoneid = table.Column<string>(type: "text", nullable: true),
                     warningsinitialized = table.Column<bool>(type: "boolean", nullable: false),
                     gamevoicechannel = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
-                    verboseerrors = table.Column<bool>(type: "boolean", nullable: false),
+                    verboseerrors = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     notifystreamoffline = table.Column<bool>(type: "boolean", nullable: false),
+                    deletestreamonlinemessage = table.Column<bool>(type: "boolean", nullable: false),
                     warnexpirehours = table.Column<int>(type: "integer", nullable: false),
                     warnexpireaction = table.Column<int>(type: "integer", nullable: false),
+                    disableglobalexpressions = table.Column<bool>(type: "boolean", nullable: false),
                     sendboostmessage = table.Column<bool>(type: "boolean", nullable: false),
                     boostmessage = table.Column<string>(type: "text", nullable: true),
                     boostmessagechannelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     boostmessagedeleteafter = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -188,7 +240,8 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,11 +266,14 @@ namespace NadekoBot.Migrations.PostgreSql
                     channelcreatedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     channeldestroyedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     channelupdatedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
+                    threaddeletedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
+                    threadcreatedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     usermutedid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     loguserpresenceid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     logvoicepresenceid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     logvoicepresencettsid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    logwarnsid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -252,7 +308,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     name = table.Column<string>(type: "text", nullable: true),
                     author = table.Column<string>(type: "text", nullable: true),
                     authorid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -267,11 +323,42 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     tag = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_nsfwblacklistedtags", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "patronquotas",
+                columns: table => new
+                {
+                    userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    featuretype = table.Column<int>(type: "integer", nullable: false),
+                    feature = table.Column<string>(type: "text", nullable: false),
+                    hourlycount = table.Column<long>(type: "bigint", nullable: false),
+                    dailycount = table.Column<long>(type: "bigint", nullable: false),
+                    monthlycount = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_patronquotas", x => new { x.userid, x.featuretype, x.feature });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "patrons",
+                columns: table => new
+                {
+                    userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    uniqueplatformuserid = table.Column<string>(type: "text", nullable: true),
+                    amountcents = table.Column<int>(type: "integer", nullable: false),
+                    lastcharge = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    validthru = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_patrons", x => x.userid);
                 });
 
             migrationBuilder.CreateTable(
@@ -286,7 +373,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     messageid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -302,7 +389,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     question = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -320,11 +407,31 @@ namespace NadekoBot.Migrations.PostgreSql
                     authorname = table.Column<string>(type: "text", nullable: false),
                     authorid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     text = table.Column<string>(type: "text", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_quotes", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "reactionroles",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    messageid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    emote = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    group = table.Column<int>(type: "integer", nullable: false),
+                    levelreq = table.Column<int>(type: "integer", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_reactionroles", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -333,13 +440,13 @@ namespace NadekoBot.Migrations.PostgreSql
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    when = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    when = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     serverid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     message = table.Column<string>(type: "text", nullable: true),
                     isprivate = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -359,7 +466,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     interval = table.Column<TimeSpan>(type: "interval", nullable: false),
                     starttimeofday = table.Column<TimeSpan>(type: "interval", nullable: true),
                     noredundant = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -373,10 +480,10 @@ namespace NadekoBot.Migrations.PostgreSql
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    patreonuserid = table.Column<string>(type: "text", nullable: true),
-                    amountrewardedthismonth = table.Column<int>(type: "integer", nullable: false),
-                    lastreward = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    platformuserid = table.Column<string>(type: "text", nullable: true),
+                    amountrewardedthismonth = table.Column<long>(type: "bigint", nullable: false),
+                    lastreward = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -391,7 +498,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     status = table.Column<string>(type: "text", nullable: true),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -408,11 +515,28 @@ namespace NadekoBot.Migrations.PostgreSql
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     group = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     levelrequirement = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_selfassignableroles", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "streamonlinemessages",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    messageid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: true),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_streamonlinemessages", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -423,11 +547,10 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    xp = table.Column<int>(type: "integer", nullable: false),
-                    awardedxp = table.Column<int>(type: "integer", nullable: false),
+                    xp = table.Column<long>(type: "bigint", nullable: false),
+                    awardedxp = table.Column<long>(type: "bigint", nullable: false),
                     notifyonlevelup = table.Column<int>(type: "integer", nullable: false),
-                    lastlevelup = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -447,11 +570,28 @@ namespace NadekoBot.Migrations.PostgreSql
                     forgivenby = table.Column<string>(type: "text", nullable: true),
                     moderator = table.Column<string>(type: "text", nullable: true),
                     weight = table.Column<long>(type: "bigint", nullable: false, defaultValue: 1L),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_warnings", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "xpshopowneditem",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    itemtype = table.Column<int>(type: "integer", nullable: false),
+                    isusing = table.Column<bool>(type: "boolean", nullable: false),
+                    itemkey = table.Column<string>(type: "text", nullable: false),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_xpshopowneditem", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -464,7 +604,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     source = table.Column<string>(type: "text", nullable: true),
                     target = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -512,7 +652,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     seconds = table.Column<int>(type: "integer", nullable: false),
                     action = table.Column<int>(type: "integer", nullable: false),
                     punishduration = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -536,7 +676,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     messagethreshold = table.Column<int>(type: "integer", nullable: false),
                     mutetime = table.Column<int>(type: "integer", nullable: false),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -558,7 +698,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     trigger = table.Column<string>(type: "text", nullable: true),
                     mapping = table.Column<string>(type: "text", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -579,7 +719,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     seconds = table.Column<int>(type: "integer", nullable: false),
                     commandname = table.Column<string>(type: "text", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -600,7 +740,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     state = table.Column<bool>(type: "boolean", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -621,7 +761,8 @@ namespace NadekoBot.Migrations.PostgreSql
                     guildconfigid = table.Column<int>(type: "integer", nullable: false),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     url = table.Column<string>(type: "text", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    message = table.Column<string>(type: "text", nullable: true),
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -643,7 +784,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -663,7 +804,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     word = table.Column<string>(type: "text", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -683,7 +824,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -703,7 +844,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -727,7 +868,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     type = table.Column<int>(type: "integer", nullable: false),
                     message = table.Column<string>(type: "text", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -747,7 +888,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -768,7 +909,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     guildconfigid = table.Column<int>(type: "integer", nullable: false),
                     number = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -789,7 +930,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -815,7 +956,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     secondarytargetname = table.Column<string>(type: "text", nullable: true),
                     iscustomcommand = table.Column<bool>(type: "boolean", nullable: false),
                     state = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -825,30 +966,6 @@ namespace NadekoBot.Migrations.PostgreSql
                         column: x => x.guildconfigid,
                         principalTable: "guildconfigs",
                         principalColumn: "id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "reactionrolemessage",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    index = table.Column<int>(type: "integer", nullable: false),
-                    guildconfigid = table.Column<int>(type: "integer", nullable: false),
-                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    messageid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    exclusive = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_reactionrolemessage", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_reactionrolemessage_guildconfigs_guildconfigid",
-                        column: x => x.guildconfigid,
-                        principalTable: "guildconfigs",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -864,8 +981,9 @@ namespace NadekoBot.Migrations.PostgreSql
                     type = table.Column<int>(type: "integer", nullable: false),
                     rolename = table.Column<string>(type: "text", nullable: true),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    rolerequirement = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -885,7 +1003,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -905,7 +1023,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -928,7 +1046,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     addroleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     fromroleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     keyword = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -948,9 +1066,9 @@ namespace NadekoBot.Migrations.PostgreSql
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    unbanat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    unbanat = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -969,9 +1087,9 @@ namespace NadekoBot.Migrations.PostgreSql
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    unmuteat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    unmuteat = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -991,9 +1109,9 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    unbanat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    unbanat = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1014,7 +1132,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     voicechannelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1037,7 +1155,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     time = table.Column<int>(type: "integer", nullable: false),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     guildconfigid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1057,7 +1175,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildconfigid = table.Column<int>(type: "integer", nullable: false),
                     serverexcluded = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1079,7 +1197,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     logsettingid = table.Column<int>(type: "integer", nullable: false),
                     logitemid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     itemtype = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1100,7 +1218,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     logsettingid = table.Column<int>(type: "integer", nullable: true),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1124,7 +1242,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     uri = table.Column<string>(type: "text", nullable: true),
                     query = table.Column<string>(type: "text", nullable: true),
                     musicplaylistid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1146,7 +1264,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     index = table.Column<int>(type: "integer", nullable: false),
                     text = table.Column<string>(type: "text", nullable: true),
                     pollid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1167,7 +1285,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     voteindex = table.Column<int>(type: "integer", nullable: false),
                     pollid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1187,7 +1305,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     antispamsettingid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1200,28 +1318,6 @@ namespace NadekoBot.Migrations.PostgreSql
                 });
 
             migrationBuilder.CreateTable(
-                name: "reactionrole",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    emotename = table.Column<string>(type: "text", nullable: true),
-                    roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
-                    reactionrolemessageid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_reactionrole", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_reactionrole_reactionrolemessage_reactionrolemessageid",
-                        column: x => x.reactionrolemessageid,
-                        principalTable: "reactionrolemessage",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "shopentryitem",
                 columns: table => new
                 {
@@ -1229,7 +1325,7 @@ namespace NadekoBot.Migrations.PostgreSql
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     text = table.Column<string>(type: "text", nullable: true),
                     shopentryid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1250,7 +1346,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     username = table.Column<string>(type: "text", nullable: true),
                     streamrolesettingsid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1271,7 +1367,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     userid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     username = table.Column<string>(type: "text", nullable: true),
                     streamrolesettingsid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1292,7 +1388,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     itemid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     itemtype = table.Column<int>(type: "integer", nullable: false),
                     xpsettingsid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1313,7 +1409,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     xpsettingsid = table.Column<int>(type: "integer", nullable: false),
                     level = table.Column<int>(type: "integer", nullable: false),
                     amount = table.Column<int>(type: "integer", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1336,7 +1432,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     level = table.Column<int>(type: "integer", nullable: false),
                     roleid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     remove = table.Column<bool>(type: "boolean", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1384,7 +1480,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     imageurl = table.Column<string>(type: "text", nullable: true),
                     xp = table.Column<int>(type: "integer", nullable: false),
                     ownerid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1404,12 +1500,10 @@ namespace NadekoBot.Migrations.PostgreSql
                     avatarid = table.Column<string>(type: "text", nullable: true),
                     clubid = table.Column<int>(type: "integer", nullable: true),
                     isclubadmin = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    totalxp = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
-                    lastlevelup = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),
-                    lastxpgain = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now()) - interval '-1 year'"),
+                    totalxp = table.Column<long>(type: "bigint", nullable: false, defaultValue: 0L),
                     notifyonlevelup = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     currencyamount = table.Column<long>(type: "bigint", nullable: false, defaultValue: 0L),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1432,7 +1526,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     claimerid = table.Column<int>(type: "integer", nullable: true),
                     affinityid = table.Column<int>(type: "integer", nullable: true),
                     price = table.Column<long>(type: "bigint", nullable: false),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1465,7 +1559,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     updatetype = table.Column<int>(type: "integer", nullable: false),
                     oldid = table.Column<int>(type: "integer", nullable: true),
                     newid = table.Column<int>(type: "integer", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1497,7 +1591,7 @@ namespace NadekoBot.Migrations.PostgreSql
                     waifuinfoid = table.Column<int>(type: "integer", nullable: true),
                     itememoji = table.Column<string>(type: "text", nullable: true),
                     name = table.Column<string>(type: "text", nullable: true),
-                    dateadded = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    dateadded = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1533,6 +1627,12 @@ namespace NadekoBot.Migrations.PostgreSql
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_autopublishchannel_guildid",
+                table: "autopublishchannel",
+                column: "guildid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_autotranslatechannels_channelid",
                 table: "autotranslatechannels",
                 column: "channelid",
@@ -1542,6 +1642,12 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "ix_autotranslatechannels_guildid",
                 table: "autotranslatechannels",
                 column: "guildid");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_bankusers_userid",
+                table: "bankusers",
+                column: "userid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_bantemplates_guildid",
@@ -1642,6 +1748,12 @@ namespace NadekoBot.Migrations.PostgreSql
                 column: "guildconfigid");
 
             migrationBuilder.CreateIndex(
+                name: "ix_gamblingstats_feature",
+                table: "gamblingstats",
+                column: "feature",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_gcchannelid_guildconfigid",
                 table: "gcchannelid",
                 column: "guildconfigid");
@@ -1703,6 +1815,17 @@ namespace NadekoBot.Migrations.PostgreSql
                 column: "guildid");
 
             migrationBuilder.CreateIndex(
+                name: "ix_patronquotas_userid",
+                table: "patronquotas",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_patrons_uniqueplatformuserid",
+                table: "patrons",
+                column: "uniqueplatformuserid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_permissions_guildconfigid",
                 table: "permissions",
                 column: "guildconfigid");
@@ -1750,14 +1873,15 @@ namespace NadekoBot.Migrations.PostgreSql
                 column: "keyword");
 
             migrationBuilder.CreateIndex(
-                name: "ix_reactionrole_reactionrolemessageid",
-                table: "reactionrole",
-                column: "reactionrolemessageid");
+                name: "ix_reactionroles_guildid",
+                table: "reactionroles",
+                column: "guildid");
 
             migrationBuilder.CreateIndex(
-                name: "ix_reactionrolemessage_guildconfigid",
-                table: "reactionrolemessage",
-                column: "guildconfigid");
+                name: "ix_reactionroles_messageid_emote",
+                table: "reactionroles",
+                columns: new[] { "messageid", "emote" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_reminders_when",
@@ -1765,9 +1889,9 @@ namespace NadekoBot.Migrations.PostgreSql
                 column: "when");
 
             migrationBuilder.CreateIndex(
-                name: "ix_rewardedusers_patreonuserid",
+                name: "ix_rewardedusers_platformuserid",
                 table: "rewardedusers",
-                column: "patreonuserid",
+                column: "platformuserid",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -1936,6 +2060,12 @@ namespace NadekoBot.Migrations.PostgreSql
                 column: "guildconfigid",
                 unique: true);
 
+            migrationBuilder.CreateIndex(
+                name: "ix_xpshopowneditem_userid_itemtype_itemkey",
+                table: "xpshopowneditem",
+                columns: new[] { "userid", "itemtype", "itemkey" },
+                unique: true);
+
             migrationBuilder.AddForeignKey(
                 name: "fk_clubapplicants_clubs_clubid",
                 table: "clubapplicants",
@@ -1977,6 +2107,7 @@ namespace NadekoBot.Migrations.PostgreSql
                 onDelete: ReferentialAction.SetNull);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -1996,7 +2127,13 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "autocommands");
 
             migrationBuilder.DropTable(
+                name: "autopublishchannel");
+
+            migrationBuilder.DropTable(
                 name: "autotranslateusers");
+
+            migrationBuilder.DropTable(
+                name: "bankusers");
 
             migrationBuilder.DropTable(
                 name: "bantemplates");
@@ -2050,6 +2187,9 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "followedstream");
 
             migrationBuilder.DropTable(
+                name: "gamblingstats");
+
+            migrationBuilder.DropTable(
                 name: "gcchannelid");
 
             migrationBuilder.DropTable(
@@ -2074,6 +2214,12 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "nsfwblacklistedtags");
 
             migrationBuilder.DropTable(
+                name: "patronquotas");
+
+            migrationBuilder.DropTable(
+                name: "patrons");
+
+            migrationBuilder.DropTable(
                 name: "permissions");
 
             migrationBuilder.DropTable(
@@ -2092,7 +2238,7 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "quotes");
 
             migrationBuilder.DropTable(
-                name: "reactionrole");
+                name: "reactionroles");
 
             migrationBuilder.DropTable(
                 name: "reminders");
@@ -2117,6 +2263,9 @@ namespace NadekoBot.Migrations.PostgreSql
 
             migrationBuilder.DropTable(
                 name: "slowmodeignoreduser");
+
+            migrationBuilder.DropTable(
+                name: "streamonlinemessages");
 
             migrationBuilder.DropTable(
                 name: "streamroleblacklisteduser");
@@ -2158,6 +2307,9 @@ namespace NadekoBot.Migrations.PostgreSql
                 name: "xprolereward");
 
             migrationBuilder.DropTable(
+                name: "xpshopowneditem");
+
+            migrationBuilder.DropTable(
                 name: "antispamsetting");
 
             migrationBuilder.DropTable(
@@ -2171,9 +2323,6 @@ namespace NadekoBot.Migrations.PostgreSql
 
             migrationBuilder.DropTable(
                 name: "poll");
-
-            migrationBuilder.DropTable(
-                name: "reactionrolemessage");
 
             migrationBuilder.DropTable(
                 name: "shopentry");
