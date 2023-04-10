@@ -237,20 +237,25 @@ namespace Ayu.Discord.Voice
             _udpEp = new(IPAddress.Parse(ready.Ip), ready.Port);
 
             var ssrcBytes = BitConverter.GetBytes(Ssrc);
-            var ipDiscoveryData = new byte[70];
-            Buffer.BlockCopy(ssrcBytes, 0, ipDiscoveryData, 0, ssrcBytes.Length);
+            Array.Reverse(ssrcBytes);
+            var ipDiscoveryData = new byte[74];
+            Buffer.BlockCopy(ssrcBytes, 0, ipDiscoveryData, 4, ssrcBytes.Length);
+            ipDiscoveryData[0] = 0x00;
+            ipDiscoveryData[1] = 0x01;
+            ipDiscoveryData[2] = 0x00;
+            ipDiscoveryData[3] = 0x46;
             await _udpClient.SendAsync(ipDiscoveryData, ipDiscoveryData.Length, _udpEp);
             while (true)
             {
                 var buffer = _udpClient.Receive(ref _udpEp);
 
-                if (buffer.Length == 70)
+                if (buffer.Length == 74)
                 {
                     //Log.Information("Received IP discovery data.");
 
-                    var myIp = Encoding.UTF8.GetString(buffer, 4, buffer.Length - 8);
+                    var myIp = Encoding.UTF8.GetString(buffer, 8, buffer.Length - 10);
                     MyIp = myIp.TrimEnd('\0');
-                    MyPort = BitConverter.ToUInt16(buffer, buffer.Length - 2);
+                    MyPort = (ushort)((buffer[^2] << 8) | buffer[^1]);
 
                     //Log.Information("{MyIp}:{MyPort}", MyIp, MyPort);
 
