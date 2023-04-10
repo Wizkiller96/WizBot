@@ -2,6 +2,16 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.14] - 02.04.2023
+
+### Fixed
+
+- Fixed voice hearbeat issue
+- `.banktake` had ok/error responses flipped. No functional change
+- PermRole should deny messages in threads todo
+- Fixed chucknorris jokes
+- `.logserver` will now
+
 ## [4.3.13] - 20.02.2023
 
 ### Fixed
