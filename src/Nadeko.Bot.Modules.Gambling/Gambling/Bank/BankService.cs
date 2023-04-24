@@ -1,5 +1,6 @@
 ﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling.Bank;
 
@@ -20,8 +21,7 @@ public sealed class BankService : IBankService, INService
             throw new ArgumentOutOfRangeException(nameof(amount));
 
         await using var ctx = _db.GetDbContext();
-        await ctx.BankUsers
-            .ToLinqToDBTable()
+        await ctx.GetTable<BankUser>()
             .InsertOrUpdateAsync(() => new()
                 {
                     UserId = userId,

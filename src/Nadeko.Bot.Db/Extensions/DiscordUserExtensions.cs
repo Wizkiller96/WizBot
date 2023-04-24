@@ -3,7 +3,6 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
-using NadekoBot.Services.Database;
 
 namespace NadekoBot.Db;
 
@@ -15,12 +14,12 @@ public static class DiscordUserExtensions
         => set.FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId);
     
     public static void EnsureUserCreated(
-        this NadekoContext ctx,
+        this DbContext ctx,
         ulong userId,
         string username,
         string discrim,
         string avatarId)
-        => ctx.DiscordUser.ToLinqToDBTable()
+        => ctx.GetTable<DiscordUser>()
               .InsertOrUpdate(
                   () => new()
                   {
@@ -43,10 +42,9 @@ public static class DiscordUserExtensions
                   });
 
     public static Task EnsureUserCreatedAsync(
-        this NadekoContext ctx,
+        this NadekoBaseContext ctx,
         ulong userId)
-        => ctx.DiscordUser
-              .ToLinqToDBTable()
+        => ctx.GetTable<DiscordUser>()
               .InsertOrUpdateAsync(
                   () => new()
                   {
@@ -68,7 +66,7 @@ public static class DiscordUserExtensions
     
     //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
     public static DiscordUser GetOrCreateUser(
-        this NadekoContext ctx,
+        this NadekoBaseContext ctx,
         ulong userId,
         string username,
         string discrim,
@@ -77,7 +75,7 @@ public static class DiscordUserExtensions
     {
         ctx.EnsureUserCreated(userId, username, discrim, avatarId);
 
-        IQueryable<DiscordUser> queryable = ctx.DiscordUser;
+        IQueryable<DiscordUser> queryable = ctx.Set<DiscordUser>();
         if (includes is not null)
             queryable = includes(queryable);
         return queryable.First(u => u.UserId == userId);
