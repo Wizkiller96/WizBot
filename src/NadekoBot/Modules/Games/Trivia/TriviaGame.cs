@@ -157,7 +157,7 @@ public sealed class TriviaGame
 
                         var isWin = false;
                         // if user won the game, tell the game to stop
-                        if (val >= _opts.WinRequirement)
+                        if (_opts.WinRequirement != 0 && val >= _opts.WinRequirement)
                         {
                             _isStopped = true;
                             isWin = true;
