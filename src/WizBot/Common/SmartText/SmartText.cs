@@ -1,16 +1,20 @@
 ﻿#nullable disable
 using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace WizBot;
 
 public abstract record SmartText
 {
+    [JsonIgnore]
     public bool IsEmbed
         => this is SmartEmbedText;
 
+    [JsonIgnore]
     public bool IsPlainText
         => this is SmartPlainText;
 
+    [JsonIgnore]
     public bool IsEmbedArray
         => this is SmartEmbedTextArray;
 

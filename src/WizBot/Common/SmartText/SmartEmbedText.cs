@@ -1,5 +1,6 @@
 ﻿#nullable disable warnings
 using SixLabors.ImageSharp.PixelFormats;
+using System.Text.Json.Serialization;
 
 namespace WizBot;
 
@@ -7,14 +8,14 @@ public sealed record SmartEmbedArrayElementText : SmartEmbedTextBase
 {
     public string Color { get; init; } = string.Empty;
 
-    public SmartEmbedArrayElementText() : base()
+    public SmartEmbedArrayElementText()
     {
         
     }
     
     public SmartEmbedArrayElementText(IEmbed eb) : base(eb)
     {
-        
+        Color = eb.Color is { } c ? new Rgba32(c.R, c.G, c.B).ToHex() : string.Empty;
     }
 
     protected override EmbedBuilder GetEmbedInternal()
@@ -63,6 +64,7 @@ public abstract record SmartEmbedTextBase : SmartText
     public SmartTextEmbedFooter Footer { get; init; }
     public SmartTextEmbedField[] Fields { get; init; }
 
+    [JsonIgnore]
     public bool IsValid
         => !string.IsNullOrWhiteSpace(Title)
            || !string.IsNullOrWhiteSpace(Description)
