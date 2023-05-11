@@ -83,6 +83,9 @@ To remove an item from the shop, but keep previous purchases, set the price to -
 
         [Comment(@"Optional description of the item")]
         public string Desc { get; set; }
+        
+        [Comment(@"Optional author of the item")]
+        public string Author { get; set; }
     }
 }
 
