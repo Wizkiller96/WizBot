@@ -68,12 +68,7 @@ Some features have their own specific placeholders which are noted in that featu
 - `%ban.reason%` - Reason for the ban, if provided  
 - `%ban.duration%` - Duration of the ban in the form Days.Hours:Minutes (6.05:04)  
 
-### Bot stats placeholders
-
-- `%servers%` - Server count bot has joined
-- `%users%` - Combined user count on servers the bot has joined
-
-### Shard stats placeholders
+### Shard stats placeholders 
 
 - `%shard.servercount%` - Server count on current shard
 - `%shard.usercount%` - Combined user count on current shard
