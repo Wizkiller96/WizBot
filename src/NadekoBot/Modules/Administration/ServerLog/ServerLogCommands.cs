@@ -143,6 +143,12 @@ public partial class Administration
                     return l.LogVoicePresenceTTSId;
                 case LogType.UserMuted:
                     return l.UserMutedId;
+                case LogType.UserWarned:
+                    return l.LogWarnsId;
+                case LogType.ThreadDeleted:
+                    return l.ThreadDeletedId;
+                case LogType.ThreadCreated:
+                    return l.ThreadCreatedId;
                 default:
                     return null;
             }

@@ -150,8 +150,10 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         {
             try
             {
-                if (sch.HasValue || sch.Value is not IGuildChannel ch)
+                if (!sch.HasValue)
                     return;
+
+                var ch = sch.Value;
 
                 if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
                     || logSetting.ThreadDeletedId is null)
@@ -165,7 +167,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 await logChannel.EmbedAsync(_eb.Create()
                     .WithOkColor()
-                    .WithTitle("🆕 " + title)
+                    .WithTitle("🗑 " + title)
                     .WithDescription($"{ch.Name} | {ch.Id}")
                     .WithFooter(CurrentTime(ch.Guild)));
             }
@@ -177,15 +179,12 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private Task _client_ThreadCreated(SocketThreadChannel sch)
+    private Task _client_ThreadCreated(SocketThreadChannel ch)
     {
         _ = Task.Run(async () =>
         {
             try
             {
-                if (sch.Guild is not IGuildChannel ch)
-                    return;
-
                 if (!GuildLogSettings.TryGetValue(ch.Guild.Id, out var logSetting)
                     || logSetting.ThreadCreatedId is null)
                     return;
@@ -455,6 +454,12 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     break;
                 case LogType.UserWarned:
                     channelId = logSetting.LogWarnsId = logSetting.LogWarnsId is null ? cid : default;
+                    break;
+                case LogType.ThreadDeleted:
+                    channelId = logSetting.ThreadDeletedId = logSetting.ThreadDeletedId is null ? cid : default;
+                    break;
+                case LogType.ThreadCreated:
+                    channelId = logSetting.ThreadCreatedId = logSetting.ThreadCreatedId is null ? cid : default;
                     break;
             }
 
@@ -1266,6 +1271,12 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 break;
             case LogType.UserWarned:
                 id = logSetting.LogWarnsId;
+                break;
+            case LogType.ThreadCreated:
+                id = logSetting.ThreadCreatedId;
+                break;
+            case LogType.ThreadDeleted:
+                id = logSetting.ThreadDeletedId;
                 break;
         }
 
