@@ -2,7 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [4.3.15] - 27.05.2023
+## [4.3.16] - 27.05.2023
+
+### Fixed
+
+- Fixed missing events from `.logevents`
+- Fixed `.log` thread deleted and thread created events not working properly
+
+## [4.3.15] - 24.05.2023
 
 ### Fixed
 
