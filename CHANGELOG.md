@@ -2,6 +2,15 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.15] - 27.05.2023
+
+### Fixed
+
+- Fixed -w 0 in trivia
+- Fixed `.rps` amount field in the response
+- Fixed `.showembed` output
+- Fixed bank award's incorrect output message
+
 ## [4.3.14] - 02.04.2023
 
 ### Fixed

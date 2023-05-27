@@ -7,7 +7,7 @@ namespace WizBot.Services;
 
 public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
-    public const string BOT_VERSION = "4.3.14";
+    public const string BOT_VERSION = "4.3.15";
 
     public string Author
         => "Kwoth#2452\nWizkiller96#5074";
