@@ -840,7 +840,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         else if (result.Result == RpsResultType.Win)
         {
             if ((long)result.Won > 0)
-                embed.AddField(GetText(strs.won), N(amount.Value));
+                embed.AddField(GetText(strs.won), N((long)result.Won));
 
             msg = GetText(strs.rps_win(ctx.User.Mention,
                 GetRpsPick(pick),
