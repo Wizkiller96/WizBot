@@ -250,8 +250,9 @@ public partial class Gambling
                 ? "-"
                 : string.Join("\n",
                     itemList.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
-                        .OrderBy(x => waifuItems[x.ItemEmoji].Price)
+                        .OrderByDescending(x => waifuItems[x.ItemEmoji].Price)
                         .GroupBy(x => x.ItemEmoji)
+                        .Take(60)
                         .Select(x => $"{x.Key} x{x.Count(),-3}")
                         .Chunk(2)
                         .Select(x => string.Join(" ", x)));
