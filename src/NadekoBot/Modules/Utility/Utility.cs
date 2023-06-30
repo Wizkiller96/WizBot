@@ -94,7 +94,7 @@ public partial class Utility : NadekoModule
 
         var rng = new NadekoRandom();
         var arr = await Task.Run(() => socketGuild.Users
-                                                  .Where(u => u.Activities.FirstOrDefault()?.Name?.ToUpperInvariant()
+                                                  .Where(u => u.Activities.FirstOrDefault()?.Name?.Trim().ToUpperInvariant()
                                                               == game)
                                                   .Select(u => u.Username)
                                                   .OrderBy(_ => rng.Next())
