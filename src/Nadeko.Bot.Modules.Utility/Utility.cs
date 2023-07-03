@@ -91,7 +91,7 @@ public partial class Utility : NadekoModule
 
         var rng = new NadekoRandom();
         var arr = await Task.Run(() => socketGuild.Users
-                                                  .Where(u => u.Activities.FirstOrDefault()?.Name?.ToUpperInvariant()
+                                                  .Where(u => u.Activities.FirstOrDefault()?.Name?.Trim().ToUpperInvariant()
                                                               == game)
                                                   .Select(u => u.Username)
                                                   .OrderBy(_ => rng.Next())
@@ -547,15 +547,20 @@ public partial class Utility : NadekoModule
             return;
         }
 
-        var embed = msg.Embeds.FirstOrDefault();
-        if (embed is null)
+        if (!msg.Embeds.Any())
         {
             await ReplyErrorLocalizedAsync(strs.not_found);
             return;
         }
 
-        var json = SmartEmbedText.FromEmbed(embed, msg.Content).ToJson(_showEmbedSerializerOptions);
-        await SendConfirmAsync(Format.Sanitize(json).Replace("](", "]\\("));
+        var json = new SmartEmbedTextArray()
+        {
+            Content = msg.Content,
+            Embeds = msg.Embeds
+                        .Map(x => new SmartEmbedArrayElementText(x))
+        }.ToJson(_showEmbedSerializerOptions);
+        
+        await SendConfirmAsync(Format.Code(json, "json").Replace("](", "]\\("));
     }
 
     [Cmd]

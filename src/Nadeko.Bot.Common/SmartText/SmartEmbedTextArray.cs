@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using System.Text.Json.Serialization;
+
 namespace NadekoBot;
 
 public sealed record SmartEmbedTextArray : SmartText
@@ -6,6 +8,7 @@ public sealed record SmartEmbedTextArray : SmartText
     public string Content { get; set; }
     public SmartEmbedArrayElementText[] Embeds { get; set; }
 
+    [JsonIgnore]
     public bool IsValid
         => Embeds?.All(x => x.IsValid) ?? false;
 
