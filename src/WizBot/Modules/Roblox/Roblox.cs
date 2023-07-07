@@ -21,7 +21,7 @@ public partial class Roblox : WizBotModule<SearchesService>
     // This code can be redone and clean up if anyone willing to do it.
     [Cmd]
     [Ratelimit(10)]
-    public async Task RInfo([Remainder] string username)
+    public async Task RbxInfo([Remainder] string username)
     {
         if (string.IsNullOrWhiteSpace(username))
             return;
@@ -29,7 +29,7 @@ public partial class Roblox : WizBotModule<SearchesService>
         try
         {
             // Make a checker to see if a Roblox account exist before showing info.
-            JToken rInfo;
+            JToken rbxInfo;
             JToken rAvatar;
             /*JToken rDevForum;*/
             //JToken rUID;
@@ -37,21 +37,21 @@ public partial class Roblox : WizBotModule<SearchesService>
             //JToken rMT;
             using (var http = _httpFactory.CreateClient())
             {
-                rInfo = JObject.Parse(await http
+                rbxInfo = JObject.Parse(await http
                                             .GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}")
                                             .ConfigureAwait(false));
                 rAvatar = JObject.Parse(await http
                                               .GetStringAsync(
-                                                  $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rInfo["userid"]}&size=720x720&format=png&isCircular=false")
+                                                  $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rbxInfo["userid"]}&size=720x720&format=png&isCircular=false")
                                               .ConfigureAwait(false));
                 /*rDevForum = JObject.Parse(await http
                                                 .GetStringAsync(
-                                                    $"https://devforum.roblox.com/u/by-external/{rInfo["userid"]}.json")
+                                                    $"https://devforum.roblox.com/u/by-external/{rbxInfo["userid"]}.json")
                                                 .ConfigureAwait(false));*/
                 // rUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
-                // rStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{rInfo["userid"]}/onlinestatus").ConfigureAwait(false));
+                // rStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{rbxInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                 // Roblox Membership Type Checker
-                // rMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{rInfo["userid"]}/group-membership-status").ConfigureAwait(false));
+                // rMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{rbxInfo["userid"]}/group-membership-status").ConfigureAwait(false));
             }
 
             var none = "N/A";
@@ -87,7 +87,7 @@ public partial class Roblox : WizBotModule<SearchesService>
                 rDevForum["user"]!["trust_level"] = "Visitor";
             }*/
 
-            var pastNames = string.Join("\n", rInfo["oldNames"]!.Take(5));
+            var pastNames = string.Join("\n", rbxInfo["oldNames"]!.Take(5));
             if (string.IsNullOrEmpty(pastNames))
             {
                 pastNames = "N/A";
@@ -95,42 +95,42 @@ public partial class Roblox : WizBotModule<SearchesService>
 
             await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
-                                            .WithAuthor($"{rInfo["username"]}'s Roblox Info",
+                                            .WithAuthor($"{rbxInfo["username"]}'s Roblox Info",
                                                 "https://i.imgur.com/jDcWXPD.png",
                                                 "https://roblox.com")
                                             .WithThumbnailUrl($"{rAvatar["data"]![0]!["imageUrl"]}")
                                             .AddField("Username",
-                                                $"[{rInfo["username"]}](https://www.roblox.com/users/{rInfo["userid"]}/profile)",
+                                                $"[{rbxInfo["username"]}](https://www.roblox.com/users/{rbxInfo["userid"]}/profile)",
                                                 true)
-                                            .AddField("Display Name", $"{rInfo["displayName"]}", true)
-                                            .AddField("User ID", $"{rInfo["userid"]}", true)
-                                            .AddField("Friends", $"{rInfo["friendCount"]}", true)
-                                            .AddField("Followers", $"{rInfo["followerCount"]}", true)
-                                            .AddField("Following", $"{rInfo["followingCount"]}", true)
+                                            .AddField("Display Name", $"{rbxInfo["displayName"]}", true)
+                                            .AddField("User ID", $"{rbxInfo["userid"]}", true)
+                                            .AddField("Friends", $"{rbxInfo["friendCount"]}", true)
+                                            .AddField("Followers", $"{rbxInfo["followerCount"]}", true)
+                                            .AddField("Following", $"{rbxInfo["followingCount"]}", true)
                                             // .AddField("Membership", $"{rMT["membershipType"]}", true)
                                             // .AddField("Presence", $"{rStatus["LastLocation"]}", true)
                                             .AddField("Account Age",
-                                                string.IsNullOrEmpty($"{rInfo["age"]}") ? none : ($"{rInfo["age"]}"),
+                                                string.IsNullOrEmpty($"{rbxInfo["age"]}") ? none : ($"{rbxInfo["age"]}"),
                                                 true)
                                             .AddField("Join Date",
-                                                string.IsNullOrEmpty($"{rInfo["joinDate"]}")
+                                                string.IsNullOrEmpty($"{rbxInfo["joinDate"]}")
                                                     ? none
-                                                    : ($"{rInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
+                                                    : ($"{rbxInfo["joinDate"]:MM.dd.yyyy HH:mm}"), true)
                                             .AddField("Blurb",
-                                                (string.IsNullOrEmpty($"{rInfo["blurb"]}")
+                                                (string.IsNullOrEmpty($"{rbxInfo["blurb"]}")
                                                     ? none
-                                                    : ($"{rInfo["blurb"]}".TrimTo(170)))!)
-                                            .AddField($"Past Names (" + rInfo["oldNames"]!.Count() + ")", pastNames))
+                                                    : ($"{rbxInfo["blurb"]}".TrimTo(170)))!)
+                                            .AddField($"Past Names (" + rbxInfo["oldNames"]!.Count() + ")", pastNames))
                      .ConfigureAwait(false);
 
             // Add a check incase user doesn't have a devforum account.
             /*await ctx.Channel.EmbedAsync(_eb.Create()
                                             .WithOkColor()
-                                            .WithAuthor($"{rInfo["username"]}'s DevForum Info",
+                                            .WithAuthor($"{rbxInfo["username"]}'s DevForum Info",
                                                 "https://doy2mn9upadnk.cloudfront.net/uploads/default/original/3X/a/7/a7c93ee978f5f5326adb01270f17c287771fbe81.png",
                                                 "https://devforum.roblox.com")
                                             .AddField("Username",
-                                                $"[{rInfo["username"]}](https://devforum.roblox.com/u/{rDevForum["user"]!["username"]})",
+                                                $"[{rbxInfo["username"]}](https://devforum.roblox.com/u/{rDevForum["user"]!["username"]})",
                                                 true)
                                             .AddField("Title",
                                                 string.IsNullOrEmpty($"{rDevForum["user"]!["title"]}")

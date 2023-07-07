@@ -2370,7 +2370,7 @@ report:
   desc: "Allows you to report a user who abuse the bot to Bot Staff."
   args:
     - "@User Abused bet flip command."
-rinfo:
+rbxinfo:
   desc: "Display a Roblox User profile information from the Roblox API."
   args:
     - "Roblox"
