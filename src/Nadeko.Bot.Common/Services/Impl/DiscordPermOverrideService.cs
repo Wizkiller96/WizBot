@@ -18,10 +18,11 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
         _db = db;
         _services = services;
         using var uow = _db.GetDbContext();
-        _overrides = uow.DiscordPermOverrides.AsNoTracking()
-                        .AsEnumerable()
-                        .ToDictionary(o => (o.GuildId ?? 0, o.Command), o => o)
-                        .ToConcurrent();
+        _overrides = uow.Set<DiscordPermOverride>()
+            .AsNoTracking()
+            .AsEnumerable()
+            .ToDictionary(o => (o.GuildId ?? 0, o.Command), o => o)
+            .ToConcurrent();
     }
 
     public bool TryGetOverrides(ulong guildId, string commandName, out Nadeko.Bot.Db.GuildPerm? perm)
@@ -52,18 +53,18 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
         commandName = commandName.ToLowerInvariant();
         await using var uow = _db.GetDbContext();
         var over = await uow.Set<DiscordPermOverride>()
-                            .AsQueryable()
-                            .FirstOrDefaultAsync(x => x.GuildId == guildId && commandName == x.Command);
+            .AsQueryable()
+            .FirstOrDefaultAsync(x => x.GuildId == guildId && commandName == x.Command);
 
         if (over is null)
         {
             uow.Set<DiscordPermOverride>()
-               .Add(over = new()
-               {
-                   Command = commandName,
-                   Perm = (Nadeko.Bot.Db.GuildPerm)perm,
-                   GuildId = guildId
-               });
+                .Add(over = new()
+                {
+                    Command = commandName,
+                    Perm = (Nadeko.Bot.Db.GuildPerm)perm,
+                    GuildId = guildId
+                });
         }
         else
             over.Perm = (Nadeko.Bot.Db.GuildPerm)perm;
@@ -77,10 +78,10 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
     {
         await using var uow = _db.GetDbContext();
         var overrides = await uow.Set<DiscordPermOverride>()
-                                 .AsQueryable()
-                                 .AsNoTracking()
-                                 .Where(x => x.GuildId == guildId)
-                                 .ToListAsync();
+            .AsQueryable()
+            .AsNoTracking()
+            .Where(x => x.GuildId == guildId)
+            .ToListAsync();
 
         uow.RemoveRange(overrides);
         await uow.SaveChangesAsync();
@@ -95,9 +96,9 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
 
         await using var uow = _db.GetDbContext();
         var over = await uow.Set<DiscordPermOverride>()
-                            .AsQueryable()
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.GuildId == guildId && x.Command == commandName);
+            .AsQueryable()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.GuildId == guildId && x.Command == commandName);
 
         if (over is null)
             return;
@@ -112,10 +113,10 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
     {
         await using var uow = _db.GetDbContext();
         return await uow.Set<DiscordPermOverride>()
-                        .AsQueryable()
-                        .AsNoTracking()
-                        .Where(x => x.GuildId == guildId)
-                        .ToListAsync();
+            .AsQueryable()
+            .AsNoTracking()
+            .Where(x => x.GuildId == guildId)
+            .ToListAsync();
     }
 
     public async Task<bool> ExecPreCommandAsync(ICommandContext context, string moduleName, CommandInfo command)

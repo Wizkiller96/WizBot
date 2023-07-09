@@ -1,5 +1,7 @@
 #nullable disable
 using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Db.Models;
 using NadekoBot.Services.Currency;
 
 namespace NadekoBot.Services;
@@ -52,7 +54,8 @@ public sealed class CurrencyService : ICurrencyService, INService
         if (type == CurrencyType.Default)
         {
             await using var ctx = _db.GetDbContext();
-            await ctx.DiscordUser
+            await ctx
+                .GetTable<DiscordUser>()
                 .Where(x => userIds.Contains(x.UserId))
                 .UpdateAsync(du => new()
                 {

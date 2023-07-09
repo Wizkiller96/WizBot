@@ -1,5 +1,6 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Services.Currency;
@@ -19,11 +20,11 @@ public class DefaultWallet : IWallet
     {
         await using var ctx = _db.GetDbContext();
         var userId = UserId;
-        return await ctx.DiscordUser
-                        .ToLinqToDBTable()
-                        .Where(x => x.UserId == userId)
-                        .Select(x => x.CurrencyAmount)
-                        .FirstOrDefaultAsync();
+        return await ctx
+            .GetTable<DiscordUser>()
+            .Where(x => x.UserId == userId)
+            .Select(x => x.CurrencyAmount)
+            .FirstOrDefaultAsync();
     }
 
     public async Task<bool> Take(long amount, TxData? txData)
@@ -34,12 +35,13 @@ public class DefaultWallet : IWallet
         await using var ctx = _db.GetDbContext();
 
         var userId = UserId;
-        var changed = await ctx.DiscordUser
-                               .Where(x => x.UserId == userId && x.CurrencyAmount >= amount)
-                               .UpdateAsync(x => new()
-                               {
-                                   CurrencyAmount = x.CurrencyAmount - amount
-                               });
+        var changed = await ctx
+            .GetTable<DiscordUser>()
+            .Where(x => x.UserId == userId && x.CurrencyAmount >= amount)
+            .UpdateAsync(x => new()
+            {
+                CurrencyAmount = x.CurrencyAmount - amount
+            });
 
         if (changed == 0)
             return false;
@@ -70,25 +72,26 @@ public class DefaultWallet : IWallet
 
         await using var ctx = _db.GetDbContext();
         var userId = UserId;
-        
+
         await using (var tran = await ctx.Database.BeginTransactionAsync())
         {
-            var changed = await ctx.DiscordUser
-                                    .Where(x => x.UserId == userId)
-                                    .UpdateAsync(x => new()
-                                    {
-                                        CurrencyAmount = x.CurrencyAmount + amount
-                                    });
+            var changed = await ctx
+                .GetTable<DiscordUser>()
+                .Where(x => x.UserId == userId)
+                .UpdateAsync(x => new()
+                {
+                    CurrencyAmount = x.CurrencyAmount + amount
+                });
 
             if (changed == 0)
             {
-                await ctx.DiscordUser
-                          .ToLinqToDBTable()
-                          .Value(x => x.UserId, userId)
-                          .Value(x => x.Username, "Unknown")
-                          .Value(x => x.Discriminator, "????")
-                          .Value(x => x.CurrencyAmount, amount)
-                          .InsertAsync();
+                await ctx
+                    .GetTable<DiscordUser>()
+                    .Value(x => x.UserId, userId)
+                    .Value(x => x.Username, "Unknown")
+                    .Value(x => x.Discriminator, "????")
+                    .Value(x => x.CurrencyAmount, amount)
+                    .InsertAsync();
             }
 
             await tran.CommitAsync();

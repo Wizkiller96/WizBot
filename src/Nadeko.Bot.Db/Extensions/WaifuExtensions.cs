@@ -75,24 +75,24 @@ public static class WaifuExtensions
                  .Select(x => x.Waifu.UserId)
                  .FirstOrDefault();
 
-    public static async Task<WaifuInfoStats> GetWaifuInfoAsync(this NadekoContext ctx, ulong userId)
+    public static async Task<WaifuInfoStats> GetWaifuInfoAsync(this DbContext ctx, ulong userId)
     {
-        await ctx.WaifuInfo
+        await ctx.Set<WaifuInfo>()
                  .ToLinqToDBTable()
                  .InsertOrUpdateAsync(() => new()
                      {
                          AffinityId = null,
                          ClaimerId = null,
                          Price = 1,
-                         WaifuId = ctx.DiscordUser.Where(x => x.UserId == userId).Select(x => x.Id).First()
+                         WaifuId = ctx.Set<DiscordUser>().Where(x => x.UserId == userId).Select(x => x.Id).First()
                      },
                      _ => new(),
                      () => new()
                      {
-                         WaifuId = ctx.DiscordUser.Where(x => x.UserId == userId).Select(x => x.Id).First()
+                         WaifuId = ctx.Set<DiscordUser>().Where(x => x.UserId == userId).Select(x => x.Id).First()
                      });
 
-        var toReturn = ctx.WaifuInfo.AsQueryable()
+        var toReturn = ctx.Set<WaifuInfo>().AsQueryable()
                           .Where(w => w.WaifuId
                                       == ctx.Set<DiscordUser>()
                                             .AsQueryable()
@@ -120,7 +120,7 @@ public static class WaifuExtensions
                                      .Where(u => u.Id == w.AffinityId)
                                      .Select(u => u.Username + "#" + u.Discriminator)
                                      .FirstOrDefault(),
-                              ClaimCount = ctx.WaifuInfo.AsQueryable().Count(x => x.ClaimerId == w.WaifuId),
+                              ClaimCount = ctx.Set<WaifuInfo>().AsQueryable().Count(x => x.ClaimerId == w.WaifuId),
                               ClaimerName =
                                   ctx.Set<DiscordUser>()
                                      .AsQueryable()

@@ -24,4 +24,8 @@
         <ProjectReference Include="..\Nadeko.Bot.Generators.Cloneable\Nadeko.Bot.Generators.Cloneable.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="_Common\Db\" />
+    </ItemGroup>
+
 </Project>

@@ -12,9 +12,9 @@ public static class PollExtensions
             .Include(x => x.Votes)
             .ToArray();
 
-    public static void RemovePoll(this NadekoContext ctx, int id)
+    public static void RemovePoll(this DbContext ctx, int id)
     {
-        var p = ctx.Poll.Include(x => x.Answers).Include(x => x.Votes).FirstOrDefault(x => x.Id == id);
+        var p = ctx.Set<Poll>().Include(x => x.Answers).Include(x => x.Votes).FirstOrDefault(x => x.Id == id);
 
         if (p is null)
             return;
@@ -31,6 +31,6 @@ public static class PollExtensions
             p.Answers.Clear();
         }
 
-        ctx.Poll.Remove(p);
+        ctx.Set<Poll>().Remove(p);
     }
 }

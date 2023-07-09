@@ -65,7 +65,7 @@ public static class GuildConfigExtensions
     /// <param name="includes">Use to manipulate the set however you want. Pass null to include everything</param>
     /// <returns>Config for the guild</returns>
     public static GuildConfig GuildConfigsForId(
-        this NadekoBaseContext ctx,
+        this DbContext ctx,
         ulong guildId,
         Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
     {
@@ -193,7 +193,7 @@ public static class GuildConfigExtensions
         conf.CleverbotEnabled = cleverbotEnabled;
     }
 
-    public static XpSettings XpSettingsFor(this NadekoBaseContext ctx, ulong guildId)
+    public static XpSettings XpSettingsFor(this DbContext ctx, ulong guildId)
     {
         var gc = ctx.GuildConfigsForId(guildId,
             set => set.Include(x => x.XpSettings)

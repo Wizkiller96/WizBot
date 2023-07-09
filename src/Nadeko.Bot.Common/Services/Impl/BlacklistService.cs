@@ -1,7 +1,9 @@
 #nullable disable
-using Microsoft.EntityFrameworkCore;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
+using NadekoBot.Db.Models;
 using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
@@ -73,38 +75,36 @@ public sealed class BlacklistService : IExecOnMessage
     public void Reload(bool publish = true)
     {
         using var uow = _db.GetDbContext();
-        var toPublish = uow.Blacklist.AsNoTracking().ToArray();
+        var toPublish = uow.GetTable<BlacklistEntry>().ToArray();
         blacklist = toPublish;
         if (publish)
             _pubSub.Pub(_blPubKey, toPublish);
     }
 
-    public void Blacklist(BlacklistType type, ulong id)
+    public async Task Blacklist(BlacklistType type, ulong id)
     {
         if (_creds.OwnerIds.Contains(id))
             return;
 
-        using var uow = _db.GetDbContext();
-        var item = new BlacklistEntry
-        {
-            ItemId = id,
-            Type = type
-        };
-        uow.Blacklist.Add(item);
-        uow.SaveChanges();
+        await using var uow = _db.GetDbContext();
+
+        await uow
+            .GetTable<BlacklistEntry>()
+            .InsertAsync(() => new()
+            {
+                ItemId = id,
+                Type = type,
+            });
 
         Reload();
     }
 
-    public void UnBlacklist(BlacklistType type, ulong id)
+    public async Task UnBlacklist(BlacklistType type, ulong id)
     {
-        using var uow = _db.GetDbContext();
-        var toRemove = uow.Blacklist.FirstOrDefault(bi => bi.ItemId == id && bi.Type == type);
-
-        if (toRemove is not null)
-            uow.Blacklist.Remove(toRemove);
-
-        uow.SaveChanges();
+        await using var uow = _db.GetDbContext();
+        await uow.GetTable<BlacklistEntry>()
+            .Where(bi => bi.ItemId == id && bi.Type == type)
+            .DeleteAsync();
 
         Reload();
     }
@@ -113,16 +113,21 @@ public sealed class BlacklistService : IExecOnMessage
     {
         using (var uow = _db.GetDbContext())
         {
-            var bc = uow.Blacklist;
-            //blacklist the users
+            var bc = uow.Set<BlacklistEntry>();
             bc.AddRange(toBlacklist.Select(x => new BlacklistEntry
             {
                 ItemId = x,
                 Type = BlacklistType.User
             }));
 
-            //clear their currencies
-            uow.DiscordUser.RemoveFromMany(toBlacklist);
+            // todo check if blacklist works and removes currency
+            uow.GetTable<DiscordUser>()
+                .UpdateAsync(x => toBlacklist.Contains(x.UserId),
+                    _ => new()
+                    {
+                        CurrencyAmount = 0
+                    });
+            
             uow.SaveChanges();
         }
 

@@ -24,15 +24,15 @@ public class PollService : IExecOnMessage
         _eb = eb;
 
         using var uow = db.GetDbContext();
-        ActivePolls = uow.Poll.GetAllPolls()
-                         .ToDictionary(x => x.GuildId,
-                             x =>
-                             {
-                                 var pr = new PollRunner(db, x);
-                                 pr.OnVoted += Pr_OnVoted;
-                                 return pr;
-                             })
-                         .ToConcurrent();
+        ActivePolls = uow.Set<Poll>().GetAllPolls()
+            .ToDictionary(x => x.GuildId,
+                x =>
+                {
+                    var pr = new PollRunner(db, x);
+                    pr.OnVoted += Pr_OnVoted;
+                    return pr;
+                })
+            .ToConcurrent();
     }
 
     public Poll CreatePoll(ulong guildId, ulong channelId, string input)
@@ -44,10 +44,10 @@ public class PollService : IExecOnMessage
             return null;
 
         var col = new IndexedCollection<PollAnswer>(data.Skip(1)
-                                                        .Select(x => new PollAnswer
-                                                        {
-                                                            Text = x
-                                                        }));
+            .Select(x => new PollAnswer
+            {
+                Text = x
+            }));
 
         return new()
         {
@@ -66,7 +66,7 @@ public class PollService : IExecOnMessage
         {
             using (var uow = _db.GetDbContext())
             {
-                uow.Poll.Add(p);
+                uow.Set<Poll>().Add(p);
                 uow.SaveChanges();
             }
 
@@ -98,8 +98,13 @@ public class PollService : IExecOnMessage
         var toDelete = await msg.Channel.SendConfirmAsync(_eb,
             _strs.GetText(strs.poll_voted(Format.Bold(usr.ToString())), usr.GuildId));
         toDelete.DeleteAfter(5);
-        try { await msg.DeleteAsync(); }
-        catch { }
+        try
+        {
+            await msg.DeleteAsync();
+        }
+        catch
+        {
+        }
     }
 
     public async Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage msg)

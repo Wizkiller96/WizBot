@@ -42,7 +42,7 @@ public static class DiscordUserExtensions
                   });
 
     public static Task EnsureUserCreatedAsync(
-        this NadekoBaseContext ctx,
+        this DbContext ctx,
         ulong userId)
         => ctx.GetTable<DiscordUser>()
               .InsertOrUpdateAsync(
@@ -66,7 +66,7 @@ public static class DiscordUserExtensions
     
     //temp is only used in updatecurrencystate, so that i don't overwrite real usernames/discrims with Unknown
     public static DiscordUser GetOrCreateUser(
-        this NadekoBaseContext ctx,
+        this DbContext ctx,
         ulong userId,
         string username,
         string discrim,

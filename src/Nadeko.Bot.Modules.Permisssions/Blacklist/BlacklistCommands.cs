@@ -124,9 +124,9 @@ public partial class Permissions
         private async Task Blacklist(AddRemove action, ulong id, BlacklistType type)
         {
             if (action == AddRemove.Add)
-                _service.Blacklist(type, id);
+                await _service.Blacklist(type, id);
             else
-                _service.UnBlacklist(type, id);
+                await _service.UnBlacklist(type, id);
 
             if (action == AddRemove.Add)
             {

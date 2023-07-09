@@ -9,9 +9,9 @@ namespace NadekoBot.Db;
 
 public static class UserXpExtensions
 {
-    public static UserXpStats GetOrCreateUserXpStats(this NadekoContext ctx, ulong guildId, ulong userId)
+    public static UserXpStats GetOrCreateUserXpStats(this DbContext ctx, ulong guildId, ulong userId)
     {
-        var usr = ctx.UserXpStats.FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
+        var usr = ctx.Set<UserXpStats>().FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);
 
         if (usr is null)
         {

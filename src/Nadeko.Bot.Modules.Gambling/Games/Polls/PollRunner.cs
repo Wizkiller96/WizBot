@@ -52,7 +52,7 @@ public class PollRunner
         finally { _locker.Release(); }
 
         await using var uow = _db.GetDbContext();
-        var trackedPoll = uow.Poll.FirstOrDefault(x => x.Id == Poll.Id);
+        var trackedPoll = uow.Set<Poll>().FirstOrDefault(x => x.Id == Poll.Id);
         trackedPoll.Votes.Add(voteObj);
         uow.SaveChanges();
         return true;
