@@ -118,7 +118,7 @@ public sealed class AutoAssignRoleService : INService
     {
         await using var uow = _db.GetDbContext();
 
-        await uow.GuildConfigs.AsNoTracking()
+        await uow.Set<GuildConfig>().AsNoTracking()
                  .Where(x => x.GuildId == guildId)
                  .UpdateAsync(_ => new()
                  {

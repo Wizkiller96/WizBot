@@ -44,7 +44,7 @@ public class WaifuService : INService, IReadyExecutor
         var settings = _gss.Data;
 
         await using var uow = _db.GetDbContext();
-        var waifu = uow.WaifuInfo.ByWaifuUserId(waifuId);
+        var waifu = uow.Set<WaifuInfo>().ByWaifuUserId(waifuId);
         var ownerUser = uow.GetOrCreateUser(owner);
 
         // owner has to be the owner of the waifu
@@ -85,14 +85,14 @@ public class WaifuService : INService, IReadyExecutor
     {
         var settings = _gss.Data;
         using var uow = _db.GetDbContext();
-        var waifu = uow.WaifuInfo.ByWaifuUserId(user.Id);
+        var waifu = uow.Set<WaifuInfo>().ByWaifuUserId(user.Id);
 
         if (waifu is null)
             return settings.Waifu.MinPrice;
 
-        var divorces = uow.WaifuUpdates.Count(x
+        var divorces = uow.Set<WaifuUpdate>().Count(x
             => x.Old != null && x.Old.UserId == user.Id && x.UpdateType == WaifuUpdateType.Claimed && x.New == null);
-        var affs = uow.WaifuUpdates.AsQueryable()
+        var affs = uow.Set<WaifuUpdate>().AsQueryable()
                       .Where(w => w.User.UserId == user.Id
                                   && w.UpdateType == WaifuUpdateType.AffinityChanged
                                   && w.New != null)
@@ -111,22 +111,22 @@ public class WaifuService : INService, IReadyExecutor
         if (!await _cs.RemoveAsync(user.Id, price, new("waifu", "reset")))
             return false;
 
-        var affs = uow.WaifuUpdates.AsQueryable()
+        var affs = uow.Set<WaifuUpdate>().AsQueryable()
                       .Where(w => w.User.UserId == user.Id
                                   && w.UpdateType == WaifuUpdateType.AffinityChanged
                                   && w.New != null);
 
-        var divorces = uow.WaifuUpdates.AsQueryable()
+        var divorces = uow.Set<WaifuUpdate>().AsQueryable()
                           .Where(x => x.Old != null
                                       && x.Old.UserId == user.Id
                                       && x.UpdateType == WaifuUpdateType.Claimed
                                       && x.New == null);
 
         //reset changes of heart to 0
-        uow.WaifuUpdates.RemoveRange(affs);
+        uow.Set<WaifuUpdate>().RemoveRange(affs);
         //reset divorces to 0
-        uow.WaifuUpdates.RemoveRange(divorces);
-        var waifu = uow.WaifuInfo.ByWaifuUserId(user.Id);
+        uow.Set<WaifuUpdate>().RemoveRange(divorces);
+        var waifu = uow.Set<WaifuInfo>().ByWaifuUserId(user.Id);
         //reset price, remove items
         //remove owner, remove affinity
         waifu.Price = 50;
@@ -149,7 +149,7 @@ public class WaifuService : INService, IReadyExecutor
         bool isAffinity;
         await using (var uow = _db.GetDbContext())
         {
-            w = uow.WaifuInfo.ByWaifuUserId(target.Id);
+            w = uow.Set<WaifuInfo>().ByWaifuUserId(target.Id);
             isAffinity = w?.Affinity?.UserId == user.Id;
             if (w is null)
             {
@@ -159,14 +159,14 @@ public class WaifuService : INService, IReadyExecutor
                     result = WaifuClaimResult.NotEnoughFunds;
                 else
                 {
-                    uow.WaifuInfo.Add(w = new()
+                    uow.Set<WaifuInfo>().Add(w = new()
                     {
                         Waifu = waifu,
                         Claimer = claimer,
                         Affinity = null,
                         Price = amount
                     });
-                    uow.WaifuUpdates.Add(new()
+                    uow.Set<WaifuUpdate>().Add(new()
                     {
                         User = waifu,
                         Old = null,
@@ -187,7 +187,7 @@ public class WaifuService : INService, IReadyExecutor
                     w.Price = amount + (amount / 4);
                     result = WaifuClaimResult.Success;
 
-                    uow.WaifuUpdates.Add(new()
+                    uow.Set<WaifuUpdate>().Add(new()
                     {
                         User = w.Waifu,
                         Old = oldClaimer,
@@ -207,7 +207,7 @@ public class WaifuService : INService, IReadyExecutor
                     w.Price = amount;
                     result = WaifuClaimResult.Success;
 
-                    uow.WaifuUpdates.Add(new()
+                    uow.Set<WaifuUpdate>().Add(new()
                     {
                         User = w.Waifu,
                         Old = oldClaimer,
@@ -233,7 +233,7 @@ public class WaifuService : INService, IReadyExecutor
         TimeSpan? remaining = null;
         await using (var uow = _db.GetDbContext())
         {
-            var w = uow.WaifuInfo.ByWaifuUserId(user.Id);
+            var w = uow.Set<WaifuInfo>().ByWaifuUserId(user.Id);
             var newAff = target is null ? null : uow.GetOrCreateUser(target);
             if (w?.Affinity?.UserId == target?.Id)
             {
@@ -249,7 +249,7 @@ public class WaifuService : INService, IReadyExecutor
             else if (w is null)
             {
                 var thisUser = uow.GetOrCreateUser(user);
-                uow.WaifuInfo.Add(new()
+                uow.Set<WaifuInfo>().Add(new()
                 {
                     Affinity = newAff,
                     Waifu = thisUser,
@@ -258,7 +258,7 @@ public class WaifuService : INService, IReadyExecutor
                 });
                 success = true;
 
-                uow.WaifuUpdates.Add(new()
+                uow.Set<WaifuUpdate>().Add(new()
                 {
                     User = thisUser,
                     Old = null,
@@ -273,7 +273,7 @@ public class WaifuService : INService, IReadyExecutor
                 w.Affinity = newAff;
                 success = true;
 
-                uow.WaifuUpdates.Add(new()
+                uow.Set<WaifuUpdate>().Add(new()
                 {
                     User = w.Waifu,
                     Old = oldAff,
@@ -291,13 +291,13 @@ public class WaifuService : INService, IReadyExecutor
     public IEnumerable<WaifuLbResult> GetTopWaifusAtPage(int page)
     {
         using var uow = _db.GetDbContext();
-        return uow.WaifuInfo.GetTop(9, page * 9);
+        return uow.Set<WaifuInfo>().GetTop(9, page * 9);
     }
 
     public ulong GetWaifuUserId(ulong ownerId, string name)
     {
         using var uow = _db.GetDbContext();
-        return uow.WaifuInfo.GetWaifuUserId(ownerId, name);
+        return uow.Set<WaifuInfo>().GetWaifuUserId(ownerId, name);
     }
 
     private static TypedKey<long> GetDivorceKey(ulong userId)
@@ -314,7 +314,7 @@ public class WaifuService : INService, IReadyExecutor
         WaifuInfo w;
         await using (var uow = _db.GetDbContext())
         {
-            w = uow.WaifuInfo.ByWaifuUserId(targetId);
+            w = uow.Set<WaifuInfo>().ByWaifuUserId(targetId);
             if (w?.Claimer is null || w.Claimer.UserId != user.Id)
                 result = DivorceResult.NotYourWife;
             else
@@ -344,7 +344,7 @@ public class WaifuService : INService, IReadyExecutor
                 var oldClaimer = w.Claimer;
                 w.Claimer = null;
 
-                uow.WaifuUpdates.Add(new()
+                uow.Set<WaifuUpdate>().Add(new()
                 {
                     User = w.Waifu,
                     Old = oldClaimer,
@@ -365,10 +365,10 @@ public class WaifuService : INService, IReadyExecutor
             return false;
 
         await using var uow = _db.GetDbContext();
-        var w = uow.WaifuInfo.ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items).Include(x => x.Claimer));
+        var w = uow.Set<WaifuInfo>().ByWaifuUserId(giftedWaifu.Id, set => set.Include(x => x.Items).Include(x => x.Claimer));
         if (w is null)
         {
-            uow.WaifuInfo.Add(w = new()
+            uow.Set<WaifuInfo>().Add(w = new()
             {
                 Affinity = null,
                 Claimer = null,

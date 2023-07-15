@@ -46,7 +46,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                 IReadOnlyList<RotatingPlayingStatus> rotatingStatuses;
                 await using (var uow = _db.GetDbContext())
                 {
-                    rotatingStatuses = uow.RotatingStatus.AsNoTracking().OrderBy(x => x.Id).ToList();
+                    rotatingStatuses = uow.Set<RotatingPlayingStatus>().AsNoTracking().OrderBy(x => x.Id).ToList();
                 }
 
                 if (rotatingStatuses.Count == 0)
@@ -72,7 +72,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
             throw new ArgumentOutOfRangeException(nameof(index));
 
         await using var uow = _db.GetDbContext();
-        var toRemove = await uow.RotatingStatus.AsQueryable().AsNoTracking().Skip(index).FirstOrDefaultAsync();
+        var toRemove = await uow.Set<RotatingPlayingStatus>().AsQueryable().AsNoTracking().Skip(index).FirstOrDefaultAsync();
 
         if (toRemove is null)
             return null;
@@ -104,6 +104,6 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
     public IReadOnlyList<RotatingPlayingStatus> GetRotatingStatuses()
     {
         using var uow = _db.GetDbContext();
-        return uow.RotatingStatus.AsNoTracking().ToList();
+        return uow.Set<RotatingPlayingStatus>().AsNoTracking().ToList();
     }
 }

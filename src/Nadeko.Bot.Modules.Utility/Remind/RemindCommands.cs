@@ -102,9 +102,9 @@ public partial class Utility
             await using (var uow = _db.GetDbContext())
             {
                 if (isServer)
-                    rems = uow.Reminders.RemindersForServer(ctx.Guild.Id, page).ToList();
+                    rems = uow.Set<Reminder>().RemindersForServer(ctx.Guild.Id, page).ToList();
                 else
-                    rems = uow.Reminders.RemindersFor(ctx.User.Id, page).ToList();
+                    rems = uow.Set<Reminder>().RemindersFor(ctx.User.Id, page).ToList();
             }
 
             if (rems.Any())
@@ -150,14 +150,14 @@ public partial class Utility
             await using (var uow = _db.GetDbContext())
             {
                 var rems = isServer
-                    ? uow.Reminders.RemindersForServer(ctx.Guild.Id, index / 10).ToList()
-                    : uow.Reminders.RemindersFor(ctx.User.Id, index / 10).ToList();
+                    ? uow.Set<Reminder>().RemindersForServer(ctx.Guild.Id, index / 10).ToList()
+                    : uow.Set<Reminder>().RemindersFor(ctx.User.Id, index / 10).ToList();
 
                 var pageIndex = index % 10;
                 if (rems.Count > pageIndex)
                 {
                     rem = rems[pageIndex];
-                    uow.Reminders.Remove(rem);
+                    uow.Set<Reminder>().Remove(rem);
                     uow.SaveChanges();
                 }
             }
@@ -198,7 +198,7 @@ public partial class Utility
 
             await using (var uow = _db.GetDbContext())
             {
-                uow.Reminders.Add(rem);
+                uow.Set<Reminder>().Add(rem);
                 await uow.SaveChangesAsync();
             }
 

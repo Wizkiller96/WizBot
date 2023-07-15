@@ -13,7 +13,7 @@ public class ShopService : IShopService, INService
     public ShopService(DbService db)
         => _db = db;
 
-    private IndexedCollection<ShopEntry> GetEntriesInternal(NadekoContext uow, ulong guildId)
+    private IndexedCollection<ShopEntry> GetEntriesInternal(DbContext uow, ulong guildId)
         => uow.GuildConfigsForId(guildId, set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
               .ShopEntries.ToIndexed();
 

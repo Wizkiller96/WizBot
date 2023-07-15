@@ -100,7 +100,7 @@ public class PlantPickService : INService, IExecNoCommand
     public IEnumerable<GuildConfigExtensions.GeneratingChannel> GetAllGeneratingChannels()
     {
         using var uow = _db.GetDbContext();
-        var chs = uow.GuildConfigs.GetGeneratingChannels();
+        var chs = uow.Set<GuildConfig>().GetGeneratingChannels();
         return chs;
     }
 
@@ -259,7 +259,7 @@ public class PlantPickService : INService, IExecNoCommand
 
                 pass = pass?.Trim().TrimTo(10, true).ToUpperInvariant();
                 // gets all plants in this channel with the same password
-                var entries = uow.PlantedCurrency.AsQueryable()
+                var entries = uow.Set<PlantedCurrency>().AsQueryable()
                                  .Where(x => x.ChannelId == ch.Id && pass == x.Password)
                                  .ToList();
                 // sum how much currency that is, and get all of the message ids (so that i can delete them)
@@ -371,7 +371,7 @@ public class PlantPickService : INService, IExecNoCommand
         string pass)
     {
         await using var uow = _db.GetDbContext();
-        uow.PlantedCurrency.Add(new()
+        uow.Set<PlantedCurrency>().Add(new()
         {
             Amount = amount,
             GuildId = gid,

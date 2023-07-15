@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using NadekoBot.Db;
+using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Services;
 using NCalc;
 using OneOf;
@@ -69,7 +70,7 @@ public class BaseShmartInputAmountReader
     protected virtual async Task<long> Cur(ICommandContext ctx)
     {
         await using var uow = _db.GetDbContext();
-        return await uow.DiscordUser.GetUserCurrencyAsync(ctx.User.Id);
+        return await uow.Set<DiscordUser>().GetUserCurrencyAsync(ctx.User.Id);
     }
 
     protected virtual async Task<long> Max(ICommandContext ctx)

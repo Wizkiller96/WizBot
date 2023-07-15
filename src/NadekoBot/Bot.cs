@@ -14,6 +14,7 @@ using NadekoBot.Modules.Permissions;
 using NadekoBot.Modules.Searches;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Modules.Xp;
+using NadekoBot.Services.Database;
 using NadekoBot.Services.Database.Models;
 using Ninject;
 using Ninject.Planning;
@@ -56,7 +57,7 @@ public sealed class Bot : IBot
         _credsProvider = new BotCredsProvider(totalShards, credPath);
         _creds = _credsProvider.GetCreds();
 
-        _db = new(_credsProvider);
+        _db = new NadekoDbService(_credsProvider);
 
         var messageCacheSize =
 #if GLOBAL_NADEKO
@@ -120,7 +121,7 @@ public sealed class Bot : IBot
         using (var uow = _db.GetDbContext())
         {
             uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
-            AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
+            AllGuildConfigs = uow.Set<GuildConfig>().GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
 
         var svcs = new StandardKernel(new NinjectSettings()

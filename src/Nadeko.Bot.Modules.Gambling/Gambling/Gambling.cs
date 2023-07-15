@@ -290,7 +290,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         List<CurrencyTransaction> trs;
         await using (var uow = _db.GetDbContext())
         {
-            trs = await uow.CurrencyTransactions.GetPageFor(userId, page);
+            trs = await uow.Set<CurrencyTransaction>().GetPageFor(userId, page);
         }
 
         var embed = _eb.Create()
@@ -332,7 +332,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         int intId = id;
         await using var uow = _db.GetDbContext();
 
-        var tr = await uow.CurrencyTransactions.ToLinqToDBTable()
+        var tr = await uow.Set<CurrencyTransaction>().ToLinqToDBTable()
             .Where(x => x.Id == intId && x.UserId == ctx.User.Id)
             .FirstOrDefaultAsync();
 
@@ -739,7 +739,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             await using (var uow = _db.GetDbContext())
             {
-                cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 10_000);
+                cleanRichest = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 10_000);
             }
 
             await ctx.Channel.TriggerTypingAsync();
@@ -751,7 +751,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         else
         {
             await using var uow = _db.GetDbContext();
-            cleanRichest = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
+            cleanRichest = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
         }
 
         await ctx.SendPaginatedConfirmAsync(page,
@@ -763,7 +763,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 if (!opts.Clean)
                 {
                     using var uow = _db.GetDbContext();
-                    toSend = uow.DiscordUser.GetTopRichest(_client.CurrentUser.Id, 9, curPage);
+                    toSend = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, curPage);
                 }
                 else
                 {

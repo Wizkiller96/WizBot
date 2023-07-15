@@ -32,7 +32,7 @@ public class PermissionService : IExecPreCommand, INService
         _eb = eb;
 
         using var uow = _db.GetDbContext();
-        foreach (var x in uow.GuildConfigs.PermissionsForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
+        foreach (var x in uow.Set<GuildConfig>().PermissionsForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
         {
             Cache.TryAdd(x.GuildId,
                 new()

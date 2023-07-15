@@ -189,7 +189,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 // group by xp amount and update the same amounts at the same time
                 foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
                 {
-                    var items = await ctx.DiscordUser
+                    var items = await ctx.Set<DiscordUser>()
                         .Where(x => group.Contains(x.UserId))
                         .UpdateWithOutputAsync(old => new()
                             {
@@ -197,7 +197,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             },
                             (_, n) => n);
 
-                    await ctx.Clubs
+                    await ctx.Set<ClubInfo>()
                         .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
                         .UpdateAsync(old => new()
                         {
@@ -212,7 +212,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     foreach (var group in toAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
                     {
                         var items = await ctx
-                            .UserXpStats
+                            .Set<UserXpStats>()
                             .Where(x => x.GuildId == guildId)
                             .Where(x => group.Contains(x.UserId))
                             .UpdateWithOutputAsync(old => new()
@@ -227,7 +227,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         foreach (var userId in missingUserIds)
                         {
                             await ctx
-                                .UserXpStats
+                                .Set<UserXpStats>()
                                 .ToLinqToDBTable()
                                 .InsertOrUpdateAsync(() => new UserXpStats()
                                     {
@@ -250,7 +250,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                         if (missingUserIds.Length > 0)
                         {
-                            var missingItems = await ctx.UserXpStats
+                            var missingItems = await ctx.Set<UserXpStats>()
                                 .ToLinqToDBTable()
                                 .Where(x => missingUserIds.Contains(x.UserId))
                                 .ToArrayAsyncLinqToDB();
@@ -559,19 +559,19 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public List<UserXpStats> GetUserXps(ulong guildId, int page)
     {
         using var uow = _db.GetDbContext();
-        return uow.UserXpStats.GetUsersFor(guildId, page);
+        return uow.Set<UserXpStats>().GetUsersFor(guildId, page);
     }
 
     public List<UserXpStats> GetTopUserXps(ulong guildId, int count)
     {
         using var uow = _db.GetDbContext();
-        return uow.UserXpStats.GetTopUserXps(guildId, count);
+        return uow.Set<UserXpStats>().GetTopUserXps(guildId, count);
     }
 
     public DiscordUser[] GetUserXps(int page)
     {
         using var uow = _db.GetDbContext();
-        return uow.DiscordUser.GetUsersXpLeaderboardFor(page);
+        return uow.Set<DiscordUser>().GetUsersXpLeaderboardFor(page);
     }
 
     public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)
@@ -876,8 +876,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         await using var uow = _db.GetDbContext();
         var du = uow.GetOrCreateUser(user, set => set.Include(x => x.Club));
         var totalXp = du.TotalXp;
-        var globalRank = uow.DiscordUser.GetUserGlobalRank(user.Id);
-        var guildRank = uow.UserXpStats.GetUserGuildRanking(user.Id, user.GuildId);
+        var globalRank = uow.Set<DiscordUser>().GetUserGlobalRank(user.Id);
+        var guildRank = uow.Set<UserXpStats>().GetUserGuildRanking(user.Id, user.GuildId);
         var stats = uow.GetOrCreateUserXpStats(user.GuildId, user.Id);
         await uow.SaveChangesAsync();
 
@@ -1396,14 +1396,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public void XpReset(ulong guildId, ulong userId)
     {
         using var uow = _db.GetDbContext();
-        uow.UserXpStats.ResetGuildUserXp(userId, guildId);
+        uow.Set<UserXpStats>().ResetGuildUserXp(userId, guildId);
         uow.SaveChanges();
     }
 
     public void XpReset(ulong guildId)
     {
         using var uow = _db.GetDbContext();
-        uow.UserXpStats.ResetGuildXp(guildId);
+        uow.Set<UserXpStats>().ResetGuildXp(guildId);
         uow.SaveChanges();
     }
 

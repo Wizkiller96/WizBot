@@ -87,11 +87,11 @@ public class UserPunishService : INService, IReadyExecutor
         {
             ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
 
-            previousCount = uow.Warnings.ForId(guildId, userId)
-                                .Where(w => !w.Forgiven && w.UserId == userId)
-                                .Sum(x => x.Weight);
+            previousCount = uow.Set<Warning>().ForId(guildId, userId)
+                .Where(w => !w.Forgiven && w.UserId == userId)
+                .Sum(x => x.Weight);
 
-            uow.Warnings.Add(warn);
+            uow.Set<Warning>().Add(warn);
 
             await uow.SaveChangesAsync();
         }
@@ -99,9 +99,9 @@ public class UserPunishService : INService, IReadyExecutor
         _ = OnUserWarned(warn);
 
         var totalCount = previousCount + weight;
-        
+
         var p = ps.Where(x => x.Count > previousCount && x.Count <= totalCount)
-                  .MaxBy(x => x.Count);
+            .MaxBy(x => x.Count);
 
         if (p is not null)
         {
@@ -241,34 +241,34 @@ public class UserPunishService : INService, IReadyExecutor
     public async Task CheckAllWarnExpiresAsync()
     {
         await using var uow = _db.GetDbContext();
-        var cleared = await uow.Warnings
-                               .Where(x => uow.GuildConfigs
-                                                 .Any(y => y.GuildId == x.GuildId
-                                                           && y.WarnExpireHours > 0
-                                                           && y.WarnExpireAction == WarnExpireAction.Clear)
-                                           && x.Forgiven == false 
-                                           && x.DateAdded
-                                           < DateTime.UtcNow.AddHours(-uow.GuildConfigs
-                                                                          .Where(y => x.GuildId == y.GuildId)
-                                                                          .Select(y => y.WarnExpireHours)
-                                                                          .First()))
-                               .UpdateAsync(_ => new()
-                               {
-                                   Forgiven = true,
-                                   ForgivenBy = "expiry"
-                               });
+        var cleared = await uow.Set<Warning>()
+            .Where(x => uow.Set<GuildConfig>()
+                            .Any(y => y.GuildId == x.GuildId
+                                      && y.WarnExpireHours > 0
+                                      && y.WarnExpireAction == WarnExpireAction.Clear)
+                        && x.Forgiven == false
+                        && x.DateAdded
+                        < DateTime.UtcNow.AddHours(-uow.Set<GuildConfig>()
+                            .Where(y => x.GuildId == y.GuildId)
+                            .Select(y => y.WarnExpireHours)
+                            .First()))
+            .UpdateAsync(_ => new()
+            {
+                Forgiven = true,
+                ForgivenBy = "expiry"
+            });
 
-        var deleted = await uow.Warnings
-                               .Where(x => uow.GuildConfigs
-                                              .Any(y => y.GuildId == x.GuildId
-                                                        && y.WarnExpireHours > 0
-                                                        && y.WarnExpireAction == WarnExpireAction.Delete)
-                                           && x.DateAdded
-                                           < DateTime.UtcNow.AddHours(-uow.GuildConfigs
-                                                                          .Where(y => x.GuildId == y.GuildId)
-                                                                          .Select(y => y.WarnExpireHours)
-                                                                          .First()))
-                               .DeleteAsync();
+        var deleted = await uow.Set<Warning>()
+            .Where(x => uow.Set<GuildConfig>()
+                            .Any(y => y.GuildId == x.GuildId
+                                      && y.WarnExpireHours > 0
+                                      && y.WarnExpireAction == WarnExpireAction.Delete)
+                        && x.DateAdded
+                        < DateTime.UtcNow.AddHours(-uow.Set<GuildConfig>()
+                            .Where(y => x.GuildId == y.GuildId)
+                            .Select(y => y.WarnExpireHours)
+                            .First()))
+            .DeleteAsync();
 
         if (cleared > 0 || deleted > 0)
         {
@@ -290,22 +290,22 @@ public class UserPunishService : INService, IReadyExecutor
 
         if (config.WarnExpireAction == WarnExpireAction.Clear)
         {
-            await uow.Warnings
-                     .Where(x => x.GuildId == guildId
-                                 && x.Forgiven == false
-                                 && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
-                     .UpdateAsync(_ => new()
-                     {
-                         Forgiven = true,
-                         ForgivenBy = "expiry"
-                     });
+            await uow.Set<Warning>()
+                .Where(x => x.GuildId == guildId
+                            && x.Forgiven == false
+                            && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
+                .UpdateAsync(_ => new()
+                {
+                    Forgiven = true,
+                    ForgivenBy = "expiry"
+                });
         }
         else if (config.WarnExpireAction == WarnExpireAction.Delete)
         {
-            await uow.Warnings
-                     .Where(x => x.GuildId == guildId
-                                 && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
-                     .DeleteAsync();
+            await uow.Set<Warning>()
+                .Where(x => x.GuildId == guildId
+                            && x.DateAdded < DateTime.UtcNow.AddHours(-config.WarnExpireHours))
+                .DeleteAsync();
         }
 
         await uow.SaveChangesAsync();
@@ -339,13 +339,13 @@ public class UserPunishService : INService, IReadyExecutor
     public IGrouping<ulong, Warning>[] WarnlogAll(ulong gid)
     {
         using var uow = _db.GetDbContext();
-        return uow.Warnings.GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
+        return uow.Set<Warning>().GetForGuild(gid).GroupBy(x => x.UserId).ToArray();
     }
 
     public Warning[] UserWarnings(ulong gid, ulong userId)
     {
         using var uow = _db.GetDbContext();
-        return uow.Warnings.ForId(gid, userId);
+        return uow.Set<Warning>().ForId(gid, userId);
     }
 
     public async Task<bool> WarnClearAsync(
@@ -357,9 +357,9 @@ public class UserPunishService : INService, IReadyExecutor
         var toReturn = true;
         await using var uow = _db.GetDbContext();
         if (index == 0)
-            await uow.Warnings.ForgiveAll(guildId, userId, moderator);
+            await uow.Set<Warning>().ForgiveAll(guildId, userId, moderator);
         else
-            toReturn = uow.Warnings.Forgive(guildId, userId, moderator, index - 1);
+            toReturn = uow.Set<Warning>().Forgive(guildId, userId, moderator, index - 1);
         await uow.SaveChangesAsync();
         return toReturn;
     }
@@ -423,8 +423,8 @@ public class UserPunishService : INService, IReadyExecutor
     {
         using var uow = _db.GetDbContext();
         return uow.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
-                  .WarnPunishments.OrderBy(x => x.Count)
-                  .ToArray();
+            .WarnPunishments.OrderBy(x => x.Count)
+            .ToArray();
     }
 
     public (IReadOnlyCollection<(string Original, ulong? Id, string Reason)> Bans, int Missing) MassKill(
@@ -434,20 +434,20 @@ public class UserPunishService : INService, IReadyExecutor
         var gusers = guild.Users;
         //get user objects and reasons
         var bans = people.Split("\n")
-                         .Select(x =>
-                         {
-                             var split = x.Trim().Split(" ");
+            .Select(x =>
+            {
+                var split = x.Trim().Split(" ");
 
-                             var reason = string.Join(" ", split.Skip(1));
+                var reason = string.Join(" ", split.Skip(1));
 
-                             if (ulong.TryParse(split[0], out var id))
-                                 return (Original: split[0], Id: id, Reason: reason);
+                if (ulong.TryParse(split[0], out var id))
+                    return (Original: split[0], Id: id, Reason: reason);
 
-                             return (Original: split[0],
-                                 gusers.FirstOrDefault(u => u.ToString().ToLowerInvariant() == x)?.Id,
-                                 Reason: reason);
-                         })
-                         .ToArray();
+                return (Original: split[0],
+                    gusers.FirstOrDefault(u => u.ToString().ToLowerInvariant() == x)?.Id,
+                    Reason: reason);
+            })
+            .ToArray();
 
         //if user is null, means that person couldn't be found
         var missing = bans.Count(x => !x.Id.HasValue);
@@ -463,14 +463,14 @@ public class UserPunishService : INService, IReadyExecutor
     public string GetBanTemplate(ulong guildId)
     {
         using var uow = _db.GetDbContext();
-        var template = uow.BanTemplates.AsQueryable().FirstOrDefault(x => x.GuildId == guildId);
+        var template = uow.Set<BanTemplate>().AsQueryable().FirstOrDefault(x => x.GuildId == guildId);
         return template?.Text;
     }
 
     public void SetBanTemplate(ulong guildId, string text)
     {
         using var uow = _db.GetDbContext();
-        var template = uow.BanTemplates.AsQueryable().FirstOrDefault(x => x.GuildId == guildId);
+        var template = uow.Set<BanTemplate>().AsQueryable().FirstOrDefault(x => x.GuildId == guildId);
 
         if (text is null)
         {
@@ -481,7 +481,7 @@ public class UserPunishService : INService, IReadyExecutor
         }
         else if (template is null)
         {
-            uow.BanTemplates.Add(new()
+            uow.Set<BanTemplate>().Add(new()
             {
                 GuildId = guildId,
                 Text = text
@@ -496,7 +496,7 @@ public class UserPunishService : INService, IReadyExecutor
     public async Task SetBanPruneAsync(ulong guildId, int? pruneDays)
     {
         await using var ctx = _db.GetDbContext();
-        await ctx.BanTemplates
+        await ctx.Set<BanTemplate>()
             .ToLinqToDBTable()
             .InsertOrUpdateAsync(() => new()
                 {
@@ -518,7 +518,7 @@ public class UserPunishService : INService, IReadyExecutor
     public async Task<int?> GetBanPruneAsync(ulong guildId)
     {
         await using var ctx = _db.GetDbContext();
-        return await ctx.BanTemplates
+        return await ctx.Set<BanTemplate>()
             .Where(x => x.GuildId == guildId)
             .Select(x => x.PruneDays)
             .FirstOrDefaultAsyncLinqToDB();
@@ -552,19 +552,19 @@ public class UserPunishService : INService, IReadyExecutor
         banReason = string.IsNullOrWhiteSpace(banReason) ? "-" : banReason;
 
         var replacer = new ReplacementBuilder().WithServer(client, guild)
-                                               .WithOverride("%ban.mod%", () => moderator.ToString())
-                                               .WithOverride("%ban.mod.fullname%", () => moderator.ToString())
-                                               .WithOverride("%ban.mod.name%", () => moderator.Username)
-                                               .WithOverride("%ban.mod.discrim%", () => moderator.Discriminator)
-                                               .WithOverride("%ban.user%", () => target.ToString())
-                                               .WithOverride("%ban.user.fullname%", () => target.ToString())
-                                               .WithOverride("%ban.user.name%", () => target.Username)
-                                               .WithOverride("%ban.user.discrim%", () => target.Discriminator)
-                                               .WithOverride("%reason%", () => banReason)
-                                               .WithOverride("%ban.reason%", () => banReason)
-                                               .WithOverride("%ban.duration%",
-                                                   () => duration?.ToString(@"d\.hh\:mm") ?? "perma")
-                                               .Build();
+            .WithOverride("%ban.mod%", () => moderator.ToString())
+            .WithOverride("%ban.mod.fullname%", () => moderator.ToString())
+            .WithOverride("%ban.mod.name%", () => moderator.Username)
+            .WithOverride("%ban.mod.discrim%", () => moderator.Discriminator)
+            .WithOverride("%ban.user%", () => target.ToString())
+            .WithOverride("%ban.user.fullname%", () => target.ToString())
+            .WithOverride("%ban.user.name%", () => target.Username)
+            .WithOverride("%ban.user.discrim%", () => target.Discriminator)
+            .WithOverride("%reason%", () => banReason)
+            .WithOverride("%ban.reason%", () => banReason)
+            .WithOverride("%ban.duration%",
+                () => duration?.ToString(@"d\.hh\:mm") ?? "perma")
+            .Build();
 
         // if template isn't set, use the old message style
         if (string.IsNullOrWhiteSpace(template))

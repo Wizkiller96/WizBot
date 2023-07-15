@@ -29,7 +29,7 @@ public static class GuildConfigExtensions
     /// <param name="ctx">Db Context</param>
     /// <param name="guildId">Id of the guild to get stream role settings for.</param>
     /// <returns>Guild'p stream role settings</returns>
-    public static StreamRoleSettings GetStreamRoleSettings(this NadekoBaseContext ctx, ulong guildId)
+    public static StreamRoleSettings GetStreamRoleSettings(this DbContext ctx, ulong guildId)
     {
         var conf = ctx.GuildConfigsForId(guildId,
             set => set.Include(y => y.StreamRole)
@@ -120,7 +120,7 @@ public static class GuildConfigExtensions
         //    .First(x => x.GuildId == guildId);
     }
 
-    public static LogSetting LogSettingsFor(this NadekoBaseContext ctx, ulong guildId)
+    public static LogSetting LogSettingsFor(this DbContext ctx, ulong guildId)
     {
         var logSetting = ctx.Set<LogSetting>()
             .AsQueryable()
@@ -148,7 +148,7 @@ public static class GuildConfigExtensions
         return query.ToList();
     }
 
-    public static GuildConfig GcWithPermissionsFor(this NadekoBaseContext ctx, ulong guildId)
+    public static GuildConfig GcWithPermissionsFor(this DbContext ctx, ulong guildId)
     {
         var config = ctx.Set<GuildConfig>().AsQueryable()
             .Where(gc => gc.GuildId == guildId)

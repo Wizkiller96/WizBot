@@ -13,6 +13,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
+      <ProjectReference Include="..\Nadeko.Bot.Modules.Gambling\Nadeko.Bot.Modules.Gambling.csproj" />
     </ItemGroup>
 
 </Project>

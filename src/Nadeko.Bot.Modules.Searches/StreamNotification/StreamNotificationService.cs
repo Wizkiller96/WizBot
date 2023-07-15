@@ -321,7 +321,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     {
         using (var uow = _db.GetDbContext())
         {
-            var gc = uow.GuildConfigs.AsQueryable()
+            var gc = uow.Set<GuildConfig>().AsQueryable()
                         .Include(x => x.FollowedStreams)
                         .FirstOrDefault(x => x.GuildId == guildConfig.GuildId);
 

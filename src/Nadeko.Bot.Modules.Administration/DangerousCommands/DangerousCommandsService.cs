@@ -14,74 +14,6 @@ public class DangerousCommandsService : INService
     public DangerousCommandsService(DbService db)
         => _db = db;
 
-    public async Task DeleteXp()
-    {
-        await using var ctx = _db.GetDbContext();
-        await ctx.DiscordUser.UpdateAsync(_ => new DiscordUser()
-        {
-            ClubId = null,
-            // IsClubAdmin = false,
-            TotalXp = 0
-        });
-
-        await ctx.UserXpStats.DeleteAsync();
-        await ctx.ClubApplicants.DeleteAsync();
-        await ctx.ClubBans.DeleteAsync();
-        await ctx.Clubs.DeleteAsync();
-        await ctx.SaveChangesAsync();
-    }
-    
-    public async Task DeleteWaifus()
-    {
-        await using var ctx = _db.GetDbContext();
-        await ctx.WaifuUpdates.DeleteAsync();
-        await ctx.WaifuItem.DeleteAsync();
-        await ctx.WaifuInfo.DeleteAsync();
-        await ctx.SaveChangesAsync();
-    }
-
-    public async Task DeleteWaifu(ulong userId)
-    {
-        await using var ctx = _db.GetDbContext();
-        await ctx.WaifuUpdates
-                 .Where(x => x.User.UserId == userId)
-                 .DeleteAsync();
-        await ctx.WaifuItem
-                 .Where(x => x.WaifuInfo.Waifu.UserId == userId)
-                 .DeleteAsync();
-        await ctx.WaifuInfo
-                 .Where(x => x.Claimer.UserId == userId)
-                 .UpdateAsync(old => new WaifuInfo()
-                 {
-                     ClaimerId = null,
-                 });
-        await ctx.WaifuInfo
-                 .Where(x => x.Waifu.UserId == userId)
-                 .DeleteAsync();
-        await ctx.SaveChangesAsync();
-    }
-    
-    public async Task DeletePlaylists()
-    {
-        await using var ctx = _db.GetDbContext();
-        await ctx.MusicPlaylists.DeleteAsync();
-        await ctx.SaveChangesAsync();
-    }
-
-    public async Task DeleteCurrency()
-    {
-        await using var ctx = _db.GetDbContext();
-        await ctx.DiscordUser.UpdateAsync(_ => new DiscordUser()
-        {
-            CurrencyAmount = 0
-        });
-
-        await ctx.CurrencyTransactions.DeleteAsync();
-        await ctx.PlantedCurrency.DeleteAsync();
-        await ctx.BankUsers.DeleteAsync();
-        await ctx.SaveChangesAsync();
-    }
-
     public async Task<int> ExecuteSql(string sql)
     {
         int res;
@@ -130,7 +62,7 @@ public class DangerousCommandsService : INService
         if (wi is not null)
         {
             // remove updates which have new or old as this waifu
-            await uow.WaifuUpdates.DeleteAsync(wu => wu.New.UserId == userId || wu.Old.UserId == userId);
+            await uow.Set<WaifuUpdate>().DeleteAsync(wu => wu.New.UserId == userId || wu.Old.UserId == userId);
 
             // delete all items this waifu owns
             await uow.Set<WaifuItem>().DeleteAsync(x => x.WaifuInfoId == wi.Id);
@@ -155,13 +87,13 @@ public class DangerousCommandsService : INService
         }
 
         // delete guild xp
-        await uow.UserXpStats.DeleteAsync(x => x.UserId == userId);
+        await uow.Set<UserXpStats>().DeleteAsync(x => x.UserId == userId);
 
         // delete currency transactions
         await uow.Set<CurrencyTransaction>().DeleteAsync(x => x.UserId == userId);
 
         // delete user, currency, and clubs go away with it
-        await uow.DiscordUser.DeleteAsync(u => u.UserId == userId);
+        await uow.Set<DiscordUser>().DeleteAsync(u => u.UserId == userId);
     }
 
     public class SelectResult

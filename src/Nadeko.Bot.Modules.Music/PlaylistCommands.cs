@@ -46,7 +46,7 @@ public sealed partial class Music
 
             await using (var uow = _db.GetDbContext())
             {
-                playlists = uow.MusicPlaylists.GetPlaylistsOnPage(num);
+                playlists = uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
             }
 
             var embed = _eb.Create(ctx)
@@ -66,13 +66,13 @@ public sealed partial class Music
             try
             {
                 await using var uow = _db.GetDbContext();
-                var pl = uow.MusicPlaylists.FirstOrDefault(x => x.Id == id);
+                var pl = uow.Set<MusicPlaylist>().FirstOrDefault(x => x.Id == id);
 
                 if (pl is not null)
                 {
                     if (_creds.IsOwner(ctx.User) || pl.AuthorId == ctx.User.Id)
                     {
-                        uow.MusicPlaylists.Remove(pl);
+                        uow.Set<MusicPlaylist>().Remove(pl);
                         await uow.SaveChangesAsync();
                         success = true;
                     }
@@ -99,7 +99,7 @@ public sealed partial class Music
             MusicPlaylist mpl;
             await using (var uow = _db.GetDbContext())
             {
-                mpl = uow.MusicPlaylists.GetWithSongs(id);
+                mpl = uow.Set<MusicPlaylist>().GetWithSongs(id);
             }
 
             await ctx.SendPaginatedConfirmAsync(page,
@@ -146,7 +146,7 @@ public sealed partial class Music
                     AuthorId = ctx.User.Id,
                     Songs = songs.ToList()
                 };
-                uow.MusicPlaylists.Add(playlist);
+                uow.Set<MusicPlaylist>().Add(playlist);
                 await uow.SaveChangesAsync();
             }
 
@@ -195,7 +195,7 @@ public sealed partial class Music
                 MusicPlaylist mpl;
                 await using (var uow = _db.GetDbContext())
                 {
-                    mpl = uow.MusicPlaylists.GetWithSongs(id);
+                    mpl = uow.Set<MusicPlaylist>().GetWithSongs(id);
                 }
 
                 if (mpl is null)

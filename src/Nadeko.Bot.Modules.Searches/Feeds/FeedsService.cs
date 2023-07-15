@@ -30,14 +30,15 @@ public class FeedsService : INService
         using (var uow = db.GetDbContext())
         {
             var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
-            _subs = uow.GuildConfigs.AsQueryable()
-                       .Where(x => guildConfigIds.Contains(x.Id))
-                       .Include(x => x.FeedSubs)
-                       .ToList()
-                       .SelectMany(x => x.FeedSubs)
-                       .GroupBy(x => x.Url.ToLower())
-                       .ToDictionary(x => x.Key, x => x.ToList())
-                       .ToConcurrent();
+            _subs = uow.Set<GuildConfig>()
+                .AsQueryable()
+                .Where(x => guildConfigIds.Contains(x.Id))
+                .Include(x => x.FeedSubs)
+                .ToList()
+                .SelectMany(x => x.FeedSubs)
+                .GroupBy(x => x.Url.ToLower())
+                .ToDictionary(x => x.Key, x => x.ToList())
+                .ToConcurrent();
         }
 
         _client = client;
@@ -60,8 +61,8 @@ public class FeedsService : INService
                 // remove from db
                 await using var ctx = _db.GetDbContext();
                 await ctx.GetTable<FeedSub>()
-                         .DeleteAsync(x => ids.Contains(x.Id));
-                
+                    .DeleteAsync(x => ids.Contains(x.Id));
+
                 // remove from the local cache
                 _subs.TryRemove(url, out _);
 
@@ -94,14 +95,14 @@ public class FeedsService : INService
                     var feed = await FeedReader.ReadAsync(rssUrl);
 
                     var items = feed
-                                .Items.Select(item => (Item: item,
-                                    LastUpdate: item.PublishingDate?.ToUniversalTime()
-                                                ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
-                                .Where(data => data.LastUpdate is not null)
-                                .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
-                                .OrderByDescending(data => data.LastUpdate)
-                                .Reverse() // start from the oldest
-                                .ToList();
+                        .Items.Select(item => (Item: item,
+                            LastUpdate: item.PublishingDate?.ToUniversalTime()
+                                        ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
+                        .Where(data => data.LastUpdate is not null)
+                        .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
+                        .OrderByDescending(data => data.LastUpdate)
+                        .Reverse() // start from the oldest
+                        .ToList();
 
                     if (!_lastPosts.TryGetValue(kvp.Key, out var lastFeedUpdate))
                     {
@@ -140,12 +141,12 @@ public class FeedsService : INService
                         if (!gotImage && feedItem.SpecificItem is AtomFeedItem afi)
                         {
                             var previewElement = afi.Element.Elements()
-                                                    .FirstOrDefault(x => x.Name.LocalName == "preview");
+                                .FirstOrDefault(x => x.Name.LocalName == "preview");
 
                             if (previewElement is null)
                             {
                                 previewElement = afi.Element.Elements()
-                                                    .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
+                                    .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
                             }
 
                             if (previewElement is not null)
@@ -184,7 +185,7 @@ public class FeedsService : INService
                 catch (Exception ex)
                 {
                     var errorCount = await AddError(rssUrl, kvp.Value.Select(x => x.Id).ToList());
-                    
+
                     Log.Warning("An error occured while getting rss stream ({ErrorCount} / 100) {RssFeed}"
                                 + "\n {Message}",
                         errorCount,
@@ -201,8 +202,8 @@ public class FeedsService : INService
     {
         using var uow = _db.GetDbContext();
         return uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
-                  .FeedSubs.OrderBy(x => x.Id)
-                  .ToList();
+            .FeedSubs.OrderBy(x => x.Id)
+            .ToList();
     }
 
     public FeedAddResult AddFeed(ulong guildId, ulong channelId, string rssFeed, string message)
@@ -250,8 +251,8 @@ public class FeedsService : INService
 
         using var uow = _db.GetDbContext();
         var items = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
-                       .FeedSubs.OrderBy(x => x.Id)
-                       .ToList();
+            .FeedSubs.OrderBy(x => x.Id)
+            .ToList();
 
         if (items.Count <= index)
             return false;

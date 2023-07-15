@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using NadekoBot.Db;
 using NadekoBot.Modules.Games.Services;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Games;
 
@@ -25,7 +26,7 @@ public partial class Games
             {
                 await using (var uow = _db.GetDbContext())
                 {
-                    uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, false);
+                    uow.Set<GuildConfig>().SetCleverbotEnabled(ctx.Guild.Id, false);
                     await uow.SaveChangesAsync();
                 }
 
@@ -37,7 +38,7 @@ public partial class Games
 
             await using (var uow = _db.GetDbContext())
             {
-                uow.GuildConfigs.SetCleverbotEnabled(ctx.Guild.Id, true);
+                uow.Set<GuildConfig>().SetCleverbotEnabled(ctx.Guild.Id, true);
                 await uow.SaveChangesAsync();
             }
 

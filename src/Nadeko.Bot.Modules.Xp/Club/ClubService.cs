@@ -34,7 +34,7 @@ public class ClubService : INService, IClubService
         if (du.ClubId is not null)
             return ClubCreateResult.AlreadyInAClub;
 
-        if (await uow.Clubs.AnyAsyncEF(x => x.Name == clubName))
+        if (await uow.Set<ClubInfo>().AnyAsyncEF(x => x.Name == clubName))
             return ClubCreateResult.NameTaken;
         
         du.IsClubAdmin = true;
@@ -43,7 +43,7 @@ public class ClubService : INService, IClubService
             Name = clubName,
             Owner = du
         };
-        uow.Clubs.Add(du.Club);
+        uow.Set<ClubInfo>().Add(du.Club);
         await uow.SaveChangesAsync();
 
         await uow.GetTable<ClubApplicants>()
@@ -55,7 +55,7 @@ public class ClubService : INService, IClubService
     public OneOf<ClubInfo, ClubTransferError> TransferClub(IUser from, IUser newOwner)
     {
         using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwner(@from.Id);
+        var club = uow.Set<ClubInfo>().GetByOwner(@from.Id);
         var newOwnerUser = uow.GetOrCreateUser(newOwner);
 
         if (club is null || club.Owner.UserId != from.Id)
@@ -77,7 +77,7 @@ public class ClubService : INService, IClubService
             return ToggleAdminResult.CantTargetThyself;
         
         await using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwner(owner.Id);
+        var club = uow.Set<ClubInfo>().GetByOwner(owner.Id);
         var adminUser = uow.GetOrCreateUser(toAdmin);
 
         if (club is null)
@@ -94,7 +94,7 @@ public class ClubService : INService, IClubService
     public ClubInfo GetClubByMember(IUser user)
     {
         using var uow = _db.GetDbContext();
-        var member = uow.Clubs.GetByMember(user.Id);
+        var member = uow.Set<ClubInfo>().GetByMember(user.Id);
         return member;
     }
     
@@ -113,7 +113,7 @@ public class ClubService : INService, IClubService
         }
 
         await using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwner(ownerUserId);
+        var club = uow.Set<ClubInfo>().GetByOwner(ownerUserId);
 
         if (club is null)
             return SetClubIconResult.NotOwner;
@@ -127,7 +127,7 @@ public class ClubService : INService, IClubService
     public bool GetClubByName(string clubName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByName(clubName);
+        club = uow.Set<ClubInfo>().GetByName(clubName);
 
         return club is not null;
     }
@@ -165,7 +165,7 @@ public class ClubService : INService, IClubService
     {
         discordUser = null;
         using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+        var club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(clubOwnerUserId);
         if (club is null)
             return ClubAcceptResult.NotOwnerOrAdmin;
 
@@ -190,7 +190,7 @@ public class ClubService : INService, IClubService
     public ClubInfo GetClubWithBansAndApplications(ulong ownerUserId)
     {
         using var uow = _db.GetDbContext();
-        return uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
+        return uow.Set<ClubInfo>().GetByOwnerOrAdmin(ownerUserId);
     }
 
     public ClubLeaveResult LeaveClub(IUser user)
@@ -211,7 +211,7 @@ public class ClubService : INService, IClubService
     public bool SetDescription(ulong userId, string desc)
     {
         using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwner(userId);
+        var club = uow.Set<ClubInfo>().GetByOwner(userId);
         if (club is null)
             return false;
 
@@ -224,11 +224,11 @@ public class ClubService : INService, IClubService
     public bool Disband(ulong userId, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByOwner(userId);
+        club = uow.Set<ClubInfo>().GetByOwner(userId);
         if (club is null)
             return false;
 
-        uow.Clubs.Remove(club);
+        uow.Set<ClubInfo>().Remove(club);
         uow.SaveChanges();
         return true;
     }
@@ -236,7 +236,7 @@ public class ClubService : INService, IClubService
     public ClubBanResult Ban(ulong bannerId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByOwnerOrAdmin(bannerId);
+        club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(bannerId);
         if (club is null)
             return ClubBanResult.NotOwnerOrAdmin;
 
@@ -270,7 +270,7 @@ public class ClubService : INService, IClubService
     public ClubUnbanResult UnBan(ulong ownerUserId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByOwnerOrAdmin(ownerUserId);
+        club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(ownerUserId);
         if (club is null)
             return ClubUnbanResult.NotOwnerOrAdmin;
 
@@ -288,7 +288,7 @@ public class ClubService : INService, IClubService
     public ClubKickResult Kick(ulong kickerId, string userName, out ClubInfo club)
     {
         using var uow = _db.GetDbContext();
-        club = uow.Clubs.GetByOwnerOrAdmin(kickerId);
+        club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(kickerId);
         if (club is null)
             return ClubKickResult.NotOwnerOrAdmin;
 
@@ -314,6 +314,6 @@ public class ClubService : INService, IClubService
             throw new ArgumentOutOfRangeException(nameof(page));
 
         using var uow = _db.GetDbContext();
-        return uow.Clubs.GetClubLeaderboardPage(page);
+        return uow.Set<ClubInfo>().GetClubLeaderboardPage(page);
     }
 }

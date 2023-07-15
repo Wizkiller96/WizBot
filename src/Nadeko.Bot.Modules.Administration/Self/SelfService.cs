@@ -83,7 +83,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     {
         await using var uow = _db.GetDbContext();
 
-        autoCommands = uow.AutoCommands.AsNoTracking()
+        autoCommands = uow.Set<AutoCommand>().AsNoTracking()
             .Where(x => x.Interval >= 5)
             .AsEnumerable()
             .GroupBy(x => x.GuildId)
@@ -91,7 +91,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
             .ToConcurrent();
 
-        var startupCommands = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
+        var startupCommands = uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval == 0);
         foreach (var cmd in startupCommands)
         {
             try
@@ -136,7 +136,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     {
         using (var uow = _db.GetDbContext())
         {
-            uow.AutoCommands.Add(cmd);
+            uow.Set<AutoCommand>().Add(cmd);
             uow.SaveChanges();
         }
 
@@ -156,13 +156,13 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     public IEnumerable<AutoCommand> GetStartupCommands()
     {
         using var uow = _db.GetDbContext();
-        return uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0).OrderBy(x => x.Id).ToList();
+        return uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval == 0).OrderBy(x => x.Id).ToList();
     }
 
     public IEnumerable<AutoCommand> GetAutoCommands()
     {
         using var uow = _db.GetDbContext();
-        return uow.AutoCommands.AsNoTracking().Where(x => x.Interval >= 5).OrderBy(x => x.Id).ToList();
+        return uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval >= 5).OrderBy(x => x.Id).ToList();
     }
 
     private async Task LoadOwnerChannels()
@@ -264,7 +264,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     public bool RemoveStartupCommand(int index, out AutoCommand cmd)
     {
         using var uow = _db.GetDbContext();
-        cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0).Skip(index).FirstOrDefault();
+        cmd = uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval == 0).Skip(index).FirstOrDefault();
 
         if (cmd is not null)
         {
@@ -279,7 +279,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     public bool RemoveAutoCommand(int index, out AutoCommand cmd)
     {
         using var uow = _db.GetDbContext();
-        cmd = uow.AutoCommands.AsNoTracking().Where(x => x.Interval >= 5).Skip(index).FirstOrDefault();
+        cmd = uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval >= 5).Skip(index).FirstOrDefault();
 
         if (cmd is not null)
         {
@@ -323,9 +323,9 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     public void ClearStartupCommands()
     {
         using var uow = _db.GetDbContext();
-        var toRemove = uow.AutoCommands.AsNoTracking().Where(x => x.Interval == 0);
+        var toRemove = uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval == 0);
 
-        uow.AutoCommands.RemoveRange(toRemove);
+        uow.Set<AutoCommand>().RemoveRange(toRemove);
         uow.SaveChanges();
     }
 

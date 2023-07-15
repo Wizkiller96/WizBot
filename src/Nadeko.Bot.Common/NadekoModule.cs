@@ -30,15 +30,15 @@ public abstract class NadekoModule : ModuleBase
 
     protected string GetText(in LocStr data)
         => Strings.GetText(data, Culture);
-    
+
     public Task<IUserMessage> SendErrorAsync(
         string title,
         string error,
         string url = null,
-        string footer = null, 
+        string footer = null,
         NadekoInteraction inter = null)
         => ctx.Channel.SendErrorAsync(_eb, title, error, url, footer);
-    
+
     public Task<IUserMessage> SendConfirmAsync(
         string title,
         string text,
@@ -49,12 +49,14 @@ public abstract class NadekoModule : ModuleBase
     // 
     public Task<IUserMessage> SendErrorAsync(string text, NadekoInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MsgType.Error, inter);
+
     public Task<IUserMessage> SendConfirmAsync(string text, NadekoInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MsgType.Ok, inter);
+
     public Task<IUserMessage> SendPendingAsync(string text, NadekoInteraction inter = null)
         => ctx.Channel.SendAsync(_eb, text, MsgType.Pending, inter);
 
-    
+
     // localized normal
     public Task<IUserMessage> ErrorLocalizedAsync(LocStr str, NadekoInteraction inter = null)
         => SendErrorAsync(GetText(str), inter);

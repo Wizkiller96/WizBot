@@ -33,14 +33,14 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         _db = db;
 
         using var uow = _db.GetDbContext();
-        _imageOnly = uow.ImageOnlyChannels
+        _imageOnly = uow.Set<ImageOnlyChannel>()
             .Where(x => x.Type == OnlyChannelType.Image)
             .ToList()
             .GroupBy(x => x.GuildId)
             .ToDictionary(x => x.Key, x => new ConcurrentHashSet<ulong>(x.Select(y => y.ChannelId)))
             .ToConcurrent();
 
-        _linkOnly = uow.ImageOnlyChannels
+        _linkOnly = uow.Set<ImageOnlyChannel>()
             .Where(x => x.Type == OnlyChannelType.Link)
             .ToList()
             .GroupBy(x => x.GuildId)
@@ -85,12 +85,12 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         await using var uow = _db.GetDbContext();
         if (forceDisable || (_imageOnly.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
         {
-            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Image);
+            await uow.Set<ImageOnlyChannel>().DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Image);
         }
         else
         {
-            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId);
-            uow.ImageOnlyChannels.Add(new()
+            await uow.Set<ImageOnlyChannel>().DeleteAsync(x => x.ChannelId == channelId);
+            uow.Set<ImageOnlyChannel>().Add(new()
             {
                 GuildId = guildId,
                 ChannelId = channelId,
@@ -115,12 +115,12 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         await using var uow = _db.GetDbContext();
         if (forceDisable || (_linkOnly.TryGetValue(guildId, out var channels) && channels.TryRemove(channelId)))
         {
-            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Link);
+            await uow.Set<ImageOnlyChannel>().DeleteAsync(x => x.ChannelId == channelId && x.Type == OnlyChannelType.Link);
         }
         else
         {
-            await uow.ImageOnlyChannels.DeleteAsync(x => x.ChannelId == channelId);
-            uow.ImageOnlyChannels.Add(new()
+            await uow.Set<ImageOnlyChannel>().DeleteAsync(x => x.ChannelId == channelId);
+            uow.Set<ImageOnlyChannel>().Add(new()
             {
                 GuildId = guildId,
                 ChannelId = channelId,

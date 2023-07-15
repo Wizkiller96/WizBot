@@ -79,7 +79,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
     private async Task RemoveReminders(IEnumerable<int> reminders)
     {
         await using var uow = _db.GetDbContext();
-        await uow.Reminders
+        await uow.Set<Reminder>()
                  .ToLinqToDBTable()
                  .DeleteAsync(x => reminders.Contains(x.Id));
 
@@ -89,7 +89,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
     private async Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
     {
         await using var uow = _db.GetDbContext();
-        return await uow.Reminders
+        return await uow.Set<Reminder>()
                         .ToLinqToDBTable()
                         .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId, _creds.TotalShards, _client.ShardId)
                                     && x.When < now)
@@ -245,7 +245,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         };
 
         await using var ctx = _db.GetDbContext();
-        await ctx.Reminders
+        await ctx.Set<Reminder>()
                  .AddAsync(rem);
         await ctx.SaveChangesAsync();
     }

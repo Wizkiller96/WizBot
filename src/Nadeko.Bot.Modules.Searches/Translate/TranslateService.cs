@@ -36,7 +36,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
         await using (var ctx = _db.GetDbContext())
         {
             var guilds = _bot.AllGuildConfigs.Select(x => x.GuildId).ToList();
-            cs = await ctx.AutoTranslateChannels.Include(x => x.Users)
+            cs = await ctx.Set<AutoTranslateChannel>().Include(x => x.Users)
                           .Where(x => guilds.Contains(x.GuildId))
                           .ToListAsyncEF();
         }
@@ -108,12 +108,12 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
     {
         await using var ctx = _db.GetDbContext();
 
-        var old = await ctx.AutoTranslateChannels.ToLinqToDBTable()
+        var old = await ctx.Set<AutoTranslateChannel>().ToLinqToDBTable()
                            .FirstOrDefaultAsyncLinqToDB(x => x.ChannelId == channelId);
 
         if (old is null)
         {
-            ctx.AutoTranslateChannels.Add(new()
+            ctx.Set<AutoTranslateChannel>().Add(new()
             {
                 GuildId = guildId,
                 ChannelId = channelId,
@@ -138,7 +138,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
             return true;
         }
 
-        await ctx.AutoTranslateChannels.ToLinqToDBTable().DeleteAsync(x => x.ChannelId == channelId);
+        await ctx.Set<AutoTranslateChannel>().ToLinqToDBTable().DeleteAsync(x => x.ChannelId == channelId);
 
         await ctx.SaveChangesAsync();
         _atcs.TryRemove(channelId, out _);
@@ -168,7 +168,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
             return null;
 
         await using var ctx = _db.GetDbContext();
-        var ch = await ctx.AutoTranslateChannels.GetByChannelId(channelId);
+        var ch = await ctx.Set<AutoTranslateChannel>().GetByChannelId(channelId);
 
         if (ch is null)
             return null;
@@ -210,7 +210,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
     public async Task<bool> UnregisterUser(ulong channelId, ulong userId)
     {
         await using var ctx = _db.GetDbContext();
-        var rows = await ctx.AutoTranslateUsers.ToLinqToDBTable()
+        var rows = await ctx.Set<AutoTranslateUser>().ToLinqToDBTable()
                             .DeleteAsync(x => x.UserId == userId && x.Channel.ChannelId == channelId);
 
         if (_users.TryGetValue(channelId, out var inner))

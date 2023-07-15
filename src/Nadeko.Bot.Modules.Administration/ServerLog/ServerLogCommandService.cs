@@ -52,7 +52,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
         using (var uow = db.GetDbContext())
         {
             var guildIds = client.Guilds.Select(x => x.Id).ToList();
-            var configs = uow.LogSettings.AsQueryable()
+            var configs = uow.Set<LogSetting>().AsQueryable()
                 .AsNoTracking()
                 .Where(x => guildIds.Contains(x.GuildId))
                 .Include(ls => ls.LogIgnores)

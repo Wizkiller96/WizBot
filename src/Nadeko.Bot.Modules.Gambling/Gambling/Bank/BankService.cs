@@ -45,7 +45,7 @@ public sealed class BankService : IBankService, INService
             throw new ArgumentOutOfRangeException(nameof(amount));
         
         await using var ctx = _db.GetDbContext();
-        var rows = await ctx.BankUsers
+        var rows = await ctx.Set<BankUser>()
             .ToLinqToDBTable()
             .Where(x => x.UserId == userId && x.Balance >= amount)
             .UpdateAsync((old) => new()
@@ -65,7 +65,7 @@ public sealed class BankService : IBankService, INService
             return false;
 
         await using var ctx = _db.GetDbContext();
-        await ctx.BankUsers
+        await ctx.Set<BankUser>()
                  .ToLinqToDBTable()
                  .InsertOrUpdateAsync(() => new()
                      {
@@ -90,7 +90,7 @@ public sealed class BankService : IBankService, INService
             throw new ArgumentOutOfRangeException(nameof(amount));
         
         await using var ctx = _db.GetDbContext();
-        var rows = await ctx.BankUsers
+        var rows = await ctx.Set<BankUser>()
                  .ToLinqToDBTable()
                  .Where(x => x.UserId == userId && x.Balance >= amount)
                  .UpdateAsync((old) => new()
@@ -110,7 +110,7 @@ public sealed class BankService : IBankService, INService
     public async Task<long> GetBalanceAsync(ulong userId)
     {
         await using var ctx = _db.GetDbContext();
-        return (await ctx.BankUsers
+        return (await ctx.Set<BankUser>()
                          .ToLinqToDBTable()
                          .FirstOrDefaultAsync(x => x.UserId == userId))
                ?.Balance

@@ -62,7 +62,7 @@ public partial class Utility
             IEnumerable<Quote> quotes;
             await using (var uow = _db.GetDbContext())
             {
-                quotes = uow.Quotes.GetGroup(ctx.Guild.Id, page, order);
+                quotes = uow.Set<Quote>().GetGroup(ctx.Guild.Id, page, order);
             }
 
             if (quotes.Any())
@@ -88,7 +88,7 @@ public partial class Utility
             Quote quote;
             await using (var uow = _db.GetDbContext())
             {
-                quote = await uow.Quotes.GetRandomQuoteByKeywordAsync(ctx.Guild.Id, keyword);
+                quote = await uow.Set<Quote>().GetRandomQuoteByKeywordAsync(ctx.Guild.Id, keyword);
                 //if (quote is not null)
                 //{
                 //    quote.UseCount += 1;
@@ -114,7 +114,7 @@ public partial class Utility
             Quote? quote;
             await using (var uow = _db.GetDbContext())
             {
-                quote = uow.Quotes.GetById(id);
+                quote = uow.Set<Quote>().GetById(id);
                 if (quote?.GuildId != ctx.Guild.Id)
                     quote = null;
             }
@@ -148,7 +148,7 @@ public partial class Utility
             Quote quote;
             await using (var uow = _db.GetDbContext())
             {
-                quote = await uow.Quotes.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
+                quote = await uow.Set<Quote>().SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
             }
 
             if (quote is null)
@@ -185,7 +185,7 @@ public partial class Utility
 
             await using (var uow = _db.GetDbContext())
             {
-                quote = uow.Quotes.GetById(id);
+                quote = uow.Set<Quote>().GetById(id);
             }
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
@@ -216,7 +216,7 @@ public partial class Utility
             Quote q;
             await using (var uow = _db.GetDbContext())
             {
-                uow.Quotes.Add(q = new()
+                uow.Set<Quote>().Add(q = new()
                 {
                     AuthorId = ctx.Message.Author.Id,
                     AuthorName = ctx.Message.Author.Username,
@@ -240,13 +240,13 @@ public partial class Utility
             string response;
             await using (var uow = _db.GetDbContext())
             {
-                var q = uow.Quotes.GetById(id);
+                var q = uow.Set<Quote>().GetById(id);
 
                 if (q?.GuildId != ctx.Guild.Id || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
                     response = GetText(strs.quotes_remove_none);
                 else
                 {
-                    uow.Quotes.Remove(q);
+                    uow.Set<Quote>().Remove(q);
                     await uow.SaveChangesAsync();
                     success = true;
                     response = GetText(strs.quote_deleted(id));
@@ -293,7 +293,7 @@ public partial class Utility
 
             await using (var uow = _db.GetDbContext())
             {
-                uow.Quotes.RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
+                uow.Set<Quote>().RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
 
                 await uow.SaveChangesAsync();
             }
@@ -309,7 +309,7 @@ public partial class Utility
             IEnumerable<Quote> quotes;
             await using (var uow = _db.GetDbContext())
             {
-                quotes = uow.Quotes.GetForGuild(ctx.Guild.Id).ToList();
+                quotes = uow.Set<Quote>().GetForGuild(ctx.Guild.Id).ToList();
             }
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
@@ -381,7 +381,7 @@ public partial class Utility
             foreach (var entry in data)
             {
                 var keyword = entry.Key;
-                await uow.Quotes.AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
+                await uow.Set<Quote>().AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
                     .Select(quote => new Quote
                     {
                         GuildId = guildId,

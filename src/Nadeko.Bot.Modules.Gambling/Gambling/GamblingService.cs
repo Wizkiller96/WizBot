@@ -6,6 +6,7 @@ using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Connect4;
+using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Gambling.Services;
 
@@ -52,7 +53,7 @@ public class GamblingService : INService, IReadyExecutor
                 var now = DateTime.UtcNow;
                 var days = TimeSpan.FromDays(lifetime);
                 await using var uow = _db.GetDbContext();
-                await uow.CurrencyTransactions
+                await uow.Set<CurrencyTransaction>()
                     .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
             }
             catch (Exception ex)
@@ -104,7 +105,7 @@ public class GamblingService : INService, IReadyExecutor
                     maxDecay = int.MaxValue;
 
                 var decay = (double)config.Decay.Percent;
-                await uow.DiscordUser
+                await uow.Set<DiscordUser>()
                     .Where(x => x.CurrencyAmount > config.Decay.MinThreshold && x.UserId != _client.CurrentUser.Id)
                     .UpdateAsync(old => new()
                     {
@@ -135,11 +136,11 @@ public class GamblingService : INService, IReadyExecutor
             async () =>
             {
                 await using var uow = _db.GetDbContext();
-                var cash = uow.DiscordUser.GetTotalCurrency();
-                var onePercent = uow.DiscordUser.GetTopOnePercentCurrency(_client.CurrentUser.Id);
-                decimal planted = uow.PlantedCurrency.AsQueryable().Sum(x => x.Amount);
-                var waifus = uow.WaifuInfo.GetTotalValue();
-                var bot = await uow.DiscordUser.GetUserCurrencyAsync(_client.CurrentUser.Id);
+                var cash = uow.Set<DiscordUser>().GetTotalCurrency();
+                var onePercent = uow.Set<DiscordUser>().GetTopOnePercentCurrency(_client.CurrentUser.Id);
+                decimal planted = uow.Set<PlantedCurrency>().AsQueryable().Sum(x => x.Amount);
+                var waifus = uow.Set<WaifuInfo>().GetTotalValue();
+                var bot = await uow.Set<DiscordUser>().GetUserCurrencyAsync(_client.CurrentUser.Id);
                 decimal bank = await uow.GetTable<BankUser>()
                     .SumAsyncLinqToDB(x => x.Balance);
 

@@ -15,9 +15,3 @@ public class WaifuUpdate : DbEntity
     public int? NewId { get; set; }
     public DiscordUser New { get; set; }
 }
-
-public enum WaifuUpdateType
-{
-    AffinityChanged,
-    Claimed
-}

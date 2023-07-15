@@ -10,26 +10,6 @@ namespace NadekoBot.Modules.Administration
         [OwnerOnly]
         public partial class DangerousCommands : NadekoModule<DangerousCommandsService>
         {
-            private async Task ConfirmActionInternalAsync(string name, Func<Task> action)
-            {
-                try
-                {
-                    var embed = _eb.Create()
-                                   .WithTitle(GetText(strs.sql_confirm_exec))
-                                   .WithDescription(name);
-
-                    if (!await PromptUserConfirmAsync(embed))
-                        return;
-
-                    await action();
-                    await ctx.OkAsync();
-                }
-                catch (Exception ex)
-                {
-                    await SendErrorAsync(ex.ToString());
-                }
-            }
-            
             [Cmd]
             [OwnerOnly]
             public Task SqlSelect([Leftover] string sql)
@@ -75,36 +55,6 @@ namespace NadekoBot.Modules.Administration
                     await SendErrorAsync(ex.ToString());
                 }
             }
-
-            [Cmd]
-            [OwnerOnly]
-            public Task DeleteWaifus()
-                => ConfirmActionInternalAsync("Delete Waifus", () => _service.DeleteWaifus());
-
-            [Cmd]
-            [OwnerOnly]
-            public async Task DeleteWaifu(IUser user)
-                => await DeleteWaifu(user.Id);
-
-            [Cmd]
-            [OwnerOnly]
-            public Task DeleteWaifu(ulong userId)
-                => ConfirmActionInternalAsync($"Delete Waifu {userId}", () => _service.DeleteWaifu(userId));
-
-            [Cmd]
-            [OwnerOnly]
-            public Task DeleteCurrency()
-                => ConfirmActionInternalAsync("Delete Currency", () => _service.DeleteCurrency());
-
-            [Cmd]
-            [OwnerOnly]
-            public Task DeletePlaylists()
-                => ConfirmActionInternalAsync("Delete Playlists", () => _service.DeletePlaylists());
-
-            [Cmd]
-            [OwnerOnly]
-            public Task DeleteXp()
-                => ConfirmActionInternalAsync("Delete Xp", () => _service.DeleteXp());
 
             [Cmd]
             [OwnerOnly]
