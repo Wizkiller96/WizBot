@@ -15,5 +15,10 @@
       <ProjectReference Include="..\Nadeko.Bot.Common\Nadeko.Bot.Common.csproj" />
       <ProjectReference Include="..\Nadeko.Bot.Modules.Gambling\Nadeko.Bot.Modules.Gambling.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="UserPunish\_common\" />
+      <Folder Include="UserPunish\_common\db\" />
+    </ItemGroup>
 
 </Project>

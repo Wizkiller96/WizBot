@@ -28,4 +28,10 @@
       <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
     </ItemGroup>
 
+
+
+
+
+
+
 </Project>
