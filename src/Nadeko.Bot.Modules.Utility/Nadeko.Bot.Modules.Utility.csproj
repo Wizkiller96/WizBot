@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="_Common\Db\" />
+      <Folder Include="_common\Db\" />
     </ItemGroup>
 
 </Project>
