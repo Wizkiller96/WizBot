@@ -79,6 +79,8 @@ public sealed class DoAsUserMessage : IUserMessage
 
     public IUser Author => _user;
 
+    public IThreadChannel Thread => _msg.Thread;
+
     public IReadOnlyCollection<IAttachment> Attachments => _msg.Attachments;
 
     public IReadOnlyCollection<IEmbed> Embeds => _msg.Embeds;
@@ -106,6 +108,7 @@ public sealed class DoAsUserMessage : IUserMessage
     public MessageFlags? Flags => _msg.Flags;
 
     public IMessageInteraction Interaction => _msg.Interaction;
+    public MessageRoleSubscriptionData RoleSubscriptionData => _msg.RoleSubscriptionData;
 
     public Task ModifyAsync(Action<MessageProperties> func, RequestOptions? options = null)
     {

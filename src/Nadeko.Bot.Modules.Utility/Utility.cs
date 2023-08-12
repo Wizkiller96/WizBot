@@ -463,10 +463,11 @@ public partial class Utility : NadekoModule
                 tags = new[] { name };
             
             await ctx.Guild.CreateStickerAsync(name,
-                string.IsNullOrWhiteSpace(description) ? "Missing description" : description,
-                tags,
                 stream,
-                $"{name}.{format}");
+                $"{name}.{format}",
+                tags,
+                description: string.IsNullOrWhiteSpace(description) ? "Missing description" : description
+                );
 
             await ctx.OkAsync();
         }
