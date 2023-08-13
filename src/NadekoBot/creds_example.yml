@@ -29,9 +29,9 @@ google:
   imageSearchId: 
 # Settings for voting system for discordbots. Meant for use on global Nadeko.
 votes:
-# top.gg votes service url
-# This is the url of your instance of the NadekoBot.Votes api
-# Example: https://votes.my.cool.bot.com
+  # top.gg votes service url
+  # This is the url of your instance of the NadekoBot.Votes api
+  # Example: https://votes.my.cool.bot.com
   topggServiceUrl: ''
   # Authorization header value sent to the TopGG service url with each request
   # This should be equivalent to the TopggKey in your NadekoBot.Votes api appsettings.json file
@@ -67,8 +67,8 @@ botCache: Memory
 redisOptions: localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=true,password=
 # Database options. Don't change if you don't know what you're doing. Leave null for default values
 db:
-# Database type. "sqlite", "mysql" and "postgresql" are supported.
-# Default is "sqlite"
+  # Database type. "sqlite", "mysql" and "postgresql" are supported.
+  # Default is "sqlite"
   type: sqlite
   # Database connection string.
   # You MUST change this if you're not using "sqlite" type.

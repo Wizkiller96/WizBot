@@ -4,6 +4,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace Nadeko.Bot.Modules.Gambling.Gambling._Common;
 
+// todo organize
 public interface IGamblingCleanupService
 {
     Task DeleteWaifus();
@@ -11,7 +12,7 @@ public interface IGamblingCleanupService
     Task DeleteCurrency();
 }
 
-public class GamblingCleanupService : IGamblingCleanupService
+public class GamblingCleanupService : IGamblingCleanupService, INService
 {
     private readonly DbService _db;
 

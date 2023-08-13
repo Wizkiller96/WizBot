@@ -4,7 +4,7 @@ using NadekoBot.Services.Database.Models;
 
 namespace NadekoBot.Modules.Xp;
 
-public sealed class XpCleanupService : IXpCleanupService
+public sealed class XpCleanupService : IXpCleanupService, INService
 {
     private readonly DbService _db;
 
