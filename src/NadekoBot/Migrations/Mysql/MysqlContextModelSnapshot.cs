@@ -2112,6 +2112,10 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("serverid");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
                     b.Property<ulong>("UserId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
