@@ -49,7 +49,8 @@ public partial class Utility
             if (!await RemindInternal(target,
                     meorhere == MeOrHere.Me || ctx.Guild is null,
                     remindData.Time,
-                    remindData.What))
+                    remindData.What,
+                    ReminderType.User))
                 await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
@@ -73,7 +74,7 @@ public partial class Utility
             }
 
 
-            if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What))
+            if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What, ReminderType.User))
                 await ReplyErrorLocalizedAsync(strs.remind_too_long);
         }
 
@@ -172,7 +173,8 @@ public partial class Utility
             ulong targetId,
             bool isPrivate,
             TimeSpan ts,
-            string message)
+            string message,
+            ReminderType reminderType)
         {
             var time = DateTime.UtcNow + ts;
 

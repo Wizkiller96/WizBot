@@ -149,9 +149,23 @@ public partial class Gambling : GamblingModule<GamblingService>
             ctx.Guild?.Id,
             true,
             when,
-            GetText(strs.timely_time));
+            GetText(strs.timely_time),
+            ReminderType.Timely);
 
         await smc.RespondConfirmAsync(_eb, GetText(strs.remind_timely(tt)), ephemeral: true);
+    }
+    
+    private NadekoInteraction CreateRemindMeInteraction(int period)
+    {
+        return _inter
+            .Create(ctx.User.Id,
+                new SimpleInteraction<DateTime>(
+                    new ButtonBuilder(
+                        label: "Remind me",
+                        emote: Emoji.Parse("⏰"),
+                        customId: "timely:remind_me"),
+                    RemindTimelyAction,
+                    DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
     }
 
     [Cmd]
@@ -164,12 +178,20 @@ public partial class Gambling : GamblingModule<GamblingService>
             await ReplyErrorLocalizedAsync(strs.timely_none);
             return;
         }
+        
+        var inter = CreateRemindMeInteraction(period);
 
         if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } rem)
         {
+            // Removes timely button if there is a timely reminder in DB
+            if (_service.UserHasTimelyReminder(ctx.User.Id))
+            {
+                inter = null;
+            }
+            
             var now = DateTime.UtcNow;
             var relativeTag = TimestampTag.FromDateTime(now.Add(rem), TimestampTagStyles.Relative);
-            await ReplyPendingLocalizedAsync(strs.timely_already_claimed(relativeTag));
+            await ReplyPendingLocalizedAsync(strs.timely_already_claimed(relativeTag), inter);
             return;
         }
 
@@ -179,19 +201,9 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        var inter = _inter
-            .Create(ctx.User.Id,
-                new SimpleInteraction<DateTime>(
-                    new ButtonBuilder(
-                        label: "Remind me",
-                        emote: Emoji.Parse("⏰"),
-                        customId: "timely:remind_me"),
-                    RemindTimelyAction,
-                    DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
-
         await ReplyConfirmLocalizedAsync(strs.timely(N(val), period), inter);
     }
-
+    
     [Cmd]
     [OwnerOnly]
     public async Task TimelyReset()
