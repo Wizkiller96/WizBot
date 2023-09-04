@@ -237,10 +237,11 @@ public abstract class NadekoContext : DbContext
           .HasForeignKey<ClubInfo>(x => x.OwnerId)
           .OnDelete(DeleteBehavior.SetNull);
 
-        ci.HasAlternateKey(x => new
-        {
-            x.Name
-        });
+        ci.HasIndex(x => new
+          {
+              x.Name
+          })
+          .IsUnique();
 
         #endregion
 
