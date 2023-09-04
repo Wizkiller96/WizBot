@@ -58,17 +58,17 @@ public partial class Xp
         [Cmd]
         public async Task ClubCreate([Leftover] string clubName)
         {
-            if (string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20)
+            var result = await _service.CreateClubAsync(ctx.User, clubName);
+
+            if (result == ClubCreateResult.NameTooLong)
             {
                 await ReplyErrorLocalizedAsync(strs.club_name_too_long);
                 return;
             }
-
-            var result = await _service.CreateClubAsync(ctx.User, clubName);
-
+            
             if (result == ClubCreateResult.NameTaken)
             {
-                await ReplyErrorLocalizedAsync(strs.club_create_error_name);
+                await ReplyErrorLocalizedAsync(strs.club_name_taken);
                 return;
             }
 
@@ -419,6 +419,33 @@ public partial class Xp
                 embed.AddField($"#{++i} " + club, club.Xp + " xp");
 
             return ctx.Channel.EmbedAsync(embed);
+        }
+
+        [Cmd]
+        public async Task ClubRename([Leftover] string clubName)
+        {
+            var res = await _service.RenameClubAsync(ctx.User.Id, clubName);
+
+            switch (res)
+            {
+                case ClubRenameResult.NameTooLong:
+                    await ReplyErrorLocalizedAsync(strs.club_name_too_long);
+                    return;
+                case ClubRenameResult.Success:
+                {
+                    var embed = _eb.Create().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
+                    await ctx.Channel.EmbedAsync(embed);
+                    return;
+                }
+                case ClubRenameResult.NameTaken:
+                    await ReplyErrorLocalizedAsync(strs.club_name_taken);
+                    return;
+                case ClubRenameResult.NotOwnerOrAdmin:
+                    await ReplyErrorLocalizedAsync(strs.club_admin_perms);
+                    return;
+                default:
+                    return;
+            }
         }
     }
 }

@@ -135,7 +135,6 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasColumnName("imageurl");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)")
                         .HasColumnName("name")
@@ -152,8 +151,9 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.HasKey("Id")
                         .HasName("pk_clubs");
 
-                    b.HasAlternateKey("Name")
-                        .HasName("ak_clubs_name");
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_clubs_name");
 
                     b.HasIndex("OwnerId")
                         .IsUnique()

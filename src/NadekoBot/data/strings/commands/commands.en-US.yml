@@ -2359,3 +2359,7 @@ doas:
   desc: "Execute the command as if you were the target user. Requires bot ownership and server administrator permission."
   args:
     - "@Thief .give all @Admin"
+clubrename:
+  desc: "Renames your club. Requires you club ownership or club-admin status."
+  args:
+    - "New cool club name"

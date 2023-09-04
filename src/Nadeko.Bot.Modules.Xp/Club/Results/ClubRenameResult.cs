@@ -1,10 +1,9 @@
 namespace NadekoBot.Modules.Xp.Services;
 
-public enum ClubCreateResult
+public enum ClubRenameResult
 {
+    NotOwnerOrAdmin,
     Success,
-    AlreadyInAClub,
     NameTaken,
-    InsufficientLevel,
     NameTooLong
 }
