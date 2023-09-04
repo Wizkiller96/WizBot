@@ -250,8 +250,9 @@ public partial class Gambling
                 ? "-"
                 : string.Join("\n",
                     itemList.Where(x => waifuItems.TryGetValue(x.ItemEmoji, out _))
-                        .OrderBy(x => waifuItems[x.ItemEmoji].Price)
+                        .OrderByDescending(x => waifuItems[x.ItemEmoji].Price)
                         .GroupBy(x => x.ItemEmoji)
+                        .Take(60)
                         .Select(x => $"{x.Key} x{x.Count(),-3}")
                         .Chunk(2)
                         .Select(x => string.Join(" ", x)));
@@ -264,7 +265,10 @@ public partial class Gambling
 
             var fansList = await _service.GetFansNames(wi.WaifuId);
             var fansStr = fansList
-                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x).Join('\n');
+                .Shuffle()
+                .Take(30)
+                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
+                .Join('\n');
 
             
             if (string.IsNullOrWhiteSpace(fansStr))
