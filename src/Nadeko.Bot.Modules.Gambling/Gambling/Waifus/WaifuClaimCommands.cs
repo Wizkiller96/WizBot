@@ -284,11 +284,10 @@ public partial class Gambling
 
             var fansList = await _service.GetFansNames(wi.WaifuId);
             var fansStr = fansList
-                            .Shuffle()
-                            .Take(30)
-                            .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
-                            .Join('\n');
-
+                .Shuffle()
+                .Take(30)
+                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
+                .Join('\n');
 
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";

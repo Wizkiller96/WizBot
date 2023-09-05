@@ -97,7 +97,8 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
         if (!GuildLogSettings.TryGetValue(gu.Guild.Id, out var logSetting)
             || before is null
-            || after is null)
+            || after is null
+            || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == gu.Id && ilc.ItemType == IgnoredItemType.User))
             return;
 
         ITextChannel? logChannel;
@@ -349,7 +350,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
 
                 var g = after.Guild;
 
-                if (!GuildLogSettings.TryGetValue(g.Id, out var logSetting) || logSetting.UserUpdatedId is null)
+                if (!GuildLogSettings.TryGetValue(g.Id, out var logSetting) || logSetting.UserUpdatedId is null || logSetting.LogIgnores.Any(ilc => ilc.LogItemId == after.Id && ilc.ItemType == IgnoredItemType.User))
                     return;
 
                 ITextChannel? logChannel;

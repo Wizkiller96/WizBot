@@ -1360,7 +1360,7 @@ medusainfo:
   - meinfo
 medusasearch:
   - medusasearch
-  - mesearch
+  - mesearchW
 # Bank stuff
 bankdeposit:
   - deposit
