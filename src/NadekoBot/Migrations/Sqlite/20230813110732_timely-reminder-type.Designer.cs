@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NadekoBot.Services.Database;
 
@@ -10,9 +11,11 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Db.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteContext))]
-    partial class SqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20230813110732_timely-reminder-type")]
+    partial class timelyremindertype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
@@ -109,6 +112,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
@@ -120,8 +124,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasAlternateKey("Name");
 
                     b.HasIndex("OwnerId")
                         .IsUnique();

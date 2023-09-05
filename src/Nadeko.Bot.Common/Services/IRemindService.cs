@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using NadekoBot.Services.Database.Models;
+
 namespace NadekoBot.Modules.Utility.Services;
 
 public interface IRemindService
@@ -8,5 +10,6 @@ public interface IRemindService
         ulong? guildId,
         bool isPrivate,
         DateTime time,
-        string message);
+        string message,
+        ReminderType reminderType);
 }

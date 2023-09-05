@@ -21,6 +21,7 @@ public interface IClubService
     ClubUnbanResult UnBan(ulong ownerUserId, string userName, out ClubInfo club);
     ClubKickResult Kick(ulong kickerId, string userName, out ClubInfo club);
     List<ClubInfo> GetClubLeaderboardPage(int page);
+    Task<ClubRenameResult> RenameClubAsync(ulong userId, string clubName);
 }
 
 public enum ClubApplyResult

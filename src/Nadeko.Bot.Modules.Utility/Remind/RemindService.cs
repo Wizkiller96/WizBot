@@ -232,7 +232,8 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         ulong? guildId,
         bool isPrivate,
         DateTime time,
-        string message)
+        string message,
+        ReminderType reminderType)
     {
         var rem = new Reminder
         {
@@ -242,6 +243,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             IsPrivate = isPrivate,
             When = time,
             Message = message, 
+            Type = reminderType
         };
 
         await using var ctx = _db.GetDbContext();

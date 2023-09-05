@@ -9,4 +9,11 @@ public class Reminder : DbEntity
     public ulong UserId { get; set; }
     public string Message { get; set; }
     public bool IsPrivate { get; set; }
+    public ReminderType Type { get; set; }
+}
+
+public enum ReminderType
+{
+    User,
+    Timely
 }

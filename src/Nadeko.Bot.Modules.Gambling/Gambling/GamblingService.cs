@@ -209,6 +209,13 @@ public class GamblingService : INService, IReadyExecutor
         }
     }
 
+    public bool UserHasTimelyReminder(ulong userId)
+    {
+        var db = _db.GetDbContext();
+        return db.GetTable<Reminder>().Any(x => x.UserId == userId
+                                         && x.Type == ReminderType.Timely);
+    }   
+
     public async Task RemoveAllTimelyClaimsAsync()
         => await _cache.RemoveAsync(_timelyKey);
 }

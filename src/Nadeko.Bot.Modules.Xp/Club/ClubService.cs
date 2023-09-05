@@ -22,6 +22,9 @@ public class ClubService : INService, IClubService
     
     public async Task<ClubCreateResult> CreateClubAsync(IUser user, string clubName)
     {
+        if (!CheckClubName(clubName))
+            return ClubCreateResult.NameTooLong;
+        
         //must be lvl 5 and must not be in a club already
 
         await using var uow = _db.GetDbContext();
@@ -315,5 +318,32 @@ public class ClubService : INService, IClubService
 
         using var uow = _db.GetDbContext();
         return uow.Set<ClubInfo>().GetClubLeaderboardPage(page);
+    }
+
+    public async Task<ClubRenameResult> RenameClubAsync(ulong userId, string clubName)
+    {
+        if (!CheckClubName(clubName))
+            return ClubRenameResult.NameTooLong;
+        
+        await using var uow = _db.GetDbContext();
+        
+        var club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(userId);
+        
+        if (club is null)
+            return ClubRenameResult.NotOwnerOrAdmin;
+        
+        if (await uow.Set<ClubInfo>().AnyAsyncEF(x => x.Name == clubName))
+            return ClubRenameResult.NameTaken;
+
+        club.Name = clubName;
+
+        await uow.SaveChangesAsync();
+
+        return ClubRenameResult.Success;
+    }
+
+    private static bool CheckClubName(string clubName)
+    {
+        return !(string.IsNullOrWhiteSpace(clubName) || clubName.Length > 20);
     }
 }
