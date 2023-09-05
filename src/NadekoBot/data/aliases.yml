@@ -1358,6 +1358,9 @@ medusalist:
 medusainfo:
   - medusainfo
   - meinfo
+medusasearch:
+  - medusasearch
+  - mesearch
 # Bank stuff
 bankdeposit:
   - deposit

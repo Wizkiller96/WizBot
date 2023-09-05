@@ -1,5 +1,6 @@
 #nullable disable
 using LinqToDB;
+using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -96,6 +97,16 @@ public sealed class BlacklistService : IExecOnMessage
                 Type = type,
             });
 
+        if (type == BlacklistType.User)
+        {
+            await uow.GetTable<DiscordUser>()
+                .Where(x => x.UserId == id)
+                .UpdateAsync(_ => new()
+                {
+                    CurrencyAmount = 0
+                });
+        }
+
         Reload();
     }
 
@@ -109,27 +120,23 @@ public sealed class BlacklistService : IExecOnMessage
         Reload();
     }
 
-    public void BlacklistUsers(IReadOnlyCollection<ulong> toBlacklist)
+    public async Task BlacklistUsers(IReadOnlyCollection<ulong> toBlacklist)
     {
-        using (var uow = _db.GetDbContext())
+        await using var uow = _db.GetDbContext();
+        var bc = uow.GetTable<BlacklistEntry>();
+        await bc.BulkCopyAsync(toBlacklist.Select(uid => new BlacklistEntry
         {
-            var bc = uow.Set<BlacklistEntry>();
-            bc.AddRange(toBlacklist.Select(x => new BlacklistEntry
-            {
-                ItemId = x,
-                Type = BlacklistType.User
-            }));
+            ItemId = uid,
+            Type = BlacklistType.User
+        }));
 
-            // todo check if blacklist works and removes currency
-            uow.GetTable<DiscordUser>()
-                .UpdateAsync(x => toBlacklist.Contains(x.UserId),
-                    _ => new()
-                    {
-                        CurrencyAmount = 0
-                    });
-            
-            uow.SaveChanges();
-        }
+        var blList = toBlacklist.ToList();
+        await uow.GetTable<DiscordUser>()
+            .Where(x => blList.Contains(x.UserId))
+            .UpdateAsync(_ => new()
+            {
+                CurrencyAmount = 0
+            });
 
         Reload();
     }

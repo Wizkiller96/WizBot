@@ -2282,6 +2282,11 @@ medusalist:
     Read about the medusa system [here](https://nadekobot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
   args:
     - ""
+medusasearch:
+  desc: |-
+    Searches for medusae online given the search term
+  args:
+    - "shrine"
 bankdeposit:
   desc: "Deposits the specified amount of currency into the bank for later use."
   args:
