@@ -2,6 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.17] - 06.09.2023
+
+### Fixed 
+
+- Fix to waifu gifts being character limited
+- Fixes UserUpdated and UserPresence not correctly ignoring users that are logignored
+- Added Trim() to activity names since apparently some activities have trailing spaces.
+
 ## [4.3.16] - 24.05.2023
 
 ### Fixed
