@@ -679,7 +679,7 @@ public partial class Utility : WizBotModule
                 .WithTitle("WizNet's Info")
                 .WithThumbnailUrl("https://i.imgur.com/Go5ZymW.png")
                 .WithDescription("WizNet is a small internet company that was made by Wizkiller96. The site first started off more as a social platform for his friends to have a place to hangout and chat with each other and share their work. Since then the site has gone through many changes and reforms. It now sits as a small hub for all the services and work WizNet provides to the public.")
-                .AddField("Websites", "[WizNet](http://wiznet.ml/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)", true)
+                .AddField("Websites", "[WizNet](http://wiznet.work/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)", true)
                 .AddField("Social Media", "[Facebook](http://facebook.com/Wizkiller96Network)\n[WizBot's Twitter](http://twitter.com/WizBot_Dev)", true)
                 .AddField("WizNet Staff", string.Join("\n", wnstaff), false)
                 .AddField("WizBot Staff", string.Join("\n", wbstaff), false)
