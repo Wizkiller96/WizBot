@@ -19,7 +19,6 @@ public class ClubService : INService, IClubService
         _httpFactory = httpFactory;
     }
 
-    
     public async Task<ClubCreateResult> CreateClubAsync(IUser user, string clubName)
     {
         //must be lvl 5 and must not be in a club already
@@ -140,7 +139,7 @@ public class ClubService : INService, IClubService
 
         //user banned or a member of a club, or already applied,
         // or doesn't min minumum level requirement, can't apply
-        if (du.Club is not null)
+        if (du.ClubId is not null)
             return ClubApplyResult.AlreadyInAClub;
         
         if (club.Bans.Any(x => x.UserId == du.Id))
