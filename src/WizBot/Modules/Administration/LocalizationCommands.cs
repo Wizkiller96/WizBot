@@ -65,7 +65,10 @@ public partial class Administration
                     _localization.SetGuildCulture(ctx.Guild, ci);
                 }
 
-                await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()), Format.Bold(ci.NativeName)));
+                var nativeName = ci.NativeName;
+                if (ci.Name == "ts-TS")
+                    nativeName = _supportedLocales[ci.Name];
+                await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()), Format.Bold(nativeName)));
             }
             catch (Exception)
             {
