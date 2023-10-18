@@ -140,7 +140,7 @@ public class ClubService : INService, IClubService
 
         //user banned or a member of a club, or already applied,
         // or doesn't min minumum level requirement, can't apply
-        if (du.Club is not null)
+        if (du.ClubId is not null)
             return ClubApplyResult.AlreadyInAClub;
         
         if (club.Bans.Any(x => x.UserId == du.Id))
