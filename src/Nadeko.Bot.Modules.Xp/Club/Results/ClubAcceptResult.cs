@@ -6,3 +6,10 @@ public enum ClubAcceptResult
     NotOwnerOrAdmin,
     NoSuchApplicant,
 }
+
+public enum ClubDenyResult
+{
+    Rejected,
+    NoSuchApplicant,
+    NotOwnerOrAdmin
+}

@@ -29,7 +29,7 @@
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
         <PackageReference Include="CoreCLR-NCalc" Version="2.2.110" />
         <PackageReference Include="Google.Apis.Urlshortener.v1" Version="1.41.1.138" />
-        <PackageReference Include="Google.Apis.YouTube.v3" Version="1.60.0.2945" />
+        <PackageReference Include="Google.Apis.YouTube.v3" Version="1.62.1.3205" />
         <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.49.0.2084" />
         <PackageReference Include="Google.Protobuf" Version="3.22.1" />
         <PackageReference Include="Grpc.Net.ClientFactory" Version="2.52.0" />

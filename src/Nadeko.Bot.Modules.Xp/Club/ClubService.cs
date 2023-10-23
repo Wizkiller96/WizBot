@@ -19,7 +19,6 @@ public class ClubService : INService, IClubService
         _httpFactory = httpFactory;
     }
 
-    
     public async Task<ClubCreateResult> CreateClubAsync(IUser user, string clubName)
     {
         if (!CheckClubName(clubName))
@@ -143,7 +142,7 @@ public class ClubService : INService, IClubService
 
         //user banned or a member of a club, or already applied,
         // or doesn't min minumum level requirement, can't apply
-        if (du.Club is not null)
+        if (du.ClubId is not null)
             return ClubApplyResult.AlreadyInAClub;
         
         if (club.Bans.Any(x => x.UserId == du.Id))
@@ -188,6 +187,26 @@ public class ClubService : INService, IClubService
         discordUser = applicant.User;
         uow.SaveChanges();
         return ClubAcceptResult.Accepted;
+    }
+    
+    public ClubDenyResult RejectApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)
+    {
+        discordUser = null;
+        using var uow = _db.GetDbContext();
+        var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+        if (club is null)
+            return ClubDenyResult.NotOwnerOrAdmin;
+
+        var applicant =
+            club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
+        if (applicant is null)
+            return ClubDenyResult.NoSuchApplicant;
+        
+        club.Applicants.Remove(applicant);
+        
+        discordUser = applicant.User;
+        uow.SaveChanges();
+        return ClubDenyResult.Rejected;
     }
 
     public ClubInfo GetClubWithBansAndApplications(ulong ownerUserId)

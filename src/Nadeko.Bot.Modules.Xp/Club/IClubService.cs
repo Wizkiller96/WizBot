@@ -13,6 +13,7 @@ public interface IClubService
     bool GetClubByName(string clubName, out ClubInfo club);
     ClubApplyResult ApplyToClub(IUser user, ClubInfo club);
     ClubAcceptResult AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser);
+    ClubDenyResult RejectApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser);
     ClubInfo? GetClubWithBansAndApplications(ulong ownerUserId);
     ClubLeaveResult LeaveClub(IUser user);
     bool SetDescription(ulong userId, string? desc);
