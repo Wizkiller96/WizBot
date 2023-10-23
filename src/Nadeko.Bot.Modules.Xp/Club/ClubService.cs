@@ -193,7 +193,7 @@ public class ClubService : INService, IClubService
     {
         discordUser = null;
         using var uow = _db.GetDbContext();
-        var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+        var club = uow.Set<ClubInfo>().GetByOwnerOrAdmin(clubOwnerUserId);
         if (club is null)
             return ClubDenyResult.NotOwnerOrAdmin;
 
