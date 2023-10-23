@@ -1929,6 +1929,10 @@ clubaccept:
   desc: "Accept a user who applied to your club."
   args:
     - "user#1337"
+clubreject:
+  desc: "Reject a user who applied to your club."
+  args:
+    - "user#1337"
 clubleave:
   desc: "Leaves the club you're currently in."
   args:

@@ -282,6 +282,24 @@ public partial class Xp
             else if(result == ClubAcceptResult.NotOwnerOrAdmin)
                 await ReplyErrorLocalizedAsync(strs.club_admin_perms);
         }
+        
+        [Cmd]
+        [Priority(1)]
+        public Task ClubReject(IUser user)
+            => ClubReject(user.ToString());
+
+        [Cmd]
+        [Priority(0)]
+        public async Task ClubReject([Leftover] string userName)
+        {
+            var result = _service.RejectApplication(ctx.User.Id, userName, out var discordUser);
+            if (result == ClubDenyResult.Rejected)
+                await ReplyConfirmLocalizedAsync(strs.club_rejected(Format.Bold(discordUser.ToString())));
+            else if(result == ClubDenyResult.NoSuchApplicant)
+                await ReplyErrorLocalizedAsync(strs.club_accept_invalid_applicant);
+            else if(result == ClubDenyResult.NotOwnerOrAdmin)
+                await ReplyErrorLocalizedAsync(strs.club_admin_perms);
+        }
 
         [Cmd]
         public async Task ClubLeave()

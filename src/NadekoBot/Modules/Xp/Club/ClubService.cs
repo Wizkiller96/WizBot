@@ -185,6 +185,26 @@ public class ClubService : INService, IClubService
         uow.SaveChanges();
         return ClubAcceptResult.Accepted;
     }
+    
+    public ClubDenyResult RejectApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)
+    {
+        discordUser = null;
+        using var uow = _db.GetDbContext();
+        var club = uow.Clubs.GetByOwnerOrAdmin(clubOwnerUserId);
+        if (club is null)
+            return ClubDenyResult.NotOwnerOrAdmin;
+
+        var applicant =
+            club.Applicants.FirstOrDefault(x => x.User.ToString().ToUpperInvariant() == userName.ToUpperInvariant());
+        if (applicant is null)
+            return ClubDenyResult.NoSuchApplicant;
+        
+        club.Applicants.Remove(applicant);
+        
+        discordUser = applicant.User;
+        uow.SaveChanges();
+        return ClubDenyResult.Rejected;
+    }
 
     public ClubInfo GetClubWithBansAndApplications(ulong ownerUserId)
     {

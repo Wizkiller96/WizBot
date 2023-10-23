@@ -848,6 +848,7 @@
   "club_not_exists": "That club doesn't exist.",
   "club_applied": "You've applied for membership in {0} club.",
   "club_accepted": "Accepted user {0} to the club.",
+  "club_rejected": "The application by {0} has been rejected.",
   "club_accept_invalid_applicant": "That user has not applied to your club.",
   "club_left": "You've left the club.",
   "club_not_in_a_club": "You are not in a club.",
