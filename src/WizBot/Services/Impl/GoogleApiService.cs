@@ -57,7 +57,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         return (await query.ExecuteAsync()).Items.Select(i => i.Id.PlaylistId);
     }
 
-    public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1, string user = null)
+    public async Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 2, string user = null)
     {
         if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentNullException(nameof(id));
@@ -67,10 +67,14 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
-        query.RelatedToVideoId = id;
+        query.Q = id;
+        // query.RelatedToVideoId = id;
         query.Type = "video";
         query.QuotaUser = user;
-        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId);
+        // bad workaround as there's no replacement for related video querying right now.
+        // Query youtube with the id of the video, take a second video in the results
+        // skip the first one as that's probably the same video.
+        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId).Skip(1);
     }
 
     public async Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
