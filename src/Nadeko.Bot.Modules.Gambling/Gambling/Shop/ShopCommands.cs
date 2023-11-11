@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling;
 

@@ -1,5 +1,5 @@
 #nullable disable
-namespace NadekoBot.Services.Database.Models;
+namespace Nadeko.Bot.Db.Models;
 
 
 // todo db required, nullable?

@@ -1,6 +1,6 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Patronage;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using OneOf;
 using OneOf.Types;
 

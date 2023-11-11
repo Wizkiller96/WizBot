@@ -1,6 +1,7 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Nadeko.Bot.Db;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
@@ -14,8 +15,8 @@ using NadekoBot.Modules.Permissions;
 using NadekoBot.Modules.Searches;
 using NadekoBot.Modules.Utility;
 using NadekoBot.Modules.Xp;
-using NadekoBot.Services.Database;
-using NadekoBot.Services.Database.Models;
+
+using Nadeko.Bot.Db.Models;
 using Ninject;
 using Ninject.Planning;
 using System.Collections.Immutable;
@@ -34,8 +35,6 @@ public sealed class Bot : IBot
 
     private IKernel Services { get; set; }
 
-    // todo remove
-    public string Mention { get; private set; }
     public bool IsReady { get; private set; }
     public int ShardId { get; set; }
 
@@ -293,8 +292,7 @@ public sealed class Bot : IBot
         var sw = Stopwatch.StartNew();
 
         await LoginAsync(_creds.Token);
-
-        Mention = Client.CurrentUser.Mention;
+        
         Log.Information("Shard {ShardId} loading services...", Client.ShardId);
         try
         {

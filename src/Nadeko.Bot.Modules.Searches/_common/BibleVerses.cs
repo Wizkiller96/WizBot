@@ -1,9 +1,9 @@
 #nullable disable
-using Newtonsoft.Json;
+
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Searches.Common;
 
-// todo replace newtonsoft with json.text
 public class BibleVerses
 {
     public string Error { get; set; }
@@ -12,7 +12,7 @@ public class BibleVerses
 
 public class BibleVerse
 {
-    [JsonProperty("book_name")]
+    [JsonPropertyName("book_name")]
     public string BookName { get; set; }
 
     public int Chapter { get; set; }

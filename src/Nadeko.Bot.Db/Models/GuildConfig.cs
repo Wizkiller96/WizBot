@@ -1,7 +1,7 @@
 #nullable disable
 using NadekoBot.Db.Models;
 
-namespace NadekoBot.Services.Database.Models;
+namespace Nadeko.Bot.Db.Models;
 
 public class GuildConfig : DbEntity
 {

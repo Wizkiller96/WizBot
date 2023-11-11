@@ -2,7 +2,7 @@
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Common;
 using NadekoBot.Modules.Utility.Common.Exceptions;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Net;
 
 namespace NadekoBot.Modules.Utility.Services;

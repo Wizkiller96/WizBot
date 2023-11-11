@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Permissions;
 

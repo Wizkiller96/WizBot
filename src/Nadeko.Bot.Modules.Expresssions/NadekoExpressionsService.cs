@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;
 using Nadeko.Bot.Common;
@@ -251,21 +251,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
         // todo print error etc
         
-        // if (await _cmdCds.TryBlock(guild, msg.Author, expr.Trigger))
-        //     return false;
-
         try
         {
-            // if (_gperm.BlockedModules.Contains("ACTUALEXPRESSIONS"))
-            // {
-            //     Log.Information(
-            //         "User {UserName} [{UserId}] tried to use an expression but 'ActualExpressions' are globally disabled",
-            //         msg.Author.ToString(),
-            //         msg.Author.Id);
-            //
-            //     return true;
-            // }
-            //
             // if (guild is SocketGuild sg)
             // {
             //     var pc = _perms.GetCacheFor(guild.Id);

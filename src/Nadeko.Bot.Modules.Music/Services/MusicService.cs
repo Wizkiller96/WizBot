@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Db;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NadekoBot.Modules.Music.Services;

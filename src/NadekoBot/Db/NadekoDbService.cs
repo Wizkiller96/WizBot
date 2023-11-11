@@ -2,7 +2,7 @@
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace NadekoBot.Services.Database;
+namespace Nadeko.Bot.Db;
 
 public sealed class NadekoDbService : DbService 
 {

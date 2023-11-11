@@ -1,5 +1,6 @@
 ﻿using Discord.Commands.Builders;
 using Microsoft.Extensions.DependencyInjection;
+using Nadeko.Common.Medusa;
 using Nadeko.Medusa.Adapters;
 using NadekoBot.Common.ModuleBehaviors;
 using Ninject;

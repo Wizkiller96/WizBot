@@ -1,6 +1,6 @@
 ﻿#nullable disable
 using NadekoBot.Modules.Games.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Text;
 
 namespace NadekoBot.Modules.Games;

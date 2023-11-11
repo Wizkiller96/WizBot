@@ -8,7 +8,7 @@ using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Services.Currency;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;

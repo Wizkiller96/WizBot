@@ -126,7 +126,6 @@ public partial class Xp
             if (level < 1 || amount < 0)
                 return;
 
-            // todo, shouldn't all amount + sign be N(amount)
             _service.SetCurrencyReward(ctx.Guild.Id, level, amount);
             if (amount == 0)
                 await ReplyConfirmLocalizedAsync(strs.cur_reward_cleared(level, _cp.GetCurrencySign()));

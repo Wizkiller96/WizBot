@@ -1,6 +1,6 @@
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Threading.Channels;
 
 namespace NadekoBot.Services;

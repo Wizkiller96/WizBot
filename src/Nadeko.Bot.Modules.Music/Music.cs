@@ -1,6 +1,6 @@
 #nullable disable
 using NadekoBot.Modules.Music.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Music;
 

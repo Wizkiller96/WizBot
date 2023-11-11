@@ -6,7 +6,7 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using Newtonsoft.Json;
 
 namespace NadekoBot.Modules.Administration.Services;

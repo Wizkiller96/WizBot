@@ -1,6 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Db;
 
@@ -29,10 +29,8 @@ public static class QuoteExtensions
         ulong guildId,
         string keyword)
     {
-        // todo figure shuffle out
-        return (await quotes.AsQueryable().Where(q => q.GuildId == guildId && q.Keyword == keyword).ToListAsync())
-            .Shuffle()
-            .FirstOrDefault();
+        return (await quotes.AsQueryable().Where(q => q.GuildId == guildId && q.Keyword == keyword).ToArrayAsync())
+            .RandomOrDefault();
     }
 
     public static async Task<Quote> SearchQuoteKeywordTextAsync(
@@ -41,15 +39,13 @@ public static class QuoteExtensions
         string keyword,
         string text)
     {
-        var rngk = new NadekoRandom();
         return (await quotes.AsQueryable()
                             .Where(q => q.GuildId == guildId
                                         && (keyword == null || q.Keyword == keyword)
                                         && (EF.Functions.Like(q.Text.ToUpper(), $"%{text.ToUpper()}%")
                                             || EF.Functions.Like(q.AuthorName, text)))
-                            .ToListAsync())
-               .OrderBy(_ => rngk.Next())
-               .FirstOrDefault();
+                            .ToArrayAsync())
+               .RandomOrDefault();
     }
 
     public static void RemoveAllByKeyword(this DbSet<Quote> quotes, ulong guildId, string keyword)

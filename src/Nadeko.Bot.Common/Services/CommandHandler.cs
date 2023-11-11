@@ -43,8 +43,8 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         // InteractionService interactions,
         IServiceProvider services)
     {
-        _client = client;
-        _commandService = commandService;
+    _client = client;
+    _commandService = commandService;
         _bss = bss;
         _bot = bot;
         _behaviorHandler = behaviorHandler;

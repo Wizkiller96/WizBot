@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace NadekoBot.Modules.Searches;
 
+// todo fix stock/crypto
 public sealed class DefaultStockDataService : IStockDataService, INService
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -82,7 +83,6 @@ public sealed class DefaultStockDataService : IStockDataService, INService
         PrepareHeaderForMatch = args => args.Header.Humanize(LetterCasing.Title)
     };
 
-    // todo replace .ToTimestamp() and remove google protobuf dependency
     // todo this needs testing
     public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
     {

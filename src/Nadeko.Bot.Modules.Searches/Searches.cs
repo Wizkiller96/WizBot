@@ -10,6 +10,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Net.Http.Json;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Searches;
@@ -548,9 +549,7 @@ public partial class Searches : NadekoModule<SearchesService>
         try
         {
             using var http = _httpFactory.CreateClient();
-            var res = await http.GetStringAsync($"https://bible-api.com/{book} {chapterAndVerse}");
-
-            obj = JsonConvert.DeserializeObject<BibleVerses>(res);
+            obj = await http.GetFromJsonAsync<BibleVerses>($"https://bible-api.com/{book} {chapterAndVerse}");
         }
         catch
         {

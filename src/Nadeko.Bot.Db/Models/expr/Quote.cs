@@ -1,7 +1,7 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations;
 
-namespace NadekoBot.Services.Database.Models;
+namespace Nadeko.Bot.Db.Models;
 
 public class Quote : DbEntity
 {

@@ -2,7 +2,7 @@
 using Humanizer.Localisation;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Utility;
 

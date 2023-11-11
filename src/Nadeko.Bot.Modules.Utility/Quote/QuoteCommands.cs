@@ -1,7 +1,7 @@
 ﻿#nullable disable warnings
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

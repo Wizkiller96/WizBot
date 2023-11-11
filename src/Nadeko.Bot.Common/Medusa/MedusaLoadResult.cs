@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Medusa;
+﻿namespace Nadeko.Common.Medusa;
 
 public enum MedusaLoadResult
 {

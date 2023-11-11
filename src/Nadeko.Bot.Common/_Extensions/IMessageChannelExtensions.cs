@@ -1,3 +1,4 @@
+
 namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions
@@ -91,10 +92,6 @@ public static class MessageChannelExtensions
         return ch.EmbedAsync(builder, inter: inter);
     }
     
-    // regular send overloads
-    public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
-        => ch.SendAsync(eb, text, MsgType.Error);
-    
     public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
         => ch.SendAsync(eb, text, MsgType.Ok);
     
@@ -147,6 +144,10 @@ public static class MessageChannelExtensions
         string? url = null,
         string? footer = null)
         => ch.SendAsync(eb, MsgType.Error, title, text, url, footer);
+    
+    // regular send overloads
+    public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
+        => ch.SendAsync(eb, text, MsgType.Error);
 
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Nadeko.Medusa;
+namespace Nadeko.Common.Medusa;
 
 public interface IMedusaLoaderService
 {

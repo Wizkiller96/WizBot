@@ -1,4 +1,5 @@
 using CommandLine;
+using Nadeko.Common.Medusa;
 
 namespace NadekoBot.Common;
 
@@ -9,7 +10,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
     private readonly DiscordPermOverrideService _dpos;
     private readonly IEmbedBuilderService _eb;
     private readonly ILocalization _loc;
-    private readonly Nadeko.Medusa.IMedusaLoaderService _medusae;
+    private readonly IMedusaLoaderService _medusae;
 
     public CommandsUtilityService(
         CommandHandler ch,
@@ -17,7 +18,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         DiscordPermOverrideService dpos,
         IEmbedBuilderService eb,
         ILocalization loc,
-        Nadeko.Medusa.IMedusaLoaderService medusae)
+        IMedusaLoaderService medusae)
     {
         _ch = ch;
         _strings = strings;
@@ -46,10 +47,9 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         if (reqs.Any())
             em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
-        em.AddField(_strings.GetText(strs.usage),
-                string.Join("\n", com.RealRemarksArr(_strings, _medusae, culture, prefix).Map(arg => Format.Code(arg))))
-            .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild))
-            .WithOkColor();
+        Extensions.Extensions.WithOkColor(em.AddField(_strings.GetText(strs.usage),
+                    string.Join("\n", com.RealRemarksArr(_strings, _medusae, culture, prefix).Map(arg => Format.Code(arg))))
+                .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild)));
 
         var opt = GetNadekoOptionType(com.Attributes);
         if (opt is not null)

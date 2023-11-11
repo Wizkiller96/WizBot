@@ -1,7 +1,7 @@
 #nullable disable
-using Nadeko.Medusa;
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
+using Nadeko.Common.Medusa;
 
 namespace NadekoBot.Modules.Administration;
 

@@ -1,4 +1,6 @@
-﻿namespace Nadeko.Common;
+﻿using System.Security.Cryptography;
+
+namespace Nadeko.Common;
 
 // made for expressions because they almost never get added
 // and they get looped through constantly
@@ -47,5 +49,14 @@ public static class ArrayExtensions
             toReturn[i++] = f(item);
 
         return toReturn;
+    }
+
+    public static T? RandomOrDefault<T>(this T[] data)
+    {
+        if (data.Length == 0)
+            return default;
+
+        var index = RandomNumberGenerator.GetInt32(0, data.Length);
+        return data[index];
     }
 }

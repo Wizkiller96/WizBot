@@ -3,7 +3,7 @@ using CommandLine;
 using Humanizer.Localisation;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Modules.Administration.Services;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Administration;
 

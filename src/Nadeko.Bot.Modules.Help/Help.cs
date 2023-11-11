@@ -1,12 +1,12 @@
 #nullable disable
 using Amazon.S3;
-using Nadeko.Medusa;
 using NadekoBot.Modules.Help.Common;
 using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
 using Nadeko.Bot.Common;
+using Nadeko.Common.Medusa;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
-// todo fix these namespaces. It should only be Nadeko.Bot.Db
-using NadekoBot.Services.Database;
 
 namespace NadekoBot.Extensions;
 

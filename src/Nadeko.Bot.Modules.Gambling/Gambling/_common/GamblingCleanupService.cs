@@ -1,6 +1,6 @@
 ﻿using LinqToDB;
 using NadekoBot.Db.Models;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 
 namespace Nadeko.Bot.Modules.Gambling.Gambling._Common;
 

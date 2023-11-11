@@ -11,12 +11,20 @@ public sealed class PermissionChecker : IPermissionChecker, INService
     private readonly PermissionService _perms;
     private readonly GlobalPermissionService _gperm;
     private readonly CmdCdService _cmdCds;
+    private readonly IEmbedBuilderService _ebs;
+    private readonly CommandHandler _ch;
 
-    public PermissionChecker(PermissionService perms, GlobalPermissionService gperm, CmdCdService cmdCds)
+    // todo .GetPrefix should be in a different place
+    public PermissionChecker(PermissionService perms,
+        GlobalPermissionService gperm, CmdCdService cmdCds,
+        IEmbedBuilderService ebs,
+        CommandHandler ch)
     {
         _perms = perms;
         _gperm = gperm;
         _cmdCds = cmdCds;
+        _ebs = ebs;
+        _ch = ch;
     }
 
     public async Task<OneOf<Success, Error<LocStr>>> CheckAsync(
@@ -44,26 +52,29 @@ public sealed class PermissionChecker : IPermissionChecker, INService
                 return new Success();
             }
 
+            // todo check if this even works
             if (guild is SocketGuild sg)
             {
                 var pc = _perms.GetCacheFor(guild.Id);
-                if (!pc.Permissions.CheckPermissions(author, channel, cmd, "ACTUALEXPRESSIONS", out var index))
+                if (!pc.Permissions.CheckPermissions(author, channel, cmd, module, out var index))
                 {
                     if (pc.Verbose)
                     {
                         // todo fix
-                        // var permissionMessage = strs.perm_prevent(index + 1,
-                        //     Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg)));
-                        //
-                        // try
-                        // {
-                        //     await msg.Channel.SendErrorAsync(_eb, permissionMessage);
-                        // }
-                        // catch
-                        // {
-                        // }
-                        //
-                        // Log.Information("{PermissionMessage}", permissionMessage);
+                        var permissionMessage = strs.perm_prevent(index + 1,
+                            Format.Bold(pc.Permissions[index].GetCommand(_ch.GetPrefix(guild), sg)));
+                        
+                        try
+                        {
+                            // await channel.SendErrorAsync(_ebs,
+                            //     title: null,
+                            //     text: GettextpermissionMessage);
+                        }
+                        catch
+                        {
+                        }
+                        
+                        Log.Information("{PermissionMessage}", permissionMessage);
                     }
 
                     // todo add proper string

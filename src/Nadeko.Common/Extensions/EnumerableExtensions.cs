@@ -38,8 +38,6 @@ public static class EnumerableExtensions
     public static string Join<T>(this IEnumerable<T> data, string separator, Func<T, string>? func = null)
         => string.Join(separator, data.Select(func ?? (x => x?.ToString() ?? string.Empty)));
     
-    
-    // todo have 2 different shuffles
     /// <summary>
     ///     Randomize element order by performing the Fisher-Yates shuffle
     /// </summary>
@@ -47,21 +45,11 @@ public static class EnumerableExtensions
     /// <param name="items">Items to shuffle</param>
     public static IReadOnlyList<T> Shuffle<T>(this IEnumerable<T> items)
     {
-        using var provider = RandomNumberGenerator.Create();
-        var list = items.ToList();
-        var n = list.Count;
-        while (n > 1)
+        var list = items.ToArray();
+        var n = list.Length;
+        while (n-- > 1)
         {
-            var box = new byte[(n / byte.MaxValue) + 1];
-            int boxSum;
-            do
-            {
-                provider.GetBytes(box);
-                boxSum = box.Sum(b => b);
-            } while (!(boxSum < n * (byte.MaxValue * box.Length / n)));
-
-            var k = boxSum % n;
-            n--;
+            var k = RandomNumberGenerator.GetInt32(n);
             (list[k], list[n]) = (list[n], list[k]);
         }
 

@@ -1,5 +1,5 @@
 ﻿using Nadeko.Common;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

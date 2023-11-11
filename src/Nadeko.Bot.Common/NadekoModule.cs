@@ -79,9 +79,10 @@ public abstract class NadekoModule : ModuleBase
 
     public async Task<bool> PromptUserConfirmAsync(IEmbedBuilder embed)
     {
-        embed.WithPendingColor().WithFooter("yes/no");
+        embed.WithPendingColor()
+            .WithFooter("yes/no");
 
-        var msg = await ctx.Channel.EmbedAsync(embed);
+        var msg = await MessageChannelExtensions.EmbedAsync(ctx.Channel, embed);
         try
         {
             var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);

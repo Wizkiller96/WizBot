@@ -1,4 +1,4 @@
-﻿namespace NadekoBot.Services.Database.Models;
+﻿namespace Nadeko.Bot.Db.Models;
 
 public class AntiSpamIgnore : DbEntity
 {

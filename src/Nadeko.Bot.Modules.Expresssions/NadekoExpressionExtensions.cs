@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.Runtime.CompilerServices;
 
 namespace NadekoBot.Modules.NadekoExpressions;

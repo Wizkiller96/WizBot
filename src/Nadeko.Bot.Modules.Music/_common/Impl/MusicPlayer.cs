@@ -1,5 +1,5 @@
 using Ayu.Discord.Voice;
-using NadekoBot.Services.Database.Models;
+using Nadeko.Bot.Db.Models;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Nadeko.Medusa;
+using Nadeko.Common.Medusa;
 
 namespace NadekoBot.Extensions;
 
