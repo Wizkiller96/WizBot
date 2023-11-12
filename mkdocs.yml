@@ -1,7 +1,7 @@
 site_name: 'WizBot Docs'
 site_url: 'https://wizbot.cc'
-repo_name: 'Wizkiller96/WizBot'
-repo_url: 'https://github.com/Wizkiller96/WizBot'
+repo_name: 'WizNet/WizBot'
+repo_url: 'https://gitlab.com/WizNet/WizBot'
 site_author: 'Kwoth & Wizkiller96'
 edit_uri: 'edit/v4/docs/'
 
@@ -87,8 +87,8 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.magiclink:
       repo_url_shorthand: true
-      user: wizkiller96
-      repo: wizbot
+      user: WizNet
+      repo: WizBot
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.superfences
