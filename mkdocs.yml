@@ -40,8 +40,6 @@ theme:
     code: Source Code Pro
   logo: https://wizbot.cc/img/wizbot-icon-887x889.png
   favicon: https://wizbot.cc/img/wizbot-icon-887x889.png
-  icon:
-    repo: custom/gitlab
 
 extra:
   homepage: https://wizbot.cc
