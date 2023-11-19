@@ -279,9 +279,9 @@ public partial class Utility : WizBotModule
         await ctx.Channel.EmbedAsync(_eb.Create()
                                         .WithOkColor()
                                         .WithAuthor($"WizBot v{StatsService.BOT_VERSION}",
-                                            "http://i.imgur.com/fObUYFS.jpg",
+                                            "https://cdn.wizbot.cc/other/bot/wizbot_icon.png",
                                             "https://wizbot.readthedocs.io/en/latest/")
-                                        .WithImageUrl("https://i.imgur.com/hT2UCqu.jpg")
+                                        .WithImageUrl("https://cdn.wizbot.cc/other/bot/wizbot-banner.jpg")
                                         .AddField(GetText(strs.author), _stats.Author, true)
                                         .AddField(GetText(strs.library), _stats.Library, true)
                                         .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
