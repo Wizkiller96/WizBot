@@ -80,6 +80,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
         lock (_reloadLock)
         {
             _creds.OwnerIds.Clear();
+            _creds.AdminIds.Clear();
             _config.Bind(_creds);
 
             if (string.IsNullOrWhiteSpace(_creds.Token))
