@@ -35,7 +35,7 @@ If you're unsure whether something is an issue, ask in our support server first.
 [linux-guide]: ./guides/linux-guide.md
 [macos-guide]: ./guides/osx-guide.md
 [from-source-guide]: ./guides/from-source.md
-[discord-server]: https://wizbot.cc/discord
+[discord-server]: https://discord.wizbot.cc/
 [gitlab]: https://gitlab.com/WizNet/WizBot
 [issues]: https://gitlab.com/WizNet/WizBot/issues
 [donate]: ./donate.md
