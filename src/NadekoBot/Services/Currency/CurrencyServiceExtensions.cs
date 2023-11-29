@@ -1,4 +1,4 @@
-﻿using NadekoBot.Services.Currency;
+using NadekoBot.Services.Currency;
 
 namespace NadekoBot.Services;
 
@@ -27,13 +27,19 @@ public static class CurrencyServiceExtensions
 
         if (await fromWallet.Transfer(amount, toWallet, extra))
         {
-            await to.SendConfirmAsync(ebs,
-                string.IsNullOrWhiteSpace(note)
-                    ? $"Received {formattedAmount} from {from} "
-                    : $"Received {formattedAmount} from {from}: {note}");
+            try
+            {
+                await to.SendConfirmAsync(ebs,
+                    string.IsNullOrWhiteSpace(note)
+                        ? $"Received {formattedAmount} from {from} "
+                        : $"Received {formattedAmount} from {from}: {note}");
+            }
+            catch
+            {
+                //ignored
+            }
             return true;
         }
-
         return false;
     }
 }
