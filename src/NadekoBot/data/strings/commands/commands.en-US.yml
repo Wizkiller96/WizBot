@@ -2363,3 +2363,8 @@ doas:
   desc: "Execute the command as if you were the target user. Requires bot ownership and server administrator permission."
   args:
     - "@Thief .give all @Admin"
+cacheusers:
+  desc: Caches users of a Discord server and saves them to the database.
+  args:
+    - ""
+    - "serverId"

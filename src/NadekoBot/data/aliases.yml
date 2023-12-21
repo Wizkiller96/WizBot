@@ -1390,4 +1390,6 @@ autopublish:
   - autopublish
 doas:
   - doas
-  - execas 
+  - execas
+cacheusers:
+  - cacheusers
