@@ -1,5 +1,6 @@
 #nullable disable
 using Nadeko.Medusa;
+using NadekoBot.Db;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Services.Database.Models;
 
@@ -22,17 +23,51 @@ public partial class Administration
         private readonly IBotStrings _strings;
         private readonly IMedusaLoaderService _medusaLoader;
         private readonly ICoordinator _coord;
+        private readonly DbService _db;
 
         public SelfCommands(
             DiscordSocketClient client,
+            DbService db,
             IBotStrings strings,
             ICoordinator coord,
             IMedusaLoaderService medusaLoader)
         {
             _client = client;
+            _db = db;
             _strings = strings;
             _coord = coord;
             _medusaLoader = medusaLoader;
+        }
+
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [OwnerOnly]
+        public Task CacheUsers()
+            => CacheUsers(ctx.Guild);
+
+        [Cmd]
+        [OwnerOnly]
+        public async Task CacheUsers(IGuild guild)
+        {
+            var downloadUsersTask = guild.DownloadUsersAsync();
+            var message = await ReplyPendingLocalizedAsync(strs.cache_users_pending);
+            using var dbContext = _db.GetDbContext();
+
+            await downloadUsersTask;
+
+            var users = (await guild.GetUsersAsync(CacheMode.CacheOnly))
+                .Cast<IUser>()
+                .ToList();
+
+            var (added, updated) = await dbContext.RefreshUsersAsync(users);
+
+            await message.ModifyAsync(x =>
+                x.Embed = _eb.Create()
+                    .WithDescription(GetText(strs.cache_users_done(added, updated)))
+                    .WithOkColor()
+                    .Build()
+            );
         }
 
         [Cmd]
