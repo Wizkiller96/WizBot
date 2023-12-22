@@ -1391,6 +1391,9 @@ autopublish:
 doas:
   - doas
   - execas
+# Database
+cacheusers:
+  - cacheusers
 # WizNet System
 feedback:
   - feedback
