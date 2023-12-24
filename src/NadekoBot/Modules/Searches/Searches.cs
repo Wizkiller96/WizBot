@@ -422,30 +422,6 @@ public partial class Searches : NadekoModule<SearchesService>
         await SendConfirmAsync("🐈" + GetText(strs.catfact), fact);
     }
 
-    //done in 3.0
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task Revav([Leftover] IGuildUser usr = null)
-    {
-        if (usr is null)
-            usr = (IGuildUser)ctx.User;
-
-        var av = usr.RealAvatarUrl();
-        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={av}");
-    }
-
-    //done in 3.0
-    [Cmd]
-    public async Task Revimg([Leftover] string imageLink = null)
-    {
-        imageLink = imageLink?.Trim() ?? "";
-
-        if (string.IsNullOrWhiteSpace(imageLink))
-            return;
-
-        await SendConfirmAsync($"https://images.google.com/searchbyimage?image_url={imageLink}");
-    }
-
     [Cmd]
     public async Task Wiki([Leftover] string query = null)
     {
