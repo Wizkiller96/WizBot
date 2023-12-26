@@ -2,6 +2,29 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.18] - 26.12.2023
+
+### Added
+
+- Added `.cacheusers` command (thx Kotz) 
+- Added `.clubreject` which lets you reject club applications
+
+### Changed
+
+- Updated discord lib, there should be less console errors now
+
+### Fixed
+
+- Fixed `icon_url` when using `.showembed`
+- Fixed `.quoteshow` not showing sometimes (thx Cata)
+- Notifications will no longer be sent if dms are off when using `.give`
+- Users should no longer be able to apply to clubs while in a club already (especially not to the same club they're already in)
+
+### Removed
+
+- `.revimg` and `.revav` as google removed reverse image search
+- 
+
 ## [4.3.17] - 06.09.2023
 
 ### Fixed 
