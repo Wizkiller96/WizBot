@@ -464,12 +464,14 @@ public partial class Utility : NadekoModule
         {
             if (tags.Length == 0)
                 tags = new[] { name };
-            
-            await ctx.Guild.CreateStickerAsync(name,
-                string.IsNullOrWhiteSpace(description) ? "Missing description" : description,
-                tags,
+
+            await ctx.Guild.CreateStickerAsync(
+                name,
                 stream,
-                $"{name}.{format}");
+                $"{name}.{format}",
+                tags,
+                string.IsNullOrWhiteSpace(description) ? "Missing description" : description
+            );
 
             await ctx.OkAsync();
         }
