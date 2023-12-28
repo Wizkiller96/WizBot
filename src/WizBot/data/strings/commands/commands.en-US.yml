@@ -1092,14 +1092,6 @@ magicitem:
   desc: "Shows a random magic item from <https://1d4chan.org/wiki/List_of_/tg/%27s_magic_items>"
   args:
     - ""
-revav:
-  desc: "Returns a Google reverse image search for someone's avatar."
-  args:
-    - "@Someone"
-revimg:
-  desc: "Returns a Google reverse image search for an image from a link."
-  args:
-    - "Image link"
 wiki:
   desc: "Gives you back a wikipedia link"
   args:
