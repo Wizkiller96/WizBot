@@ -61,12 +61,12 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 ##### Installation Instructions
 
 1. Download the latest release from <https://gitlab.com/WizNet/WizBot/-/releases>
-   - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
+   - Look for the file called "X.XX.X-osx-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 2. Untar it 
    ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 1!
-    - `tar xf X.XX.X-linux-x64-build.tar`
-3. Rename the `wizbot-linux-x64` to `wizbot` 
-    - `mv wizbot-linux-x64 wizbot`
+    - `tar xf X.XX.X-osx-x64-build.tar`
+3. Rename the `wizbot-osx-x64` to `wizbot` 
+    - `mv wizbot-osx-x64 wizbot`
 4. Move into wizbot directory and make WizBot executable
     - `cd wizbot && chmod +x WizBot`
 5. Copy the creds.yml template 
@@ -85,15 +85,15 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
 1. Stop the bot
 2. Download the latest release from <https://gitlab.com/WizNet/WizBot/-/releases>
-    - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
+    - Look for the file called "X.XX.X-osx-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 3. Untar it 
    ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 2!
-    - `tar xf 2.99.8-linux-x64-build.tar`
+    - `tar xf 2.99.8-osx-x64-build.tar`
 4. Rename the old wizbot directory to wizbot-old (remove your old backup first if you have one, or back it up under a different name)
     - `rm -rf wizbot-old 2>/dev/null`
     - `mv wizbot wizbot-old`
 5. Rename the new wizbot directory to wizbot
-    - `mv wizbot-linux-x64 wizbot`
+    - `mv wizbot-osx-x64 wizbot`
 6. Remove old strings and aliases to avoid overwriting the updated versions of those files  
    ⚠ If you've modified said files, back them up instead
     - `rm wizbot-old/data/aliases.yml`
@@ -113,10 +113,10 @@ sudo ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 
 Don't forget to change X.XX.X to match step 2.
 ```sh
-tar xf X.XX.X-linux-x64-build.tar && \
+tar xf X.XX.X-osx-x64-build.tar && \
 rm -rf wizbot-old 2>/dev/null && \
 mv wizbot wizbot-old && \
-mv wizbot-linux-x64 wizbot && \
+mv wizbot-osx-x64 wizbot && \
 rm wizbot-old/data/aliases.yml && \
 rm -r wizbot-old/data/strings && \
 cp -RT wizbot-old/data/ wizbot/data/ && \
