@@ -116,6 +116,21 @@ publish-windows:
   tags:
     - windows
 
+# DigitalOcean Spaces
+upload-windows-release:
+  stage: upload-windows-updater-release
+  rules:
+    - if: "$CI_COMMIT_TAG"
+  image:
+    name: digitalocean/doctl
+    entrypoint: [""]
+  script:
+    - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
+    - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
+    - s3cmd --version
+    - s3cmd put --acl-public --cf-invalidate "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME" s3://"$DO_SPACES_BUCKET_NAME"/dl/bot/"$INSTALLER_FILE_NAME"
+    - s3cmd put --acl-public --cf-invalidate releases-v3.json s3://"$DO_SPACES_BUCKET_NAME"/dl/bot/releases-v3.json
+
 #upload-windows-updater-release:
 #  stage: upload-windows-updater-release
 #  rules:
