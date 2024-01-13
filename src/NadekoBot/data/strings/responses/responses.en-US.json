@@ -1060,5 +1060,7 @@
   "sticker_missing_name": "Please specify a name for the sticker.",
   "thread_deleted": "Thread Deleted",
   "thread_created": "Thread Created",
-  "supported_languages": "Supported Languages"
+  "supported_languages": "Supported Languages",
+  "cache_users_pending": "Updating users, please wait...",
+  "cache_users_done": "{0} users were added and {1} users were updated."
 }

@@ -2372,3 +2372,8 @@ clubrename:
   desc: "Renames your club. Requires you club ownership or club-admin status."
   args:
     - "New cool club name"
+cacheusers:
+  desc: Caches users of a Discord server and saves them to the database.
+  args:
+    - ""
+    - "serverId"

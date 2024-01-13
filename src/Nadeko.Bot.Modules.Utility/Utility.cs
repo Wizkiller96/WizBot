@@ -1,4 +1,6 @@
 #nullable disable
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using NadekoBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -461,13 +463,14 @@ public partial class Utility : NadekoModule
         {
             if (tags.Length == 0)
                 tags = new[] { name };
-            
-            await ctx.Guild.CreateStickerAsync(name,
+
+            await ctx.Guild.CreateStickerAsync(
+                name,
                 stream,
                 $"{name}.{format}",
                 tags,
-                description: string.IsNullOrWhiteSpace(description) ? "Missing description" : description
-                );
+                string.IsNullOrWhiteSpace(description) ? "Missing description" : description
+            );
 
             await ctx.OkAsync();
         }

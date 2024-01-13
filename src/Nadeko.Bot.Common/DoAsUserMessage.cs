@@ -49,6 +49,13 @@ public sealed class DoAsUserMessage : IUserMessage
         return _msg.RemoveAllReactionsForEmoteAsync(emote, options);
     }
 
+    public IAsyncEnumerable<IReadOnlyCollection<IUser>> GetReactionUsersAsync(
+        IEmote emoji,
+        int limit,
+        RequestOptions? options = null,
+        ReactionType type = ReactionType.Normal)
+        => _msg.GetReactionUsersAsync(emoji, limit, options, type);
+
     public IAsyncEnumerable<IReadOnlyCollection<IUser>> GetReactionUsersAsync(IEmote emoji, int limit,
         RequestOptions? options = null)
     {
@@ -136,6 +143,8 @@ public sealed class DoAsUserMessage : IUserMessage
     {
         return _msg.Resolve(userHandling, channelHandling, roleHandling, everyoneHandling, emojiHandling);
     }
+
+    public MessageResolvedData ResolvedData => _msg.ResolvedData;
 
     public IUserMessage ReferencedMessage => _msg.ReferencedMessage;
 }
