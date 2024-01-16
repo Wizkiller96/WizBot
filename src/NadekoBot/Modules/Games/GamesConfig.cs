@@ -8,7 +8,7 @@ namespace NadekoBot.Modules.Games.Common;
 public sealed partial class GamesConfig : ICloneable<GamesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 2;
+    public int Version { get; set; } = 3;
 
     [Comment("Hangman related settings (.hangman command)")]
     public HangmanConfig Hangman { get; set; } = new()
@@ -108,14 +108,22 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
 public sealed partial class ChatGptConfig
 {
     [Comment(@"Which GPT-3 Model should bot use.
-'ada001' - cheapest and fastest 
-'babbage001' - 2nd option
-'curie001' - 3rd option
-'davinci003' - Most expensive, slowest")]
-    public Gpt3Model Model { get; set; } = Gpt3Model.Ada001;
+    gpt35turbo - cheapest
+    gpt4 - 30x more expensive, higher quality
+    gp432k - same model as above, but with a 32k token limit")]
+    public ChatGptModel ModelName { get; set; } = ChatGptModel.Gpt35Turbo;
+
+    [Comment(@"How should the chat bot behave, what's its personality? (Usage of this counts towards the max tokens)")]
+    public string PersonalityPrompt { get; set; } = "You are a chat bot willing to have a conversation with anyone about anything.";
+
+    [Comment(@"The maximum number of messages in a conversation that can be remembered. (This will increase the number of tokens used)")]
+    public int ChatHistory { get; set; } = 5;
 
     [Comment(@"The maximum number of tokens to use per GPT-3 API call")]
     public int MaxTokens { get; set; } = 100;
+
+    [Comment(@"The minimum number of tokens to use per GPT-3 API call, such that chat history is removed to make room.")]
+    public int MinTokens { get; set; } = 30;
 }
 
 [Cloneable]
@@ -149,10 +157,9 @@ public enum ChatBotImplementation
     Gpt3
 }
 
-public enum Gpt3Model
+public enum ChatGptModel
 {
-    Ada001,
-    Babbage001,
-    Curie001,
-    Davinci003
+    Gpt35Turbo,
+    Gpt4,
+    Gpt432k
 }

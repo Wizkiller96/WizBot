@@ -11,7 +11,13 @@ public class Gpt3Response
 
 public class Choice
 {
-    public string Text { get; set; }
+    [JsonPropertyName("message")]
+    public Message Message { get; init; }
+}
+
+public class Message {
+    [JsonPropertyName("content")]
+    public string Content { get; init; }
 }
 
 public class Gpt3ApiRequest
@@ -19,12 +25,22 @@ public class Gpt3ApiRequest
     [JsonPropertyName("model")]
     public string Model { get; init; }
 
-    [JsonPropertyName("prompt")]
-    public string Prompt { get; init; }
+    [JsonPropertyName("messages")]
+    public List<GPTMessage> Messages { get; init; }
 
     [JsonPropertyName("temperature")]
     public int Temperature { get; init; }
 
     [JsonPropertyName("max_tokens")]
     public int MaxTokens { get; init; }
+}
+
+public class GPTMessage
+{
+    [JsonPropertyName("role")]
+    public string Role {get; init;}
+    [JsonPropertyName("content")]
+    public string Content {get; init;}
+    [JsonPropertyName("name")]
+    public string Name {get; init;}
 }
