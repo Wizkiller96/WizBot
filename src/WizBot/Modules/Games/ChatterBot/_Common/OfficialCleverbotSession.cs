@@ -18,7 +18,7 @@ public class OfficialCleverbotSession : IChatterBotSession
         _httpFactory = factory;
     }
 
-    public async Task<string> Think(string input)
+    public async Task<string> Think(string input, string username)
     {
         using var http = _httpFactory.CreateClient();
         var dataString = await http.GetStringAsync(string.Format(QueryString, input, cs ?? ""));

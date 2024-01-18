@@ -79,8 +79,12 @@ public class ChatterBotService : IExecOnMessage
             case ChatBotImplementation.Gpt3:
                 if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
                     return new OfficialGpt3Session(_creds.Gpt3ApiKey,
-                        _gcs.Data.ChatGpt.Model,
+                        _gcs.Data.ChatGpt.ModelName,
+                        _gcs.Data.ChatGpt.ChatHistory,
                         _gcs.Data.ChatGpt.MaxTokens,
+                        _gcs.Data.ChatGpt.MinTokens,
+                        _gcs.Data.ChatGpt.PersonalityPrompt,
+                        _client.CurrentUser.Username,
                         _httpFactory);
 
                 Log.Information("Gpt3 will not work as the api key is missing.");
@@ -199,7 +203,7 @@ public class ChatterBotService : IExecOnMessage
             }
 
             _ = channel.TriggerTypingAsync();
-            var response = await cbs.Think(message);
+            var response = await cbs.Think(message, usrMsg.Author.ToString());
             await channel.SendConfirmAsync(_eb,
                 title: null,
                 response.SanitizeMentions(true)
