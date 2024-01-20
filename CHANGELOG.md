@@ -2,6 +2,10 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.20] - 20.01.2024
+
+### Fixed
+- Fixed `.config searches followedStreams.maxCount` not working
 
 ## [4.3.19] - 20.01.2024
 
@@ -36,7 +40,6 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 ### Removed
 
 - `.revimg` and `.revav` as google removed reverse image search
-- 
 
 ## [4.3.17] - 06.09.2023
 
