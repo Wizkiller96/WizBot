@@ -60,7 +60,7 @@ public partial class Administration
                 .Cast<IUser>()
                 .ToList();
 
-            var (added, updated) = await dbContext.RefreshUsersAsync(users);
+            var (added, updated) = await _service.RefreshUsersAsync(users);
 
             await message.ModifyAsync(x =>
                 x.Embed = _eb.Create()

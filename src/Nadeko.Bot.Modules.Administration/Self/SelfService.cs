@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using Nadeko.Bot.Db.Models;
 using System.Collections.Immutable;
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -395,5 +398,55 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         public string Name { get; init; }
         public string Link { get; init; }
         public ActivityType Type { get; init; }
+    }
+    
+    
+    /// <summary>
+    /// Adds the specified <paramref name="users"/> to the database. If a database user with placeholder name
+    /// and discriminator is present in <paramref name="users"/>, their name and discriminator get updated accordingly.
+    /// </summary>
+    /// <param name="ctx">This database context.</param>
+    /// <param name="users">The users to add or update in the database.</param>
+    /// <returns>A tuple with the amount of new users added and old users updated.</returns>
+    public async Task<(long UsersAdded, long UsersUpdated)> RefreshUsersAsync(List<IUser> users)
+    {
+        await using var ctx = _db.GetDbContext(); 
+        var presentDbUsers = await ctx.GetTable<DiscordUser>()
+            .Select(x => new { x.UserId, x.Username, x.Discriminator })
+            .Where(x => users.Select(y => y.Id).Contains(x.UserId))
+            .ToArrayAsyncEF();
+
+        var usersToAdd = users
+            .Where(x => !presentDbUsers.Select(x => x.UserId).Contains(x.Id))
+            .Select(x => new DiscordUser()
+            {
+                UserId = x.Id,
+                AvatarId = x.AvatarId,
+                Username = x.Username,
+                Discriminator = x.Discriminator
+            });
+
+        var added = (await ctx.BulkCopyAsync(usersToAdd)).RowsCopied;
+        var toUpdateUserIds = presentDbUsers
+            .Where(x => x.Username == "Unknown" && x.Discriminator == "????")
+            .Select(x => x.UserId)
+            .ToArray();
+
+        foreach (var user in users.Where(x => toUpdateUserIds.Contains(x.Id)))
+        {
+            await ctx.GetTable<DiscordUser>()
+                .Where(x => x.UserId == user.Id)
+                .UpdateAsync(x => new DiscordUser()
+                {
+                    Username = user.Username,
+                    Discriminator = user.Discriminator,
+
+                    // .award tends to set AvatarId and DateAdded to NULL, so account for that.
+                    AvatarId = user.AvatarId,
+                    DateAdded = x.DateAdded ?? DateTime.UtcNow
+                });
+        }
+
+        return (added, toUpdateUserIds.Length);
     }
 }
