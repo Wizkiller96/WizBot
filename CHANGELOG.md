@@ -2,6 +2,19 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+
+## [4.3.19] - 20.01.2024
+
+### Added
+- Added `followedStreams.maxCount` to `searches.yml` which lets bot owners change the default of 10 per server
+
+### Changed
+- Improvements to GPT ChatterBot (thx alexandra) 
+- Add a personality prompt to tweak the way chatgpt bot behaves 
+- Added Chat history support to chatgpt ChatterBot
+- Chatgpt token usage now correctly calculated
+- More chatgpt configs in `games.yml`
+
 ## [4.3.18] - 26.12.2023
 
 ### Added

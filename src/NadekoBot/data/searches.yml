@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 1
+version: 2
 # Which engine should .search command
 # 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 # 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
@@ -41,3 +41,7 @@ searxInstances: []
 # Instances specified must have api available.
 # You check that by opening an api endpoint in your browser. For example: https://my-invidious-instance.mydomain.com/api/v1/trending
 invidiousInstances: []
+# Maximum number of followed streams per server
+followedStreams:
+# Maximum number of streams that each server can follow. -1 for infinite
+  maxCount: 10
