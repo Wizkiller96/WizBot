@@ -8,18 +8,18 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
 {
     [Comment("DO NOT CHANGE")]
     public int Version { get; set; } = 0;
-    
+
     [Comment(@"Which engine should .search command
 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
 'searx' - requires at least one searx instance specified in the 'searxInstances' property below")]
     public WebSearchEngine WebSearchEngine { get; set; } = WebSearchEngine.Google_Scrape;
-    
+
     [Comment(@"Which engine should .image command use
 'google'- official google api. googleApiKey and google.imageSearchId set in creds.yml
 'searx' requires at least one searx instance specified in the 'searxInstances' property below")]
     public ImgSearchEngine ImgSearchEngine { get; set; } = ImgSearchEngine.Google;
-    
+
 
     [Comment(@"Which search provider will be used for the `.youtube` command.
 
@@ -55,6 +55,15 @@ Use a fully qualified url. Example: https://my-invidious-instance.mydomain.com
 Instances specified must have api available.
 You check that by opening an api endpoint in your browser. For example: https://my-invidious-instance.mydomain.com/api/v1/trending")]
     public List<string> InvidiousInstances { get; set; } = new List<string>();
+
+    [Comment("Maximum number of followed streams per server")]
+    public FollowedStreamConfig FollowedStreams { get; set; } = new FollowedStreamConfig();
+}
+
+public sealed class FollowedStreamConfig
+{
+    [Comment("Maximum number of streams that each server can follow. -1 for infinite")]
+    public int MaxCount { get; set; } = 10;
 }
 
 public enum YoutubeSearcher
