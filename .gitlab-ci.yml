@@ -123,8 +123,10 @@ upload-windows-release:
   rules:
     - if: "$CI_COMMIT_TAG"
   image:
-    name: digitalocean/doctl
+    name: python:3.7
     entrypoint: [""]
+  before_script:
+    - pip install s3cmd
   script:
     - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
     - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
