@@ -1,10 +1,12 @@
-﻿# Which engine should .search command
+﻿# DO NOT CHANGE
+version: 2
+# Which engine should .search command
 # 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 # 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
 # 'searx' - requires at least one searx instance specified in the 'searxInstances' property below
 webSearchEngine: Google_Scrape
 # Which engine should .image command use
-# 'google' requires googleApiKey and google.imageSearchId set in creds.yml
+# 'google'- official google api. googleApiKey and google.imageSearchId set in creds.yml
 # 'searx' requires at least one searx instance specified in the 'searxInstances' property below
 imgSearchEngine: Google
 # Which search provider will be used for the `.youtube` command.
@@ -39,3 +41,7 @@ searxInstances: []
 # Instances specified must have api available.
 # You check that by opening an api endpoint in your browser. For example: https://my-invidious-instance.mydomain.com/api/v1/trending
 invidiousInstances: []
+# Maximum number of followed streams per server
+followedStreams:
+  # Maximum number of streams that each server can follow. -1 for infinite
+  maxCount: 10
