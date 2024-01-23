@@ -28,6 +28,11 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
         
+        AddParsedProp("followedStreams.maxCount",
+            sc => sc.FollowedStreams.MaxCount,
+            ConfigParsers.InsensitiveEnum,
+            ConfigPrinters.ToString);
+
         Migrate();
     }
 
@@ -39,6 +44,13 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             {
                 c.Version = 1;
                 c.WebSearchEngine = WebSearchEngine.Google_Scrape;
+            });
+        }
+        if (data.Version < 2)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 2;
             });
         }
     }

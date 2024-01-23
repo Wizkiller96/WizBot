@@ -55,6 +55,15 @@ Use a fully qualified url. Example: https://my-invidious-instance.mydomain.com
 Instances specified must have api available.
 You check that by opening an api endpoint in your browser. For example: https://my-invidious-instance.mydomain.com/api/v1/trending")]
     public List<string> InvidiousInstances { get; set; } = new List<string>();
+    
+    [Comment("Maximum number of followed streams per server")]
+    public FollowedStreamConfig FollowedStreams { get; set; } = new FollowedStreamConfig();
+}
+
+public sealed class FollowedStreamConfig
+{
+    [Comment("Maximum number of streams that each server can follow. -1 for infinite")]
+    public int MaxCount { get; set; } = 10;
 }
 
 public enum YoutubeSearcher

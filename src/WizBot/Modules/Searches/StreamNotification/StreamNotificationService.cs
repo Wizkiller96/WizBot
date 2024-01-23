@@ -28,6 +28,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
 
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
+    private readonly SearchesConfigService _config;
 
     public TypedKey<List<StreamData>> StreamsOnlineKey { get; }
     public TypedKey<List<StreamData>> StreamsOfflineKey { get; }
@@ -49,13 +50,15 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         IHttpClientFactory httpFactory,
         Bot bot,
         IPubSub pubSub,
-        IEmbedBuilderService eb)
+        IEmbedBuilderService eb,
+        SearchesConfigService config)
     {
         _db = db;
         _client = client;
         _strings = strings;
         _pubSub = pubSub;
         _eb = eb;
+        _config = config;
         
         _streamTracker = new(httpFactory, creds);
 
@@ -282,14 +285,13 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                              var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream, false), message);
 
                              // only cache the ids of channel/message pairs 
-                             if(_deleteOnOfflineServers.Contains(fs.GuildId))
-                                return (textChannel.Id, msg.Id);
-                             else 
+                             if (_deleteOnOfflineServers.Contains(fs.GuildId))
+                                 return (textChannel.Id, msg.Id);
+                             else
                                  return default;
                          })
                          .WhenAll();
 
-                
                 // push online stream messages to redis
                 // when streams go offline, any server which
                 // has the online stream message deletion feature
@@ -450,7 +452,9 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                 GuildId = guildId
             };
 
-            if (gc.FollowedStreams.Count >= 10)
+            var config = _config.Data;
+            if (config.FollowedStreams.MaxCount is not -1
+                && gc.FollowedStreams.Count >= config.FollowedStreams.MaxCount)
                 return null;
 
             gc.FollowedStreams.Add(fs);
