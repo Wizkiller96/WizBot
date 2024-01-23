@@ -30,7 +30,7 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
         
         AddParsedProp("followedStreams.maxCount",
             sc => sc.FollowedStreams.MaxCount,
-            ConfigParsers.InsensitiveEnum,
+            int.TryParse,
             ConfigPrinters.ToString);
 
         Migrate();
