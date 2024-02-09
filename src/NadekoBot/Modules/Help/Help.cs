@@ -292,7 +292,7 @@ public partial class Help : NadekoModule<HelpService>
                     .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
                     .WithOkColor();
 
-        foreach (var cmd in group.Commands)
+        foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
             eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
         }
