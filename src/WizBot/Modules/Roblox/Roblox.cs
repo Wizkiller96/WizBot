@@ -32,8 +32,6 @@ public partial class Roblox : WizBotModule<SearchesService>
             JToken rbxInfo;
             JToken rAvatar;
             /*JToken rDevForum;*/
-            //JToken rUID;
-            //JToken rStatus;
             //JToken rMT;
             using (var http = _httpFactory.CreateClient())
             {
@@ -42,16 +40,14 @@ public partial class Roblox : WizBotModule<SearchesService>
                                             .ConfigureAwait(false));
                 rAvatar = JObject.Parse(await http
                                               .GetStringAsync(
-                                                  $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rbxInfo["userid"]}&size=720x720&format=png&isCircular=false")
+                                                  $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rbxInfo["userId"]}&size=720x720&format=png&isCircular=false")
                                               .ConfigureAwait(false));
                 /*rDevForum = JObject.Parse(await http
                                                 .GetStringAsync(
-                                                    $"https://devforum.roblox.com/u/by-external/{rbxInfo["userid"]}.json")
+                                                    $"https://devforum.roblox.com/u/by-external/{rbxInfo["userId"]}.json")
                                                 .ConfigureAwait(false));*/
-                // rUID = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/get-by-username?username={username}").ConfigureAwait(false)); // Backup UserId
-                // rStatus = JObject.Parse(await http.GetStringAsync($"http://api.roblox.com/users/{rbxInfo["userid"]}/onlinestatus").ConfigureAwait(false));
                 // Roblox Membership Type Checker
-                // rMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{rbxInfo["userid"]}/group-membership-status").ConfigureAwait(false));
+                // rMT = JObject.Parse(await http.GetStringAsync($"https://groups.roblox.com/v1/users/{rbxInfo["userId"]}/group-membership-status").ConfigureAwait(false));
             }
 
             var none = "N/A";
@@ -100,15 +96,14 @@ public partial class Roblox : WizBotModule<SearchesService>
                                                 "https://roblox.com")
                                             .WithThumbnailUrl($"{rAvatar["data"]![0]!["imageUrl"]}")
                                             .AddField("Username",
-                                                $"[{rbxInfo["username"]}](https://www.roblox.com/users/{rbxInfo["userid"]}/profile)",
+                                                $"[{rbxInfo["username"]}](https://www.roblox.com/users/{rbxInfo["userId"]}/profile)",
                                                 true)
                                             .AddField("Display Name", $"{rbxInfo["displayName"]}", true)
-                                            .AddField("User ID", $"{rbxInfo["userid"]}", true)
+                                            .AddField("User ID", $"{rbxInfo["userId"]}", true)
                                             .AddField("Friends", $"{rbxInfo["friendCount"]}", true)
                                             .AddField("Followers", $"{rbxInfo["followerCount"]}", true)
                                             .AddField("Following", $"{rbxInfo["followingCount"]}", true)
                                             // .AddField("Membership", $"{rMT["membershipType"]}", true)
-                                            // .AddField("Presence", $"{rStatus["LastLocation"]}", true)
                                             .AddField("Account Age",
                                                 string.IsNullOrEmpty($"{rbxInfo["age"]}") ? none : ($"{rbxInfo["age"]}"),
                                                 true)
