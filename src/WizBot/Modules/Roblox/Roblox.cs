@@ -30,18 +30,13 @@ public partial class Roblox : WizBotModule<SearchesService>
         {
             // Make a checker to see if a Roblox account exist before showing info.
             JToken rbxInfo;
-            JToken rAvatar;
-            /*JToken rDevForum;*/
+            //JToken rDevForum;
             //JToken rMT;
             using (var http = _httpFactory.CreateClient())
             {
                 rbxInfo = JObject.Parse(await http
                                             .GetStringAsync($"https://wizbot.cc/api/v1/roblox/getPlayerInfo/{username}")
                                             .ConfigureAwait(false));
-                rAvatar = JObject.Parse(await http
-                                              .GetStringAsync(
-                                                  $"https://thumbnails.roblox.com/v1/users/avatar?userIds={rbxInfo["userId"]}&size=720x720&format=png&isCircular=false")
-                                              .ConfigureAwait(false));
                 /*rDevForum = JObject.Parse(await http
                                                 .GetStringAsync(
                                                     $"https://devforum.roblox.com/u/by-external/{rbxInfo["userId"]}.json")
@@ -94,12 +89,13 @@ public partial class Roblox : WizBotModule<SearchesService>
                                             .WithAuthor($"{rbxInfo["username"]}'s Roblox Info",
                                                 "https://i.imgur.com/jDcWXPD.png",
                                                 "https://roblox.com")
-                                            .WithThumbnailUrl($"{rAvatar["data"]![0]!["imageUrl"]}")
+                                            .WithThumbnailUrl($"{rbxInfo["avatarBust"]}")
                                             .AddField("Username",
                                                 $"[{rbxInfo["username"]}](https://www.roblox.com/users/{rbxInfo["userId"]}/profile)",
                                                 true)
                                             .AddField("Display Name", $"{rbxInfo["displayName"]}", true)
                                             .AddField("User ID", $"{rbxInfo["userId"]}", true)
+                                            .AddField("Verified Badge", $"{rbxInfo["verifiedBadge"]}", true)
                                             .AddField("Friends", $"{rbxInfo["friendCount"]}", true)
                                             .AddField("Followers", $"{rbxInfo["followerCount"]}", true)
                                             .AddField("Following", $"{rbxInfo["followingCount"]}", true)
