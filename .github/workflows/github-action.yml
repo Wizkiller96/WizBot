@@ -1,0 +1,201 @@
+
+name: Build and Deploy WizBot
+
+on:
+  push:
+    branches:
+      - v4
+    tags:
+      - '*'
+
+image: mcr.microsoft.com/dotnet/sdk:6.0
+
+stages:
+  - build
+  - test
+  - upload-builds
+  - release
+  - publish-windows
+
+variables:
+  project: "WizBot"
+  tests: "WizBot.Tests"
+  LINUX_X64_OUTPUT_DIR: "wizbot-linux-x64"
+  LINUX_X64_RELEASE: "$CI_COMMIT_TAG-linux-x64-build.tar"
+  LINUX_ARM64_OUTPUT_DIR: "wizbot-linux-arm64"
+  LINUX_ARM64_RELEASE: "$CI_COMMIT_TAG-linux-arm64-build.tar"
+  MACOS_X64_OUTPUT_DIR: "wizbot-osx-x64"
+  MACOS_X64_RELEASE: "$CI_COMMIT_TAG-osx-x64-build.tar"
+  MACOS_ARM64_OUTPUT_DIR: "wizbot-osx-arm64"
+  MACOS_ARM64_RELEASE: "$CI_COMMIT_TAG-osx-arm64-build.tar"
+  WIN_X64_OUTPUT_DIR: "wizbot-windows-x64"
+  WIN_X64_RELEASE: "$CI_COMMIT_TAG-windows-x64-build.zip"
+  WIN_ARM64_OUTPUT_DIR: "wizbot-windows-arm64"
+  WIN_ARM64_RELEASE: "$CI_COMMIT_TAG-windows-arm64-build.zip"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/WizBot-build/${CI_COMMIT_TAG}"
+  INSTALLER_OUTPUT_DIR: "wizbot-installers/${CI_COMMIT"
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Build
+        run: |
+          dotnet publish -c Release -r linux-x64 --self-contained -o linux-x64 src/WizBot/WizBot.csproj
+          dotnet publish -c Release -r linux-arm64 --self-contained -o linux-arm64 src/WizBot/WizBot.csproj
+          dotnet publish -c Release -r win7-x64 --self-contained -o win-x64 src/WizBot/WizBot.csproj
+          dotnet publish -c Release -r win7-arm64 --self-contained -o win-arm64 src/WizBot/WizBot.csproj
+          dotnet publish -c Release -r osx-x64 --self-contained -o osx-x64 src/WizBot/WizBot.csproj
+          dotnet publish -c Release -r osx-arm64 --self-contained -o osx-arm64 src/WizBot/WizBot.csproj
+        env:
+          CI_COMMIT_TAG: ${{ github.ref_name }}
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            linux-x64
+            linux-arm64
+            win-x64
+            win-arm64
+            osx-x64
+            osx-arm64
+    
+    upload-builds:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
+
+      - name: Upload Builds
+        run: |
+          apk add --no-cache curl tar zip
+          tar cvf $LINUX_X64_RELEASE build/linux-x64/*
+          tar cvf $LINUX_ARM64_RELEASE build/linux-arm64/*
+          tar cvf $MACOS_X64_RELEASE build/osx-x64/*
+          tar cvf $MACOS_ARM64_RELEASE build/osx-arm64/*
+          zip -r $WIN_X64_RELEASE build/win-x64/*
+          zip -r $WIN_ARM64_RELEASE build/win-arm64/*
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_X64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_X64_RELEASE
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_ARM64_RELEASE
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_X64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_X64_RELEASE
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_ARM64_RELEASE
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_X64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_X64_RELEASE
+          curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_ARM64_RELEASE
+
+    release:
+    needs: upload-builds
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "WizBot v${{ github.ref_name }}"
+          body: |
+            ## [Changelog](https://gitlab.com/WizNet/WizBot/-/blob/v4/CHANGELOG.md#$(echo "${{ github.ref_name }}" | sed "s/\.//g")-$(date +%d%m%Y))
+          draft: false
+          prerelease: false
+          files: |
+            build/linux-x64/${{ env.LINUX_X64_RELEASE }}
+            build/linux-arm64/${{ env.LINUX_ARM64_RELEASE }}
+            build/win-x64/${{ env.WIN_X64_RELEASE }}
+            build/win-arm64/${{ env.WIN_ARM64_RELEASE }}
+            build/osx-x64/${{ env.MACOS_X64_RELEASE }}
+            build/osx-arm64/${{ env.MACOS_ARM64_RELEASE }}
+
+  test:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Run Tests
+        run: |
+          cd src/$tests
+          dotnet test
+
+  publish-windows:
+    needs: test
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Install Dependencies
+        run: |
+          choco install dotnet-6.0-runtime --version=6.0.4 -y
+          choco install dotnet-6.0-sdk --version=6.0.202 -y
+          choco install innosetup -y
+
+      - name: Build
+        run: |
+          dotnet clean
+          dotnet restore -f --no-cache -v n
+          dotnet publish -c Release --runtime win7-x64 /p:Version=$CI_COMMIT_TAG src/WizBot
+          $env:WIZBOT_INSTALL_VERSION = $CI_COMMIT_TAG
+          iscc.exe "/O+" ".\exe_builder.iss"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-installer
+          path: "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
+
+    tags:
+      - windows  
+
+  docker-build:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/') || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.CI_REGISTRY }}
+          username: ${{ secrets.CI_REGISTRY_USER }}
+          password: ${{ secrets.CI_REGISTRY_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.CI_REGISTRY }}/${{ secrets.CI_REGISTRY_IMAGE }}:latest
+            ${{ secrets.CI_REGISTRY }}/${{ secrets.CI_REGISTRY_IMAGE }}:${{ github.sha }}
