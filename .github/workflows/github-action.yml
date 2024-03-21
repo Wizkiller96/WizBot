@@ -97,7 +97,6 @@ jobs:
 
     release:
     needs: upload-builds
-    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Download Build Artifacts
@@ -141,7 +140,6 @@ jobs:
 
   publish-windows:
     needs: test
-    runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/checkout@v3
@@ -175,7 +173,6 @@ jobs:
       - windows  
 
   docker-build:
-    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/heads/') || startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/checkout@v3
