@@ -60,7 +60,6 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 
     public async Task OnReadyAsync()
     {
-        Log.Information("Command handler runnning on ready");
         // clear users on short cooldown every GLOBAL_COMMANDS_COOLDOWN miliseconds
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(GLOBAL_COMMANDS_COOLDOWN));
         while (await timer.WaitForNextTickAsync())

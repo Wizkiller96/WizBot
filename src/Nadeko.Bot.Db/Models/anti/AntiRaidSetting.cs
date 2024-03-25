@@ -2,7 +2,6 @@
 namespace Nadeko.Bot.Db.Models;
 
 
-// todo db required, nullable?
 public class AntiRaidSetting : DbEntity
 {
     public int GuildConfigId { get; set; }

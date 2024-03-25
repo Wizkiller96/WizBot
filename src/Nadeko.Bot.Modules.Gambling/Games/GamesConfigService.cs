@@ -28,17 +28,30 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
             long.TryParse,
             ConfigPrinters.ToString,
             val => val >= 0);
-        
         AddParsedProp("chatbot",
             gs => gs.ChatBot,
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
-        AddParsedProp("gpt.model",
-            gs => gs.ChatGpt.Model,
+        AddParsedProp("gpt.modelName",
+            gs => gs.ChatGpt.ModelName,
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
+        AddParsedProp("gpt.personality",
+            gs => gs.ChatGpt.PersonalityPrompt,
+            ConfigParsers.String,
+            ConfigPrinters.ToString);
+        AddParsedProp("gpt.chathistory",
+            gs => gs.ChatGpt.ChatHistory,
+            int.TryParse,
+            ConfigPrinters.ToString,
+            val => val > 0);
         AddParsedProp("gpt.max_tokens",
             gs => gs.ChatGpt.MaxTokens,
+            int.TryParse,
+            ConfigPrinters.ToString,
+            val => val > 0);
+        AddParsedProp("gpt.min_tokens",
+            gs => gs.ChatGpt.MinTokens,
             int.TryParse,
             ConfigPrinters.ToString,
             val => val > 0);
@@ -65,7 +78,16 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
             ModifyConfig(c =>
             {
                 c.Version = 2;
-                c.ChatBot = ChatBotImplementation.Cleverbot;  
+                c.ChatBot = ChatBotImplementation.Cleverbot;
+            });
+        }
+
+        if (data.Version < 3)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 3;
+                c.ChatGpt.ModelName = ChatGptModel.Gpt35Turbo;
             });
         }
     }

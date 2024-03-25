@@ -17,15 +17,20 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             sc => sc.WebSearchEngine,
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
-        
+
         AddParsedProp("imgEngine",
             sc => sc.ImgSearchEngine,
             ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
-        
+
         AddParsedProp("ytProvider",
             sc => sc.YtProvider,
             ConfigParsers.InsensitiveEnum,
+            ConfigPrinters.ToString);
+
+        AddParsedProp("followedStreams.maxCount",
+            sc => sc.FollowedStreams.MaxCount,
+            int.TryParse,
             ConfigPrinters.ToString);
 
         Migrate();
@@ -39,6 +44,14 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             {
                 c.Version = 1;
                 c.WebSearchEngine = WebSearchEngine.Google_Scrape;
+            });
+        }
+
+        if (data.Version < 2)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 2;
             });
         }
     }

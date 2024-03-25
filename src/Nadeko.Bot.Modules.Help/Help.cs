@@ -76,10 +76,10 @@ public sealed class Help : NadekoModule<HelpService>
         var topLevelModules = new List<ModuleInfo>();
         foreach (var m in _cmds.Modules.GroupBy(x => x.GetTopLevelModule()).Select(x => x.Key))
         {
-            var result = await _perms.CheckAsync(ctx.Guild, ctx.Channel, ctx.User,
+            var result = await _perms.CheckPermsAsync(ctx.Guild, ctx.Channel, ctx.User,
                 m.Name, null);
 
-            if (result.IsT0)
+            if (result.IsAllowed)
                 topLevelModules.Add(m);
         }
 
@@ -222,9 +222,10 @@ public sealed class Help : NadekoModule<HelpService>
                          .Name
                          .StartsWith(module, StringComparison.InvariantCultureIgnoreCase)))
         {
-            var result = await _perms.CheckAsync(ctx.Guild, ctx.Channel, ctx.User, cmd.Module.GetTopLevelModule().Name,
+            var result = await _perms.CheckPermsAsync(ctx.Guild, ctx.Channel, ctx.User, cmd.Module.GetTopLevelModule().Name,
                 cmd.Name);
-            if (result.IsT0)
+            
+            if (result.IsAllowed)
                 allowed.Add(cmd);
         }
 
@@ -311,7 +312,7 @@ public sealed class Help : NadekoModule<HelpService>
             .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
             .WithOkColor();
 
-        foreach (var cmd in group.Commands)
+        foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
             eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
         }

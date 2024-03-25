@@ -20,20 +20,20 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
     private const string PREPEND_EXPORT =
         """
-            # Keys are triggers, Each key has a LIST of expressions in the following format:
-            # - res: Response string
-            #   id: Alphanumeric id used for commands related to the expression. (Note, when using .exprsimport, a new id will be generated.)
-            #   react: 
-            #     - <List
-            #     -  of
-            #     - reactions>
-            #   at: Whether expression allows targets (see .h .exprat) 
-            #   ca: Whether expression expects trigger anywhere (see .h .exprca) 
-            #   dm: Whether expression DMs the response (see .h .exprdm) 
-            #   ad: Whether expression automatically deletes triggering message (see .h .exprad) 
-            
+        # Keys are triggers, Each key has a LIST of expressions in the following format:
+        # - res: Response string
+        #   id: Alphanumeric id used for commands related to the expression. (Note, when using .exprsimport, a new id will be generated.)
+        #   react:
+        #     - <List
+        #     -  of
+        #     - reactions>
+        #   at: Whether expression allows targets (see .h .exprat)
+        #   ca: Whether expression expects trigger anywhere (see .h .exprca)
+        #   dm: Whether expression DMs the response (see .h .exprdm)
+        #   ad: Whether expression automatically deletes triggering message (see .h .exprad)
 
-            """;
+
+        """;
 
     private static readonly ISerializer _exportSerializer = new SerializerBuilder()
         .WithEventEmitter(args
@@ -63,7 +63,9 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private ConcurrentDictionary<ulong, NadekoExpression[]> newguildExpressions = new();
 
     private readonly DbService _db;
+
     private readonly DiscordSocketClient _client;
+
     // private readonly PermissionService _perms;
     // private readonly GlobalPermissionService _gperm;
     // private readonly CmdCdService _cmdCds;
@@ -238,46 +240,40 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         if (expr is null || expr.Response == "-")
             return false;
 
-        var result = await _permChecker.CheckAsync(
-            guild,
-            msg.Channel,
-            msg.Author,
-            "ACTUALEXPRESSIONS",
-            expr.Trigger
-        );
-
-        if (!result.IsT0)
-            return false;
-
-        // todo print error etc
-        
         try
         {
-            // if (guild is SocketGuild sg)
-            // {
-            //     var pc = _perms.GetCacheFor(guild.Id);
-            //     if (!pc.Permissions.CheckPermissions(msg, expr.Trigger, "ACTUALEXPRESSIONS", out var index))
-            //     {
-            //         if (pc.Verbose)
-            //         {
-            //             var permissionMessage = _strings.GetText(strs.perm_prevent(index + 1,
-            //                     Format.Bold(pc.Permissions[index].GetCommand(_cmd.GetPrefix(guild), sg))),
-            //                 sg.Id);
-            //
-            //             try
-            //             {
-            //                 await msg.Channel.SendErrorAsync(_eb, permissionMessage);
-            //             }
-            //             catch
-            //             {
-            //             }
-            //
-            //             Log.Information("{PermissionMessage}", permissionMessage);
-            //         }
-            //
-            //         return true;
-            //     }
-            // }
+            if (guild is SocketGuild sg)
+            {
+                var result = await _permChecker.CheckPermsAsync(
+                    guild,
+                    msg.Channel,
+                    msg.Author,
+                    "ACTUALEXPRESSIONS",
+                    expr.Trigger
+                );
+
+                if (!result.IsAllowed)
+                {
+                    if (result.TryPickT3(out var disallowed, out _))
+                    {
+                        var permissionMessage = _strings.GetText(strs.perm_prevent(disallowed.PermIndex + 1,
+                                Format.Bold(disallowed.PermText)),
+                            sg.Id);
+
+                        try
+                        {
+                            await msg.Channel.SendErrorAsync(_eb, permissionMessage);
+                        }
+                        catch
+                        {
+                        }
+
+                        Log.Information("{PermissionMessage}", permissionMessage);
+                    }
+
+                    return true;
+                }
+            }
 
             var sentMsg = await expr.Send(msg, _client, false);
 
@@ -556,7 +552,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         foreach (var entry in data)
         {
             var trigger = entry.Key;
-            await uow.Set<NadekoExpression>().AddRangeAsync(entry.Value.Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
+            await uow.Set<NadekoExpression>().AddRangeAsync(entry.Value
+                .Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
                 .Select(expr => new NadekoExpression
                 {
                     GuildId = guildId,

@@ -76,8 +76,12 @@ public class ChatterBotService : IExecOnMessage
             case ChatBotImplementation.Gpt3:
                 if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
                     return new OfficialGpt3Session(_creds.Gpt3ApiKey,
-                        _gcs.Data.ChatGpt.Model,
+                        _gcs.Data.ChatGpt.ModelName,
+                        _gcs.Data.ChatGpt.ChatHistory,
                         _gcs.Data.ChatGpt.MaxTokens,
+                        _gcs.Data.ChatGpt.MinTokens,
+                        _gcs.Data.ChatGpt.PersonalityPrompt,
+                        _client.CurrentUser.Username,
                         _httpFactory);
 
                 Log.Information("Gpt3 will not work as the api key is missing.");
@@ -125,17 +129,14 @@ public class ChatterBotService : IExecOnMessage
             if (message is null || cbs is null)
                 return false;
 
-            var res = await _perms.CheckAsync(sg,
+            var res = await _perms.CheckPermsAsync(sg,
                 usrMsg.Channel,
                 usrMsg.Author,
                 "games",
                 CleverBotResponseStr.CLEVERBOT_RESPONSE);
             
-            // todo this needs checking, this might block all messages in a channel if cleverbot is enabled but blocked
-            // need to check what kind of block it is
-            // might be the case for other classes using permission checker
-            if (!res.IsT0)
-                return true;
+            if (!res.IsAllowed)
+                return false;
 
             var channel = (ITextChannel)usrMsg.Channel;
             var conf = _ps.GetConfig();
@@ -183,7 +184,7 @@ public class ChatterBotService : IExecOnMessage
             }
 
             _ = channel.TriggerTypingAsync();
-            var response = await cbs.Think(message);
+            var response = await cbs.Think(message, usrMsg.Author.ToString());
             await channel.SendConfirmAsync(_eb,
                 title: null,
                 response.SanitizeMentions(true)

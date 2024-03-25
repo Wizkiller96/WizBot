@@ -125,10 +125,10 @@ public sealed class Bot : IBot
 
         var svcs = new StandardKernel(new NinjectSettings()
         {
-            ThrowOnGetServiceNotFound = true,
+            // ThrowOnGetServiceNotFound = true,
             ActivationCacheDisabled = true,
         });
-
+        
         // this is required in order for medusa unloading to work
         svcs.Components.Remove<IPlanner, Planner>();
         svcs.Components.Add<IPlanner, RemovablePlanner>();
@@ -197,7 +197,7 @@ public sealed class Bot : IBot
 
     private void LoadTypeReaders(Assembly assembly)
     {
-        var filteredTypes = assembly.GetTypes()
+        var filteredTypes = assembly.GetExportedTypes()
                                     .Where(x => x.IsSubclassOf(typeof(TypeReader))
                                                 && x.BaseType?.GetGenericArguments().Length > 0
                                                 && !x.IsAbstract);
@@ -208,6 +208,7 @@ public sealed class Bot : IBot
             if (baseType is null)
                 continue;
 
+            Log.Information(ft.Name);
             var typeReader = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var typeArgs = baseType.GetGenericArguments();
             _commandService.AddTypeReader(typeArgs[0], typeReader);

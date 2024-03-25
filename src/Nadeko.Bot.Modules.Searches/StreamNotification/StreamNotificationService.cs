@@ -27,6 +27,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
 
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
+    private readonly SearchesConfigService _config;
 
     public TypedKey<List<StreamData>> StreamsOnlineKey { get; }
     public TypedKey<List<StreamData>> StreamsOfflineKey { get; }
@@ -48,14 +49,16 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         IHttpClientFactory httpFactory,
         IBot bot,
         IPubSub pubSub,
-        IEmbedBuilderService eb)
+        IEmbedBuilderService eb,
+        SearchesConfigService config)
     {
         _db = db;
         _client = client;
         _strings = strings;
         _pubSub = pubSub;
         _eb = eb;
-        
+        _config = config;
+
         _streamTracker = new(httpFactory, creds);
 
         StreamsOnlineKey = new("streams.online");
@@ -68,34 +71,34 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         {
             var ids = client.GetGuildIds();
             var guildConfigs = uow.Set<GuildConfig>()
-                                  .AsQueryable()
-                                  .Include(x => x.FollowedStreams)
-                                  .Where(x => ids.Contains(x.GuildId))
-                                  .ToList();
+                .AsQueryable()
+                .Include(x => x.FollowedStreams)
+                .Where(x => ids.Contains(x.GuildId))
+                .ToList();
 
             _offlineNotificationServers = new(guildConfigs
-                                              .Where(gc => gc.NotifyStreamOffline)
-                                              .Select(x => x.GuildId)
-                                              .ToList());
-            
+                .Where(gc => gc.NotifyStreamOffline)
+                .Select(x => x.GuildId)
+                .ToList());
+
             _deleteOnOfflineServers = new(guildConfigs
-                                              .Where(gc => gc.DeleteStreamOnlineMessage)
-                                              .Select(x => x.GuildId)
-                                              .ToList());
+                .Where(gc => gc.DeleteStreamOnlineMessage)
+                .Select(x => x.GuildId)
+                .ToList());
 
             var followedStreams = guildConfigs.SelectMany(x => x.FollowedStreams).ToList();
 
             _shardTrackedStreams = followedStreams.GroupBy(x => new
-                                                  {
-                                                      x.Type,
-                                                      Name = x.Username.ToLower()
-                                                  })
-                                                  .ToList()
-                                                  .ToDictionary(
-                                                      x => new StreamDataKey(x.Key.Type, x.Key.Name.ToLower()),
-                                                      x => x.GroupBy(y => y.GuildId)
-                                                            .ToDictionary(y => y.Key,
-                                                                y => y.AsEnumerable().ToHashSet()));
+                {
+                    x.Type,
+                    Name = x.Username.ToLower()
+                })
+                .ToList()
+                .ToDictionary(
+                    x => new StreamDataKey(x.Key.Type, x.Key.Name.ToLower()),
+                    x => x.GroupBy(y => y.GuildId)
+                        .ToDictionary(y => y.Key,
+                            y => y.AsEnumerable().ToHashSet()));
 
             // shard 0 will keep track of when there are no more guilds which track a stream
             if (client.ShardId == 0)
@@ -106,12 +109,12 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                     _streamTracker.AddLastData(fs.CreateKey(), null, false);
 
                 _trackCounter = allFollowedStreams.GroupBy(x => new
-                                                  {
-                                                      x.Type,
-                                                      Name = x.Username.ToLower()
-                                                  })
-                                                  .ToDictionary(x => new StreamDataKey(x.Key.Type, x.Key.Name),
-                                                      x => x.Select(fs => fs.GuildId).ToHashSet());
+                    {
+                        x.Type,
+                        Name = x.Username.ToLower()
+                    })
+                    .ToDictionary(x => new StreamDataKey(x.Key.Type, x.Key.Name),
+                        x => x.Select(fs => fs.GuildId).ToHashSet());
             }
         }
 
@@ -151,7 +154,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                     continue;
 
                 var deleteGroups = failingStreams.GroupBy(x => x.Type)
-                                                 .ToDictionary(x => x.Key, x => x.Select(y => y.Name).ToList());
+                    .ToDictionary(x => x.Key, x => x.Select(y => y.Name).ToList());
 
                 await using var uow = _db.GetDbContext();
                 foreach (var kvp in deleteGroups)
@@ -164,9 +167,9 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                         string.Join(", ", kvp.Value));
 
                     var toDelete = uow.Set<FollowedStream>()
-                                      .AsQueryable()
-                                      .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
-                                      .ToList();
+                        .AsQueryable()
+                        .Where(x => x.Type == kvp.Key && kvp.Value.Contains(x.Username))
+                        .ToList();
 
                     uow.RemoveRange(toDelete);
                     await uow.SaveChangesAsync();
@@ -245,17 +248,17 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
             {
                 await fss
-                      // send offline stream notifications only to guilds which enable it with .stoff
-                      .SelectMany(x => x.Value)
-                      .Where(x => _offlineNotificationServers.Contains(x.GuildId))
-                      .Select(fs => _client.GetGuild(fs.GuildId)
-                                           ?.GetTextChannel(fs.ChannelId)
-                                           ?.EmbedAsync(GetEmbed(fs.GuildId, stream)))
-                      .WhenAll();
+                    // send offline stream notifications only to guilds which enable it with .stoff
+                    .SelectMany(x => x.Value)
+                    .Where(x => _offlineNotificationServers.Contains(x.GuildId))
+                    .Select(fs => _client.GetGuild(fs.GuildId)
+                        ?.GetTextChannel(fs.ChannelId)
+                        ?.EmbedAsync(GetEmbed(fs.GuildId, stream)))
+                    .WhenAll();
             }
         }
     }
-    
+
 
     private async ValueTask HandleStreamsOnline(List<StreamData> onlineStreams)
     {
@@ -265,30 +268,30 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
             if (_shardTrackedStreams.TryGetValue(key, out var fss))
             {
                 var messages = await fss.SelectMany(x => x.Value)
-                         .Select(async fs =>
-                         {
-                             var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
+                    .Select(async fs =>
+                    {
+                        var textChannel = _client.GetGuild(fs.GuildId)?.GetTextChannel(fs.ChannelId);
 
-                             if (textChannel is null)
-                                 return default;
+                        if (textChannel is null)
+                            return default;
 
-                             var rep = new ReplacementBuilder().WithOverride("%user%", () => fs.Username)
-                                                               .WithOverride("%platform%", () => fs.Type.ToString())
-                                                               .Build();
+                        var rep = new ReplacementBuilder().WithOverride("%user%", () => fs.Username)
+                            .WithOverride("%platform%", () => fs.Type.ToString())
+                            .Build();
 
-                             var message = string.IsNullOrWhiteSpace(fs.Message) ? "" : rep.Replace(fs.Message);
+                        var message = string.IsNullOrWhiteSpace(fs.Message) ? "" : rep.Replace(fs.Message);
 
-                             var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream, false), message);
+                        var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream, false), message);
 
-                             // only cache the ids of channel/message pairs 
-                             if(_deleteOnOfflineServers.Contains(fs.GuildId))
-                                return (textChannel.Id, msg.Id);
-                             else 
-                                 return default;
-                         })
-                         .WhenAll();
+                        // only cache the ids of channel/message pairs 
+                        if (_deleteOnOfflineServers.Contains(fs.GuildId))
+                            return (textChannel.Id, msg.Id);
+                        else
+                            return default;
+                    })
+                    .WhenAll();
 
-                
+
                 // push online stream messages to redis
                 // when streams go offline, any server which
                 // has the online stream message deletion feature
@@ -296,16 +299,15 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                 try
                 {
                     var pairs = messages
-                                .Where(x => x != default)
-                                .Select(x => (x.Item1, x.Item2))
-                                .ToList();
+                        .Where(x => x != default)
+                        .Select(x => (x.Item1, x.Item2))
+                        .ToList();
 
                     if (pairs.Count > 0)
                         await OnlineMessagesSent(key.Type, key.Name, pairs);
                 }
                 catch
                 {
-
                 }
             }
         }
@@ -383,10 +385,10 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         await using (var uow = _db.GetDbContext())
         {
             var fss = uow.Set<FollowedStream>()
-                         .AsQueryable()
-                         .Where(x => x.GuildId == guildId)
-                         .OrderBy(x => x.Id)
-                         .ToList();
+                .AsQueryable()
+                .Where(x => x.GuildId == guildId)
+                .OrderBy(x => x.Id)
+                .ToList();
 
             // out of range
             if (fss.Count <= index)
@@ -449,7 +451,9 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                 GuildId = guildId
             };
 
-            if (gc.FollowedStreams.Count >= 10)
+            var config = _config.Data;
+            if (config.FollowedStreams.MaxCount is not -1
+                && gc.FollowedStreams.Count >= config.FollowedStreams.MaxCount)
                 return null;
 
             gc.FollowedStreams.Add(fs);
@@ -474,10 +478,10 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     public IEmbedBuilder GetEmbed(ulong guildId, StreamData status, bool showViewers = true)
     {
         var embed = _eb.Create()
-                       .WithTitle(status.Name)
-                       .WithUrl(status.StreamUrl)
-                       .WithDescription(status.StreamUrl)
-                       .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
+            .WithTitle(status.Name)
+            .WithUrl(status.StreamUrl)
+            .WithDescription(status.StreamUrl)
+            .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
 
         if (showViewers)
         {
@@ -526,7 +530,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
 
         return newValue;
     }
-    
+
     public bool ToggleStreamOnlineDelete(ulong guildId)
     {
         using var uow = _db.GetDbContext();

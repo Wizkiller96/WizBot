@@ -28,5 +28,5 @@ public class DiscordUser : DbEntity
         => UserId.GetHashCode();
 
     public override string ToString()
-        => Username + "#" + Discriminator;
+        => Discriminator == "0000" ? Username : Username + "#" + Discriminator;
 }

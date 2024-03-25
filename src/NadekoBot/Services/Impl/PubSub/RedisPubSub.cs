@@ -20,7 +20,9 @@ public sealed class RedisPubSub : IPubSub
     {
         var serialized = _serializer.Serialize(data);
         return _multi.GetSubscriber()
-                     .PublishAsync($"{_creds.RedisKey()}:{key.Key}", serialized, CommandFlags.FireAndForget);
+                     .PublishAsync(new RedisChannel($"{_creds.RedisKey()}:{key.Key}", RedisChannel.PatternMode.Literal),
+                         serialized,
+                         CommandFlags.FireAndForget);
     }
 
     public Task Sub<TData>(in TypedKey<TData> key, Func<TData, ValueTask> action)
@@ -47,6 +49,9 @@ public sealed class RedisPubSub : IPubSub
             }
         }
 
-        return _multi.GetSubscriber().SubscribeAsync($"{_creds.RedisKey()}:{eventName}", OnSubscribeHandler);
+        return _multi.GetSubscriber()
+                     .SubscribeAsync(
+                         new RedisChannel($"{_creds.RedisKey()}:{eventName}", RedisChannel.PatternMode.Literal),
+                         OnSubscribeHandler);
     }
 }

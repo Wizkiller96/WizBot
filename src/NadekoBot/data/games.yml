@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 2
+version: 3
 # Hangman related settings (.hangman command)
 hangman:
 # The amount of currency awarded to the winner of a hangman game
@@ -57,14 +57,19 @@ raceAnimals:
 # Which chatbot API should bot use.
 # 'cleverbot' - bot will use Cleverbot API.
 # 'gpt3' - bot will use GPT-3 API
-chatBot: gpt3
+chatBot: Gpt3
 
 chatGpt:
-  # Which GPT-3 Model should bot use.
-  # 'ada001' - cheapest and fastest
-  # 'babbage001' - 2nd option
-  # 'curie001' - 3rd option
-  # 'davinci003' - Most expensive, slowest
-  model: davinci003
+# Which GPT-3 Model should bot use.
+  # gpt35turbo - cheapest
+  # gpt4 - 30x more expensive, higher quality
+  # gp432k - same model as above, but with a 32k token limit
+  modelName: Gpt35Turbo
+  # How should the chat bot behave, whats its personality? (Usage of this counts towards the max tokens)
+  personalityPrompt: You are a chat bot willing to have a conversation with anyone about anything.
+  # The maximum number of messages in a conversation that can be remembered. (This will increase the number of tokens used)
+  chatHistory: 5
   # The maximum number of tokens to use per GPT-3 API call
   maxTokens: 100
+  # The minimum number of tokens to use per GPT-3 API call, such that chat history is removed to make room.
+  minTokens: 30

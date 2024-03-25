@@ -14,9 +14,10 @@ public sealed class PermissionChecker : IPermissionChecker, INService
     private readonly IEmbedBuilderService _ebs;
     private readonly CommandHandler _ch;
 
-    // todo .GetPrefix should be in a different place
-    public PermissionChecker(PermissionService perms,
-        GlobalPermissionService gperm, CmdCdService cmdCds,
+    public PermissionChecker(
+        PermissionService perms,
+        GlobalPermissionService gperm,
+        CmdCdService cmdCds,
         IEmbedBuilderService ebs,
         CommandHandler ch)
     {
@@ -27,58 +28,41 @@ public sealed class PermissionChecker : IPermissionChecker, INService
         _ch = ch;
     }
 
-    public async Task<OneOf<Success, Error<LocStr>>> CheckAsync(
+    public async Task<PermCheckResult> CheckPermsAsync(
         IGuild guild,
         IMessageChannel channel,
         IUser author,
         string module,
-        string? cmd)
+        string? cmdName)
     {
         module = module.ToLowerInvariant();
-        cmd = cmd?.ToLowerInvariant();
-        // todo add proper string
-        if (cmd is not null && await _cmdCds.TryBlock(guild, author, cmd))
-            return new Error<LocStr>(new());
+        cmdName = cmdName?.ToLowerInvariant();
+
+        if (cmdName is not null && await _cmdCds.TryBlock(guild, author, cmdName))
+        {
+            return new PermCooldown();
+        }
 
         try
         {
             if (_gperm.BlockedModules.Contains(module))
             {
-                Log.Information("u:{UserId} tried to use module {Module} which is globally disabled.",
-                    author.Id,
-                    module
-                );
-
-                return new Success();
+                return new PermGlobalBlock();
             }
 
-            // todo check if this even works
+            if (cmdName is not null && _gperm.BlockedCommands.Contains(cmdName))
+            {
+                return new PermGlobalBlock();
+            }
+
             if (guild is SocketGuild sg)
             {
-                var pc = _perms.GetCacheFor(guild.Id);
-                if (!pc.Permissions.CheckPermissions(author, channel, cmd, module, out var index))
+                var pc = _perms.GetCacheFor(sg.Id);
+                if (!pc.Permissions.CheckPermissions(author, channel, cmdName, module, out var index))
                 {
-                    if (pc.Verbose)
-                    {
-                        // todo fix
-                        var permissionMessage = strs.perm_prevent(index + 1,
-                            Format.Bold(pc.Permissions[index].GetCommand(_ch.GetPrefix(guild), sg)));
-                        
-                        try
-                        {
-                            // await channel.SendErrorAsync(_ebs,
-                            //     title: null,
-                            //     text: GettextpermissionMessage);
-                        }
-                        catch
-                        {
-                        }
-                        
-                        Log.Information("{PermissionMessage}", permissionMessage);
-                    }
-
-                    // todo add proper string
-                    return new Error<LocStr>(new());
+                    return new PermDisallowed(index,
+                        pc.Permissions[index].GetCommand(_ch.GetPrefix(guild), sg),
+                        pc.Verbose);
                 }
             }
         }
@@ -86,6 +70,6 @@ public sealed class PermissionChecker : IPermissionChecker, INService
         {
         }
 
-        return new Success();
+        return new PermAllowed();
     }
 }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -14,8 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CoreCLR-NCalc" Version="2.2.110"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0"/>
+        <PackageReference Include="CoreCLR-NCalc" Version="3.0.203" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+        <PackageReference Include="SharpToken" Version="1.2.14" />
     </ItemGroup>
 
 
