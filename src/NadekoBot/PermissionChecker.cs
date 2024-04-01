@@ -1,8 +1,5 @@
-﻿using Nadeko.Bot.Common;
-using NadekoBot.Modules.Permissions.Common;
+﻿using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
-using OneOf;
-using OneOf.Types;
 
 namespace NadekoBot;
 

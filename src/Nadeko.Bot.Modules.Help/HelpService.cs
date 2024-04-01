@@ -1,42 +1,34 @@
-#nullable disable
+using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Help.Services;
 
-public class HelpService : IExecNoCommand, INService
+public class HelpService(BotConfigService bss, IReplacementService repSvc) : IExecNoCommand, INService
 {
-    private readonly BotConfigService _bss;
-
-    public HelpService(BotConfigService bss)
+    public async Task ExecOnNoCommandAsync(IGuild? guild, IUserMessage msg)
     {
-        _bss = bss;
-    }
-
-    public Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
-    {
-        var settings = _bss.Data;
+        var settings = bss.Data;
         if (guild is null)
         {
             if (string.IsNullOrWhiteSpace(settings.DmHelpText) || settings.DmHelpText == "-")
-                return Task.CompletedTask;
+                return;
 
             // only send dm help text if it contains one of the keywords, if they're specified
             // if they're not, then reply to every DM
             if (settings.DmHelpTextKeywords is not null &&
                 !settings.DmHelpTextKeywords.Any(k => msg.Content.Contains(k)))
-                return Task.CompletedTask;
+            {
+                return;
+            }
 
-            var rep = new ReplacementBuilder().WithOverride("%prefix%", () => _bss.Data.Prefix)
-                .WithOverride("%bot.prefix%", () => _bss.Data.Prefix)
-                .WithUser(msg.Author)
-                .Build();
+            var repCtx = new ReplacementContext(guild: guild, channel: msg.Channel, users: msg.Author)
+                .WithOverride("%prefix%", () => bss.Data.Prefix)
+                .WithOverride("%bot.prefix%", () => bss.Data.Prefix);
 
             var text = SmartText.CreateFrom(settings.DmHelpText);
-            text = rep.Replace(text);
+            text = await repSvc.ReplaceAsync(text, repCtx);
 
-            return msg.Channel.SendAsync(text);
+            await msg.Channel.SendAsync(text);
         }
-
-        return Task.CompletedTask;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Numerics;
 
-namespace Nadeko.Bot.Common;
+namespace NadekoBot.Common;
 
 public interface ICurrencyProvider
 {

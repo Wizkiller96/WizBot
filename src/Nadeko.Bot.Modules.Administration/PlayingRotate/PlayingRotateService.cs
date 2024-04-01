@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using Nadeko.Bot.Db.Models;
 
@@ -9,7 +10,8 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
 {
     private readonly BotConfigService _bss;
     private readonly SelfService _selfService;
-    private readonly Replacer _rep;
+    private readonly IReplacementService _repService;
+    // private readonly Replacer _rep;
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
 
@@ -18,15 +20,15 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         DbService db,
         BotConfigService bss,
         IEnumerable<IPlaceholderProvider> phProviders,
-        SelfService selfService)
+        SelfService selfService,
+        IReplacementService repService)
     {
         _db = db;
         _bss = bss;
         _selfService = selfService;
+        _repService = repService;
         _client = client;
 
-        if (client.ShardId == 0)
-            _rep = new ReplacementBuilder().WithClient(client).WithProviders(phProviders).Build();
     }
 
     public async Task OnReadyAsync()
@@ -56,7 +58,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                     ? rotatingStatuses[index = 0]
                     : rotatingStatuses[index++];
 
-                var statusText = _rep.Replace(playingStatus.Status);
+                var statusText = await _repService.ReplaceAsync(playingStatus.Status, new (client: _client));
                 await _selfService.SetGameAsync(statusText, (ActivityType)playingStatus.Type);
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common;
 using NadekoBot.Db;
 using Nadeko.Bot.Db.Models;
 
@@ -11,15 +12,18 @@ public class AdministrationService : INService
     public ConcurrentDictionary<ulong, bool> DeleteMessagesOnCommandChannels { get; }
 
     private readonly DbService _db;
+    private readonly IReplacementService _repSvc;
     private readonly ILogCommandService _logService;
 
     public AdministrationService(
         IBot bot,
         CommandHandler cmdHandler,
         DbService db,
+        IReplacementService repSvc,
         ILogCommandService logService)
     {
         _db = db;
+        _repSvc = repSvc;
         _logService = logService;
 
         DeleteMessagesOnCommand = new(bot.AllGuildConfigs.Where(g => g.DeleteMessageOnCommand).Select(g => g.GuildId));
@@ -148,10 +152,10 @@ public class AdministrationService : INService
         if (msg is not IUserMessage umsg || msg.Author.Id != context.Client.CurrentUser.Id)
             return;
 
-        var rep = new ReplacementBuilder().WithDefault(context).Build();
+        var repCtx = new ReplacementContext(context);
 
         var text = SmartText.CreateFrom(input);
-        text = rep.Replace(text);
+        text = await _repSvc.ReplaceAsync(text, repCtx);
 
         await umsg.EditAsync(text);
     }

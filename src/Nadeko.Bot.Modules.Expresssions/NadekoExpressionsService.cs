@@ -6,7 +6,6 @@ using NadekoBot.Db;
 using Nadeko.Bot.Db.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;
-using Nadeko.Bot.Common;
 using NadekoBot.Services;
 using Serilog;
 using YamlDotNet.Serialization;
@@ -75,6 +74,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private readonly IBot _bot;
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
+    private readonly IReplacementService _repSvc;
     private readonly Random _rng;
 
     private bool ready;
@@ -88,6 +88,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         ICommandHandler cmd,
         IPubSub pubSub,
         IEmbedBuilderService eb,
+        IReplacementService repSvc,
         IPermissionChecker permChecker)
     {
         _db = db;
@@ -97,6 +98,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         _bot = bot;
         _pubSub = pubSub;
         _eb = eb;
+        _repSvc = repSvc;
         _permChecker = permChecker;
         _rng = new NadekoRandom();
 
@@ -275,7 +277,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                 }
             }
 
-            var sentMsg = await expr.Send(msg, _client, false);
+            var sentMsg = await expr.Send(msg, _repSvc, _client, false);
 
             var reactions = expr.GetReactions();
             foreach (var reaction in reactions)

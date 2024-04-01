@@ -1,26 +1,25 @@
 #nullable disable
 using NadekoBot.Db;
 using Nadeko.Bot.Db.Models;
+using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Administration.Services;
 
-public sealed class GuildTimezoneService : ITimezoneService, INService
+public sealed class GuildTimezoneService : ITimezoneService, IReadyExecutor, INService
 {
-    public static ConcurrentDictionary<ulong, GuildTimezoneService> AllServices { get; } = new();
     private readonly ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
     private readonly DbService _db;
+    private readonly IReplacementPatternStore _repStore;
 
-    public GuildTimezoneService(DiscordSocketClient client, IBot bot, DbService db)
+    public GuildTimezoneService(IBot bot, DbService db, IReplacementPatternStore repStore)
     {
         _timezones = bot.AllGuildConfigs.Select(GetTimzezoneTuple)
-                        .Where(x => x.Timezone is not null)
-                        .ToDictionary(x => x.GuildId, x => x.Timezone)
-                        .ToConcurrent();
+            .Where(x => x.Timezone is not null)
+            .ToDictionary(x => x.GuildId, x => x.Timezone)
+            .ToConcurrent();
 
-        var curUser = client.CurrentUser;
-        if (curUser is not null)
-            AllServices.TryAdd(curUser.Id, this);
         _db = db;
+        _repStore = repStore;
 
         bot.JoinedGuild += Bot_JoinedGuild;
     }
@@ -55,7 +54,7 @@ public sealed class GuildTimezoneService : ITimezoneService, INService
     {
         if (guildId is ulong gid && _timezones.TryGetValue(gid, out var tz))
             return tz;
-        
+
         return null;
     }
 
@@ -75,4 +74,22 @@ public sealed class GuildTimezoneService : ITimezoneService, INService
 
     public TimeZoneInfo GetTimeZoneOrUtc(ulong? guildId)
         => GetTimeZoneOrDefault(guildId) ?? TimeZoneInfo.Utc;
+
+    public Task OnReadyAsync()
+    {
+        _repStore.Register("%server.time%",
+            (IGuild g) =>
+            {
+                var to = TimeZoneInfo.Local;
+                if (g is not null)
+                {
+                    to = GetTimeZoneOrDefault(g.Id) ?? TimeZoneInfo.Local;
+                }
+
+                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.Utc, to).ToString("HH:mm ")
+                       + to.StandardName.GetInitials();
+            });
+
+        return Task.CompletedTask;
+    }
 }

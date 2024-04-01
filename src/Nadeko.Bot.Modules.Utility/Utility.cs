@@ -1,6 +1,4 @@
 #nullable disable
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using NadekoBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -61,11 +59,12 @@ public partial class Utility : NadekoModule
     [Priority(1)]
     public async Task Say(ITextChannel channel, [Leftover] SmartText message)
     {
-        var rep = new ReplacementBuilder()
-                  .WithDefault(ctx.User, channel, (SocketGuild)ctx.Guild, (DiscordSocketClient)ctx.Client)
-                  .Build();
+        // var rep = new ReplacementBuilder()
+        //           .WithDefault(ctx.User, channel, (SocketGuild)ctx.Guild, (DiscordSocketClient)ctx.Client)
+        //           .Build();
 
-        message = rep.Replace(message);
+        var repCtx = new ReplacementContext(Context);
+        message = await repSvc.ReplaceAsync(message, repCtx);
 
         await channel.SendAsync(message, !((IGuildUser)ctx.User).GuildPermissions.MentionEveryone);
     }

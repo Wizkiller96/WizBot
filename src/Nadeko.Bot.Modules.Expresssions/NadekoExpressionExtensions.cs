@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using Nadeko.Bot.Db.Models;
 using System.Runtime.CompilerServices;
+using NadekoBot.Common;
 
 namespace NadekoBot.Modules.NadekoExpressions;
 
@@ -12,6 +13,7 @@ public static class NadekoExpressionExtensions
     public static async Task<IUserMessage> Send(
         this NadekoExpression cr,
         IUserMessage ctx,
+        IReplacementService repSvc,
         DiscordSocketClient client,
         bool sanitize)
     {
@@ -32,16 +34,18 @@ public static class NadekoExpressionExtensions
 
         var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
 
-        var rep = new ReplacementBuilder()
-                  .WithDefault(ctx.Author, ctx.Channel, (ctx.Channel as ITextChannel)?.Guild as SocketGuild, client)
-                  .WithOverride("%target%",
-                      () => canMentionEveryone
-                          ? ctx.Content[substringIndex..].Trim()
-                          : ctx.Content[substringIndex..].Trim().SanitizeMentions(true))
-                  .Build();
-
+        var repCtx = new ReplacementContext(client: client,
+                guild: (ctx.Channel as ITextChannel)?.Guild as SocketGuild,
+                channel: ctx.Channel,
+                users: ctx.Author
+            )
+            .WithOverride("%target%",
+                () => canMentionEveryone
+                    ? ctx.Content[substringIndex..].Trim()
+                    : ctx.Content[substringIndex..].Trim().SanitizeMentions(true));
+        
         var text = SmartText.CreateFrom(cr.Response);
-        text = rep.Replace(text);
+        text = await repSvc.ReplaceAsync(text, repCtx);
 
         return await channel.SendAsync(text, sanitize);
     }

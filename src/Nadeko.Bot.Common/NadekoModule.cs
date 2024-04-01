@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System.Globalization;
+using NadekoBot.Common;
 
 // ReSharper disable InconsistentNaming
 
@@ -18,6 +19,7 @@ public abstract class NadekoModule : ModuleBase
     public ILocalization _localization { get; set; }
     public IEmbedBuilderService _eb { get; set; }
     public INadekoInteractionService _inter { get; set; }
+    public IReplacementService repSvc { get; set; }
 
     protected string prefix
         => _cmdHandler.GetPrefix(ctx.Guild);

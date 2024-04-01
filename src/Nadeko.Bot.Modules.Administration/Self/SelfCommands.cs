@@ -1,5 +1,5 @@
 #nullable disable
-using NadekoBot.Db;
+using NadekoBot.Common;
 using NadekoBot.Modules.Administration.Services;
 using Nadeko.Bot.Db.Models;
 using Nadeko.Common.Medusa;
@@ -506,9 +506,10 @@ public partial class Administration
         [OwnerOnly]
         public async Task SetGame(ActivityType type, [Leftover] string game = null)
         {
-            var rep = new ReplacementBuilder().WithDefault(Context).Build();
+            // var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
-            await _service.SetGameAsync(game is null ? game : rep.Replace(game), type);
+            var repCtx = new ReplacementContext(ctx);
+            await _service.SetGameAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
 
             await ReplyConfirmLocalizedAsync(strs.set_game);
         }
@@ -538,7 +539,8 @@ public partial class Administration
             if (server is null)
                 return;
 
-            var rep = new ReplacementBuilder().WithDefault(Context).Build();
+            // var repSvc = new ReplacementBuilder().WithDefault(Context).Build();
+            var repCtx = new ReplacementContext(Context);
 
             if (ids[1].ToUpperInvariant().StartsWith("C:", StringComparison.InvariantCulture))
             {
@@ -547,7 +549,7 @@ public partial class Administration
                 if (ch is null)
                     return;
 
-                text = rep.Replace(text);
+                text = await repSvc.ReplaceAsync(text, repCtx);
                 await ch.SendAsync(text);
             }
             else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
@@ -558,7 +560,7 @@ public partial class Administration
                     return;
 
                 var ch = await user.CreateDMChannelAsync();
-                text = rep.Replace(text);
+                text = await repSvc.ReplaceAsync(text, repCtx);
                 await ch.SendAsync(text);
             }
             else

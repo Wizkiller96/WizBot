@@ -1,5 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
@@ -28,6 +29,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     private readonly IPubSub _pubSub;
     private readonly IEmbedBuilderService _eb;
     private readonly SearchesConfigService _config;
+    private readonly IReplacementService _repSvc;
 
     public TypedKey<List<StreamData>> StreamsOnlineKey { get; }
     public TypedKey<List<StreamData>> StreamsOfflineKey { get; }
@@ -50,7 +52,8 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         IBot bot,
         IPubSub pubSub,
         IEmbedBuilderService eb,
-        SearchesConfigService config)
+        SearchesConfigService config,
+        IReplacementService repSvc)
     {
         _db = db;
         _client = client;
@@ -58,6 +61,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         _pubSub = pubSub;
         _eb = eb;
         _config = config;
+        _repSvc = repSvc;
 
         _streamTracker = new(httpFactory, creds);
 
@@ -275,11 +279,13 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                         if (textChannel is null)
                             return default;
 
-                        var rep = new ReplacementBuilder().WithOverride("%user%", () => fs.Username)
-                            .WithOverride("%platform%", () => fs.Type.ToString())
-                            .Build();
+                        var repCtx = new ReplacementContext(guild: textChannel.Guild, client: _client)
+                            .WithOverride("%platform%", () => fs.Type.ToString());
 
-                        var message = string.IsNullOrWhiteSpace(fs.Message) ? "" : rep.Replace(fs.Message);
+
+                        var message = string.IsNullOrWhiteSpace(fs.Message)
+                            ? ""
+                            : await _repSvc.ReplaceAsync(fs.Message, repCtx);
 
                         var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream, false), message);
 
@@ -324,8 +330,8 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         using (var uow = _db.GetDbContext())
         {
             var gc = uow.Set<GuildConfig>().AsQueryable()
-                        .Include(x => x.FollowedStreams)
-                        .FirstOrDefault(x => x.GuildId == guildConfig.GuildId);
+                .Include(x => x.FollowedStreams)
+                .FirstOrDefault(x => x.GuildId == guildConfig.GuildId);
 
             if (gc is null)
                 return Task.CompletedTask;

@@ -2,6 +2,7 @@ using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using Nadeko.Bot.Db.Models;
 using System.Threading.Channels;
+using NadekoBot.Common;
 
 namespace NadekoBot.Services;
 
@@ -18,16 +19,19 @@ public class GreetService : INService, IReadyExecutor
     private readonly GreetGrouper<IGuildUser> _greets = new();
     private readonly GreetGrouper<IUser> _byes = new();
     private readonly BotConfigService _bss;
+    private readonly IReplacementService _repSvc;
 
     public GreetService(
         DiscordSocketClient client,
         IBot bot,
         DbService db,
-        BotConfigService bss)
+        BotConfigService bss,
+        IReplacementService repSvc)
     {
         _db = db;
         _client = client;
         _bss = bss;
+        _repSvc = repSvc;
 
         _guildConfigsCache = new(bot.AllGuildConfigs.ToDictionary(g => g.GuildId, GreetSettings.Create));
 
@@ -81,11 +85,12 @@ public class GreetService : INService, IReadyExecutor
                 return;
 
             var toSend = SmartText.CreateFrom(conf.BoostMessage);
-            var rep = new ReplacementBuilder().WithDefault(user, channel, user.Guild, _client).Build();
 
             try
             {
-                var toDelete = await channel.SendAsync(rep.Replace(toSend));
+                var newContent = await _repSvc.ReplaceAsync(toSend,
+                    new(client: _client, guild: user.Guild, channel: channel, users: user));
+                var toDelete = await channel.SendAsync(newContent);
                 if (conf.BoostMessageDeleteAfter > 0)
                     toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
             }
@@ -177,23 +182,31 @@ public class GreetService : INService, IReadyExecutor
         if (!users.Any())
             return;
 
-        var rep = new ReplacementBuilder().WithChannel(channel)
-                                          .WithClient(_client)
-                                          .WithServer(_client, (SocketGuild)channel.Guild)
-                                          .WithManyUsers(users)
-                                          .Build();
+        // var rep = new ReplacementBuilder().WithChannel(channel)
+        // .WithClient(_client)
+        // .WithServer(_client, (SocketGuild)channel.Guild)
+        // .WithManyUsers(users)
+        // .Build();
+
+        var repCtx = new ReplacementContext(client: _client,
+            guild: channel.Guild,
+            channel: channel,
+            users: users.ToArray());
 
         var text = SmartText.CreateFrom(conf.ChannelByeMessageText);
-        text = rep.Replace(text);
+        text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
             var toDelete = await channel.SendAsync(text);
             if (conf.AutoDeleteByeMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions ||
+                                       ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
-            Log.Warning(ex, "Missing permissions to send a bye message, the bye message will be disabled on server: {GuildId}", channel.GuildId);
+            Log.Warning(ex,
+                "Missing permissions to send a bye message, the bye message will be disabled on server: {GuildId}",
+                channel.GuildId);
             await SetBye(channel.GuildId, channel.Id, false);
         }
         catch (Exception ex)
@@ -210,23 +223,31 @@ public class GreetService : INService, IReadyExecutor
         if (users.Count == 0)
             return;
 
-        var rep = new ReplacementBuilder().WithChannel(channel)
-                                          .WithClient(_client)
-                                          .WithServer(_client, (SocketGuild)channel.Guild)
-                                          .WithManyUsers(users)
-                                          .Build();
+        // var rep = new ReplacementBuilder()
+        // .WithChannel(channel)
+        // .WithClient(_client)
+        // .WithServer(_client, (SocketGuild)channel.Guild)
+        // .WithManyUsers(users)
+        // .Build();
 
+        var repCtx = new ReplacementContext(client: _client,
+            guild: channel.Guild,
+            channel: channel,
+            users: users.ToArray());
         var text = SmartText.CreateFrom(conf.ChannelGreetMessageText);
-        text = rep.Replace(text);
+        text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
             var toDelete = await channel.SendAsync(text);
             if (conf.AutoDeleteGreetMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions ||
+                                       ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
-            Log.Warning(ex, "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}", channel.GuildId);
+            Log.Warning(ex,
+                "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}",
+                channel.GuildId);
             await SetGreet(channel.GuildId, channel.Id, false);
         }
         catch (Exception ex)
@@ -254,13 +275,14 @@ public class GreetService : INService, IReadyExecutor
     {
         try
         {
-            var rep = new ReplacementBuilder()
-                      .WithUser(user)
-                      .WithServer(_client, (SocketGuild)user.Guild)
-                      .Build();
+            // var rep = new ReplacementBuilder()
+            // .WithUser(user)
+            // .WithServer(_client, (SocketGuild)user.Guild)
+            // .Build();
 
+            var repCtx = new ReplacementContext(client: _client, guild: user.Guild, users: user);
             var text = SmartText.CreateFrom(conf.DmGreetMessageText);
-            text = rep.Replace(text);
+            text = await _repSvc.ReplaceAsync(text, repCtx);
 
             if (text is SmartPlainText pt)
             {
@@ -269,7 +291,7 @@ public class GreetService : INService, IReadyExecutor
                     Description = pt.Text
                 };
             }
-            
+
             if (text is SmartEmbedText set)
             {
                 text = set with

@@ -2,6 +2,7 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;
@@ -18,6 +19,7 @@ public class UserPunishService : INService, IReadyExecutor
     private readonly BlacklistService _blacklistService;
     private readonly BotConfigService _bcs;
     private readonly DiscordSocketClient _client;
+    private readonly IReplacementService _repSvc;
 
     public event Func<Warning, Task> OnUserWarned = static delegate { return Task.CompletedTask; };
 
@@ -26,13 +28,15 @@ public class UserPunishService : INService, IReadyExecutor
         DbService db,
         BlacklistService blacklistService,
         BotConfigService bcs,
-        DiscordSocketClient client)
+        DiscordSocketClient client,
+        IReplacementService repSvc)
     {
         _mute = mute;
         _db = db;
         _blacklistService = blacklistService;
         _bcs = bcs;
         _client = client;
+        _repSvc = repSvc;
     }
 
     public async Task OnReadyAsync()
@@ -524,7 +528,7 @@ public class UserPunishService : INService, IReadyExecutor
             .FirstOrDefaultAsyncLinqToDB();
     }
 
-    public SmartText GetBanUserDmEmbed(
+    public Task<SmartText> GetBanUserDmEmbed(
         ICommandContext context,
         IGuildUser target,
         string defaultMessage,
@@ -538,7 +542,7 @@ public class UserPunishService : INService, IReadyExecutor
             banReason,
             duration);
 
-    public SmartText GetBanUserDmEmbed(
+    public async Task<SmartText> GetBanUserDmEmbed(
         DiscordSocketClient client,
         SocketGuild guild,
         IGuildUser moderator,
@@ -551,7 +555,7 @@ public class UserPunishService : INService, IReadyExecutor
 
         banReason = string.IsNullOrWhiteSpace(banReason) ? "-" : banReason;
 
-        var replacer = new ReplacementBuilder().WithServer(client, guild)
+        var repCtx = new ReplacementContext(client, guild)
             .WithOverride("%ban.mod%", () => moderator.ToString())
             .WithOverride("%ban.mod.fullname%", () => moderator.ToString())
             .WithOverride("%ban.mod.name%", () => moderator.Username)
@@ -563,8 +567,8 @@ public class UserPunishService : INService, IReadyExecutor
             .WithOverride("%reason%", () => banReason)
             .WithOverride("%ban.reason%", () => banReason)
             .WithOverride("%ban.duration%",
-                () => duration?.ToString(@"d\.hh\:mm") ?? "perma")
-            .Build();
+                () => duration?.ToString(@"d\.hh\:mm") ?? "perma");
+
 
         // if template isn't set, use the old message style
         if (string.IsNullOrWhiteSpace(template))
@@ -590,6 +594,6 @@ public class UserPunishService : INService, IReadyExecutor
         }
 
         var output = SmartText.CreateFrom(template);
-        return replacer.Replace(output);
+        return await _repSvc.ReplaceAsync(output, repCtx);
     }
 }

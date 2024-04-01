@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Nadeko.Bot.Common;
+using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db.Models;
 using NadekoBot.Modules.Games.Common;

@@ -30,7 +30,7 @@ public sealed record SmartEmbedArrayElementText : SmartEmbedTextBase
 
 public sealed record SmartEmbedText : SmartEmbedTextBase
 {
-    public string PlainText { get; init; }
+    public string? PlainText { get; init; }
 
     public uint Color { get; init; } = 7458112;
 
@@ -54,15 +54,15 @@ public sealed record SmartEmbedText : SmartEmbedTextBase
 
 public abstract record SmartEmbedTextBase : SmartText
 {
-    public string Title { get; init; }
-    public string Description { get; init; }
-    public string Url { get; init; }
-    public string Thumbnail { get; init; }
-    public string Image { get; init; }
+    public string? Title { get; init; }
+    public string? Description { get; init; }
+    public string? Url { get; init; }
+    public string? Thumbnail { get; init; }
+    public string? Image { get; init; }
 
-    public SmartTextEmbedAuthor Author { get; init; }
-    public SmartTextEmbedFooter Footer { get; init; }
-    public SmartTextEmbedField[] Fields { get; init; }
+    public SmartTextEmbedAuthor? Author { get; init; }
+    public SmartTextEmbedFooter? Footer { get; init; }
+    public SmartTextEmbedField[]? Fields { get; init; }
 
     [JsonIgnore]
     public bool IsValid

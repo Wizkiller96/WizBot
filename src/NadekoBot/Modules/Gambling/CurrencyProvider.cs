@@ -1,4 +1,4 @@
-﻿using Nadeko.Bot.Common;
+﻿using NadekoBot.Common;
 using NadekoBot.Modules.Gambling.Services;
 
 namespace NadekoBot.Modules.Gambling;

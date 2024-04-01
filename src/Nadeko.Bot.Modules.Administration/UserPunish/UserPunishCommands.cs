@@ -425,7 +425,7 @@ public partial class Administration
                 try
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
-                    var embed = _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
+                    var embed = await _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
                     if (embed is not null)
                         await guildUser.SendAsync(embed);
                 }
@@ -490,7 +490,7 @@ public partial class Administration
             try
             {
                 var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
-                var embed = _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
+                var embed = await _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
                 if (embed is not null)
                     await user.SendAsync(embed);
             }
@@ -586,7 +586,7 @@ public partial class Administration
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
         {
             var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), reason));
-            var embed = _service.GetBanUserDmEmbed(Context, (IGuildUser)ctx.User, defaultMessage, reason, duration);
+            var embed = await _service.GetBanUserDmEmbed(Context, (IGuildUser)ctx.User, defaultMessage, reason, duration);
 
             if (embed is null)
                 await ConfirmLocalizedAsync(strs.banmsg_disabled);

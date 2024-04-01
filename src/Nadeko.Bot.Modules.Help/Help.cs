@@ -5,7 +5,7 @@ using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
-using Nadeko.Bot.Common;
+using NadekoBot.Common;
 using Nadeko.Common.Medusa;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -56,15 +56,14 @@ public sealed class Help : NadekoModule<HelpService>
             return default;
 
         var clientId = await _lazyClientId.Value;
-        var r = new ReplacementBuilder().WithDefault(Context)
+        var repCtx = new ReplacementContext(Context)
             .WithOverride("{0}", () => clientId.ToString())
             .WithOverride("{1}", () => prefix)
             .WithOverride("%prefix%", () => prefix)
-            .WithOverride("%bot.prefix%", () => prefix)
-            .Build();
+            .WithOverride("%bot.prefix%", () => prefix);
 
         var text = SmartText.CreateFrom(botSettings.HelpText);
-        return r.Replace(text);
+        return await repSvc.ReplaceAsync(text, repCtx);
     }
 
     [Cmd]

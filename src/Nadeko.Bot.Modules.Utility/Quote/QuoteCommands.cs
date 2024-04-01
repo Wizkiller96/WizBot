@@ -1,4 +1,5 @@
 ﻿#nullable disable warnings
+using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
 using Nadeko.Bot.Db.Models;
@@ -99,10 +100,10 @@ public partial class Utility
             if (quote is null)
                 return;
 
-            var rep = new ReplacementBuilder().WithDefault(Context).Build();
+            var repCtx = new ReplacementContext(Context);
 
             var text = SmartText.CreateFrom(quote.Text);
-            text = rep.Replace(text);
+            text = await repSvc.ReplaceAsync(text, repCtx);
 
             await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true);
         }
@@ -193,7 +194,7 @@ public partial class Utility
 
             Quote quote;
 
-            var rep = new ReplacementBuilder().WithDefault(Context).Build();
+            var repCtx = new ReplacementContext(Context);
 
             await using (var uow = _db.GetDbContext())
             {
@@ -212,7 +213,7 @@ public partial class Utility
 
 
             var text = SmartText.CreateFrom(quote.Text);
-            text = rep.Replace(text);
+            text = await repSvc.ReplaceAsync(text, repCtx);
             await ctx.Channel.SendAsync(infoText + text, true);
         }
 

@@ -2,7 +2,7 @@
 using OneOf;
 using OneOf.Types;
 
-namespace Nadeko.Bot.Common;
+namespace NadekoBot.Common;
 
 public interface IPermissionChecker
 {
