@@ -85,11 +85,11 @@ public partial class Searches
                         .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
                         .WithTitle(stock.Name)
                         .AddField(GetText(strs.price), $"{sign} **{price}**", true)
-                        .AddField(GetText(strs.market_cap), stock.MarketCap.ToString("C0", localCulture), true)
+                        .AddField(GetText(strs.market_cap), stock.MarketCap, true)
                         .AddField(GetText(strs.volume_24h), stock.DailyVolume.ToString("C0", localCulture), true)
                         .AddField("Change", $"{change} ({changePercent})", true)
-                        .AddField("Change 50d", $"{sign50}{change50}", true)
-                        .AddField("Change 200d", $"{sign200}{change200}", true)
+                        // .AddField("Change 50d", $"{sign50}{change50}", true)
+                        // .AddField("Change 200d", $"{sign200}{change200}", true)
                         .WithFooter(stock.Exchange);
             
             var message = await ctx.Channel.EmbedAsync(eb);
