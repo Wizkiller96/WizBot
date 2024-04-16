@@ -363,7 +363,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if (before.Username != after.Username)
                 {
                     embed.WithTitle("👥 " + GetText(g, strs.username_changed))
-                        .WithDescription($"{before.Username}#{before.Discriminator} | {before.Id}")
+                        .WithDescription($"{before.Username} | {before.Id}")
                         .AddField("Old Name", $"{before.Username}", true)
                         .AddField("New Name", $"{after.Username}", true)
                         .WithFooter(CurrentTime(g))
@@ -905,7 +905,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
-                              strs.user_vmoved("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                              strs.user_vmoved("👤" + Format.Bold(usr.Username),
                                   Format.Bold(beforeVch?.Name ?? ""),
                                   Format.Bold(afterVch?.Name ?? "")));
                 }
@@ -914,7 +914,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
-                              strs.user_vjoined("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                              strs.user_vjoined("👤" + Format.Bold(usr.Username),
                                   Format.Bold(afterVch?.Name ?? "")));
                 }
                 else if (afterVch is null)
@@ -922,7 +922,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                     str = "🎙"
                           + Format.Code(PrettyCurrentTime(usr.Guild))
                           + GetText(logChannel.Guild,
-                              strs.user_vleft("👤" + Format.Bold(usr.Username + "#" + usr.Discriminator),
+                              strs.user_vleft("👤" + Format.Bold(usr.Username),
                                   Format.Bold(beforeVch.Name ?? "")));
                 }
 

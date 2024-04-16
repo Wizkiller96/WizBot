@@ -239,7 +239,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
         await SendConfirmAsync("🎟 " + GetText(strs.raffled_user),
-            $"**{usr.Username}#{usr.Discriminator}**",
+            $"**{usr.Username}**",
             footer: $"ID: {usr.Id}");
     }
 
@@ -258,7 +258,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var usr = membersArray[new NadekoRandom().Next(0, membersArray.Length)];
         await SendConfirmAsync("🎟 " + GetText(strs.raffled_user),
-            $"**{usr.Username}#{usr.Discriminator}**",
+            $"**{usr.Username}**",
             footer: $"ID: {usr.Id}");
     }
 
