@@ -48,4 +48,23 @@ public interface IStatsService
     ///     Gets total amount of private memory currently in use by the bot, in Megabytes.
     /// </summary>
     double GetPrivateMemoryMegabytes();
+
+    GuildInfo GetGuildInfo(string name);
+    GuildInfo GetGuildInfo(ulong id);
+}
+
+public record struct GuildInfo
+{
+    public required string Name { get; init; }
+    public required string IconUrl { get; init; }
+    public required string Owner { get; init; }
+    public required ulong OwnerId { get; init; }
+    public required ulong Id { get; init; }
+    public required int TextChannels { get; init; }
+    public required int VoiceChannels { get; init; }
+    public required DateTime CreatedAt { get; init; }
+    public required IReadOnlyList<string> Features { get; init; }
+    public required IReadOnlyList<Emote> Emojis { get; init; }
+    public required IReadOnlyList<IRole> Roles { get; init; }
+    public int MemberCount { get; init; }
 }

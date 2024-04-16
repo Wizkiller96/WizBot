@@ -1,7 +1,7 @@
-﻿using CsvHelper;
+﻿using AngleSharp;
+using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
-using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace NadekoBot.Modules.Searches;
@@ -22,33 +22,61 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                 return default;
 
             using var http = _httpClientFactory.CreateClient();
-            var data = await http.GetFromJsonAsync<YahooQueryModel>(
-                $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={query}");
 
-            if (data is null)
-                return default; 
-            
-            var symbol = data.QuoteResponse.Result.FirstOrDefault();
 
-            if (symbol is null)
-                return default;
+
+            var quoteHtmlPage = $"https://finance.yahoo.com/quote/{query.ToUpperInvariant()}";
+
+            var config = Configuration.Default.WithDefaultLoader();
+            using var document = await BrowsingContext.New(config).OpenAsync(quoteHtmlPage);
+            var divElem =
+                document.QuerySelector(
+                    "#quote-header-info > div:nth-child(2) > div > div > h1");
+            var tickerName = (divElem)?.TextContent;
+
+            var marketcap = document
+                            .QuerySelectorAll("table")
+                            .Skip(1)
+                            .First()
+                            .QuerySelector("tbody > tr > td:nth-child(2)")
+                            ?.TextContent;
+
+
+            var volume = document.QuerySelector("td[data-test='AVERAGE_VOLUME_3MONTH-value']")
+                                 ?.TextContent;
             
+            var close= document.QuerySelector("td[data-test='PREV_CLOSE-value']")
+                                 ?.TextContent ?? "0";
+            
+            var price = document
+                        .QuerySelector("#quote-header-info")
+                        ?.QuerySelector("fin-streamer[data-field='regularMarketPrice']")
+                                 ?.TextContent ?? close;
+            
+            // var data = await http.GetFromJsonAsync<YahooQueryModel>(
+            //     $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={query}");
+            //
+            // if (data is null)
+            //     return default;
+
+            // var symbol = data.QuoteResponse.Result.FirstOrDefault();
+
+            // if (symbol is null)
+            // return default;
+
             return new()
             {
-                Name = symbol.LongName,
-                Symbol = symbol.Symbol,
-                Price = symbol.RegularMarketPrice,
-                Close = symbol.RegularMarketPreviousClose,
-                MarketCap = symbol.MarketCap,
-                Change50d = symbol.FiftyDayAverageChangePercent,
-                Change200d = symbol.TwoHundredDayAverageChangePercent,
-                DailyVolume = symbol.AverageDailyVolume10Day,
-                Exchange = symbol.FullExchangeName
+                Name = tickerName,
+                Symbol = query,
+                Price = double.Parse(price, NumberStyles.Any, CultureInfo.InvariantCulture),
+                Close = double.Parse(close, NumberStyles.Any, CultureInfo.InvariantCulture),
+                MarketCap = marketcap,
+                DailyVolume = (long)double.Parse(volume ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture),
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Log.Warning(ex, "Error getting stock data: {ErrorMessage}", ex.Message);
+            Log.Warning(ex, "Error getting stock data: {ErrorMessage}", ex.ToString());
             return default;
         }
     }
@@ -59,9 +87,9 @@ public sealed class DefaultStockDataService : IStockDataService, INService
             throw new ArgumentNullException(nameof(query));
 
         query = Uri.EscapeDataString(query);
-        
+
         using var http = _httpClientFactory.CreateClient();
-        
+
         var res = await http.GetStringAsync(
             "https://finance.yahoo.com/_finance_doubledown/api/resource/searchassist"
             + $";searchTerm={query}"
@@ -71,11 +99,11 @@ public sealed class DefaultStockDataService : IStockDataService, INService
 
         if (data is null or { Items: null })
             return Array.Empty<SymbolData>();
-        
+
         return data.Items
-                  .Where(x => x.Type == "S")
-                  .Select(x => new SymbolData(x.Symbol, x.Name))
-                  .ToList();
+                   .Where(x => x.Type == "S")
+                   .Select(x => new SymbolData(x.Symbol, x.Name))
+                   .ToList();
     }
 
     private static CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture)

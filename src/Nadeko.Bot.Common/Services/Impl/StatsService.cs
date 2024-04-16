@@ -185,4 +185,28 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
         _currentProcess.Refresh();
         return _currentProcess.PrivateMemorySize64 / 1.Megabytes().Bytes;
     }
+
+    public GuildInfo GetGuildInfo(string name)
+        => throw new NotImplementedException();
+
+    public GuildInfo GetGuildInfo(ulong id)
+    {
+        var g = _client.GetGuild(id);
+        
+        return new GuildInfo()
+        {
+            Id = g.Id,
+            IconUrl = g.IconUrl,
+            Name = g.Name,
+            Owner = g.Owner.Username,
+            OwnerId = g.OwnerId,
+            CreatedAt = g.CreatedAt.UtcDateTime,
+            VoiceChannels = g.VoiceChannels.Count,
+            TextChannels = g.TextChannels.Count,
+            Features = g.Features.Value.ToString().Split(","),
+            Emojis = g.Emotes.ToArray(),
+            Roles = g.Roles.OrderByDescending(x => x.Position).ToArray(),
+            MemberCount = g.MemberCount,
+        };
+    }
 }

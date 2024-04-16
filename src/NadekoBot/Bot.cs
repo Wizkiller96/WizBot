@@ -208,7 +208,6 @@ public sealed class Bot : IBot
             if (baseType is null)
                 continue;
 
-            Log.Information(ft.Name);
             var typeReader = (TypeReader)ActivatorUtilities.CreateInstance(Services, ft);
             var typeArgs = baseType.GetGenericArguments();
             _commandService.AddTypeReader(typeArgs[0], typeReader);
