@@ -117,42 +117,19 @@ publish-windows:
   tags:
     - windows
 
-# DigitalOcean Spaces
-upload-windows-release:
-  stage: upload-windows-release
+upload-windows-updater-release:
+  stage: upload-windows-updater-release
   rules:
     - if: "$CI_COMMIT_TAG"
   image:
-    name: python:3.7
+    name: amazon/aws-cli
     entrypoint: [""]
-  before_script:
-    - pip install s3cmd
-    - echo "[default]" > .s3cfg
-    - echo "access_key = $DO_SPACES_ACCESS_KEY" >> .s3cfg
-    - echo "secret_key = $DO_SPACES_SECRET_KEY" >> .s3cfg
-    - echo "bucket_location = US" >> .s3cfg
-    - echo "host_base = nyc3.digitaloceanspaces.com" >> .s3cfg
-    - echo "host_bucket = %(bucket)s.nyc3.digitaloceanspaces.com" >> .s3cfg
   script:
     - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
     - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
-    - s3cmd --version
-    - s3cmd put --acl-public --cf-invalidate "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME" s3://"$DO_SPACES_BUCKET_NAME"/dl/bot/"$INSTALLER_FILE_NAME"
-    - s3cmd put --acl-public --cf-invalidate releases-v3.json s3://"$DO_SPACES_BUCKET_NAME"/dl/bot/releases-v3.json
-
-#upload-windows-updater-release:
-#  stage: upload-windows-updater-release
-#  rules:
-#    - if: "$CI_COMMIT_TAG"
-#  image:
-#    name: amazon/aws-cli
-#    entrypoint: [""]
-#  script:
-#    - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
-#    - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
-#    - aws --version
-#    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-#    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
+    - aws --version
+    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
+    - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
 
 publish-medusa-package:
   stage: publish-medusa-package
