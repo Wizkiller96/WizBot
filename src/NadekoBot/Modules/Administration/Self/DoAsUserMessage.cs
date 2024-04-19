@@ -146,4 +146,5 @@ public sealed class DoAsUserMessage : IUserMessage
     public MessageResolvedData ResolvedData => _msg.ResolvedData;
 
     public IUserMessage ReferencedMessage => _msg.ReferencedMessage;
+    public IMessageInteractionMetadata InteractionMetadata { get; }
 }
