@@ -184,6 +184,7 @@
   "setrole": "Successfully added role {0} to user {1}",
   "setrole_err": "Failed to add role. I have insufficient permissions.",
   "set_avatar": "New avatar set!",
+  "set_banner": "New banner set!",
   "set_channel_name": "New channel name set.",
   "set_game": "New game set!",
   "set_stream": "New stream set!",

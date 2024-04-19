@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Services.Database.Models;
 using System.Collections.Immutable;
-using Nadeko.Common;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -320,6 +319,40 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
 
         return true;
     }
+
+    public async Task<bool> SetBanner(string img)
+    {
+        if (string.IsNullOrWhiteSpace(img))
+        {
+            return false;
+        }
+
+        if (!Uri.IsWellFormedUriString(img, UriKind.Absolute))
+        {
+            return false;
+        }
+
+        var uri = new Uri(img);
+
+        using var http = _httpFactory.CreateClient();
+        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+
+        if (!sr.IsImage())
+        {
+            return false;
+        }
+
+        if (sr.GetContentLength() > 8.Megabytes().Bytes)
+        {
+            return false;
+        }
+
+        await using var imageStream = await sr.Content.ReadAsStreamAsync();
+
+        await _client.CurrentUser.ModifyAsync(x => x.Banner = new Image(imageStream));
+        return true;
+    }
+
 
     public void ClearStartupCommands()
     {
