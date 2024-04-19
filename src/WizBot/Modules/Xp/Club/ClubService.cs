@@ -147,7 +147,7 @@ public class ClubService : INService, IClubService
             return ClubApplyResult.Banned;
         
         if (club.Applicants.Any(x => x.UserId == du.Id))
-            return ClubApplyResult.InsufficientLevel;
+            return ClubApplyResult.AlreadyApplied;
 
         var app = new ClubApplicants
         {

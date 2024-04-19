@@ -19,25 +19,25 @@ public class WaifuInfo : DbEntity
 
     public override string ToString()
     {
-        var claimer = "no one";
         var status = string.Empty;
 
-        var waifuUsername = Waifu.Username.TrimTo(20);
-        var claimerUsername = Claimer?.Username.TrimTo(20);
+        var waifuUsername = Waifu.ToString().TrimTo(20);
+        var claimer = Claimer?.ToString().TrimTo(20)
+                      ?? "no one";
 
-        if (ClaimerId is not null)
-            claimer = $"{claimerUsername}#{Claimer.Discriminator}";
+        var affinity = Affinity?.ToString().TrimTo(20);
+        
         if (AffinityId is null)
             status = $"... but {waifuUsername}'s heart is empty";
         else if (AffinityId == ClaimerId)
-            status = $"... and {waifuUsername} likes {claimerUsername} too <3";
+            status = $"... and {waifuUsername} likes {claimer} too <3";
         else
         {
             status =
-                $"... but {waifuUsername}'s heart belongs to {Affinity.Username.TrimTo(20)}#{Affinity.Discriminator}";
+                $"... but {waifuUsername}'s heart belongs to {affinity}";
         }
 
-        return $"**{waifuUsername}#{Waifu.Discriminator}** - claimed by **{claimer}**\n\t{status}";
+        return $"**{waifuUsername}** - claimed by **{claimer}**\n\t{status}";
     }
 }
 

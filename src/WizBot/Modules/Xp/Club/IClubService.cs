@@ -27,8 +27,7 @@ public interface IClubService
 public enum ClubApplyResult
 {
     Success,
-
     AlreadyInAClub,
     Banned,
-    InsufficientLevel
+    AlreadyApplied
 }

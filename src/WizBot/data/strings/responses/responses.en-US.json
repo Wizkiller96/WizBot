@@ -840,7 +840,7 @@
   "server_leaderboard": "Server XP Leaderboard",
   "global_leaderboard": "Global XP Leaderboard",
   "modified": "Modified server XP of the user {0} by {1}",
-  "club_insuff_lvl": "You're insufficient level to join that club.",
+  "club_already_applied": "You're insufficient level to join that club.",
   "club_join_banned": "You're banned from that club.",
   "club_already_in": "You are already a member of a club.",
   "club_create_error_name": "Failed creating the club. A club with that name already exists.",
