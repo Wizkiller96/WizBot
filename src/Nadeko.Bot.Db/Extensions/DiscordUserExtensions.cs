@@ -92,7 +92,7 @@ public static class DiscordUserExtensions
     public static DiscordUser[] GetUsersXpLeaderboardFor(this DbSet<DiscordUser> users, int page)
         => users.AsQueryable().OrderByDescending(x => x.TotalXp).Skip(page * 9).Take(9).AsEnumerable().ToArray();
 
-    public static List<DiscordUser> GetTopRichest(
+    public static Task<List<DiscordUser>> GetTopRichest(
         this DbSet<DiscordUser> users,
         ulong botId,
         int count,
@@ -102,7 +102,7 @@ public static class DiscordUserExtensions
                 .OrderByDescending(c => c.CurrencyAmount)
                 .Skip(page * 9)
                 .Take(count)
-                .ToList();
+                .ToListAsyncLinqToDB();
 
     public static async Task<long> GetUserCurrencyAsync(this DbSet<DiscordUser> users, ulong userId)
         => (await users.FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId))?.CurrencyAmount ?? 0;

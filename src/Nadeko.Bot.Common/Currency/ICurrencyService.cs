@@ -1,3 +1,4 @@
+using NadekoBot.Db.Models;
 using NadekoBot.Services.Currency;
 
 namespace NadekoBot.Services;
@@ -37,4 +38,6 @@ public interface ICurrencyService
         IUser user,
         long amount,
         TxData? txData);
+    
+    Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int count);
 }

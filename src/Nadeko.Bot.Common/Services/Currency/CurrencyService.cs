@@ -1,6 +1,7 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using NadekoBot.Services.Currency;
 
@@ -106,4 +107,10 @@ public sealed class CurrencyService : ICurrencyService, INService
         long amount,
         TxData txData)
         => await RemoveAsync(user.Id, amount, txData);
+
+    public async Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int count)
+    {
+        await using var uow = _db.GetDbContext();
+        return await uow.Set<DiscordUser>().GetTopRichest(ignoreId, count);
+    }
 }

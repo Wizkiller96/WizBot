@@ -751,7 +751,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             await using (var uow = _db.GetDbContext())
             {
-                cleanRichest = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 10_000);
+                cleanRichest = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 10_000);
             }
 
             await ctx.Channel.TriggerTypingAsync();
@@ -763,19 +763,19 @@ public partial class Gambling : GamblingModule<GamblingService>
         else
         {
             await using var uow = _db.GetDbContext();
-            cleanRichest = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, page).ToList();
+            cleanRichest = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, page);
         }
 
         await ctx.SendPaginatedConfirmAsync(page,
-            curPage =>
+            async curPage =>
             {
                 var embed = _eb.Create().WithOkColor().WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
 
                 List<DiscordUser> toSend;
                 if (!opts.Clean)
                 {
-                    using var uow = _db.GetDbContext();
-                    toSend = uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, curPage);
+                    await using var uow = _db.GetDbContext();
+                    toSend = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 9, curPage);
                 }
                 else
                 {

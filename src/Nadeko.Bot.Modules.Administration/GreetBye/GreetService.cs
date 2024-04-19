@@ -81,24 +81,33 @@ public class GreetService : INService, IReadyExecutor
             if (channel is null)
                 return;
 
-            if (string.IsNullOrWhiteSpace(conf.BoostMessage))
-                return;
-
-            var toSend = SmartText.CreateFrom(conf.BoostMessage);
-
-            try
-            {
-                var newContent = await _repSvc.ReplaceAsync(toSend,
-                    new(client: _client, guild: user.Guild, channel: channel, users: user));
-                var toDelete = await channel.SendAsync(newContent);
-                if (conf.BoostMessageDeleteAfter > 0)
-                    toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error sending boost message");
-            }
+            await SendBoostMessage(conf, user, channel);
         };
+
+    private async Task<bool> SendBoostMessage(GreetSettings conf, IGuildUser user, ITextChannel channel)
+    {
+        if (string.IsNullOrWhiteSpace(conf.BoostMessage))
+            return false;
+
+        var toSend = SmartText.CreateFrom(conf.BoostMessage);
+
+        try
+        {
+            var newContent = await _repSvc.ReplaceAsync(toSend,
+                new(client: _client, guild: user.Guild, channel: channel, users: user));
+            var toDelete = await channel.SendAsync(newContent);
+            if (conf.BoostMessageDeleteAfter > 0)
+                toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error sending boost message");
+        }
+
+        return false;
+    }
 
     private Task OnClientLeftGuild(SocketGuild arg)
     {
@@ -172,6 +181,15 @@ public class GreetService : INService, IReadyExecutor
     {
         using var uow = _db.GetDbContext();
         return uow.GuildConfigsForId(gid, set => set).BoostMessage;
+    }
+
+    public GreetSettings GetGreetSettings(ulong gid)
+    {
+        if (_guildConfigsCache.TryGetValue(gid, out var gs))
+            return gs;
+
+        using var uow = _db.GetDbContext();
+        return GreetSettings.Create(uow.GuildConfigsForId(gid, set => set));
     }
 
     private Task ByeUsers(GreetSettings conf, ITextChannel channel, IUser user)
@@ -579,11 +597,16 @@ public class GreetService : INService, IReadyExecutor
         await uow.SaveChangesAsync();
     }
 
-    public async Task<bool> ToggleBoost(ulong guildId, ulong channelId)
+    public async Task<bool> ToggleBoost(ulong guildId, ulong channelId, bool? forceState = null)
     {
         await using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set);
-        conf.SendBoostMessage = !conf.SendBoostMessage;
+
+        if (forceState is not bool fs)
+            conf.SendBoostMessage = !conf.SendBoostMessage;
+        else
+            conf.SendBoostMessage = fs;
+
         conf.BoostMessageChannelId = channelId;
         await uow.SaveChangesAsync();
 
@@ -635,6 +658,12 @@ public class GreetService : INService, IReadyExecutor
     {
         var conf = GetOrAddSettingsForGuild(user.GuildId);
         return GreetDmUser(conf, user);
+    }
+
+    public Task<bool> BoostTest(ITextChannel channel, IGuildUser user)
+    {
+        var conf = GetOrAddSettingsForGuild(user.GuildId);
+        return SendBoostMessage(conf, user, channel);
     }
 
     #endregion
