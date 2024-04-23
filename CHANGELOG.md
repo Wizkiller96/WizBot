@@ -2,6 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.0.0]
+
+### Added
+
+- `.shopadd command` You can now sell commands in the shop. The command will execute as if you were the one running it when someone buys it
+  - type `.h .shopadd` for more info
+- 
+
 ## [4.3.22] - 23.04.2023
 
 ### Added

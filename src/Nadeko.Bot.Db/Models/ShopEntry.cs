@@ -5,8 +5,8 @@ public enum ShopEntryType
 {
     Role,
 
-    List
-    //Infinite_List,
+    List,
+    Command
 }
 
 public class ShopEntry : DbEntity, IIndexed
@@ -25,6 +25,9 @@ public class ShopEntry : DbEntity, IIndexed
     //list
     public HashSet<ShopEntryItem> Items { get; set; } = new();
     public ulong? RoleRequirement { get; set; }
+    
+    // command 
+    public string Command { get; set; }
 }
 
 public class ShopEntryItem : DbEntity

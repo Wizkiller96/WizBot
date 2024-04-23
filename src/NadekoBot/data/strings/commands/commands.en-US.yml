@@ -1751,9 +1751,14 @@ shop:
     - ""
     - "2"
 shopadd:
-  desc: "Adds an item to the shop by specifying type price and name. Available types are role and list. 90% of currency from each purchase will be received by the user who added the item to the shop."
+  desc: |-
+    - Available types are role, list and command.
+    - If the item is a role, specify a role id or a role name.
+    - If the item is a command, specify the full command, replacing the user with %user% (for a mention) or %user.id% for user id.
+    90% of currency from each purchase will be received by the user who added the item to the shop. 
   args:
     - "role 1000 Rich"
+    - "cmd 1000 .setrole %user% Rich"
 shopremove:
   desc: "Removes an item from the shop by its ID."
   args:

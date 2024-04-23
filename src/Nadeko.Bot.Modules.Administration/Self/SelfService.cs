@@ -4,6 +4,7 @@ using Nadeko.Bot.Db.Models;
 using System.Collections.Immutable;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Administration.Services;

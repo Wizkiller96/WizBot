@@ -710,6 +710,7 @@
   "shop_item_add": "Shop item added",
   "shop_none": "No shop items found on this page.",
   "shop_role": "You will get {0} role.",
+  "shop_command_invalid_context": "Unable to retrieve user, channel or server in order to execute the command.",
   "type": "Type",
   "gvc_disabled": "Game Voice Channel feature has been disabled on this server.",
   "gvc_enabled": "{0} is a Game Voice Channel now.",

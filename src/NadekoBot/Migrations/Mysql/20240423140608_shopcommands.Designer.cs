@@ -2,53 +2,56 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nadeko.Bot.Db;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace NadekoBot.Db.Migrations
+namespace NadekoBot.Db.Migrations.Mysql
 {
-    [DbContext(typeof(PostgreSqlContext))]
-    partial class PostgreSqlContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MysqlContext))]
+    [Migration("20240423140608_shopcommands")]
+    partial class shopcommands
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiAltSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("action");
 
                     b.Property<int>("ActionDurationMinutes")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("actiondurationminutes");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<TimeSpan>("MinAge")
-                        .HasColumnType("interval")
+                        .HasColumnType("time(6)")
                         .HasColumnName("minage");
 
-                    b.Property<decimal?>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.HasKey("Id")
@@ -65,33 +68,33 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("action");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("PunishDuration")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("punishduration");
 
                     b.Property<int>("Seconds")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("seconds");
 
                     b.Property<int>("UserThreshold")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("userthreshold");
 
                     b.HasKey("Id")
@@ -108,21 +111,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AntiSpamSettingId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("antispamsettingid");
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.HasKey("Id")
@@ -138,33 +141,33 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("action");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("MessageThreshold")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("messagethreshold");
 
                     b.Property<int>("MuteTime")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("mutetime");
 
-                    b.Property<decimal?>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.HasKey("Id")
@@ -181,45 +184,45 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<string>("ChannelName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("channelname");
 
                     b.Property<string>("CommandText")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("commandtext");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal?>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("GuildName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("guildname");
 
                     b.Property<int>("Interval")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("interval");
 
-                    b.Property<decimal?>("VoiceChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("VoiceChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("voicechannelid");
 
                     b.Property<string>("VoiceChannelName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("voicechannelname");
 
                     b.HasKey("Id")
@@ -232,25 +235,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AutoDelete")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autodelete");
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.HasKey("Id")
@@ -270,29 +273,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ChannelId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Source")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("source");
 
                     b.Property<string>("Target")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("target");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -308,25 +311,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<int?>("PruneDays")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("prunedays");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("text");
 
                     b.HasKey("Id")
@@ -343,21 +346,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("ItemId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ItemId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("itemid");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.HasKey("Id")
@@ -370,25 +373,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<string>("Mapping")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("mapping");
 
                     b.Property<string>("Trigger")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("trigger");
 
                     b.HasKey("Id")
@@ -404,25 +407,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CommandName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("commandname");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("Seconds")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("seconds");
 
                     b.HasKey("Id")
@@ -438,41 +441,41 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("Amount")
                         .HasColumnType("bigint")
                         .HasColumnName("amount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Extra")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("extra");
 
                     b.Property<string>("Note")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("note");
 
-                    b.Property<decimal?>("OtherId")
+                    b.Property<ulong?>("OtherId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("otherid")
                         .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("type");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -488,25 +491,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<bool>("State")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("state");
 
                     b.HasKey("Id")
@@ -522,25 +525,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Command")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("command");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal?>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
-                    b.Property<decimal>("Perm")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("Perm")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("perm");
 
                     b.HasKey("Id")
@@ -557,25 +560,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("ItemId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ItemId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("itemid");
 
                     b.Property<int>("ItemType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("itemtype");
 
                     b.Property<int?>("XpSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("xpsettingsid");
 
                     b.HasKey("Id")
@@ -591,30 +594,30 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("message");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("url");
 
                     b.HasKey("Id")
@@ -630,21 +633,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.HasKey("Id")
@@ -660,21 +663,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.HasKey("Id")
@@ -690,21 +693,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.HasKey("Id")
@@ -720,21 +723,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<string>("Word")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("word");
 
                     b.HasKey("Id")
@@ -750,21 +753,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.HasKey("Id")
@@ -780,25 +783,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Bet")
-                        .HasColumnType("numeric")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("bet");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Feature")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("feature");
 
                     b.Property<decimal>("PaidOut")
-                        .HasColumnType("numeric")
+                        .HasColumnType("decimal(65,30)")
                         .HasColumnName("paidout");
 
                     b.HasKey("Id")
@@ -815,25 +818,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.Property<int>("Number")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("number");
 
                     b.HasKey("Id")
@@ -850,163 +853,163 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AutoAssignRoleIds")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("autoassignroleids");
 
                     b.Property<int>("AutoDeleteByeMessagesTimer")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("autodeletebyemessagestimer");
 
                     b.Property<int>("AutoDeleteGreetMessagesTimer")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("autodeletegreetmessagestimer");
 
                     b.Property<bool>("AutoDeleteSelfAssignedRoleMessages")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autodeleteselfassignedrolemessages");
 
                     b.Property<string>("BoostMessage")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("boostmessage");
 
-                    b.Property<decimal>("BoostMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("BoostMessageChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("boostmessagechannelid");
 
                     b.Property<int>("BoostMessageDeleteAfter")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("boostmessagedeleteafter");
 
-                    b.Property<decimal>("ByeMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ByeMessageChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("byemessagechannelid");
 
                     b.Property<string>("ChannelByeMessageText")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("channelbyemessagetext");
 
                     b.Property<string>("ChannelGreetMessageText")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("channelgreetmessagetext");
 
                     b.Property<bool>("CleverbotEnabled")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("cleverbotenabled");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("DeleteMessageOnCommand")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("deletemessageoncommand");
 
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("deletestreamonlinemessage");
 
                     b.Property<bool>("DisableGlobalExpressions")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("disableglobalexpressions");
 
                     b.Property<string>("DmGreetMessageText")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("dmgreetmessagetext");
 
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("exclusiveselfassignedroles");
 
                     b.Property<bool>("FilterInvites")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("filterinvites");
 
                     b.Property<bool>("FilterLinks")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("filterlinks");
 
                     b.Property<bool>("FilterWords")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("filterwords");
 
-                    b.Property<decimal?>("GameVoiceChannel")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("GameVoiceChannel")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("gamevoicechannel");
 
-                    b.Property<decimal>("GreetMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GreetMessageChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("greetmessagechannelid");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Locale")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("locale");
 
                     b.Property<string>("MuteRoleName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("muterolename");
 
                     b.Property<bool>("NotifyStreamOffline")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("notifystreamoffline");
 
                     b.Property<string>("PermissionRole")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("permissionrole");
 
                     b.Property<string>("Prefix")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("prefix");
 
                     b.Property<bool>("SendBoostMessage")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("sendboostmessage");
 
                     b.Property<bool>("SendChannelByeMessage")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("sendchannelbyemessage");
 
                     b.Property<bool>("SendChannelGreetMessage")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("sendchannelgreetmessage");
 
                     b.Property<bool>("SendDmGreetMessage")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("senddmgreetmessage");
 
                     b.Property<string>("TimeZoneId")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("timezoneid");
 
                     b.Property<bool>("VerboseErrors")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true)
                         .HasColumnName("verboseerrors");
 
                     b.Property<bool>("VerbosePermissions")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("verbosepermissions");
 
                     b.Property<int>("WarnExpireAction")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("warnexpireaction");
 
                     b.Property<int>("WarnExpireHours")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("warnexpirehours");
 
                     b.Property<bool>("WarningsInitialized")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("warningsinitialized");
 
                     b.HasKey("Id")
@@ -1026,25 +1029,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("ItemType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("itemtype");
 
-                    b.Property<decimal>("LogItemId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("LogItemId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("logitemid");
 
                     b.Property<int>("LogSettingId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("logsettingid");
 
                     b.HasKey("Id")
@@ -1061,21 +1064,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("LogSettingId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("logsettingid");
 
                     b.HasKey("Id")
@@ -1091,25 +1094,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.HasKey("Id")
@@ -1126,89 +1129,89 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("ChannelCreatedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("ChannelCreatedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelcreatedid");
 
-                    b.Property<decimal?>("ChannelDestroyedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("ChannelDestroyedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channeldestroyedid");
 
-                    b.Property<decimal?>("ChannelUpdatedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("ChannelUpdatedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelupdatedid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
-                    b.Property<decimal?>("LogOtherId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LogOtherId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("logotherid");
 
-                    b.Property<decimal?>("LogUserPresenceId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LogUserPresenceId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("loguserpresenceid");
 
-                    b.Property<decimal?>("LogVoicePresenceId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LogVoicePresenceId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("logvoicepresenceid");
 
-                    b.Property<decimal?>("LogVoicePresenceTTSId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LogVoicePresenceTTSId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("logvoicepresencettsid");
 
-                    b.Property<decimal?>("LogWarnsId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LogWarnsId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("logwarnsid");
 
-                    b.Property<decimal?>("MessageDeletedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("MessageDeletedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("messagedeletedid");
 
-                    b.Property<decimal?>("MessageUpdatedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("MessageUpdatedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("messageupdatedid");
 
-                    b.Property<decimal?>("ThreadCreatedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("ThreadCreatedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("threadcreatedid");
 
-                    b.Property<decimal?>("ThreadDeletedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("ThreadDeletedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("threaddeletedid");
 
-                    b.Property<decimal?>("UserBannedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserBannedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userbannedid");
 
-                    b.Property<decimal?>("UserJoinedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserJoinedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userjoinedid");
 
-                    b.Property<decimal?>("UserLeftId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserLeftId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userleftid");
 
-                    b.Property<decimal?>("UserMutedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserMutedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("usermutedid");
 
-                    b.Property<decimal?>("UserUnbannedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserUnbannedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userunbannedid");
 
-                    b.Property<decimal?>("UserUpdatedId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("UserUpdatedId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userupdatedid");
 
                     b.HasKey("Id")
@@ -1225,38 +1228,38 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AutoDisconnect")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autodisconnect");
 
                     b.Property<bool>("AutoPlay")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autoplay");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
-                    b.Property<decimal?>("MusicChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("MusicChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("musicchannelid");
 
                     b.Property<int>("PlayerRepeat")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("playerrepeat");
 
                     b.Property<int>("QualityPreset")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("qualitypreset");
 
                     b.Property<int>("Volume")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(100)
                         .HasColumnName("volume");
 
@@ -1274,25 +1277,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("author");
 
-                    b.Property<decimal>("AuthorId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("AuthorId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("authorid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
@@ -1305,21 +1308,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -1335,45 +1338,45 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowTarget")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("allowtarget");
 
                     b.Property<bool>("AutoDeleteTrigger")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("autodeletetrigger");
 
                     b.Property<bool>("ContainsAnywhere")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("containsanywhere");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("DmResponse")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("dmresponse");
 
-                    b.Property<decimal?>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Reactions")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("reactions");
 
                     b.Property<string>("Response")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("response");
 
                     b.Property<string>("Trigger")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("trigger");
 
                     b.HasKey("Id")
@@ -1386,21 +1389,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Tag")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("tag");
 
                     b.HasKey("Id")
@@ -1416,45 +1419,45 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("Index")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("index");
 
                     b.Property<bool>("IsCustomCommand")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("iscustomcommand");
 
                     b.Property<int>("PrimaryTarget")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("primarytarget");
 
-                    b.Property<decimal>("PrimaryTargetId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("PrimaryTargetId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("primarytargetid");
 
                     b.Property<int>("SecondaryTarget")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("secondarytarget");
 
                     b.Property<string>("SecondaryTargetName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("secondarytargetname");
 
                     b.Property<bool>("State")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("state");
 
                     b.HasKey("Id")
@@ -1470,37 +1473,37 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("Amount")
                         .HasColumnType("bigint")
                         .HasColumnName("amount");
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
-                    b.Property<decimal>("MessageId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("messageid");
 
                     b.Property<string>("Password")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("password");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -1520,37 +1523,37 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("MusicPlaylistId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("musicplaylistid");
 
                     b.Property<string>("Provider")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("provider");
 
                     b.Property<int>("ProviderType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("providertype");
 
                     b.Property<string>("Query")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("query");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("title");
 
                     b.Property<string>("Uri")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("uri");
 
                     b.HasKey("Id")
@@ -1566,25 +1569,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Question")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("question");
 
                     b.HasKey("Id")
@@ -1601,25 +1604,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Index")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("index");
 
                     b.Property<int?>("PollId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("pollid");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("text");
 
                     b.HasKey("Id")
@@ -1635,25 +1638,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("PollId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("pollid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<int>("VoteIndex")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("voteindex");
 
                     b.HasKey("Id")
@@ -1669,36 +1672,36 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AuthorId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("AuthorId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("authorid");
 
                     b.Property<string>("AuthorName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("authorname");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Keyword")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("keyword");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("text");
 
                     b.HasKey("Id")
@@ -1717,42 +1720,42 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Emote")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("emote");
 
                     b.Property<int>("Group")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("group");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<int>("LevelReq")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("levelreq");
 
-                    b.Property<decimal>("MessageId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("messageid");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.HasKey("Id")
@@ -1772,41 +1775,41 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("IsPrivate")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("isprivate");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("message");
 
-                    b.Property<decimal>("ServerId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ServerId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("serverid");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<DateTime>("When")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("when");
 
                     b.HasKey("Id")
@@ -1822,41 +1825,41 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<TimeSpan>("Interval")
-                        .HasColumnType("interval")
+                        .HasColumnType("time(6)")
                         .HasColumnName("interval");
 
-                    b.Property<decimal?>("LastMessageId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("LastMessageId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("lastmessageid");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("message");
 
                     b.Property<bool>("NoRedundant")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("noredundant");
 
                     b.Property<TimeSpan?>("StartTimeOfDay")
-                        .HasColumnType("interval")
+                        .HasColumnType("time(6)")
                         .HasColumnName("starttimeofday");
 
                     b.HasKey("Id")
@@ -1869,29 +1872,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("AmountRewardedThisMonth")
                         .HasColumnType("bigint")
                         .HasColumnName("amountrewardedthismonth");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<DateTime>("LastReward")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("lastreward");
 
                     b.Property<string>("PlatformUserId")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("platformuserid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -1908,21 +1911,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Status")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("status");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.HasKey("Id")
@@ -1935,31 +1938,31 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Group")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("group");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<int>("LevelRequirement")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("levelrequirement");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.HasKey("Id")
@@ -1976,53 +1979,53 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AuthorId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("AuthorId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("authorid");
 
                     b.Property<string>("Command")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("command");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("Index")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("index");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.Property<int>("Price")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("price");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.Property<string>("RoleName")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("rolename");
 
-                    b.Property<decimal?>("RoleRequirement")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("RoleRequirement")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("rolerequirement");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.HasKey("Id")
@@ -2038,21 +2041,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("ShopEntryId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("shopentryid");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("text");
 
                     b.HasKey("Id")
@@ -2068,21 +2071,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.HasKey("Id")
@@ -2098,21 +2101,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2128,25 +2131,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("StreamRoleSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("streamrolesettingsid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("username");
 
                     b.HasKey("Id")
@@ -2162,33 +2165,33 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AddRoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("AddRoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("addroleid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("Enabled")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("enabled");
 
-                    b.Property<decimal>("FromRoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("FromRoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("fromroleid");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<string>("Keyword")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("keyword");
 
                     b.HasKey("Id")
@@ -2205,25 +2208,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("StreamRoleSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("streamrolesettingsid");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("username");
 
                     b.HasKey("Id")
@@ -2239,25 +2242,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<DateTime>("UnbanAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("unbanat");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2273,25 +2276,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<DateTime>("UnmuteAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("unmuteat");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2307,29 +2310,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.Property<DateTime>("UnbanAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("unbanat");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2345,29 +2348,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("AwardedXp")
                         .HasColumnType("bigint")
                         .HasColumnName("awardedxp");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<int>("NotifyOnLevelUp")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("notifyonlevelup");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<long>("Xp")
@@ -2400,25 +2403,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
-                    b.Property<decimal>("VoiceChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("VoiceChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("voicechannelid");
 
                     b.HasKey("Id")
@@ -2434,21 +2437,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AffinityId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("affinityid");
 
                     b.Property<int?>("ClaimerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("claimerid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<long>("Price")
@@ -2456,7 +2459,7 @@ namespace NadekoBot.Db.Migrations
                         .HasColumnName("price");
 
                     b.Property<int>("WaifuId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("waifuid");
 
                     b.HasKey("Id")
@@ -2482,25 +2485,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("ItemEmoji")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("itememoji");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.Property<int?>("WaifuInfoId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("waifuinfoid");
 
                     b.HasKey("Id")
@@ -2516,29 +2519,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("NewId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("newid");
 
                     b.Property<int?>("OldId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("oldid");
 
                     b.Property<int>("UpdateType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("updatetype");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2560,37 +2563,37 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("Forgiven")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("forgiven");
 
                     b.Property<string>("ForgivenBy")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("forgivenby");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Moderator")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("moderator");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("reason");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<long>("Weight")
@@ -2618,33 +2621,33 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Count")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("count");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<int>("Punishment")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("punishment");
 
-                    b.Property<decimal?>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.Property<int>("Time")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("time");
 
                     b.HasKey("Id")
@@ -2660,25 +2663,25 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("amount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Level")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("level");
 
                     b.Property<int>("XpSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("xpsettingsid");
 
                     b.HasKey("Id")
@@ -2694,29 +2697,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("Level")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("level");
 
                     b.Property<bool>("Remove")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("remove");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("roleid");
 
                     b.Property<int>("XpSettingsId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("xpsettingsid");
 
                     b.HasKey("Id")
@@ -2733,21 +2736,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
                     b.Property<bool>("ServerExcluded")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("serverexcluded");
 
                     b.HasKey("Id")
@@ -2764,21 +2767,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.HasKey("Id")
@@ -2795,21 +2798,21 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("Balance")
                         .HasColumnType("bigint")
                         .HasColumnName("balance");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -2825,11 +2828,11 @@ namespace NadekoBot.Db.Migrations
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
                 {
                     b.Property<int>("ClubId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("clubid");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("userid");
 
                     b.HasKey("ClubId", "UserId")
@@ -2844,11 +2847,11 @@ namespace NadekoBot.Db.Migrations
             modelBuilder.Entity("NadekoBot.Db.Models.ClubBans", b =>
                 {
                     b.Property<int>("ClubId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("clubid");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("userid");
 
                     b.HasKey("ClubId", "UserId")
@@ -2864,34 +2867,35 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("description");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("imageurl");
 
                     b.Property<string>("Name")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("name");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8mb4_bin");
 
                     b.Property<int?>("OwnerId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ownerid");
 
                     b.Property<int>("Xp")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("xp");
 
                     b.HasKey("Id")
@@ -2912,17 +2916,17 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AvatarId")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("avatarid");
 
                     b.Property<int?>("ClubId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("clubid");
 
                     b.Property<long>("CurrencyAmount")
@@ -2932,22 +2936,22 @@ namespace NadekoBot.Db.Migrations
                         .HasColumnName("currencyamount");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<string>("Discriminator")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("discriminator");
 
                     b.Property<bool>("IsClubAdmin")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false)
                         .HasColumnName("isclubadmin");
 
                     b.Property<int>("NotifyOnLevelUp")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasDefaultValue(0)
                         .HasColumnName("notifyonlevelup");
 
@@ -2957,12 +2961,12 @@ namespace NadekoBot.Db.Migrations
                         .HasDefaultValue(0L)
                         .HasColumnName("totalxp");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("username");
 
                     b.HasKey("Id")
@@ -2990,37 +2994,37 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<int?>("GuildConfigId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<decimal>("GuildId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("guildid");
 
                     b.Property<string>("Message")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("message");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.Property<string>("Username")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("username");
 
                     b.HasKey("Id")
@@ -3034,28 +3038,28 @@ namespace NadekoBot.Db.Migrations
 
             modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
                 {
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.Property<int>("FeatureType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("featuretype");
 
                     b.Property<string>("Feature")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("feature");
 
-                    b.Property<long>("DailyCount")
-                        .HasColumnType("bigint")
+                    b.Property<uint>("DailyCount")
+                        .HasColumnType("int unsigned")
                         .HasColumnName("dailycount");
 
-                    b.Property<long>("HourlyCount")
-                        .HasColumnType("bigint")
+                    b.Property<uint>("HourlyCount")
+                        .HasColumnType("int unsigned")
                         .HasColumnName("hourlycount");
 
-                    b.Property<long>("MonthlyCount")
-                        .HasColumnType("bigint")
+                    b.Property<uint>("MonthlyCount")
+                        .HasColumnType("int unsigned")
                         .HasColumnName("monthlycount");
 
                     b.HasKey("UserId", "FeatureType", "Feature")
@@ -3069,25 +3073,27 @@ namespace NadekoBot.Db.Migrations
 
             modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
                 {
-                    b.Property<decimal>("UserId")
+                    b.Property<ulong>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(20,0)")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("UserId"));
+
                     b.Property<int>("AmountCents")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("amountcents");
 
                     b.Property<DateTime>("LastCharge")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("lastcharge");
 
                     b.Property<string>("UniquePlatformUserId")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("uniqueplatformuserid");
 
                     b.Property<DateTime>("ValidThru")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("validthru");
 
                     b.HasKey("UserId")
@@ -3104,29 +3110,29 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ChannelId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("channelid");
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<decimal>("MessageId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("messageid");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("longtext")
                         .HasColumnName("name");
 
                     b.Property<int>("Type")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("type");
 
                     b.HasKey("Id")
@@ -3139,30 +3145,30 @@ namespace NadekoBot.Db.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
                     b.Property<bool>("IsUsing")
-                        .HasColumnType("boolean")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("isusing");
 
                     b.Property<string>("ItemKey")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("itemkey");
 
                     b.Property<int>("ItemType")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("itemtype");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
@@ -3427,7 +3433,7 @@ namespace NadekoBot.Db.Migrations
                     b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
                         .WithMany("Blacklist")
                         .HasForeignKey("StreamRoleSettingsId")
-                        .HasConstraintName("fk_streamroleblacklisteduser_streamrolesettings_streamrolesett~");
+                        .HasConstraintName("fk_streamroleblacklisteduser_streamrolesettings_streamrolesetti~");
                 });
 
             modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
@@ -3447,7 +3453,7 @@ namespace NadekoBot.Db.Migrations
                     b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
                         .WithMany("Whitelist")
                         .HasForeignKey("StreamRoleSettingsId")
-                        .HasConstraintName("fk_streamrolewhitelisteduser_streamrolesettings_streamrolesett~");
+                        .HasConstraintName("fk_streamrolewhitelisteduser_streamrolesettings_streamrolesetti~");
                 });
 
             modelBuilder.Entity("Nadeko.Bot.Db.Models.UnbanTimer", b =>

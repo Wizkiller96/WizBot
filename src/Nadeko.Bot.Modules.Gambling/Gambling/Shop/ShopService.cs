@@ -1,7 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
-
 using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling.Services;
@@ -14,8 +13,10 @@ public class ShopService : IShopService, INService
         => _db = db;
 
     private IndexedCollection<ShopEntry> GetEntriesInternal(DbContext uow, ulong guildId)
-        => uow.GuildConfigsForId(guildId, set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
-              .ShopEntries.ToIndexed();
+        => uow.GuildConfigsForId(guildId,
+                set => set.Include(x => x.ShopEntries)
+                    .ThenInclude(x => x.Items))
+            .ShopEntries.ToIndexed();
 
     public async Task<bool> ChangeEntryPriceAsync(ulong guildId, int index, int newPrice)
     {
@@ -108,5 +109,25 @@ public class ShopService : IShopService, INService
 
         await uow.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<ShopEntry> AddShopCommandAsync(ulong guildId, ulong userId, int price, string command)
+    {
+        await using var uow = _db.GetDbContext();
+
+        var entries = GetEntriesInternal(uow, guildId);
+        var entry = new ShopEntry()
+        {
+            AuthorId = userId,
+            Command = command,
+            Type = ShopEntryType.Command,
+            Price = price,
+        };
+        entries.Add(entry);
+        uow.GuildConfigsForId(guildId, set => set).ShopEntries = entries;
+
+        await uow.SaveChangesAsync();
+
+        return entry;
     }
 }

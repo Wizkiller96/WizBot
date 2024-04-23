@@ -1,4 +1,6 @@
 #nullable disable
+using Nadeko.Bot.Db.Models;
+
 namespace NadekoBot.Modules.Gambling.Services;
 
 public interface IShopService
@@ -40,4 +42,5 @@ public interface IShopService
     Task<bool> MoveEntryAsync(ulong guildId, int fromIndex, int toIndex);
 
     Task<bool> SetItemRoleRequirementAsync(ulong guildId, int index, ulong? roleId);
+    Task<ShopEntry> AddShopCommandAsync(ulong guildId, ulong userId, int price, string command);
 }

@@ -4,6 +4,7 @@ using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using Nadeko.Bot.Db.Models;
+using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -20,6 +21,12 @@ public partial class Gambling
         public enum Role
         {
             Role
+        }
+
+        public enum Command
+        {
+            Command,
+            Cmd
         }
 
         private readonly DbService _db;
@@ -39,8 +46,8 @@ public partial class Gambling
 
             using var uow = _db.GetDbContext();
             var entries = uow.GuildConfigsForId(ctx.Guild.Id,
-                                 set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
-                             .ShopEntries.ToIndexed();
+                    set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
+                .ShopEntries.ToIndexed();
             return ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
@@ -156,7 +163,7 @@ public partial class Gambling
                 return;
             }
 
-            if (entry.Type == ShopEntryType.List)
+            else if (entry.Type == ShopEntryType.List)
             {
                 if (entry.Items.Count == 0)
                 {
@@ -177,11 +184,11 @@ public partial class Gambling
                     try
                     {
                         await ctx.User.EmbedAsync(_eb.Create()
-                                                     .WithOkColor()
-                                                     .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
-                                                     .AddField(GetText(strs.item), item.Text)
-                                                     .AddField(GetText(strs.price), entry.Price.ToString(), true)
-                                                     .AddField(GetText(strs.name), entry.Name, true));
+                            .WithOkColor()
+                            .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
+                            .AddField(GetText(strs.item), item.Text)
+                            .AddField(GetText(strs.price), entry.Price.ToString(), true)
+                            .AddField(GetText(strs.name), entry.Name, true));
 
                         await _cs.AddAsync(entry.AuthorId,
                             GetProfitAmount(entry.Price),
@@ -193,9 +200,9 @@ public partial class Gambling
                         await using (var uow = _db.GetDbContext())
                         {
                             var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
-                                                                                  set => set.Include(x => x.ShopEntries)
-                                                                                      .ThenInclude(x => x.Items))
-                                                                              .ShopEntries);
+                                    set => set.Include(x => x.ShopEntries)
+                                        .ThenInclude(x => x.Items))
+                                .ShopEntries);
                             entry = entries.ElementAtOrDefault(index);
                             if (entry is not null)
                             {
@@ -213,10 +220,78 @@ public partial class Gambling
                 else
                     await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
             }
+            else if (entry.Type == ShopEntryType.Command)
+            {
+                var guild = ctx.Guild as SocketGuild;
+                var channel = ctx.Channel as ISocketMessageChannel;
+                var msg = ctx.Message as SocketUserMessage;
+                var user = await ctx.Guild.GetUserAsync(entry.AuthorId);
+
+                if (guild is null || channel is null || msg is null || user is null)
+                {
+                    await ReplyErrorLocalizedAsync(strs.shop_command_invalid_context);
+                    return;
+                }
+
+                if (!await _cs.RemoveAsync(ctx.User.Id, entry.Price, new("shop", "buy", entry.Type.ToString())))
+                {
+                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    return;
+                }
+                else
+                {
+                    var cmd = entry.Command.Replace("%you%", ctx.User.Id.ToString());
+                    var eb = _eb.Create()
+                        .WithPendingColor()
+                        .WithTitle("Executing shop command")
+                        .WithDescription(cmd);
+
+                    var msgTask = ctx.Channel.EmbedAsync(eb);
+
+                    await _cs.AddAsync(entry.AuthorId,
+                        GetProfitAmount(entry.Price),
+                        new("shop", "sell", entry.Name));
+                    
+                    await _cmdHandler.TryRunCommand(guild,
+                        channel,
+                        new DoAsUserMessage(
+                            msg,
+                            user,
+                            cmd
+                        ));
+
+                    try
+                    {
+                        var pendingMsg = await msgTask;
+                        await pendingMsg.EditAsync(SmartEmbedText.FromEmbed(eb
+                            .WithOkColor()
+                            .WithTitle("Shop command executed")
+                            .Build()));
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
         }
 
         private static long GetProfitAmount(int price)
             => (int)Math.Ceiling(0.90 * price);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.ManageRoles)]
+        public async Task ShopAdd(Command _, int price, [Leftover] string command)
+        {
+            if (price < 1)
+                return;
+
+
+            var entry = await _service.AddShopCommandAsync(ctx.Guild.Id, ctx.User.Id, price, command);
+
+            await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -239,9 +314,9 @@ public partial class Gambling
             await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
-                                                                      set => set.Include(x => x.ShopEntries)
-                                                                          .ThenInclude(x => x.Items))
-                                                                  .ShopEntries)
+                        set => set.Include(x => x.ShopEntries)
+                            .ThenInclude(x => x.Items))
+                    .ShopEntries)
                 {
                     entry
                 };
@@ -271,9 +346,9 @@ public partial class Gambling
             await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
-                                                                      set => set.Include(x => x.ShopEntries)
-                                                                          .ThenInclude(x => x.Items))
-                                                                  .ShopEntries)
+                        set => set.Include(x => x.ShopEntries)
+                            .ThenInclude(x => x.Items))
+                    .ShopEntries)
                 {
                     entry
                 };
@@ -302,9 +377,9 @@ public partial class Gambling
             await using (var uow = _db.GetDbContext())
             {
                 var entries = new IndexedCollection<ShopEntry>(uow.GuildConfigsForId(ctx.Guild.Id,
-                                                                      set => set.Include(x => x.ShopEntries)
-                                                                          .ThenInclude(x => x.Items))
-                                                                  .ShopEntries);
+                        set => set.Include(x => x.ShopEntries)
+                            .ThenInclude(x => x.Items))
+                    .ShopEntries);
                 entry = entries.ElementAtOrDefault(index);
                 if (entry is not null && (rightType = entry.Type == ShopEntryType.List))
                 {
@@ -456,19 +531,27 @@ public partial class Gambling
             if (entry.Type == ShopEntryType.Role)
             {
                 return embed
-                       .AddField(GetText(strs.name),
-                           GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
-                                                              ?? "MISSING_ROLE"))),
-                           true)
-                       .AddField(GetText(strs.price), N(entry.Price), true)
-                       .AddField(GetText(strs.type), entry.Type.ToString(), true);
+                    .AddField(GetText(strs.name),
+                        GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name
+                                                           ?? "MISSING_ROLE"))),
+                        true)
+                    .AddField(GetText(strs.price), N(entry.Price), true)
+                    .AddField(GetText(strs.type), entry.Type.ToString(), true);
             }
 
             if (entry.Type == ShopEntryType.List)
             {
                 return embed.AddField(GetText(strs.name), entry.Name, true)
-                            .AddField(GetText(strs.price), N(entry.Price), true)
-                            .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
+                    .AddField(GetText(strs.price), N(entry.Price), true)
+                    .AddField(GetText(strs.type), GetText(strs.random_unique_item), true);
+            }
+            
+            else if (entry.Type == ShopEntryType.Command)
+            {
+                return embed
+                    .AddField(GetText(strs.name), Format.Code(entry.Command), true)
+                    .AddField(GetText(strs.price), N(entry.Price), true)
+                    .AddField(GetText(strs.type), entry.Type.ToString(), true);
             }
 
             //else if (entry.Type == ShopEntryType.Infinite_List)
@@ -490,6 +573,9 @@ public partial class Gambling
                        + GetText(strs.shop_role(Format.Bold(ctx.Guild.GetRole(entry.RoleId)?.Name ?? "MISSING_ROLE")));
             if (entry.Type == ShopEntryType.List)
                 return prepend + GetText(strs.unique_items_left(entry.Items.Count)) + "\n" + entry.Name;
+
+            if (entry.Type == ShopEntryType.Command)
+                return prepend + Format.Code(entry.Command);
             return prepend;
         }
     }

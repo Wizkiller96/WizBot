@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nadeko.Bot.Db;
 
@@ -16,417 +17,19 @@ namespace NadekoBot.Db.Migrations.Mysql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("NadekoBot.Db.Models.AutoPublishChannel", b =>
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiAltSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("channelid");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<ulong>("GuildId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("guildid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_autopublishchannel");
-
-                    b.HasIndex("GuildId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_autopublishchannel_guildid");
-
-                    b.ToTable("autopublishchannel", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<long>("Balance")
-                        .HasColumnType("bigint")
-                        .HasColumnName("balance");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_bankusers");
-
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_bankusers_userid");
-
-                    b.ToTable("bankusers", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
-                {
-                    b.Property<int>("ClubId")
-                        .HasColumnType("int")
-                        .HasColumnName("clubid");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userid");
-
-                    b.HasKey("ClubId", "UserId")
-                        .HasName("pk_clubapplicants");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_clubapplicants_userid");
-
-                    b.ToTable("clubapplicants", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.ClubBans", b =>
-                {
-                    b.Property<int>("ClubId")
-                        .HasColumnType("int")
-                        .HasColumnName("clubid");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userid");
-
-                    b.HasKey("ClubId", "UserId")
-                        .HasName("pk_clubbans");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_clubbans_userid");
-
-                    b.ToTable("clubbans", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.ClubInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext")
-                        .HasColumnName("description");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("longtext")
-                        .HasColumnName("imageurl");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("name")
-                        .UseCollation("utf8mb4_bin");
-
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int")
-                        .HasColumnName("ownerid");
-
-                    b.Property<int>("Xp")
-                        .HasColumnType("int")
-                        .HasColumnName("xp");
-
-                    b.HasKey("Id")
-                        .HasName("pk_clubs");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_clubs_name");
-
-                    b.HasIndex("OwnerId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_clubs_ownerid");
-
-                    b.ToTable("clubs", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.DiscordUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("AvatarId")
-                        .HasColumnType("longtext")
-                        .HasColumnName("avatarid");
-
-                    b.Property<int?>("ClubId")
-                        .HasColumnType("int")
-                        .HasColumnName("clubid");
-
-                    b.Property<long>("CurrencyAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(0L)
-                        .HasColumnName("currencyamount");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("Discriminator")
-                        .HasColumnType("longtext")
-                        .HasColumnName("discriminator");
-
-                    b.Property<bool>("IsClubAdmin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false)
-                        .HasColumnName("isclubadmin");
-
-                    b.Property<int>("NotifyOnLevelUp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0)
-                        .HasColumnName("notifyonlevelup");
-
-                    b.Property<long>("TotalXp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasDefaultValue(0L)
-                        .HasColumnName("totalxp");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("longtext")
-                        .HasColumnName("username");
-
-                    b.HasKey("Id")
-                        .HasName("pk_discorduser");
-
-                    b.HasAlternateKey("UserId")
-                        .HasName("ak_discorduser_userid");
-
-                    b.HasIndex("ClubId")
-                        .HasDatabaseName("ix_discorduser_clubid");
-
-                    b.HasIndex("CurrencyAmount")
-                        .HasDatabaseName("ix_discorduser_currencyamount");
-
-                    b.HasIndex("TotalXp")
-                        .HasDatabaseName("ix_discorduser_totalxp");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_discorduser_userid");
-
-                    b.ToTable("discorduser", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.FollowedStream", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("channelid");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<int?>("GuildConfigId")
-                        .HasColumnType("int")
-                        .HasColumnName("guildconfigid");
-
-                    b.Property<ulong>("GuildId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("guildid");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext")
-                        .HasColumnName("message");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int")
-                        .HasColumnName("type");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("longtext")
-                        .HasColumnName("username");
-
-                    b.HasKey("Id")
-                        .HasName("pk_followedstream");
-
-                    b.HasIndex("GuildConfigId")
-                        .HasDatabaseName("ix_followedstream_guildconfigid");
-
-                    b.ToTable("followedstream", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
-                {
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
-
-                    b.Property<int>("FeatureType")
-                        .HasColumnType("int")
-                        .HasColumnName("featuretype");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("feature");
-
-                    b.Property<uint>("DailyCount")
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("dailycount");
-
-                    b.Property<uint>("HourlyCount")
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("hourlycount");
-
-                    b.Property<uint>("MonthlyCount")
-                        .HasColumnType("int unsigned")
-                        .HasColumnName("monthlycount");
-
-                    b.HasKey("UserId", "FeatureType", "Feature")
-                        .HasName("pk_patronquotas");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_patronquotas_userid");
-
-                    b.ToTable("patronquotas", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
-                {
-                    b.Property<ulong>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
-
-                    b.Property<int>("AmountCents")
-                        .HasColumnType("int")
-                        .HasColumnName("amountcents");
-
-                    b.Property<DateTime>("LastCharge")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("lastcharge");
-
-                    b.Property<string>("UniquePlatformUserId")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("uniqueplatformuserid");
-
-                    b.Property<DateTime>("ValidThru")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("validthru");
-
-                    b.HasKey("UserId")
-                        .HasName("pk_patrons");
-
-                    b.HasIndex("UniquePlatformUserId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_patrons_uniqueplatformuserid");
-
-                    b.ToTable("patrons", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.StreamOnlineMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("channelid");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<ulong>("MessageId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("messageid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext")
-                        .HasColumnName("name");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id")
-                        .HasName("pk_streamonlinemessages");
-
-                    b.ToTable("streamonlinemessages", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.XpShopOwnedItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<bool>("IsUsing")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("isusing");
-
-                    b.Property<string>("ItemKey")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("itemkey");
-
-                    b.Property<int>("ItemType")
-                        .HasColumnType("int")
-                        .HasColumnName("itemtype");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("userid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_xpshopowneditem");
-
-                    b.HasIndex("UserId", "ItemType", "ItemKey")
-                        .IsUnique()
-                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
-
-                    b.ToTable("xpshopowneditem", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
                         .HasColumnType("int")
@@ -458,12 +61,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("antialtsetting", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiRaidSetting", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiRaidSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
                         .HasColumnType("int")
@@ -499,12 +104,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("antiraidsetting", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiSpamIgnore", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamIgnore", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AntiSpamSettingId")
                         .HasColumnType("int")
@@ -527,12 +134,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("antispamignore", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiSpamSetting", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Action")
                         .HasColumnType("int")
@@ -568,12 +177,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("antispamsetting", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AutoCommand", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoCommand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -617,12 +228,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("autocommands", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AutoTranslateChannel", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AutoDelete")
                         .HasColumnType("tinyint(1)")
@@ -653,12 +266,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("autotranslatechannels", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AutoTranslateUser", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ChannelId")
                         .HasColumnType("int")
@@ -689,12 +304,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("autotranslateusers", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.BanTemplate", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.BanTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -722,12 +339,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("bantemplates", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.BlacklistEntry", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.BlacklistEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -747,12 +366,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("blacklist", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandAlias", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandAlias", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -779,12 +400,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("commandalias", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandCooldown", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandCooldown", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CommandName")
                         .HasColumnType("longtext")
@@ -811,12 +434,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("commandcooldown", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CurrencyTransaction", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.CurrencyTransaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("Amount")
                         .HasColumnType("bigint")
@@ -859,12 +484,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("currencytransactions", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.DelMsgOnCmdChannel", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.DelMsgOnCmdChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -891,12 +518,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("delmsgoncmdchannel", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.DiscordPermOverride", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.DiscordPermOverride", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Command")
                         .HasColumnType("varchar(255)")
@@ -924,12 +553,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("discordpermoverrides", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ExcludedItem", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ExcludedItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -956,12 +587,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("excludeditem", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FeedSub", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FeedSub", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -993,12 +626,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("feedsub", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterChannelId", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1021,12 +656,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("filterchannelid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterLinksChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1049,12 +686,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("filterlinkschannelid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterWordsChannelId", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterWordsChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1077,12 +716,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("filterwordschannelid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilteredWord", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilteredWord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1105,12 +746,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("filteredword", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1133,12 +776,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("gcchannelid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GamblingStats", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GamblingStats", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Bet")
                         .HasColumnType("decimal(65,30)")
@@ -1166,12 +811,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("gamblingstats", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GroupName", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GroupName", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1199,12 +846,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("groupname", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GuildConfig", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GuildConfig", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AutoAssignRoleIds")
                         .HasColumnType("longtext")
@@ -1373,12 +1022,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("guildconfigs", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.IgnoredLogItem", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredLogItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1406,12 +1057,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("ignoredlogchannels", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.IgnoredVoicePresenceChannel", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredVoicePresenceChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1434,12 +1087,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("ignoredvoicepresencechannels", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ImageOnlyChannel", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ImageOnlyChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1467,12 +1122,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("imageonlychannels", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.LogSetting", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.LogSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong?>("ChannelCreatedId")
                         .HasColumnType("bigint unsigned")
@@ -1564,12 +1221,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("logsettings", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.MusicPlayerSettings", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlayerSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AutoDisconnect")
                         .HasColumnType("tinyint(1)")
@@ -1611,12 +1270,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("musicplayersettings", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.MusicPlaylist", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Author")
                         .HasColumnType("longtext")
@@ -1640,12 +1301,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("musicplaylists", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.MutedUserId", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.MutedUserId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1668,12 +1331,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("muteduserid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.NadekoExpression", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.NadekoExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowTarget")
                         .HasColumnType("tinyint(1)")
@@ -1717,12 +1382,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("expressions", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.NsfwBlacklistedTag", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.NsfwBlacklistedTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1745,12 +1412,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("nsfwblacklistedtags", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Permissionv2", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Permissionv2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1797,12 +1466,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("permissions", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PlantedCurrency", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlantedCurrency", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("Amount")
                         .HasColumnType("bigint")
@@ -1845,12 +1516,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("plantedcurrency", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PlaylistSong", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlaylistSong", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1889,12 +1562,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("playlistsong", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Poll", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Poll", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -1922,12 +1597,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("poll", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PollAnswer", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1954,12 +1631,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("pollanswer", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PollVote", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollVote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -1986,12 +1665,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("pollvote", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Quote", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Quote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("AuthorId")
                         .HasColumnType("bigint unsigned")
@@ -2032,12 +1713,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("quotes", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleV2", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ReactionRoleV2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -2085,12 +1768,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("reactionroles", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Reminder", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Reminder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -2133,12 +1818,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("reminders", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Repeater", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Repeater", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("bigint unsigned")
@@ -2178,12 +1865,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("repeaters", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.RewardedUser", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.RewardedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("AmountRewardedThisMonth")
                         .HasColumnType("bigint")
@@ -2215,12 +1904,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("rewardedusers", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.RotatingPlayingStatus", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.RotatingPlayingStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2240,12 +1931,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("rotatingstatus", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.SelfAssignedRole", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.SelfAssignedRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2279,16 +1972,22 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("selfassignableroles", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<ulong>("AuthorId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("authorid");
+
+                    b.Property<string>("Command")
+                        .HasColumnType("longtext")
+                        .HasColumnName("command");
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2335,12 +2034,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("shopentry", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntryItem", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntryItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2363,12 +2064,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("shopentryitem", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.SlowmodeIgnoredRole", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2391,12 +2094,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("slowmodeignoredrole", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.SlowmodeIgnoredUser", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2419,12 +2124,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("slowmodeignoreduser", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleBlacklistedUser", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleBlacklistedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2451,12 +2158,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("streamroleblacklisteduser", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleSettings", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<ulong>("AddRoleId")
                         .HasColumnType("bigint unsigned")
@@ -2492,12 +2201,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("streamrolesettings", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleWhitelistedUser", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleWhitelistedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2524,12 +2235,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("streamrolewhitelisteduser", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnbanTimer", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnbanTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2556,12 +2269,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("unbantimer", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnmuteTimer", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnmuteTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2588,12 +2303,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("unmutetimer", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnroleTimer", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnroleTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2624,12 +2341,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("unroletimer", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UserXpStats", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UserXpStats", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<long>("AwardedXp")
                         .HasColumnType("bigint")
@@ -2677,12 +2396,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("userxpstats", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.VcRoleInfo", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.VcRoleInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2709,12 +2430,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("vcroleinfo", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuInfo", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AffinityId")
                         .HasColumnType("int")
@@ -2755,12 +2478,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("waifuinfo", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuItem", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2787,12 +2512,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("waifuitem", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuUpdate", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuUpdate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2829,12 +2556,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("waifuupdates", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Warning", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Warning", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2885,12 +2614,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("warnings", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WarningPunishment", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WarningPunishment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Count")
                         .HasColumnType("int")
@@ -2925,12 +2656,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("warningpunishment", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpCurrencyReward", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpCurrencyReward", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("int")
@@ -2957,12 +2690,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("xpcurrencyreward", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpRoleReward", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpRoleReward", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -2994,12 +2729,14 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("xprolereward", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpSettings", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)")
@@ -3021,6 +2758,837 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasDatabaseName("ix_xpsettings_guildconfigid");
 
                     b.ToTable("xpsettings", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoPublishChannel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_autopublishchannel");
+
+                    b.HasIndex("GuildId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_autopublishchannel_guildid");
+
+                    b.ToTable("autopublishchannel", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bankusers");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bankusers_userid");
+
+                    b.ToTable("bankusers", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
+                {
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int")
+                        .HasColumnName("clubid");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userid");
+
+                    b.HasKey("ClubId", "UserId")
+                        .HasName("pk_clubapplicants");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_clubapplicants_userid");
+
+                    b.ToTable("clubapplicants", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.ClubBans", b =>
+                {
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int")
+                        .HasColumnName("clubid");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userid");
+
+                    b.HasKey("ClubId", "UserId")
+                        .HasName("pk_clubbans");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_clubbans_userid");
+
+                    b.ToTable("clubbans", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.ClubInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext")
+                        .HasColumnName("description");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext")
+                        .HasColumnName("imageurl");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8mb4_bin");
+
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int")
+                        .HasColumnName("ownerid");
+
+                    b.Property<int>("Xp")
+                        .HasColumnType("int")
+                        .HasColumnName("xp");
+
+                    b.HasKey("Id")
+                        .HasName("pk_clubs");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_clubs_name");
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_clubs_ownerid");
+
+                    b.ToTable("clubs", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.DiscordUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvatarId")
+                        .HasColumnType("longtext")
+                        .HasColumnName("avatarid");
+
+                    b.Property<int?>("ClubId")
+                        .HasColumnType("int")
+                        .HasColumnName("clubid");
+
+                    b.Property<long>("CurrencyAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
+                        .HasColumnName("currencyamount");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<string>("Discriminator")
+                        .HasColumnType("longtext")
+                        .HasColumnName("discriminator");
+
+                    b.Property<bool>("IsClubAdmin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false)
+                        .HasColumnName("isclubadmin");
+
+                    b.Property<int>("NotifyOnLevelUp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("notifyonlevelup");
+
+                    b.Property<long>("TotalXp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(0L)
+                        .HasColumnName("totalxp");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("longtext")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_discorduser");
+
+                    b.HasAlternateKey("UserId")
+                        .HasName("ak_discorduser_userid");
+
+                    b.HasIndex("ClubId")
+                        .HasDatabaseName("ix_discorduser_clubid");
+
+                    b.HasIndex("CurrencyAmount")
+                        .HasDatabaseName("ix_discorduser_currencyamount");
+
+                    b.HasIndex("TotalXp")
+                        .HasDatabaseName("ix_discorduser_totalxp");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_discorduser_userid");
+
+                    b.ToTable("discorduser", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.FollowedStream", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<int?>("GuildConfigId")
+                        .HasColumnType("int")
+                        .HasColumnName("guildconfigid");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext")
+                        .HasColumnName("message");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("longtext")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_followedstream");
+
+                    b.HasIndex("GuildConfigId")
+                        .HasDatabaseName("ix_followedstream_guildconfigid");
+
+                    b.ToTable("followedstream", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.Property<int>("FeatureType")
+                        .HasColumnType("int")
+                        .HasColumnName("featuretype");
+
+                    b.Property<string>("Feature")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("feature");
+
+                    b.Property<uint>("DailyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("dailycount");
+
+                    b.Property<uint>("HourlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("hourlycount");
+
+                    b.Property<uint>("MonthlyCount")
+                        .HasColumnType("int unsigned")
+                        .HasColumnName("monthlycount");
+
+                    b.HasKey("UserId", "FeatureType", "Feature")
+                        .HasName("pk_patronquotas");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_patronquotas_userid");
+
+                    b.ToTable("patronquotas", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
+                {
+                    b.Property<ulong>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("UserId"));
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("int")
+                        .HasColumnName("amountcents");
+
+                    b.Property<DateTime>("LastCharge")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("lastcharge");
+
+                    b.Property<string>("UniquePlatformUserId")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("uniqueplatformuserid");
+
+                    b.Property<DateTime>("ValidThru")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("validthru");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_patrons");
+
+                    b.HasIndex("UniquePlatformUserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_patrons_uniqueplatformuserid");
+
+                    b.ToTable("patrons", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamOnlineMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messageid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_streamonlinemessages");
+
+                    b.ToTable("streamonlinemessages", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.XpShopOwnedItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<bool>("IsUsing")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("isusing");
+
+                    b.Property<string>("ItemKey")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("itemkey");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("int")
+                        .HasColumnName("itemtype");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_xpshopowneditem");
+
+                    b.HasIndex("UserId", "ItemType", "ItemKey")
+                        .IsUnique()
+                        .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
+
+                    b.ToTable("xpshopowneditem", (string)null);
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiAltSetting", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithOne("AntiAltSetting")
+                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiAltSetting", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_antialtsetting_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiRaidSetting", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("AntiRaidSetting")
+                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiRaidSetting", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_antiraidsetting_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamIgnore", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.AntiSpamSetting", null)
+                        .WithMany("IgnoredChannels")
+                        .HasForeignKey("AntiSpamSettingId")
+                        .HasConstraintName("fk_antispamignore_antispamsetting_antispamsettingid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("AntiSpamSetting")
+                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiSpamSetting", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_antispamsetting_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateUser", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.AutoTranslateChannel", "Channel")
+                        .WithMany("Users")
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_autotranslateusers_autotranslatechannels_channelid");
+
+                    b.Navigation("Channel");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandAlias", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("CommandAliases")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_commandalias_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandCooldown", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("CommandCooldowns")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_commandcooldown_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.DelMsgOnCmdChannel", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("DelMsgOnCmdChannels")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_delmsgoncmdchannel_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ExcludedItem", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", null)
+                        .WithMany("ExclusionList")
+                        .HasForeignKey("XpSettingsId")
+                        .HasConstraintName("fk_excludeditem_xpsettings_xpsettingsid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FeedSub", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithMany("FeedSubs")
+                        .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_feedsub_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterChannelId", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("FilterInvitesChannelIds")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_filterchannelid_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterLinksChannelId", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("FilterLinksChannelIds")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_filterlinkschannelid_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterWordsChannelId", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("FilterWordsChannelIds")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_filterwordschannelid_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilteredWord", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("FilteredWords")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_filteredword_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GCChannelId", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithMany("GenerateCurrencyChannelIds")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_gcchannelid_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GroupName", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithMany("SelfAssignableRoleGroupNames")
+                        .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_groupname_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredLogItem", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.LogSetting", "LogSetting")
+                        .WithMany("LogIgnores")
+                        .HasForeignKey("LogSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ignoredlogchannels_logsettings_logsettingid");
+
+                    b.Navigation("LogSetting");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredVoicePresenceChannel", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.LogSetting", "LogSetting")
+                        .WithMany()
+                        .HasForeignKey("LogSettingId")
+                        .HasConstraintName("fk_ignoredvoicepresencechannels_logsettings_logsettingid");
+
+                    b.Navigation("LogSetting");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.MutedUserId", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("MutedUsers")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_muteduserid_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Permissionv2", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_permissions_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlaylistSong", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.MusicPlaylist", null)
+                        .WithMany("Songs")
+                        .HasForeignKey("MusicPlaylistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_playlistsong_musicplaylists_musicplaylistid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollAnswer", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.Poll", null)
+                        .WithMany("Answers")
+                        .HasForeignKey("PollId")
+                        .HasConstraintName("fk_pollanswer_poll_pollid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollVote", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.Poll", null)
+                        .WithMany("Votes")
+                        .HasForeignKey("PollId")
+                        .HasConstraintName("fk_pollvote_poll_pollid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("ShopEntries")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_shopentry_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntryItem", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.ShopEntry", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ShopEntryId")
+                        .HasConstraintName("fk_shopentryitem_shopentry_shopentryid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredRole", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("SlowmodeIgnoredRoles")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_slowmodeignoredrole_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredUser", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("SlowmodeIgnoredUsers")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_slowmodeignoreduser_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleBlacklistedUser", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
+                        .WithMany("Blacklist")
+                        .HasForeignKey("StreamRoleSettingsId")
+                        .HasConstraintName("fk_streamroleblacklisteduser_streamrolesettings_streamrolesetti~");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("StreamRole")
+                        .HasForeignKey("Nadeko.Bot.Db.Models.StreamRoleSettings", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_streamrolesettings_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleWhitelistedUser", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
+                        .WithMany("Whitelist")
+                        .HasForeignKey("StreamRoleSettingsId")
+                        .HasConstraintName("fk_streamrolewhitelisteduser_streamrolesettings_streamrolesetti~");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnbanTimer", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("UnbanTimer")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_unbantimer_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnmuteTimer", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("UnmuteTimers")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_unmutetimer_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnroleTimer", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("UnroleTimer")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_unroletimer_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.VcRoleInfo", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("VcRoleInfos")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_vcroleinfo_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
+                {
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Affinity")
+                        .WithMany()
+                        .HasForeignKey("AffinityId")
+                        .HasConstraintName("fk_waifuinfo_discorduser_affinityid");
+
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Claimer")
+                        .WithMany()
+                        .HasForeignKey("ClaimerId")
+                        .HasConstraintName("fk_waifuinfo_discorduser_claimerid");
+
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Waifu")
+                        .WithOne()
+                        .HasForeignKey("Nadeko.Bot.Db.Models.WaifuInfo", "WaifuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_waifuinfo_discorduser_waifuid");
+
+                    b.Navigation("Affinity");
+
+                    b.Navigation("Claimer");
+
+                    b.Navigation("Waifu");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuItem", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.WaifuInfo", "WaifuInfo")
+                        .WithMany("Items")
+                        .HasForeignKey("WaifuInfoId")
+                        .HasConstraintName("fk_waifuitem_waifuinfo_waifuinfoid");
+
+                    b.Navigation("WaifuInfo");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuUpdate", b =>
+                {
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "New")
+                        .WithMany()
+                        .HasForeignKey("NewId")
+                        .HasConstraintName("fk_waifuupdates_discorduser_newid");
+
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Old")
+                        .WithMany()
+                        .HasForeignKey("OldId")
+                        .HasConstraintName("fk_waifuupdates_discorduser_oldid");
+
+                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_waifuupdates_discorduser_userid");
+
+                    b.Navigation("New");
+
+                    b.Navigation("Old");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WarningPunishment", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                        .WithMany("WarnPunishments")
+                        .HasForeignKey("GuildConfigId")
+                        .HasConstraintName("fk_warningpunishment_guildconfigs_guildconfigid");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpCurrencyReward", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", "XpSettings")
+                        .WithMany("CurrencyRewards")
+                        .HasForeignKey("XpSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_xpcurrencyreward_xpsettings_xpsettingsid");
+
+                    b.Navigation("XpSettings");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpRoleReward", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", "XpSettings")
+                        .WithMany("RoleRewards")
+                        .HasForeignKey("XpSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_xprolereward_xpsettings_xpsettingsid");
+
+                    b.Navigation("XpSettings");
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
+                {
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                        .WithOne("XpSettings")
+                        .HasForeignKey("Nadeko.Bot.Db.Models.XpSettings", "GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_xpsettings_guildconfigs_guildconfigid");
+
+                    b.Navigation("GuildConfig");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
@@ -3089,445 +3657,23 @@ namespace NadekoBot.Db.Migrations.Mysql
 
             modelBuilder.Entity("NadekoBot.Db.Models.FollowedStream", b =>
                 {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
+                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
                         .WithMany("FollowedStreams")
                         .HasForeignKey("GuildConfigId")
                         .HasConstraintName("fk_followedstream_guildconfigs_guildconfigid");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithOne("AntiAltSetting")
-                        .HasForeignKey("NadekoBot.Services.Database.Models.AntiAltSetting", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_antialtsetting_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiRaidSetting", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("AntiRaidSetting")
-                        .HasForeignKey("NadekoBot.Services.Database.Models.AntiRaidSetting", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_antiraidsetting_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiSpamIgnore", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.AntiSpamSetting", null)
-                        .WithMany("IgnoredChannels")
-                        .HasForeignKey("AntiSpamSettingId")
-                        .HasConstraintName("fk_antispamignore_antispamsetting_antispamsettingid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiSpamSetting", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("AntiSpamSetting")
-                        .HasForeignKey("NadekoBot.Services.Database.Models.AntiSpamSetting", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_antispamsetting_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AutoTranslateUser", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.AutoTranslateChannel", "Channel")
-                        .WithMany("Users")
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_autotranslateusers_autotranslatechannels_channelid");
-
-                    b.Navigation("Channel");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandAlias", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("CommandAliases")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_commandalias_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.CommandCooldown", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("CommandCooldowns")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_commandcooldown_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.DelMsgOnCmdChannel", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("DelMsgOnCmdChannels")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_delmsgoncmdchannel_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ExcludedItem", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.XpSettings", null)
-                        .WithMany("ExclusionList")
-                        .HasForeignKey("XpSettingsId")
-                        .HasConstraintName("fk_excludeditem_xpsettings_xpsettingsid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FeedSub", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("FeedSubs")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_feedsub_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterChannelId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilterInvitesChannelIds")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_filterchannelid_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterLinksChannelId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilterLinksChannelIds")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_filterlinkschannelid_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilterWordsChannelId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilterWordsChannelIds")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_filterwordschannelid_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.FilteredWord", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("FilteredWords")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_filteredword_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("GenerateCurrencyChannelIds")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_gcchannelid_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GroupName", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithMany("SelfAssignableRoleGroupNames")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_groupname_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.IgnoredLogItem", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.LogSetting", "LogSetting")
-                        .WithMany("LogIgnores")
-                        .HasForeignKey("LogSettingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_ignoredlogchannels_logsettings_logsettingid");
-
-                    b.Navigation("LogSetting");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.IgnoredVoicePresenceChannel", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.LogSetting", "LogSetting")
-                        .WithMany()
-                        .HasForeignKey("LogSettingId")
-                        .HasConstraintName("fk_ignoredvoicepresencechannels_logsettings_logsettingid");
-
-                    b.Navigation("LogSetting");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.MutedUserId", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("MutedUsers")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_muteduserid_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Permissionv2", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("Permissions")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_permissions_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PlaylistSong", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.MusicPlaylist", null)
-                        .WithMany("Songs")
-                        .HasForeignKey("MusicPlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_playlistsong_musicplaylists_musicplaylistid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PollAnswer", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.Poll", null)
-                        .WithMany("Answers")
-                        .HasForeignKey("PollId")
-                        .HasConstraintName("fk_pollanswer_poll_pollid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.PollVote", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.Poll", null)
-                        .WithMany("Votes")
-                        .HasForeignKey("PollId")
-                        .HasConstraintName("fk_pollvote_poll_pollid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("ShopEntries")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_shopentry_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntryItem", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.ShopEntry", null)
-                        .WithMany("Items")
-                        .HasForeignKey("ShopEntryId")
-                        .HasConstraintName("fk_shopentryitem_shopentry_shopentryid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.SlowmodeIgnoredRole", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("SlowmodeIgnoredRoles")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_slowmodeignoredrole_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.SlowmodeIgnoredUser", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("SlowmodeIgnoredUsers")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_slowmodeignoreduser_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleBlacklistedUser", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.StreamRoleSettings", null)
-                        .WithMany("Blacklist")
-                        .HasForeignKey("StreamRoleSettingsId")
-                        .HasConstraintName("fk_streamroleblacklisteduser_streamrolesettings_streamrolesetti~");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleSettings", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("StreamRole")
-                        .HasForeignKey("NadekoBot.Services.Database.Models.StreamRoleSettings", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_streamrolesettings_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleWhitelistedUser", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.StreamRoleSettings", null)
-                        .WithMany("Whitelist")
-                        .HasForeignKey("StreamRoleSettingsId")
-                        .HasConstraintName("fk_streamrolewhitelisteduser_streamrolesettings_streamrolesetti~");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnbanTimer", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("UnbanTimer")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_unbantimer_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnmuteTimer", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("UnmuteTimers")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_unmutetimer_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.UnroleTimer", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("UnroleTimer")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_unroletimer_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.VcRoleInfo", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("VcRoleInfos")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_vcroleinfo_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuInfo", b =>
-                {
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Affinity")
-                        .WithMany()
-                        .HasForeignKey("AffinityId")
-                        .HasConstraintName("fk_waifuinfo_discorduser_affinityid");
-
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Claimer")
-                        .WithMany()
-                        .HasForeignKey("ClaimerId")
-                        .HasConstraintName("fk_waifuinfo_discorduser_claimerid");
-
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Waifu")
-                        .WithOne()
-                        .HasForeignKey("NadekoBot.Services.Database.Models.WaifuInfo", "WaifuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_waifuinfo_discorduser_waifuid");
-
-                    b.Navigation("Affinity");
-
-                    b.Navigation("Claimer");
-
-                    b.Navigation("Waifu");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuItem", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.WaifuInfo", "WaifuInfo")
-                        .WithMany("Items")
-                        .HasForeignKey("WaifuInfoId")
-                        .HasConstraintName("fk_waifuitem_waifuinfo_waifuinfoid");
-
-                    b.Navigation("WaifuInfo");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuUpdate", b =>
-                {
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "New")
-                        .WithMany()
-                        .HasForeignKey("NewId")
-                        .HasConstraintName("fk_waifuupdates_discorduser_newid");
-
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "Old")
-                        .WithMany()
-                        .HasForeignKey("OldId")
-                        .HasConstraintName("fk_waifuupdates_discorduser_oldid");
-
-                    b.HasOne("NadekoBot.Db.Models.DiscordUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_waifuupdates_discorduser_userid");
-
-                    b.Navigation("New");
-
-                    b.Navigation("Old");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WarningPunishment", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
-                        .WithMany("WarnPunishments")
-                        .HasForeignKey("GuildConfigId")
-                        .HasConstraintName("fk_warningpunishment_guildconfigs_guildconfigid");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpCurrencyReward", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.XpSettings", "XpSettings")
-                        .WithMany("CurrencyRewards")
-                        .HasForeignKey("XpSettingsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_xpcurrencyreward_xpsettings_xpsettingsid");
-
-                    b.Navigation("XpSettings");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpRoleReward", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.XpSettings", "XpSettings")
-                        .WithMany("RoleRewards")
-                        .HasForeignKey("XpSettingsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_xprolereward_xpsettings_xpsettingsid");
-
-                    b.Navigation("XpSettings");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpSettings", b =>
-                {
-                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
-                        .WithOne("XpSettings")
-                        .HasForeignKey("NadekoBot.Services.Database.Models.XpSettings", "GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_xpsettings_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.ClubInfo", b =>
-                {
-                    b.Navigation("Applicants");
-
-                    b.Navigation("Bans");
-
-                    b.Navigation("Members");
-                });
-
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiSpamSetting", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Navigation("IgnoredChannels");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.AutoTranslateChannel", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateChannel", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GuildConfig", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.GuildConfig", b =>
                 {
                     b.Navigation("AntiAltSetting");
 
@@ -3582,47 +3728,56 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.Navigation("XpSettings");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.LogSetting", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.LogSetting", b =>
                 {
                     b.Navigation("LogIgnores");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.MusicPlaylist", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Navigation("Songs");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.Poll", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.Poll", b =>
                 {
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.StreamRoleSettings", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
                 {
                     b.Navigation("Blacklist");
 
                     b.Navigation("Whitelist");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.WaifuInfo", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.XpSettings", b =>
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
                 {
                     b.Navigation("CurrencyRewards");
 
                     b.Navigation("ExclusionList");
 
                     b.Navigation("RoleRewards");
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.ClubInfo", b =>
+                {
+                    b.Navigation("Applicants");
+
+                    b.Navigation("Bans");
+
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }
