@@ -260,8 +260,8 @@ public partial class Xp
                 await ReplyConfirmLocalizedAsync(strs.club_applied(Format.Bold(club.ToString())));
             else if (result == ClubApplyResult.Banned)
                 await ReplyErrorLocalizedAsync(strs.club_join_banned);
-            else if (result == ClubApplyResult.InsufficientLevel)
-                await ReplyErrorLocalizedAsync(strs.club_insuff_lvl);
+            else if (result == ClubApplyResult.AlreadyApplied)
+                await ReplyErrorLocalizedAsync(strs.club_already_applied);
             else if (result == ClubApplyResult.AlreadyInAClub)
                 await ReplyErrorLocalizedAsync(strs.club_already_in);
         }

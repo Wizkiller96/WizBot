@@ -2,6 +2,23 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.22] - 23.04.2023
+
+### Added
+- Added `.setbanner` command (thx cata)
+
+### Fixed
+- Fixed pagination error due to a missing emoji
+
+
+## [4.3.21] - 19.04.2023
+
+### Fixed
+- Possible fix for a duplicate in `.h bank`
+- Fixed `.stock` command
+- Fixed `.clubapply` and `.clubaccept`
+- Removed some redundant discriminators
+
 ## [4.3.20] - 20.01.2024
 
 ### Fixed

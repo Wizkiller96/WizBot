@@ -501,6 +501,16 @@ public partial class Administration
             if (success)
                 await ReplyConfirmLocalizedAsync(strs.set_avatar);
         }
+        
+        [Cmd]
+        [OwnerOnly]
+        public async Task SetBanner([Leftover] string img = null)
+        {
+            var success = await _service.SetBanner(img);
+
+            if (success)
+                await ReplyConfirmLocalizedAsync(strs.set_banner);
+        }
 
         [Cmd]
         [OwnerOnly]

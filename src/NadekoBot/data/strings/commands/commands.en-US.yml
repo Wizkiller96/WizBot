@@ -402,6 +402,10 @@ setavatar:
   desc: "Sets a new avatar image for the NadekoBot. Parameter is a direct link to an image."
   args:
     - "https://i.imgur.com/xTG3a1I.jpg"
+setbanner:
+  desc: "Sets a new banner image for the NadekoBot. Parameter is a direct link to an image. Supports gifs."
+  args:
+    - "https://i.imgur.com/xTG3a1I.jpg"
 setgame:
   desc: "Sets the bots game status to either Playing, Listening, or Watching."
   args:
