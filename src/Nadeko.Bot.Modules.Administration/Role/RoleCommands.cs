@@ -1,21 +1,26 @@
 ﻿#nullable disable
+using System.Xml.Schema;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace NadekoBot.Modules.Administration;
 
-
 public partial class Administration
 {
     public partial class RoleCommands : NadekoModule
     {
-        public enum Exclude { Excl }
+        public enum Exclude
+        {
+            Excl
+        }
 
         private readonly IServiceProvider _services;
+        private StickyRolesService _stickyRoleSvc;
 
-        public RoleCommands(IServiceProvider services)
+        public RoleCommands(IServiceProvider services, StickyRolesService stickyRoleSvc)
         {
             _services = services;
+            _stickyRoleSvc = stickyRoleSvc;
         }
 
         [Cmd]
@@ -178,6 +183,24 @@ public partial class Administration
             catch (Exception)
             {
                 await ReplyErrorLocalizedAsync(strs.rc_perms);
+            }
+        }
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.Administrator)]
+        public async Task StickyRoles()
+        {
+            var newState = await _stickyRoleSvc.ToggleStickyRoles(ctx.Guild.Id);
+
+            if (newState)
+            {
+                await ReplyConfirmLocalizedAsync(strs.sticky_roles_enabled);
+            }
+            else
+            {
+                await ReplyConfirmLocalizedAsync(strs.sticky_roles_disabled);
             }
         }
     }

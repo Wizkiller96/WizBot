@@ -983,6 +983,10 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("senddmgreetmessage");
 
+                    b.Property<bool>("StickyRoles")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("stickyroles");
+
                     b.Property<string>("TimeZoneId")
                         .HasColumnType("longtext")
                         .HasColumnName("timezoneid");
@@ -2122,6 +2126,42 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasDatabaseName("ix_slowmodeignoreduser_guildconfigid");
 
                     b.ToTable("slowmodeignoreduser", (string)null);
+                });
+
+            modelBuilder.Entity("Nadeko.Bot.Db.Models.StickyRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.Property<string>("RoleIds")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("roleids");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_stickyroles");
+
+                    b.HasIndex("GuildId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_stickyroles_guildid_userid");
+
+                    b.ToTable("stickyroles", (string)null);
                 });
 
             modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleBlacklistedUser", b =>

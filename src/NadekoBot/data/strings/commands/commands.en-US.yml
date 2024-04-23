@@ -2382,7 +2382,11 @@ clubrename:
   args:
     - "New cool club name"
 cacheusers:
-  desc: Caches users of a Discord server and saves them to the database.
+  desc: "Caches users of a Discord server and saves them to the database."
   args:
     - ""
     - "serverId"
+stickyroles:
+  desc: "Toggles whether the bot will save the leaving users' roles, and reapply them once they re-join. The roles will be stored for up to 30 days."
+  args:
+    - ""

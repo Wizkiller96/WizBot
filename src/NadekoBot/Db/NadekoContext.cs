@@ -60,6 +60,8 @@ public abstract class NadekoContext : DbContext
     public DbSet<PatronQuota> PatronQuotas { get; set; }
     
     public DbSet<StreamOnlineMessage> StreamOnlineMessages { get; set; }
+    
+    public DbSet<StickyRole> StickyRoles { get; set; }
 
 
     #region Mandatory Provider-Specific Values
@@ -480,6 +482,16 @@ public abstract class NadekoContext : DbContext
             .HasIndex(x => x.Feature)
             .IsUnique());
 
+        #endregion
+        
+        #region Sticky Roles
+        
+        modelBuilder.Entity<StickyRole>(sr => sr.HasIndex(x => new
+        {
+            x.GuildId,
+            x.UserId
+        }).IsUnique());
+        
         #endregion
     }
 

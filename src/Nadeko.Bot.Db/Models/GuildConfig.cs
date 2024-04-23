@@ -103,6 +103,7 @@ public class GuildConfig : DbEntity
     public string BoostMessage { get; set; } = "%user% just boosted this server!";
     public ulong BoostMessageChannelId { get; set; }
     public int BoostMessageDeleteAfter { get; set; }
+    public bool StickyRoles { get; set; }
 
     #endregion
 }
