@@ -167,8 +167,8 @@ public static class MessageChannelExtensions
     private const string BUTTON_LEFT = "BUTTON_LEFT";
     private const string BUTTON_RIGHT = "BUTTON_RIGHT";
     
-    private static readonly IEmote _arrowLeft = Emote.Parse("<:x:969658061805465651>");
-    private static readonly IEmote _arrowRight = Emote.Parse("<:x:969658062220701746>");
+    private static readonly IEmote _arrowLeft = Emote.Parse("<:x:1232256519844790302>");
+    private static readonly IEmote _arrowRight = Emote.Parse("<:x:1232256515298295838>");
 
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
