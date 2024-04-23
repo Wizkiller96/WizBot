@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
@@ -653,14 +654,18 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
     #region Basic Operations
 
-    public async Task<NadekoExpression> AddAsync(ulong? guildId, string key, string message)
+    public async Task<NadekoExpression> AddAsync(ulong? guildId, string key, string message,
+        bool ca = false, bool ad = false, bool dm = false)
     {
         key = key.ToLowerInvariant();
         var expr = new NadekoExpression
         {
             GuildId = guildId,
             Trigger = key,
-            Response = message
+            Response = message,
+            ContainsAnywhere = ca,
+            AutoDeleteTrigger = ad,
+            DmResponse = dm
         };
 
         if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
@@ -677,7 +682,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         return expr;
     }
 
-    public async Task<NadekoExpression> EditAsync(ulong? guildId, int id, string message)
+    public async Task<NadekoExpression> EditAsync(ulong? guildId, int id, string message,
+        bool? ca = null, bool? ad = null, bool? dm = null)
     {
         await using var uow = _db.GetDbContext();
         var expr = uow.Set<NadekoExpression>().GetById(id);
@@ -695,6 +701,10 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         // enable allow target if message is edited to contain target
         if (expr.Response.Contains("%target%", StringComparison.OrdinalIgnoreCase))
             expr.AllowTarget = true;
+
+        expr.ContainsAnywhere = ca ?? expr.ContainsAnywhere;
+        expr.AutoDeleteTrigger = ad ?? expr.AutoDeleteTrigger;
+        expr.DmResponse = dm ?? expr.DmResponse;
 
         await uow.SaveChangesAsync();
         await UpdateInternalAsync(guildId, expr);
@@ -746,5 +756,22 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
             _disabledGlobalExpressionGuilds.TryRemove(guildId);
 
         return toReturn;
+    }
+
+
+    public async Task<(IReadOnlyCollection<NadekoExpression> Exprs, int TotalCount)> FindExpressionsAsync(ulong guildId,
+        string query, int page)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        if (newguildExpressions.TryGetValue(guildId, out var exprs))
+        {
+            return (exprs.Where(x => x.Trigger.Contains(query))
+                .Skip(page * 9)
+                .Take(9)
+                .ToArray(), exprs.Length);
+        }
+
+        return ([], 0);
     }
 }

@@ -568,10 +568,10 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return uow.Set<UserXpStats>().GetTopUserXps(guildId, count);
     }
 
-    public DiscordUser[] GetUserXps(int page)
+    public DiscordUser[] GetUserXps(int page, int perPage = 9)
     {
         using var uow = _db.GetDbContext();
-        return uow.Set<DiscordUser>().GetUsersXpLeaderboardFor(page);
+        return uow.Set<DiscordUser>().GetUsersXpLeaderboardFor(page, perPage);
     }
 
     public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)

@@ -94,10 +94,10 @@ public sealed class CurrencyService : ICurrencyService, INService
     {
         if (amount == 0)
             return true;
-        
+
         var wallet = await GetWalletAsync(userId);
         var result = await wallet.Take(amount, txData);
-        if(result) 
+        if (result)
             await _txTracker.TrackRemove(amount, txData);
         return result;
     }
@@ -108,9 +108,9 @@ public sealed class CurrencyService : ICurrencyService, INService
         TxData txData)
         => await RemoveAsync(user.Id, amount, txData);
 
-    public async Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int count)
+    public async Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int page = 0, int perPage = 9)
     {
         await using var uow = _db.GetDbContext();
-        return await uow.Set<DiscordUser>().GetTopRichest(ignoreId, count);
+        return await uow.Set<DiscordUser>().GetTopRichest(ignoreId, page, perPage);
     }
 }

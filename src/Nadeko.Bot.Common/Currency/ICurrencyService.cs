@@ -39,5 +39,5 @@ public interface ICurrencyService
         long amount,
         TxData? txData);
     
-    Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int count);
+    Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int page = 0, int perPage = 9);
 }

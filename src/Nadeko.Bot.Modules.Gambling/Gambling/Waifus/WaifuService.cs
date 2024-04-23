@@ -288,10 +288,10 @@ public class WaifuService : INService, IReadyExecutor
         return (oldAff, success, remaining);
     }
 
-    public IEnumerable<WaifuLbResult> GetTopWaifusAtPage(int page)
+    public IEnumerable<WaifuLbResult> GetTopWaifusAtPage(int page, int perPage = 9)
     {
         using var uow = _db.GetDbContext();
-        return uow.Set<WaifuInfo>().GetTop(9, page * 9);
+        return uow.Set<WaifuInfo>().GetTop(perPage, page * perPage);
     }
 
     public ulong GetWaifuUserId(ulong ownerId, string name)
