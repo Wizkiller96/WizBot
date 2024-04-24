@@ -16,11 +16,22 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(1)]
+        public Task YtUploadNotif(string url, [Leftover] string message = null)
+            => YtUploadNotif(url, null, message);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(2)]
         public Task YtUploadNotif(string url, ITextChannel channel = null, [Leftover] string message = null)
         {
             var m = _ytChannelRegex.Match(url);
             if (!m.Success)
                 return ReplyErrorLocalizedAsync(strs.invalid_input);
+
+            if (!((IGuildUser)ctx.User).GetPermissions(channel).MentionEveryone)
+                message = message?.SanitizeAllMentions();
 
             var channelId = m.Groups["channelid"].Value;
 
@@ -30,14 +41,26 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(0)]
+        public Task Feed(string url, [Leftover] string message = null)
+            => Feed(url, null, message);
+
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(1)]
         public async Task Feed(string url, ITextChannel channel = null, [Leftover] string message = null)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) 
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)
                 || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 await ReplyErrorLocalizedAsync(strs.feed_invalid_url);
-                return; 
+                return;
             }
+
+            if (!((IGuildUser)ctx.User).GetPermissions(channel).MentionEveryone)
+                message = message?.SanitizeAllMentions();
 
             channel ??= (ITextChannel)ctx.Channel;
             try
@@ -53,7 +76,7 @@ public partial class Searches
 
             if (ctx.User is not IGuildUser gu || !gu.GuildPermissions.Administrator)
                 message = message?.SanitizeMentions(true);
-            
+
             var result = _service.AddFeed(ctx.Guild.Id, channel.Id, url, message);
             if (result == FeedAddResult.Success)
             {

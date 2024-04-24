@@ -23,6 +23,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 - `.cmds <module name>` looks better / simpler
 
+
+### Fixed
+
+- `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
+
 ## [4.3.22] - 23.04.2023
 
 ### Added

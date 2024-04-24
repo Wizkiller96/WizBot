@@ -173,7 +173,7 @@ public class FeedsService : INService
                             .Where(x => x.GuildConfig is not null)
                             .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
                                 ?.GetTextChannel(x.ChannelId)
-                                ?.EmbedAsync(embed, x.Message))
+                                ?.EmbedAsync(embed, string.IsNullOrWhiteSpace(x.Message) ? "" : x.Message))
                             .Where(x => x is not null);
 
                         allSendTasks.Add(feedSendTasks.WhenAll());
@@ -213,7 +213,8 @@ public class FeedsService : INService
         var fs = new FeedSub
         {
             ChannelId = channelId,
-            Url = rssFeed.Trim()
+            Url = rssFeed.Trim(),
+            Message = message
         };
 
         using var uow = _db.GetDbContext();
