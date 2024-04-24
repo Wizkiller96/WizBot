@@ -2286,6 +2286,9 @@ namespace NadekoBot.Db.Migrations.Sqlite
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("TEXT");
 

@@ -9,6 +9,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.shopadd command` You can now sell commands in the shop. The command will execute as if you were the one running it when someone buys it
   - type `.h .shopadd` for more info
 - `.stickyroles` Users leaving the server will have their roles saved to the database and reapplied if they rejoin within 30 days.
+- Giveaway commands
+  - `.ga start` starts the giveway with the specified duration and message (prize). You may have up to 5 giveaways on the server at once
+  - `.ga end <id>` prematurely ends the giveaway and selects a winner
+  - `.ga cancel <id>` cancels the giveaway and doesn't select the winner
+  - `.ga list` lists active giveaways on the current server
+  - `.ga reroll <id>` rerolls the winner on the completed giveaway. This only works for 24 hours after the giveaway has ended, or until the bot restarts.
+  - After the giveaway has started, user join the giveaway by adding a :tada: reaction
 
 ## [4.3.22] - 23.04.2023
 

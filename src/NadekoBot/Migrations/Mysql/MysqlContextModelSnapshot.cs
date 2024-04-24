@@ -3082,6 +3082,10 @@ namespace NadekoBot.Db.Migrations.Mysql
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
+
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("endsat");

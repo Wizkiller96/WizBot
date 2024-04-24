@@ -3081,6 +3081,10 @@ namespace NadekoBot.Db.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
+
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("endsat");

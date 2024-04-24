@@ -19,6 +19,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                         .Annotation("Sqlite:Autoincrement", true),
                     GuildId = table.Column<ulong>(type: "INTEGER", nullable: false),
                     MessageId = table.Column<ulong>(type: "INTEGER", nullable: false),
+                    ChannelId = table.Column<ulong>(type: "INTEGER", nullable: false),
                     Message = table.Column<string>(type: "TEXT", nullable: false),
                     EndsAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

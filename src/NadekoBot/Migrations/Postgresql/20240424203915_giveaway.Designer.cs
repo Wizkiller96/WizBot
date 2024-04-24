@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NadekoBot.Db.Migrations
 {
     [DbContext(typeof(PostgreSqlContext))]
-    [Migration("20240424152951_giveaway")]
+    [Migration("20240424203915_giveaway")]
     partial class giveaway
     {
         /// <inheritdoc />
@@ -3083,6 +3083,10 @@ namespace NadekoBot.Db.Migrations
                         .HasColumnName("id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
 
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("timestamp without time zone")

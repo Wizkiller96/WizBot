@@ -36,8 +36,9 @@ public partial class Utility
             }
 
             eb
+                .WithOkColor()
                 .WithTitle(GetText(strs.giveaway_started))
-                .WithFooter($"id: {new kwum(id).ToString()}");
+                .WithFooter($"id:  {new kwum(id).ToString()}");
 
             await startingMsg.AddReactionAsync(new Emoji(GiveawayService.GiveawayEmoji));
             await startingMsg.ModifyAsync(x => x.Embed = eb.Build());
@@ -47,30 +48,32 @@ public partial class Utility
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task GiveawayEnd(kwum id)
         {
-            var (giveaway, winner) = await _service.EndGiveawayAsync(ctx.Guild.Id, id);
+           var success = await _service.EndGiveawayAsync(ctx.Guild.Id, id);
 
-            if (winner is null || giveaway is null)
-                return;
+           if(!success)
+           {
+               await ReplyErrorLocalizedAsync(strs.giveaway_not_found);
+               return;
+           }
 
-            var eb = _eb.Create(ctx)
-                .WithOkColor()
-                .WithTitle(GetText(strs.giveaway_ended))
-                .WithDescription(giveaway.Message)
-                .AddField(GetText(strs.winner),
-                    $"""
-                     {winner.Name}
-                     <@{winner.UserId}>
-                     {Format.Code(winner.UserId.ToString())}
-                     """,
-                    true);
-
-            await ctx.Channel.EmbedAsync(eb);
+           await ctx.OkAsync();
+            _ = ctx.Message.DeleteAfter(5);
         }
 
         [Cmd]
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task GiveawayReroll(kwum id)
-        {
+        { 
+            var success = await _service.RerollGiveawayAsync(ctx.Guild.Id, id);
+            if (!success)
+            {
+                await ReplyErrorLocalizedAsync(strs.giveaway_not_found);
+                return;
+            }
+            
+            
+            await ctx.OkAsync();
+            _ = ctx.Message.DeleteAfter(5);
         }
 
         [Cmd]
@@ -101,11 +104,12 @@ public partial class Utility
             }
 
             var eb = _eb.Create(ctx)
+                .WithTitle(GetText(strs.giveaway_list))
                 .WithOkColor();
 
             foreach (var g in giveaways)
             {
-                eb.AddField($"id: {new kwum(g.Id)}", g.Message, true);
+                eb.AddField($"id:  {new kwum(g.Id)}", g.Message, true);
             }
 
             await ctx.Channel.EmbedAsync(eb);

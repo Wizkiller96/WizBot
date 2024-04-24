@@ -1075,5 +1075,6 @@
   "no_givaways": "There are no active giveaways on this server.",
   "giveaway_cancelled": "Giveaway cancelled.",
   "giveaway_starting": "Starting giveaway...",
-  "winner": "Winner"
+  "winner": "Winner",
+  "giveaway_list": "List of active giveways",
 }

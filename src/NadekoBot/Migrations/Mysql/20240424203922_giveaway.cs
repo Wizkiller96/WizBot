@@ -20,6 +20,7 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     guildid = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     messageid = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    channelid = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     message = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     endsat = table.Column<DateTime>(type: "datetime(6)", nullable: false)

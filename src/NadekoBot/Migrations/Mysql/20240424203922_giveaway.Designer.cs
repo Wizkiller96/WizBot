@@ -12,7 +12,7 @@ using Nadeko.Bot.Db;
 namespace NadekoBot.Db.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    [Migration("20240424152958_giveaway")]
+    [Migration("20240424203922_giveaway")]
     partial class giveaway
     {
         /// <inheritdoc />
@@ -3084,6 +3084,10 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasColumnName("id");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
 
                     b.Property<DateTime>("EndsAt")
                         .HasColumnType("datetime(6)")

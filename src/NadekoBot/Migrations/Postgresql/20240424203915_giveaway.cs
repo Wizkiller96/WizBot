@@ -20,6 +20,7 @@ namespace NadekoBot.Db.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     messageid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
                     message = table.Column<string>(type: "text", nullable: false),
                     endsat = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },

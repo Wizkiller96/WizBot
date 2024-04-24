@@ -633,7 +633,7 @@ quotesearch:
   desc: "Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author"
   args:
     - "\"find this long text\""
-    - "AuthorName" 
+    - "AuthorName"
     - "keyword some text"
     - "keyword AuthorName"
 quoteid:
@@ -2006,7 +2006,7 @@ ytuploadnotif:
     Shortcut for `.feed https://www.youtube.com/feeds/videos.xml?channel_id=%3Cyoutube_channel_id`
     You can optionally specify a message which will be posted with an update.
   args:
-    - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow" 
+    - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow"
     - "https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow New video is posted"
 feed:
   desc: |-
@@ -2266,7 +2266,7 @@ deleteemptyservers:
   args:
     - ""
 medusaload:
-  desc: |- 
+  desc: |-
     Loads a medusa with the specified name from the data/medusae/ folder.
     Provide no name to see the list of loadable medusae.
     Read about the medusa system [here](https://nadekobot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
@@ -2289,7 +2289,7 @@ medusainfo:
   args:
     - "mycoolmedusa"
     - ""
-medusalist: 
+medusalist:
   desc: |-
     Lists all loaded and unloaded medusae.
     Read about the medusa system [here](https://nadekobot.readthedocs.io/en/latest/medusa/creating-a-medusa/)
@@ -2329,7 +2329,7 @@ patronmessage:
   args:
     - "x hello"
 eval:
-  desc: |- 
+  desc: |-
     Execute arbitrary C# code and (optionally) return a result. Several namespaces are included by default.
     Special variables available: 
     `self` - Instance of the command group executing the command (this)
@@ -2397,15 +2397,15 @@ giveawaystart:
     - "15m Quick giveaway for a free course!"
     - "1d Join to win 1000$!"
 giveawayend:
-  desc: "Prematurely ends a giveaway and chooses a winner. Specify the ID of the giveaway to end."
+  desc: "Prematurely ends a giveaway and selects a winner. Specify the ID of the giveaway to end."
   args:
     - "ab3"
 giveawaycancel:
-  desc: "Cancels a giveaway. Specify the ID of the giveaway to cancel."
+  desc: "Cancels a giveaway. Specify the ID of the giveaway to cancel. The winner will not be chosen."
   args:
     - "ab3"
 giveawayreroll:
-  desc: "Rerolls a giveaway. Specify the ID of the giveaway to reroll. The winner will not be chosen."
+  desc: "Rerolls a giveaway. Specify the ID of the giveaway to reroll. This is only active within 24h after the giveaway has ended or until the bot restarts."
   args:
     - "cd3"
 giveawaylist:
