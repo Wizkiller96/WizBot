@@ -279,25 +279,17 @@ public sealed class Help : NadekoModule<HelpService>
                         if (opts.View == CommandsOptions.ViewType.Cross)
                         {
                             return
-                                $"{(succ.Contains(x) ? "✅" : "❌")}{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                                $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
                         }
 
-                        return
-                            $"{prefix + x.Aliases.First(),-15} {"[" + x.Aliases.Skip(1).FirstOrDefault() + "]",-8}";
+                        if (x.Aliases.Count == 1)
+                            return prefix + x.Aliases[0];
+
+                        return prefix + x.Aliases[0] + " / " + prefix + x.Aliases[1];
+                        
                     });
-
-                if (i == last - 1 && (i + 1) % 2 != 0)
-                {
-                    transformed = transformed.Chunk(2)
-                        .Select(x =>
-                        {
-                            if (x.Count() == 1)
-                                return $"{x.First()}";
-                            return string.Concat(x);
-                        });
-                }
-
-                embed.AddField(g.ElementAt(i).Key, "```css\n" + string.Join("\n", transformed) + "\n```", true);
+                
+                embed.AddField(g.ElementAt(i).Key, "" + string.Join("\n", transformed) + "", true);
             }
         }
 
