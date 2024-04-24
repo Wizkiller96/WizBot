@@ -1,4 +1,5 @@
-﻿using NadekoBot.Common.TypeReaders;
+﻿using LinqToDB.Common;
+using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Modules.Utility.Services;
 
@@ -16,9 +17,9 @@ public partial class Utility
         {
             if (--index < 0)
                 return;
-            
+
             var result = await _service.ToggleSkipNextAsync(ctx.Guild.Id, index);
-            
+
             if (result is null)
             {
                 await ReplyErrorLocalizedAsync(strs.index_out_of_range);
@@ -34,7 +35,7 @@ public partial class Utility
                 await ReplyConfirmLocalizedAsync(strs.repeater_dont_skip_next);
             }
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
@@ -65,9 +66,9 @@ public partial class Utility
 
             var description = GetRepeaterInfoString(removed);
             await ctx.Channel.EmbedAsync(_eb.Create()
-                                            .WithOkColor()
-                                            .WithTitle(GetText(strs.repeater_removed(index + 1)))
-                                            .WithDescription(description));
+                .WithOkColor()
+                .WithTitle(GetText(strs.repeater_removed(index + 1)))
+                .WithDescription(description));
         }
 
         [Cmd]
@@ -95,16 +96,30 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        [Priority(-1)]
+        [Priority(-2)]
         public Task Repeat([Leftover] string message)
-            => Repeat(null, null, message);
+            => Repeat(ctx.Channel, null, null, message);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(-1)]
+        public Task Repeat(ITextChannel channel, [Leftover] string message)
+            => Repeat(channel, null, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
         public Task Repeat(StoopidTime interval, [Leftover] string message)
-            => Repeat(null, interval, message);
+            => Repeat(ctx.Channel, null, interval, message);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(0)]
+        public Task Repeat(ITextChannel ch, StoopidTime interval, [Leftover] string message)
+            => Repeat(ch, null, interval, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -116,9 +131,31 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(1)]
+        public Task Repeat(ITextChannel channel, GuildDateTime dt, [Leftover] string message)
+            => Repeat(channel, dt, null, message);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
         [Priority(2)]
-        public async Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
+        public Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
+            => Repeat(ctx.Channel, dt, interval, message);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageMessages)]
+        [Priority(3)]
+        public async Task Repeat(IMessageChannel channel, GuildDateTime? dt, StoopidTime? interval,
+            [Leftover] string message)
         {
+            if (channel is not ITextChannel txtCh || txtCh.GuildId != ctx.Guild.Id)
+                return;
+
+            var perms = ((IGuildUser)ctx.User).GetPermissions(txtCh);
+            if (!perms.SendMessages)
+                return;
+
             var startTimeOfDay = dt?.InputTimeUtc.TimeOfDay;
             // if interval not null, that means user specified it (don't change it)
 
@@ -137,7 +174,7 @@ public partial class Utility
                 ? message
                 : message.SanitizeMentions(true);
 
-            var runner = await _service.AddRepeaterAsync(ctx.Channel.Id,
+            var runner = await _service.AddRepeaterAsync(channel.Id,
                 ctx.Guild.Id,
                 realInterval,
                 message,
@@ -152,9 +189,9 @@ public partial class Utility
 
             var description = GetRepeaterInfoString(runner);
             await ctx.Channel.EmbedAsync(_eb.Create()
-                                            .WithOkColor()
-                                            .WithTitle(GetText(strs.repeater_created))
-                                            .WithDescription(description));
+                .WithOkColor()
+                .WithTitle(GetText(strs.repeater_created))
+                .WithDescription(description));
         }
 
         [Cmd]

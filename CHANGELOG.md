@@ -16,6 +16,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - `.ga list` lists active giveaways on the current server
   - `.ga reroll <id>` rerolls the winner on the completed giveaway. This only works for 24 hours after the giveaway has ended, or until the bot restarts.
   - After the giveaway has started, user join the giveaway by adding a :tada: reaction
+- You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 
 ## [4.3.22] - 23.04.2023
 
