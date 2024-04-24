@@ -33,13 +33,13 @@ public sealed class FilterService : IExecOnMessage
         {
             var ids = client.GetGuildIds();
             var configs = uow.Set<GuildConfig>()
-                             .AsQueryable()
-                             .Include(x => x.FilteredWords)
-                             .Include(x => x.FilterLinksChannelIds)
-                             .Include(x => x.FilterWordsChannelIds)
-                             .Include(x => x.FilterInvitesChannelIds)
-                             .Where(gc => ids.Contains(gc.GuildId))
-                             .ToList();
+                .AsQueryable()
+                .Include(x => x.FilteredWords)
+                .Include(x => x.FilterLinksChannelIds)
+                .Include(x => x.FilterWordsChannelIds)
+                .Include(x => x.FilterInvitesChannelIds)
+                .Where(gc => ids.Contains(gc.GuildId))
+                .ToList();
 
             InviteFilteringServers = new(configs.Where(gc => gc.FilterInvites).Select(gc => gc.GuildId));
             InviteFilteringChannels =
@@ -168,6 +168,10 @@ public sealed class FilterService : IExecOnMessage
         if (usrMsg is null)
             return false;
 
+        // if user has manage messages perm, don't filter
+        if (usrMsg.Channel is ITextChannel ch && usrMsg.Author is IGuildUser gu && gu.GetPermissions(ch).ManageMessages)
+            return false;
+        
         if ((InviteFilteringChannels.Contains(usrMsg.Channel.Id) || InviteFilteringServers.Contains(guild.Id))
             && usrMsg.Content.IsDiscordInvite())
         {
@@ -200,6 +204,10 @@ public sealed class FilterService : IExecOnMessage
         if (usrMsg is null)
             return false;
 
+        // if user has manage messages perm, don't filter
+        if (usrMsg.Channel is ITextChannel ch && usrMsg.Author is IGuildUser gu && gu.GetPermissions(ch).ManageMessages)
+            return false;
+        
         if ((LinkFilteringChannels.Contains(usrMsg.Channel.Id) || LinkFilteringServers.Contains(guild.Id))
             && usrMsg.Content.TryGetUrlPath(out _))
         {
@@ -226,9 +234,10 @@ public sealed class FilterService : IExecOnMessage
     public async Task<ServerFilterSettings> GetFilterSettings(ulong guildId)
     {
         await using var uow = _db.GetDbContext();
-        var gc = uow.GuildConfigsForId(guildId, set => set
-            .Include(x => x.FilterInvitesChannelIds)
-            .Include(x => x.FilterLinksChannelIds));
+        var gc = uow.GuildConfigsForId(guildId,
+            set => set
+                .Include(x => x.FilterInvitesChannelIds)
+                .Include(x => x.FilterLinksChannelIds));
 
         return new()
         {
