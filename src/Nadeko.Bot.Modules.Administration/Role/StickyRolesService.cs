@@ -79,7 +79,7 @@ public sealed class StickyRolesService : INService, IReadyExecutor
             {
                 GuildId = guildId,
                 UserId = userId,
-                RoleIds = string.Join(',', guRoles.Select(x => x.Id.ToString())),
+                RoleIds = string.Join(',', guRoles.Where(x => !x.IsEveryone && !x.IsManaged).Select(x => x.Id.ToString())),
                 DateAdded = DateTime.UtcNow
             });
     }

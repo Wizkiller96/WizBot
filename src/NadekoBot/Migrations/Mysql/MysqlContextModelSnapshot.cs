@@ -3073,6 +3073,70 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("followedstream", (string)null);
                 });
 
+            modelBuilder.Entity("NadekoBot.Db.Models.GiveawayModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndsAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("endsat");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("message");
+
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("messageid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_giveawaymodel");
+
+                    b.ToTable("giveawaymodel", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.GiveawayUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GiveawayId")
+                        .HasColumnType("int")
+                        .HasColumnName("giveawayid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_giveawayuser");
+
+                    b.HasIndex("GiveawayId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_giveawayuser_giveawayid_userid");
+
+                    b.ToTable("giveawayuser", (string)null);
+                });
+
             modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
                 {
                     b.Property<ulong>("UserId")
@@ -3703,6 +3767,16 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasConstraintName("fk_followedstream_guildconfigs_guildconfigid");
                 });
 
+            modelBuilder.Entity("NadekoBot.Db.Models.GiveawayUser", b =>
+                {
+                    b.HasOne("NadekoBot.Db.Models.GiveawayModel", null)
+                        .WithMany("Participants")
+                        .HasForeignKey("GiveawayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_giveawayuser_giveawaymodel_giveawayid");
+                });
+
             modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Navigation("IgnoredChannels");
@@ -3818,6 +3892,11 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.Navigation("Bans");
 
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.GiveawayModel", b =>
+                {
+                    b.Navigation("Participants");
                 });
 #pragma warning restore 612, 618
         }

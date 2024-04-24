@@ -2390,3 +2390,25 @@ stickyroles:
   desc: "Toggles whether the bot will save the leaving users' roles, and reapply them once they re-join. The roles will be stored for up to 30 days."
   args:
     - ""
+giveawaystart:
+  desc: "Starts a giveaway. Specify the duration (between 1 minute and 30 days) followed by the prize."
+  args:
+    - "12h We are giving away one copy of our latest album!"
+    - "15m Quick giveaway for a free course!"
+    - "1d Join to win 1000$!"
+giveawayend:
+  desc: "Prematurely ends a giveaway and chooses a winner. Specify the ID of the giveaway to end."
+  args:
+    - "ab3"
+giveawaycancel:
+  desc: "Cancels a giveaway. Specify the ID of the giveaway to cancel."
+  args:
+    - "ab3"
+giveawayreroll:
+  desc: "Rerolls a giveaway. Specify the ID of the giveaway to reroll. The winner will not be chosen."
+  args:
+    - "cd3"
+giveawaylist:
+  desc: "Lists all active giveaways."
+  args:
+    - ""

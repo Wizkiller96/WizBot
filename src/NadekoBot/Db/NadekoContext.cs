@@ -493,6 +493,25 @@ public abstract class NadekoContext : DbContext
         }).IsUnique());
         
         #endregion
+        
+        
+        #region Giveaway
+
+        modelBuilder.Entity<GiveawayModel>()
+            .HasMany(x => x.Participants)
+            .WithOne()
+            .HasForeignKey(x => x.GiveawayId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<GiveawayUser>(gu => gu
+            .HasIndex(x => new
+            {
+                x.GiveawayId,
+                x.UserId
+            })
+            .IsUnique());
+        
+        #endregion
     }
 
 #if DEBUG

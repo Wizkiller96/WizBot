@@ -189,7 +189,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [BotPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.ManageRoles)]
         public async Task StickyRoles()
         {
             var newState = await _stickyRoleSvc.ToggleStickyRoles(ctx.Guild.Id);

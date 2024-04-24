@@ -8,7 +8,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.shopadd command` You can now sell commands in the shop. The command will execute as if you were the one running it when someone buys it
   - type `.h .shopadd` for more info
-- 
+- `.stickyroles` Users leaving the server will have their roles saved to the database and reapplied if they rejoin within 30 days.
 
 ## [4.3.22] - 23.04.2023
 
