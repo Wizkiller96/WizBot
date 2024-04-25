@@ -2,6 +2,14 @@
 
 Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [4.3.22] - 25.04.2024
+
+### Added
+- Added `.setbanner` command (thx cata)
+
+### Fixed
+- Fixed pagination error due to a missing emoji
+
 ## [4.3.21] - 19.04.2024
 
 ### Fixed
