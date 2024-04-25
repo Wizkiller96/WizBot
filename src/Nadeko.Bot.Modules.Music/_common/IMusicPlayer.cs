@@ -37,4 +37,5 @@ public interface IMusicPlayer : IDisposable
     void EnqueueTracks(IEnumerable<ITrackInfo> tracks, string queuer);
     void SetRepeat(PlayerRepeatType type);
     void ShuffleQueue();
+    void SetFairplay();
 }

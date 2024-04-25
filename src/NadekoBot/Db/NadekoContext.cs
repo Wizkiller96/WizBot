@@ -62,6 +62,9 @@ public abstract class NadekoContext : DbContext
     public DbSet<StreamOnlineMessage> StreamOnlineMessages { get; set; }
     
     public DbSet<StickyRole> StickyRoles { get; set; }
+    
+    public DbSet<TodoModel> Todos { get; set; }
+    public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
 
 
     #region Mandatory Provider-Specific Values
@@ -510,6 +513,23 @@ public abstract class NadekoContext : DbContext
                 x.UserId
             })
             .IsUnique());
+        
+        #endregion
+        
+        #region Todo
+
+        modelBuilder.Entity<TodoModel>()
+                    .HasKey(x => x.Id);
+        
+        modelBuilder.Entity<TodoModel>()
+            .HasIndex(x => x.UserId)
+            .IsUnique(false);
+        
+        modelBuilder.Entity<ArchivedTodoListModel>()
+            .HasMany(x => x.Items)
+            .WithOne()
+            .HasForeignKey(x => x.ArchiveId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         #endregion
     }

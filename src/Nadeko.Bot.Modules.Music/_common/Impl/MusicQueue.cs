@@ -1,4 +1,6 @@
-﻿namespace NadekoBot.Modules.Music;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+namespace NadekoBot.Modules.Music;
 
 public sealed partial class MusicQueue
 {
@@ -41,7 +43,7 @@ public sealed partial class MusicQueue : IMusicQueue
         get
         {
             // just make sure the internal logic runs first
-            // to make sure that some potential indermediate value is not returned
+            // to make sure that some potential intermediate value is not returned
             lock (_locker)
             {
                 return index;
@@ -79,9 +81,11 @@ public sealed partial class MusicQueue : IMusicQueue
             var added = new QueuedTrackInfo(trackInfo, queuer);
             enqueuedAt = tracks.Count;
             tracks.AddLast(added);
+          
             return added;
         }
     }
+
 
     public IQueuedTrackInfo EnqueueNext(ITrackInfo trackInfo, string queuer, out int trackIndex)
     {
@@ -292,6 +296,48 @@ public sealed partial class MusicQueue : IMusicQueue
         {
             return index == tracks.Count // if there are no tracks
                    || index == tracks.Count - 1;
+        }
+    }
+
+    public void ReorderFairly()
+    {
+        lock (_locker)
+        {
+            var groups = new Dictionary<string, int>();
+            var queuers = new List<Queue<QueuedTrackInfo>>();
+
+            foreach (var track in tracks.Skip(index).Concat(tracks.Take(index)))
+            {
+                if (!groups.TryGetValue(track.Queuer, out var qIndex))
+                {
+                    queuers.Add(new Queue<QueuedTrackInfo>());
+                    qIndex = queuers.Count - 1;
+                    groups.Add(track.Queuer, qIndex);
+                }
+
+                queuers[qIndex].Enqueue(track);
+            }
+
+            tracks = new LinkedList<QueuedTrackInfo>();
+            index = 0;
+
+            while (true)
+            {
+                for (var i = 0; i < queuers.Count; i++)
+                {
+                    var queue = queuers[i];
+                    tracks.AddLast(queue.Dequeue());
+
+                    if (queue.Count == 0)
+                    {
+                        queuers.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+                if (queuers.Count == 0)
+                    break;
+            }
         }
     }
 

@@ -1419,8 +1419,8 @@ log:
   args:
     - "userpresence"
     - "userbanned"
-fairplay:
-  desc: "Toggles fairplay. While enabled, the bot will prioritize songs from users who didn't have their song recently played instead of the song's position in the queue."
+queuefairplay:
+  desc: "Triggers fairplay. The song queue will be re-ordered in a fair manner. No effect on newly added songs."
   args:
     - ""
 define:
@@ -2045,6 +2045,10 @@ sqlselect:
   desc: "Executes provided sql query and returns the results. Dangerous."
   args:
     - "SELECT * FROM DiscordUser LIMIT 5"
+sqlselectcsv:
+  desc: "Executes provided sql query and returns the results in a csv file. Dangerous."
+  args:
+    - "SELECT * FROM DiscordUser LIMIT 5"
 deletewaifus:
   desc: "Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables."
   args:
@@ -2412,3 +2416,43 @@ giveawaylist:
   desc: "Lists all active giveaways."
   args:
     - ""
+todolist:
+  desc: "Lists all todos."
+  args:
+    - ""
+todoadd:
+  desc: "Adds a new todo."
+  args:
+    - "I need to do this"
+todoedit:
+  desc: "Edits a todo with the specified ID."
+  args:
+    - "abc This is an updated entry"
+todocomplete:
+  desc: "Marks a todo with the specified ID as done."
+  args:
+    - "4a"
+tododelete:
+  desc: "Deletes a todo with the specified ID."
+  args:
+    - "abc"
+todoclear:
+  desc: "Deletes all unarchived todos."
+  args:
+    - ""
+todoarchiveadd:
+  desc: "Creates a new archive with the specified name using current todos."
+  args:
+    - "Day 1"
+todoarchivelist:
+  desc: "Lists all archived todo lists."
+  args:
+    - ""
+todoarchiveshow:
+  desc: "Shows the archived todo list with the specified ID."
+  args:
+    - "3c"
+todoarchivedelete:
+  desc: "Deletes the archived todo list with the specified ID."
+  args:
+    - "99"

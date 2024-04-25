@@ -513,6 +513,8 @@ queuerepeat:
 queueautoplay:
   - queueautoplay
   - qap
+queuefairplay:
+  - qfp
 save:
   - save
 streamrole:
@@ -1165,6 +1167,8 @@ sqlexec:
   - sqlexec
 sqlselect:
   - sqlselect
+sqlselectcsv:
+  - sqlselectcsv
 deletewaifus:
   - deletewaifus
 deletewaifu:
@@ -1404,3 +1408,37 @@ giveawayreroll:
   - reroll
 giveawaylist:
   - list
+# todos
+todoadd:
+  - add 
+  - a
+todolist:
+  - list
+  - ls
+tododelete:
+  - delete
+  - del
+  - remove
+  - rm
+todoclear:
+  - clear
+  - clr
+  - cls
+todocomplete:
+  - complete
+  - done
+  - finish
+todoarchiveadd:
+  - add
+  - create
+  - new
+todoarchiveshow:
+  - show
+todoarchivelist:
+  - list
+  - ls
+todoarchivedelete:
+  - delete
+  - del
+  - remove
+  - rm

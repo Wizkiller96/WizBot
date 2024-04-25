@@ -2800,6 +2800,30 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.ToTable("xpsettings", (string)null);
                 });
 
+            modelBuilder.Entity("NadekoBot.Db.Models.ArchivedTodoListModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("name");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_todosarchive");
+
+                    b.ToTable("todosarchive", (string)null);
+                });
+
             modelBuilder.Entity("NadekoBot.Db.Models.AutoPublishChannel", b =>
                 {
                     b.Property<int>("Id")
@@ -3244,6 +3268,48 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasName("pk_streamonlinemessages");
 
                     b.ToTable("streamonlinemessages", (string)null);
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.TodoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ArchiveId")
+                        .HasColumnType("int")
+                        .HasColumnName("archiveid");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("dateadded");
+
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("isdone");
+
+                    b.Property<string>("Todo")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("todo");
+
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("userid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_todos");
+
+                    b.HasIndex("ArchiveId")
+                        .HasDatabaseName("ix_todos_archiveid");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_todos_userid");
+
+                    b.ToTable("todos", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.XpShopOwnedItem", b =>
@@ -3781,6 +3847,15 @@ namespace NadekoBot.Db.Migrations.Mysql
                         .HasConstraintName("fk_giveawayuser_giveawaymodel_giveawayid");
                 });
 
+            modelBuilder.Entity("NadekoBot.Db.Models.TodoModel", b =>
+                {
+                    b.HasOne("NadekoBot.Db.Models.ArchivedTodoListModel", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ArchiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_todos_todosarchive_archiveid");
+                });
+
             modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Navigation("IgnoredChannels");
@@ -3887,6 +3962,11 @@ namespace NadekoBot.Db.Migrations.Mysql
                     b.Navigation("ExclusionList");
 
                     b.Navigation("RoleRewards");
+                });
+
+            modelBuilder.Entity("NadekoBot.Db.Models.ArchivedTodoListModel", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.ClubInfo", b =>

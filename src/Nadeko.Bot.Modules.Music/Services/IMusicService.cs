@@ -33,4 +33,5 @@ public interface IMusicService : IPlaceholderProvider
     Task<QualityPreset> GetMusicQualityAsync(ulong guildId);
     Task SetMusicQualityAsync(ulong guildId, QualityPreset preset);
     Task<bool> ToggleQueueAutoPlayAsync(ulong guildId);
+    Task<bool> FairplayAsync(ulong guildId);
 }

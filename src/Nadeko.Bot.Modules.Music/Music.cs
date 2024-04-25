@@ -755,4 +755,15 @@ public sealed partial class Music : NadekoModule<IMusicService>
         else
             await ReplyConfirmLocalizedAsync(strs.music_autoplay_off);
     }
+
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    public async Task QueueFairplay()
+    {
+        var newValue = await _service.FairplayAsync(ctx.Guild.Id);
+        if (newValue)
+            await ReplyConfirmLocalizedAsync(strs.music_fairplay);
+        else
+            await ReplyErrorLocalizedAsync(strs.no_player);
+    }
 }

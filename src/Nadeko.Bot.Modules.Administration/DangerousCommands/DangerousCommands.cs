@@ -1,4 +1,7 @@
 ﻿#nullable disable
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
 using NadekoBot.Modules.Administration.Services;
 
 #if !GLOBAL_NADEKO
@@ -25,13 +28,50 @@ namespace NadekoBot.Modules.Administration
                             return _eb.Create().WithErrorColor().WithFooter(sql).WithDescription("-");
 
                         return _eb.Create()
-                                  .WithOkColor()
-                                  .WithFooter(sql)
-                                  .WithTitle(string.Join(" ║ ", result.ColumnNames))
-                                  .WithDescription(string.Join('\n', items.Select(x => string.Join(" ║ ", x))));
+                            .WithOkColor()
+                            .WithFooter(sql)
+                            .WithTitle(string.Join(" ║ ", result.ColumnNames))
+                            .WithDescription(string.Join('\n', items.Select(x => string.Join(" ║ ", x))));
                     },
                     result.Results.Count,
                     20);
+            }
+
+            [Cmd]
+            [OwnerOnly]
+            public async Task SqlSelectCsv([Leftover] string sql)
+            {
+                var result = _service.SelectSql(sql);
+
+                // create a file stream and write the data as csv
+                using var ms = new MemoryStream();
+                await using var sw = new StreamWriter(ms);
+                await using var csv = new CsvWriter(sw,
+                    new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "," });
+
+                foreach (var cn in result.ColumnNames)
+                {
+                    csv.WriteField(cn);
+                }
+
+                await csv.NextRecordAsync();
+
+                foreach (var row in result.Results)
+                {
+                    foreach (var field in row)
+                    {
+                        csv.WriteField(field);
+                    }
+
+                    await csv.NextRecordAsync();
+                }
+
+
+                await csv.FlushAsync();
+                ms.Position = 0;
+
+                // send the file
+                await ctx.Channel.SendFileAsync(ms, $"query_result_{DateTime.UtcNow.Ticks}.csv");
             }
 
             [Cmd]
@@ -41,8 +81,8 @@ namespace NadekoBot.Modules.Administration
                 try
                 {
                     var embed = _eb.Create()
-                                   .WithTitle(GetText(strs.sql_confirm_exec))
-                                   .WithDescription(Format.Code(sql));
+                        .WithTitle(GetText(strs.sql_confirm_exec))
+                        .WithDescription(Format.Code(sql));
 
                     if (!await PromptUserConfirmAsync(embed))
                         return;
@@ -61,7 +101,7 @@ namespace NadekoBot.Modules.Administration
             public async Task PurgeUser(ulong userId)
             {
                 var embed = _eb.Create()
-                               .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
+                    .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
 
                 if (!await PromptUserConfirmAsync(embed))
                     return;

@@ -19,4 +19,5 @@ public interface IMusicQueue
     IQueuedTrackInfo? MoveTrack(int from, int to);
     void Shuffle(Random rng);
     bool IsLast();
+    void ReorderFairly();
 }

@@ -61,10 +61,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
         _songBuffer = new PoopyBufferImmortalized(_vc.InputLength);
 
-        _thread = new(async () =>
-        {
-            await PlayLoop();
-        });
+        _thread = new(async () => { await PlayLoop(); });
         _thread.Start();
     }
 
@@ -274,7 +271,7 @@ public sealed class MusicPlayer : IMusicPlayer
                 // turn off green in vc
 
                 _ = OnCompleted?.Invoke(this, track);
-                
+
                 if (AutoPlay && track.Platform == MusicPlatform.Youtube)
                 {
                     try
@@ -283,7 +280,8 @@ public sealed class MusicPlayer : IMusicPlayer
                         var related = relatedSongs.Shuffle().FirstOrDefault();
                         if (related is not null)
                         {
-                            var relatedTrack = await _trackResolveProvider.QuerySongAsync(related, MusicPlatform.Youtube);
+                            var relatedTrack =
+                                await _trackResolveProvider.QuerySongAsync(related, MusicPlatform.Youtube);
                             if (relatedTrack is not null)
                                 EnqueueTrack(relatedTrack, "Autoplay");
                         }
@@ -408,20 +406,20 @@ public sealed class MusicPlayer : IMusicPlayer
                 break;
 
             await chunk.Select(async data =>
-                       {
-                           var (query, platform) = data;
-                           try
-                           {
-                               await TryEnqueueTrackAsync(query, queuer, false, platform);
-                               errorCount = 0;
-                           }
-                           catch (Exception ex)
-                           {
-                               Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
-                               ++errorCount;
-                           }
-                       })
-                       .WhenAll();
+                {
+                    var (query, platform) = data;
+                    try
+                    {
+                        await TryEnqueueTrackAsync(query, queuer, false, platform);
+                        errorCount = 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
+                        ++errorCount;
+                    }
+                })
+                .WhenAll();
 
             await Task.Delay(1000);
 
@@ -525,4 +523,9 @@ public sealed class MusicPlayer : IMusicPlayer
     }
 
     private delegate void AdjustVolumeDelegate(Span<byte> data, float volume);
+
+    public void SetFairplay()
+    {
+        _queue.ReorderFairly();
+    }
 }

@@ -16,6 +16,20 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - `.ga list` lists active giveaways on the current server
   - `.ga reroll <id>` rerolls the winner on the completed giveaway. This only works for 24 hours after the giveaway has ended, or until the bot restarts.
   - After the giveaway has started, user join the giveaway by adding a :tada: reaction
+- Selfhosters - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
+- Todo Commands
+  - `.todo add <name>` - adds a new todo
+  - `.todo delete <id>` - deletes a todo item
+  - `.todo done <id>` - completes a todo (marks it with a checkmark)
+  - `.todo list` - lists all todos
+  - `.todo edit <id> <new message>` - edits a todo item message
+  - Todo archive commands
+    - `.todo archive add <name>` - adds all current todos (completed and not completed) to the archived list, your current todo list will become cleared
+    - `.todo archive list` - lists all your archived todo lists
+    - `.todo archive show <id>` - shows the todo items from one of your archived lists
+    - `.todo archive delete <id>` - deletes and archived todo list
+- `.queufairplay` / `.qfp` (music feature) re-added but it works differently
+  - Once you run it, it will reorganize currently queued songs so that they're in a fair order. It has no effect on any subsequently queued songs
 
 ### Changed
 
