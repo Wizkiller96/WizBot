@@ -11,7 +11,6 @@ public sealed class MusicService : IMusicService
     private readonly DbService _db;
     private readonly IYoutubeResolver _ytResolver;
     private readonly ILocalTrackResolver _localResolver;
-    private readonly ISoundcloudResolver _scResolver;
     private readonly DiscordSocketClient _client;
     private readonly IBotStrings _strings;
     private readonly IGoogleApiService _googleApiService;
@@ -28,7 +27,6 @@ public sealed class MusicService : IMusicService
         DbService db,
         IYoutubeResolver ytResolver,
         ILocalTrackResolver localResolver,
-        ISoundcloudResolver scResolver,
         DiscordSocketClient client,
         IBotStrings strings,
         IGoogleApiService googleApiService,
@@ -40,7 +38,6 @@ public sealed class MusicService : IMusicService
         _db = db;
         _ytResolver = ytResolver;
         _localResolver = localResolver;
-        _scResolver = scResolver;
         _client = client;
         _strings = strings;
         _googleApiService = googleApiService;
@@ -118,21 +115,6 @@ public sealed class MusicService : IMusicService
 
             mp.EnqueueTrack(track, queuer);
         }
-    }
-
-    public async Task<int> EnqueueSoundcloudPlaylistAsync(IMusicPlayer mp, string playlist, string queuer)
-    {
-        var i = 0;
-        await foreach (var track in _scResolver.ResolvePlaylistAsync(playlist))
-        {
-            if (mp.IsKilled)
-                break;
-
-            mp.EnqueueTrack(track, queuer);
-            ++i;
-        }
-
-        return i;
     }
 
     private async Task<IMusicPlayer?> CreateMusicPlayerInternalAsync(ulong guildId, ITextChannel defaultChannel)

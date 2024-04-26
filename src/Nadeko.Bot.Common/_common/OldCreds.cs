@@ -9,7 +9,6 @@ public class OldCreds
     public string GoogleApiKey { get; set; } = string.Empty;
     public string MashapeKey { get; set; } = string.Empty;
     public string OsuApiKey { get; set; } = string.Empty;
-    public string SoundCloudClientId { get; set; } = string.Empty;
     public string CleverbotApiKey { get; set; } = string.Empty;
     public string CarbonKey { get; set; } = string.Empty;
     public int TotalShards { get; set; } = 1;

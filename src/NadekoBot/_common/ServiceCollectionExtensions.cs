@@ -59,7 +59,6 @@ public static class ServiceCollectionExtensions
 
         kernel.Bind<ITrackResolveProvider>().To<TrackResolveProvider>().InSingletonScope();
         kernel.Bind<IYoutubeResolver>().To<YtdlYoutubeResolver>().InSingletonScope();
-        kernel.Bind<ISoundcloudResolver>().To<SoundcloudResolver>().InSingletonScope();
         kernel.Bind<ILocalTrackResolver>().To<LocalTrackResolver>().InSingletonScope();
         kernel.Bind<IRadioResolver>().To<RadioResolver>().InSingletonScope();
         kernel.Bind<ITrackCacher>().To<TrackCacher>().InSingletonScope();

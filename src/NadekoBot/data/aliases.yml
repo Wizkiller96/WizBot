@@ -418,8 +418,6 @@ typestop:
   - typestop
 typeadd:
   - typeadd
-pollend:
-  - pollend
 pick:
   - pick
 plant:
@@ -434,8 +432,6 @@ choose:
   - choose
 rps:
   - rps
-linux:
-  - linux
 next:
   - next
   - n
@@ -463,9 +459,6 @@ queuesearch:
   - queuesearch
   - qs
   - yqs
-soundcloudqueue:
-  - soundcloudqueue
-  - sq
 listqueue:
   - listqueue
   - lq
@@ -479,9 +472,6 @@ volume:
 playlist:
   - playlist
   - pl
-soundcloudpl:
-  - soundcloudpl
-  - scpl
 localplaylist:
   - localplaylist
   - lopl
@@ -651,8 +641,6 @@ chucknorris:
 magicitem:
   - magicitem
   - mi
-safebooru:
-  - safebooru
 wiki:
   - wiki
   - wikipedia
@@ -662,25 +650,6 @@ color:
 avatar:
   - avatar
   - av
-hentai:
-  - hentai
-danbooru:
-  - danbooru
-derpibooru:
-  - derpibooru
-  - derpi
-gelbooru:
-  - gelbooru
-rule34:
-  - rule34
-e621:
-  - e621
-boobs:
-  - boobs
-butts:
-  - butts
-  - ass
-  - butt
 translate:
   - translate
   - trans
@@ -761,10 +730,6 @@ chatmute:
   - chatmute
 voicemute:
   - voicemute
-konachan:
-  - konachan
-sankaku:
-  - sankaku
 muterole:
   - muterole
   - setmuterole
@@ -782,9 +747,6 @@ placelist:
   - placelist
 place:
   - place
-poll:
-  - poll
-  - ppoll
 autotranslang:
   - autotranslang
   - atl
@@ -801,8 +763,6 @@ typelist:
   - typelist
 listservers:
   - listservers
-hentaibomb:
-  - hentaibomb
 cleverbot:
   - cleverbot
   - chatgpt
@@ -811,8 +771,6 @@ shorten:
 wikia:
   - wikia
   - fandom
-yandere:
-  - yandere
 magicthegathering:
   - magicthegathering
   - mtg
@@ -837,8 +795,6 @@ define:
   - def
 activity:
   - activity
-autohentai:
-  - autohentai
 setstatus:
   - setstatus
 invitecreate:
@@ -852,8 +808,6 @@ invitedelete:
   - invitedelete
   - invrm
   - invdel
-pollstats:
-  - pollstats
 antilist:
   - antilist
   - antilst
@@ -923,8 +877,6 @@ languageset:
 languageslist:
   - languageslist
   - langli
-rategirl:
-  - rategirl
 aliaslist:
   - aliaslist
   - cmdmaplist
@@ -1059,9 +1011,6 @@ configreload:
   - creload
   - confreload
   - crel
-nsfwtagblacklist:
-  - nsfwtagbl
-  - nsfwtbl
 experience:
   - experience
   - xp
@@ -1141,10 +1090,6 @@ clubleaderboard:
   - clubs
 clubadmin:
   - clubadmin
-autoboobs:
-  - autoboobs
-autobutts:
-  - autobutts
 eightball:
   - eightball
   - 8ball
@@ -1253,10 +1198,9 @@ delete:
 roleid:
   - roleid
   - rid
-nsfwtoggle:
+agerestricttoggle:
   - nsfwtoggle
-  - nsfw
-  - nsfwtgl
+  - artoggle
 economy:
   - economy
 purgeuser:
@@ -1410,7 +1354,7 @@ giveawaylist:
   - list
 # todos
 todoadd:
-  - add 
+  - add
   - a
 todolist:
   - list

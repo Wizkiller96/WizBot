@@ -306,8 +306,7 @@ public partial class Utility : NadekoModule
     }
 
     [Cmd]
-    public async Task
-        Showemojis([Leftover] string _) // need to have the parameter so that the message.tags gets populated
+    public async Task Showemojis([Leftover] string _)
     {
         var tags = ctx.Message.Tags.Where(t => t.Type == TagType.Emoji).Select(t => (Emote)t.Value);
 
@@ -429,38 +428,6 @@ public partial class Utility : NadekoModule
             using var http = _httpFactory.CreateClient();
             stream = await http.GetStreamAsync(ss.GetStickerUrl());
         }
-        // else if (ctx.Message.Attachments.FirstOrDefault() is { } attachment)
-        // {
-        //     var url = attachment?.Url;
-        //
-        //     if (url is null)
-        //         return;
-        //
-        //     if (name is null)
-        //     {
-        //         await ReplyErrorLocalizedAsync(strs.sticker_missing_name);
-        //         return;
-        //     }
-        //
-        //     format = Path.GetExtension(attachment.Filename);
-        //
-        //     if (attachment is not { Width: 300, Height: 300 })
-        //     {
-        //         await ReplyErrorLocalizedAsync(strs.sticker_invalid_size);
-        //         return;
-        //     }
-        //
-        //     using var http = _httpFactory.CreateClient();
-        //     
-        //     using var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-        //     if (res.GetContentLength() > 512.Kilobytes().Bytes)
-        //     {
-        //         await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);
-        //         return;
-        //     }
-        //
-        //     stream = await res.Content.ReadAsStreamAsync();
-        // }
         else
         {
             await ReplyErrorLocalizedAsync(strs.sticker_error);

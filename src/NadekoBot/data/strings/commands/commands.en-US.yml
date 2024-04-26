@@ -800,10 +800,6 @@ rps:
   args:
     - "r 100"
     - "scissors"
-linux:
-  desc: "Prints a customizable Linux interjection"
-  args:
-    - "Spyware Windows"
 next:
   desc: "Goes to the next song in the queue. You have to be in the same voice channel as the bot"
   args:
@@ -838,10 +834,6 @@ queuesearch:
   desc: "Search for top 5 youtube song result using keywords, and type the index of the song to play that song. Bot will join your voice channel. **You must be in a voice channel**."
   args:
     - "Dream Of Venice"
-soundcloudqueue:
-  desc: "Queue a soundcloud song using keywords. Bot will join your voice channel. **You must be in a voice channel**."
-  args:
-    - "Dream Of Venice"
 listqueue:
   desc: "Lists 10 currently queued songs per page. Default page is 1."
   args:
@@ -859,11 +851,6 @@ playlist:
   desc: "Queues up to 500 songs from a youtube playlist specified by a link, or keywords."
   args:
     - "<youtube_playlist_link>"
-soundcloudpl:
-  desc: "Queue a Soundcloud playlist using a link."
-  args:
-    - "https://soundcloud.com/classical-music-playlist/sets/classical-music-essential-collection"
-    - "<soundcloud_set_link>"
 localplaylist:
   desc: "Queues all songs from a directory."
   args:
@@ -1117,59 +1104,6 @@ avatar:
   desc: "Shows a mentioned person's avatar."
   args:
     - "@Someone"
-hentai:
-  desc: "Shows a hentai image from a random website (gelbooru, danbooru, konachan or yandere) with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags. Only 1 tag allowed."
-  args:
-    - "yuri"
-autohentai:
-  desc: "Posts a hentai every X seconds with a random tag from the provided tags. Use `|` to separate tag groups. Random group will be chosen every time the image is sent. Max 2 tags per group. 20 seconds minimum. Provide no parameters to disable."
-  args:
-    - "30 yuri kissing|tail long_hair"
-    - ""
-hentaibomb:
-  desc: "Shows a total 5 images (from gelbooru, danbooru, konachan and yandere). Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri"
-yandere:
-  desc: "Shows a random image from yandere with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-danbooru:
-  desc: "Shows a random hentai image from danbooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-derpibooru:
-  desc: "Shows a random image from derpibooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-gelbooru:
-  desc: "Shows a random hentai image from gelbooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-sankaku:
-  desc: "Shows a random hentai image from chan.sankakucomplex.com with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kiss"
-rule34:
-  desc: "Shows a random image from rule34.xx with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-e621:
-  desc: "Shows a random hentai image from e621.net with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-safebooru:
-  desc: "Shows a random image from safebooru with a given tag. Tag(s) are optional but preferred. Maximum is usually 2 tags."
-  args:
-    - "yuri kissing"
-boobs:
-  desc: "Real adult content."
-  args:
-    - ""
-butts:
-  desc: "Real adult content."
-  args:
-    - ""
 translate:
   desc: "Translates text from the given language to the destination language."
   args:
@@ -1581,10 +1515,6 @@ languageslist:
   desc: "List of languages for which translation (or part of it) exist atm."
   args:
     - ""
-rategirl:
-  desc: "Use the universal hot-crazy wife zone matrix to determine the girl's worth. It is everything young men need to know about women. At any moment in time, any woman you have previously located on this chart can vanish from that location and appear anywhere else on the chart."
-  args:
-    - "@SomeGurl"
 exprtoggleglobal:
   desc: "Toggles whether global expressions are usable on this server."
   args:
@@ -1640,7 +1570,6 @@ alias:
   desc: "Create a custom alias for a certain Nadeko command. Provide no alias to remove the existing one."
   args:
     - "allin {0}bf all h"
-    - "\"linux thingy\" >loonix Spyware Windows"
 warnlog:
   desc: "See a list of warnings of a certain user."
   args:
@@ -1986,16 +1915,6 @@ clubadmin:
   desc: "Assigns (or unassigns) staff role to the member of the club. Admins can ban, kick and accept applications."
   args:
     - "@Someone"
-autoboobs:
-  desc: "Posts a boobs every X seconds. 20 seconds minimum. Provide no parameters to disable."
-  args:
-    - "30"
-    - ""
-autobutts:
-  desc: "Posts a butt every X seconds. 20 seconds minimum. Provide no parameters to disable."
-  args:
-    - "30"
-    - ""
 eightball:
   desc: "Ask the 8ball a yes/no question."
   args:
@@ -2232,8 +2151,8 @@ roleid:
   desc: "Shows the id of the specified role."
   args:
     - "Some Role"
-nsfwtoggle:
-  desc: "Toggles the NSFW parameter of the current text channel."
+agerestricttoggle:
+  desc: "Toggles whether the current channel is age-restricted."
   args:
     - ""
 economy:

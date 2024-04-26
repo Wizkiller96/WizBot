@@ -248,7 +248,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.ManageChannels)]
     [BotPerm(GuildPerm.ManageChannels)]
-    public async Task NsfwToggle()
+    public async Task AgeRestrictToggle()
     {
         var channel = (ITextChannel)ctx.Channel;
         var isEnabled = channel.IsNsfw;

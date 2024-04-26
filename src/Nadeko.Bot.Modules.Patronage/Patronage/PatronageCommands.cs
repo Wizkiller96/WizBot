@@ -37,7 +37,6 @@ public partial class Patronage : NadekoModule
             Format.Bold(result.Failed.ToString())));
     }
 
-    // [Cmd]
     // [OwnerOnly]
     // public async Task PatronGift(IUser user, int amount)
     // {

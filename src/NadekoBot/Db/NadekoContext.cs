@@ -42,10 +42,8 @@ public abstract class NadekoContext : DbContext
     public DbSet<DiscordUser> DiscordUser { get; set; }
     public DbSet<MusicPlayerSettings> MusicPlayerSettings { get; set; }
     public DbSet<Repeater> Repeaters { get; set; }
-    public DbSet<Poll> Poll { get; set; }
     public DbSet<WaifuInfo> WaifuInfo { get; set; }
     public DbSet<ImageOnlyChannel> ImageOnlyChannels { get; set; }
-    public DbSet<NsfwBlacklistedTag> NsfwBlacklistedTags { get; set; }
     public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
 
@@ -285,12 +283,6 @@ public abstract class NadekoContext : DbContext
 
         #endregion
 
-        #region Polls
-
-        modelBuilder.Entity<Poll>().HasIndex(x => x.GuildId).IsUnique();
-
-        #endregion
-
         #region CurrencyTransactions
 
         modelBuilder.Entity<CurrencyTransaction>(e =>
@@ -401,8 +393,6 @@ public abstract class NadekoContext : DbContext
         #endregion
 
         modelBuilder.Entity<ImageOnlyChannel>(ioc => ioc.HasIndex(x => x.ChannelId).IsUnique());
-
-        modelBuilder.Entity<NsfwBlacklistedTag>(nbt => nbt.HasIndex(x => x.GuildId).IsUnique(false));
 
         var atch = modelBuilder.Entity<AutoTranslateChannel>();
         atch.HasIndex(x => x.GuildId).IsUnique(false);

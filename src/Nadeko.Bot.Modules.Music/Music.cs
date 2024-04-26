@@ -591,36 +591,6 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public Task SoundCloudQueue([Leftover] string query)
-        => QueueByQuery(query, false, MusicPlatform.SoundCloud);
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task SoundCloudPl([Leftover] string playlist)
-    {
-        if (string.IsNullOrWhiteSpace(playlist))
-            return;
-
-        var succ = await QueuePreconditionInternalAsync();
-        if (!succ)
-            return;
-
-        var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
-        if (mp is null)
-        {
-            await ReplyErrorLocalizedAsync(strs.no_player);
-            return;
-        }
-
-        _ = ctx.Channel.TriggerTypingAsync();
-
-        await _service.EnqueueSoundcloudPlaylistAsync(mp, playlist, ctx.User.ToString());
-
-        await ctx.OkAsync();
-    }
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
     public async Task Playlist([Leftover] string playlistQuery)
     {
         if (string.IsNullOrWhiteSpace(playlistQuery))

@@ -4,18 +4,15 @@ public sealed class TrackResolveProvider : ITrackResolveProvider
 {
     private readonly IYoutubeResolver _ytResolver;
     private readonly ILocalTrackResolver _localResolver;
-    private readonly ISoundcloudResolver _soundcloudResolver;
     private readonly IRadioResolver _radioResolver;
 
     public TrackResolveProvider(
         IYoutubeResolver ytResolver,
         ILocalTrackResolver localResolver,
-        ISoundcloudResolver soundcloudResolver,
         IRadioResolver radioResolver)
     {
         _ytResolver = ytResolver;
         _localResolver = localResolver;
-        _soundcloudResolver = soundcloudResolver;
         _radioResolver = radioResolver;
     }
 
@@ -29,14 +26,10 @@ public sealed class TrackResolveProvider : ITrackResolveProvider
                 return _ytResolver.ResolveByQueryAsync(query);
             case MusicPlatform.Local:
                 return _localResolver.ResolveByQueryAsync(query);
-            case MusicPlatform.SoundCloud:
-                return _soundcloudResolver.ResolveByQueryAsync(query);
             case null:
                 var match = _ytResolver.YtVideoIdRegex.Match(query);
                 if (match.Success)
                     return _ytResolver.ResolveByIdAsync(match.Groups["id"].Value);
-                else if (_soundcloudResolver.IsSoundCloudLink(query))
-                    return _soundcloudResolver.ResolveByQueryAsync(query);
                 else if (Uri.TryCreate(query, UriKind.Absolute, out var uri) && uri.IsFile)
                     return _localResolver.ResolveByQueryAsync(uri.AbsolutePath);
                 else if (IsRadioLink(query))

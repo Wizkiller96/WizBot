@@ -986,7 +986,7 @@
   "module_description_gambling": "Bet on dice rolls, blackjack, slots, coinflips and others",
   "module_description_games": "Play trivia, nunchi, hangman, connect4 and other games",
   "module_description_nsfw": "NSFW commands.",
-  "module_description_music": "Play music from youtube, local files soundcloud and radio streams",
+  "module_description_music": "Play music from youtube, local files and radio streams",
   "module_description_utility": "Manage custom quotes, repeating messages and check facts about the server",
   "module_description_administration": "Moderation, punish users, setup self assignable roles and greet messages",
   "module_description_expressions": "Setup custom bot responses to certain words or phrases",

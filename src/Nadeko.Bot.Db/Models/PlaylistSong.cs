@@ -15,5 +15,4 @@ public enum MusicType
     Radio,
     YouTube,
     Local,
-    Soundcloud
 }

@@ -42,6 +42,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
 
+### Removed
+
+- `.poll` commands removed, discord added polls.
+- `.scpl` and other music soundcloud commands have been removed as soundcloud isn't issuing new api tokens for years now
+
 ## [4.3.22] - 23.04.2023
 
 ### Added
