@@ -36,6 +36,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Users who have manage messages perm in the channel will now be excluded from link and invite filtering (`.sfi` and `.sfl`)
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 - `.cmds <module name>` looks better / simpler
+- Cleanup: Removed a lot of obsolete aliases.
 
 
 ### Fixed
@@ -46,6 +47,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.poll` commands removed, discord added polls.
 - `.scpl` and other music soundcloud commands have been removed as soundcloud isn't issuing new api tokens for years now
+- Removed a lot of useless and nsfw commands
 
 ## [4.3.22] - 23.04.2023
 
