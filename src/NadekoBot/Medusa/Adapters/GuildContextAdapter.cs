@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Nadeko.Snake;
 
 public sealed class GuildContextAdapter : GuildContext
 {

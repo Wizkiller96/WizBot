@@ -1,4 +1,5 @@
-﻿using Ninject.Modules;
+﻿using Nadeko.Snake;
+using Ninject.Modules;
 using System.Collections.Immutable;
 
 namespace Nadeko.Medusa;

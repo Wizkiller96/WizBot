@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Nadeko.Snake;
+using System.Reflection;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Activation.Caching;

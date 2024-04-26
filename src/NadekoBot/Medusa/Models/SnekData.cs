@@ -1,4 +1,6 @@
-﻿namespace Nadeko.Medusa;
+﻿using Nadeko.Snake;
+
+namespace Nadeko.Medusa;
 
 public sealed record SnekInfo(
     string Name,

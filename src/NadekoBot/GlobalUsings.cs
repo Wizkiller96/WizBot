@@ -12,7 +12,7 @@ global using Nadeko.Common; // new project
 global using NadekoBot.Common; // old + nadekobot specific things
 global using NadekoBot.Common.Attributes;
 global using NadekoBot.Extensions;
-global using Nadeko.Snake;
+// global using Nadeko.Snake;
 
 // discord
 global using Discord;

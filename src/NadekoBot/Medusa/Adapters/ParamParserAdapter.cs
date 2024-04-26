@@ -1,4 +1,6 @@
-﻿public sealed class ParamParserAdapter<T> : TypeReader
+﻿using Nadeko.Snake;
+
+public sealed class ParamParserAdapter<T> : TypeReader
 {
     private readonly ParamParser<T> _parser;
     private readonly IMedusaStrings _strings;

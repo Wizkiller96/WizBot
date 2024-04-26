@@ -1,4 +1,6 @@
-﻿namespace Nadeko.Medusa.Adapters;
+﻿using Nadeko.Snake;
+
+namespace Nadeko.Medusa.Adapters;
 
 public class FilterAdapter : PreconditionAttribute
 {

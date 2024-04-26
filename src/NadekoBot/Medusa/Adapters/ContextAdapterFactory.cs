@@ -1,4 +1,4 @@
-﻿using Nadeko.Medusa;
+﻿using Nadeko.Snake;
 
 internal class ContextAdapterFactory
 {

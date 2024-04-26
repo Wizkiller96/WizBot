@@ -6,15 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+        <PackageReference Include="NUnit" Version="4.1.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nadeko.Bot.Modules.Administration\Nadeko.Bot.Modules.Administration.csproj" />
-      <ProjectReference Include="..\Nadeko.Common\Nadeko.Common.csproj" />
-      <ProjectReference Include="..\Nadeko.Econ\Nadeko.Econ.csproj" />
       <ProjectReference Include="..\NadekoBot\NadekoBot.csproj" />
     </ItemGroup>
 

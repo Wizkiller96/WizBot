@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Nadeko.Snake;
+
 [DIIgnore]
 public sealed class BehaviorAdapter : ICustomBehavior
 {
