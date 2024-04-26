@@ -1,4 +1,4 @@
-w# Setting up NadekoBot on Linux
+# Setting up NadekoBot on Linux
 
 | Table of Contents                                   |
 | :-------------------------------------------------- |
