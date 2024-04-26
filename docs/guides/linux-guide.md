@@ -1,4 +1,4 @@
-w# Setting up NadekoBot on Linux
+# Setting up NadekoBot on Linux
 
 | Table of Contents                                   |
 | :-------------------------------------------------- |
@@ -175,8 +175,8 @@ Choose:
 [1] to Run NadekoBot with Auto Restart on "die" command without updating.
 [2] to Run with Auto Updating on restart after using "die" command.
 ```
-- Run `1` to update the bot upon restart. (This is done using the `.die` command)
-- Run `2` to restart the bot without updating. (This is also done using the `.die` command)
+- Run `1` to restart the bot without updating. (This is done using the `.die` command)
+- Run `2` to update the bot upon restart. (This is also done using the `.die` command)
 
 5. That's it! to detatch the tmux session:
     - Press `Ctrl` + `B`
