@@ -25,7 +25,7 @@ public partial class Utility
                                .WithDescription(GetText(strs.config_not_found(Format.Code(name))))
                                .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
 
@@ -48,7 +48,7 @@ public partial class Utility
                                .WithTitle(GetText(strs.config_list))
                                .WithDescription(string.Join("\n", configNames));
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
 
@@ -63,7 +63,7 @@ public partial class Utility
                                .WithDescription(GetText(strs.config_not_found(Format.Code(name))))
                                .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
 
@@ -78,7 +78,7 @@ public partial class Utility
                 var embed = _eb.Create().WithOkColor().WithTitle($"⚙️ {setting.Name}").WithDescription(propStrings);
 
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
             // if the prop is invalid -> print error and list of 
@@ -94,7 +94,7 @@ public partial class Utility
                                             strs.config_prop_not_found(Format.Code(prop), Format.Code(name))))
                                         .AddField($"⚙️ {setting.Name}", propStrings);
 
-                await ctx.Channel.EmbedAsync(propErrorEmbed);
+                await EmbedAsync(propErrorEmbed);
                 return;
             }
 
@@ -120,7 +120,7 @@ public partial class Utility
                 if (!string.IsNullOrWhiteSpace(comment))
                     embed.AddField("Comment", comment);
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
 

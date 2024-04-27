@@ -35,7 +35,7 @@ public partial class Searches
         //         .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
         //         .WithFooter($"{GetText(strs.score)} {novelData.Score}");
         //     
-        //     await ctx.Channel.EmbedAsync(embed);
+        //     await EmbedAsync(embed);
         // }
 
         [Cmd]
@@ -110,7 +110,7 @@ public partial class Searches
                  .WithUrl(fullQueryLink)
                  .WithImageUrl(imageUrl);
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         private static string MalInfoToEmoji(string info)
@@ -165,7 +165,7 @@ public partial class Searches
                                string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }),
                                true)
                            .WithFooter($"{GetText(strs.score)} {animeData.AverageScore} / 100");
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -198,7 +198,7 @@ public partial class Searches
                                true)
                            .WithFooter($"{GetText(strs.score)} {mangaData.AverageScore} / 100");
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
     }
 }

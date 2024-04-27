@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Nadeko.Bot.Db;
+using NadekoBot.Db;
 
 #nullable disable
 
@@ -20,7 +20,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiAltSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiAltSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AntiAltSetting");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiRaidSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiRaidSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +81,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AntiRaidSetting");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamIgnore", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamIgnore", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -103,7 +103,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AntiSpamIgnore");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,7 +135,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AntiSpamSetting");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoCommand", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoCommand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,7 +173,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AutoCommands");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoTranslateChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,7 +201,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AutoTranslateChannels");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoTranslateUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -229,7 +229,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("AutoTranslateUsers");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.BanTemplate", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.BanTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,7 +255,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("BanTemplates");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.BlacklistEntry", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.BlacklistEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Blacklist");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandAlias", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.CommandAlias", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,7 +300,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("CommandAlias");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandCooldown", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.CommandCooldown", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -325,7 +325,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("CommandCooldown");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.CurrencyTransaction", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.CurrencyTransaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -363,7 +363,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("CurrencyTransactions");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.DelMsgOnCmdChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.DelMsgOnCmdChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -388,7 +388,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("DelMsgOnCmdChannel");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.DiscordPermOverride", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.DiscordPermOverride", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -414,7 +414,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("DiscordPermOverrides");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ExcludedItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ExcludedItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -439,7 +439,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("ExcludedItem");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FeedSub", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FeedSub", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -468,7 +468,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("FeedSub");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -490,7 +490,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("FilterChannelId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterLinksChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterLinksChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -512,7 +512,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("FilterLinksChannelId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterWordsChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterWordsChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -534,7 +534,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("FilterWordsChannelId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilteredWord", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilteredWord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -556,7 +556,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("FilteredWord");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GCChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -578,7 +578,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("GCChannelId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GamblingStats", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GamblingStats", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -604,7 +604,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("GamblingStats");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GroupName", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GroupName", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -630,7 +630,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("GroupName");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GuildConfig", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GuildConfig", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -762,7 +762,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("GuildConfigs");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredLogItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredLogItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -788,7 +788,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("IgnoredLogChannels");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredVoicePresenceChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredVoicePresenceChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -810,7 +810,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("IgnoredVoicePresenceCHannels");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ImageOnlyChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ImageOnlyChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -836,7 +836,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("ImageOnlyChannels");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.LogSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.LogSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -910,7 +910,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("LogSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlayerSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.MusicPlayerSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -947,7 +947,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("MusicPlayerSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlaylist", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -970,7 +970,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("MusicPlaylists");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.MutedUserId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.MutedUserId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -992,7 +992,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("MutedUserId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.NadekoExpression", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.NadekoExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1030,7 +1030,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Expressions");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.NsfwBlacklistedTag", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.NsfwBlacklistedTag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1052,7 +1052,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("NsfwBlacklistedTags");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Permissionv2", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Permissionv2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1092,7 +1092,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlantedCurrency", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PlantedCurrency", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1129,7 +1129,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("PlantedCurrency");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlaylistSong", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PlaylistSong", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1163,7 +1163,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("PlaylistSong");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Poll", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Poll", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1189,7 +1189,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Poll");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollAnswer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PollAnswer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1214,7 +1214,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("PollAnswer");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollVote", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PollVote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1239,7 +1239,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("PollVote");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Quote", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Quote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1275,7 +1275,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ReactionRoleV2", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ReactionRoleV2", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1316,7 +1316,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("ReactionRoles");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Reminder", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Reminder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1353,7 +1353,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Reminders");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Repeater", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Repeater", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1388,7 +1388,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Repeaters");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.RewardedUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.RewardedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1417,7 +1417,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("RewardedUsers");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.RotatingPlayingStatus", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.RotatingPlayingStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1437,7 +1437,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("RotatingStatus");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.SelfAssignedRole", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.SelfAssignedRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1468,7 +1468,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("SelfAssignableRoles");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ShopEntry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1514,7 +1514,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("ShopEntry");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntryItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ShopEntryItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1536,7 +1536,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("ShopEntryItem");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredRole", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.SlowmodeIgnoredRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1558,7 +1558,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("SlowmodeIgnoredRole");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.SlowmodeIgnoredUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1580,7 +1580,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("SlowmodeIgnoredUser");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleBlacklistedUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleBlacklistedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1605,7 +1605,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("StreamRoleBlacklistedUser");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1637,7 +1637,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("StreamRoleSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleWhitelistedUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleWhitelistedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1662,7 +1662,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("StreamRoleWhitelistedUser");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnbanTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnbanTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1687,7 +1687,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("UnbanTimer");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnmuteTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnmuteTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1712,7 +1712,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("UnmuteTimer");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnroleTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnroleTimer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1740,7 +1740,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("UnroleTimer");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UserXpStats", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UserXpStats", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1780,7 +1780,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("UserXpStats");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.VcRoleInfo", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.VcRoleInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1805,7 +1805,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("VcRoleInfo");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1840,7 +1840,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("WaifuInfo");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1865,7 +1865,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("WaifuItem");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuUpdate", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuUpdate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1897,7 +1897,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("WaifuUpdates");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Warning", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Warning", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1940,7 +1940,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("Warnings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WarningPunishment", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WarningPunishment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1971,7 +1971,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("WarningPunishment");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpCurrencyReward", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpCurrencyReward", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1996,7 +1996,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("XpCurrencyReward");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpRoleReward", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpRoleReward", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2025,7 +2025,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("XpRoleReward");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpSettings", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2362,47 +2362,47 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.ToTable("XpShopOwnedItem");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiAltSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiAltSetting", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithOne("AntiAltSetting")
-                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiAltSetting", "GuildConfigId")
+                        .HasForeignKey("NadekoBot.Db.Models.AntiAltSetting", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiRaidSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiRaidSetting", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithOne("AntiRaidSetting")
-                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiRaidSetting", "GuildConfigId")
+                        .HasForeignKey("NadekoBot.Db.Models.AntiRaidSetting", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamIgnore", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamIgnore", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.AntiSpamSetting", null)
+                    b.HasOne("NadekoBot.Db.Models.AntiSpamSetting", null)
                         .WithMany("IgnoredChannels")
                         .HasForeignKey("AntiSpamSettingId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamSetting", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithOne("AntiSpamSetting")
-                        .HasForeignKey("Nadeko.Bot.Db.Models.AntiSpamSetting", "GuildConfigId")
+                        .HasForeignKey("NadekoBot.Db.Models.AntiSpamSetting", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoTranslateUser", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.AutoTranslateChannel", "Channel")
+                    b.HasOne("NadekoBot.Db.Models.AutoTranslateChannel", "Channel")
                         .WithMany("Users")
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2411,37 +2411,37 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("Channel");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandAlias", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.CommandAlias", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("CommandAliases")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.CommandCooldown", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.CommandCooldown", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("CommandCooldowns")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.DelMsgOnCmdChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.DelMsgOnCmdChannel", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("DelMsgOnCmdChannels")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ExcludedItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ExcludedItem", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.XpSettings", null)
                         .WithMany("ExclusionList")
                         .HasForeignKey("XpSettingsId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FeedSub", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FeedSub", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithMany("FeedSubs")
                         .HasForeignKey("GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2450,46 +2450,46 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterChannelId", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterInvitesChannelIds")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterLinksChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterLinksChannelId", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterLinksChannelIds")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilterWordsChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilterWordsChannelId", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterWordsChannelIds")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.FilteredWord", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.FilteredWord", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilteredWords")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GCChannelId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GCChannelId", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithMany("GenerateCurrencyChannelIds")
                         .HasForeignKey("GuildConfigId");
 
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GroupName", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GroupName", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithMany("SelfAssignableRoleGroupNames")
                         .HasForeignKey("GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2498,9 +2498,9 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredLogItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredLogItem", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.LogSetting", "LogSetting")
+                    b.HasOne("NadekoBot.Db.Models.LogSetting", "LogSetting")
                         .WithMany("LogIgnores")
                         .HasForeignKey("LogSettingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2509,133 +2509,133 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("LogSetting");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.IgnoredVoicePresenceChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredVoicePresenceChannel", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.LogSetting", "LogSetting")
+                    b.HasOne("NadekoBot.Db.Models.LogSetting", "LogSetting")
                         .WithMany()
                         .HasForeignKey("LogSettingId");
 
                     b.Navigation("LogSetting");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.MutedUserId", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.MutedUserId", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("MutedUsers")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Permissionv2", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Permissionv2", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("Permissions")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PlaylistSong", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PlaylistSong", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.MusicPlaylist", null)
+                    b.HasOne("NadekoBot.Db.Models.MusicPlaylist", null)
                         .WithMany("Songs")
                         .HasForeignKey("MusicPlaylistId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollAnswer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PollAnswer", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.Poll", null)
+                    b.HasOne("NadekoBot.Db.Models.Poll", null)
                         .WithMany("Answers")
                         .HasForeignKey("PollId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.PollVote", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.PollVote", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.Poll", null)
+                    b.HasOne("NadekoBot.Db.Models.Poll", null)
                         .WithMany("Votes")
                         .HasForeignKey("PollId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ShopEntry", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("ShopEntries")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntryItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ShopEntryItem", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.ShopEntry", null)
+                    b.HasOne("NadekoBot.Db.Models.ShopEntry", null)
                         .WithMany("Items")
                         .HasForeignKey("ShopEntryId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredRole", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.SlowmodeIgnoredRole", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("SlowmodeIgnoredRoles")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.SlowmodeIgnoredUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.SlowmodeIgnoredUser", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("SlowmodeIgnoredUsers")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleBlacklistedUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleBlacklistedUser", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", null)
                         .WithMany("Blacklist")
                         .HasForeignKey("StreamRoleSettingsId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleSettings", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithOne("StreamRole")
-                        .HasForeignKey("Nadeko.Bot.Db.Models.StreamRoleSettings", "GuildConfigId")
+                        .HasForeignKey("NadekoBot.Db.Models.StreamRoleSettings", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GuildConfig");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleWhitelistedUser", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleWhitelistedUser", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.StreamRoleSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", null)
                         .WithMany("Whitelist")
                         .HasForeignKey("StreamRoleSettingsId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnbanTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnbanTimer", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnbanTimer")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnmuteTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnmuteTimer", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnmuteTimers")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.UnroleTimer", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.UnroleTimer", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnroleTimer")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.VcRoleInfo", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.VcRoleInfo", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("VcRoleInfos")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuInfo", b =>
                 {
                     b.HasOne("NadekoBot.Db.Models.DiscordUser", "Affinity")
                         .WithMany()
@@ -2647,7 +2647,7 @@ namespace NadekoBot.Db.Migrations.Sqlite
 
                     b.HasOne("NadekoBot.Db.Models.DiscordUser", "Waifu")
                         .WithOne()
-                        .HasForeignKey("Nadeko.Bot.Db.Models.WaifuInfo", "WaifuId")
+                        .HasForeignKey("NadekoBot.Db.Models.WaifuInfo", "WaifuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2658,16 +2658,16 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("Waifu");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuItem", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuItem", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.WaifuInfo", "WaifuInfo")
+                    b.HasOne("NadekoBot.Db.Models.WaifuInfo", "WaifuInfo")
                         .WithMany("Items")
                         .HasForeignKey("WaifuInfoId");
 
                     b.Navigation("WaifuInfo");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuUpdate", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuUpdate", b =>
                 {
                     b.HasOne("NadekoBot.Db.Models.DiscordUser", "New")
                         .WithMany()
@@ -2690,16 +2690,16 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WarningPunishment", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WarningPunishment", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("WarnPunishments")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpCurrencyReward", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpCurrencyReward", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", "XpSettings")
+                    b.HasOne("NadekoBot.Db.Models.XpSettings", "XpSettings")
                         .WithMany("CurrencyRewards")
                         .HasForeignKey("XpSettingsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2708,9 +2708,9 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("XpSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpRoleReward", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpRoleReward", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.XpSettings", "XpSettings")
+                    b.HasOne("NadekoBot.Db.Models.XpSettings", "XpSettings")
                         .WithMany("RoleRewards")
                         .HasForeignKey("XpSettingsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2719,11 +2719,11 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("XpSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpSettings", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithOne("XpSettings")
-                        .HasForeignKey("Nadeko.Bot.Db.Models.XpSettings", "GuildConfigId")
+                        .HasForeignKey("NadekoBot.Db.Models.XpSettings", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2790,22 +2790,22 @@ namespace NadekoBot.Db.Migrations.Sqlite
 
             modelBuilder.Entity("NadekoBot.Db.Models.FollowedStream", b =>
                 {
-                    b.HasOne("Nadeko.Bot.Db.Models.GuildConfig", null)
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FollowedStreams")
                         .HasForeignKey("GuildConfigId");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AntiSpamSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamSetting", b =>
                 {
                     b.Navigation("IgnoredChannels");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.AutoTranslateChannel", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.AutoTranslateChannel", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.GuildConfig", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.GuildConfig", b =>
                 {
                     b.Navigation("AntiAltSetting");
 
@@ -2860,41 +2860,41 @@ namespace NadekoBot.Db.Migrations.Sqlite
                     b.Navigation("XpSettings");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.LogSetting", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.LogSetting", b =>
                 {
                     b.Navigation("LogIgnores");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.MusicPlaylist", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Navigation("Songs");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.Poll", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.Poll", b =>
                 {
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.ShopEntry", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.ShopEntry", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.StreamRoleSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleSettings", b =>
                 {
                     b.Navigation("Blacklist");
 
                     b.Navigation("Whitelist");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.WaifuInfo", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.WaifuInfo", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Nadeko.Bot.Db.Models.XpSettings", b =>
+            modelBuilder.Entity("NadekoBot.Db.Models.XpSettings", b =>
                 {
                     b.Navigation("CurrencyRewards");
 

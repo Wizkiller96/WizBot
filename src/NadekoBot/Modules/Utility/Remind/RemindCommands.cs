@@ -2,7 +2,7 @@
 using Humanizer.Localisation;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -127,7 +127,7 @@ public partial class Utility
                 embed.WithDescription(GetText(strs.reminders_none));
 
             embed.AddPaginatedFooter(page + 1, null);
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]

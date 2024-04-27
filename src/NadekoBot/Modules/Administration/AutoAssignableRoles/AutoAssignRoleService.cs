@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using System.Net;
 using System.Threading.Channels;
 using LinqToDB;

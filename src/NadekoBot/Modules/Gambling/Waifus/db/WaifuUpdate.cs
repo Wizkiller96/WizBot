@@ -1,7 +1,5 @@
 #nullable disable
-using NadekoBot.Db.Models;
-
-namespace Nadeko.Bot.Db.Models;
+namespace NadekoBot.Db.Models;
 
 public class WaifuUpdate : DbEntity
 {

@@ -1,7 +1,7 @@
 ﻿#nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 

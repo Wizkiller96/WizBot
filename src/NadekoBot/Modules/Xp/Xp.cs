@@ -1,8 +1,7 @@
 #nullable disable warnings
 using NadekoBot.Modules.Xp.Services;
-using Nadeko.Bot.Db.Models;
-using NadekoBot.Db;
 using NadekoBot.Db.Models;
+using NadekoBot.Db;
 using NadekoBot.Modules.Patronage;
 
 namespace NadekoBot.Modules.Xp;
@@ -65,7 +64,7 @@ public partial class Xp : NadekoModule<XpService>
             .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
             .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]
@@ -254,7 +253,7 @@ public partial class Xp : NadekoModule<XpService>
             }
         }
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]

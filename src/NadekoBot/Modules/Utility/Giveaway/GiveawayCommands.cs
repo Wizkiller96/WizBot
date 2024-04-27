@@ -22,7 +22,7 @@ public partial class Utility
                 .WithTitle(GetText(strs.giveaway_starting))
                 .WithDescription(message);
 
-            var startingMsg = await ctx.Channel.EmbedAsync(eb);
+            var startingMsg = await EmbedAsync(eb);
 
             var maybeId =
                 await _service.StartGiveawayAsync(ctx.Guild.Id, ctx.Channel.Id, startingMsg.Id, duration, message);
@@ -112,7 +112,7 @@ public partial class Utility
                 eb.AddField($"id:  {new kwum(g.Id)}", g.Message, true);
             }
 
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
         }
     }
 }

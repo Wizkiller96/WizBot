@@ -1,5 +1,5 @@
 ﻿using NadekoBot.Common.TypeReaders.Models;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Administration;
 
@@ -46,7 +46,7 @@ public partial class Administration
                                 ? "-"
                                 : string.Join('\n', usrs.Select(x => $"{x.LogItemId} | <@{x.LogItemId}>")));
 
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
         }
 
         [Cmd]

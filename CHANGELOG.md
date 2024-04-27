@@ -6,9 +6,9 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Added
 
-- `.shopadd command` You can now sell commands in the shop. The command will execute as if you were the one running it when someone buys it
+- Added `.shopadd command` You can now sell commands in the shop. The command will execute as if you were the one running it when someone buys it
   - type `.h .shopadd` for more info
-- `.stickyroles` Users leaving the server will have their roles saved to the database and reapplied if they rejoin within 30 days.
+- Added `.stickyroles` Users leaving the server will have their roles saved to the database and reapplied if they rejoin within 30 days.
 - Giveaway commands
   - `.ga start` starts the giveway with the specified duration and message (prize). You may have up to 5 giveaways on the server at once
   - `.ga end <id>` prematurely ends the giveaway and selects a winner
@@ -16,20 +16,22 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - `.ga list` lists active giveaways on the current server
   - `.ga reroll <id>` rerolls the winner on the completed giveaway. This only works for 24 hours after the giveaway has ended, or until the bot restarts.
   - After the giveaway has started, user join the giveaway by adding a :tada: reaction
-- Selfhosters - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
-- Todo Commands
+- Added Todo Commands
   - `.todo add <name>` - adds a new todo
   - `.todo delete <id>` - deletes a todo item
   - `.todo done <id>` - completes a todo (marks it with a checkmark)
   - `.todo list` - lists all todos
   - `.todo edit <id> <new message>` - edits a todo item message
-  - Todo archive commands
+  - In addition to that, there are also Todo archive commands
     - `.todo archive add <name>` - adds all current todos (completed and not completed) to the archived list, your current todo list will become cleared
     - `.todo archive list` - lists all your archived todo lists
     - `.todo archive show <id>` - shows the todo items from one of your archived lists
     - `.todo archive delete <id>` - deletes and archived todo list
-- `.queufairplay` / `.qfp` (music feature) re-added but it works differently
+- Added `.queufairplay` / `.qfp` (music feature) re-added but it works differently
   - Once you run it, it will reorganize currently queued songs so that they're in a fair order. It has no effect on any subsequently queued songs
+- Added `.clubrename` command to uh rename your club
+- For self-hosters:
+  - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
 
 ### Changed
 
@@ -37,11 +39,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 - `.cmds <module name>` looks better / simpler
 - Cleanup: Removed a lot of obsolete aliases.
-
+- The bot will now send a discord Reply to every command
+- A lot of code cleanup (still a lot to be done) and Quality of Life improvements
 
 ### Fixed
 
 - `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
+- `.say` will now correctly report errors if the user or the bot don't have sufficent perms to send a message in the targeted channel
 
 ### Removed
 

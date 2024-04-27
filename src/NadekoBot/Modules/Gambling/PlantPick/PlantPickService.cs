@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;

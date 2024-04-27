@@ -137,7 +137,7 @@ public partial class Searches
             {
                 var embed = _eb.Create().WithDescription(GetText(strs.account_not_found)).WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
                 return;
             }
 
@@ -192,7 +192,7 @@ public partial class Searches
             {
                 var eembed = _eb.Create().WithDescription(GetText(strs.leagues_not_found)).WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(eembed);
+                await EmbedAsync(eembed);
                 return;
             }
 
@@ -215,7 +215,7 @@ public partial class Searches
 
             embed.WithDescription(sb.ToString());
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -281,13 +281,13 @@ public partial class Searches
                                .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
                                .WithOkColor();
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
             catch
             {
                 var embed = _eb.Create().WithDescription(GetText(strs.ninja_not_found)).WithErrorColor();
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
         }
 

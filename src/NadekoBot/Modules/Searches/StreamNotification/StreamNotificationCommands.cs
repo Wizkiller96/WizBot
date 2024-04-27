@@ -29,7 +29,7 @@ public partial class Searches
             }
 
             var embed = _service.GetEmbed(ctx.Guild.Id, data);
-            await ctx.Channel.EmbedAsync(embed, GetText(strs.stream_tracked));
+            await EmbedAsync(embed, GetText(strs.stream_tracked));
         }
 
         [Cmd]

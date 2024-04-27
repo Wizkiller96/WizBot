@@ -1,8 +1,7 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
-using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -90,7 +89,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         var toAdd = new RotatingPlayingStatus
         {
             Status = status,
-            Type = (Nadeko.Bot.Db.ActivityType)activityType
+            Type = (NadekoBot.Db.DbActivityType)activityType
         };
         uow.Add(toAdd);
         await uow.SaveChangesAsync();

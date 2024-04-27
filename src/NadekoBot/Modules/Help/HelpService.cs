@@ -1,4 +1,3 @@
-using NadekoBot.Common;
 using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Help.Services;

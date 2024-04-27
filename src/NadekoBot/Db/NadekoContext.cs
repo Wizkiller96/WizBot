@@ -2,11 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NadekoBot.Db.Models;
-using Nadeko.Bot.Db.Models;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Nadeko.Bot.Db;
+namespace NadekoBot.Db;
 
 public abstract class NadekoContext : DbContext
 {

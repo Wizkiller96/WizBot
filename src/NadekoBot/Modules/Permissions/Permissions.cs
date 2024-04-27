@@ -4,7 +4,7 @@ using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Common;
 using NadekoBot.Modules.Permissions.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Permissions;
 
@@ -115,7 +115,7 @@ public partial class Permissions : NadekoModule<PermissionService>
                                   return str;
                               }));
 
-        await ctx.Channel.SendMessageAsync(toSend);
+        await SendConfirmAsync(toSend);
     }
 
     [Cmd]

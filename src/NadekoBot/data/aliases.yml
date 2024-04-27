@@ -743,10 +743,6 @@ unmute:
   - unmute
 xkcd:
   - xkcd
-placelist:
-  - placelist
-place:
-  - place
 autotranslang:
   - autotranslang
   - atl
@@ -1090,6 +1086,8 @@ clubleaderboard:
   - clubs
 clubadmin:
   - clubadmin
+clubrename:
+  - clubrename
 eightball:
   - eightball
   - 8ball
@@ -1386,3 +1384,8 @@ todoarchivedelete:
   - del
   - remove
   - rm
+todoedit:
+  - edit
+  - change
+stickyroles:
+  - stickyroles

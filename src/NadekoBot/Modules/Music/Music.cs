@@ -1,6 +1,6 @@
 #nullable disable
 using NadekoBot.Modules.Music.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Music;
 
@@ -586,7 +586,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
             embed.WithUrl(track.Url);
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]

@@ -1,7 +1,5 @@
 #nullable disable
-using Nadeko.Bot.Db;
-
-namespace Nadeko.Bot.Db.Models;
+namespace NadekoBot.Db.Models;
 
 public class DiscordPermOverride : DbEntity
 {

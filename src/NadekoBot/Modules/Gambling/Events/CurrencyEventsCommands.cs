@@ -2,7 +2,7 @@
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Events;
 using NadekoBot.Modules.Gambling.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling;
 

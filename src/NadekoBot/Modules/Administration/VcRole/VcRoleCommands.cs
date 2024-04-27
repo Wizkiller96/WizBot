@@ -68,7 +68,7 @@ public partial class Administration
             else
                 text = GetText(strs.no_vcroles);
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.vc_role_list))
                                             .WithDescription(text));

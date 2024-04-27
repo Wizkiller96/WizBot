@@ -1,6 +1,6 @@
 #nullable disable
 using NadekoBot.Db;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Common.ModuleBehaviors;
 
 namespace NadekoBot.Modules.Administration.Services;

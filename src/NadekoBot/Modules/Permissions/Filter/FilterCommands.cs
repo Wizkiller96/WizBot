@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Permissions;
 
@@ -63,7 +63,7 @@ public partial class Permissions
             embed.AddField($"{GetEnabledEmoji(config.FilterInvitesEnabled)} Filter Invites",
                 await GetChannelListAsync(config.FilterInvitesChannels));
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]

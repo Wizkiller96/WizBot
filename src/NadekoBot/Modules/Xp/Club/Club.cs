@@ -405,7 +405,7 @@ public partial class Xp
                     .WithOkColor()
                     .WithDescription(desc);
 
-                await ctx.Channel.EmbedAsync(eb);
+                await EmbedAsync(eb);
             }
             else
             {
@@ -436,7 +436,7 @@ public partial class Xp
             foreach (var club in clubs)
                 embed.AddField($"#{++i} " + club, club.Xp + " xp");
 
-            return ctx.Channel.EmbedAsync(embed);
+            return EmbedAsync(embed);
         }
 
         [Cmd]
@@ -452,7 +452,7 @@ public partial class Xp
                 case ClubRenameResult.Success:
                 {
                     var embed = _eb.Create().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
-                    await ctx.Channel.EmbedAsync(embed);
+                    await EmbedAsync(embed);
                     return;
                 }
                 case ClubRenameResult.NameTaken:

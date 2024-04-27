@@ -1,14 +1,11 @@
 ﻿#nullable disable
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;
-using NadekoBot.Services;
-using Serilog;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

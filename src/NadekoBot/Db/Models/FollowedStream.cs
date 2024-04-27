@@ -1,6 +1,4 @@
 #nullable disable
-using Nadeko.Bot.Db.Models;
-
 namespace NadekoBot.Db.Models;
 
 public class FollowedStream : DbEntity

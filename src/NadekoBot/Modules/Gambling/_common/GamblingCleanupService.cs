@@ -1,8 +1,8 @@
 ﻿using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Db.Models;
-using Nadeko.Bot.Db.Models;
 
-namespace Nadeko.Bot.Modules.Gambling.Gambling._Common;
+namespace NadekoBot.Modules.Gambling;
 
 public class GamblingCleanupService : IGamblingCleanupService, INService
 {
@@ -16,45 +16,41 @@ public class GamblingCleanupService : IGamblingCleanupService, INService
     public async Task DeleteWaifus()
     {
         await using var ctx = _db.GetDbContext();
-        await ctx.Set<WaifuInfo>().DeleteAsync();
-        await ctx.Set<WaifuItem>().DeleteAsync();
-        await ctx.Set<WaifuUpdate>().DeleteAsync();
-        await ctx.SaveChangesAsync();
+        await ctx.GetTable<WaifuInfo>().DeleteAsync();
+        await ctx.GetTable<WaifuItem>().DeleteAsync();
+        await ctx.GetTable<WaifuUpdate>().DeleteAsync();
     }
 
     public async Task DeleteWaifu(ulong userId)
     {
         await using var ctx = _db.GetDbContext();
-        await ctx.Set<WaifuUpdate>()
+        await ctx.GetTable<WaifuUpdate>()
             .Where(x => x.User.UserId == userId)
             .DeleteAsync();
-        await ctx.Set<WaifuItem>()
+        await ctx.GetTable<WaifuItem>()
             .Where(x => x.WaifuInfo.Waifu.UserId == userId)
             .DeleteAsync();
-        await ctx.Set<WaifuInfo>()
+        await ctx.GetTable<WaifuInfo>()
             .Where(x => x.Claimer.UserId == userId)
             .UpdateAsync(old => new WaifuInfo()
             {
                 ClaimerId = null,
             });
-        await ctx.Set<WaifuInfo>()
+        await ctx.GetTable<WaifuInfo>()
             .Where(x => x.Waifu.UserId == userId)
             .DeleteAsync();
-        await ctx.SaveChangesAsync();
     }
     
     public async Task DeleteCurrency()
     {
-        await using var uow = _db.GetDbContext();
-        await uow.Set<DiscordUser>().UpdateAsync(_ => new DiscordUser()
+        await using var ctx = _db.GetDbContext();
+        await ctx.GetTable<DiscordUser>().UpdateAsync(_ => new DiscordUser()
         {
             CurrencyAmount = 0
         });
 
-        await uow.Set<CurrencyTransaction>().DeleteAsync();
-        await uow.Set<PlantedCurrency>().DeleteAsync();
-        await uow.Set<BankUser>().DeleteAsync();
-        await uow.SaveChangesAsync();
+        await ctx.GetTable<CurrencyTransaction>().DeleteAsync();
+        await ctx.GetTable<PlantedCurrency>().DeleteAsync();
+        await ctx.GetTable<BankUser>().DeleteAsync();
     }
-    
 }

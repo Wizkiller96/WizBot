@@ -1,7 +1,6 @@
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System.Text;
-using Serilog;
 
 namespace Nadeko.Common;
 

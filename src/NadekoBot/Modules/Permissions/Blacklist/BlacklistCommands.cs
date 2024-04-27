@@ -1,6 +1,6 @@
 #nullable disable
 using NadekoBot.Modules.Permissions.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Permissions;
 

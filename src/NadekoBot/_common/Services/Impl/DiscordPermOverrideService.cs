@@ -1,7 +1,7 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Services;
 
@@ -25,7 +25,7 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
             .ToConcurrent();
     }
 
-    public bool TryGetOverrides(ulong guildId, string commandName, out Nadeko.Bot.Db.GuildPerm? perm)
+    public bool TryGetOverrides(ulong guildId, string commandName, out NadekoBot.Db.GuildPerm? perm)
     {
         commandName = commandName.ToLowerInvariant();
         if (_overrides.TryGetValue((guildId, commandName), out var dpo))
@@ -62,12 +62,12 @@ public class DiscordPermOverrideService : INService, IExecPreCommand, IDiscordPe
                 .Add(over = new()
                 {
                     Command = commandName,
-                    Perm = (Nadeko.Bot.Db.GuildPerm)perm,
+                    Perm = (NadekoBot.Db.GuildPerm)perm,
                     GuildId = guildId
                 });
         }
         else
-            over.Perm = (Nadeko.Bot.Db.GuildPerm)perm;
+            over.Perm = (NadekoBot.Db.GuildPerm)perm;
 
         _overrides[(guildId, commandName)] = over;
 

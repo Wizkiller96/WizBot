@@ -1,5 +1,5 @@
 #nullable disable
-namespace Nadeko.Bot.Db.Models;
+namespace NadekoBot.Db.Models;
 
 public enum ShopEntryType
 {

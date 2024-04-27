@@ -38,7 +38,7 @@ public partial class Permissions
             if (blockedCommands.Any())
                 embed.AddField(GetText(strs.blocked_commands), string.Join("\n", _service.BlockedCommands));
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]

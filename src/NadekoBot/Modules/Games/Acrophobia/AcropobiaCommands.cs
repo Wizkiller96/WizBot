@@ -74,7 +74,7 @@ public partial class Games
                                GetText(strs.acro_started(Format.Bold(string.Join(".", game.StartingLetters)))))
                            .WithFooter(GetText(strs.acro_started_footer(game.Opts.SubmissionTime)));
 
-            return ctx.Channel.EmbedAsync(embed);
+            return EmbedAsync(embed);
         }
 
         private Task Game_OnUserVoted(string user)
@@ -92,7 +92,7 @@ public partial class Games
 
             if (submissions.Length == 1)
             {
-                await ctx.Channel.EmbedAsync(_eb.Create()
+                await EmbedAsync(_eb.Create()
                                                 .WithOkColor()
                                                 .WithDescription(GetText(
                                                     strs.acro_winner_only(
@@ -114,7 +114,7 @@ public partial class Games
 --")))
                            .WithFooter(GetText(strs.acro_vote));
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         private async Task Game_OnEnded(AcrophobiaGame game, ImmutableArray<KeyValuePair<AcrophobiaUser, int>> votes)
@@ -134,7 +134,7 @@ public partial class Games
                                Format.Bold(winner.Value.ToString()))))
                            .WithFooter(winner.Key.Input);
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
     }
 }

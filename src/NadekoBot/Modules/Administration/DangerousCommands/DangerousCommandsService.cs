@@ -3,7 +3,6 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
-using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 

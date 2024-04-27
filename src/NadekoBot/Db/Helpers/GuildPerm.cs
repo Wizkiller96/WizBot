@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Bot.Db;
+﻿namespace NadekoBot.Db;
 
 [Flags]
 public enum GuildPerm : ulong

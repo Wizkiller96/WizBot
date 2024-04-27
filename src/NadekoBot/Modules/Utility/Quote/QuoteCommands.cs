@@ -1,8 +1,7 @@
 ﻿#nullable disable warnings
-using NadekoBot.Common;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -105,7 +104,7 @@ public partial class Utility
             var text = SmartText.CreateFrom(quote.Text);
             text = await repSvc.ReplaceAsync(text, repCtx);
 
-            await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true);
+            await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true, replyTo: ctx.Message);
         }
 
         [Cmd]
@@ -214,7 +213,7 @@ public partial class Utility
 
             var text = SmartText.CreateFrom(quote.Text);
             text = await repSvc.ReplaceAsync(text, repCtx);
-            await ctx.Channel.SendAsync(infoText + text, true);
+            await ctx.Channel.SendAsync(infoText + text, true, replyTo: ctx.Message);
         }
 
         [Cmd]

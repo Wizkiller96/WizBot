@@ -148,7 +148,7 @@ public partial class Gambling
                                .AddField(Format.Bold("Result"),
                                    string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
             else if ((match = _dndRegex.Match(arg)).Length != 0)
             {
@@ -180,7 +180,7 @@ public partial class Gambling
                                                => Format.Code(x.ToString()))))
                                    .AddField(Format.Bold("Sum"),
                                        sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
-                    await ctx.Channel.EmbedAsync(embed);
+                    await EmbedAsync(embed);
                 }
             }
         }

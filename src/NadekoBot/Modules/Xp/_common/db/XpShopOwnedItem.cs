@@ -1,6 +1,4 @@
 ﻿#nullable disable warnings
-using Nadeko.Bot.Db.Models;
-
 namespace NadekoBot.Db.Models;
 
 public class XpShopOwnedItem : DbEntity

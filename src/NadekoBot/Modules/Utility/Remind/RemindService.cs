@@ -3,7 +3,7 @@ using System.Globalization;
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using System.Text.RegularExpressions;
 
 namespace NadekoBot.Modules.Utility.Services;

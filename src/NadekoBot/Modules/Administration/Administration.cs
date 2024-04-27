@@ -113,7 +113,7 @@ public partial class Administration : NadekoModule<AdministrationService>
 
         embed.AddField(GetText(strs.channel_delmsgoncmd), str);
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]

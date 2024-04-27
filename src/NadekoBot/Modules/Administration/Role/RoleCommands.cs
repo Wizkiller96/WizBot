@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using System.Xml.Schema;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = SixLabors.ImageSharp.Color;
 

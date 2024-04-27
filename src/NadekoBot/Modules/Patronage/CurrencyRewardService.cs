@@ -4,7 +4,7 @@ using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Patronage;
 using NadekoBot.Services.Currency;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Utility;
 

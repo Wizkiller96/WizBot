@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Bot.Db.Models;
+﻿namespace NadekoBot.Db.Models;
 
 #nullable disable
 public class StickyRole : DbEntity

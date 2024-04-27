@@ -1,8 +1,6 @@
 #nullable disable
-using LinqToDB.Common;
-using LinqToDB.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
+using Microsoft.EntityFrameworkCore;
 
 namespace NadekoBot.Services;
 

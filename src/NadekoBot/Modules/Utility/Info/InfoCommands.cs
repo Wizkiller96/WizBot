@@ -75,7 +75,7 @@ public partial class Utility
                     string.Join(" ", guild.Emotes.Shuffle().Take(20).Select(e => $"{e.Name} {e}")).TrimTo(1020));
             }
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -94,7 +94,7 @@ public partial class Utility
                            .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
                            .AddField(GetText(strs.users), usercount.ToString(), true)
                            .WithOkColor();
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
         
         [Cmd]
@@ -121,7 +121,7 @@ public partial class Utility
             if (!string.IsNullOrWhiteSpace(role.GetIconUrl()))
                 embed = embed.WithThumbnailUrl(role.GetIconUrl());
             
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -165,7 +165,7 @@ public partial class Utility
             if (av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
             
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         private DateTimeOffset? GetJoinedAt(IGuildUser user)
@@ -204,7 +204,7 @@ public partial class Utility
                     kvp.Value)));
             }
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                                             .WithTitle(GetText(strs.activity_page(page + 1)))
                                             .WithOkColor()
                                             .WithFooter(GetText(

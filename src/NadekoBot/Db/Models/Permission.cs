@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 
-namespace Nadeko.Bot.Db.Models;
+namespace NadekoBot.Db.Models;
 
 [DebuggerDisplay("{PrimaryTarget}{SecondaryTarget} {SecondaryTargetName} {State} {PrimaryTargetId}")]
 public class Permissionv2 : DbEntity, IIndexed

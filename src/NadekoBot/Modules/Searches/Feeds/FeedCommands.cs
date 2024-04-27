@@ -117,7 +117,7 @@ public partial class Searches
 
             if (!feeds.Any())
             {
-                await ctx.Channel.EmbedAsync(_eb.Create().WithOkColor().WithDescription(GetText(strs.feed_no_feed)));
+                await EmbedAsync(_eb.Create().WithOkColor().WithDescription(GetText(strs.feed_no_feed)));
                 return;
             }
 

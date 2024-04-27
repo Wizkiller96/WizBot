@@ -112,7 +112,7 @@ public partial class Administration
 
         [Cmd]
         public async Task LanguagesList()
-            => await ctx.Channel.EmbedAsync(_eb.Create()
+            => await EmbedAsync(_eb.Create()
                                                .WithOkColor()
                                                .WithTitle(GetText(strs.lang_list))
                                                .WithDescription(string.Join("\n",

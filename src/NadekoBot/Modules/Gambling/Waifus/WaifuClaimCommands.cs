@@ -2,7 +2,7 @@
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Common.Waifu;
 using NadekoBot.Modules.Gambling.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Gambling;
 
@@ -217,7 +217,7 @@ public partial class Gambling
                 embed.AddField("#" + ((page * 9) + j + 1) + " - " + N(w.Price), GetLbString(w));
             }
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         private string GetLbString(WaifuLbResult w)

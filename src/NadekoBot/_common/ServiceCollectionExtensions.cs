@@ -139,7 +139,7 @@ public static class ServiceCollectionExtensions
                              || c.IsAssignableTo(typeof(IExecPostCommand))
                              || c.IsAssignableTo(typeof(IExecNoCommand)))
                             && !c.HasAttribute<DIIgnoreAttribute>()
-#if GLOBAL_NADEK
+#if GLOBAL_NADEKO
                             && !c.HasAttribute<NoPublicBotAttribute>()
 #endif
                 )

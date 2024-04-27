@@ -1,7 +1,8 @@
 ﻿#nullable disable
+using LinqToDB;
 using NadekoBot.Db;
 using NadekoBot.Modules.Music.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Music;
 
@@ -55,7 +56,7 @@ public sealed partial class Music
                                playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
                            .WithOkColor();
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -150,11 +151,11 @@ public sealed partial class Music
                 await uow.SaveChangesAsync();
             }
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
-                                            .WithOkColor()
-                                            .WithTitle(GetText(strs.playlist_saved))
-                                            .AddField(GetText(strs.name), name)
-                                            .AddField(GetText(strs.id), playlist.Id.ToString()));
+            await EmbedAsync(_eb.Create()
+                                .WithOkColor()
+                                .WithTitle(GetText(strs.playlist_saved))
+                                .AddField(GetText(strs.name), name)
+                                .AddField(GetText(strs.id), playlist.Id.ToString()));
         }
 
         [Cmd]
@@ -224,6 +225,15 @@ public sealed partial class Music
             {
                 _playlistLock.Release();
             }
+        }
+
+        [Cmd]
+        [OwnerOnly]
+        public async Task DeletePlaylists()
+        {
+            await using var uow = _db.GetDbContext();
+            await uow.Set<MusicPlaylist>().DeleteAsync();
+            await uow.SaveChangesAsync();
         }
     }
 }

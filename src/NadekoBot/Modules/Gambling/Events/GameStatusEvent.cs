@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using System.Collections.Concurrent;
 
 namespace NadekoBot.Modules.Gambling.Common.Events;

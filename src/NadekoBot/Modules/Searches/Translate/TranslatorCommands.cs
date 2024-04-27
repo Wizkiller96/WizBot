@@ -22,7 +22,7 @@ public partial class Searches
 
                 var embed = _eb.Create(ctx).WithOkColor().AddField(from, text).AddField(to, translation);
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
             catch
             {
@@ -89,7 +89,7 @@ public partial class Searches
                 eb.AddField("󠀁", chunk.Join("\n"), isInline: true);
             }
 
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
         }
     }
 }

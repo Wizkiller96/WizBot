@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Modules.Permissions.Common;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Permissions.Services;
 

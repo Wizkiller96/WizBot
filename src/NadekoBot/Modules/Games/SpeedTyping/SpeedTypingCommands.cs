@@ -97,7 +97,7 @@ public partial class Games
                            .WithDescription(removed.Text.TrimTo(50))
                            .WithOkColor();
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
     }
 }

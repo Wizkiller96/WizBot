@@ -77,7 +77,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 return;
             }
 
-            await ctx.Channel.EmbedAsync(_eb.Create(ctx)
+            await EmbedAsync(_eb.Create(ctx)
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.loaded_medusae))
                                             .WithDescription(loaded.Select(x => x.Name)
@@ -177,7 +177,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                                 : cmdNames,
                             true);
 
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
             return;
         }
 
@@ -224,6 +224,6 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 """, true);
         }
 
-        await ctx.Channel.EmbedAsync(eb);
+        await EmbedAsync(eb);
     }
 }

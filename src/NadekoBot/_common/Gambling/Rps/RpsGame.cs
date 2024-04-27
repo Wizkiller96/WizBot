@@ -3,10 +3,10 @@
 public sealed class RpsGame
 {
     private static readonly NadekoRandom _rng = new NadekoRandom();
-    
-    const decimal WIN_MULTI = 1.95m;
-    const decimal DRAW_MULTI = 1m;
-    const decimal LOSE_MULTI = 0m;
+
+    private const decimal WIN_MULTI = 1.95m;
+    private const decimal DRAW_MULTI = 1m;
+    private const decimal LOSE_MULTI = 0m;
     
     public RpsGame()
     {

@@ -1,7 +1,6 @@
 ﻿#nullable disable
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using System.Runtime.CompilerServices;
-using NadekoBot.Common;
 
 namespace NadekoBot.Modules.NadekoExpressions;
 

@@ -49,7 +49,7 @@ public partial class Searches
                 var obj = objs[0];
                 var userId = obj.UserId;
 
-                await ctx.Channel.EmbedAsync(_eb.Create()
+                await EmbedAsync(_eb.Create()
                                                 .WithOkColor()
                                                 .WithTitle($"osu! {smode} profile for {user}")
                                                 .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
@@ -109,7 +109,7 @@ public partial class Searches
                            .AddField("Playcount", userStats.Playcount, true)
                            .AddField("Level", userStats.Level, true);
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -172,7 +172,7 @@ public partial class Searches
             foreach (var (title, desc) in mapData.Where(x => x != default))
                 eb.AddField(title, desc);
 
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
         }
 
         //https://osu.ppy.sh/wiki/Accuracy

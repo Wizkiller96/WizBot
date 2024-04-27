@@ -1,7 +1,5 @@
 #nullable disable
 
-using NadekoBot.Common.Attributes;
-
 namespace NadekoBot.Modules.NadekoExpressions;
 
 [Name("Expressions")]
@@ -34,7 +32,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         var ex = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
-        await ctx.Channel.EmbedAsync(_eb.Create()
+        await EmbedAsync(_eb.Create()
                                         .WithOkColor()
                                         .WithTitle(GetText(strs.expr_new))
                                         .WithDescription($"#{new kwum(ex.Id)}")

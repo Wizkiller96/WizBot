@@ -62,7 +62,7 @@ public partial class Games
 
             var eb = GetEmbed(_eb, hangman);
             eb.WithDescription(GetText(strs.hangman_game_started));
-            await ctx.Channel.EmbedAsync(eb);
+            await EmbedAsync(eb);
         }
 
         [Cmd]

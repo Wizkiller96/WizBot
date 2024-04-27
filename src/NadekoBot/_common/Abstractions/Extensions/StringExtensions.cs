@@ -1,8 +1,6 @@
 using NadekoBot.Common.Yml;
 using System.Text;
 using System.Text.RegularExpressions;
-using Humanizer;
-using Nadeko.Common;
 
 namespace NadekoBot.Extensions;
 

@@ -322,7 +322,7 @@ public sealed class PatronageService
                 _ = ctx.WarningAsync();
 
                 if (ctx.Guild?.OwnerId == ctx.User.Id)
-                    _ = ctx.Channel.EmbedAsync(eb);
+                    _ = ctx.Channel.EmbedAsync(eb, replyTo: ctx.Message);
                 else
                     _ = ctx.User.EmbedAsync(eb);
 
@@ -356,7 +356,7 @@ public sealed class PatronageService
 
                 // send the message in the server in case it's the owner
                 if (ctx.Guild?.OwnerId == ctx.User.Id)
-                    _ = ctx.Channel.EmbedAsync(eb);
+                    _ = ctx.Channel.EmbedAsync(eb, replyTo: ctx.Message);
                 else
                     _ = ctx.User.EmbedAsync(eb);
 

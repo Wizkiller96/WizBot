@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using NadekoBot.Modules.NadekoExpressions;
-using NadekoBot.Services;
 
 namespace NadekoBot.Common.TypeReaders;
 

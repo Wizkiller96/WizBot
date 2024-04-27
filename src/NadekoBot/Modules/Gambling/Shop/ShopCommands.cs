@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using NadekoBot.Modules.Administration;
 
 namespace NadekoBot.Modules.Gambling;
@@ -246,7 +246,7 @@ public partial class Gambling
                         .WithTitle("Executing shop command")
                         .WithDescription(cmd);
 
-                    var msgTask = ctx.Channel.EmbedAsync(eb);
+                    var msgTask = EmbedAsync(eb);
 
                     await _cs.AddAsync(entry.AuthorId,
                         GetProfitAmount(entry.Price),

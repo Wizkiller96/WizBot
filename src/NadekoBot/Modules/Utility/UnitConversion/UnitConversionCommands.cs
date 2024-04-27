@@ -22,7 +22,7 @@ public partial class Utility
                     string.Join(", ", g.Select(x => x.Triggers.FirstOrDefault()).OrderBy(x => x)));
             }
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]

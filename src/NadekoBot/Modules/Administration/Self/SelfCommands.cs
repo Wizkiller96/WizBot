@@ -1,7 +1,6 @@
 #nullable disable
-using NadekoBot.Common;
 using NadekoBot.Modules.Administration.Services;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using Nadeko.Common.Medusa;
 
 namespace NadekoBot.Modules.Administration;
@@ -113,7 +112,7 @@ public partial class Administration
             };
             _service.AddNewAutoCommand(cmd);
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.scadd))
                                             .AddField(GetText(strs.server),

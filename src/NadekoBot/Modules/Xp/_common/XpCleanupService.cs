@@ -1,6 +1,5 @@
 ﻿using LinqToDB;
 using NadekoBot.Db.Models;
-using Nadeko.Bot.Db.Models;
 
 namespace NadekoBot.Modules.Xp;
 

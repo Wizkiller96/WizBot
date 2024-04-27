@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NadekoBot.Common.ModuleBehaviors;
 using System.Net;
 using System.Threading.Channels;
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Administration.Services;
 

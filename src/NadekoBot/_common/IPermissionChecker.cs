@@ -1,6 +1,4 @@
-﻿using Nadeko.Bot.Db.Models;
-using OneOf;
-using OneOf.Types;
+﻿using OneOf;
 
 namespace NadekoBot.Common;
 

@@ -1,6 +1,4 @@
-﻿using Nadeko.Bot.Db.Models;
-
-namespace NadekoBot.Db.Models;
+﻿namespace NadekoBot.Db.Models;
 
 public class BankUser : DbEntity
 {

@@ -1,5 +1,4 @@
-﻿using LinqToDB.Common;
-using NadekoBot.Common.TypeReaders;
+﻿using NadekoBot.Common.TypeReaders;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Modules.Utility.Services;
 
@@ -65,7 +64,7 @@ public partial class Utility
             }
 
             var description = GetRepeaterInfoString(removed);
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_removed(index + 1)))
                 .WithDescription(description));
@@ -188,7 +187,7 @@ public partial class Utility
             }
 
             var description = GetRepeaterInfoString(runner);
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_created))
                 .WithDescription(description));
@@ -216,7 +215,7 @@ public partial class Utility
                 embed.AddField(name, description);
             }
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         private string GetRepeaterInfoString(RunningRepeater runner)

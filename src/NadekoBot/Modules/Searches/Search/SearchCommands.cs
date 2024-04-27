@@ -68,7 +68,7 @@ public partial class Searches
                                GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
                                "https://i.imgur.com/G46fm8J.png");
 
-            await ctx.Channel.EmbedAsync(embed);
+            await EmbedAsync(embed);
         }
 
         [Cmd]
@@ -121,7 +121,7 @@ public partial class Searches
                 embeds.Add(CreateEmbed(entry));
             }
 
-            await ctx.Channel.EmbedAsync(null, embeds: embeds);
+            await EmbedAsync(null, embeds: embeds);
         }
 
         private TypedKey<string> GetYtCacheKey(string query)
@@ -196,7 +196,7 @@ public partial class Searches
 //                        .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)
 //                        .WithOkColor();
 //
-//         await ctx.Channel.EmbedAsync(embed);
+//         await EmbedAsync(embed);
 //     }
     }
 }

@@ -5,7 +5,6 @@ using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
-using NadekoBot.Common;
 using Nadeko.Common.Medusa;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -294,7 +293,7 @@ public sealed class Help : NadekoModule<HelpService>
         }
 
         embed.WithFooter(GetText(strs.commands_instr(prefix)));
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     private async Task Group(ModuleInfo group)
@@ -308,7 +307,7 @@ public sealed class Help : NadekoModule<HelpService>
             eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
         }
 
-        await ctx.Channel.EmbedAsync(eb);
+        await EmbedAsync(eb);
     }
 
     [Cmd]

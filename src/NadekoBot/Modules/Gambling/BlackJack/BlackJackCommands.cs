@@ -128,7 +128,7 @@ public partial class Gambling
                     embed.AddField(full, cStr);
                 }
 
-                msg = await ctx.Channel.EmbedAsync(embed);
+                msg = await EmbedAsync(embed);
             }
             catch
             {

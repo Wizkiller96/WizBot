@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Bot.Modules.Gambling.Gambling._Common;
+﻿namespace NadekoBot.Modules.Gambling;
 
 public interface IGamblingCleanupService
 {

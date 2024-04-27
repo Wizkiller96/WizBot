@@ -93,7 +93,7 @@ public partial class Searches : NadekoModule<SearchesService>
                     $"https://openweathermap.org/img/w/{data.Weather[0].Icon}.png");
         }
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]
@@ -159,7 +159,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
 
-        await ctx.Channel.EmbedAsync(_eb.Create()
+        await EmbedAsync(_eb.Create()
             .WithOkColor()
             .WithTitle(movie.Title)
             .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
@@ -189,7 +189,7 @@ public partial class Searches : NadekoModule<SearchesService>
     private Task InternalRandomImage(SearchesService.ImageTag tag)
     {
         var url = _service.GetRandomImageUrl(tag);
-        return ctx.Channel.EmbedAsync(_eb.Create().WithOkColor().WithImageUrl(url));
+        return EmbedAsync(_eb.Create().WithOkColor().WithImageUrl(url));
     }
 
     [Cmd]
@@ -239,7 +239,7 @@ public partial class Searches : NadekoModule<SearchesService>
             }
         }
 
-        await ctx.Channel.EmbedAsync(_eb.Create()
+        await EmbedAsync(_eb.Create()
             .WithOkColor()
             .AddField(GetText(strs.original_url), $"<{query}>")
             .AddField(GetText(strs.short_url), $"<{shortLink}>"));
@@ -269,7 +269,7 @@ public partial class Searches : NadekoModule<SearchesService>
             .AddField(GetText(strs.cost), card.ManaCost, true)
             .AddField(GetText(strs.types), card.Types, true);
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]
@@ -298,7 +298,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!string.IsNullOrWhiteSpace(card.Flavor))
             embed.WithDescription(card.Flavor);
 
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     [Cmd]
@@ -468,7 +468,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         var avatarUrl = usr.RealAvatarUrl(2048);
 
-        await ctx.Channel.EmbedAsync(
+        await EmbedAsync(
             _eb.Create()
                 .WithOkColor()
                 .AddField("Username", usr.ToString())
@@ -536,7 +536,7 @@ public partial class Searches : NadekoModule<SearchesService>
         else
         {
             var v = obj.Verses[0];
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                 .WithOkColor()
                 .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
                 .WithDescription(v.Text));

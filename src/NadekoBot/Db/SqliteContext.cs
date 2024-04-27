@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Nadeko.Bot.Db;
+namespace NadekoBot.Db;
 
 public sealed class SqliteContext : NadekoContext
 {

@@ -167,7 +167,7 @@ public partial class Gambling
 
 
             if (msg is null)
-                msg = await ctx.Channel.EmbedAsync(embed);
+                msg = await EmbedAsync(embed);
             else
                 await msg.ModifyAsync(x => x.Embed = embed.Build());
         }

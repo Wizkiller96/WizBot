@@ -1,5 +1,4 @@
 ﻿using System.Threading.Channels;
-using Serilog;
 
 namespace Nadeko.Common;
 

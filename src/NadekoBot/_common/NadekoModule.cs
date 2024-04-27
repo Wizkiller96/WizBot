@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using System.Globalization;
-using NadekoBot.Common;
 
 // ReSharper disable InconsistentNaming
 
@@ -48,15 +47,18 @@ public abstract class NadekoModule : ModuleBase
         string footer = null)
         => ctx.Channel.SendConfirmAsync(_eb, title, text, url, footer);
 
-    // 
+    // public Task<IUserMessage> SendAsync(SmartText text, NadekoInteraction inter = null, IUserMessage replyTo = null)
+        // => ctx.Channel.SendAsync(_eb, text, MsgType.Ok, inter, replyTo: replyTo);
+    
+    // colored
     public Task<IUserMessage> SendErrorAsync(string text, NadekoInteraction inter = null)
-        => ctx.Channel.SendAsync(_eb, text, MsgType.Error, inter);
+        => ctx.Channel.SendAsync(_eb, text, MsgType.Error, inter, replyTo: ctx.Message);
 
     public Task<IUserMessage> SendConfirmAsync(string text, NadekoInteraction inter = null)
-        => ctx.Channel.SendAsync(_eb, text, MsgType.Ok, inter);
+        => ctx.Channel.SendAsync(_eb, text, MsgType.Ok, inter, replyTo: ctx.Message);
 
     public Task<IUserMessage> SendPendingAsync(string text, NadekoInteraction inter = null)
-        => ctx.Channel.SendAsync(_eb, text, MsgType.Pending, inter);
+        => ctx.Channel.SendAsync(_eb, text, MsgType.Pending, inter, replyTo: ctx.Message);
 
 
     // localized normal
@@ -138,6 +140,9 @@ public abstract class NadekoModule : ModuleBase
             return Task.CompletedTask;
         }
     }
+    
+    public Task<IUserMessage> EmbedAsync(IEmbedBuilder embed, string msg = "", IReadOnlyCollection<IEmbedBuilder> embeds = null)
+        => ctx.Channel.EmbedAsync(embed, msg, replyTo: ctx.Message);
 }
 
 public abstract class NadekoModule<TService> : NadekoModule

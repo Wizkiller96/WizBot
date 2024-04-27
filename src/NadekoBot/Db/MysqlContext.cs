@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db.Models;
 
-namespace Nadeko.Bot.Db;
+namespace NadekoBot.Db;
 
 public sealed class MysqlContext : NadekoContext
 {

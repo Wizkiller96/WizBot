@@ -1,22 +1,10 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Nadeko.Bot.Db;
+using NadekoBot.Db;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
-using NadekoBot.Db;
-using NadekoBot.Modules.Administration;
-using NadekoBot.Modules.Gambling;
-using NadekoBot.Modules.Help;
-using NadekoBot.Modules.Music;
-using NadekoBot.Modules.NadekoExpressions;
-using NadekoBot.Modules.Patronage;
-using NadekoBot.Modules.Permissions;
-using NadekoBot.Modules.Searches;
-using NadekoBot.Modules.Utility;
-using NadekoBot.Modules.Xp;
-
-using Nadeko.Bot.Db.Models;
+using NadekoBot.Db.Models;
 using Ninject;
 using Ninject.Planning;
 using System.Collections.Immutable;
@@ -98,12 +86,6 @@ public sealed class Bot : IBot
         _loadedAssemblies = new[]
         {
             typeof(Bot).Assembly, // bot
-            typeof(Creds).Assembly, // bot.common
-
-            // modules
-            typeof(NadekoExpressions).Assembly, typeof(Administration).Assembly, typeof(Gambling).Assembly,
-            typeof(Help).Assembly, typeof(Music).Assembly, typeof(Patronage).Assembly, typeof(Permissions).Assembly,
-            typeof(Searches).Assembly, typeof(Utility).Assembly, typeof(Xp).Assembly,
         };
     }
 
@@ -145,6 +127,7 @@ public sealed class Bot : IBot
         svcs.AddSingleton<IConfigSeria, YamlSeria>();
         svcs.AddSingleton<IMemoryCache, MemoryCache>(new MemoryCache(new MemoryCacheOptions()));
         svcs.AddSingleton<IBehaviorHandler, BehaviorHandler>();
+        svcs.AddSingleton<ILocalization, Localization>();
 
 
         foreach (var a in _loadedAssemblies)

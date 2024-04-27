@@ -31,7 +31,7 @@ public partial class Searches
                                    .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{XKCD_URL}/{comic.Num}")
                                    .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
                                    .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
-                    var sent = await ctx.Channel.EmbedAsync(embed);
+                    var sent = await EmbedAsync(embed);
 
                     await Task.Delay(10000);
 
@@ -67,7 +67,7 @@ public partial class Searches
                                .AddField(GetText(strs.comic_number), comic.Num.ToString(), true)
                                .AddField(GetText(strs.date), $"{comic.Month}/{comic.Year}", true);
 
-                var sent = await ctx.Channel.EmbedAsync(embed);
+                var sent = await EmbedAsync(embed);
 
                 await Task.Delay(10000);
 

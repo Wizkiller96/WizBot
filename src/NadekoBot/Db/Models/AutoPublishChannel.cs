@@ -1,5 +1,3 @@
-using Nadeko.Bot.Db.Models;
-
 namespace NadekoBot.Db.Models;
 
 public class AutoPublishChannel : DbEntity

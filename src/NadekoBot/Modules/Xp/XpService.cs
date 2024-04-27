@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
-using Nadeko.Bot.Db.Models;
 using Newtonsoft.Json;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

@@ -8,7 +8,6 @@ using NadekoBot.Modules.Gambling.Common;
 using NadekoBot.Modules.Gambling.Services;
 using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Services.Currency;
-using Nadeko.Bot.Db.Models;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
@@ -103,7 +102,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         eb.WithDescription(str);
 
-        await ctx.Channel.EmbedAsync(eb);
+        await EmbedAsync(eb);
     }
 
     [Cmd]
@@ -131,7 +130,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             .WithOkColor();
 
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     private static readonly FeatureLimitKey _timelyKey = new FeatureLimitKey()
@@ -332,7 +331,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         embed.WithDescription(sb.ToString());
         embed.WithFooter(GetText(strs.page(page + 1)));
-        await ctx.Channel.EmbedAsync(embed);
+        await EmbedAsync(embed);
     }
 
     private static string GetFormattedCurtrDate(CurrencyTransaction ct)
@@ -375,7 +374,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         eb.WithFooter(GetFormattedCurtrDate(tr));
 
-        await ctx.Channel.EmbedAsync(eb);
+        await EmbedAsync(eb);
     }
 
     private string GetHumanReadableTransaction(string type, string subType, ulong? maybeUserId)

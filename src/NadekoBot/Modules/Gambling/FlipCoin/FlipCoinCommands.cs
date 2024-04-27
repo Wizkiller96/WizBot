@@ -130,7 +130,7 @@ public partial class Gambling
                 str = Format.Bold(GetText(strs.better_luck));
             }
 
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await EmbedAsync(_eb.Create()
                 .WithAuthor(ctx.User)
                                             .WithDescription(str)
                                             .WithOkColor()

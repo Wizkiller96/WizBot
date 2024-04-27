@@ -92,7 +92,7 @@ public partial class Searches
                         // .AddField("Change 200d", $"{sign200}{change200}", true)
                         .WithFooter(stock.Exchange);
             
-            var message = await ctx.Channel.EmbedAsync(eb);
+            var message = await EmbedAsync(eb);
             await using var imageData = await stockImageTask;
             if (imageData is null)
                 return;

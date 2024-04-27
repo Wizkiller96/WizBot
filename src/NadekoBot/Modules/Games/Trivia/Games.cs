@@ -171,7 +171,7 @@ public partial class Games
                 if (Uri.IsWellFormedUriString(question.ImageUrl, UriKind.Absolute))
                     questionEmbed.WithImageUrl(question.ImageUrl);
 
-                questionMessage = await ctx.Channel.EmbedAsync(questionEmbed);
+                questionMessage = await EmbedAsync(questionEmbed);
             }
             catch (HttpException ex) when (ex.HttpCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden
                                                or HttpStatusCode.BadRequest)
@@ -194,7 +194,7 @@ public partial class Games
                 if (Uri.IsWellFormedUriString(question.AnswerImageUrl, UriKind.Absolute))
                     embed.WithImageUrl(question.AnswerImageUrl);
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
             catch
             {
@@ -218,7 +218,7 @@ public partial class Games
         {
             try
             {
-                await ctx.Channel.EmbedAsync(_eb.Create(ctx)
+                await EmbedAsync(_eb.Create(ctx)
                     .WithOkColor()
                     .WithAuthor(GetText(strs.trivia_ended))
                     .WithTitle(GetText(strs.leaderboard))
@@ -252,7 +252,7 @@ public partial class Games
 
                 if (isWin)
                 {
-                    await ctx.Channel.EmbedAsync(embed);
+                    await EmbedAsync(embed);
 
                     var reward = _gamesConfig.Data.Trivia.CurrencyReward;
                     if (reward > 0)
@@ -264,7 +264,7 @@ public partial class Games
                 embed.WithDescription(GetText(strs.trivia_guess(user.Name,
                     Format.Bold(question.Answer))));
 
-                await ctx.Channel.EmbedAsync(embed);
+                await EmbedAsync(embed);
             }
             catch
             {

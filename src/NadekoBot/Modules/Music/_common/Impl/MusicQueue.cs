@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-
-namespace NadekoBot.Modules.Music;
+﻿namespace NadekoBot.Modules.Music;
 
 public sealed partial class MusicQueue
 {

@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using NadekoBot.Modules.Games.Common;
 using NadekoBot.Modules.Games.Services;
 
 namespace NadekoBot.Modules.Games;
@@ -39,7 +38,7 @@ public partial class Games : NadekoModule<GamesService>
             return;
 
         var res = _service.GetEightballResponse(ctx.User.Id, question);
-        await ctx.Channel.EmbedAsync(_eb.Create()
+        await EmbedAsync(_eb.Create()
             .WithOkColor()
             .WithDescription(ctx.User.ToString())
             .AddField("❓ " + GetText(strs.question), question)

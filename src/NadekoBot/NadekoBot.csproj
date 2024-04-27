@@ -108,7 +108,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ayu\Ayu.Discord.Voice\Ayu.Discord.Voice.csproj" />
+        <ProjectReference Include="..\ayu\NadekoBot.Voice\NadekoBot.Voice.csproj" />
         <ProjectReference Include="..\Nadeko.Medusa\Nadeko.Medusa.csproj" />
 
         <ProjectReference Include="..\NadekoBot.Generators\NadekoBot.Generators.csproj" OutputItemType="Analyzer" />
@@ -133,6 +133,7 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="data\medusae\" />
+      <Folder Include="_common\Extensions\" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">

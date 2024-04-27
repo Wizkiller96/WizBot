@@ -49,7 +49,7 @@ public partial class Patronage : NadekoModule
     //
     //     var eb = _eb.Create(ctx);
     //
-    //     await ctx.Channel.EmbedAsync(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
+    //     await EmbedAsync(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
     //                                    .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
     //                                    .AddField("Amount", $"**{patron.Amount / 100.0f:N1}$**", true)
     //                                    .AddField("Until", TimestampTag.FromDateTime(patron.ValidThru.AddDays(1))));
