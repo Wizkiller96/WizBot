@@ -15,6 +15,6 @@
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Version)' == '' ">
-        <Version>6.0.0</Version>
+        <Version>9.0.0</Version>
     </PropertyGroup>
 </Project>

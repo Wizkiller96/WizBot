@@ -1,7 +1,6 @@
 ﻿using Discord;
-using Nadeko.Snake;
 
-namespace NadekoBot;
+namespace NadekoBot.Medusa;
 
 public static class MedusaExtensions
 {

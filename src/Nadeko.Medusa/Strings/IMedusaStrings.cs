@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 ///     Defines methods to retrieve and reload medusa strings

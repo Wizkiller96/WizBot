@@ -1,8 +1,8 @@
-﻿using Nadeko.Snake;
+﻿using NadekoBot.Medusa;
 using Ninject.Modules;
 using System.Collections.Immutable;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 public sealed record ResolvedMedusa(
     WeakReference<MedusaAssemblyLoadContext> LoadContext,

@@ -1,4 +1,4 @@
-﻿using Nadeko.Snake;
+﻿using NadekoBot.Medusa;
 
 public sealed class ParamParserAdapter<T> : TypeReader
 {

@@ -2,7 +2,7 @@
 using Serilog;
 using YamlDotNet.Serialization;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 ///     Loads strings from the shortcut or localizable path

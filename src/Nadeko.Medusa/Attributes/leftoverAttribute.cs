@@ -1,4 +1,4 @@
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Marks the parameter to take 

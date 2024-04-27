@@ -1,5 +1,4 @@
-﻿using Nadeko.Snake;
-using System.Reflection;
+﻿using System.Reflection;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Activation.Caching;
@@ -7,7 +6,7 @@ using Ninject.Modules;
 using Ninject.Planning;
 using System.Text.Json;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 public sealed class MedusaNinjectModule : NinjectModule
 {

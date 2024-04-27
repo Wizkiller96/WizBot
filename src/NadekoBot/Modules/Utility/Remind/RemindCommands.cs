@@ -3,6 +3,7 @@ using Humanizer.Localisation;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Db.Models;
+using System.Resources;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -43,7 +44,7 @@ public partial class Utility
                 await ReplyErrorLocalizedAsync(strs.remind_invalid);
                 return;
             }
-
+            
             ulong target;
             target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
             if (!await RemindInternal(target,

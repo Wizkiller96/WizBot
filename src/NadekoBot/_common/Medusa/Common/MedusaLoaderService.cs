@@ -10,9 +10,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Nadeko.Snake;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 // ReSharper disable RedundantAssignment
 public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, INService

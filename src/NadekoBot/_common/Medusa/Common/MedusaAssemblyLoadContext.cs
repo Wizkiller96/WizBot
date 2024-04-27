@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 public class MedusaAssemblyLoadContext : AssemblyLoadContext
 {

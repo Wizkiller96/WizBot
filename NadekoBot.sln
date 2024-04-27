@@ -19,7 +19,7 @@ EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NadekoBot", "src\NadekoBot\NadekoBot.csproj", "{45EC1473-C678-4857-A544-07DFE0D0B478}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NadekoBot.Voice", "src\ayu\NadekoBot.Voice\NadekoBot.Voice.csproj", "{2F4CF6D6-0C2F-4944-B204-9508CDA53195}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NadekoBot.Voice", "src\NadekoBot.Voice\NadekoBot.Voice.csproj", "{2F4CF6D6-0C2F-4944-B204-9508CDA53195}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NadekoBot.Tests", "src\NadekoBot.Tests\NadekoBot.Tests.csproj", "{DB448DD4-C97F-40E9-8BD3-F605FF1FF833}"
 EndProject

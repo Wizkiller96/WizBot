@@ -1,6 +1,6 @@
 ﻿using NadekoBot.Common.Configs;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 public sealed class MedusaConfigService : ConfigServiceBase<MedusaConfig>, IMedusaConfigService
 {

@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using Nadeko.Snake;
+﻿using NadekoBot.Medusa;
 
 [DIIgnore]
 public sealed class BehaviorAdapter : ICustomBehavior

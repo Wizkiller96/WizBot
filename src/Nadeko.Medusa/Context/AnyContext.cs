@@ -1,7 +1,7 @@
 ﻿using Discord;
 using NadekoBot;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Commands which take this class as a first parameter can be executed in both DMs and Servers 

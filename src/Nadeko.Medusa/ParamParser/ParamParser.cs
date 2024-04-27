@@ -1,4 +1,4 @@
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Overridden to implement parsers for custom types 

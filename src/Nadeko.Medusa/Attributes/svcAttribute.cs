@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Snake;
+﻿namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Marks the class as a service which can be used within the same Medusa

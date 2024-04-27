@@ -1,8 +1,7 @@
-﻿using Nadeko.Snake;
+﻿using NadekoBot.Medusa;
 using System.Reflection;
-using CommandStrings = Nadeko.Snake.CommandStrings;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 public sealed class SnekCommandData
 {

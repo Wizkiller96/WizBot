@@ -94,8 +94,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         => image.Mutate(ctx =>
         {
             foreach (var data in drawData)
-                DrawLineExtensions.DrawLines(ctx,
-                    data.IsGreen
+                ctx.DrawLines(data.IsGreen
                         ? _greenBrush
                         : _redBrush,
                     1,
@@ -104,8 +103,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
 
 
             foreach (var data in drawData)
-                FillRectangleExtensions.Fill(ctx,
-                    data.IsGreen
+                ctx.Fill(data.IsGreen
                         ? _greenBrush
                         : _redBrush,
                     data.BodyRect);

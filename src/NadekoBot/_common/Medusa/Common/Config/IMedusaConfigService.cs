@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Medusa;
+﻿namespace NadekoBot.Medusa;
 
 public interface IMedusaConfigService
 {

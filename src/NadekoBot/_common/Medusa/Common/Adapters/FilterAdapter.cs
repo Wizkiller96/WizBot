@@ -1,4 +1,4 @@
-﻿using Nadeko.Snake;
+﻿using NadekoBot.Medusa;
 
 namespace Nadeko.Medusa.Adapters;
 

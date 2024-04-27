@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Commands which take this type as the first parameter can only be executed in DMs

@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Snake;
+﻿namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Marks services in command arguments for injection.

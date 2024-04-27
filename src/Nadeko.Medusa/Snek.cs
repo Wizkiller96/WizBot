@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// The base class which will be loaded as a module into NadekoBot

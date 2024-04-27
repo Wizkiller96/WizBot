@@ -1,4 +1,4 @@
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 ///     Implemented by classes which provide localized strings in their own ways

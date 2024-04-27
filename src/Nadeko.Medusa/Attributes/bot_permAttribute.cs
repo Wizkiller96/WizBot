@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public sealed class bot_permAttribute : MedusaPermAttribute

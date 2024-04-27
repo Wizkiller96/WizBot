@@ -1,6 +1,6 @@
 using YamlDotNet.Serialization;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 public readonly struct CommandStrings
 {

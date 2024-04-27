@@ -2,7 +2,7 @@
 using Cloneable;
 using NadekoBot.Common.Yml;
 
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 [Cloneable]
 public sealed partial class MedusaConfig : ICloneable<MedusaConfig>

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Serilog;
 
-namespace Nadeko.Snake;
+namespace NadekoBot.Medusa;
 
 public class MedusaStrings : IMedusaStrings
 {

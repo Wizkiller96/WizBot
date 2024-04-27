@@ -28,7 +28,7 @@ public class YamlSeria : IConfigSeria
             me =>
             {
                 var str = me.Groups["code"].Value;
-                var newString = YamlHelper.UnescapeUnicodeCodePoint(str);
+                var newString = str.UnescapeUnicodeCodePoint();
                 return newString;
             });
         return output;

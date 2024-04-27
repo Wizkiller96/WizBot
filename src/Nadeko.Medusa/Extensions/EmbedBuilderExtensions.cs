@@ -1,4 +1,4 @@
-﻿namespace NadekoBot;
+﻿namespace NadekoBot.Medusa;
 
 public static class EmbedBuilderExtensions
 {

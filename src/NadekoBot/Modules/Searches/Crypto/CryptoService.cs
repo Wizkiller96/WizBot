@@ -118,7 +118,7 @@ public class CryptoService : INService
 
         var nearest = cryptos
                       .Select(elem => (Elem: elem,
-                          Distance: StringExtensions.LevenshteinDistance(elem.Name.ToUpperInvariant(), name)))
+                          Distance: elem.Name.ToUpperInvariant().LevenshteinDistance(name)))
                       .OrderBy(x => x.Distance)
                       .FirstOrDefault(x => x.Distance <= 2);
 

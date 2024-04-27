@@ -86,7 +86,7 @@ public abstract class NadekoModule : ModuleBase
         embed.WithPendingColor()
             .WithFooter("yes/no");
 
-        var msg = await MessageChannelExtensions.EmbedAsync(ctx.Channel, embed);
+        var msg = await ctx.Channel.EmbedAsync(embed);
         try
         {
             var input = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);

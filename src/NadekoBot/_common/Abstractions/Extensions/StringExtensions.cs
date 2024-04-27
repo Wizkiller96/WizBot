@@ -131,7 +131,7 @@ public static class StringExtensions
             me =>
             {
                 var str = me.Groups["code"].Value;
-                var newString = YamlHelper.UnescapeUnicodeCodePoint(str);
+                var newString = str.UnescapeUnicodeCodePoint();
                 return newString;
             });
 }

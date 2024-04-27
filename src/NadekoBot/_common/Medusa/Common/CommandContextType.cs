@@ -1,4 +1,4 @@
-namespace Nadeko.Medusa;
+namespace NadekoBot.Medusa;
 
 /// <summary>
 /// Enum specifying in which context the command can be executed
