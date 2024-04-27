@@ -20,9 +20,8 @@ namespace NadekoBot.VotesApi
         public AuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
             IConfiguration conf)
-            : base(options, logger, encoder, clock)
+            : base(options, logger, encoder)
             => _conf = conf;
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
