@@ -3,8 +3,7 @@
 src/NadekoBot/data/last_known_version.txt
 
 # medusa stuff
-!src/NadekoBot/data/medusae/medusa.yml
-src/NadekoBot/data/medusae/**
+src/NadekoBot/data/medusae/
 
 # other
 
