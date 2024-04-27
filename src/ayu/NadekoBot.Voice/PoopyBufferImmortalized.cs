@@ -4,7 +4,7 @@ using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ayu.Discord.Voice
+namespace NadekoBot.Voice
 {
     public sealed class PoopyBufferImmortalized : ISongBuffer
     {

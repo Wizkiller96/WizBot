@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ayu.Discord.Voice.Models
+namespace NadekoBot.Voice.Models
 {
     public sealed class VoiceResume
     {

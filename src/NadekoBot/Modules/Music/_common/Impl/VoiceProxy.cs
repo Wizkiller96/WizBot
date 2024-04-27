@@ -1,6 +1,6 @@
 #nullable disable
-using Ayu.Discord.Voice;
-using Ayu.Discord.Voice.Models;
+using NadekoBot.Voice;
+using NadekoBot.Voice.Models;
 
 namespace NadekoBot.Modules.Music;
 

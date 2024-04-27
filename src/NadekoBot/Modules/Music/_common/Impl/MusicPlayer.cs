@@ -1,4 +1,4 @@
-using Ayu.Discord.Voice;
+using NadekoBot.Voice;
 using NadekoBot.Db.Models;
 using System.ComponentModel;
 using System.Diagnostics;

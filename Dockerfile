@@ -7,7 +7,7 @@ COPY src/Nadeko.Common/*.csproj src/Nadeko.Common/
 COPY src/NadekoBot/*.csproj src/NadekoBot/
 COPY src/NadekoBot.Coordinator/*.csproj src/NadekoBot.Coordinator/
 COPY src/NadekoBot.Generators/*.csproj src/NadekoBot.Generators/
-COPY src/ayu/Ayu.Discord.Voice/*.csproj src/ayu/Ayu.Discord.Voice/
+COPY src/ayu/NadekoBot.Voice/*.csproj src/ayu/NadekoBot.Voice/
 COPY NuGet.Config ./
 RUN dotnet restore src/NadekoBot/
 

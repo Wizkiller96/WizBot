@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Ayu.Discord.Voice.Models
+namespace NadekoBot.Voice.Models
 {
     public sealed class VoiceSpeaking
     {

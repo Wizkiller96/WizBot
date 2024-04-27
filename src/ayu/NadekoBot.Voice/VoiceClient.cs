@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 
-namespace Ayu.Discord.Voice
+namespace NadekoBot.Voice
 {
     public sealed class VoiceClient : IDisposable
     {

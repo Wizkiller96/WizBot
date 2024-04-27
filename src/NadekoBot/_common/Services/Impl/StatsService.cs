@@ -7,7 +7,8 @@ namespace NadekoBot.Services;
 
 public sealed class StatsService : IStatsService, IReadyExecutor, INService
 {
-    public const string BOT_VERSION = "5.0.0-beta1";
+    public static string BotVersion
+        => typeof(Bot).Assembly.GetName().Version?.ToString(3) ?? "Custom";
 
     public string Author
         => "Kwoth#2452";

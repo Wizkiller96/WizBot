@@ -1,4 +1,4 @@
-﻿using Ayu.Discord.Voice.Models;
+﻿using NadekoBot.Voice.Models;
 using Discord.Models.Gateway;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Ayu.Discord.Gateway;
 using Newtonsoft.Json;
 
-namespace Ayu.Discord.Voice
+namespace NadekoBot.Voice
 {
     public class VoiceGateway
     {

@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using Ayu.Discord.Voice;
+using NadekoBot.Voice;
 using System.Reflection;
 
 namespace NadekoBot.Modules.Music.Services;

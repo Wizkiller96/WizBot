@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Ayu.Discord.Voice
+namespace NadekoBot.Voice
 {
     internal static unsafe class Sodium
     {
