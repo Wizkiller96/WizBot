@@ -113,6 +113,7 @@ public sealed class DoAsUserMessage : IUserMessage
 
     public MessageFlags? Flags => _msg.Flags;
 
+    [Obsolete("Obsolete in favor of InteractionMetadata")]
     public IMessageInteraction Interaction => _msg.Interaction;
     public MessageRoleSubscriptionData RoleSubscriptionData  => _msg.RoleSubscriptionData;
 
@@ -146,5 +147,7 @@ public sealed class DoAsUserMessage : IUserMessage
     public MessageResolvedData ResolvedData => _msg.ResolvedData;
     
     public IUserMessage ReferencedMessage => _msg.ReferencedMessage;
-    public IMessageInteractionMetadata InteractionMetadata { get; }
+    
+    public IMessageInteractionMetadata InteractionMetadata
+        => _msg.InteractionMetadata;
 }
