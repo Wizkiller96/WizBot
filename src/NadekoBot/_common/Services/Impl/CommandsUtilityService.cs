@@ -28,7 +28,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         _medusae = medusae;
     }
 
-    public IEmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
+    public EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild)
     {
         var prefix = _ch.GetPrefix(guild);
 
@@ -39,17 +39,19 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         var culture = _loc.GetCultureInfo(guild);
 
-        var em = _eb.Create()
-            .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
+        var em = new EmbedBuilder()
+                    .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
         var reqs = GetCommandRequirements(com, (GuildPermission?)overrides);
         if (reqs.Any())
             em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
-        Extensions.Extensions.WithOkColor(em.AddField(_strings.GetText(strs.usage),
-                    string.Join("\n", com.RealRemarksArr(_strings, _medusae, culture, prefix).Map(arg => Format.Code(arg))))
-                .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild)));
+        em
+            .WithOkColor()
+            .AddField(_strings.GetText(strs.usage),
+                string.Join("\n", com.RealRemarksArr(_strings, _medusae, culture, prefix).Map(arg => Format.Code(arg))))
+            .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild));
 
         var opt = GetNadekoOptionType(com.Attributes);
         if (opt is not null)
@@ -72,31 +74,31 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
     public static List<string> GetCommandOptionHelpList(Type opt)
     {
         var strs = opt.GetProperties()
-            .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
-            .Where(x => x is not null)
-            .Cast<OptionAttribute>()
-            .Select(x =>
-            {
-                var toReturn = $"`--{x.LongName}`";
+                      .Select(x => x.GetCustomAttributes(true).FirstOrDefault(a => a is OptionAttribute))
+                      .Where(x => x is not null)
+                      .Cast<OptionAttribute>()
+                      .Select(x =>
+                      {
+                          var toReturn = $"`--{x.LongName}`";
 
-                if (!string.IsNullOrWhiteSpace(x.ShortName))
-                    toReturn += $" (`-{x.ShortName}`)";
+                          if (!string.IsNullOrWhiteSpace(x.ShortName))
+                              toReturn += $" (`-{x.ShortName}`)";
 
-                toReturn += $"   {x.HelpText}  ";
-                return toReturn;
-            })
-            .ToList();
+                          toReturn += $"   {x.HelpText}  ";
+                          return toReturn;
+                      })
+                      .ToList();
 
         return strs;
     }
 
     public static Type? GetNadekoOptionType(IEnumerable<Attribute> attributes)
         => attributes
-            .Select(a => a.GetType())
-            .Where(a => a.IsGenericType
-                        && a.GetGenericTypeDefinition() == typeof(NadekoOptionsAttribute<>))
-            .Select(a => a.GenericTypeArguments[0])
-            .FirstOrDefault();
+           .Select(a => a.GetType())
+           .Where(a => a.IsGenericType
+                       && a.GetGenericTypeDefinition() == typeof(NadekoOptionsAttribute<>))
+           .Select(a => a.GenericTypeArguments[0])
+           .FirstOrDefault();
 
     public static string[] GetCommandRequirements(CommandInfo cmd, GuildPerm? overrides = null)
     {
@@ -107,38 +109,38 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         if (cmd.Preconditions.Any(x => x is NoPublicBotAttribute)
             || cmd.Module
-                .Preconditions
-                .Any(x => x is NoPublicBotAttribute)
+                  .Preconditions
+                  .Any(x => x is NoPublicBotAttribute)
             || cmd.Module.GetTopLevelModule()
-                .Preconditions
-                .Any(x => x is NoPublicBotAttribute))
+                  .Preconditions
+                  .Any(x => x is NoPublicBotAttribute))
             toReturn.Add("No Public Bot");
 
         if (cmd.Preconditions
-                .Any(x => x is OnlyPublicBotAttribute)
+               .Any(x => x is OnlyPublicBotAttribute)
             || cmd.Module
-                .Preconditions
-                .Any(x => x is OnlyPublicBotAttribute)
+                  .Preconditions
+                  .Any(x => x is OnlyPublicBotAttribute)
             || cmd.Module.GetTopLevelModule()
-                .Preconditions
-                .Any(x => x is OnlyPublicBotAttribute))
+                  .Preconditions
+                  .Any(x => x is OnlyPublicBotAttribute))
             toReturn.Add("Only Public Bot");
 
         var userPermString = cmd.Preconditions
-            .Where(ca => ca is UserPermAttribute)
-            .Cast<UserPermAttribute>()
-            .Select(userPerm =>
-            {
-                if (userPerm.ChannelPermission is { } cPerm)
-                    return GetPreconditionString(cPerm);
+                                .Where(ca => ca is UserPermAttribute)
+                                .Cast<UserPermAttribute>()
+                                .Select(userPerm =>
+                                {
+                                    if (userPerm.ChannelPermission is { } cPerm)
+                                        return GetPreconditionString(cPerm);
 
-                if (userPerm.GuildPermission is { } gPerm)
-                    return GetPreconditionString(gPerm);
+                                    if (userPerm.GuildPermission is { } gPerm)
+                                        return GetPreconditionString(gPerm);
 
-                return string.Empty;
-            })
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Join('\n');
+                                    return string.Empty;
+                                })
+                                .Where(x => !string.IsNullOrWhiteSpace(x))
+                                .Join('\n');
 
         if (overrides is null)
         {
@@ -166,7 +168,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         => _strings.GetText(str, guild?.Id);
 }
 
-public interface ICommandsUtilityService 
+public interface ICommandsUtilityService
 {
-    IEmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild);
+    EmbedBuilder GetCommandHelp(CommandInfo com, IGuild guild);
 }

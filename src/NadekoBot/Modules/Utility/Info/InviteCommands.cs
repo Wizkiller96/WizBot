@@ -22,7 +22,7 @@ public partial class Utility
             var ch = (ITextChannel)ctx.Channel;
             var invite = await ch.CreateInviteAsync(opts.Expire, opts.MaxUses, opts.Temporary, opts.Unique);
 
-            await SendConfirmAsync($"{ctx.User.Mention} https://discord.gg/{invite.Code}");
+            await Response().Confirm($"{ctx.User.Mention} https://discord.gg/{invite.Code}").SendAsync();
         }
 
         [Cmd]
@@ -44,9 +44,9 @@ public partial class Utility
                     var invs = invites.Skip(cur * 9).Take(9).ToList();
 
                     if (!invs.Any())
-                        return _eb.Create().WithErrorColor().WithDescription(GetText(strs.no_invites));
+                        return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.no_invites));
 
-                    var embed = _eb.Create().WithOkColor();
+                    var embed = new EmbedBuilder().WithOkColor();
                     foreach (var inv in invites)
                     {
                         var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null

@@ -24,18 +24,18 @@ public partial class Gambling
         {
             var (opts, _) = OptionsParser.ParseFrom(new EventOptions(), options);
             if (!await _service.TryCreateEventAsync(ctx.Guild.Id, ctx.Channel.Id, ev, opts, GetEmbed))
-                await ReplyErrorLocalizedAsync(strs.start_event_fail);
+                await Response().Error(strs.start_event_fail).SendAsync();
         }
 
-        private IEmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
+        private EmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
             => type switch
             {
-                CurrencyEvent.Type.Reaction => _eb.Create()
+                CurrencyEvent.Type.Reaction => new EmbedBuilder()
                                                   .WithOkColor()
                                                   .WithTitle(GetText(strs.event_title(type.ToString())))
                                                   .WithDescription(GetReactionDescription(opts.Amount, currentPot))
                                                   .WithFooter(GetText(strs.event_duration_footer(opts.Hours))),
-                CurrencyEvent.Type.GameStatus => _eb.Create()
+                CurrencyEvent.Type.GameStatus => new EmbedBuilder()
                                                     .WithOkColor()
                                                     .WithTitle(GetText(strs.event_title(type.ToString())))
                                                     .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))

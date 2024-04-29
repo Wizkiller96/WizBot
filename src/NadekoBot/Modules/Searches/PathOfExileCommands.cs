@@ -121,7 +121,7 @@ public partial class Searches
 
             if (string.IsNullOrWhiteSpace(usr))
             {
-                await SendErrorAsync("Please provide an account name.");
+                await Response().Error("Please provide an account name.").SendAsync();
                 return;
             }
 
@@ -135,9 +135,9 @@ public partial class Searches
             }
             catch
             {
-                var embed = _eb.Create().WithDescription(GetText(strs.account_not_found)).WithErrorColor();
+                var embed = new EmbedBuilder().WithDescription(GetText(strs.account_not_found)).WithErrorColor();
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
 
@@ -147,7 +147,7 @@ public partial class Searches
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
-                    var embed = _eb.Create()
+                    var embed = new EmbedBuilder()
                                    .WithAuthor($"Characters on {usr}'s account",
                                        "https://web.poecdn.com/image/favicon/ogimage.png",
                                        $"{PROFILE_URL}{usr}")
@@ -190,13 +190,13 @@ public partial class Searches
             }
             catch
             {
-                var eembed = _eb.Create().WithDescription(GetText(strs.leagues_not_found)).WithErrorColor();
+                var eembed = new EmbedBuilder().WithDescription(GetText(strs.leagues_not_found)).WithErrorColor();
 
-                await EmbedAsync(eembed);
+                await Response().Embed(eembed).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithAuthor("Path of Exile Leagues",
                                "https://web.poecdn.com/image/favicon/ogimage.png",
                                "https://www.pathofexile.com")
@@ -215,7 +215,7 @@ public partial class Searches
 
             embed.WithDescription(sb.ToString());
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -226,13 +226,13 @@ public partial class Searches
         {
             if (string.IsNullOrWhiteSpace(leagueName))
             {
-                await SendErrorAsync("Please provide league name.");
+                await Response().Error("Please provide league name.").SendAsync();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(currencyName))
             {
-                await SendErrorAsync("Please provide currency name.");
+                await Response().Error("Please provide currency name.").SendAsync();
                 return;
             }
 
@@ -273,7 +273,7 @@ public partial class Searches
                         CultureInfo.InvariantCulture);
                 }
 
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithAuthor($"{leagueName} Currency Exchange",
                                    "https://web.poecdn.com/image/favicon/ogimage.png",
                                    "http://poe.ninja")
@@ -281,13 +281,13 @@ public partial class Searches
                                .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
                                .WithOkColor();
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
             }
             catch
             {
-                var embed = _eb.Create().WithDescription(GetText(strs.ninja_not_found)).WithErrorColor();
+                var embed = new EmbedBuilder().WithDescription(GetText(strs.ninja_not_found)).WithErrorColor();
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
             }
         }
 

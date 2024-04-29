@@ -16,7 +16,7 @@ public class ReactionEvent : ICurrencyEvent
     private readonly ICurrencyService _cs;
     private readonly long _amount;
 
-    private readonly Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> _embedFunc;
+    private readonly Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> _embedFunc;
     private readonly bool _isPotLimited;
     private readonly ITextChannel _channel;
     private readonly ConcurrentHashSet<ulong> _awardedUsers = new();
@@ -38,7 +38,7 @@ public class ReactionEvent : ICurrencyEvent
         ITextChannel ch,
         EventOptions opt,
         GamblingConfig config,
-        Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embedFunc)
+        Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
     {
         _client = client;
         _guild = g;
@@ -109,7 +109,7 @@ public class ReactionEvent : ICurrencyEvent
         _t.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
     }
 
-    private IEmbedBuilder GetEmbed(long pot)
+    private EmbedBuilder GetEmbed(long pot)
         => _embedFunc(CurrencyEvent.Type.Reaction, _opts, pot);
 
     private async Task OnMessageDeleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> cacheable)

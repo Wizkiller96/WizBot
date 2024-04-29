@@ -20,7 +20,7 @@ public partial class Gambling
         public async Task WaifuReset()
         {
             var price = _service.GetResetPrice(ctx.User);
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithTitle(GetText(strs.waifu_reset_confirm))
                            .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
 
@@ -29,11 +29,11 @@ public partial class Gambling
 
             if (await _service.TryReset(ctx.User))
             {
-                await ReplyConfirmLocalizedAsync(strs.waifu_reset);
+                await Response().Confirm(strs.waifu_reset).SendAsync();
                 return;
             }
 
-            await ReplyErrorLocalizedAsync(strs.waifu_reset_fail);
+            await Response().Error(strs.waifu_reset_fail).SendAsync();
         }
 
         [Cmd]
@@ -42,13 +42,13 @@ public partial class Gambling
         {
             if (amount < Config.Waifu.MinPrice)
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_isnt_cheap(Config.Waifu.MinPrice + CurrencySign));
+                await Response().Error(strs.waifu_isnt_cheap(Config.Waifu.MinPrice + CurrencySign)).SendAsync();
                 return;
             }
 
             if (target.Id == ctx.User.Id)
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_not_yourself);
+                await Response().Error(strs.waifu_not_yourself).SendAsync();
                 return;
             }
 
@@ -56,14 +56,16 @@ public partial class Gambling
 
             if (result == WaifuClaimResult.InsufficientAmount)
             {
-                await ReplyErrorLocalizedAsync(
-                    strs.waifu_not_enough(N((long)Math.Ceiling(w.Price * (isAffinity ? 0.88f : 1.1f)))));
+                await Response()
+                      .Error(
+                          strs.waifu_not_enough(N((long)Math.Ceiling(w.Price * (isAffinity ? 0.88f : 1.1f)))))
+                      .SendAsync();
                 return;
             }
 
             if (result == WaifuClaimResult.NotEnoughFunds)
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                 return;
             }
 
@@ -72,7 +74,7 @@ public partial class Gambling
                 msg += "\n" + GetText(strs.waifu_fulfilled(target, N(w.Price)));
             else
                 msg = " " + msg;
-            await SendConfirmAsync(ctx.User.Mention + msg);
+            await Response().Confirm(ctx.User.Mention + msg).SendAsync();
         }
 
         [Cmd]
@@ -82,13 +84,15 @@ public partial class Gambling
         {
             if (!await _service.WaifuTransfer(ctx.User, waifuId, newOwner))
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_transfer_fail);
+                await Response().Error(strs.waifu_transfer_fail).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.waifu_transfer_success(Format.Bold(waifuId.ToString()),
-                Format.Bold(ctx.User.ToString()),
-                Format.Bold(newOwner.ToString())));
+            await Response()
+                  .Confirm(strs.waifu_transfer_success(Format.Bold(waifuId.ToString()),
+                      Format.Bold(ctx.User.ToString()),
+                      Format.Bold(newOwner.ToString())))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -98,13 +102,15 @@ public partial class Gambling
         {
             if (!await _service.WaifuTransfer(ctx.User, waifu.Id, newOwner))
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_transfer_fail);
+                await Response().Error(strs.waifu_transfer_fail).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.waifu_transfer_success(Format.Bold(waifu.ToString()),
-                Format.Bold(ctx.User.ToString()),
-                Format.Bold(newOwner.ToString())));
+            await Response()
+                  .Confirm(strs.waifu_transfer_success(Format.Bold(waifu.ToString()),
+                      Format.Bold(ctx.User.ToString()),
+                      Format.Bold(newOwner.ToString())))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -114,7 +120,7 @@ public partial class Gambling
         {
             var waifuUserId = _service.GetWaifuUserId(ctx.User.Id, target);
             if (waifuUserId == default)
-                return ReplyErrorLocalizedAsync(strs.waifu_not_yours);
+                return Response().Error(strs.waifu_not_yours).SendAsync();
 
             return Divorce(waifuUserId);
         }
@@ -137,18 +143,22 @@ public partial class Gambling
 
             if (result == DivorceResult.SucessWithPenalty)
             {
-                await ReplyConfirmLocalizedAsync(strs.waifu_divorced_like(Format.Bold(w.Waifu.ToString()),
-                    N(amount)));
+                await Response()
+                      .Confirm(strs.waifu_divorced_like(Format.Bold(w.Waifu.ToString()),
+                          N(amount)))
+                      .SendAsync();
             }
             else if (result == DivorceResult.Success)
-                await ReplyConfirmLocalizedAsync(strs.waifu_divorced_notlike(N(amount)));
+                await Response().Confirm(strs.waifu_divorced_notlike(N(amount))).SendAsync();
             else if (result == DivorceResult.NotYourWife)
-                await ReplyErrorLocalizedAsync(strs.waifu_not_yours);
+                await Response().Error(strs.waifu_not_yours).SendAsync();
             else
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_recent_divorce(
-                    Format.Bold(((int)remaining?.TotalHours).ToString()),
-                    Format.Bold(remaining?.Minutes.ToString())));
+                await Response()
+                      .Error(strs.waifu_recent_divorce(
+                          Format.Bold(((int)remaining?.TotalHours).ToString()),
+                          Format.Bold(remaining?.Minutes.ToString())))
+                      .SendAsync();
             }
         }
 
@@ -158,7 +168,7 @@ public partial class Gambling
         {
             if (user?.Id == ctx.User.Id)
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_egomaniac);
+                await Response().Error(strs.waifu_egomaniac).SendAsync();
                 return;
             }
 
@@ -167,24 +177,28 @@ public partial class Gambling
             {
                 if (remaining is not null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.waifu_affinity_cooldown(
-                        Format.Bold(((int)remaining?.TotalHours).ToString()),
-                        Format.Bold(remaining?.Minutes.ToString())));
+                    await Response()
+                          .Error(strs.waifu_affinity_cooldown(
+                              Format.Bold(((int)remaining?.TotalHours).ToString()),
+                              Format.Bold(remaining?.Minutes.ToString())))
+                          .SendAsync();
                 }
                 else
-                    await ReplyErrorLocalizedAsync(strs.waifu_affinity_already);
+                    await Response().Error(strs.waifu_affinity_already).SendAsync();
 
                 return;
             }
 
             if (user is null)
-                await ReplyConfirmLocalizedAsync(strs.waifu_affinity_reset);
+                await Response().Confirm(strs.waifu_affinity_reset).SendAsync();
             else if (oldAff is null)
-                await ReplyConfirmLocalizedAsync(strs.waifu_affinity_set(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.waifu_affinity_set(Format.Bold(user.ToString()))).SendAsync();
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.waifu_affinity_changed(Format.Bold(oldAff.ToString()),
-                    Format.Bold(user.ToString())));
+                await Response()
+                      .Confirm(strs.waifu_affinity_changed(Format.Bold(oldAff.ToString()),
+                          Format.Bold(user.ToString())))
+                      .SendAsync();
             }
         }
 
@@ -204,11 +218,11 @@ public partial class Gambling
 
             if (waifus.Count == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.waifus_none);
+                await Response().Confirm(strs.waifus_none).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
+            var embed = new EmbedBuilder().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
 
             var i = 0;
             foreach (var w in waifus)
@@ -217,7 +231,7 @@ public partial class Gambling
                 embed.AddField("#" + ((page * 9) + j + 1) + " - " + N(w.Price), GetLbString(w));
             }
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private string GetLbString(WaifuLbResult w)
@@ -284,15 +298,15 @@ public partial class Gambling
 
             var fansList = await _service.GetFansNames(wi.WaifuId);
             var fansStr = fansList
-                .Shuffle()
-                .Take(30)
-                .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
-                .Join('\n');
+                          .Shuffle()
+                          .Take(30)
+                          .Select((x) => claimsNames.Contains(x) ? $"{x} 💞" : x)
+                          .Join('\n');
 
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(strs.waifu)
                                       + " "
@@ -312,7 +326,7 @@ public partial class Gambling
                                true)
                            .AddField(GetText(strs.gifts), itemsStr, true);
 
-            await ctx.Channel.EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -327,7 +341,7 @@ public partial class Gambling
             await ctx.SendPaginatedConfirmAsync(page,
                 cur =>
                 {
-                    var embed = _eb.Create().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
+                    var embed = new EmbedBuilder().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
 
                     waifuItems.OrderBy(x => x.Negative)
                               .ThenBy(x => x.Price)
@@ -357,7 +371,7 @@ public partial class Gambling
             var item = allItems.FirstOrDefault(x => x.Name.ToLowerInvariant() == itemName.ToLowerInvariant());
             if (item is null)
             {
-                await ReplyErrorLocalizedAsync(strs.waifu_gift_not_exist);
+                await Response().Error(strs.waifu_gift_not_exist).SendAsync();
                 return;
             }
 
@@ -365,11 +379,13 @@ public partial class Gambling
 
             if (sucess)
             {
-                await ReplyConfirmLocalizedAsync(strs.waifu_gift(Format.Bold(item + " " + item.ItemEmoji),
-                    Format.Bold(waifu.ToString())));
+                await Response()
+                      .Confirm(strs.waifu_gift(Format.Bold(item + " " + item.ItemEmoji),
+                          Format.Bold(waifu.ToString())))
+                      .SendAsync();
             }
             else
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
         }
     }
 }

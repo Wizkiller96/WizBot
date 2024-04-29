@@ -16,8 +16,8 @@ public partial class Utility
         {
             await _service.SetStreamRole(fromRole, addRole);
 
-            await ReplyConfirmLocalizedAsync(strs.stream_role_enabled(Format.Bold(fromRole.ToString()),
-                Format.Bold(addRole.ToString())));
+            await Response().Confirm(strs.stream_role_enabled(Format.Bold(fromRole.ToString()),
+                Format.Bold(addRole.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -27,7 +27,7 @@ public partial class Utility
         public async Task StreamRole()
         {
             await _service.StopStreamRole(ctx.Guild);
-            await ReplyConfirmLocalizedAsync(strs.stream_role_disabled);
+            await Response().Confirm(strs.stream_role_disabled).SendAsync();
         }
 
         [Cmd]
@@ -39,9 +39,9 @@ public partial class Utility
             var kw = await _service.SetKeyword(ctx.Guild, keyword);
 
             if (string.IsNullOrWhiteSpace(keyword))
-                await ReplyConfirmLocalizedAsync(strs.stream_role_kw_reset);
+                await Response().Confirm(strs.stream_role_kw_reset).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.stream_role_kw_set(Format.Bold(kw)));
+                await Response().Confirm(strs.stream_role_kw_set(Format.Bold(kw))).SendAsync();
         }
 
         [Cmd]
@@ -59,14 +59,14 @@ public partial class Utility
             if (action == AddRemove.Add)
             {
                 if (success)
-                    await ReplyConfirmLocalizedAsync(strs.stream_role_bl_add(Format.Bold(user.ToString())));
+                    await Response().Confirm(strs.stream_role_bl_add(Format.Bold(user.ToString()))).SendAsync();
                 else
-                    await ReplyConfirmLocalizedAsync(strs.stream_role_bl_add_fail(Format.Bold(user.ToString())));
+                    await Response().Confirm(strs.stream_role_bl_add_fail(Format.Bold(user.ToString()))).SendAsync();
             }
             else if (success)
-                await ReplyConfirmLocalizedAsync(strs.stream_role_bl_rem(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.stream_role_bl_rem(Format.Bold(user.ToString()))).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.stream_role_bl_rem_fail(Format.Bold(user.ToString())));
+                await Response().Error(strs.stream_role_bl_rem_fail(Format.Bold(user.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -84,14 +84,14 @@ public partial class Utility
             if (action == AddRemove.Add)
             {
                 if (success)
-                    await ReplyConfirmLocalizedAsync(strs.stream_role_wl_add(Format.Bold(user.ToString())));
+                    await Response().Confirm(strs.stream_role_wl_add(Format.Bold(user.ToString()))).SendAsync();
                 else
-                    await ReplyConfirmLocalizedAsync(strs.stream_role_wl_add_fail(Format.Bold(user.ToString())));
+                    await Response().Confirm(strs.stream_role_wl_add_fail(Format.Bold(user.ToString()))).SendAsync();
             }
             else if (success)
-                await ReplyConfirmLocalizedAsync(strs.stream_role_wl_rem(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.stream_role_wl_rem(Format.Bold(user.ToString()))).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.stream_role_wl_rem_fail(Format.Bold(user.ToString())));
+                await Response().Error(strs.stream_role_wl_rem_fail(Format.Bold(user.ToString()))).SendAsync();
         }
     }
 }

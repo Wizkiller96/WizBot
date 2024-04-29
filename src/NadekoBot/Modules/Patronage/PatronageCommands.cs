@@ -31,10 +31,10 @@ public partial class Patronage : NadekoModule
         _ = ctx.Channel.TriggerTypingAsync();
         var result = await _service.SendMessageToPatronsAsync(tierAndHigher, message);
 
-        await ReplyConfirmLocalizedAsync(strs.patron_msg_sent(
+        await Response().Confirm(strs.patron_msg_sent(
             Format.Code(tierAndHigher.ToString()),
             Format.Bold(result.Success.ToString()),
-            Format.Bold(result.Failed.ToString())));
+            Format.Bold(result.Failed.ToString()))).SendAsync();
     }
 
     // [OwnerOnly]
@@ -47,12 +47,12 @@ public partial class Patronage : NadekoModule
     //     
     //     var patron = _service.GiftPatronAsync(user, amount);
     //
-    //     var eb = _eb.Create(ctx);
+    //     var eb = new EmbedBuilder();
     //
-    //     await EmbedAsync(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
+    //     await Response().Embed(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
     //                                    .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
     //                                    .AddField("Amount", $"**{patron.Amount / 100.0f:N1}$**", true)
-    //                                    .AddField("Until", TimestampTag.FromDateTime(patron.ValidThru.AddDays(1))));
+    //                                    .AddField("Until", TimestampTag.FromDateTime(patron.ValidThru.AddDays(1)))).SendAsync();
     //     
     //
     // }
@@ -61,14 +61,14 @@ public partial class Patronage : NadekoModule
     {
         if (!_pConf.Data.IsEnabled)
         {
-            await ReplyErrorLocalizedAsync(strs.patron_not_enabled);
+            await Response().Error(strs.patron_not_enabled).SendAsync();
             return;
         }
 
         var patron = await _service.GetPatronAsync(user.Id);
         var quotaStats = await _service.GetUserQuotaStatistic(user.Id);
 
-        var eb = _eb.Create(ctx)
+        var eb = new EmbedBuilder()
             .WithAuthor(user)
             .WithTitle(GetText(strs.patron_info))
             .WithOkColor();
@@ -119,7 +119,7 @@ public partial class Patronage : NadekoModule
         }
         catch
         {
-            await ReplyErrorLocalizedAsync(strs.cant_dm);
+            await Response().Error(strs.cant_dm).SendAsync();
         }
     }
 

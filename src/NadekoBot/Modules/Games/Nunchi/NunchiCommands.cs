@@ -25,17 +25,16 @@ public partial class Games
             if ((nunchi = _service.NunchiGames.GetOrAdd(ctx.Guild.Id, newNunchi)) != newNunchi)
             {
                 // join it
+                // if you failed joining, that means game is running or just ended
                 if (!await nunchi.Join(ctx.User.Id, ctx.User.ToString()))
-                    // if you failed joining, that means game is running or just ended
-                    // await ReplyErrorLocalized("nunchi_already_started");
                     return;
 
-                await ReplyErrorLocalizedAsync(strs.nunchi_joined(nunchi.ParticipantCount));
+                await Response().Error(strs.nunchi_joined(nunchi.ParticipantCount)).SendAsync();
                 return;
             }
 
 
-            try { await ConfirmLocalizedAsync(strs.nunchi_created); }
+            try { await Response().Confirm(strs.nunchi_created).SendAsync(); }
             catch { }
 
             nunchi.OnGameEnded += NunchiOnGameEnded;
@@ -50,7 +49,7 @@ public partial class Games
             {
                 if (_service.NunchiGames.TryRemove(ctx.Guild.Id, out var game))
                     game.Dispose();
-                await ConfirmLocalizedAsync(strs.nunchi_failed_to_start);
+                await Response().Confirm(strs.nunchi_failed_to_start).SendAsync();
             }
 
             Task ClientMessageReceived(SocketMessage arg)
@@ -82,30 +81,34 @@ public partial class Games
                 }
 
                 if (arg2 is null)
-                    return ConfirmLocalizedAsync(strs.nunchi_ended_no_winner);
-                return ConfirmLocalizedAsync(strs.nunchi_ended(Format.Bold(arg2)));
+                    return Response().Confirm(strs.nunchi_ended_no_winner).SendAsync();
+                return Response().Confirm(strs.nunchi_ended(Format.Bold(arg2))).SendAsync();
             }
         }
 
         private Task Nunchi_OnRoundStarted(NunchiGame arg, int cur)
-            => ConfirmLocalizedAsync(strs.nunchi_round_started(Format.Bold(arg.ParticipantCount.ToString()),
-                Format.Bold(cur.ToString())));
+            => Response()
+               .Confirm(strs.nunchi_round_started(Format.Bold(arg.ParticipantCount.ToString()),
+                   Format.Bold(cur.ToString())))
+               .SendAsync();
 
         private Task Nunchi_OnUserGuessed(NunchiGame arg)
-            => ConfirmLocalizedAsync(strs.nunchi_next_number(Format.Bold(arg.CurrentNumber.ToString())));
+            => Response().Confirm(strs.nunchi_next_number(Format.Bold(arg.CurrentNumber.ToString()))).SendAsync();
 
         private Task Nunchi_OnRoundEnded(NunchiGame arg1, (ulong Id, string Name)? arg2)
         {
             if (arg2.HasValue)
-                return ConfirmLocalizedAsync(strs.nunchi_round_ended(Format.Bold(arg2.Value.Name)));
-            return ConfirmLocalizedAsync(strs.nunchi_round_ended_boot(
-                Format.Bold("\n"
-                            + string.Join("\n, ",
-                                arg1.Participants.Select(x
-                                    => x.Name))))); // this won't work if there are too many users
+                return Response().Confirm(strs.nunchi_round_ended(Format.Bold(arg2.Value.Name))).SendAsync();
+            return Response()
+                   .Confirm(strs.nunchi_round_ended_boot(
+                       Format.Bold("\n"
+                                   + string.Join("\n, ",
+                                       arg1.Participants.Select(x
+                                           => x.Name)))))
+                   .SendAsync(); // this won't work if there are too many users
         }
 
         private Task Nunchi_OnGameStarted(NunchiGame arg)
-            => ConfirmLocalizedAsync(strs.nunchi_started(Format.Bold(arg.ParticipantCount.ToString())));
+            => Response().Confirm(strs.nunchi_started(Format.Bold(arg.ParticipantCount.ToString()))).SendAsync();
     }
 }

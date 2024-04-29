@@ -16,7 +16,7 @@ public partial class Xp
         [UserPerm(GuildPerm.Administrator)]
         public async Task XpRewsReset()
         {
-            var promptEmbed = _eb.Create()
+            var promptEmbed = new EmbedBuilder()
                                  .WithPendingColor()
                                  .WithDescription(GetText(strs.xprewsreset_confirm));
             
@@ -69,7 +69,7 @@ public partial class Xp
             return Context.SendPaginatedConfirmAsync(page,
                 cur =>
                 {
-                    var embed = _eb.Create().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
+                    var embed = new EmbedBuilder().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
 
                     var localRewards = allRewards.Skip(cur * 9).Take(9).ToList();
 
@@ -94,7 +94,7 @@ public partial class Xp
         public async Task XpRoleReward(int level)
         {
             _service.ResetRoleReward(ctx.Guild.Id, level);
-            await ReplyConfirmLocalizedAsync(strs.xp_role_reward_cleared(level));
+            await Response().Confirm(strs.xp_role_reward_cleared(level)).SendAsync();
         }
 
         [Cmd]
@@ -109,11 +109,11 @@ public partial class Xp
 
             _service.SetRoleReward(ctx.Guild.Id, level, role.Id, action == AddRemove.Remove);
             if (action == AddRemove.Add)
-                await ReplyConfirmLocalizedAsync(strs.xp_role_reward_add_role(level, Format.Bold(role.ToString())));
+                await Response().Confirm(strs.xp_role_reward_add_role(level, Format.Bold(role.ToString()))).SendAsync();
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.xp_role_reward_remove_role(Format.Bold(level.ToString()),
-                    Format.Bold(role.ToString())));
+                await Response().Confirm(strs.xp_role_reward_remove_role(Format.Bold(level.ToString()),
+                    Format.Bold(role.ToString()))).SendAsync();
             }
         }
 
@@ -127,10 +127,10 @@ public partial class Xp
 
             _service.SetCurrencyReward(ctx.Guild.Id, level, amount);
             if (amount == 0)
-                await ReplyConfirmLocalizedAsync(strs.cur_reward_cleared(level, _cp.GetCurrencySign()));
+                await Response().Confirm(strs.cur_reward_cleared(level, _cp.GetCurrencySign())).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.cur_reward_added(level,
-                    Format.Bold(amount + _cp.GetCurrencySign())));
+                await Response().Confirm(strs.cur_reward_added(level,
+                    Format.Bold(amount + _cp.GetCurrencySign()))).SendAsync();
         }
     }
 }

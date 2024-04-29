@@ -50,13 +50,13 @@ public sealed partial class Music
                 playlists = uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
             }
 
-            var embed = _eb.Create(ctx)
+            var embed = new EmbedBuilder()
                            .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
                            .WithDescription(string.Join("\n",
                                playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
                            .WithOkColor();
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -85,9 +85,9 @@ public sealed partial class Music
             }
 
             if (!success)
-                await ReplyErrorLocalizedAsync(strs.playlist_delete_fail);
+                await Response().Error(strs.playlist_delete_fail).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.playlist_deleted);
+                await Response().Confirm(strs.playlist_deleted).SendAsync();
         }
 
         [Cmd]
@@ -111,7 +111,7 @@ public sealed partial class Music
                         mpl.Songs.Skip(cur * 20)
                            .Take(20)
                            .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                    return _eb.Create().WithTitle($"\"{mpl.Name}\" by {mpl.Author}").WithOkColor().WithDescription(str);
+                    return new EmbedBuilder().WithTitle($"\"{mpl.Name}\" by {mpl.Author}").WithOkColor().WithDescription(str);
                 },
                 mpl.Songs.Count,
                 20);
@@ -123,7 +123,7 @@ public sealed partial class Music
         {
             if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
             {
-                await ReplyErrorLocalizedAsync(strs.no_player);
+                await Response().Error(strs.no_player).SendAsync();
                 return;
             }
 
@@ -151,11 +151,11 @@ public sealed partial class Music
                 await uow.SaveChangesAsync();
             }
 
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                                 .WithOkColor()
                                 .WithTitle(GetText(strs.playlist_saved))
                                 .AddField(GetText(strs.name), name)
-                                .AddField(GetText(strs.id), playlist.Id.ToString()));
+                                .AddField(GetText(strs.id), playlist.Id.ToString())).SendAsync();
         }
 
         [Cmd]
@@ -171,7 +171,7 @@ public sealed partial class Music
 
                 if (voiceChannelId is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+                    await Response().Error(strs.must_be_in_voice).SendAsync();
                     return;
                 }
 
@@ -182,14 +182,14 @@ public sealed partial class Music
 
                 if (botUser.VoiceChannel?.Id != voiceChannelId)
                 {
-                    await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
+                    await Response().Error(strs.not_with_bot_in_voice).SendAsync();
                     return;
                 }
 
                 var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
                 if (mp is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.no_player);
+                    await Response().Error(strs.no_player).SendAsync();
                     return;
                 }
 
@@ -201,7 +201,7 @@ public sealed partial class Music
 
                 if (mpl is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.playlist_id_not_found);
+                    await Response().Error(strs.playlist_id_not_found).SendAsync();
                     return;
                 }
 

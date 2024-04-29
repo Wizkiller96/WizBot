@@ -42,8 +42,8 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         public async Task LanguageSet()
-            => await ReplyConfirmLocalizedAsync(strs.lang_set_show(Format.Bold(Culture.ToString()),
-                Format.Bold(Culture.NativeName)));
+            => await Response().Confirm(strs.lang_set_show(Format.Bold(Culture.ToString()),
+                Format.Bold(Culture.NativeName))).SendAsync();
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -68,11 +68,11 @@ public partial class Administration
                 var nativeName = ci.NativeName;
                 if (ci.Name == "ts-TS")
                     nativeName = _supportedLocales[ci.Name];
-                await ReplyConfirmLocalizedAsync(strs.lang_set(Format.Bold(ci.ToString()), Format.Bold(nativeName)));
+                await Response().Confirm(strs.lang_set(Format.Bold(ci.ToString()), Format.Bold(nativeName))).SendAsync();
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.lang_set_fail);
+                await Response().Error(strs.lang_set_fail).SendAsync();
             }
         }
 
@@ -80,7 +80,7 @@ public partial class Administration
         public async Task LanguageSetDefault()
         {
             var cul = _localization.DefaultCultureInfo;
-            await ReplyErrorLocalizedAsync(strs.lang_set_bot_show(cul, cul.NativeName));
+            await Response().Error(strs.lang_set_bot_show(cul, cul.NativeName)).SendAsync();
         }
 
         [Cmd]
@@ -101,23 +101,23 @@ public partial class Administration
                     _localization.SetDefaultCulture(ci);
                 }
 
-                await ReplyConfirmLocalizedAsync(strs.lang_set_bot(Format.Bold(ci.ToString()),
-                    Format.Bold(ci.NativeName)));
+                await Response().Confirm(strs.lang_set_bot(Format.Bold(ci.ToString()),
+                    Format.Bold(ci.NativeName))).SendAsync();
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.lang_set_fail);
+                await Response().Error(strs.lang_set_fail).SendAsync();
             }
         }
 
         [Cmd]
         public async Task LanguagesList()
-            => await EmbedAsync(_eb.Create()
+            => await Response().Embed(new EmbedBuilder()
                                                .WithOkColor()
                                                .WithTitle(GetText(strs.lang_list))
                                                .WithDescription(string.Join("\n",
                                                    _supportedLocales.Select(
-                                                       x => $"{Format.Code(x.Key),-10} => {x.Value}"))));
+                                                       x => $"{Format.Code(x.Key),-10} => {x.Value}")))).SendAsync();
     }
 }
 /* list of language codes for reference. 

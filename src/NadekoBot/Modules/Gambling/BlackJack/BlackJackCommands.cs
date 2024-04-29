@@ -42,7 +42,7 @@ public partial class Gambling
                 if (!await bj.Join(ctx.User, amount))
                 {
                     _service.Games.TryRemove(ctx.Channel.Id, out _);
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                     return;
                 }
 
@@ -50,12 +50,12 @@ public partial class Gambling
                 bj.GameEnded += Bj_GameEnded;
                 bj.Start();
 
-                await ReplyConfirmLocalizedAsync(strs.bj_created);
+                await Response().Confirm(strs.bj_created).SendAsync();
             }
             else
             {
                 if (await bj.Join(ctx.User, amount))
-                    await ReplyConfirmLocalizedAsync(strs.bj_joined);
+                    await Response().Confirm(strs.bj_joined).SendAsync();
                 else
                 {
                     Log.Information("{User} can't join a blackjack game as it's in {BlackjackState} state already",
@@ -95,7 +95,7 @@ public partial class Gambling
 
                 var cStr = string.Concat(c.Select(x => x[..^1] + " "));
                 cStr += "\n" + string.Concat(c.Select(x => x.Last() + " "));
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithOkColor()
                                .WithTitle("BlackJack")
                                .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);
@@ -128,7 +128,7 @@ public partial class Gambling
                     embed.AddField(full, cStr);
                 }
 
-                msg = await EmbedAsync(embed);
+                msg = await Response().Embed(embed).SendAsync();
             }
             catch
             {
@@ -174,7 +174,7 @@ public partial class Gambling
             else if (a == BjAction.Double)
             {
                 if (!await bj.Double(ctx.User))
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
             }
 
             await ctx.Message.DeleteAsync();

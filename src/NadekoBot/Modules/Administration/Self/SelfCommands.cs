@@ -50,22 +50,22 @@ public partial class Administration
         public async Task CacheUsers(IGuild guild)
         {
             var downloadUsersTask = guild.DownloadUsersAsync();
-            var message = await ReplyPendingLocalizedAsync(strs.cache_users_pending);
+            var message = await Response().Pending(strs.cache_users_pending).SendAsync();
             using var dbContext = _db.GetDbContext();
 
             await downloadUsersTask;
 
             var users = (await guild.GetUsersAsync(CacheMode.CacheOnly))
-                .Cast<IUser>()
-                .ToList();
+                        .Cast<IUser>()
+                        .ToList();
 
             var (added, updated) = await _service.RefreshUsersAsync(users);
 
             await message.ModifyAsync(x =>
-                x.Embed = _eb.Create()
-                    .WithDescription(GetText(strs.cache_users_done(added, updated)))
-                    .WithOkColor()
-                    .Build()
+                x.Embed = new EmbedBuilder()
+                             .WithDescription(GetText(strs.cache_users_done(added, updated)))
+                             .WithOkColor()
+                             .Build()
             );
         }
 
@@ -76,16 +76,17 @@ public partial class Administration
             if (ctx.User is not IGuildUser { GuildPermissions.Administrator: true })
                 return;
 
-            if (ctx.Guild is SocketGuild sg && ctx.Channel is ISocketMessageChannel ch
+            if (ctx.Guild is SocketGuild sg
+                && ctx.Channel is ISocketMessageChannel ch
                 && ctx.Message is SocketUserMessage msg)
             {
                 var fakeMessage = new DoAsUserMessage(msg, user, message);
-                
+
                 await _cmdHandler.TryRunCommand(sg, ch, fakeMessage);
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.error_occured);
+                await Response().Error(strs.error_occured).SendAsync();
             }
         }
 
@@ -112,14 +113,14 @@ public partial class Administration
             };
             _service.AddNewAutoCommand(cmd);
 
-            await EmbedAsync(_eb.Create()
-                                            .WithOkColor()
-                                            .WithTitle(GetText(strs.scadd))
-                                            .AddField(GetText(strs.server),
-                                                cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
-                                                true)
-                                            .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                                            .AddField(GetText(strs.command_text), cmdText));
+            await Response().Embed(new EmbedBuilder()
+                                .WithOkColor()
+                                .WithTitle(GetText(strs.scadd))
+                                .AddField(GetText(strs.server),
+                                    cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
+                                    true)
+                                .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                                .AddField(GetText(strs.command_text), cmdText)).SendAsync();
         }
 
         [Cmd]
@@ -148,7 +149,7 @@ public partial class Administration
             };
             _service.AddNewAutoCommand(cmd);
 
-            await ReplyConfirmLocalizedAsync(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval));
+            await Response().Confirm(strs.autocmd_add(Format.Code(Format.Sanitize(cmdText)), cmd.Interval)).SendAsync();
         }
 
         [Cmd]
@@ -162,18 +163,20 @@ public partial class Administration
             var scmds = _service.GetStartupCommands().Skip(page * 5).Take(5).ToList();
 
             if (scmds.Count == 0)
-                await ReplyErrorLocalizedAsync(strs.startcmdlist_none);
+                await Response().Error(strs.startcmdlist_none).SendAsync();
             else
             {
                 var i = 0;
-                await SendConfirmAsync(text: string.Join("\n",
-                        scmds.Select(x => $@"```css
+                await Response()
+                      .Confirm(text: string.Join("\n",
+                              scmds.Select(x => $@"```css
 #{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
-                    title: string.Empty,
-                    footer: GetText(strs.page(page + 1)));
+                          title: string.Empty,
+                          footer: GetText(strs.page(page + 1)))
+                      .SendAsync();
             }
         }
 
@@ -187,19 +190,21 @@ public partial class Administration
 
             var scmds = _service.GetAutoCommands().Skip(page * 5).Take(5).ToList();
             if (!scmds.Any())
-                await ReplyErrorLocalizedAsync(strs.autocmdlist_none);
+                await Response().Error(strs.autocmdlist_none).SendAsync();
             else
             {
                 var i = 0;
-                await SendConfirmAsync(text: string.Join("\n",
-                        scmds.Select(x => $@"```css
+                await Response()
+                      .Confirm(text: string.Join("\n",
+                              scmds.Select(x => $@"```css
 #{++i + (page * 5)}
 [{GetText(strs.server)}]: {(x.GuildId.HasValue ? $"{x.GuildName} #{x.GuildId}" : "-")}
 [{GetText(strs.channel)}]: {x.ChannelName} #{x.ChannelId}
 {GetIntervalText(x.Interval)}
 [{GetText(strs.command_text)}]: {x.CommandText}```")),
-                    title: string.Empty,
-                    footer: GetText(strs.page(page + 1)));
+                          title: string.Empty,
+                          footer: GetText(strs.page(page + 1)))
+                      .SendAsync();
             }
         }
 
@@ -215,7 +220,7 @@ public partial class Administration
             ctx.Message.DeleteAfter(0);
             try
             {
-                var msg = await SendConfirmAsync($"⏲ {miliseconds}ms");
+                var msg = await Response().Confirm($"⏲ {miliseconds}ms").SendAsync();
                 msg.DeleteAfter(miliseconds / 1000);
             }
             catch { }
@@ -231,7 +236,7 @@ public partial class Administration
         {
             if (!_service.RemoveAutoCommand(--index, out _))
             {
-                await ReplyErrorLocalizedAsync(strs.acrm_fail);
+                await Response().Error(strs.acrm_fail).SendAsync();
                 return;
             }
 
@@ -244,9 +249,9 @@ public partial class Administration
         public async Task StartupCommandRemove([Leftover] int index)
         {
             if (!_service.RemoveStartupCommand(--index, out _))
-                await ReplyErrorLocalizedAsync(strs.scrm_fail);
+                await Response().Error(strs.scrm_fail).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.scrm);
+                await Response().Confirm(strs.scrm).SendAsync();
         }
 
         [Cmd]
@@ -257,7 +262,7 @@ public partial class Administration
         {
             _service.ClearStartupCommands();
 
-            await ReplyConfirmLocalizedAsync(strs.startcmds_cleared);
+            await Response().Confirm(strs.startcmds_cleared).SendAsync();
         }
 
         [Cmd]
@@ -267,9 +272,9 @@ public partial class Administration
             var enabled = _service.ForwardMessages();
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.fwdm_start);
+                await Response().Confirm(strs.fwdm_start).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.fwdm_stop);
+                await Response().Pending(strs.fwdm_stop).SendAsync();
         }
 
         [Cmd]
@@ -279,9 +284,9 @@ public partial class Administration
             var enabled = _service.ForwardToAll();
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.fwall_start);
+                await Response().Confirm(strs.fwall_start).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.fwall_stop);
+                await Response().Pending(strs.fwall_stop).SendAsync();
         }
 
         [Cmd]
@@ -292,9 +297,9 @@ public partial class Administration
             var enabled = _service.ForwardToChannel(ctx.Channel.Id);
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.fwch_start);
+                await Response().Confirm(strs.fwch_start).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.fwch_stop);
+                await Response().Pending(strs.fwch_stop).SendAsync();
         }
 
         [Cmd]
@@ -331,7 +336,7 @@ public partial class Administration
                     if (string.IsNullOrWhiteSpace(str))
                         str = GetText(strs.no_shards_on_page);
 
-                    return _eb.Create().WithOkColor().WithDescription($"{status}\n\n{str}");
+                    return new EmbedBuilder().WithOkColor().WithDescription($"{status}\n\n{str}");
                 },
                 allShardStrings.Length,
                 25);
@@ -355,9 +360,9 @@ public partial class Administration
         {
             var success = _coord.RestartShard(shardId);
             if (success)
-                await ReplyConfirmLocalizedAsync(strs.shard_reconnecting(Format.Bold("#" + shardId)));
+                await Response().Confirm(strs.shard_reconnecting(Format.Bold("#" + shardId))).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.no_shard_id);
+                await Response().Error(strs.no_shard_id).SendAsync();
         }
 
         [Cmd]
@@ -393,7 +398,7 @@ public partial class Administration
                 }
             }
 
-            await ReplyConfirmLocalizedAsync(strs.deleted_x_servers(toLeave.Count));
+            await Response().Confirm(strs.deleted_x_servers(toLeave.Count)).SendAsync();
         }
 
         [Cmd]
@@ -403,8 +408,8 @@ public partial class Administration
             try
             {
                 await _client.SetStatusAsync(UserStatus.Invisible);
-                _ =  _client.StopAsync();
-                await ReplyConfirmLocalizedAsync(strs.shutting_down);
+                _ = _client.StopAsync();
+                await Response().Confirm(strs.shutting_down).SendAsync();
             }
             catch
             {
@@ -422,11 +427,11 @@ public partial class Administration
             var success = _coord.RestartBot();
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.restart_fail);
+                await Response().Error(strs.restart_fail).SendAsync();
                 return;
             }
 
-            try { await ReplyConfirmLocalizedAsync(strs.restarting); }
+            try { await Response().Confirm(strs.restarting).SendAsync(); }
             catch { }
         }
 
@@ -446,7 +451,7 @@ public partial class Administration
                 Log.Warning("You've been ratelimited. Wait 2 hours to change your name");
             }
 
-            await ReplyConfirmLocalizedAsync(strs.bot_name(Format.Bold(newName)));
+            await Response().Confirm(strs.bot_name(Format.Bold(newName))).SendAsync();
         }
 
         [Cmd]
@@ -460,7 +465,7 @@ public partial class Administration
             var curUser = await ctx.Guild.GetCurrentUserAsync();
             await curUser.ModifyAsync(u => u.Nickname = newNick);
 
-            await ReplyConfirmLocalizedAsync(strs.bot_nick(Format.Bold(newNick) ?? "-"));
+            await Response().Confirm(strs.bot_nick(Format.Bold(newNick) ?? "-")).SendAsync();
         }
 
         [Cmd]
@@ -473,13 +478,15 @@ public partial class Administration
             if (sg.OwnerId == gu.Id
                 || gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
             {
-                await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
+                await Response().Error(strs.insuf_perms_i).SendAsync();
                 return;
             }
 
             await gu.ModifyAsync(u => u.Nickname = newNick);
 
-            await ReplyConfirmLocalizedAsync(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"));
+            await Response()
+                  .Confirm(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -488,7 +495,7 @@ public partial class Administration
         {
             await _client.SetStatusAsync(SettableUserStatusToUserStatus(status));
 
-            await ReplyConfirmLocalizedAsync(strs.bot_status(Format.Bold(status.ToString())));
+            await Response().Confirm(strs.bot_status(Format.Bold(status.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -498,9 +505,9 @@ public partial class Administration
             var success = await _service.SetAvatar(img);
 
             if (success)
-                await ReplyConfirmLocalizedAsync(strs.set_avatar);
+                await Response().Confirm(strs.set_avatar).SendAsync();
         }
-        
+
         [Cmd]
         [OwnerOnly]
         public async Task SetBanner([Leftover] string img = null)
@@ -508,7 +515,7 @@ public partial class Administration
             var success = await _service.SetBanner(img);
 
             if (success)
-                await ReplyConfirmLocalizedAsync(strs.set_banner);
+                await Response().Confirm(strs.set_banner).SendAsync();
         }
 
         [Cmd]
@@ -520,7 +527,7 @@ public partial class Administration
             var repCtx = new ReplacementContext(ctx);
             await _service.SetGameAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
 
-            await ReplyConfirmLocalizedAsync(strs.set_game);
+            await Response().Confirm(strs.set_game).SendAsync();
         }
 
         [Cmd]
@@ -531,7 +538,7 @@ public partial class Administration
 
             await _service.SetStreamAsync(name, url);
 
-            await ReplyConfirmLocalizedAsync(strs.set_stream);
+            await Response().Confirm(strs.set_stream).SendAsync();
         }
 
         [Cmd]
@@ -574,11 +581,11 @@ public partial class Administration
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_format);
+                await Response().Error(strs.invalid_format).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.message_sent);
+            await Response().Confirm(strs.message_sent).SendAsync();
         }
 
         [Cmd]
@@ -587,7 +594,7 @@ public partial class Administration
         {
             _strings.Reload();
             await _medusaLoader.ReloadStrings();
-            await ReplyConfirmLocalizedAsync(strs.bot_strings_reloaded);
+            await Response().Confirm(strs.bot_strings_reloaded).SendAsync();
         }
 
         [Cmd]

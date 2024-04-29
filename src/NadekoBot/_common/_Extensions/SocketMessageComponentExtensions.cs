@@ -48,9 +48,9 @@ public static class SocketMessageComponentExtensions
 
     public static Task EmbedAsync(
         this SocketMessageComponent smc,
-        IEmbedBuilder? embed,
+        EmbedBuilder? embed,
         string plainText = "",
-        IReadOnlyCollection<IEmbedBuilder>? embeds = null,
+        IReadOnlyCollection<EmbedBuilder>? embeds = null,
         NadekoInteraction? inter = null,
         bool ephemeral = false)
         => smc.RespondAsync(plainText,
@@ -66,7 +66,7 @@ public static class SocketMessageComponentExtensions
         bool ephemeral = false,
         NadekoInteraction? inter = null)
     {
-        var builder = eb.Create().WithDescription(text);
+        var builder = new EmbedBuilder().WithDescription(text);
 
         builder = (type switch
         {
@@ -80,13 +80,6 @@ public static class SocketMessageComponentExtensions
     }
     
     // embed title and optional footer overloads
-
-    public static Task RespondErrorAsync(
-        this SocketMessageComponent smc,
-        IEmbedBuilderService eb,
-        string text,
-        bool ephemeral = false)
-        => smc.RespondAsync(eb, text, MsgType.Error, ephemeral);
 
     public static Task RespondConfirmAsync(
         this SocketMessageComponent smc,

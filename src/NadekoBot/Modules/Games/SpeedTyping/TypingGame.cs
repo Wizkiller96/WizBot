@@ -17,7 +17,7 @@ public class TypingGame
     private readonly GamesService _games;
     private readonly string _prefix;
     private readonly Options _options;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     public TypingGame(
         GamesService games,
@@ -25,13 +25,13 @@ public class TypingGame
         ITextChannel channel,
         string prefix,
         Options options,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _games = games;
         _client = client;
         _prefix = prefix;
         _options = options;
-        _eb = eb;
+        _sender = sender;
 
         Channel = channel;
         IsActive = false;
@@ -50,7 +50,9 @@ public class TypingGame
         _sw.Reset();
         try
         {
-            await Channel.SendConfirmAsync(_eb, "Typing contest stopped.");
+            await _sender.Response(Channel)
+                         .Confirm("Typing contest stopped.")
+                         .SendAsync();
         }
         catch
         {
@@ -68,8 +70,10 @@ public class TypingGame
         var i = (int)(CurrentSentence.Length / WORD_VALUE * 1.7f);
         try
         {
-            await Channel.SendConfirmAsync(_eb,
-                $":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.");
+            await _sender.Response(Channel)
+                         .Confirm(
+                             $":clock2: Next contest will last for {i} seconds. Type the bolded text as fast as you can.")
+                         .SendAsync();
 
 
             var time = _options.StartTime;
@@ -139,18 +143,26 @@ public class TypingGame
                     var elapsed = _sw.Elapsed;
                     var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                     _finishedUserIds.Add(msg.Author.Id);
-                    await Channel.EmbedAsync(_eb.Create()
-                                                .WithOkColor()
-                                                .WithTitle($"{msg.Author} finished the race!")
-                                                .AddField("Place", $"#{_finishedUserIds.Count}", true)
-                                                .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
-                                                .AddField("Errors", distance.ToString(), true));
+
+                    await _sender.Response(Channel)
+                                 .Embed(eb => new EmbedBuilder()
+                                                  .WithOkColor()
+                                                  .WithTitle($"{msg.Author} finished the race!")
+                                                  .AddField("Place", $"#{_finishedUserIds.Count}", true)
+                                                  .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
+                                                  .AddField("Errors", distance.ToString(), true))
+                                 .SendAsync();
 
                     if (_finishedUserIds.Count % 4 == 0)
                     {
-                        await Channel.SendConfirmAsync(_eb,
-                            ":exclamation: A lot of people finished, here is the text for those still typing:"
-                            + $"\n\n**{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**");
+                        await _sender.Response(Channel)
+                                     .Confirm(
+                                         $"""
+                                          :exclamation: A lot of people finished, here is the text for those still typing:
+
+                                          **{Format.Sanitize(CurrentSentence.Replace(" ", " \x200B", StringComparison.InvariantCulture)).SanitizeMentions(true)}**
+                                          """)
+                                     .SendAsync();
                     }
                 }
             }

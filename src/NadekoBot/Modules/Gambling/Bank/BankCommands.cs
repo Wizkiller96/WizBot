@@ -30,11 +30,11 @@ public partial class Gambling
             
             if (await _bank.DepositAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_deposited(N(amount)));
+                await Response().Confirm(strs.bank_deposited(N(amount))).SendAsync();
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
             }
         }
         
@@ -46,11 +46,11 @@ public partial class Gambling
             
             if (await _bank.WithdrawAsync(ctx.User.Id, amount))
             {
-                await ReplyConfirmLocalizedAsync(strs.bank_withdrew(N(amount)));
+                await Response().Confirm(strs.bank_withdrew(N(amount))).SendAsync();
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.bank_withdraw_insuff(CurrencySign));
+                await Response().Error(strs.bank_withdraw_insuff(CurrencySign)).SendAsync();
             }
         }
         
@@ -59,7 +59,7 @@ public partial class Gambling
         {
             var bal = await _bank.GetBalanceAsync(ctx.User.Id);
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                         .WithOkColor()
                         .WithDescription(GetText(strs.bank_balance(N(bal))));
 
@@ -70,7 +70,7 @@ public partial class Gambling
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.cant_dm);
+                await Response().Error(strs.cant_dm).SendAsync();
             }
         }
 
@@ -82,10 +82,10 @@ public partial class Gambling
                 return;
             }
 
-            await ReplyErrorLocalizedAsync(strs.take_fail(N(amount),
+            await Response().Error(strs.take_fail(N(amount),
                 _client.GetUser(userId)?.ToString()
                 ?? userId.ToString(),
-                CurrencySign));
+                CurrencySign)).SendAsync();
         }
         
         private async Task BankAwardInternalAsync(long amount, ulong userId)

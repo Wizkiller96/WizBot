@@ -21,17 +21,17 @@ public partial class Administration
             // the user can't aar the role which is higher or equal to his highest role
             if (ctx.User.Id != guser.Guild.OwnerId && guser.GetRoles().Max(x => x.Position) <= role.Position)
             {
-                await ReplyErrorLocalizedAsync(strs.hierarchy);
+                await Response().Error(strs.hierarchy).SendAsync();
                 return;
             }
 
             var roles = await _service.ToggleAarAsync(ctx.Guild.Id, role.Id);
             if (roles.Count == 0)
-                await ReplyConfirmLocalizedAsync(strs.aar_disabled);
+                await Response().Confirm(strs.aar_disabled).SendAsync();
             else if (roles.Contains(role.Id))
                 await AutoAssignRole();
             else
-                await ReplyConfirmLocalizedAsync(strs.aar_role_removed(Format.Bold(role.ToString())));
+                await Response().Confirm(strs.aar_role_removed(Format.Bold(role.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -42,7 +42,7 @@ public partial class Administration
         {
             if (!_service.TryGetRoles(ctx.Guild.Id, out var roles))
             {
-                await ReplyConfirmLocalizedAsync(strs.aar_none);
+                await Response().Confirm(strs.aar_none).SendAsync();
                 return;
             }
 
@@ -51,8 +51,10 @@ public partial class Administration
             if (existing.Count != roles.Count)
                 await _service.SetAarRolesAsync(ctx.Guild.Id, existing.Select(x => x.Id));
 
-            await ReplyConfirmLocalizedAsync(strs.aar_roles(
-                '\n' + existing.Select(x => Format.Bold(x.ToString())).Join(",\n")));
+            await Response()
+                  .Confirm(strs.aar_roles(
+                      '\n' + existing.Select(x => Format.Bold(x.ToString())).Join(",\n")))
+                  .SendAsync();
         }
     }
 }

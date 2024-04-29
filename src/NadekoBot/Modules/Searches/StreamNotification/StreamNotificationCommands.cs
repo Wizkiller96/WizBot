@@ -24,12 +24,15 @@ public partial class Searches
             var data = await _service.FollowStream(ctx.Guild.Id, ctx.Channel.Id, link);
             if (data is null)
             {
-                await ReplyErrorLocalizedAsync(strs.stream_not_added);
+                await Response().Error(strs.stream_not_added).SendAsync();
                 return;
             }
 
             var embed = _service.GetEmbed(ctx.Guild.Id, data);
-            await EmbedAsync(embed, GetText(strs.stream_tracked));
+            await Response()
+                  .Embed(embed)
+                  .Text(strs.stream_tracked)
+                  .SendAsync();
         }
 
         [Cmd]
@@ -44,11 +47,11 @@ public partial class Searches
             var fs = await _service.UnfollowStreamAsync(ctx.Guild.Id, index);
             if (fs is null)
             {
-                await ReplyErrorLocalizedAsync(strs.stream_no);
+                await Response().Error(strs.stream_no).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.stream_removed(Format.Bold(fs.Username), fs.Type));
+            await Response().Confirm(strs.stream_removed(Format.Bold(fs.Username), fs.Type)).SendAsync();
         }
 
         [Cmd]
@@ -57,7 +60,7 @@ public partial class Searches
         public async Task StreamsClear()
         {
             await _service.ClearAllStreams(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.streams_cleared);
+            await Response().Confirm(strs.streams_cleared).SendAsync();
         }
 
         [Cmd]
@@ -93,9 +96,9 @@ public partial class Searches
                                    .ToList();
 
                     if (elements.Count == 0)
-                        return _eb.Create().WithDescription(GetText(strs.streams_none)).WithErrorColor();
+                        return new EmbedBuilder().WithDescription(GetText(strs.streams_none)).WithErrorColor();
 
-                    var eb = _eb.Create().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
+                    var eb = new EmbedBuilder().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
                     for (var index = 0; index < elements.Count; index++)
                     {
                         var elem = elements[index];
@@ -117,11 +120,11 @@ public partial class Searches
         {
             var newValue = _service.ToggleStreamOffline(ctx.Guild.Id);
             if (newValue)
-                await ReplyConfirmLocalizedAsync(strs.stream_off_enabled);
+                await Response().Confirm(strs.stream_off_enabled).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.stream_off_disabled);
+                await Response().Confirm(strs.stream_off_disabled).SendAsync();
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
@@ -129,9 +132,9 @@ public partial class Searches
         {
             var newValue = _service.ToggleStreamOnlineDelete(ctx.Guild.Id);
             if (newValue)
-                await ReplyConfirmLocalizedAsync(strs.stream_online_delete_enabled);
+                await Response().Confirm(strs.stream_online_delete_enabled).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.stream_online_delete_disabled);
+                await Response().Confirm(strs.stream_online_delete_disabled).SendAsync();
         }
 
         [Cmd]
@@ -144,14 +147,14 @@ public partial class Searches
 
             if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
             {
-                await ReplyConfirmLocalizedAsync(strs.stream_not_following);
+                await Response().Confirm(strs.stream_not_following).SendAsync();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(message))
-                await ReplyConfirmLocalizedAsync(strs.stream_message_reset(Format.Bold(fs.Username)));
+                await Response().Confirm(strs.stream_message_reset(Format.Bold(fs.Username))).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.stream_message_set(Format.Bold(fs.Username)));
+                await Response().Confirm(strs.stream_message_set(Format.Bold(fs.Username))).SendAsync();
         }
 
         [Cmd]
@@ -163,11 +166,11 @@ public partial class Searches
 
             if (count == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.stream_not_following_any);
+                await Response().Confirm(strs.stream_not_following_any).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.stream_message_set_all(count));
+            await Response().Confirm(strs.stream_message_set_all(count)).SendAsync();
         }
 
         [Cmd]
@@ -179,21 +182,23 @@ public partial class Searches
                 var data = await _service.GetStreamDataAsync(url);
                 if (data is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.no_channel_found);
+                    await Response().Error(strs.no_channel_found).SendAsync();
                     return;
                 }
 
                 if (data.IsLive)
                 {
-                    await ReplyConfirmLocalizedAsync(strs.streamer_online(Format.Bold(data.Name),
-                        Format.Bold(data.Viewers.ToString())));
+                    await Response()
+                          .Confirm(strs.streamer_online(Format.Bold(data.Name),
+                              Format.Bold(data.Viewers.ToString())))
+                          .SendAsync();
                 }
                 else
-                    await ReplyConfirmLocalizedAsync(strs.streamer_offline(data.Name));
+                    await Response().Confirm(strs.streamer_offline(data.Name)).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.no_channel_found);
+                await Response().Error(strs.no_channel_found).SendAsync();
             }
         }
     }

@@ -36,13 +36,13 @@ public partial class Administration
             {
                 await targetUser.AddRoleAsync(roleToAdd);
 
-                await ReplyConfirmLocalizedAsync(strs.setrole(Format.Bold(roleToAdd.Name),
-                    Format.Bold(targetUser.ToString())));
+                await Response().Confirm(strs.setrole(Format.Bold(roleToAdd.Name),
+                    Format.Bold(targetUser.ToString()))).SendAsync();
             }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Error in setrole command");
-                await ReplyErrorLocalizedAsync(strs.setrole_err);
+                await Response().Error(strs.setrole_err).SendAsync();
             }
         }
 
@@ -59,12 +59,12 @@ public partial class Administration
             try
             {
                 await targetUser.RemoveRoleAsync(roleToRemove);
-                await ReplyConfirmLocalizedAsync(strs.remrole(Format.Bold(roleToRemove.Name),
-                    Format.Bold(targetUser.ToString())));
+                await Response().Confirm(strs.remrole(Format.Bold(roleToRemove.Name),
+                    Format.Bold(targetUser.ToString()))).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.remrole_err);
+                await Response().Error(strs.remrole_err).SendAsync();
             }
         }
 
@@ -81,16 +81,16 @@ public partial class Administration
             {
                 if (roleToEdit.Position > (await ctx.Guild.GetCurrentUserAsync()).GetRoles().Max(r => r.Position))
                 {
-                    await ReplyErrorLocalizedAsync(strs.renrole_perms);
+                    await Response().Error(strs.renrole_perms).SendAsync();
                     return;
                 }
 
                 await roleToEdit.ModifyAsync(g => g.Name = newname);
-                await ReplyConfirmLocalizedAsync(strs.renrole);
+                await Response().Confirm(strs.renrole).SendAsync();
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.renrole_err);
+                await Response().Error(strs.renrole_err).SendAsync();
             }
         }
 
@@ -111,11 +111,11 @@ public partial class Administration
             try
             {
                 await user.RemoveRolesAsync(userRoles);
-                await ReplyConfirmLocalizedAsync(strs.rar(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.rar(Format.Bold(user.ToString()))).SendAsync();
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.rar_err);
+                await Response().Error(strs.rar_err).SendAsync();
             }
         }
 
@@ -129,7 +129,7 @@ public partial class Administration
                 return;
 
             var r = await ctx.Guild.CreateRoleAsync(roleName, isMentionable: false);
-            await ReplyConfirmLocalizedAsync(strs.cr(Format.Bold(r.Name)));
+            await Response().Confirm(strs.cr(Format.Bold(r.Name))).SendAsync();
         }
 
         [Cmd]
@@ -143,7 +143,7 @@ public partial class Administration
                 return;
 
             await role.DeleteAsync();
-            await ReplyConfirmLocalizedAsync(strs.dr(Format.Bold(role.Name)));
+            await Response().Confirm(strs.dr(Format.Bold(role.Name))).SendAsync();
         }
 
         [Cmd]
@@ -155,16 +155,16 @@ public partial class Administration
             var newHoisted = !role.IsHoisted;
             await role.ModifyAsync(r => r.Hoist = newHoisted);
             if (newHoisted)
-                await ReplyConfirmLocalizedAsync(strs.rolehoist_enabled(Format.Bold(role.Name)));
+                await Response().Confirm(strs.rolehoist_enabled(Format.Bold(role.Name))).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.rolehoist_disabled(Format.Bold(role.Name)));
+                await Response().Confirm(strs.rolehoist_disabled(Format.Bold(role.Name))).SendAsync();
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public async Task RoleColor([Leftover] IRole role)
-            => await SendConfirmAsync("Role Color", role.Color.RawValue.ToString("x6"));
+            => await Response().Confirm("Role Color", role.Color.RawValue.ToString("x6")).SendAsync();
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -177,11 +177,11 @@ public partial class Administration
             {
                 var rgba32 = color.ToPixel<Rgba32>();
                 await role.ModifyAsync(r => r.Color = new Discord.Color(rgba32.R, rgba32.G, rgba32.B));
-                await ReplyConfirmLocalizedAsync(strs.rc(Format.Bold(role.Name)));
+                await Response().Confirm(strs.rc(Format.Bold(role.Name))).SendAsync();
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.rc_perms);
+                await Response().Error(strs.rc_perms).SendAsync();
             }
         }
 
@@ -195,11 +195,11 @@ public partial class Administration
 
             if (newState)
             {
-                await ReplyConfirmLocalizedAsync(strs.sticky_roles_enabled);
+                await Response().Confirm(strs.sticky_roles_enabled).SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.sticky_roles_disabled);
+                await Response().Confirm(strs.sticky_roles_disabled).SendAsync();
             }
         }
     }

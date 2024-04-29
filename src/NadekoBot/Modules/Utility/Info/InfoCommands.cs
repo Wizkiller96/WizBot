@@ -54,7 +54,7 @@ public partial class Utility
             if (string.IsNullOrWhiteSpace(features))
                 features = "-";
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithAuthor(GetText(strs.server_info))
                            .WithTitle(guild.Name)
                            .AddField(GetText(strs.id), guild.Id.ToString(), true)
@@ -75,7 +75,7 @@ public partial class Utility
                     string.Join(" ", guild.Emotes.Shuffle().Take(20).Select(e => $"{e.Name} {e}")).TrimTo(1020));
             }
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -87,14 +87,14 @@ public partial class Utility
                 return;
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
             var usercount = (await ch.GetUsersAsync().FlattenAsync()).Count();
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithTitle(ch.Name)
                            .WithDescription(ch.Topic?.SanitizeMentions(true))
                            .AddField(GetText(strs.id), ch.Id.ToString(), true)
                            .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
                            .AddField(GetText(strs.users), usercount.ToString(), true)
                            .WithOkColor();
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
         
         [Cmd]
@@ -107,7 +107,7 @@ public partial class Utility
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                 .AddMilliseconds(role.Id >> 22);
             var usercount = role.Members.LongCount();
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                 .WithTitle(role.Name.TrimTo(128))
                 .WithDescription(role.Permissions.ToList().Join(" | "))
                 .AddField(GetText(strs.id), role.Id.ToString(), true)
@@ -121,7 +121,7 @@ public partial class Utility
             if (!string.IsNullOrWhiteSpace(role.GetIconUrl()))
                 embed = embed.WithThumbnailUrl(role.GetIconUrl());
             
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -133,7 +133,7 @@ public partial class Utility
             if (user is null)
                 return;
 
-            var embed = _eb.Create().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
+            var embed = new EmbedBuilder().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
             if (!string.IsNullOrWhiteSpace(user.Nickname))
                 embed.AddField(GetText(strs.nickname), user.Nickname, true);
 
@@ -165,7 +165,7 @@ public partial class Utility
             if (av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
             
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private DateTimeOffset? GetJoinedAt(IGuildUser user)
@@ -204,12 +204,12 @@ public partial class Utility
                     kvp.Value)));
             }
 
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                                             .WithTitle(GetText(strs.activity_page(page + 1)))
                                             .WithOkColor()
                                             .WithFooter(GetText(
                                                 strs.activity_users_total(_cmdHandler.UserMessagesSent.Count)))
-                                            .WithDescription(str.ToString()));
+                                            .WithDescription(str.ToString())).SendAsync();
         }
     }
 }

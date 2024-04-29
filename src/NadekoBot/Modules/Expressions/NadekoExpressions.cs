@@ -32,13 +32,13 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         var ex = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
-        await EmbedAsync(_eb.Create()
-                                        .WithOkColor()
-                                        .WithTitle(GetText(strs.expr_new))
-                                        .WithDescription($"#{new kwum(ex.Id)}")
-                                        .AddField(GetText(strs.trigger), key)
-                                        .AddField(GetText(strs.response),
-                                            message.Length > 1024 ? GetText(strs.redacted_too_long) : message));
+        await Response().Embed(new EmbedBuilder()
+                            .WithOkColor()
+                            .WithTitle(GetText(strs.expr_new))
+                            .WithDescription($"#{new kwum(ex.Id)}")
+                            .AddField(GetText(strs.trigger), key)
+                            .AddField(GetText(strs.response),
+                                message.Length > 1024 ? GetText(strs.redacted_too_long) : message)).SendAsync();
     }
 
     [Cmd]
@@ -47,11 +47,11 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         var result = await _service.ToggleGlobalExpressionsAsync(ctx.Guild.Id);
         if (result)
-            await ReplyConfirmLocalizedAsync(strs.expr_global_disabled);
+            await Response().Confirm(strs.expr_global_disabled).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.expr_global_enabled);
+            await Response().Confirm(strs.expr_global_enabled).SendAsync();
     }
-    
+
     [Cmd]
     [UserPerm(GuildPerm.Administrator)]
     public async Task ExprAddServer(string key, [Leftover] string message)
@@ -74,7 +74,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
@@ -93,14 +93,14 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         if ((channel is null && !_creds.IsOwner(ctx.User))
             || (channel is not null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
         var ex = await _service.EditAsync(ctx.Guild?.Id, id, message);
         if (ex is not null)
         {
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await ctx.Channel.EmbedAsync(new EmbedBuilder()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.expr_edited))
                                             .WithDescription($"#{id}")
@@ -110,7 +110,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         }
         else
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+            await Response().Error(strs.expr_no_found_id).SendAsync();
         }
     }
 
@@ -127,7 +127,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         if (expressions is null || !expressions.Any())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found);
+            await Response().Error(strs.expr_no_found).SendAsync();
             return;
         }
 
@@ -146,7 +146,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
                                                         : " // " + string.Join(" ", ex.GetReactions())))
                                       .Join('\n');
 
-                return _eb.Create().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
+                return new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
             },
             expressions.Length,
             20);
@@ -159,11 +159,11 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         if (found is null)
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+            await Response().Error(strs.expr_no_found_id).SendAsync();
             return;
         }
 
-        await ctx.Channel.EmbedAsync(_eb.Create()
+        await ctx.Channel.EmbedAsync(new EmbedBuilder()
                                         .WithOkColor()
                                         .WithDescription($"#{id}")
                                         .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
@@ -177,7 +177,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         if (ex is not null)
         {
-            await ctx.Channel.EmbedAsync(_eb.Create()
+            await ctx.Channel.EmbedAsync(new EmbedBuilder()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.expr_deleted))
                                             .WithDescription($"#{id}")
@@ -186,7 +186,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         }
         else
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+            await Response().Error(strs.expr_no_found_id).SendAsync();
         }
     }
 
@@ -201,7 +201,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
@@ -213,21 +213,21 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
         var ex = _service.GetExpression(ctx.Guild?.Id, id);
         if (ex is null)
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+            await Response().Error(strs.expr_no_found_id).SendAsync();
             return;
         }
 
         if (emojiStrs.Length == 0)
         {
             await _service.ResetExprReactions(ctx.Guild?.Id, id);
-            await ReplyConfirmLocalizedAsync(strs.expr_reset(Format.Bold(id.ToString())));
+            await Response().Confirm(strs.expr_reset(Format.Bold(id.ToString()))).SendAsync();
             return;
         }
 
@@ -253,15 +253,17 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         if (succ.Count == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_emojis);
+            await Response().Error(strs.invalid_emojis).SendAsync();
             return;
         }
 
         await _service.SetExprReactions(ctx.Guild?.Id, id, succ);
 
 
-        await ReplyConfirmLocalizedAsync(strs.expr_set(Format.Bold(id.ToString()),
-            succ.Select(static x => x.ToString()).Join(", ")));
+        await Response()
+              .Confirm(strs.expr_set(Format.Bold(id.ToString()),
+                  succ.Select(static x => x.ToString()).Join(", ")))
+              .SendAsync();
     }
 
     [Cmd]
@@ -293,26 +295,30 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
         var (success, newVal) = await _service.ToggleExprOptionAsync(ctx.Guild?.Id, id, option);
         if (!success)
         {
-            await ReplyErrorLocalizedAsync(strs.expr_no_found_id);
+            await Response().Error(strs.expr_no_found_id).SendAsync();
             return;
         }
 
         if (newVal)
         {
-            await ReplyConfirmLocalizedAsync(strs.option_enabled(Format.Code(option.ToString()),
-                Format.Code(id.ToString())));
+            await Response()
+                  .Confirm(strs.option_enabled(Format.Code(option.ToString()),
+                      Format.Code(id.ToString())))
+                  .SendAsync();
         }
         else
         {
-            await ReplyConfirmLocalizedAsync(strs.option_disabled(Format.Code(option.ToString()),
-                Format.Code(id.ToString())));
+            await Response()
+                  .Confirm(strs.option_disabled(Format.Code(option.ToString()),
+                      Format.Code(id.ToString())))
+                  .SendAsync();
         }
     }
 
@@ -321,12 +327,12 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task ExprClear()
     {
-        if (await PromptUserConfirmAsync(_eb.Create()
+        if (await PromptUserConfirmAsync(new EmbedBuilder()
                                             .WithTitle("Expression clear")
                                             .WithDescription("This will delete all expressions on this server.")))
         {
             var count = _service.DeleteAllExpressions(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.exprs_cleared(count));
+            await Response().Confirm(strs.exprs_cleared(count)).SendAsync();
         }
     }
 
@@ -335,7 +341,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
@@ -354,7 +360,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     {
         if (!AdminInGuildOrOwnerInDm())
         {
-            await ReplyErrorLocalizedAsync(strs.expr_insuff_perms);
+            await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
         }
 
@@ -367,7 +373,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             var attachment = ctx.Message.Attachments.FirstOrDefault();
             if (attachment is null)
             {
-                await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                await Response().Error(strs.expr_import_no_input).SendAsync();
                 return;
             }
 
@@ -376,7 +382,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                await Response().Error(strs.expr_import_no_input).SendAsync();
                 return;
             }
         }
@@ -384,7 +390,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         var succ = await _service.ImportExpressionsAsync(ctx.Guild?.Id, input);
         if (!succ)
         {
-            await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
+            await Response().Error(strs.expr_import_invalid_data).SendAsync();
             return;
         }
 

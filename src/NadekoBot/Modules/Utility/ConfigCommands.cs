@@ -20,12 +20,12 @@ public partial class Utility
             if (setting is null)
             {
                 var configNames = _settingServices.Select(x => x.Name);
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithErrorColor()
                                .WithDescription(GetText(strs.config_not_found(Format.Code(name))))
                                .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
 
@@ -43,12 +43,12 @@ public partial class Utility
             name = name?.ToLowerInvariant();
             if (string.IsNullOrWhiteSpace(name))
             {
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithOkColor()
                                .WithTitle(GetText(strs.config_list))
                                .WithDescription(string.Join("\n", configNames));
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
 
@@ -58,12 +58,12 @@ public partial class Utility
             // if config name is not found, print error and the list of configs
             if (setting is null)
             {
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithErrorColor()
                                .WithDescription(GetText(strs.config_not_found(Format.Code(name))))
                                .AddField(GetText(strs.config_list), string.Join("\n", configNames));
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
 
@@ -75,10 +75,10 @@ public partial class Utility
             if (string.IsNullOrWhiteSpace(prop))
             {
                 var propStrings = GetPropsAndValuesString(setting, propNames);
-                var embed = _eb.Create().WithOkColor().WithTitle($"⚙️ {setting.Name}").WithDescription(propStrings);
+                var embed = new EmbedBuilder().WithOkColor().WithTitle($"⚙️ {setting.Name}").WithDescription(propStrings);
 
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
             // if the prop is invalid -> print error and list of 
@@ -88,13 +88,13 @@ public partial class Utility
             if (!exists)
             {
                 var propStrings = GetPropsAndValuesString(setting, propNames);
-                var propErrorEmbed = _eb.Create()
+                var propErrorEmbed = new EmbedBuilder()
                                         .WithErrorColor()
                                         .WithDescription(GetText(
                                             strs.config_prop_not_found(Format.Code(prop), Format.Code(name))))
                                         .AddField($"⚙️ {setting.Name}", propStrings);
 
-                await EmbedAsync(propErrorEmbed);
+                await Response().Embed(propErrorEmbed).SendAsync();
                 return;
             }
 
@@ -110,7 +110,7 @@ public partial class Utility
                 if (prop != "currency.sign")
                     value = Format.Code(Format.Sanitize(value.TrimTo(1000)), "json");
 
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithOkColor()
                                .AddField("Config", Format.Code(setting.Name), true)
                                .AddField("Prop", Format.Code(prop), true)
@@ -120,7 +120,7 @@ public partial class Utility
                 if (!string.IsNullOrWhiteSpace(comment))
                     embed.AddField("Comment", comment);
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
                 return;
             }
 
@@ -128,7 +128,7 @@ public partial class Utility
 
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.config_edit_fail(Format.Code(prop), Format.Code(value)));
+                await Response().Error(strs.config_edit_fail(Format.Code(prop), Format.Code(value))).SendAsync();
                 return;
             }
 

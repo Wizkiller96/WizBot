@@ -56,10 +56,10 @@ public sealed class Help : NadekoModule<HelpService>
 
         var clientId = await _lazyClientId.Value;
         var repCtx = new ReplacementContext(Context)
-            .WithOverride("{0}", () => clientId.ToString())
-            .WithOverride("{1}", () => prefix)
-            .WithOverride("%prefix%", () => prefix)
-            .WithOverride("%bot.prefix%", () => prefix);
+                     .WithOverride("{0}", () => clientId.ToString())
+                     .WithOverride("{1}", () => prefix)
+                     .WithOverride("%prefix%", () => prefix)
+                     .WithOverride("%bot.prefix%", () => prefix);
 
         var text = SmartText.CreateFrom(botSettings.HelpText);
         return await repSvc.ReplaceAsync(text, repCtx);
@@ -74,8 +74,11 @@ public sealed class Help : NadekoModule<HelpService>
         var topLevelModules = new List<ModuleInfo>();
         foreach (var m in _cmds.Modules.GroupBy(x => x.GetTopLevelModule()).Select(x => x.Key))
         {
-            var result = await _perms.CheckPermsAsync(ctx.Guild, ctx.Channel, ctx.User,
-                m.Name, null);
+            var result = await _perms.CheckPermsAsync(ctx.Guild,
+                ctx.Channel,
+                ctx.User,
+                m.Name,
+                null);
 
             if (result.IsAllowed)
                 topLevelModules.Add(m);
@@ -84,7 +87,7 @@ public sealed class Help : NadekoModule<HelpService>
         await ctx.SendPaginatedConfirmAsync(page,
             cur =>
             {
-                var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.list_of_modules));
+                var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.list_of_modules));
 
                 var localModules = topLevelModules.Skip(12 * cur).Take(12).ToList();
 
@@ -95,12 +98,12 @@ public sealed class Help : NadekoModule<HelpService>
                 }
 
                 localModules.OrderBy(module => module.Name)
-                    .ToList()
-                    .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
-                        GetModuleDescription(module.Name)
-                        + "\n"
-                        + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
-                        true));
+                            .ToList()
+                            .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
+                                GetModuleDescription(module.Name)
+                                + "\n"
+                                + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
+                                true));
 
                 return embed;
             },
@@ -116,11 +119,11 @@ public sealed class Help : NadekoModule<HelpService>
         if (key.Key == strs.module_description_missing.Key)
         {
             var desc = _medusae
-                .GetLoadedMedusae(Culture)
-                .FirstOrDefault(m => m.Sneks
-                    .Any(x => x.Name.Equals(moduleName,
-                        StringComparison.InvariantCultureIgnoreCase)))
-                ?.Description;
+                       .GetLoadedMedusae(Culture)
+                       .FirstOrDefault(m => m.Sneks
+                                             .Any(x => x.Name.Equals(moduleName,
+                                                 StringComparison.InvariantCultureIgnoreCase)))
+                       ?.Description;
 
             if (desc is not null)
                 return desc;
@@ -216,20 +219,23 @@ public sealed class Help : NadekoModule<HelpService>
         var allowed = new List<CommandInfo>();
 
         foreach (var cmd in _cmds.Commands
-                     .Where(c => c.Module.GetTopLevelModule()
-                         .Name
-                         .StartsWith(module, StringComparison.InvariantCultureIgnoreCase)))
+                                 .Where(c => c.Module.GetTopLevelModule()
+                                              .Name
+                                              .StartsWith(module, StringComparison.InvariantCultureIgnoreCase)))
         {
-            var result = await _perms.CheckPermsAsync(ctx.Guild, ctx.Channel, ctx.User, cmd.Module.GetTopLevelModule().Name,
+            var result = await _perms.CheckPermsAsync(ctx.Guild,
+                ctx.Channel,
+                ctx.User,
+                cmd.Module.GetTopLevelModule().Name,
                 cmd.Name);
-            
+
             if (result.IsAllowed)
                 allowed.Add(cmd);
         }
 
         var cmds = allowed.OrderBy(c => c.Aliases[0])
-            .DistinctBy(x => x.Aliases[0])
-            .ToList();
+                          .DistinctBy(x => x.Aliases[0])
+                          .ToList();
 
 
         // check preconditions for all commands, but only if it's not 'all'
@@ -238,12 +244,12 @@ public sealed class Help : NadekoModule<HelpService>
         if (opts.View != CommandsOptions.ViewType.All)
         {
             succ = new((await cmds.Select(async x =>
-                    {
-                        var pre = await x.CheckPreconditionsAsync(Context, _services);
-                        return (Cmd: x, Succ: pre.IsSuccess);
-                    })
-                    .WhenAll()).Where(x => x.Succ)
-                .Select(x => x.Cmd));
+                                  {
+                                      var pre = await x.CheckPreconditionsAsync(Context, _services);
+                                      return (Cmd: x, Succ: pre.IsSuccess);
+                                  })
+                                  .WhenAll()).Where(x => x.Succ)
+                                             .Select(x => x.Cmd));
 
             if (opts.View == CommandsOptions.ViewType.Hide)
                 // if hidden is specified, completely remove these commands from the list
@@ -251,63 +257,62 @@ public sealed class Help : NadekoModule<HelpService>
         }
 
         var cmdsWithGroup = cmds.GroupBy(c => c.Module.GetGroupName())
-            .OrderBy(x => x.Key == x.First().Module.Name ? int.MaxValue : x.Count())
-            .ToList();
+                                .OrderBy(x => x.Key == x.First().Module.Name ? int.MaxValue : x.Count())
+                                .ToList();
 
         if (cmdsWithGroup.Count == 0)
         {
             if (opts.View != CommandsOptions.ViewType.Hide)
-                await ReplyErrorLocalizedAsync(strs.module_not_found);
+                await Response().Error(strs.module_not_found).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.module_not_found_or_cant_exec);
+                await Response().Error(strs.module_not_found_or_cant_exec).SendAsync();
             return;
         }
 
         var cnt = 0;
         var groups = cmdsWithGroup.GroupBy(_ => cnt++ / 48).ToArray();
-        var embed = _eb.Create().WithOkColor();
+        var embed = new EmbedBuilder().WithOkColor();
         foreach (var g in groups)
         {
             var last = g.Count();
             for (var i = 0; i < last; i++)
             {
                 var transformed = g.ElementAt(i)
-                    .Select(x =>
-                    {
-                        //if cross is specified, and the command doesn't satisfy the requirements, cross it out
-                        if (opts.View == CommandsOptions.ViewType.Cross)
-                        {
-                            return
-                                $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
-                        }
+                                   .Select(x =>
+                                   {
+                                       //if cross is specified, and the command doesn't satisfy the requirements, cross it out
+                                       if (opts.View == CommandsOptions.ViewType.Cross)
+                                       {
+                                           return
+                                               $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
+                                       }
 
-                        if (x.Aliases.Count == 1)
-                            return prefix + x.Aliases[0];
+                                       if (x.Aliases.Count == 1)
+                                           return prefix + x.Aliases[0];
 
-                        return prefix + x.Aliases[0] + " / " + prefix + x.Aliases[1];
-                        
-                    });
-                
+                                       return prefix + x.Aliases[0] + " / " + prefix + x.Aliases[1];
+                                   });
+
                 embed.AddField(g.ElementAt(i).Key, "" + string.Join("\n", transformed) + "", true);
             }
         }
 
         embed.WithFooter(GetText(strs.commands_instr(prefix)));
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     private async Task Group(ModuleInfo group)
     {
-        var eb = _eb.Create(ctx)
-            .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
-            .WithOkColor();
+        var eb = new EmbedBuilder()
+                    .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
+                    .WithOkColor();
 
         foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
             eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
         }
 
-        await EmbedAsync(eb);
+        await Response().Embed(eb).SendAsync();
     }
 
     [Cmd]
@@ -326,9 +331,9 @@ public sealed class Help : NadekoModule<HelpService>
             fail = fail.Substring(prefix.Length);
 
         var group = _cmds.Modules
-            .SelectMany(x => x.Submodules)
-            .Where(x => !string.IsNullOrWhiteSpace(x.Group))
-            .FirstOrDefault(x => x.Group.Equals(fail, StringComparison.InvariantCultureIgnoreCase));
+                         .SelectMany(x => x.Submodules)
+                         .Where(x => !string.IsNullOrWhiteSpace(x.Group))
+                         .FirstOrDefault(x => x.Group.Equals(fail, StringComparison.InvariantCultureIgnoreCase));
 
         if (group is not null)
         {
@@ -336,7 +341,7 @@ public sealed class Help : NadekoModule<HelpService>
             return;
         }
 
-        await ReplyErrorLocalizedAsync(strs.command_not_found);
+        await Response().Error(strs.command_not_found).SendAsync();
     }
 
     [Cmd]
@@ -364,7 +369,7 @@ public sealed class Help : NadekoModule<HelpService>
             }
             catch (Exception)
             {
-                await ReplyErrorLocalizedAsync(strs.cant_dm);
+                await Response().Error(strs.cant_dm).SendAsync();
             }
 
             return;
@@ -383,29 +388,29 @@ public sealed class Help : NadekoModule<HelpService>
         // order commands by top level module name
         // and make a dictionary of <ModuleName, Array<JsonCommandData>>
         var cmdData = _cmds.Commands.GroupBy(x => x.Module.GetTopLevelModule().Name)
-            .OrderBy(x => x.Key)
-            .ToDictionary(x => x.Key,
-                x => x.DistinctBy(c => c.Aliases.First())
-                    .Select(com =>
-                    {
-                        List<string> optHelpStr = null;
+                           .OrderBy(x => x.Key)
+                           .ToDictionary(x => x.Key,
+                               x => x.DistinctBy(c => c.Aliases.First())
+                                     .Select(com =>
+                                     {
+                                         List<string> optHelpStr = null;
 
-                        var opt = CommandsUtilityService.GetNadekoOptionType(com.Attributes);
-                        if (opt is not null)
-                            optHelpStr = CommandsUtilityService.GetCommandOptionHelpList(opt);
+                                         var opt = CommandsUtilityService.GetNadekoOptionType(com.Attributes);
+                                         if (opt is not null)
+                                             optHelpStr = CommandsUtilityService.GetCommandOptionHelpList(opt);
 
-                        return new CommandJsonObject
-                        {
-                            Aliases = com.Aliases.Select(alias => prefix + alias).ToArray(),
-                            Description = com.RealSummary(_strings, _medusae, Culture, prefix),
-                            Usage = com.RealRemarksArr(_strings, _medusae, Culture, prefix),
-                            Submodule = com.Module.Name,
-                            Module = com.Module.GetTopLevelModule().Name,
-                            Options = optHelpStr,
-                            Requirements = CommandsUtilityService.GetCommandRequirements(com)
-                        };
-                    })
-                    .ToList());
+                                         return new CommandJsonObject
+                                         {
+                                             Aliases = com.Aliases.Select(alias => prefix + alias).ToArray(),
+                                             Description = com.RealSummary(_strings, _medusae, Culture, prefix),
+                                             Usage = com.RealRemarksArr(_strings, _medusae, Culture, prefix),
+                                             Submodule = com.Module.Name,
+                                             Module = com.Module.GetTopLevelModule().Name,
+                                             Options = optHelpStr,
+                                             Requirements = CommandsUtilityService.GetCommandRequirements(com)
+                                         };
+                                     })
+                                     .ToList());
 
         var readableData = JsonConvert.SerializeObject(cmdData, Formatting.Indented);
         var uploadData = JsonConvert.SerializeObject(cmdData, Formatting.None);
@@ -498,21 +503,23 @@ public sealed class Help : NadekoModule<HelpService>
 
     [Cmd]
     public async Task Guide()
-        => await ConfirmLocalizedAsync(strs.guide("https://nadeko.bot/commands",
-            "https://nadekobot.readthedocs.io/en/latest/"));
+        => await Response()
+                 .Confirm(strs.guide("https://nadeko.bot/commands",
+                     "https://nadekobot.readthedocs.io/en/latest/"))
+                 .SendAsync();
 
 
     private Task SelfhostAction(SocketMessageComponent smc, object _)
         => smc.RespondConfirmAsync(_eb,
             """
-                - In case you don't want or cannot Donate to NadekoBot project, but you 
-                - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer or server for free.
-                
-                *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
-                
-                - You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
-                - If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/nadekobot) to keep the development going :)
-                """,
+            - In case you don't want or cannot Donate to NadekoBot project, but you
+            - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer or server for free.
+
+            *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
+
+            - You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
+            - If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/nadekobot) to keep the development going :)
+            """,
             true);
 
     [Cmd]
@@ -527,9 +534,9 @@ public sealed class Help : NadekoModule<HelpService>
                     label: "Selfhosting"),
                 SelfhostAction));
 
-        var eb = _eb.Create(ctx)
-            .WithOkColor()
-            .WithTitle("Thank you for considering to donate to the NadekoBot project!");
+        var eb = new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle("Thank you for considering to donate to the NadekoBot project!");
 
         eb
             .WithDescription("NadekoBot relies on donations to keep the servers, services and APIs running.\n"
@@ -558,13 +565,13 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
 ")
             .AddField("Troubleshooting",
                 """
-                    
-                    *In case you didn't receive the rewards within 5 minutes:*
-                    `1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
-                    `2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
-                    `3.` Make sure your payment has been processed and not declined by Patreon.
-                    `4.` If any of the previous steps don't help, you can join the nadeko support server <https://discord.nadeko.bot> and ask for help in the #help channel
-                    """);
+
+                *In case you didn't receive the rewards within 5 minutes:*
+                `1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
+                `2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
+                `3.` Make sure your payment has been processed and not declined by Patreon.
+                `4.` If any of the previous steps don't help, you can join the nadeko support server <https://discord.nadeko.bot> and ask for help in the #help channel
+                """);
 
         try
         {
@@ -573,7 +580,7 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
         }
         catch
         {
-            await ReplyErrorLocalizedAsync(strs.cant_dm);
+            await Response().Error(strs.cant_dm).SendAsync();
         }
     }
 }

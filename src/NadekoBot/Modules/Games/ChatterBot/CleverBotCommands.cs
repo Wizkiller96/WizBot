@@ -30,7 +30,7 @@ public partial class Games
                     await uow.SaveChangesAsync();
                 }
 
-                await ReplyConfirmLocalizedAsync(strs.cleverbot_disabled);
+                await Response().Confirm(strs.cleverbot_disabled).SendAsync();
                 return;
             }
 
@@ -42,7 +42,7 @@ public partial class Games
                 await uow.SaveChangesAsync();
             }
 
-            await ReplyConfirmLocalizedAsync(strs.cleverbot_enabled);
+            await Response().Confirm(strs.cleverbot_enabled).SendAsync();
         }
     }
 }

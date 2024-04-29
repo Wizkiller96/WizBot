@@ -16,7 +16,7 @@ public partial class Administration
             if (runnerUser.Id != ctx.Guild.OwnerId
                 && runnerUserRoles.Max(x => x.Position) <= targetUserRoles.Max(x => x.Position))
             {
-                await ReplyErrorLocalizedAsync(strs.mute_perms);
+                await Response().Error(strs.mute_perms).SendAsync();
                 return false;
             }
 
@@ -31,20 +31,20 @@ public partial class Administration
             if (role is null)
             {
                 var muteRole = await _service.GetMuteRole(ctx.Guild);
-                await ReplyConfirmLocalizedAsync(strs.mute_role(Format.Code(muteRole.Name)));
+                await Response().Confirm(strs.mute_role(Format.Code(muteRole.Name))).SendAsync();
                 return;
             }
 
             if (ctx.User.Id != ctx.Guild.OwnerId
                 && role.Position >= ((SocketGuildUser)ctx.User).Roles.Max(x => x.Position))
             {
-                await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+                await Response().Error(strs.insuf_perms_u).SendAsync();
                 return;
             }
 
             await _service.SetMuteRoleAsync(ctx.Guild.Id, role.Name);
 
-            await ReplyConfirmLocalizedAsync(strs.mute_role_set);
+            await Response().Confirm(strs.mute_role_set).SendAsync();
         }
 
         [Cmd]
@@ -59,12 +59,12 @@ public partial class Administration
                     return;
 
                 await _service.MuteUser(target, ctx.User, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_muted(Format.Bold(target.ToString())));
+                await Response().Confirm(strs.user_muted(Format.Bold(target.ToString()))).SendAsync();
             }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Exception in the mute command");
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -82,13 +82,13 @@ public partial class Administration
                     return;
 
                 await _service.TimedMute(user, ctx.User, time.Time, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_muted_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes));
+                await Response().Confirm(strs.user_muted_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes)).SendAsync();
             }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Error in mute command");
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -100,11 +100,11 @@ public partial class Administration
             try
             {
                 await _service.UnmuteUser(user.GuildId, user.Id, ctx.User, reason: reason);
-                await ReplyConfirmLocalizedAsync(strs.user_unmuted(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.user_unmuted(Format.Bold(user.ToString()))).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -120,12 +120,12 @@ public partial class Administration
                     return;
 
                 await _service.MuteUser(user, ctx.User, MuteType.Chat, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_chat_mute(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.user_chat_mute(Format.Bold(user.ToString()))).SendAsync();
             }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Exception in the chatmute command");
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -143,13 +143,13 @@ public partial class Administration
                     return;
 
                 await _service.TimedMute(user, ctx.User, time.Time, MuteType.Chat, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_chat_mute_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes));
+                await Response().Confirm(strs.user_chat_mute_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes)).SendAsync();
             }
             catch (Exception ex)
             {
                 Log.Warning(ex, "Error in chatmute command");
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -161,11 +161,11 @@ public partial class Administration
             try
             {
                 await _service.UnmuteUser(user.Guild.Id, user.Id, ctx.User, MuteType.Chat, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_chat_unmute(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.user_chat_unmute(Format.Bold(user.ToString()))).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -181,11 +181,11 @@ public partial class Administration
                     return;
 
                 await _service.MuteUser(user, ctx.User, MuteType.Voice, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_voice_mute(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.user_voice_mute(Format.Bold(user.ToString()))).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -203,12 +203,12 @@ public partial class Administration
                     return;
 
                 await _service.TimedMute(user, ctx.User, time.Time, MuteType.Voice, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_voice_mute_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes));
+                await Response().Confirm(strs.user_voice_mute_time(Format.Bold(user.ToString()),
+                    (int)time.Time.TotalMinutes)).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
 
@@ -220,11 +220,11 @@ public partial class Administration
             try
             {
                 await _service.UnmuteUser(user.GuildId, user.Id, ctx.User, MuteType.Voice, reason);
-                await ReplyConfirmLocalizedAsync(strs.user_voice_unmute(Format.Bold(user.ToString())));
+                await Response().Confirm(strs.user_voice_unmute(Format.Bold(user.ToString()))).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.mute_error);
+                await Response().Error(strs.mute_error).SendAsync();
             }
         }
     }

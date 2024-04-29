@@ -17,11 +17,11 @@ public partial class Administration
         {
             if (await _service.TryStopAntiAlt(ctx.Guild.Id))
             {
-                await ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Alt"));
+                await Response().Confirm(strs.prot_disable("Anti-Alt")).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.protection_not_running("Anti-Alt"));
+            await Response().Confirm(strs.protection_not_running("Anti-Alt")).SendAsync();
         }
 
         [Cmd]
@@ -74,8 +74,8 @@ public partial class Administration
         public Task AntiRaid()
         {
             if (_service.TryStopAntiRaid(ctx.Guild.Id))
-                return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Raid"));
-            return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Raid"));
+                return Response().Confirm(strs.prot_disable("Anti-Raid")).SendAsync();
+            return Response().Pending(strs.protection_not_running("Anti-Raid")).SendAsync();
         }
 
         [Cmd]
@@ -104,33 +104,33 @@ public partial class Administration
         {
             if (action == PunishmentAction.AddRole)
             {
-                await ReplyErrorLocalizedAsync(strs.punishment_unsupported(action));
+                await Response().Error(strs.punishment_unsupported(action)).SendAsync();
                 return;
             }
 
             if (userThreshold is < 2 or > 30)
             {
-                await ReplyErrorLocalizedAsync(strs.raid_cnt(2, 30));
+                await Response().Error(strs.raid_cnt(2, 30)).SendAsync();
                 return;
             }
 
             if (seconds is < 2 or > 300)
             {
-                await ReplyErrorLocalizedAsync(strs.raid_time(2, 300));
+                await Response().Error(strs.raid_time(2, 300)).SendAsync();
                 return;
             }
 
             if (punishTime is not null)
             {
                 if (!_service.IsDurationAllowed(action))
-                    await ReplyErrorLocalizedAsync(strs.prot_cant_use_time);
+                    await Response().Error(strs.prot_cant_use_time).SendAsync();
             }
 
             var time = (int?)punishTime?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
                 return;
-            
-            if(action is PunishmentAction.TimeOut && time < 1)
+
+            if (action is PunishmentAction.TimeOut && time < 1)
                 return;
 
             var stats = await _service.StartAntiRaidAsync(ctx.Guild.Id, userThreshold, seconds, action, time);
@@ -138,8 +138,10 @@ public partial class Administration
             if (stats is null)
                 return;
 
-            await SendConfirmAsync(GetText(strs.prot_enable("Anti-Raid")),
-                $"{ctx.User.Mention} {GetAntiRaidString(stats)}");
+            await Response()
+                  .Confirm(GetText(strs.prot_enable("Anti-Raid")),
+                      $"{ctx.User.Mention} {GetAntiRaidString(stats)}")
+                  .SendAsync();
         }
 
         [Cmd]
@@ -148,8 +150,8 @@ public partial class Administration
         public Task AntiSpam()
         {
             if (_service.TryStopAntiSpam(ctx.Guild.Id))
-                return ReplyConfirmLocalizedAsync(strs.prot_disable("Anti-Spam"));
-            return ReplyPendingLocalizedAsync(strs.protection_not_running("Anti-Spam"));
+                return Response().Confirm(strs.prot_disable("Anti-Spam")).SendAsync();
+            return Response().Pending(strs.protection_not_running("Anti-Spam")).SendAsync();
         }
 
         [Cmd]
@@ -190,7 +192,7 @@ public partial class Administration
             if (timeData is not null)
             {
                 if (!_service.IsDurationAllowed(action))
-                    await ReplyErrorLocalizedAsync(strs.prot_cant_use_time);
+                    await Response().Error(strs.prot_cant_use_time).SendAsync();
             }
 
             var time = (int?)timeData?.Time.TotalMinutes ?? 0;
@@ -202,8 +204,10 @@ public partial class Administration
 
             var stats = await _service.StartAntiSpamAsync(ctx.Guild.Id, messageCount, action, time, role?.Id);
 
-            await SendConfirmAsync(GetText(strs.prot_enable("Anti-Spam")),
-                $"{ctx.User.Mention} {GetAntiSpamString(stats)}");
+            await Response()
+                  .Confirm(GetText(strs.prot_enable("Anti-Spam")),
+                      $"{ctx.User.Mention} {GetAntiSpamString(stats)}")
+                  .SendAsync();
         }
 
         [Cmd]
@@ -215,14 +219,14 @@ public partial class Administration
 
             if (added is null)
             {
-                await ReplyErrorLocalizedAsync(strs.protection_not_running("Anti-Spam"));
+                await Response().Error(strs.protection_not_running("Anti-Spam")).SendAsync();
                 return;
             }
 
             if (added.Value)
-                await ReplyConfirmLocalizedAsync(strs.spam_ignore("Anti-Spam"));
+                await Response().Confirm(strs.spam_ignore("Anti-Spam")).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.spam_not_ignore("Anti-Spam"));
+                await Response().Confirm(strs.spam_not_ignore("Anti-Spam")).SendAsync();
         }
 
         [Cmd]
@@ -233,11 +237,11 @@ public partial class Administration
 
             if (spam is null && raid is null && alt is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.prot_none);
+                await Response().Confirm(strs.prot_none).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.prot_active));
+            var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.prot_active));
 
             if (spam is not null)
                 embed.AddField("Anti-Spam", GetAntiSpamString(spam).TrimTo(1024), true);
@@ -248,7 +252,7 @@ public partial class Administration
             if (alt is not null)
                 embed.AddField("Anti-Alt", GetAntiAltString(alt), true);
 
-            await ctx.Channel.EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private string GetAntiAltString(AntiAltStats alt)

@@ -59,12 +59,12 @@ public partial class Xp : NadekoModule<XpService>
         var globalSetting = _service.GetNotificationType(ctx.User);
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
-        var embed = _eb.Create()
-            .WithOkColor()
-            .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
-            .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
+        var embed = new EmbedBuilder()
+                       .WithOkColor()
+                       .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
+                       .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -87,9 +87,9 @@ public partial class Xp : NadekoModule<XpService>
         var ex = _service.ToggleExcludeServer(ctx.Guild.Id);
 
         if (ex)
-            await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(ctx.Guild.ToString())));
+            await Response().Confirm(strs.excluded(Format.Bold(ctx.Guild.ToString()))).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(ctx.Guild.ToString())));
+            await Response().Confirm(strs.not_excluded(Format.Bold(ctx.Guild.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -100,9 +100,9 @@ public partial class Xp : NadekoModule<XpService>
         var ex = _service.ToggleExcludeRole(ctx.Guild.Id, role.Id);
 
         if (ex)
-            await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(role.ToString())));
+            await Response().Confirm(strs.excluded(Format.Bold(role.ToString()))).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(role.ToString())));
+            await Response().Confirm(strs.not_excluded(Format.Bold(role.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -116,9 +116,9 @@ public partial class Xp : NadekoModule<XpService>
         var ex = _service.ToggleExcludeChannel(ctx.Guild.Id, channel.Id);
 
         if (ex)
-            await ReplyConfirmLocalizedAsync(strs.excluded(Format.Bold(channel.ToString())));
+            await Response().Confirm(strs.excluded(Format.Bold(channel.ToString()))).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.not_excluded(Format.Bold(channel.ToString())));
+            await Response().Confirm(strs.not_excluded(Format.Bold(channel.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -127,16 +127,16 @@ public partial class Xp : NadekoModule<XpService>
     {
         var serverExcluded = _service.IsServerExcluded(ctx.Guild.Id);
         var roles = _service.GetExcludedRoles(ctx.Guild.Id)
-            .Select(x => ctx.Guild.GetRole(x))
-            .Where(x => x is not null)
-            .Select(x => $"`role`   {x.Mention}")
-            .ToList();
+                            .Select(x => ctx.Guild.GetRole(x))
+                            .Where(x => x is not null)
+                            .Select(x => $"`role`   {x.Mention}")
+                            .ToList();
 
         var chans = (await _service.GetExcludedChannels(ctx.Guild.Id)
-                .Select(x => ctx.Guild.GetChannelAsync(x))
-                .WhenAll()).Where(x => x is not null)
-            .Select(x => $"`channel` <#{x.Id}>")
-            .ToList();
+                                   .Select(x => ctx.Guild.GetChannelAsync(x))
+                                   .WhenAll()).Where(x => x is not null)
+                                              .Select(x => $"`channel` <#{x.Id}>")
+                                              .ToList();
 
         var rolesStr = roles.Any() ? string.Join("\n", roles) + "\n" : string.Empty;
         var chansStr = chans.Count > 0 ? string.Join("\n", chans) + "\n" : string.Empty;
@@ -150,10 +150,10 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.SendPaginatedConfirmAsync(0,
             curpage =>
             {
-                var embed = _eb.Create()
-                    .WithTitle(GetText(strs.exclusion_list))
-                    .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
-                    .WithOkColor();
+                var embed = new EmbedBuilder()
+                               .WithTitle(GetText(strs.exclusion_list))
+                               .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
+                               .WithOkColor();
 
                 return embed;
             },
@@ -189,14 +189,14 @@ public partial class Xp : NadekoModule<XpService>
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
             allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
-                .Where(user => socketGuild.GetUser(user.UserId) is not null)
-                .ToList();
+                               .Where(user => socketGuild.GetUser(user.UserId) is not null)
+                               .ToList();
         }
 
         await ctx.SendPaginatedConfirmAsync(page,
             curPage =>
             {
-                var embed = _eb.Create().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
+                var embed = new EmbedBuilder().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
 
                 List<UserXpStats> users;
                 if (opts.Clean)
@@ -239,7 +239,7 @@ public partial class Xp : NadekoModule<XpService>
             return;
         var users = _service.GetUserXps(page);
 
-        var embed = _eb.Create().WithTitle(GetText(strs.global_leaderboard)).WithOkColor();
+        var embed = new EmbedBuilder().WithTitle(GetText(strs.global_leaderboard)).WithOkColor();
 
         if (!users.Any())
             embed.WithDescription("-");
@@ -253,7 +253,7 @@ public partial class Xp : NadekoModule<XpService>
             }
         }
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -269,8 +269,10 @@ public partial class Xp : NadekoModule<XpService>
             return;
 
         var count = await _service.AddXpToUsersAsync(ctx.Guild.Id, amount, role.Members.Select(x => x.Id).ToArray());
-        await ReplyConfirmLocalizedAsync(
-            strs.xpadd_users(Format.Bold(amount.ToString()), Format.Bold(count.ToString())));
+        await Response()
+              .Confirm(
+                  strs.xpadd_users(Format.Bold(amount.ToString()), Format.Bold(count.ToString())))
+              .SendAsync();
     }
 
     [Cmd]
@@ -284,7 +286,7 @@ public partial class Xp : NadekoModule<XpService>
 
         _service.AddXp(userId, ctx.Guild.Id, amount);
         var usr = ((SocketGuild)ctx.Guild).GetUser(userId)?.ToString() ?? userId.ToString();
-        await ReplyConfirmLocalizedAsync(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString())));
+        await Response().Confirm(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -301,7 +303,7 @@ public partial class Xp : NadekoModule<XpService>
     {
         _service.ReloadXpTemplate();
         await Task.Delay(1000);
-        await ReplyConfirmLocalizedAsync(strs.template_reloaded);
+        await Response().Confirm(strs.template_reloaded).SendAsync();
     }
 
     [Cmd]
@@ -315,14 +317,14 @@ public partial class Xp : NadekoModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset(ulong userId)
     {
-        var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_user_confirm));
+        var embed = new EmbedBuilder().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_user_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
 
         _service.XpReset(ctx.Guild.Id, userId);
 
-        await ReplyConfirmLocalizedAsync(strs.reset_user(userId));
+        await Response().Confirm(strs.reset_user(userId)).SendAsync();
     }
 
     [Cmd]
@@ -330,14 +332,14 @@ public partial class Xp : NadekoModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset()
     {
-        var embed = _eb.Create().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_server_confirm));
+        var embed = new EmbedBuilder().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_server_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
 
         _service.XpReset(ctx.Guild.Id);
 
-        await ReplyConfirmLocalizedAsync(strs.reset_server);
+        await Response().Confirm(strs.reset_server).SendAsync();
     }
 
     public enum XpShopInputType
@@ -358,15 +360,19 @@ public partial class Xp : NadekoModule<XpService>
     {
         if (!_service.IsShopEnabled())
         {
-            await ReplyErrorLocalizedAsync(strs.xp_shop_disabled);
+            await Response().Error(strs.xp_shop_disabled).SendAsync();
             return;
         }
 
-        await SendConfirmAsync(GetText(strs.available_commands),
-            $@"`{prefix}xpshop bgs`
-`{prefix}xpshop frames`
+        await Response()
+              .Confirm(GetText(strs.available_commands),
+                  $"""
+                   `{prefix}xpshop bgs`
+                   `{prefix}xpshop frames`
 
-*{GetText(strs.xpshop_website)}*");
+                   *{GetText(strs.xpshop_website)}*
+                   """)
+              .SendAsync();
     }
 
     [Cmd]
@@ -383,13 +389,13 @@ public partial class Xp : NadekoModule<XpService>
 
         if (items is null)
         {
-            await ReplyErrorLocalizedAsync(strs.xp_shop_disabled);
+            await Response().Error(strs.xp_shop_disabled).SendAsync();
             return;
         }
 
         if (items.Count == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.not_found);
+            await Response().Error(strs.not_found).SendAsync();
             return;
         }
 
@@ -398,13 +404,15 @@ public partial class Xp : NadekoModule<XpService>
             {
                 var (key, item) = items.Skip(current).First();
 
-                var eb = _eb.Create(ctx)
-                    .WithOkColor()
-                    .WithTitle(item.Name)
-                    .AddField(GetText(strs.price), CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()), true)
-                    .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
-                        ? item.Url
-                        : item.Preview);
+                var eb = new EmbedBuilder()
+                            .WithOkColor()
+                            .WithTitle(item.Name)
+                            .AddField(GetText(strs.price),
+                                CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()),
+                                true)
+                            .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
+                                ? item.Url
+                                : item.Preview);
 
                 if (!string.IsNullOrWhiteSpace(item.Desc))
                     eb.AddField(GetText(strs.desc), item.Desc);
@@ -483,20 +491,24 @@ public partial class Xp : NadekoModule<XpService>
         {
             var _ = result switch
             {
-                BuyResult.XpShopDisabled => await ReplyErrorLocalizedAsync(strs.xp_shop_disabled),
-                BuyResult.InsufficientFunds => await ReplyErrorLocalizedAsync(strs.not_enough(_gss.GetCurrencySign())),
+                BuyResult.XpShopDisabled => await Response().Error(strs.xp_shop_disabled).SendAsync(),
+                BuyResult.InsufficientFunds => await Response()
+                                                     .Error(strs.not_enough(_gss.GetCurrencySign()))
+                                                     .SendAsync(),
                 BuyResult.AlreadyOwned =>
-                    await ReplyErrorLocalizedAsync(strs.xpshop_already_owned, GetUseInteraction()),
-                BuyResult.UnknownItem => await ReplyErrorLocalizedAsync(strs.xpshop_item_not_found),
-                BuyResult.InsufficientPatronTier => await ReplyErrorLocalizedAsync(strs.patron_insuff_tier),
+                    await Response().Error(strs.xpshop_already_owned).Interaction(GetUseInteraction()).SendAsync(),
+                BuyResult.UnknownItem => await Response().Error(strs.xpshop_item_not_found).SendAsync(),
+                BuyResult.InsufficientPatronTier => await Response().Error(strs.patron_insuff_tier).SendAsync(),
                 _ => throw new ArgumentOutOfRangeException()
             };
             return;
         }
 
-        await ReplyConfirmLocalizedAsync(strs.xpshop_buy_success(type.ToString().ToLowerInvariant(),
-                key.ToLowerInvariant()),
-            GetUseInteraction());
+        await Response()
+              .Confirm(strs.xpshop_buy_success(type.ToString().ToLowerInvariant(),
+                  key.ToLowerInvariant()))
+              .Interaction(GetUseInteraction())
+              .SendAsync();
     }
 
     [Cmd]
@@ -506,7 +518,7 @@ public partial class Xp : NadekoModule<XpService>
 
         if (!result)
         {
-            await ReplyConfirmLocalizedAsync(strs.xp_shop_item_cant_use);
+            await Response().Confirm(strs.xp_shop_item_cant_use).SendAsync();
             return;
         }
 
@@ -525,7 +537,7 @@ public partial class Xp : NadekoModule<XpService>
 
         if (!result)
         {
-            await ReplyConfirmLocalizedAsync(strs.xp_shop_item_cant_use);
+            await Response().Confirm(strs.xp_shop_item_cant_use).SendAsync();
         }
     }
 
@@ -540,7 +552,7 @@ public partial class Xp : NadekoModule<XpService>
 
         if (result == BuyResult.InsufficientFunds)
         {
-            await ReplyErrorLocalizedAsync(strs.not_enough(_gss.GetCurrencySign()));
+            await Response().Error(strs.not_enough(_gss.GetCurrencySign())).SendAsync();
         }
     }
 

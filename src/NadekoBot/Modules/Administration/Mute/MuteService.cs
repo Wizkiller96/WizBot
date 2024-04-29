@@ -122,7 +122,7 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+        _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
                                                            .WithDescription(
                                                                $"You've been muted in {user.Guild} server")
                                                            .AddField("Mute Type", type.ToString())
@@ -140,7 +140,7 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _ = Task.Run(() => user.SendMessageAsync(embed: _eb.Create()
+        _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
                                                            .WithDescription(
                                                                $"You've been unmuted in {user.Guild} server")
                                                            .AddField("Unmute Type", type.ToString())

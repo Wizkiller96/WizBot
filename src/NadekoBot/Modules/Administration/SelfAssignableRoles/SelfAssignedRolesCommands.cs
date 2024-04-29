@@ -18,9 +18,9 @@ public partial class Administration
             var newVal = _service.ToggleAdSarm(ctx.Guild.Id);
 
             if (newVal)
-                await ReplyConfirmLocalizedAsync(strs.adsarm_enable(prefix));
+                await Response().Confirm(strs.adsarm_enable(prefix)).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.adsarm_disable(prefix));
+                await Response().Confirm(strs.adsarm_disable(prefix)).SendAsync();
         }
 
         [Cmd]
@@ -46,11 +46,12 @@ public partial class Administration
 
             if (succ)
             {
-                await ReplyConfirmLocalizedAsync(strs.role_added(Format.Bold(role.Name),
-                    Format.Bold(@group.ToString())));
+                await Response()
+                      .Confirm(strs.role_added(Format.Bold(role.Name), Format.Bold(group.ToString())))
+                      .SendAsync();
             }
             else
-                await ReplyErrorLocalizedAsync(strs.role_in_list(Format.Bold(role.Name)));
+                await Response().Error(strs.role_in_list(Format.Bold(role.Name))).SendAsync();
         }
 
         [Cmd]
@@ -64,11 +65,12 @@ public partial class Administration
 
             if (set)
             {
-                await ReplyConfirmLocalizedAsync(
-                    strs.group_name_added(Format.Bold(@group.ToString()), Format.Bold(name)));
+                await Response()
+                      .Confirm(strs.group_name_added(Format.Bold(group.ToString()), Format.Bold(name)))
+                      .SendAsync();
             }
             else
-                await ReplyConfirmLocalizedAsync(strs.group_name_removed(Format.Bold(group.ToString())));
+                await Response().Confirm(strs.group_name_removed(Format.Bold(group.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -82,9 +84,9 @@ public partial class Administration
 
             var success = _service.RemoveSar(role.Guild.Id, role.Id);
             if (!success)
-                await ReplyErrorLocalizedAsync(strs.self_assign_not);
+                await Response().Error(strs.self_assign_not).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.self_assign_rem(Format.Bold(role.Name)));
+                await Response().Confirm(strs.self_assign_rem(Format.Bold(role.Name))).SendAsync();
         }
 
         [Cmd]
@@ -133,7 +135,7 @@ public partial class Administration
                         rolesStr.AppendLine();
                     }
 
-                    return _eb.Create()
+                    return new EmbedBuilder()
                               .WithOkColor()
                               .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
                               .WithDescription(rolesStr.ToString())
@@ -153,9 +155,9 @@ public partial class Administration
         {
             var areExclusive = _service.ToggleEsar(ctx.Guild.Id);
             if (areExclusive)
-                await ReplyConfirmLocalizedAsync(strs.self_assign_excl);
+                await Response().Confirm(strs.self_assign_excl).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.self_assign_no_excl);
+                await Response().Confirm(strs.self_assign_no_excl).SendAsync();
         }
 
         [Cmd]
@@ -171,12 +173,14 @@ public partial class Administration
 
             if (!succ)
             {
-                await ReplyErrorLocalizedAsync(strs.self_assign_not);
+                await Response().Error(strs.self_assign_not).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.self_assign_level_req(Format.Bold(role.Name),
-                Format.Bold(level.ToString())));
+            await Response()
+                  .Confirm(strs.self_assign_level_req(Format.Bold(role.Name),
+                      Format.Bold(level.ToString())))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -189,15 +193,15 @@ public partial class Administration
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.AssignResult.ErrNotAssignable)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
+                msg = await Response().Error(strs.self_assign_not).SendAsync();
             else if (result == SelfAssignedRolesService.AssignResult.ErrLvlReq)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_level(Format.Bold(extra.ToString())));
+                msg = await Response().Error(strs.self_assign_not_level(Format.Bold(extra.ToString()))).SendAsync();
             else if (result == SelfAssignedRolesService.AssignResult.ErrAlreadyHave)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_already(Format.Bold(role.Name)));
+                msg = await Response().Error(strs.self_assign_already(Format.Bold(role.Name))).SendAsync();
             else if (result == SelfAssignedRolesService.AssignResult.ErrNotPerms)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
+                msg = await Response().Error(strs.self_assign_perms).SendAsync();
             else
-                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_success(Format.Bold(role.Name)));
+                msg = await Response().Confirm(strs.self_assign_success(Format.Bold(role.Name))).SendAsync();
 
             if (autoDelete)
             {
@@ -216,13 +220,13 @@ public partial class Administration
 
             IUserMessage msg;
             if (result == SelfAssignedRolesService.RemoveResult.ErrNotAssignable)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not);
+                msg = await Response().Error(strs.self_assign_not).SendAsync();
             else if (result == SelfAssignedRolesService.RemoveResult.ErrNotHave)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_not_have(Format.Bold(role.Name)));
+                msg = await Response().Error(strs.self_assign_not_have(Format.Bold(role.Name))).SendAsync();
             else if (result == SelfAssignedRolesService.RemoveResult.ErrNotPerms)
-                msg = await ReplyErrorLocalizedAsync(strs.self_assign_perms);
+                msg = await Response().Error(strs.self_assign_perms).SendAsync();
             else
-                msg = await ReplyConfirmLocalizedAsync(strs.self_assign_remove(Format.Bold(role.Name)));
+                msg = await Response().Confirm(strs.self_assign_remove(Format.Bold(role.Name))).SendAsync();
 
             if (autoDelete)
             {

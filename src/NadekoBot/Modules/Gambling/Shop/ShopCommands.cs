@@ -54,8 +54,8 @@ public partial class Gambling
                     var theseEntries = entries.Skip(curPage * 9).Take(9).ToArray();
 
                     if (!theseEntries.Any())
-                        return _eb.Create().WithErrorColor().WithDescription(GetText(strs.shop_none));
-                    var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.shop));
+                        return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.shop_none));
+                    var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.shop));
 
                     for (var i = 0; i < theseEntries.Length; i++)
                     {
@@ -100,7 +100,7 @@ public partial class Gambling
 
             if (entry is null)
             {
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
+                await Response().Error(strs.shop_item_not_found).SendAsync();
                 return;
             }
 
@@ -109,14 +109,14 @@ public partial class Gambling
                 var role = ctx.Guild.GetRole(reqRoleId);
                 if (role is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_item_req_role_not_found);
+                    await Response().Error(strs.shop_item_req_role_not_found).SendAsync();
                     return;
                 }
 
                 var guser = (IGuildUser)ctx.User;
                 if (!guser.RoleIds.Contains(reqRoleId))
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_item_req_role_unfulfilled(Format.Bold(role.ToString())));
+                    await Response().Error(strs.shop_item_req_role_unfulfilled(Format.Bold(role.ToString()))).SendAsync();
                     return;
                 }
             }
@@ -128,13 +128,13 @@ public partial class Gambling
 
                 if (role is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_role_not_found);
+                    await Response().Error(strs.shop_role_not_found).SendAsync();
                     return;
                 }
 
                 if (guser.RoleIds.Any(id => id == role.Id))
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_role_already_bought);
+                    await Response().Error(strs.shop_role_already_bought).SendAsync();
                     return;
                 }
 
@@ -148,18 +148,18 @@ public partial class Gambling
                     {
                         Log.Warning(ex, "Error adding shop role");
                         await _cs.AddAsync(ctx.User.Id, entry.Price, new("shop", "error-refund"));
-                        await ReplyErrorLocalizedAsync(strs.shop_role_purchase_error);
+                        await Response().Error(strs.shop_role_purchase_error).SendAsync();
                         return;
                     }
 
                     var profit = GetProfitAmount(entry.Price);
                     await _cs.AddAsync(entry.AuthorId, profit, new("shop", "sell", $"Shop sell item - {entry.Type}"));
                     await _cs.AddAsync(ctx.Client.CurrentUser.Id, entry.Price - profit, new("shop", "cut"));
-                    await ReplyConfirmLocalizedAsync(strs.shop_role_purchase(Format.Bold(role.Name)));
+                    await Response().Confirm(strs.shop_role_purchase(Format.Bold(role.Name))).SendAsync();
                     return;
                 }
 
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                 return;
             }
 
@@ -167,7 +167,7 @@ public partial class Gambling
             {
                 if (entry.Items.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.out_of_stock);
+                    await Response().Error(strs.out_of_stock).SendAsync();
                     return;
                 }
 
@@ -183,7 +183,7 @@ public partial class Gambling
 
                     try
                     {
-                        await ctx.User.EmbedAsync(_eb.Create()
+                        await ctx.User.EmbedAsync(new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
                             .AddField(GetText(strs.item), item.Text)
@@ -211,14 +211,14 @@ public partial class Gambling
                             }
                         }
 
-                        await ReplyErrorLocalizedAsync(strs.shop_buy_error);
+                        await Response().Error(strs.shop_buy_error).SendAsync();
                         return;
                     }
 
-                    await ReplyConfirmLocalizedAsync(strs.shop_item_purchase);
+                    await Response().Confirm(strs.shop_item_purchase).SendAsync();
                 }
                 else
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
             }
             else if (entry.Type == ShopEntryType.Command)
             {
@@ -229,24 +229,24 @@ public partial class Gambling
 
                 if (guild is null || channel is null || msg is null || user is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.shop_command_invalid_context);
+                    await Response().Error(strs.shop_command_invalid_context).SendAsync();
                     return;
                 }
 
                 if (!await _cs.RemoveAsync(ctx.User.Id, entry.Price, new("shop", "buy", entry.Type.ToString())))
                 {
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                     return;
                 }
                 else
                 {
                     var cmd = entry.Command.Replace("%you%", ctx.User.Id.ToString());
-                    var eb = _eb.Create()
+                    var eb = new EmbedBuilder()
                         .WithPendingColor()
                         .WithTitle("Executing shop command")
                         .WithDescription(cmd);
 
-                    var msgTask = EmbedAsync(eb);
+                    var msgTask = Response().Embed(eb).SendAsync();
 
                     await _cs.AddAsync(entry.AuthorId,
                         GetProfitAmount(entry.Price),
@@ -290,7 +290,7 @@ public partial class Gambling
 
             var entry = await _service.AddShopCommandAsync(ctx.Guild.Id, ctx.User.Id, price, command);
 
-            await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
+            await Response().Embed(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add))).SendAsync();
         }
 
         [Cmd]
@@ -324,7 +324,7 @@ public partial class Gambling
                 uow.SaveChanges();
             }
 
-            await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
+            await Response().Embed(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add))).SendAsync();
         }
 
         [Cmd]
@@ -356,7 +356,7 @@ public partial class Gambling
                 uow.SaveChanges();
             }
 
-            await ctx.Channel.EmbedAsync(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add)));
+            await Response().Embed(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add))).SendAsync();
         }
 
         [Cmd]
@@ -392,13 +392,13 @@ public partial class Gambling
             }
 
             if (entry is null)
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
+                await Response().Error(strs.shop_item_not_found).SendAsync();
             else if (!rightType)
-                await ReplyErrorLocalizedAsync(strs.shop_item_wrong_type);
+                await Response().Error(strs.shop_item_wrong_type).SendAsync();
             else if (added == false)
-                await ReplyErrorLocalizedAsync(strs.shop_list_item_not_unique);
+                await Response().Error(strs.shop_list_item_not_unique).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.shop_list_item_added);
+                await Response().Confirm(strs.shop_list_item_added).SendAsync();
         }
 
         [Cmd]
@@ -426,9 +426,9 @@ public partial class Gambling
             }
 
             if (removed is null)
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
+                await Response().Error(strs.shop_item_not_found).SendAsync();
             else
-                await ctx.Channel.EmbedAsync(EntryToEmbed(removed).WithTitle(GetText(strs.shop_item_rm)));
+                await Response().Embed(EntryToEmbed(removed).WithTitle(GetText(strs.shop_item_rm))).SendAsync();
         }
 
         [Cmd]
@@ -514,19 +514,19 @@ public partial class Gambling
             var succ = await _service.SetItemRoleRequirementAsync(ctx.Guild.Id, itemIndex, role?.Id);
             if (!succ)
             {
-                await ReplyErrorLocalizedAsync(strs.shop_item_not_found);
+                await Response().Error(strs.shop_item_not_found).SendAsync();
                 return;
             }
 
             if (role is null)
-                await ReplyConfirmLocalizedAsync(strs.shop_item_role_no_req(itemIndex));
+                await Response().Confirm(strs.shop_item_role_no_req(itemIndex)).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.shop_item_role_req(itemIndex + 1, role));
+                await Response().Confirm(strs.shop_item_role_req(itemIndex + 1, role)).SendAsync();
         }
 
-        public IEmbedBuilder EntryToEmbed(ShopEntry entry)
+        public EmbedBuilder EntryToEmbed(ShopEntry entry)
         {
-            var embed = _eb.Create().WithOkColor();
+            var embed = new EmbedBuilder().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
             {

@@ -33,13 +33,13 @@ public partial class Administration
             var msg = await ctx.Channel.GetMessageAsync(messageId);
             if (msg is null)
             {
-                await ReplyErrorLocalizedAsync(strs.not_found);
+                await Response().Error(strs.not_found).SendAsync();
                 return;
             }
             
             if (ctx.User.Id != ctx.Guild.OwnerId && ((IGuildUser)ctx.User).GetRoles().Max(x => x.Position) <= role.Position)
             {
-                await ReplyErrorLocalizedAsync(strs.hierarchy);
+                await Response().Error(strs.hierarchy).SendAsync();
                 return;
             }
 
@@ -58,8 +58,8 @@ public partial class Administration
                 {
                     _ = msg.RemoveReactionAsync(emote, ctx.Client.CurrentUser);
                     return !fl.IsPatronLimit
-                        ? ReplyErrorLocalizedAsync(strs.limit_reached(fl.Quota))
-                        : ReplyPendingLocalizedAsync(strs.feature_limit_reached_owner(fl.Quota, fl.Name));
+                        ? Response().Error(strs.limit_reached(fl.Quota)).SendAsync()
+                        : Response().Pending(strs.feature_limit_reached_owner(fl.Quota, fl.Name)).SendAsync();
                 });
         }
 
@@ -76,7 +76,7 @@ public partial class Administration
 
             await ctx.SendPaginatedConfirmAsync(page, curPage =>
             {
-                var embed = _eb.Create(ctx)
+                var embed = new EmbedBuilder()
                                .WithOkColor();
 
                 var content = string.Empty;

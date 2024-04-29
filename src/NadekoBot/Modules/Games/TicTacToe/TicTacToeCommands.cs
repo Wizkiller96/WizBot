@@ -37,7 +37,7 @@ public partial class Games
 
                 game = new(Strings, _client, channel, (IGuildUser)ctx.User, options, _eb);
                 _service.TicTacToeGames.Add(channel.Id, game);
-                await ReplyConfirmLocalizedAsync(strs.ttt_created);
+                await Response().Confirm(strs.ttt_created).SendAsync();
 
                 game.OnEnded += _ =>
                 {

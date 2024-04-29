@@ -13,11 +13,11 @@ public partial class Searches
     //         var succ = await _service.ToggleChannelFollowAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
     //         if(succ)
     //         {
-    //             await ReplyConfirmLocalizedAsync(strs.yt_follow_added);
+    //             await Response().Confirm(strs.yt_follow_added).SendAsync();
     //         }
     //         else
     //         {
-    //             await ReplyConfirmLocalizedAsync(strs.yt_follow_fail);
+    //             await Response().Confirm(strs.yt_follow_fail).SendAsync();
     //         }
     //     }
     //     
@@ -28,11 +28,11 @@ public partial class Searches
     //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
     //         //if (succ)
     //         //{
-    //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_added);
+    //         //    await Response().Confirm(strs.yt_track_added).SendAsync();
     //         //}
     //         //else
     //         //{
-    //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_fail);
+    //         //    await Response().Confirm(strs.yt_track_fail).SendAsync();
     //         //}
     //     }
     //     
@@ -43,11 +43,11 @@ public partial class Searches
     //         //var succ = await _service.ToggleChannelTrackingAsync(ctx.Guild.Id, ctx.Channel.Id, ytChannelId, uploadMessage);
     //         //if (succ)
     //         //{
-    //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_added);
+    //         //    await Response().Confirm(strs.yt_track_added).SendAsync();
     //         //}
     //         //else
     //         //{
-    //         //    await ReplyConfirmLocalizedAsync(strs.yt_track_fail);
+    //         //    await Response().Confirm(strs.yt_track_fail).SendAsync();
     //         //}
     //     }
     // }

@@ -38,7 +38,7 @@ public partial class Gambling
 
             var fileName = $"dice.{format.FileExtensions.First()}";
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .AddField(GetText(strs.roll2), gen)
@@ -74,7 +74,7 @@ public partial class Gambling
         {
             if (num is < 1 or > 30)
             {
-                await ReplyErrorLocalizedAsync(strs.dice_invalid_number(1, 30));
+                await Response().Error(strs.dice_invalid_number(1, 30)).SendAsync();
                 return;
             }
 
@@ -115,7 +115,7 @@ public partial class Gambling
                 d.Dispose();
 
             var imageName = $"dice.{format.FileExtensions.First()}";
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .AddField(GetText(strs.rolls), values.Select(x => Format.Code(x.ToString())).Join(' '), true)
@@ -141,14 +141,14 @@ public partial class Gambling
 
                 for (var i = 0; i < n1; i++)
                     rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithOkColor()
                                .WithAuthor(ctx.User)
                                .WithDescription(GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
                                .AddField(Format.Bold("Result"),
                                    string.Join(" ", rolls.Select(c => Format.Code($"[{c}]"))));
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
             }
             else if ((match = _dndRegex.Match(arg)).Length != 0)
             {
@@ -170,7 +170,7 @@ public partial class Gambling
                         arr[i] = rng.Next(1, n2 + 1);
 
                     var sum = arr.Sum();
-                    var embed = _eb.Create()
+                    var embed = new EmbedBuilder()
                                    .WithOkColor()
                                    .WithAuthor(ctx.User)
                                    .WithDescription(GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))
@@ -180,7 +180,7 @@ public partial class Gambling
                                                => Format.Code(x.ToString()))))
                                    .AddField(Format.Bold("Sum"),
                                        sum + " + " + add + " - " + sub + " = " + (sum + add - sub));
-                    await EmbedAsync(embed);
+                    await Response().Embed(embed).SendAsync();
                 }
             }
         }
@@ -194,7 +194,7 @@ public partial class Gambling
                 var arr = range.Split('-').Take(2).Select(int.Parse).ToArray();
                 if (arr[0] > arr[1])
                 {
-                    await ReplyErrorLocalizedAsync(strs.second_larger_than_first);
+                    await Response().Error(strs.second_larger_than_first).SendAsync();
                     return;
                 }
 
@@ -203,7 +203,7 @@ public partial class Gambling
             else
                 rolled = new NadekoRandom().Next(0, int.Parse(range) + 1);
 
-            await ReplyConfirmLocalizedAsync(strs.dice_rolled(Format.Bold(rolled.ToString())));
+            await Response().Confirm(strs.dice_rolled(Format.Bold(rolled.ToString()))).SendAsync();
         }
 
         private async Task<Image<Rgba32>> GetDiceAsync(int num)

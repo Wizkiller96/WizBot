@@ -26,6 +26,7 @@ public class ChatterBotService : IExecOnMessage
     private readonly IHttpClientFactory _httpFactory;
     private readonly IPatronageService _ps;
     private readonly GamesConfigService _gcs;
+    private readonly IMessageSenderService _sender;
 
     public ChatterBotService(
         DiscordSocketClient client,
@@ -37,7 +38,8 @@ public class ChatterBotService : IExecOnMessage
         IBotCredentials creds,
         IEmbedBuilderService eb,
         IPatronageService ps,
-        GamesConfigService gcs)
+        GamesConfigService gcs,
+        IMessageSenderService sender)
     {
         _client = client;
         _perms = perms;
@@ -49,6 +51,7 @@ public class ChatterBotService : IExecOnMessage
         _ps = ps;
         _perms = perms;
         _gcs = gcs;
+        _sender = sender;
 
         _flKey = new FeatureLimitKey()
         {
@@ -133,7 +136,7 @@ public class ChatterBotService : IExecOnMessage
                 usrMsg.Author,
                 "games",
                 CleverBotResponseStr.CLEVERBOT_RESPONSE);
-            
+
             if (!res.IsAllowed)
                 return false;
 
@@ -163,20 +166,24 @@ public class ChatterBotService : IExecOnMessage
                 {
                     if (ql.Quota == 0)
                     {
-                        await channel.SendErrorAsync(_eb,
-                            null!,
-                            text:
-                            "In order to use the cleverbot feature, the owner of this server should be [Patron Tier X](https://patreon.com/join/nadekobot) on patreon.",
-                            footer:
-                            "You may disable the cleverbot feature, and this message via '.cleverbot' command");
+                        await channel
+                              .Response(_strings, _eb)
+                              .Error(null,
+                                  text:
+                                  "In order to use the cleverbot feature, the owner of this server should be [Patron Tier X](https://patreon.com/join/nadekobot) on patreon.",
+                                  footer:
+                                  "You may disable the cleverbot feature, and this message via '.cleverbot' command")
+                              .SendAsync();
 
                         return true;
                     }
 
-                    await channel.SendErrorAsync(_eb,
-                        null!,
-                        $"You've reached your quota limit of **{ql.Quota}** responses {ql.QuotaPeriod.ToFullName()} for the cleverbot feature.",
-                        footer: "You may wait for the quota reset or .");
+                    await channel.Response(_strings, _eb)
+                                 .Error(
+                                     null!,
+                                     $"You've reached your quota limit of **{ql.Quota}** responses {ql.QuotaPeriod.ToFullName()} for the cleverbot feature.",
+                                     footer: "You may wait for the quota reset or .")
+                                 .SendAsync();
 
                     return true;
                 }
@@ -184,19 +191,17 @@ public class ChatterBotService : IExecOnMessage
 
             _ = channel.TriggerTypingAsync();
             var response = await cbs.Think(message, usrMsg.Author.ToString());
-            await channel.SendConfirmAsync(_eb,
-                title: null,
-                response.SanitizeMentions(true)
-                // , footer: counter > 0 ? counter.ToString() : null
-            );
+            await _sender.Response(channel)
+                         .Confirm(response)
+                         .SendAsync();
 
             Log.Information("""
-                CleverBot Executed
-                Server: {GuildName} [{GuildId}]
-                Channel: {ChannelName} [{ChannelId}]
-                UserId: {Author} [{AuthorId}]
-                Message: {Content}
-                """,
+                            CleverBot Executed
+                            Server: {GuildName} [{GuildId}]
+                            Channel: {ChannelName} [{ChannelId}]
+                            UserId: {Author} [{AuthorId}]
+                            Message: {Content}
+                            """,
                 guild.Name,
                 guild.Id,
                 usrMsg.Channel?.Name,

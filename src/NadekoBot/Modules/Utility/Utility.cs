@@ -70,13 +70,13 @@ public partial class Utility : NadekoModule
     {
         if (!((IGuildUser)ctx.User).GetPermissions(channel).SendMessages)
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+            await Response().Error(strs.insuf_perms_u).SendAsync();
             return;
         }
 
         if (!((ctx.Guild as SocketGuild)?.CurrentUser.GetPermissions(channel).SendMessages ?? false))
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
+            await Response().Error(strs.insuf_perms_i).SendAsync();
             return;
         }
 
@@ -122,14 +122,16 @@ public partial class Utility : NadekoModule
 
         var i = 0;
         if (arr.Length == 0)
-            await ReplyErrorLocalizedAsync(strs.nobody_playing_game);
+            await Response().Error(strs.nobody_playing_game).SendAsync();
         else
         {
-            await SendConfirmAsync("```css\n"
-                                   + string.Join("\n",
-                                       arr.GroupBy(_ => i++ / 2)
-                                          .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}"))))
-                                   + "\n```");
+            await Response()
+                  .Confirm("```css\n"
+                           + string.Join("\n",
+                               arr.GroupBy(_ => i++ / 2)
+                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}"))))
+                           + "\n```")
+                  .SendAsync();
         }
     }
 
@@ -158,9 +160,9 @@ public partial class Utility : NadekoModule
                 var pageUsers = roleUsers.Skip(cur * 20).Take(20).ToList();
 
                 if (pageUsers.Count == 0)
-                    return _eb.Create().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
+                    return new EmbedBuilder().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
 
-                return _eb.Create()
+                return new EmbedBuilder()
                           .WithOkColor()
                           .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"), roleUsers.Length)))
                           .WithDescription(string.Join("\n", pageUsers));
@@ -192,7 +194,7 @@ public partial class Utility : NadekoModule
                                    return !method.GetParameters().Any();
                                }))
             builder.AppendLine($"{p.Name} : {p.GetValue(perms, null)}");
-        await SendConfirmAsync(builder.ToString());
+        await Response().Confirm(builder.ToString()).SendAsync();
     }
 
     [Cmd]
@@ -200,26 +202,30 @@ public partial class Utility : NadekoModule
     public async Task UserId([Leftover] IGuildUser target = null)
     {
         var usr = target ?? ctx.User;
-        await ReplyConfirmLocalizedAsync(strs.userid("🆔",
-            Format.Bold(usr.ToString()),
-            Format.Code(usr.Id.ToString())));
+        await Response()
+              .Confirm(strs.userid("🆔",
+                  Format.Bold(usr.ToString()),
+                  Format.Code(usr.Id.ToString())))
+              .SendAsync();
     }
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     public async Task RoleId([Leftover] IRole role)
-        => await ReplyConfirmLocalizedAsync(strs.roleid("🆔",
-            Format.Bold(role.ToString()),
-            Format.Code(role.Id.ToString())));
+        => await Response()
+                 .Confirm(strs.roleid("🆔",
+                     Format.Bold(role.ToString()),
+                     Format.Code(role.Id.ToString())))
+                 .SendAsync();
 
     [Cmd]
     public async Task ChannelId()
-        => await ReplyConfirmLocalizedAsync(strs.channelid("🆔", Format.Code(ctx.Channel.Id.ToString())));
+        => await Response().Confirm(strs.channelid("🆔", Format.Code(ctx.Channel.Id.ToString()))).SendAsync();
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
     public async Task ServerId()
-        => await ReplyConfirmLocalizedAsync(strs.serverid("🆔", Format.Code(ctx.Guild.Id.ToString())));
+        => await Response().Confirm(strs.serverid("🆔", Format.Code(ctx.Guild.Id.ToString()))).SendAsync();
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
@@ -241,11 +247,13 @@ public partial class Utility : NadekoModule
                               .Take(rolesPerPage)
                               .ToArray();
             if (!roles.Any())
-                await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
+                await Response().Error(strs.no_roles_on_page).SendAsync();
             else
             {
-                await SendConfirmAsync(GetText(strs.roles_page(page, Format.Bold(target.ToString()))),
-                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
+                await Response()
+                      .Confirm(GetText(strs.roles_page(page, Format.Bold(target.ToString()))),
+                          "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles))
+                      .SendAsync();
             }
         }
         else
@@ -256,11 +264,13 @@ public partial class Utility : NadekoModule
                              .Take(rolesPerPage)
                              .ToArray();
             if (!roles.Any())
-                await ReplyErrorLocalizedAsync(strs.no_roles_on_page);
+                await Response().Error(strs.no_roles_on_page).SendAsync();
             else
             {
-                await SendConfirmAsync(GetText(strs.roles_all_page(page)),
-                    "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true));
+                await Response()
+                      .Confirm(GetText(strs.roles_all_page(page)),
+                          "\n• " + string.Join("\n• ", (IEnumerable<IRole>)roles).SanitizeMentions(true))
+                      .SendAsync();
             }
         }
     }
@@ -279,9 +289,9 @@ public partial class Utility : NadekoModule
 
         var topic = channel.Topic;
         if (string.IsNullOrWhiteSpace(topic))
-            await ReplyErrorLocalizedAsync(strs.no_topic_set);
+            await Response().Error(strs.no_topic_set).SendAsync();
         else
-            await SendConfirmAsync(GetText(strs.channel_topic), topic);
+            await Response().Confirm(GetText(strs.channel_topic), topic).SendAsync();
     }
 
     [Cmd]
@@ -291,7 +301,7 @@ public partial class Utility : NadekoModule
         if (string.IsNullOrWhiteSpace(ownerIds))
             ownerIds = "-";
 
-        await EmbedAsync(_eb.Create()
+        await Response().Embed(new EmbedBuilder()
                             .WithOkColor()
                             .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
                                 "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
@@ -314,7 +324,7 @@ public partial class Utility : NadekoModule
                                 GetText(strs.presence_txt(_coord.GetGuildCount(),
                                     _stats.TextChannels,
                                     _stats.VoiceChannels)),
-                                true));
+                                true)).SendAsync();
     }
 
     [Cmd]
@@ -325,7 +335,7 @@ public partial class Utility : NadekoModule
         var result = string.Join("\n", tags.Select(m => GetText(strs.showemojis(m, m.Url))));
 
         if (string.IsNullOrWhiteSpace(result))
-            await ReplyErrorLocalizedAsync(strs.showemojis_none);
+            await Response().Error(strs.showemojis_none).SendAsync();
         else
             await ctx.Channel.SendMessageAsync(result.TrimTo(2000));
     }
@@ -364,7 +374,7 @@ public partial class Utility : NadekoModule
         using var res = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
         if (!res.IsImage() || res.GetContentLength() > 262_144)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_emoji_link);
+            await Response().Error(strs.invalid_emoji_link).SendAsync();
             return;
         }
 
@@ -378,11 +388,11 @@ public partial class Utility : NadekoModule
         {
             Log.Warning(ex, "Error adding emoji on server {GuildId}", ctx.Guild.Id);
 
-            await ReplyErrorLocalizedAsync(strs.emoji_add_error);
+            await Response().Error(strs.emoji_add_error).SendAsync();
             return;
         }
 
-        await ConfirmLocalizedAsync(strs.emoji_added(em.ToString()));
+        await Response().Confirm(strs.emoji_added(em.ToString())).SendAsync();
     }
 
     [Cmd]
@@ -413,7 +423,7 @@ public partial class Utility : NadekoModule
 
         if (fails.Count > 0)
         {
-            await ReplyPendingLocalizedAsync(strs.emoji_not_removed(fails.Select(x => x.ToString()).Join(" ")));
+            await Response().Pending(strs.emoji_not_removed(fails.Select(x => x.ToString()).Join(" "))).SendAsync();
             return;
         }
 
@@ -442,7 +452,7 @@ public partial class Utility : NadekoModule
         }
         else
         {
-            await ReplyErrorLocalizedAsync(strs.sticker_error);
+            await Response().Error(strs.sticker_error).SendAsync();
             return;
         }
 
@@ -464,7 +474,7 @@ public partial class Utility : NadekoModule
         catch (Exception ex)
         {
             Log.Warning(ex, "Error occurred while adding a sticker: {Message}", ex.Message);
-            await ReplyErrorLocalizedAsync(strs.error_occured);
+            await Response().Error(strs.error_occured).SendAsync();
         }
         finally
         {
@@ -503,15 +513,15 @@ public partial class Utility : NadekoModule
 
         if (!guilds.Any())
         {
-            await ReplyErrorLocalizedAsync(strs.listservers_none);
+            await Response().Error(strs.listservers_none).SendAsync();
             return;
         }
 
-        var embed = _eb.Create().WithOkColor();
+        var embed = new EmbedBuilder().WithOkColor();
         foreach (var guild in guilds)
             embed.AddField(guild.Name, GetText(strs.listservers(guild.Id, guild.MemberCount, guild.OwnerId)));
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -527,20 +537,20 @@ public partial class Utility : NadekoModule
         var perms = user.GetPermissions(ch);
         if (!perms.ReadMessageHistory || !perms.ViewChannel)
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+            await Response().Error(strs.insuf_perms_u).SendAsync();
             return;
         }
 
         var msg = await ch.GetMessageAsync(messageId);
         if (msg is null)
         {
-            await ReplyErrorLocalizedAsync(strs.msg_not_found);
+            await Response().Error(strs.msg_not_found).SendAsync();
             return;
         }
 
         if (!msg.Embeds.Any())
         {
-            await ReplyErrorLocalizedAsync(strs.not_found);
+            await Response().Error(strs.not_found).SendAsync();
             return;
         }
 
@@ -551,7 +561,7 @@ public partial class Utility : NadekoModule
                         .Map(x => new SmartEmbedArrayElementText(x))
         }.ToJson(_showEmbedSerializerOptions);
 
-        await SendConfirmAsync(Format.Code(json, "json").Replace("](", "]\\("));
+        await Response().Confirm(Format.Code(json, "json").Replace("](", "]\\(")).SendAsync();
     }
 
     [Cmd]
@@ -607,7 +617,9 @@ public partial class Utility : NadekoModule
             sw.Stop();
             msg.DeleteAfter(0);
 
-            await SendConfirmAsync($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms");
+            await Response()
+                  .Confirm($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms")
+                  .SendAsync();
         }
         finally
         {
@@ -623,9 +635,9 @@ public partial class Utility : NadekoModule
         var state = _veService.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 
         if (state)
-            await ReplyConfirmLocalizedAsync(strs.verbose_errors_enabled);
+            await Response().Confirm(strs.verbose_errors_enabled).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.verbose_errors_disabled);
+            await Response().Confirm(strs.verbose_errors_disabled).SendAsync();
     }
 
     [Cmd]
@@ -671,17 +683,17 @@ public partial class Utility : NadekoModule
             var output = result.ReturnValue?.ToString();
             if (!string.IsNullOrWhiteSpace(output))
             {
-                var eb = _eb.Create(ctx)
+                var eb = new EmbedBuilder()
                             .WithOkColor()
                             .AddField("Code", scriptText)
                             .AddField("Output", output.TrimTo(512)!);
 
-                _ = EmbedAsync(eb);
+                _ = Response().Embed(eb).SendAsync();
             }
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.Message);
+            await Response().Error(ex.Message).SendAsync();
         }
     }
 }

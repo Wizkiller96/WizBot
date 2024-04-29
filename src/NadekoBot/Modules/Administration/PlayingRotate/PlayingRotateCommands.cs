@@ -13,9 +13,9 @@ public partial class Administration
         public async Task RotatePlaying()
         {
             if (_service.ToggleRotatePlaying())
-                await ReplyConfirmLocalizedAsync(strs.ropl_enabled);
+                await Response().Confirm(strs.ropl_enabled).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.ropl_disabled);
+                await Response().Confirm(strs.ropl_disabled).SendAsync();
         }
 
         [Cmd]
@@ -24,7 +24,7 @@ public partial class Administration
         {
             await _service.AddPlaying(t, status);
 
-            await ReplyConfirmLocalizedAsync(strs.ropl_added);
+            await Response().Confirm(strs.ropl_added).SendAsync();
         }
 
         [Cmd]
@@ -34,12 +34,14 @@ public partial class Administration
             var statuses = _service.GetRotatingStatuses();
 
             if (!statuses.Any())
-                await ReplyErrorLocalizedAsync(strs.ropl_not_set);
+                await Response().Error(strs.ropl_not_set).SendAsync();
             else
             {
                 var i = 1;
-                await ReplyConfirmLocalizedAsync(strs.ropl_list(string.Join("\n\t",
-                    statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}"))));
+                await Response()
+                      .Confirm(strs.ropl_list(string.Join("\n\t",
+                          statuses.Select(rs => $"`{i++}.` *{rs.Type}* {rs.Status}"))))
+                      .SendAsync();
             }
         }
 
@@ -54,7 +56,7 @@ public partial class Administration
             if (msg is null)
                 return;
 
-            await ReplyConfirmLocalizedAsync(strs.reprm(msg));
+            await Response().Confirm(strs.reprm(msg)).SendAsync();
         }
     }
 }

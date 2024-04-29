@@ -7,7 +7,7 @@ public abstract class CleanupModuleBase : NadekoModule
     {
         try
         {
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                 .WithTitle(GetText(strs.sql_confirm_exec))
                 .WithDescription(name);
 
@@ -19,7 +19,7 @@ public abstract class CleanupModuleBase : NadekoModule
         }
         catch (Exception ex)
         {
-            await SendErrorAsync(ex.ToString());
+            await Response().Error(ex.ToString()).SendAsync();
         }
     }
 }

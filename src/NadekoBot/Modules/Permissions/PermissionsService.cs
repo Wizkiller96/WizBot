@@ -18,18 +18,21 @@ public class PermissionService : IExecPreCommand, INService
     private readonly CommandHandler _cmd;
     private readonly IBotStrings _strings;
     private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     public PermissionService(
         DiscordSocketClient client,
         DbService db,
         CommandHandler cmd,
         IBotStrings strings,
-        IEmbedBuilderService eb)
+        IEmbedBuilderService eb,
+        IMessageSenderService sender)
     {
         _db = db;
         _cmd = cmd;
         _strings = strings;
         _eb = eb;
+        _sender = sender;
 
         using var uow = _db.GetDbContext();
         foreach (var x in uow.Set<GuildConfig>().PermissionsForAll(client.Guilds.ToArray().Select(x => x.Id).ToList()))
@@ -115,11 +118,12 @@ public class PermissionService : IExecPreCommand, INService
             {
                 try
                 {
-                    await channel.SendErrorAsync(_eb,
-                        _strings.GetText(strs.perm_prevent(index + 1,
-                                Format.Bold(pc.Permissions[index]
-                                              .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))),
-                            guild.Id));
+                    await _sender.Response(channel)
+                                 .Error(_strings.GetText(strs.perm_prevent(index + 1,
+                                         Format.Bold(pc.Permissions[index]
+                                                       .GetCommand(_cmd.GetPrefix(guild), (SocketGuild)guild))),
+                                     guild.Id))
+                                 .SendAsync();
                 }
                 catch
                 {
@@ -148,7 +152,7 @@ public class PermissionService : IExecPreCommand, INService
                 returnMsg = "You need Admin permissions in order to use permission commands.";
                 if (pc.Verbose)
                 {
-                    try { await channel.SendErrorAsync(_eb, returnMsg); }
+                    try { await _sender.Response(channel).Error(returnMsg).SendAsync(); }
                     catch { }
                 }
 
@@ -160,7 +164,7 @@ public class PermissionService : IExecPreCommand, INService
                 returnMsg = $"You need the {Format.Bold(role.Name)} role in order to use permission commands.";
                 if (pc.Verbose)
                 {
-                    try { await channel.SendErrorAsync(_eb, returnMsg); }
+                    try { await _sender.Response(channel).Error(returnMsg).SendAsync(); }
                     catch { }
                 }
 

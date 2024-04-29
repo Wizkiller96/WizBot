@@ -9,13 +9,16 @@ namespace NadekoBot.Modules.Utility.Services;
 public class AliasService : IInputTransformer, INService
 {
     public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new();
-    private readonly IEmbedBuilderService _eb;
 
     private readonly DbService _db;
+    private readonly IMessageSenderService _sender;
 
-    public AliasService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
+    public AliasService(
+        DiscordSocketClient client,
+        DbService db,
+        IMessageSenderService sender)
     {
-        _eb = eb;
+        _sender = sender;
 
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -53,7 +56,7 @@ public class AliasService : IInputTransformer, INService
     {
         if (guild is null || string.IsNullOrWhiteSpace(input))
             return null;
-        
+
         if (AliasMaps.TryGetValue(guild.Id, out var maps))
         {
             string newInput = null;
@@ -75,7 +78,9 @@ public class AliasService : IInputTransformer, INService
                 {
                     try
                     {
-                        var toDelete = await channel.SendConfirmAsync(_eb, $"{input} => {newInput}");
+                        var toDelete = await _sender.Response(channel)
+                                                    .Confirm($"{input} => {newInput}")
+                                                    .SendAsync();
                         toDelete.DeleteAfter(1.5f);
                     }
                     catch

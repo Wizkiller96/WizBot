@@ -71,9 +71,9 @@ public class TicTacToe
         return sb.ToString();
     }
 
-    public IEmbedBuilder GetEmbed(string title = null)
+    public EmbedBuilder GetEmbed(string title = null)
     {
-        var embed = _eb.Create()
+        var embed = new EmbedBuilder()
                        .WithOkColor()
                        .WithDescription(Environment.NewLine + GetState())
                        .WithAuthor(GetText(strs.vs(_users[0], _users[1])));
@@ -115,13 +115,13 @@ public class TicTacToe
     {
         if (phase is Phase.Started or Phase.Ended)
         {
-            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_already_running));
+            await _channel.Response(_strings, _eb).Error(user.Mention + GetText(strs.ttt_already_running)).SendAsync();
             return;
         }
 
         if (_users[0] == user)
         {
-            await _channel.SendErrorAsync(_eb, user.Mention + GetText(strs.ttt_against_yourself));
+            await _channel.Response(_strings, _eb).Error(user.Mention + GetText(strs.ttt_against_yourself)).SendAsync();
             return;
         }
 

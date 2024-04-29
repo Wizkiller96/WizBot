@@ -34,7 +34,7 @@ public partial class Gambling
                 {
                     try
                     {
-                        await ReplyErrorLocalizedAsync(strs.no_more_cards);
+                        await Response().Error(strs.no_more_cards).SendAsync();
                     }
                     catch
                     {
@@ -55,7 +55,7 @@ public partial class Gambling
             foreach (var i in images)
                 i.Dispose();
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithOkColor();
             
             var toSend = string.Empty;
@@ -131,7 +131,7 @@ public partial class Gambling
                     return c;
                 });
 
-            await ReplyConfirmLocalizedAsync(strs.deck_reshuffled);
+            await Response().Confirm(strs.deck_reshuffled).SendAsync();
         }
 
         [Cmd]
@@ -156,11 +156,11 @@ public partial class Gambling
 
             if (!res.TryPickT0(out var result, out _))
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                 return;
             }
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .WithDescription(result.Card.GetEmoji())

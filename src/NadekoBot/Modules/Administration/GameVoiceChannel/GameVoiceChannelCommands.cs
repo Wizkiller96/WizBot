@@ -18,18 +18,18 @@ public partial class Administration
 
             if (vch is null)
             {
-                await ReplyErrorLocalizedAsync(strs.not_in_voice);
+                await Response().Error(strs.not_in_voice).SendAsync();
                 return;
             }
 
             var id = _service.ToggleGameVoiceChannel(ctx.Guild.Id, vch.Id);
 
             if (id is null)
-                await ReplyConfirmLocalizedAsync(strs.gvc_disabled);
+                await Response().Confirm(strs.gvc_disabled).SendAsync();
             else
             {
                 _service.GameVoiceChannels.Add(vch.Id);
-                await ReplyConfirmLocalizedAsync(strs.gvc_enabled(Format.Bold(vch.Name)));
+                await Response().Confirm(strs.gvc_enabled(Format.Bold(vch.Name))).SendAsync();
             }
         }
     }

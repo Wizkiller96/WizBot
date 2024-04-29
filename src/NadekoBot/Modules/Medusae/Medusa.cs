@@ -29,14 +29,14 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
             if (unloaded.Length == 0)
             {
-                await ReplyPendingLocalizedAsync(strs.no_medusa_available);
+                await Response().Pending(strs.no_medusa_available).SendAsync();
                 return;
             }
 
             await ctx.SendPaginatedConfirmAsync(0,
                 page =>
                 {
-                    return _eb.Create(ctx)
+                    return new EmbedBuilder()
                               .WithOkColor()
                               .WithTitle(GetText(strs.list_of_unloaded))
                               .WithDescription(unloaded.Skip(10 * page).Take(10).Join('\n'));
@@ -48,7 +48,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
         var res = await _service.LoadMedusaAsync(name);
         if (res == MedusaLoadResult.Success)
-            await ReplyConfirmLocalizedAsync(strs.medusa_loaded(Format.Code(name)));
+            await Response().Confirm(strs.medusa_loaded(Format.Code(name))).SendAsync();
         else
         {
             var locStr = res switch
@@ -60,7 +60,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 _ => strs.error_occured
             };
 
-            await ReplyErrorLocalizedAsync(locStr);
+            await Response().Error(locStr).SendAsync();
         }
     }
     
@@ -73,22 +73,22 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             var loaded = _service.GetLoadedMedusae();
             if (loaded.Count == 0)
             {
-                await ReplyPendingLocalizedAsync(strs.no_medusa_loaded);
+                await Response().Pending(strs.no_medusa_loaded).SendAsync();
                 return;
             }
 
-            await EmbedAsync(_eb.Create(ctx)
+            await Response().Embed(new EmbedBuilder()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.loaded_medusae))
                                             .WithDescription(loaded.Select(x => x.Name)
-                                                                   .Join("\n")));
+                                                                   .Join("\n"))).SendAsync();
             
             return;
         }
         
         var res = await _service.UnloadMedusaAsync(name);
         if (res == MedusaUnloadResult.Success)
-            await ReplyConfirmLocalizedAsync(strs.medusa_unloaded(Format.Code(name)));
+            await Response().Confirm(strs.medusa_unloaded(Format.Code(name))).SendAsync();
         else
         {
             var locStr = res switch
@@ -98,7 +98,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 _ => strs.error_occured
             };
 
-            await ReplyErrorLocalizedAsync(locStr);
+            await Response().Error(locStr).SendAsync();
         }
     }
 
@@ -110,7 +110,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
         if (all.Count == 0)
         {
-            await ReplyPendingLocalizedAsync(strs.no_medusa_available);
+            await Response().Pending(strs.no_medusa_available).SendAsync();
             return;
         }
         
@@ -128,7 +128,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
 
         await ctx.SendPaginatedConfirmAsync(0,
-            page => _eb.Create(ctx)
+            page => new EmbedBuilder()
                        .WithOkColor()
                        .WithTitle(GetText(strs.list_of_medusae))
                        .WithDescription(output.Skip(page * 10).Take(10).Join('\n')),
@@ -150,7 +150,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             
             if (found is null)
             {
-                await ReplyErrorLocalizedAsync(strs.medusa_name_not_found);
+                await Response().Error(strs.medusa_name_not_found).SendAsync();
                 return;
             }
 
@@ -161,7 +161,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                                        : $"{x.Prefix} {x.Name}"))
                                    .Join("\n");
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                         .WithOkColor()
                         .WithAuthor(GetText(strs.medusa_info))
                         .WithTitle(found.Name)
@@ -177,20 +177,20 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                                 : cmdNames,
                             true);
 
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
             return;
         }
 
         if (medusae.Count == 0)
         {
-            await ReplyPendingLocalizedAsync(strs.no_medusa_loaded);
+            await Response().Pending(strs.no_medusa_loaded).SendAsync();
             return;
         }
         
         await ctx.SendPaginatedConfirmAsync(0,
             page =>
             {
-                var eb = _eb.Create(ctx)
+                var eb = new EmbedBuilder()
                             .WithOkColor();
 
                 foreach (var medusa in medusae.Skip(page * 9).Take(9))
@@ -212,7 +212,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
     [OwnerOnly]
     public async Task MedusaSearch()
     {
-        var eb = _eb.Create()
+        var eb = new EmbedBuilder()
                     .WithTitle(GetText(strs.list_of_medusae))
                     .WithOkColor();
         
@@ -224,6 +224,6 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 """, true);
         }
 
-        await EmbedAsync(eb);
+        await Response().Embed(eb).SendAsync();
     }
 }

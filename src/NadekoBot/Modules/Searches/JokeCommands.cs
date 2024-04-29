@@ -10,30 +10,30 @@ public partial class Searches
     {
         [Cmd]
         public async Task Yomama()
-            => await SendConfirmAsync(await _service.GetYomamaJoke());
+            => await Response().Confirm(await _service.GetYomamaJoke()).SendAsync();
 
         [Cmd]
         public async Task Randjoke()
         {
             var (setup, punchline) = await _service.GetRandomJoke();
-            await SendConfirmAsync(setup, punchline);
+            await Response().Confirm(setup, punchline).SendAsync();
         }
 
         [Cmd]
         public async Task ChuckNorris()
-            => await SendConfirmAsync(await _service.GetChuckNorrisJoke());
+            => await Response().Confirm(await _service.GetChuckNorrisJoke()).SendAsync();
 
         [Cmd]
         public async Task WowJoke()
         {
             if (!_service.WowJokes.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.jokes_not_loaded);
+                await Response().Error(strs.jokes_not_loaded).SendAsync();
                 return;
             }
 
             var joke = _service.WowJokes[new NadekoRandom().Next(0, _service.WowJokes.Count)];
-            await SendConfirmAsync(joke.Question, joke.Answer);
+            await Response().Confirm(joke.Question, joke.Answer).SendAsync();
         }
 
         [Cmd]
@@ -41,13 +41,13 @@ public partial class Searches
         {
             if (!_service.MagicItems.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.magicitems_not_loaded);
+                await Response().Error(strs.magicitems_not_loaded).SendAsync();
                 return;
             }
 
             var item = _service.MagicItems[new NadekoRandom().Next(0, _service.MagicItems.Count)];
 
-            await SendConfirmAsync("✨" + item.Name, item.Description);
+            await Response().Confirm("✨" + item.Name, item.Description).SendAsync();
         }
     }
 }

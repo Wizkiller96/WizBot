@@ -18,7 +18,7 @@ public sealed class GuildContextAdapter : GuildContext
 
     public override IGuildUser User { get; } 
 
-    public override IEmbedBuilder Embed()
+    public override EmbedBuilder Embed()
         => _ebs.Value.Create();
 
     public GuildContextAdapter(ICommandContext ctx, IMedusaStrings strings, IServiceProvider services)

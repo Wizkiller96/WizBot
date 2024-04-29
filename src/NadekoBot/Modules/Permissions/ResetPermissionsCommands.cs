@@ -23,7 +23,7 @@ public partial class Permissions
         public async Task ResetPerms()
         {
             await _perms.Reset(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.perms_reset);
+            await Response().Confirm(strs.perms_reset).SendAsync();
         }
 
         [Cmd]
@@ -31,7 +31,7 @@ public partial class Permissions
         public async Task ResetGlobalPerms()
         {
             await _gps.Reset();
-            await ReplyConfirmLocalizedAsync(strs.global_perms_reset);
+            await Response().Confirm(strs.global_perms_reset).SendAsync();
         }
     }
 }

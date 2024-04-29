@@ -54,7 +54,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(query))
             return;
 
-        var embed = _eb.Create();
+        var embed = new EmbedBuilder();
         var data = await _service.GetWeatherDataAsync(query);
 
         if (data is null)
@@ -93,7 +93,7 @@ public partial class Searches : NadekoModule<SearchesService>
                     $"https://openweathermap.org/img/w/{data.Weather[0].Icon}.png");
         }
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -124,22 +124,22 @@ public partial class Searches : NadekoModule<SearchesService>
                     break;
             }
 
-            await ReplyErrorLocalizedAsync(errorKey);
+            await Response().Error(errorKey).SendAsync();
             return;
         }
 
         if (string.IsNullOrWhiteSpace(data.TimeZoneName))
         {
-            await ReplyErrorLocalizedAsync(strs.timezone_db_api_key);
+            await Response().Error(strs.timezone_db_api_key).SendAsync();
             return;
         }
 
-        var eb = _eb.Create()
-            .WithOkColor()
-            .WithTitle(GetText(strs.time_new))
-            .WithDescription(Format.Code(data.Time.ToString(Culture)))
-            .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
-            .AddField(GetText(strs.timezone), data.TimeZoneName, true);
+        var eb = new EmbedBuilder()
+                 .WithOkColor()
+                 .WithTitle(GetText(strs.time_new))
+                 .WithDescription(Format.Code(data.Time.ToString(Culture)))
+                 .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
+                 .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
         await ctx.Channel.SendMessageAsync(embed: eb.Build());
     }
@@ -155,19 +155,21 @@ public partial class Searches : NadekoModule<SearchesService>
         var movie = await _service.GetMovieDataAsync(query);
         if (movie is null)
         {
-            await ReplyErrorLocalizedAsync(strs.imdb_fail);
+            await Response().Error(strs.imdb_fail).SendAsync();
             return;
         }
 
-        await EmbedAsync(_eb.Create()
-            .WithOkColor()
-            .WithTitle(movie.Title)
-            .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
-            .WithDescription(movie.Plot.TrimTo(1000))
-            .AddField("Rating", movie.ImdbRating, true)
-            .AddField("Genre", movie.Genre, true)
-            .AddField("Year", movie.Year, true)
-            .WithImageUrl(movie.Poster));
+        await Response()
+              .Embed(new EmbedBuilder()
+                     .WithOkColor()
+                     .WithTitle(movie.Title)
+                     .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
+                     .WithDescription(movie.Plot.TrimTo(1000))
+                     .AddField("Rating", movie.ImdbRating, true)
+                     .AddField("Genre", movie.Genre, true)
+                     .AddField("Year", movie.Year, true)
+                     .WithImageUrl(movie.Poster))
+              .SendAsync();
     }
 
     [Cmd]
@@ -189,7 +191,7 @@ public partial class Searches : NadekoModule<SearchesService>
     private Task InternalRandomImage(SearchesService.ImageTag tag)
     {
         var url = _service.GetRandomImageUrl(tag);
-        return EmbedAsync(_eb.Create().WithOkColor().WithImageUrl(url));
+        return Response().Embed(new EmbedBuilder().WithOkColor().WithImageUrl(url)).SendAsync();
     }
 
     [Cmd]
@@ -199,7 +201,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
 
         var shortenedUrl = await _google.ShortenUrl($"https://letmegooglethat.com/?q={Uri.EscapeDataString(ffs)}");
-        await SendConfirmAsync($"<{shortenedUrl}>");
+        await Response().Confirm($"<{shortenedUrl}>").SendAsync();
     }
 
     [Cmd]
@@ -239,10 +241,12 @@ public partial class Searches : NadekoModule<SearchesService>
             }
         }
 
-        await EmbedAsync(_eb.Create()
-            .WithOkColor()
-            .AddField(GetText(strs.original_url), $"<{query}>")
-            .AddField(GetText(strs.short_url), $"<{shortLink}>"));
+        await Response()
+              .Embed(new EmbedBuilder()
+                     .WithOkColor()
+                     .AddField(GetText(strs.original_url), $"<{query}>")
+                     .AddField(GetText(strs.short_url), $"<{shortLink}>"))
+              .SendAsync();
     }
 
     [Cmd]
@@ -256,20 +260,20 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (card is null)
         {
-            await ReplyErrorLocalizedAsync(strs.card_not_found);
+            await Response().Error(strs.card_not_found).SendAsync();
             return;
         }
 
-        var embed = _eb.Create()
-            .WithOkColor()
-            .WithTitle(card.Name)
-            .WithDescription(card.Description)
-            .WithImageUrl(card.ImageUrl)
-            .AddField(GetText(strs.store_url), card.StoreUrl, true)
-            .AddField(GetText(strs.cost), card.ManaCost, true)
-            .AddField(GetText(strs.types), card.Types, true);
+        var embed = new EmbedBuilder()
+                    .WithOkColor()
+                    .WithTitle(card.Name)
+                    .WithDescription(card.Description)
+                    .WithImageUrl(card.ImageUrl)
+                    .AddField(GetText(strs.store_url), card.StoreUrl, true)
+                    .AddField(GetText(strs.cost), card.ManaCost, true)
+                    .AddField(GetText(strs.types), card.Types, true);
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -280,7 +284,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (string.IsNullOrWhiteSpace(_creds.RapidApiKey))
         {
-            await ReplyErrorLocalizedAsync(strs.mashape_api_missing);
+            await Response().Error(strs.mashape_api_missing).SendAsync();
             return;
         }
 
@@ -289,16 +293,16 @@ public partial class Searches : NadekoModule<SearchesService>
 
         if (card is null)
         {
-            await ReplyErrorLocalizedAsync(strs.card_not_found);
+            await Response().Error(strs.card_not_found).SendAsync();
             return;
         }
 
-        var embed = _eb.Create().WithOkColor().WithImageUrl(card.Img);
+        var embed = new EmbedBuilder().WithOkColor().WithImageUrl(card.Img);
 
         if (!string.IsNullOrWhiteSpace(card.Flavor))
             embed.WithDescription(card.Flavor);
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -321,11 +325,11 @@ public partial class Searches : NadekoModule<SearchesService>
                         p =>
                         {
                             var item = items[p];
-                            return _eb.Create()
-                                .WithOkColor()
-                                .WithUrl(item.Permalink)
-                                .WithTitle(item.Word)
-                                .WithDescription(item.Definition);
+                            return new EmbedBuilder()
+                                   .WithOkColor()
+                                   .WithUrl(item.Permalink)
+                                   .WithTitle(item.Word)
+                                   .WithDescription(item.Definition);
                         },
                         items.Length,
                         1);
@@ -337,7 +341,7 @@ public partial class Searches : NadekoModule<SearchesService>
             }
         }
 
-        await ReplyErrorLocalizedAsync(strs.ud_error);
+        await Response().Error(strs.ud_error).SendAsync();
     }
 
     [Cmd]
@@ -361,28 +365,28 @@ public partial class Searches : NadekoModule<SearchesService>
             var data = JsonConvert.DeserializeObject<DefineModel>(res);
 
             var datas = data.Results
-                .Where(x => x.Senses is not null
-                            && x.Senses.Count > 0
-                            && x.Senses[0].Definition is not null)
-                .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
-                .ToList();
+                            .Where(x => x.Senses is not null
+                                        && x.Senses.Count > 0
+                                        && x.Senses[0].Definition is not null)
+                            .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
+                            .ToList();
 
             if (!datas.Any())
             {
                 Log.Warning("Definition not found: {Word}", word);
-                await ReplyErrorLocalizedAsync(strs.define_unknown);
+                await Response().Error(strs.define_unknown).SendAsync();
             }
 
 
             var col = datas.Select(x => (
-                    Definition: x.Sense.Definition is string
-                        ? x.Sense.Definition.ToString()
-                        : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
-                    Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
-                        ? string.Empty
-                        : x.Sense.Examples[0].Text, Word: word,
-                    WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
-                .ToList();
+                               Definition: x.Sense.Definition is string
+                                   ? x.Sense.Definition.ToString()
+                                   : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
+                               Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
+                                   ? string.Empty
+                                   : x.Sense.Examples[0].Text, Word: word,
+                               WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
+                           .ToList();
 
             Log.Information("Sending {Count} definition for: {Word}", col.Count, word);
 
@@ -390,12 +394,12 @@ public partial class Searches : NadekoModule<SearchesService>
                 page =>
                 {
                     var model = col.Skip(page).First();
-                    var embed = _eb.Create()
-                        .WithDescription(ctx.User.Mention)
-                        .AddField(GetText(strs.word), model.Word, true)
-                        .AddField(GetText(strs._class), model.WordType, true)
-                        .AddField(GetText(strs.definition), model.Definition)
-                        .WithOkColor();
+                    var embed = new EmbedBuilder()
+                                .WithDescription(ctx.User.Mention)
+                                .AddField(GetText(strs.word), model.Word, true)
+                                .AddField(GetText(strs._class), model.WordType, true)
+                                .AddField(GetText(strs.definition), model.Definition)
+                                .WithOkColor();
 
                     if (!string.IsNullOrWhiteSpace(model.Example))
                         embed.AddField(GetText(strs.example), model.Example);
@@ -418,7 +422,7 @@ public partial class Searches : NadekoModule<SearchesService>
         var response = await http.GetStringAsync("https://catfact.ninja/fact");
 
         var fact = JObject.Parse(response)["fact"].ToString();
-        await SendConfirmAsync("🐈" + GetText(strs.catfact), fact);
+        await Response().Confirm("🐈" + GetText(strs.catfact), fact).SendAsync();
     }
 
     [Cmd]
@@ -435,7 +439,7 @@ public partial class Searches : NadekoModule<SearchesService>
             + Uri.EscapeDataString(query));
         var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
         if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
-            await ReplyErrorLocalizedAsync(strs.wiki_page_not_found);
+            await Response().Error(strs.wiki_page_not_found).SendAsync();
         else
             await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl);
     }
@@ -468,13 +472,14 @@ public partial class Searches : NadekoModule<SearchesService>
 
         var avatarUrl = usr.RealAvatarUrl(2048);
 
-        await EmbedAsync(
-            _eb.Create()
-                .WithOkColor()
-                .AddField("Username", usr.ToString())
-                .AddField("Avatar Url", avatarUrl)
-                .WithThumbnailUrl(avatarUrl.ToString()),
-            ctx.User.Mention);
+        await Response()
+              .Embed(
+                  new EmbedBuilder()
+                      .WithOkColor()
+                      .AddField("Username", usr.ToString())
+                      .AddField("Avatar Url", avatarUrl)
+                      .WithThumbnailUrl(avatarUrl.ToString()))
+              .SendAsync();
     }
 
     [Cmd]
@@ -482,7 +487,7 @@ public partial class Searches : NadekoModule<SearchesService>
     {
         if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
         {
-            await ReplyErrorLocalizedAsync(strs.wikia_input_error);
+            await Response().Error(strs.wikia_input_error).SendAsync();
             return;
         }
 
@@ -502,7 +507,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
             if (string.IsNullOrWhiteSpace(title))
             {
-                await ReplyErrorLocalizedAsync(strs.wikia_error);
+                await Response().Error(strs.wikia_error).SendAsync();
                 return;
             }
 
@@ -513,7 +518,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
         catch
         {
-            await ReplyErrorLocalizedAsync(strs.wikia_error);
+            await Response().Error(strs.wikia_error).SendAsync();
         }
     }
 
@@ -532,14 +537,16 @@ public partial class Searches : NadekoModule<SearchesService>
         }
 
         if (obj.Error is not null || obj.Verses is null || obj.Verses.Length == 0)
-            await SendErrorAsync(obj.Error ?? "No verse found.");
+            await Response().Error(obj.Error ?? "No verse found.").SendAsync();
         else
         {
             var v = obj.Verses[0];
-            await EmbedAsync(_eb.Create()
-                .WithOkColor()
-                .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
-                .WithDescription(v.Text));
+            await Response()
+                  .Embed(new EmbedBuilder()
+                         .WithOkColor()
+                         .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
+                         .WithDescription(v.Text))
+                  .SendAsync();
         }
     }
 
@@ -554,11 +561,11 @@ public partial class Searches : NadekoModule<SearchesService>
         var appId = await _service.GetSteamAppIdByName(query);
         if (appId == -1)
         {
-            await ReplyErrorLocalizedAsync(strs.not_found);
+            await Response().Error(strs.not_found).SendAsync();
             return;
         }
 
-        //var embed = _eb.Create()
+        //var embed = new EmbedBuilder()
         //    .WithOkColor()
         //    .WithDescription(gameData.ShortDescription)
         //    .WithTitle(gameData.Name)
@@ -576,12 +583,13 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!string.IsNullOrWhiteSpace(query))
             return true;
 
-        await ErrorLocalizedAsync(strs.specify_search_params);
+        await Response().Error(strs.specify_search_params).SendAsync();
         return false;
     }
 
     public class ShortenData
     {
-        [JsonProperty("result_url")] public string ResultUrl { get; set; }
+        [JsonProperty("result_url")]
+        public string ResultUrl { get; set; }
     }
 }

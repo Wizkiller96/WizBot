@@ -1,7 +1,11 @@
-namespace NadekoBot.Extensions;
+﻿namespace NadekoBot.Extensions;
 
 public static class MessageChannelExtensions
 {
+    public static ResponseBuilder Response(this IMessageChannel channel, IBotStrings bs, IEmbedBuilderService ebs)
+        => new ResponseBuilder(bs, ebs)
+            .Channel(channel);
+
     // main overload that all other send methods reduce to
     public static Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
@@ -33,7 +37,7 @@ public static class MessageChannelExtensions
 
         if (replyTo.Channel.Id != source.Id)
             return null;
-        
+
         return new(replyTo.Id,
             replyTo.Channel.Id,
             (replyTo.Channel as ITextChannel)?.GuildId,
@@ -86,7 +90,7 @@ public static class MessageChannelExtensions
 
     public static Task<IUserMessage> EmbedAsync(
         this IMessageChannel ch,
-        IEmbedBuilder? embed,
+        EmbedBuilder? embed,
         string plainText = "",
         IReadOnlyCollection<IEmbedBuilder>? embeds = null,
         NadekoInteraction? inter = null,
@@ -96,89 +100,13 @@ public static class MessageChannelExtensions
             embed: embed?.Build(),
             embeds: embeds?.Map(x => x.Build()),
             replyTo: replyTo);
-
-    public static Task<IUserMessage> SendAsync(
-        this IMessageChannel ch,
-        IEmbedBuilderService eb,
-        string text,
-        MsgType type,
-        NadekoInteraction? inter = null,
-        IUserMessage? replyTo = null)
-    {
-        var builder = eb.Create().WithDescription(text);
-
-        builder = (type switch
-        {
-            MsgType.Error => builder.WithErrorColor(),
-            MsgType.Ok => builder.WithOkColor(),
-            MsgType.Pending => builder.WithPendingColor(),
-            _ => throw new ArgumentOutOfRangeException(nameof(type))
-        });
-
-        return ch.EmbedAsync(builder, inter: inter, replyTo: replyTo);
-    }
-
-    public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
-        => ch.SendAsync(eb, text, MsgType.Ok);
-
-    public static Task<IUserMessage> SendAsync(
-        this IMessageChannel ch,
-        IEmbedBuilderService eb,
-        MsgType type,
-        string? title,
-        string text,
-        string? url = null,
-        string? footer = null)
-    {
-        var embed = eb.Create()
-                      .WithDescription(text)
-                      .WithTitle(title);
-
-        if (url is not null && Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            embed.WithUrl(url);
-
-        if (!string.IsNullOrWhiteSpace(footer))
-            embed.WithFooter(footer);
-
-        embed = type switch
-        {
-            MsgType.Error => embed.WithErrorColor(),
-            MsgType.Ok => embed.WithOkColor(),
-            MsgType.Pending => embed.WithPendingColor(),
-            _ => throw new ArgumentOutOfRangeException(nameof(type))
-        };
-
-        return ch.EmbedAsync(embed);
-    }
-
+    
     // embed title and optional footer overloads
-
-    public static Task<IUserMessage> SendConfirmAsync(
-        this IMessageChannel ch,
-        IEmbedBuilderService eb,
-        string? title,
-        string text,
-        string? url = null,
-        string? footer = null)
-        => ch.SendAsync(eb, MsgType.Ok, title, text, url, footer);
-
-    public static Task<IUserMessage> SendErrorAsync(
-        this IMessageChannel ch,
-        IEmbedBuilderService eb,
-        string title,
-        string text,
-        string? url = null,
-        string? footer = null)
-        => ch.SendAsync(eb, MsgType.Error, title, text, url, footer);
-
-    // regular send overloads
-    public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, IEmbedBuilderService eb, string text)
-        => ch.SendAsync(eb, text, MsgType.Error);
 
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
-        Func<int, IEmbedBuilder> pageFunc,
+        Func<int, EmbedBuilder> pageFunc,
         int totalElements,
         int itemsPerPage,
         bool addPaginatedFooter = true)
@@ -197,7 +125,7 @@ public static class MessageChannelExtensions
     public static Task SendPaginatedConfirmAsync(
         this ICommandContext ctx,
         int currentPage,
-        Func<int, Task<IEmbedBuilder>> pageFunc,
+        Func<int, Task<EmbedBuilder>> pageFunc,
         int totalElements,
         int itemsPerPage,
         bool addPaginatedFooter = true)
@@ -211,7 +139,7 @@ public static class MessageChannelExtensions
     public static async Task SendPaginatedConfirmAsync<T>(
         this ICommandContext ctx,
         int currentPage,
-        Func<int, Task<IEmbedBuilder>> pageFunc,
+        Func<int, Task<EmbedBuilder>> pageFunc,
         Func<int, ValueTask<SimpleInteraction<T>?>>? interFactory,
         int totalElements,
         int itemsPerPage,

@@ -18,8 +18,8 @@ public static class Extensions
     private static readonly Regex _urlRegex =
         new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
 
-    public static IEmbedBuilder WithAuthor(this IEmbedBuilder eb, IUser author)
-        => eb.WithAuthor(author.ToString()!, author.RealAvatarUrl().ToString());
+    // public static EmbedBuilder WithAuthor(this EmbedBuilder eb, IUser author)
+        // => eb.WithAuthor(author.ToString()!, author.RealAvatarUrl().ToString());
 
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch
@@ -134,22 +134,22 @@ public static class Extensions
     private static string GetFullUsage(string commandName, string args, string prefix)
         => $"{prefix}{commandName} {string.Format(args, prefix)}".TrimEnd();
 
-    public static IEmbedBuilder AddPaginatedFooter(this IEmbedBuilder embed, int curPage, int? lastPage)
+    public static EmbedBuilder AddPaginatedFooter(this EmbedBuilder embed, int curPage, int? lastPage)
     {
         if (lastPage is not null)
             return embed.WithFooter($"{curPage + 1} / {lastPage + 1}");
         return embed.WithFooter(curPage.ToString());
     }
 
-    public static IEmbedBuilder WithOkColor(this IEmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Ok);
-
-    public static IEmbedBuilder WithPendingColor(this IEmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Pending);
-
-    public static IEmbedBuilder WithErrorColor(this IEmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Error);
-
+    // public static EmbedBuilder WithOkColor(this EmbedBuilder eb)
+    //     => eb.WithColor(EmbedColor.Ok);
+    //
+    // public static EmbedBuilder WithPendingColor(this EmbedBuilder eb)
+    //     => eb.WithColor(EmbedColor.Pending);
+    //
+    // public static EmbedBuilder WithErrorColor(this EmbedBuilder eb)
+    //     => eb.WithColor(EmbedColor.Error);
+    //
     public static IMessage DeleteAfter(this IUserMessage msg, float seconds, ILogCommandService? logService = null)
     {
         Task.Run(async () =>

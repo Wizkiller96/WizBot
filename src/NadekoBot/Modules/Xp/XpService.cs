@@ -22,7 +22,6 @@ namespace NadekoBot.Modules.Xp.Services;
 
 public class XpService : INService, IReadyExecutor, IExecNoCommand
 {
-
     private readonly DbService _db;
     private readonly IImageCache _images;
     private readonly IBotStrings _strings;
@@ -44,10 +43,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly TypedKey<bool> _xpTemplateReloadKey;
     private readonly IPatronageService _ps;
     private readonly IBotCache _c;
-    
-    
+
+
     private readonly QueueRunner _levelUpQueue = new QueueRunner(0, 50);
     private readonly Channel<UserXpGainData> _xpGainQueue = Channel.CreateUnbounded<UserXpGainData>();
+    private readonly IMessageSenderService _sender;
 
     public XpService(
         DiscordSocketClient client,
@@ -63,7 +63,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         XpConfigService xpConfig,
         IPubSub pubSub,
         IEmbedBuilderService eb,
-        IPatronageService ps)
+        IPatronageService ps,
+        IMessageSenderService sender)
     {
         _db = db;
         _images = images;
@@ -81,6 +82,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _xpTemplateReloadKey = new("xp.template.reload");
         _ps = ps;
         _c = c;
+        _sender = sender;
 
         InternalReloadXpTemplate();
 
@@ -127,7 +129,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public async Task OnReadyAsync()
     {
         _ = Task.Run(() => _levelUpQueue.RunAsync());
-        
+
         using var timer = new PeriodicTimer(5.Seconds());
         while (await timer.WaitForNextTickAsync())
         {
@@ -142,12 +144,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         public ulong GuildId { get; set; }
         public ulong UserId { get; set; }
     }
+
     private async Task UpdateXp()
     {
         try
         {
             var reader = _xpGainQueue.Reader;
-            
+
             // sum up all gains into a single UserCacheItem
             var globalToAdd = new Dictionary<ulong, UserXpGainData>();
             var guildToAdd = new Dictionary<ulong, Dictionary<ulong, UserXpGainData>>();
@@ -159,7 +162,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 else
                     ci.XpAmount += item.XpAmount;
 
-                
+
                 // ad guild xp in these guilds to these users
                 if (!guildToAdd.TryGetValue(item.Guild.Id, out var users))
                     users = guildToAdd[item.Guild.Id] = new();
@@ -183,77 +186,77 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         await _cs.AddAsync(user.Key, (long)(amount), null);
                     }
                 }
-                
+
                 // update global user xp in batches
                 // group by xp amount and update the same amounts at the same time
                 foreach (var group in globalToAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
                 {
                     var items = await ctx.Set<DiscordUser>()
-                        .Where(x => group.Contains(x.UserId))
-                        .UpdateWithOutputAsync(old => new()
-                            {
-                                TotalXp = old.TotalXp + group.Key
-                            },
-                            (_, n) => n);
+                                         .Where(x => group.Contains(x.UserId))
+                                         .UpdateWithOutputAsync(old => new()
+                                             {
+                                                 TotalXp = old.TotalXp + group.Key
+                                             },
+                                             (_, n) => n);
 
                     await ctx.Set<ClubInfo>()
-                        .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
-                        .UpdateAsync(old => new()
-                        {
-                            Xp = old.Xp + (group.Key * old.Members.Count(m => group.Contains(m.UserId)))
-                        });
-                    
+                             .Where(x => x.Members.Any(m => group.Contains(m.UserId)))
+                             .UpdateAsync(old => new()
+                             {
+                                 Xp = old.Xp + (group.Key * old.Members.Count(m => group.Contains(m.UserId)))
+                             });
+
                     dus.AddRange(items);
                 }
+
                 // update guild user xp in batches
                 foreach (var (guildId, toAdd) in guildToAdd)
                 {
                     foreach (var group in toAdd.GroupBy(x => x.Value.XpAmount, x => x.Key))
                     {
                         var items = await ctx
-                            .Set<UserXpStats>()
-                            .Where(x => x.GuildId == guildId)
-                            .Where(x => group.Contains(x.UserId))
-                            .UpdateWithOutputAsync(old => new()
-                                {
-                                    Xp = old.Xp + group.Key
-                                },
-                                (_, n) => n);
-                        
+                                          .Set<UserXpStats>()
+                                          .Where(x => x.GuildId == guildId)
+                                          .Where(x => group.Contains(x.UserId))
+                                          .UpdateWithOutputAsync(old => new()
+                                              {
+                                                  Xp = old.Xp + group.Key
+                                              },
+                                              (_, n) => n);
+
                         gxps.AddRange(items);
-                        
+
                         var missingUserIds = group.Where(userId => !items.Any(x => x.UserId == userId)).ToArray();
                         foreach (var userId in missingUserIds)
                         {
                             await ctx
-                                .Set<UserXpStats>()
-                                .ToLinqToDBTable()
-                                .InsertOrUpdateAsync(() => new UserXpStats()
-                                    {
-                                        UserId = userId,
-                                        GuildId = guildId,
-                                        Xp = group.Key,
-                                        DateAdded = DateTime.UtcNow,
-                                        AwardedXp = 0,
-                                        NotifyOnLevelUp = XpNotificationLocation.None
-                                    },
-                                    _ => new()
-                                    {
-                                        
-                                    },
-                                    () => new()
-                                    {
-                                        UserId = userId
-                                    });
+                                  .Set<UserXpStats>()
+                                  .ToLinqToDBTable()
+                                  .InsertOrUpdateAsync(() => new UserXpStats()
+                                      {
+                                          UserId = userId,
+                                          GuildId = guildId,
+                                          Xp = group.Key,
+                                          DateAdded = DateTime.UtcNow,
+                                          AwardedXp = 0,
+                                          NotifyOnLevelUp = XpNotificationLocation.None
+                                      },
+                                      _ => new()
+                                      {
+                                      },
+                                      () => new()
+                                      {
+                                          UserId = userId
+                                      });
                         }
 
                         if (missingUserIds.Length > 0)
                         {
                             var missingItems = await ctx.Set<UserXpStats>()
-                                .ToLinqToDBTable()
-                                .Where(x => missingUserIds.Contains(x.UserId))
-                                .ToArrayAsyncLinqToDB();
-                            
+                                                        .ToLinqToDBTable()
+                                                        .Where(x => missingUserIds.Contains(x.UserId))
+                                                        .ToArrayAsyncLinqToDB();
+
                             gxps.AddRange(missingItems);
                         }
                     }
@@ -325,7 +328,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             await HandleNotifyInternalAsync(guildId, channelId, userId, isServer, newLevel, notifyLoc);
         };
 
-    private async Task HandleRewardsInternalAsync(ulong guildId, ulong userId, long oldLevel, long newLevel)
+    private async Task HandleRewardsInternalAsync(
+        ulong guildId,
+        ulong userId,
+        long oldLevel,
+        long newLevel)
     {
         List<XpRoleReward> rrews;
         List<XpCurrencyReward> crews;
@@ -364,16 +371,17 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
     }
 
-    private async Task HandleNotifyInternalAsync(ulong guildId, 
-        ulong channelId, 
-        ulong userId, 
+    private async Task HandleNotifyInternalAsync(
+        ulong guildId,
+        ulong channelId,
+        ulong userId,
         bool isServer,
         long newLevel,
         XpNotificationLocation notifyLoc)
     {
         if (notifyLoc == XpNotificationLocation.None)
             return;
-            
+
         var guild = _client.GetGuild(guildId);
         var user = guild?.GetUser(userId);
         var ch = guild?.GetTextChannel(channelId);
@@ -395,10 +403,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             {
                 if (ch is not null)
                 {
-                    await ch.SendConfirmAsync(_eb,
-                        _strings.GetText(strs.level_up_channel(user.Mention,
-                                Format.Bold(newLevel.ToString())),
-                            guild.Id));
+                    await _sender.Response(ch)
+                                 .Confirm(_strings.GetText(strs.level_up_channel(user.Mention,
+                                         Format.Bold(newLevel.ToString())),
+                                     guild.Id))
+                                 .SendAsync();
                 }
             }
         }
@@ -414,10 +423,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (chan is null)
                 return;
 
-            await chan.SendConfirmAsync(_eb,
-                _strings.GetText(strs.level_up_global(user.Mention,
-                        Format.Bold(newLevel.ToString())),
-                    guild.Id));
+            await _sender.Response(chan)
+                         .Confirm(
+                             _strings.GetText(strs.level_up_global(user.Mention,
+                                     Format.Bold(newLevel.ToString())),
+                                 guild.Id))
+                         .SendAsync();
         }
     }
 
@@ -673,7 +684,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     private TypedKey<long> GetVoiceXpKey(ulong userId)
         => new($"xp:{_client.CurrentUser.Id}:vc_join:{userId}");
-    
+
     private async Task UserJoinedVoiceChannel(SocketGuildUser user)
     {
         var value = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -683,7 +694,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             TimeSpan.FromMinutes(_xpConfig.Data.VoiceMaxMinutes),
             overwrite: false);
     }
-    
+
     // private void UserJoinedVoiceChannel(SocketGuildUser user)
     // {
     //     var key = $"{_creds.RedisKey()}_user_xp_vc_join_{user.Id}";
@@ -725,7 +736,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             });
         }
     }
-    
+
     /*
      * private void UserLeftVoiceChannel(SocketGuildUser user, SocketVoiceChannel channel)
     {
@@ -825,13 +836,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<UserXpStats>()
-            .Where(x => x.GuildId == guildId && userIds.Contains(x.UserId))
-            .UpdateAsync(old => new()
-            {
-                Xp = old.Xp + amount
-            });
+                        .Where(x => x.GuildId == guildId && userIds.Contains(x.UserId))
+                        .UpdateAsync(old => new()
+                        {
+                            Xp = old.Xp + amount
+                        });
     }
-    
+
     public void AddXp(ulong userId, ulong guildId, int amount)
     {
         using var uow = _db.GetDbContext();
@@ -863,7 +874,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     private TypedKey<bool> GetUserRewKey(ulong userId)
         => new($"xp:{_client.CurrentUser.Id}:user_gain:{userId}");
-    
+
     private async Task<bool> SetUserRewardedAsync(ulong userId)
         => await _c.AddAsync(GetUserRewKey(userId),
             true,
@@ -982,7 +993,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             }
 
             var outlinePen = new Pen(Color.Black, 1f);
-            
+
             using var img = Image.Load<Rgba32>(bgBytes, out var imageFormat);
             if (template.User.Name.Show)
             {
@@ -1253,7 +1264,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         {
             return await _images.GetXpBackgroundImageAsync();
         }
-        
+
         var url = _xpConfig.Data.Shop.GetItemUrl(XpShopItemType.Background, item.ItemKey);
         if (!string.IsNullOrWhiteSpace(url))
         {
@@ -1428,13 +1439,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
         return new(_xpConfig.Data.Shop.Bgs?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
     }
-    
+
     public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopFrames()
     {
         var data = _xpConfig.Data;
         if (!data.Shop.IsEnabled)
             return new(default(Dictionary<string, XpConfig.ShopItemInfo>));
-        
+
         return new(_xpConfig.Data.Shop.Frames?.Where(x => x.Value.Price >= 0).ToDictionary(x => x.Key, x => x.Value));
     }
 
@@ -1448,7 +1459,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var req = type == XpShopItemType.Background
             ? conf.Shop.BgsTierRequirement
             : conf.Shop.FramesTierRequirement;
-        
+
         if (req != PatronTier.None && !_creds.IsOwner(userId))
         {
             var patron = await _ps.GetPatronAsync(userId);
@@ -1456,12 +1467,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if ((int)patron.Tier < (int)req)
                 return BuyResult.InsufficientPatronTier;
         }
-        
+
         await using var ctx = _db.GetDbContext();
         // await using var tran = await ctx.Database.BeginTransactionAsync();
         try
         {
-            if (await ctx.GetTable<XpShopOwnedItem>().AnyAsyncLinqToDB(x => x.UserId == userId && x.ItemKey == key && x.ItemType == type))
+            if (await ctx.GetTable<XpShopOwnedItem>()
+                         .AnyAsyncLinqToDB(x => x.UserId == userId && x.ItemKey == key && x.ItemType == type))
                 return BuyResult.AlreadyOwned;
 
             var item = GetShopItem(type, key);
@@ -1471,17 +1483,17 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (item.Price > 0 && !await _cs.RemoveAsync(userId, item.Price, new("xpshop", "buy", $"Background {key}")))
                 return BuyResult.InsufficientFunds;
-                
+
 
             await ctx.GetTable<XpShopOwnedItem>()
-                .InsertAsync(() => new XpShopOwnedItem()
-                {
-                    UserId = userId,
-                    IsUsing = false,
-                    ItemKey = key,
-                    ItemType = type,
-                    DateAdded = DateTime.UtcNow,
-                });
+                     .InsertAsync(() => new XpShopOwnedItem()
+                     {
+                         UserId = userId,
+                         IsUsing = false,
+                         ItemKey = key,
+                         ItemType = type,
+                         DateAdded = DateTime.UtcNow,
+                     });
 
             return BuyResult.Success;
         }
@@ -1497,54 +1509,57 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var data = _xpConfig.Data;
         if (type == XpShopItemType.Background)
         {
-            if (data.Shop.Bgs is {} bgs && bgs.TryGetValue(key, out var item))
+            if (data.Shop.Bgs is { } bgs && bgs.TryGetValue(key, out var item))
                 return item;
-            
+
             return null;
         }
 
         if (type == XpShopItemType.Frame)
         {
-            if (data.Shop.Frames is {} fs && fs.TryGetValue(key, out var item))
+            if (data.Shop.Frames is { } fs && fs.TryGetValue(key, out var item))
                 return item;
-            
+
             return null;
         }
 
         throw new ArgumentOutOfRangeException(nameof(type));
     }
 
-    public async Task<bool> OwnsItemAsync(ulong userId,
+    public async Task<bool> OwnsItemAsync(
+        ulong userId,
         XpShopItemType itemType,
         string key)
     {
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<XpShopOwnedItem>()
-            .AnyAsyncLinqToDB(x => x.UserId == userId
-                                   && x.ItemType == itemType
-                                   && x.ItemKey == key);
+                        .AnyAsyncLinqToDB(x => x.UserId == userId
+                                               && x.ItemType == itemType
+                                               && x.ItemKey == key);
     }
-    
-    
-    public async Task<XpShopOwnedItem?> GetUserItemAsync(ulong userId,
+
+
+    public async Task<XpShopOwnedItem?> GetUserItemAsync(
+        ulong userId,
         XpShopItemType itemType,
         string key)
     {
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<XpShopOwnedItem>()
-            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
-                                              && x.ItemType == itemType
-                                              && x.ItemKey == key);
+                        .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                                          && x.ItemType == itemType
+                                                          && x.ItemKey == key);
     }
-    
-    public async Task<XpShopOwnedItem?> GetItemInUse(ulong userId,
+
+    public async Task<XpShopOwnedItem?> GetItemInUse(
+        ulong userId,
         XpShopItemType itemType)
     {
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<XpShopOwnedItem>()
-            .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
-                                              && x.ItemType == itemType
-                                              && x.IsUsing);
+                        .FirstOrDefaultAsyncLinqToDB(x => x.UserId == userId
+                                                          && x.ItemType == itemType
+                                                          && x.IsUsing);
     }
 
     public async Task<bool> UseShopItemAsync(ulong userId, XpShopItemType itemType, string key)
@@ -1568,11 +1583,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (await OwnsItemAsync(userId, itemType, key))
         {
             await ctx.GetTable<XpShopOwnedItem>()
-                .Where(x => x.UserId == userId && x.ItemType == itemType)
-                .UpdateAsync(old => new()
-                {
-                    IsUsing = key == old.ItemKey
-                });
+                     .Where(x => x.UserId == userId && x.ItemType == itemType)
+                     .UpdateAsync(old => new()
+                     {
+                         IsUsing = key == old.ItemKey
+                     });
 
             return true;
         }

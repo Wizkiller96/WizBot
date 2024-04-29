@@ -26,7 +26,7 @@ public partial class Utility
         public async Task AliasesClear()
         {
             var count = _service.ClearAliases(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.aliases_cleared(count));
+            await Response().Confirm(strs.aliases_cleared(count)).SendAsync();
         }
 
         [Cmd]
@@ -43,7 +43,7 @@ public partial class Utility
             {
                 if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.TryRemove(trigger, out _))
                 {
-                    await ReplyErrorLocalizedAsync(strs.alias_remove_fail(Format.Code(trigger)));
+                    await Response().Error(strs.alias_remove_fail(Format.Code(trigger))).SendAsync();
                     return;
                 }
 
@@ -56,7 +56,7 @@ public partial class Utility
                     uow.SaveChanges();
                 }
 
-                await ReplyConfirmLocalizedAsync(strs.alias_removed(Format.Code(trigger)));
+                await Response().Confirm(strs.alias_removed(Format.Code(trigger))).SendAsync();
                 return;
             }
 
@@ -100,7 +100,7 @@ public partial class Utility
                     return map;
                 });
 
-            await ReplyConfirmLocalizedAsync(strs.alias_added(Format.Code(trigger), Format.Code(mapping)));
+            await Response().Confirm(strs.alias_added(Format.Code(trigger), Format.Code(mapping))).SendAsync();
         }
 
 
@@ -115,7 +115,7 @@ public partial class Utility
 
             if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.aliases_none);
+                await Response().Error(strs.aliases_none).SendAsync();
                 return;
             }
 
@@ -124,7 +124,7 @@ public partial class Utility
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
-                    return _eb.Create()
+                    return new EmbedBuilder()
                               .WithOkColor()
                               .WithTitle(GetText(strs.alias_list))
                               .WithDescription(string.Join("\n",

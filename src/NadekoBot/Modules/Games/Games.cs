@@ -28,7 +28,7 @@ public partial class Games : NadekoModule<GamesService>
         if (listArr.Length < 2)
             return;
         var rng = new NadekoRandom();
-        await SendConfirmAsync("🤔", listArr[rng.Next(0, listArr.Length)]);
+        await Response().Confirm("🤔", listArr[rng.Next(0, listArr.Length)]).SendAsync();
     }
 
     [Cmd]
@@ -38,10 +38,10 @@ public partial class Games : NadekoModule<GamesService>
             return;
 
         var res = _service.GetEightballResponse(ctx.User.Id, question);
-        await EmbedAsync(_eb.Create()
+        await Response().Embed(new EmbedBuilder()
             .WithOkColor()
             .WithDescription(ctx.User.ToString())
             .AddField("❓ " + GetText(strs.question), question)
-            .AddField("🎱 " + GetText(strs._8ball), res));
+            .AddField("🎱 " + GetText(strs._8ball), res)).SendAsync();
     }
 }

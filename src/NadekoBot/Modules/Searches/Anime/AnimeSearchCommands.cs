@@ -20,11 +20,11 @@ public partial class Searches
         //
         //     if (novelData is null)
         //     {
-        //         await ReplyErrorLocalizedAsync(strs.failed_finding_novel);
+        //         await Response().Error(strs.failed_finding_novel).SendAsync();
         //         return;
         //     }
         //
-        //     var embed = _eb.Create()
+        //     var embed = new EmbedBuilder()
         //         .WithOkColor()
         //         .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
         //         .WithTitle(novelData.Title)
@@ -35,7 +35,7 @@ public partial class Searches
         //         .AddField(GetText(strs.genres), string.Join(" ", novelData.Genres.Any() ? novelData.Genres : new[] { "none" }), true)
         //         .WithFooter($"{GetText(strs.score)} {novelData.Score}");
         //     
-        //     await EmbedAsync(embed);
+        //     await Response().Embed(embed).SendAsync();
         // }
 
         [Cmd]
@@ -86,7 +86,7 @@ public partial class Searches
                                       .Select(x => x.TextContent.Split(':').Select(y => y.Trim()).ToArray())
                                       .ToArray();
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(strs.mal_profile(name)))
                            .AddField("💚 " + GetText(strs.watching), stats[0], true)
@@ -110,7 +110,7 @@ public partial class Searches
                  .WithUrl(fullQueryLink)
                  .WithImageUrl(imageUrl);
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private static string MalInfoToEmoji(string info)
@@ -147,11 +147,11 @@ public partial class Searches
 
             if (animeData is null)
             {
-                await ReplyErrorLocalizedAsync(strs.failed_finding_anime);
+                await Response().Error(strs.failed_finding_anime).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithDescription(animeData.Synopsis.Replace("<br>",
                                Environment.NewLine,
@@ -165,7 +165,7 @@ public partial class Searches
                                string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }),
                                true)
                            .WithFooter($"{GetText(strs.score)} {animeData.AverageScore} / 100");
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -179,11 +179,11 @@ public partial class Searches
 
             if (mangaData is null)
             {
-                await ReplyErrorLocalizedAsync(strs.failed_finding_manga);
+                await Response().Error(strs.failed_finding_manga).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithDescription(mangaData.Synopsis.Replace("<br>",
                                Environment.NewLine,
@@ -198,7 +198,7 @@ public partial class Searches
                                true)
                            .WithFooter($"{GetText(strs.score)} {mangaData.AverageScore} / 100");
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
     }
 }

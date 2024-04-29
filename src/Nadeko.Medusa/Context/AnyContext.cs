@@ -48,5 +48,5 @@ public abstract class AnyContext
     /// instead of manually creating embedbuilder instances
     /// </summary>
     /// <returns>A context-aware <see cref="IEmbedBuilder"/> instance </returns>
-    public abstract IEmbedBuilder Embed();
+    public abstract EmbedBuilder Embed();
 }

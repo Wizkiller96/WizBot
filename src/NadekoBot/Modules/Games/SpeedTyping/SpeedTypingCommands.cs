@@ -27,10 +27,10 @@ public partial class Games
             var channel = (ITextChannel)ctx.Channel;
 
             var game = _service.RunningContests.GetOrAdd(ctx.Guild.Id,
-                _ => new(_games, _client, channel, prefix, options, _eb));
+                _ => new(_games, _client, channel, prefix, options, _sender));
 
             if (game.IsActive)
-                await SendErrorAsync($"Contest already running in {game.Channel.Mention} channel.");
+                await Response().Error($"Contest already running in {game.Channel.Mention} channel.").SendAsync();
             else
                 await game.Start();
         }
@@ -45,7 +45,7 @@ public partial class Games
                 return;
             }
 
-            await SendErrorAsync("No contest to stop on this channel.");
+            await Response().Error("No contest to stop on this channel.").SendAsync();
         }
 
 
@@ -59,7 +59,7 @@ public partial class Games
 
             _games.AddTypingArticle(ctx.User, text);
 
-            await SendConfirmAsync("Added new article for typing game.");
+            await Response().Confirm("Added new article for typing game.").SendAsync();
         }
 
         [Cmd]
@@ -73,13 +73,15 @@ public partial class Games
 
             if (!articles.Any())
             {
-                await SendErrorAsync($"{ctx.User.Mention} `No articles found on that page.`");
+                await Response().Error($"{ctx.User.Mention} `No articles found on that page.`").SendAsync();
                 return;
             }
 
             var i = (page - 1) * 15;
-            await SendConfirmAsync("List of articles for Type Race",
-                string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")));
+            await Response()
+                  .Confirm("List of articles for Type Race",
+                      string.Join("\n", articles.Select(a => $"`#{++i}` - {a.Text.TrimTo(50)}")))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -92,12 +94,12 @@ public partial class Games
             if (removed is null)
                 return;
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithTitle($"Removed typing article #{index + 1}")
                            .WithDescription(removed.Text.TrimTo(50))
                            .WithOkColor();
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
     }
 }

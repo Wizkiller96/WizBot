@@ -205,7 +205,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             }
             else
             {
-                await ch.EmbedAsync(_eb.Create()
+                await ch.EmbedAsync(new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("Reminder")
                         .AddField("Created At",

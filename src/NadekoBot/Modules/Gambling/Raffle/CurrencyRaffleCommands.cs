@@ -32,25 +32,29 @@ public partial class Gambling
 
             async Task OnEnded(IUser arg, long won)
             {
-                await SendConfirmAsync(GetText(strs.rafflecur_ended(CurrencyName,
-                    Format.Bold(arg.ToString()),
-                    won + CurrencySign)));
+                await Response()
+                      .Confirm(GetText(strs.rafflecur_ended(CurrencyName,
+                          Format.Bold(arg.ToString()),
+                          won + CurrencySign)))
+                      .SendAsync();
             }
 
             var res = await _service.JoinOrCreateGame(ctx.Channel.Id, ctx.User, amount, mixed, OnEnded);
 
             if (res.Item1 is not null)
             {
-                await SendConfirmAsync(GetText(strs.rafflecur(res.Item1.GameType.ToString())),
-                    string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({N(x.Amount)})")),
-                    footer: GetText(strs.rafflecur_joined(ctx.User.ToString())));
+                await Response()
+                      .Confirm(GetText(strs.rafflecur(res.Item1.GameType.ToString())),
+                          string.Join("\n", res.Item1.Users.Select(x => $"{x.DiscordUser} ({N(x.Amount)})")),
+                          footer: GetText(strs.rafflecur_joined(ctx.User.ToString())))
+                      .SendAsync();
             }
             else
             {
                 if (res.Item2 == CurrencyRaffleService.JoinErrorType.AlreadyJoinedOrInvalidAmount)
-                    await ReplyErrorLocalizedAsync(strs.rafflecur_already_joined);
+                    await Response().Error(strs.rafflecur_already_joined).SendAsync();
                 else if (res.Item2 == CurrencyRaffleService.JoinErrorType.NotEnoughCurrency)
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
             }
         }
     }

@@ -10,7 +10,7 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task Hangmanlist()
-            => await SendConfirmAsync(GetText(strs.hangman_types(prefix)), _service.GetHangmanTypes().Join('\n'));
+            => await Response().Confirm(GetText(strs.hangman_types(prefix)), _service.GetHangmanTypes().Join('\n')).SendAsync();
 
         private static string Draw(HangmanGame.State state)
             => $"""
@@ -23,11 +23,11 @@ public partial class Games
             /-\
             """;
 
-        public static IEmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
+        public static EmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
         {
             if (state.Phase == HangmanGame.Phase.Running)
             {
-                return eb.Create()
+                return new EmbedBuilder()
                          .WithOkColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
@@ -36,14 +36,14 @@ public partial class Games
 
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
             {
-                return eb.Create()
+                return new EmbedBuilder()
                          .WithErrorColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
                          .WithFooter(state.MissedLetters.Join(' '));
             }
 
-            return eb.Create()
+            return new EmbedBuilder()
                      .WithOkColor()
                      .AddField("Hangman", Draw(state))
                      .AddField("Guess", Format.Code(state.Word))
@@ -56,13 +56,13 @@ public partial class Games
         {
             if (!_service.StartHangman(ctx.Channel.Id, type, out var hangman))
             {
-                await ReplyErrorLocalizedAsync(strs.hangman_running);
+                await Response().Error(strs.hangman_running).SendAsync();
                 return;
             }
 
             var eb = GetEmbed(_eb, hangman);
             eb.WithDescription(GetText(strs.hangman_game_started));
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
         }
 
         [Cmd]
@@ -70,7 +70,7 @@ public partial class Games
         public async Task HangmanStop()
         {
             if (await _service.StopHangman(ctx.Channel.Id))
-                await ReplyConfirmLocalizedAsync(strs.hangman_stopped);
+                await Response().Confirm(strs.hangman_stopped).SendAsync();
         }
     }
 }

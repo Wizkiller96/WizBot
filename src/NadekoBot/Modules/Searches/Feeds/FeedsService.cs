@@ -115,7 +115,7 @@ public class FeedsService : INService
                         if (itemUpdateDate <= lastFeedUpdate)
                             continue;
 
-                        var embed = _eb.Create().WithFooter(rssUrl);
+                        var embed = new EmbedBuilder().WithFooter(rssUrl);
 
                         _lastPosts[kvp.Key] = itemUpdateDate;
 

@@ -68,7 +68,7 @@ public partial class Gambling
             {
                 if (!await _cs.RemoveAsync(ctx.User.Id, options.Bet, new("connect4", "bet")))
                 {
-                    await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                     _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);
                     game.Dispose();
                     return;
@@ -82,9 +82,9 @@ public partial class Gambling
 
             game.Initialize();
             if (options.Bet == 0)
-                await ReplyConfirmLocalizedAsync(strs.connect4_created);
+                await Response().Confirm(strs.connect4_created).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.connect4_created_bet(N(options.Bet)));
+                await Response().Error(strs.connect4_created_bet(N(options.Bet))).SendAsync();
 
             Task ClientMessageReceived(SocketMessage arg)
             {
@@ -125,7 +125,7 @@ public partial class Gambling
                     toDispose.Dispose();
                 }
 
-                return ErrorLocalizedAsync(strs.connect4_failed_to_start);
+                return Response().Error(strs.connect4_failed_to_start).SendAsync();
             }
 
             Task GameOnGameEnded(Connect4Game arg, Connect4Game.Result result)
@@ -150,7 +150,7 @@ public partial class Gambling
                 else
                     title = GetText(strs.connect4_draw);
 
-                return msg.ModifyAsync(x => x.Embed = _eb.Create()
+                return msg.ModifyAsync(x => x.Embed = new EmbedBuilder()
                                                          .WithTitle(title)
                                                          .WithDescription(GetGameStateText(game))
                                                          .WithOkColor()
@@ -160,14 +160,14 @@ public partial class Gambling
 
         private async Task Game_OnGameStateUpdated(Connect4Game game)
         {
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
                            .WithDescription(GetGameStateText(game))
                            .WithOkColor();
 
 
             if (msg is null)
-                msg = await EmbedAsync(embed);
+                msg = await Response().Embed(embed).SendAsync();
             else
                 await msg.ModifyAsync(x => x.Embed = embed.Build());
         }
@@ -198,6 +198,7 @@ public partial class Gambling
 
             for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++)
                 sb.Append(_numbers[i]);
+            
             return sb.ToString();
         }
     }

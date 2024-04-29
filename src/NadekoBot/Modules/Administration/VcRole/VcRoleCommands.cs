@@ -15,9 +15,9 @@ public partial class Administration
         public async Task VcRoleRm(ulong vcId)
         {
             if (_service.RemoveVcRole(ctx.Guild.Id, vcId))
-                await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vcId.ToString())));
+                await Response().Confirm(strs.vcrole_removed(Format.Bold(vcId.ToString()))).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.vcrole_not_found);
+                await Response().Error(strs.vcrole_not_found).SendAsync();
         }
 
         [Cmd]
@@ -32,19 +32,19 @@ public partial class Administration
 
             if (vc is null || vc.GuildId != user.GuildId)
             {
-                await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+                await Response().Error(strs.must_be_in_voice).SendAsync();
                 return;
             }
 
             if (role is null)
             {
                 if (_service.RemoveVcRole(ctx.Guild.Id, vc.Id))
-                    await ReplyConfirmLocalizedAsync(strs.vcrole_removed(Format.Bold(vc.Name)));
+                    await Response().Confirm(strs.vcrole_removed(Format.Bold(vc.Name))).SendAsync();
             }
             else
             {
                 _service.AddVcRole(ctx.Guild.Id, role, vc.Id);
-                await ReplyConfirmLocalizedAsync(strs.vcrole_added(Format.Bold(vc.Name), Format.Bold(role.Name)));
+                await Response().Confirm(strs.vcrole_added(Format.Bold(vc.Name), Format.Bold(role.Name))).SendAsync();
             }
         }
 
@@ -68,10 +68,10 @@ public partial class Administration
             else
                 text = GetText(strs.no_vcroles);
 
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                                             .WithOkColor()
                                             .WithTitle(GetText(strs.vc_role_list))
-                                            .WithDescription(text));
+                                            .WithDescription(text)).SendAsync();
         }
     }
 }

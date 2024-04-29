@@ -26,11 +26,11 @@ public partial class Permissions
             var blockedCommands = _service.BlockedCommands;
             if (!blockedModule.Any() && !blockedCommands.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.lgp_none);
+                await Response().Error(strs.lgp_none).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create().WithOkColor();
+            var embed = new EmbedBuilder().WithOkColor();
 
             if (blockedModule.Any())
                 embed.AddField(GetText(strs.blocked_modules), string.Join("\n", _service.BlockedModules));
@@ -38,7 +38,7 @@ public partial class Permissions
             if (blockedCommands.Any())
                 embed.AddField(GetText(strs.blocked_commands), string.Join("\n", _service.BlockedCommands));
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -51,11 +51,11 @@ public partial class Permissions
 
             if (added)
             {
-                await ReplyConfirmLocalizedAsync(strs.gmod_add(Format.Bold(module.Name)));
+                await Response().Confirm(strs.gmod_add(Format.Bold(module.Name))).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.gmod_remove(Format.Bold(module.Name)));
+            await Response().Confirm(strs.gmod_remove(Format.Bold(module.Name))).SendAsync();
         }
 
         [Cmd]
@@ -67,11 +67,11 @@ public partial class Permissions
 
             if (added)
             {
-                await ReplyConfirmLocalizedAsync(strs.gcmd_add(Format.Bold(cmd.Name)));
+                await Response().Confirm(strs.gcmd_add(Format.Bold(cmd.Name))).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.gcmd_remove(Format.Bold(cmd.Name)));
+            await Response().Confirm(strs.gcmd_remove(Format.Bold(cmd.Name))).SendAsync();
         }
     }
 }

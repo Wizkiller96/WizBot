@@ -49,9 +49,9 @@ public partial class Administration : NadekoModule<AdministrationService>
     {
         var newValue = await _somethingOnly.ToggleImageOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
-            await ReplyConfirmLocalizedAsync(strs.imageonly_enable);
+            await Response().Confirm(strs.imageonly_enable).SendAsync();
         else
-            await ReplyPendingLocalizedAsync(strs.imageonly_disable);
+            await Response().Pending(strs.imageonly_disable).SendAsync();
     }
     
     [Cmd]
@@ -62,9 +62,9 @@ public partial class Administration : NadekoModule<AdministrationService>
     {
         var newValue = await _somethingOnly.ToggleLinkOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
-            await ReplyConfirmLocalizedAsync(strs.linkonly_enable);
+            await Response().Confirm(strs.linkonly_enable).SendAsync();
         else
-            await ReplyPendingLocalizedAsync(strs.linkonly_disable);
+            await Response().Pending(strs.linkonly_disable).SendAsync();
     }
 
     [Cmd]
@@ -95,7 +95,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         var guild = (SocketGuild)ctx.Guild;
         var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
 
-        var embed = _eb.Create()
+        var embed = new EmbedBuilder()
                        .WithOkColor()
                        .WithTitle(GetText(strs.server_delmsgoncmd))
                        .WithDescription(enabled ? "✅" : "❌");
@@ -113,7 +113,7 @@ public partial class Administration : NadekoModule<AdministrationService>
 
         embed.AddField(GetText(strs.channel_delmsgoncmd), str);
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -126,12 +126,12 @@ public partial class Administration : NadekoModule<AdministrationService>
         if (_service.ToggleDeleteMessageOnCommand(ctx.Guild.Id))
         {
             _service.DeleteMessagesOnCommand.Add(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.delmsg_on);
+            await Response().Confirm(strs.delmsg_on).SendAsync();
         }
         else
         {
             _service.DeleteMessagesOnCommand.TryRemove(ctx.Guild.Id);
-            await ReplyConfirmLocalizedAsync(strs.delmsg_off);
+            await Response().Confirm(strs.delmsg_off).SendAsync();
         }
     }
 
@@ -154,11 +154,11 @@ public partial class Administration : NadekoModule<AdministrationService>
         await _service.SetDelMsgOnCmdState(ctx.Guild.Id, actualChId, s);
 
         if (s == State.Disable)
-            await ReplyConfirmLocalizedAsync(strs.delmsg_channel_off);
+            await Response().Confirm(strs.delmsg_channel_off).SendAsync();
         else if (s == State.Enable)
-            await ReplyConfirmLocalizedAsync(strs.delmsg_channel_on);
+            await Response().Confirm(strs.delmsg_channel_on).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.delmsg_channel_inherit);
+            await Response().Confirm(strs.delmsg_channel_inherit).SendAsync();
     }
 
     [Cmd]
@@ -168,7 +168,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task Deafen(params IGuildUser[] users)
     {
         await _service.DeafenUsers(true, users);
-        await ReplyConfirmLocalizedAsync(strs.deafen);
+        await Response().Confirm(strs.deafen).SendAsync();
     }
 
     [Cmd]
@@ -178,7 +178,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task UnDeafen(params IGuildUser[] users)
     {
         await _service.DeafenUsers(false, users);
-        await ReplyConfirmLocalizedAsync(strs.undeafen);
+        await Response().Confirm(strs.undeafen).SendAsync();
     }
 
     [Cmd]
@@ -188,7 +188,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task DelVoiChanl([Leftover] IVoiceChannel voiceChannel)
     {
         await voiceChannel.DeleteAsync();
-        await ReplyConfirmLocalizedAsync(strs.delvoich(Format.Bold(voiceChannel.Name)));
+        await Response().Confirm(strs.delvoich(Format.Bold(voiceChannel.Name))).SendAsync();
     }
 
     [Cmd]
@@ -198,7 +198,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task CreatVoiChanl([Leftover] string channelName)
     {
         var ch = await ctx.Guild.CreateVoiceChannelAsync(channelName);
-        await ReplyConfirmLocalizedAsync(strs.createvoich(Format.Bold(ch.Name)));
+        await Response().Confirm(strs.createvoich(Format.Bold(ch.Name))).SendAsync();
     }
 
     [Cmd]
@@ -208,7 +208,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task DelTxtChanl([Leftover] ITextChannel toDelete)
     {
         await toDelete.DeleteAsync();
-        await ReplyConfirmLocalizedAsync(strs.deltextchan(Format.Bold(toDelete.Name)));
+        await Response().Confirm(strs.deltextchan(Format.Bold(toDelete.Name))).SendAsync();
     }
 
     [Cmd]
@@ -218,7 +218,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     public async Task CreaTxtChanl([Leftover] string channelName)
     {
         var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName); 
-        await ReplyConfirmLocalizedAsync(strs.createtextchan(Format.Bold(txtCh.Name)));
+        await Response().Confirm(strs.createtextchan(Format.Bold(txtCh.Name))).SendAsync();
     }
 
     [Cmd]
@@ -230,7 +230,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         var channel = (ITextChannel)ctx.Channel;
         topic ??= "";
         await channel.ModifyAsync(c => c.Topic = topic);
-        await ReplyConfirmLocalizedAsync(strs.set_topic);
+        await Response().Confirm(strs.set_topic).SendAsync();
     }
 
     [Cmd]
@@ -241,7 +241,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     {
         var channel = (ITextChannel)ctx.Channel;
         await channel.ModifyAsync(c => c.Name = name);
-        await ReplyConfirmLocalizedAsync(strs.set_channel_name);
+        await Response().Confirm(strs.set_channel_name).SendAsync();
     }
 
     [Cmd]
@@ -256,9 +256,9 @@ public partial class Administration : NadekoModule<AdministrationService>
         await channel.ModifyAsync(c => c.IsNsfw = !isEnabled);
 
         if (isEnabled)
-            await ReplyConfirmLocalizedAsync(strs.nsfw_set_false);
+            await Response().Confirm(strs.nsfw_set_false).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.nsfw_set_true);
+            await Response().Confirm(strs.nsfw_set_true).SendAsync();
     }
 
     [Cmd]
@@ -277,13 +277,13 @@ public partial class Administration : NadekoModule<AdministrationService>
         var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
         if (!userPerms.Has(ChannelPermission.ManageMessages))
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+            await Response().Error(strs.insuf_perms_u).SendAsync();
             return;
         }
 
         if (!botPerms.Has(ChannelPermission.ViewChannel))
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
+            await Response().Error(strs.insuf_perms_i).SendAsync();
             return;
         }
 
@@ -312,13 +312,13 @@ public partial class Administration : NadekoModule<AdministrationService>
         var botPerms = ((SocketGuild)ctx.Guild).CurrentUser.GetPermissions(channel);
         if (!userPerms.Has(ChannelPermission.ManageMessages))
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+            await Response().Error(strs.insuf_perms_u).SendAsync();
             return;
         }
 
         if (!botPerms.Has(ChannelPermission.ManageMessages))
         {
-            await ReplyErrorLocalizedAsync(strs.insuf_perms_i);
+            await Response().Error(strs.insuf_perms_i).SendAsync();
             return;
         }
 
@@ -326,7 +326,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         var msg = await channel.GetMessageAsync(messageId);
         if (msg is null)
         {
-            await ReplyErrorLocalizedAsync(strs.msg_not_found);
+            await Response().Error(strs.msg_not_found).SendAsync();
             return;
         }
 
@@ -342,7 +342,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         }
         else
         {
-            await ReplyErrorLocalizedAsync(strs.time_too_long);
+            await Response().Error(strs.time_too_long).SendAsync();
             return;
         }
 
@@ -373,7 +373,7 @@ public partial class Administration : NadekoModule<AdministrationService>
 
         if (t is null)
         {
-            await ReplyErrorLocalizedAsync(strs.not_found);
+            await Response().Error(strs.not_found).SendAsync();
             return;
         }
         
@@ -387,7 +387,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     {
         if (ctx.Channel.GetChannelType() != ChannelType.News)
         {
-            await ReplyErrorLocalizedAsync(strs.req_announcement_channel);
+            await Response().Error(strs.req_announcement_channel).SendAsync();
             return;
         }
 
@@ -395,11 +395,11 @@ public partial class Administration : NadekoModule<AdministrationService>
 
         if (newState)
         {
-            await ReplyConfirmLocalizedAsync(strs.autopublish_enable);
+            await Response().Confirm(strs.autopublish_enable).SendAsync();
         }
         else
         {
-            await ReplyConfirmLocalizedAsync(strs.autopublish_disable);
+            await Response().Confirm(strs.autopublish_disable).SendAsync();
         }
     }
 }

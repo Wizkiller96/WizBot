@@ -18,15 +18,15 @@ public partial class Administration
             if (perms is null || perms.Length == 0)
             {
                 await _service.RemoveOverride(ctx.Guild.Id, cmd.Name);
-                await ReplyConfirmLocalizedAsync(strs.perm_override_reset);
+                await Response().Confirm(strs.perm_override_reset).SendAsync();
                 return;
             }
 
             var aggregatePerms = perms.Aggregate((acc, seed) => seed | acc);
             await _service.AddOverride(ctx.Guild.Id, cmd.Name, aggregatePerms);
 
-            await ReplyConfirmLocalizedAsync(strs.perm_override(Format.Bold(aggregatePerms.ToString()),
-                Format.Code(cmd.Name)));
+            await Response().Confirm(strs.perm_override(Format.Bold(aggregatePerms.ToString()),
+                Format.Code(cmd.Name))).SendAsync();
         }
 
         [Cmd]
@@ -34,7 +34,7 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         public async Task DiscordPermOverrideReset()
         {
-            var result = await PromptUserConfirmAsync(_eb.Create()
+            var result = await PromptUserConfirmAsync(new EmbedBuilder()
                                                          .WithOkColor()
                                                          .WithDescription(GetText(strs.perm_override_all_confirm)));
 
@@ -43,7 +43,7 @@ public partial class Administration
 
             await _service.ClearAllOverrides(ctx.Guild.Id);
 
-            await ReplyConfirmLocalizedAsync(strs.perm_override_all);
+            await Response().Confirm(strs.perm_override_all).SendAsync();
         }
 
         [Cmd]
@@ -59,7 +59,7 @@ public partial class Administration
             await ctx.SendPaginatedConfirmAsync(page,
                 curPage =>
                 {
-                    var eb = _eb.Create().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
+                    var eb = new EmbedBuilder().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
 
                     var thisPageOverrides = overrides.Skip(9 * curPage).Take(9).ToList();
 

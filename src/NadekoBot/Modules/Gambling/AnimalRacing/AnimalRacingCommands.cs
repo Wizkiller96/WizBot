@@ -41,7 +41,9 @@ public partial class Gambling
 
             var ar = new AnimalRace(options, _cs, _gamesConf.Data.RaceAnimals.Shuffle());
             if (!_service.AnimalRaces.TryAdd(ctx.Guild.Id, ar))
-                return SendErrorAsync(GetText(strs.animal_race), GetText(strs.animal_race_already_started));
+                return Response()
+                       .Error(GetText(strs.animal_race), GetText(strs.animal_race_already_started))
+                       .SendAsync();
 
             ar.Initialize();
 
@@ -71,15 +73,19 @@ public partial class Gambling
                 var winner = race.FinishedUsers[0];
                 if (race.FinishedUsers[0].Bet > 0)
                 {
-                    return SendConfirmAsync(GetText(strs.animal_race),
-                        GetText(strs.animal_race_won_money(Format.Bold(winner.Username),
-                            winner.Animal.Icon,
-                            (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)));
+                    return Response()
+                           .Confirm(GetText(strs.animal_race),
+                               GetText(strs.animal_race_won_money(Format.Bold(winner.Username),
+                                   winner.Animal.Icon,
+                                   (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)))
+                           .SendAsync();
                 }
 
                 ar.Dispose();
-                return SendConfirmAsync(GetText(strs.animal_race),
-                    GetText(strs.animal_race_won(Format.Bold(winner.Username), winner.Animal.Icon)));
+                return Response()
+                       .Confirm(GetText(strs.animal_race),
+                           GetText(strs.animal_race_won(Format.Bold(winner.Username), winner.Animal.Icon)))
+                       .SendAsync();
             }
 
             ar.OnStartingFailed += Ar_OnStartingFailed;
@@ -88,17 +94,21 @@ public partial class Gambling
             ar.OnStarted += Ar_OnStarted;
             _client.MessageReceived += ClientMessageReceived;
 
-            return SendConfirmAsync(GetText(strs.animal_race),
-                GetText(strs.animal_race_starting(options.StartTime)),
-                footer: GetText(strs.animal_race_join_instr(prefix)));
+            return Response()
+                   .Confirm(GetText(strs.animal_race),
+                       GetText(strs.animal_race_starting(options.StartTime)),
+                       footer: GetText(strs.animal_race_join_instr(prefix)))
+                   .SendAsync();
         }
 
         private Task Ar_OnStarted(AnimalRace race)
         {
             if (race.Users.Count == race.MaxUsers)
-                return SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_full));
-            return SendConfirmAsync(GetText(strs.animal_race),
-                GetText(strs.animal_race_starting_with_x(race.Users.Count)));
+                return Response().Confirm(GetText(strs.animal_race), GetText(strs.animal_race_full)).SendAsync();
+            return Response()
+                   .Confirm(GetText(strs.animal_race),
+                       GetText(strs.animal_race_starting_with_x(race.Users.Count)))
+                   .SendAsync();
         }
 
         private async Task Ar_OnStateUpdate(AnimalRace race)
@@ -115,10 +125,10 @@ public partial class Gambling
             var msg = raceMessage;
 
             if (msg is null)
-                raceMessage = await SendConfirmAsync(text);
+                raceMessage = await Response().Confirm(text).SendAsync();
             else
             {
-                await msg.ModifyAsync(x => x.Embed = _eb.Create()
+                await msg.ModifyAsync(x => x.Embed = new EmbedBuilder()
                                                         .WithTitle(GetText(strs.animal_race))
                                                         .WithDescription(text)
                                                         .WithOkColor()
@@ -130,7 +140,7 @@ public partial class Gambling
         {
             _service.AnimalRaces.TryRemove(ctx.Guild.Id, out _);
             race.Dispose();
-            return ReplyErrorLocalizedAsync(strs.animal_race_failed);
+            return Response().Error(strs.animal_race_failed).SendAsync();
         }
 
         [Cmd]
@@ -142,7 +152,7 @@ public partial class Gambling
 
             if (!_service.AnimalRaces.TryGetValue(ctx.Guild.Id, out var ar))
             {
-                await ReplyErrorLocalizedAsync(strs.race_not_exist);
+                await Response().Error(strs.race_not_exist).SendAsync();
                 return;
             }
 
@@ -151,12 +161,16 @@ public partial class Gambling
                 var user = await ar.JoinRace(ctx.User.Id, ctx.User.ToString(), amount);
                 if (amount > 0)
                 {
-                    await SendConfirmAsync(GetText(strs.animal_race_join_bet(ctx.User.Mention,
-                        user.Animal.Icon,
-                        amount + CurrencySign)));
+                    await Response()
+                          .Confirm(GetText(strs.animal_race_join_bet(ctx.User.Mention,
+                              user.Animal.Icon,
+                              amount + CurrencySign)))
+                          .SendAsync();
                 }
                 else
-                    await SendConfirmAsync(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)));
+                    await Response()
+                          .Confirm(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)))
+                          .SendAsync();
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -172,11 +186,11 @@ public partial class Gambling
             }
             catch (AnimalRaceFullException)
             {
-                await SendConfirmAsync(GetText(strs.animal_race), GetText(strs.animal_race_full));
+                await Response().Confirm(GetText(strs.animal_race), GetText(strs.animal_race_full)).SendAsync();
             }
             catch (NotEnoughFundsException)
             {
-                await SendErrorAsync(GetText(strs.not_enough(CurrencySign)));
+                await Response().Error(GetText(strs.not_enough(CurrencySign))).SendAsync();
             }
         }
     }

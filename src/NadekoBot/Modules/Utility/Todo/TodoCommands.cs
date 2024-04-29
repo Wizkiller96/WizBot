@@ -13,7 +13,7 @@ public partial class Utility
             var result = await _service.AddAsync(ctx.User.Id, todo);
             if (result == TodoAddResult.MaxLimitReached)
             {
-                await ReplyErrorLocalizedAsync(strs.todo_add_max_limit);
+                await Response().Error(strs.todo_add_max_limit).SendAsync();
                 return;
             }
 
@@ -25,7 +25,7 @@ public partial class Utility
         {
             if (!await _service.EditAsync(ctx.User.Id, todoId, newMessage))
             {
-                await ReplyErrorLocalizedAsync(strs.todo_not_found);
+                await Response().Error(strs.todo_not_found).SendAsync();
                 return;
             }
 
@@ -39,7 +39,7 @@ public partial class Utility
 
             if (todos.Length == 0)
             {
-                await ReplyErrorLocalizedAsync(strs.todo_list_empty);
+                await Response().Error(strs.todo_list_empty).SendAsync();
                 return;
             }
 
@@ -52,7 +52,7 @@ public partial class Utility
         {
             if (!await _service.CompleteTodoAsync(ctx.User.Id, todoId))
             {
-                await ReplyErrorLocalizedAsync(strs.todo_not_found);
+                await Response().Error(strs.todo_not_found).SendAsync();
                 return;
             }
 
@@ -64,7 +64,7 @@ public partial class Utility
         {
             if (!await _service.DeleteTodoAsync(ctx.User.Id, todoId))
             {
-                await ReplyErrorLocalizedAsync(strs.todo_not_found);
+                await Response().Error(strs.todo_not_found).SendAsync();
                 return;
             }
 
@@ -76,7 +76,7 @@ public partial class Utility
         {
             await _service.ClearTodosAsync(ctx.User.Id);
 
-            await ReplyConfirmLocalizedAsync(strs.todo_cleared);
+            await Response().Confirm(strs.todo_cleared).SendAsync();
         }
 
 
@@ -85,7 +85,7 @@ public partial class Utility
             await ctx.SendPaginatedConfirmAsync(0,
                 (curPage) =>
                 {
-                    var eb = _eb.Create()
+                    var eb = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle(GetText(strs.todo_list));
 
@@ -97,7 +97,7 @@ public partial class Utility
                 9);
         }
 
-        private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, int curPage, IEmbedBuilder eb)
+        private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, int curPage, EmbedBuilder eb)
         {
             foreach (var todo in todos.Skip(curPage * 9).Take(9))
             {
@@ -119,13 +119,13 @@ public partial class Utility
                 var result = await _service.ArchiveTodosAsync(ctx.User.Id, name);
                 if (result == ArchiveTodoResult.NoTodos)
                 {
-                    await ReplyErrorLocalizedAsync(strs.todo_no_todos);
+                    await Response().Error(strs.todo_no_todos).SendAsync();
                     return;
                 }
 
                 if (result == ArchiveTodoResult.MaxLimitReached)
                 {
-                    await ReplyErrorLocalizedAsync(strs.todo_archive_max_limit);
+                    await Response().Error(strs.todo_archive_max_limit).SendAsync();
                     return;
                 }
 
@@ -142,14 +142,14 @@ public partial class Utility
 
                 if (archivedTodoLists.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.todo_archive_empty);
+                    await Response().Error(strs.todo_archive_empty).SendAsync();
                     return;
                 }
 
                 await ctx.SendPaginatedConfirmAsync(page,
                     (curPage) =>
                     {
-                        var eb = _eb.Create()
+                        var eb = new EmbedBuilder()
                             .WithTitle(GetText(strs.todo_archive_list))
                             .WithOkColor();
 
@@ -171,14 +171,14 @@ public partial class Utility
                 var list = await _service.GetArchivedTodoListAsync(ctx.User.Id, id);
                 if (list == null || list.Items.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.todo_archive_not_found);
+                    await Response().Error(strs.todo_archive_not_found).SendAsync();
                     return;
                 }
 
                 await ctx.SendPaginatedConfirmAsync(0,
                     (curPage) =>
                     {
-                        var eb = _eb.Create()
+                        var eb = new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle(GetText(strs.todo_list));
 

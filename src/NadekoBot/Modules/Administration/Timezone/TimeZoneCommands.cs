@@ -37,7 +37,7 @@ public partial class Administration
 
 
             await ctx.SendPaginatedConfirmAsync(page,
-                curPage => _eb.Create()
+                curPage => new EmbedBuilder()
                               .WithOkColor()
                               .WithTitle(GetText(strs.timezones_available))
                               .WithDescription(string.Join("\n",
@@ -49,7 +49,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task Timezone()
-            => await ReplyConfirmLocalizedAsync(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id)));
+            => await Response().Confirm(strs.timezone_guild(_service.GetTimeZoneOrUtc(ctx.Guild.Id))).SendAsync();
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -63,13 +63,13 @@ public partial class Administration
 
             if (tz is null)
             {
-                await ReplyErrorLocalizedAsync(strs.timezone_not_found);
+                await Response().Error(strs.timezone_not_found).SendAsync();
                 return;
             }
 
             _service.SetTimeZone(ctx.Guild.Id, tz);
 
-            await SendConfirmAsync(tz.ToString());
+            await Response().Confirm(tz.ToString()).SendAsync();
         }
     }
 }

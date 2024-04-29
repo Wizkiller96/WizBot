@@ -37,8 +37,8 @@ public sealed class DmContextAdapter : DmContext
         _localization = new(_services.GetRequiredService<ILocalization>());
     }
 
-    public override IEmbedBuilder Embed()
-        => _ebs.Value.Create();
+    public override EmbedBuilder Embed()
+        => new EmbedBuilder();
 
     public override string GetText(string key, object[]? args = null)
     {

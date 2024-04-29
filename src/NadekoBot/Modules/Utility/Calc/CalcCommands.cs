@@ -16,9 +16,9 @@ public partial class Utility
             expr.EvaluateParameter += Expr_EvaluateParameter;
             var result = expr.Evaluate();
             if (!expr.HasErrors())
-                await SendConfirmAsync("⚙ " + GetText(strs.result), result.ToString());
+                await Response().Confirm("⚙ " + GetText(strs.result), result.ToString()).SendAsync();
             else
-                await SendErrorAsync("⚙ " + GetText(strs.error), expr.Error);
+                await Response().Error("⚙ " + GetText(strs.error), expr.Error).SendAsync();
         }
 
         private static void Expr_EvaluateParameter(string name, ParameterArgs args)
@@ -42,7 +42,7 @@ public partial class Utility
                                         .DistinctBy(x => x.Name)
                                         .Select(x => x.Name)
                                         .Except(new[] { "ToString", "Equals", "GetHashCode", "GetType" });
-            await SendConfirmAsync(GetText(strs.calcops(prefix)), string.Join(", ", selection));
+            await Response().Confirm(GetText(strs.calcops(prefix)), string.Join(", ", selection)).SendAsync();
         }
     }
 }

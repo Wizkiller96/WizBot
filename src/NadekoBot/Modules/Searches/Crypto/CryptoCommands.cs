@@ -30,12 +30,12 @@ public partial class Searches
 
                 if (symbols.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.not_found);
+                    await Response().Error(strs.not_found).SendAsync();
                     return;
                 }
 
                 var symbol = symbols.First();
-                var promptEmbed = _eb.Create()
+                var promptEmbed = new EmbedBuilder()
                                      .WithDescription(symbol.Description)
                                      .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
                 
@@ -47,7 +47,7 @@ public partial class Searches
 
                 if (stock is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.not_found);
+                    await Response().Error(strs.not_found).SendAsync();
                     return;
                 }
             }
@@ -79,7 +79,7 @@ public partial class Searches
             
             var price = stock.Price.ToString("C2", localCulture);
 
-            var eb = _eb.Create()
+            var eb = new EmbedBuilder()
                         .WithOkColor()
                         .WithAuthor(stock.Symbol)
                         .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
@@ -92,7 +92,7 @@ public partial class Searches
                         // .AddField("Change 200d", $"{sign200}{change200}", true)
                         .WithFooter(stock.Exchange);
             
-            var message = await EmbedAsync(eb);
+            var message = await Response().Embed(eb).SendAsync();
             await using var imageData = await stockImageTask;
             if (imageData is null)
                 return;
@@ -127,7 +127,7 @@ public partial class Searches
 
             if (nearest is not null)
             {
-                var embed = _eb.Create()
+                var embed = new EmbedBuilder()
                                .WithTitle(GetText(strs.crypto_not_found))
                                .WithDescription(
                                    GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
@@ -138,7 +138,7 @@ public partial class Searches
 
             if (crypto is null)
             {
-                await ReplyErrorLocalizedAsync(strs.crypto_not_found);
+                await Response().Error(strs.crypto_not_found).SendAsync();
                 return;
             }
 
@@ -160,7 +160,7 @@ public partial class Searches
             await using var sparkline = await _service.GetSparklineAsync(crypto.Id, usd.PercentChange7d >= 0);
             var fileName = $"{crypto.Slug}_7d.png";
             
-            var toSend = _eb.Create()
+            var toSend = new EmbedBuilder()
                             .WithOkColor()
                             .WithAuthor($"#{crypto.CmcRank}")
                             .WithTitle($"{crypto.Name} ({crypto.Symbol})")

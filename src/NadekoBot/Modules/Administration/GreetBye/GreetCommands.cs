@@ -13,9 +13,9 @@ public partial class Administration
             var enabled = await _service.ToggleBoost(ctx.Guild.Id, ctx.Channel.Id);
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.boost_on);
+                await Response().Confirm(strs.boost_on).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.boost_off);
+                await Response().Pending(strs.boost_off).SendAsync();
         }
 
         [Cmd]
@@ -29,9 +29,9 @@ public partial class Administration
             await _service.SetBoostDel(ctx.Guild.Id, timer);
 
             if (timer > 0)
-                await ReplyConfirmLocalizedAsync(strs.boostdel_on(timer));
+                await Response().Confirm(strs.boostdel_on(timer)).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.boostdel_off);
+                await Response().Pending(strs.boostdel_off).SendAsync();
         }
 
         [Cmd]
@@ -42,15 +42,15 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(text))
             {
                 var boostMessage = _service.GetBoostMessage(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.boostmsg_cur(boostMessage?.SanitizeMentions()));
+                await Response().Confirm(strs.boostmsg_cur(boostMessage?.SanitizeMentions())).SendAsync();
                 return;
             }
 
             var sendBoostEnabled = _service.SetBoostMessage(ctx.Guild.Id, ref text);
 
-            await ReplyConfirmLocalizedAsync(strs.boostmsg_new);
+            await Response().Confirm(strs.boostmsg_new).SendAsync();
             if (!sendBoostEnabled)
-                await ReplyPendingLocalizedAsync(strs.boostmsg_enable($"`{prefix}boost`"));
+                await Response().Pending(strs.boostmsg_enable($"`{prefix}boost`")).SendAsync();
         }
 
         [Cmd]
@@ -64,9 +64,9 @@ public partial class Administration
             await _service.SetGreetDel(ctx.Guild.Id, timer);
 
             if (timer > 0)
-                await ReplyConfirmLocalizedAsync(strs.greetdel_on(timer));
+                await Response().Confirm(strs.greetdel_on(timer)).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.greetdel_off);
+                await Response().Pending(strs.greetdel_off).SendAsync();
         }
 
         [Cmd]
@@ -77,9 +77,9 @@ public partial class Administration
             var enabled = await _service.SetGreet(ctx.Guild.Id, ctx.Channel.Id);
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.greet_on);
+                await Response().Confirm(strs.greet_on).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.greet_off);
+                await Response().Pending(strs.greet_off).SendAsync();
         }
 
         [Cmd]
@@ -90,16 +90,16 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(text))
             {
                 var greetMsg = _service.GetGreetMsg(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.greetmsg_cur(greetMsg?.SanitizeMentions()));
+                await Response().Confirm(strs.greetmsg_cur(greetMsg?.SanitizeMentions())).SendAsync();
                 return;
             }
 
             var sendGreetEnabled = _service.SetGreetMessage(ctx.Guild.Id, ref text);
 
-            await ReplyConfirmLocalizedAsync(strs.greetmsg_new);
+            await Response().Confirm(strs.greetmsg_new).SendAsync();
 
             if (!sendGreetEnabled)
-                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
+                await Response().Pending(strs.greetmsg_enable($"`{prefix}greet`")).SendAsync();
         }
 
         [Cmd]
@@ -110,9 +110,9 @@ public partial class Administration
             var enabled = await _service.SetGreetDm(ctx.Guild.Id);
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.greetdm_on);
+                await Response().Confirm(strs.greetdm_on).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.greetdm_off);
+                await Response().Confirm(strs.greetdm_off).SendAsync();
         }
 
         [Cmd]
@@ -123,15 +123,15 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(text))
             {
                 var dmGreetMsg = _service.GetDmGreetMsg(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.greetdmmsg_cur(dmGreetMsg?.SanitizeMentions()));
+                await Response().Confirm(strs.greetdmmsg_cur(dmGreetMsg?.SanitizeMentions())).SendAsync();
                 return;
             }
 
             var sendGreetEnabled = _service.SetGreetDmMessage(ctx.Guild.Id, ref text);
 
-            await ReplyConfirmLocalizedAsync(strs.greetdmmsg_new);
+            await Response().Confirm(strs.greetdmmsg_new).SendAsync();
             if (!sendGreetEnabled)
-                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{prefix}greetdm`"));
+                await Response().Pending(strs.greetdmmsg_enable($"`{prefix}greetdm`")).SendAsync();
         }
 
         [Cmd]
@@ -142,9 +142,9 @@ public partial class Administration
             var enabled = await _service.SetBye(ctx.Guild.Id, ctx.Channel.Id);
 
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.bye_on);
+                await Response().Confirm(strs.bye_on).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.bye_off);
+                await Response().Confirm(strs.bye_off).SendAsync();
         }
 
         [Cmd]
@@ -155,15 +155,15 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(text))
             {
                 var byeMsg = _service.GetByeMessage(ctx.Guild.Id);
-                await ReplyConfirmLocalizedAsync(strs.byemsg_cur(byeMsg?.SanitizeMentions()));
+                await Response().Confirm(strs.byemsg_cur(byeMsg?.SanitizeMentions())).SendAsync();
                 return;
             }
 
             var sendByeEnabled = _service.SetByeMessage(ctx.Guild.Id, ref text);
 
-            await ReplyConfirmLocalizedAsync(strs.byemsg_new);
+            await Response().Confirm(strs.byemsg_new).SendAsync();
             if (!sendByeEnabled)
-                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
+                await Response().Pending(strs.byemsg_enable($"`{prefix}bye`")).SendAsync();
         }
 
         [Cmd]
@@ -174,9 +174,9 @@ public partial class Administration
             await _service.SetByeDel(ctx.Guild.Id, timer);
 
             if (timer > 0)
-                await ReplyConfirmLocalizedAsync(strs.byedel_on(timer));
+                await Response().Confirm(strs.byedel_on(timer)).SendAsync();
             else
-                await ReplyPendingLocalizedAsync(strs.byedel_off);
+                await Response().Pending(strs.byedel_off).SendAsync();
         }
 
 
@@ -191,7 +191,7 @@ public partial class Administration
             await _service.ByeTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetByeEnabled(ctx.Guild.Id);
             if (!enabled)
-                await ReplyPendingLocalizedAsync(strs.byemsg_enable($"`{prefix}bye`"));
+                await Response().Pending(strs.byemsg_enable($"`{prefix}bye`")).SendAsync();
         }
 
         [Cmd]
@@ -205,7 +205,7 @@ public partial class Administration
             await _service.GreetTest((ITextChannel)ctx.Channel, user);
             var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
             if (!enabled)
-                await ReplyPendingLocalizedAsync(strs.greetmsg_enable($"`{prefix}greet`"));
+                await Response().Pending(strs.greetmsg_enable($"`{prefix}greet`")).SendAsync();
         }
 
         [Cmd]
@@ -223,7 +223,7 @@ public partial class Administration
                 await ctx.WarningAsync();
             var enabled = _service.GetGreetDmEnabled(ctx.Guild.Id);
             if (!enabled)
-                await ReplyPendingLocalizedAsync(strs.greetdmmsg_enable($"`{prefix}greetdm`"));
+                await Response().Pending(strs.greetdmmsg_enable($"`{prefix}greetdm`")).SendAsync();
         }
     }
 }

@@ -58,9 +58,9 @@ public partial class Permissions
                     var pageItems = items.Skip(10 * curPage).Take(10).ToList();
 
                     if (pageItems.Count == 0)
-                        return _eb.Create().WithOkColor().WithTitle(title).WithDescription(GetText(strs.empty_page));
+                        return new EmbedBuilder().WithOkColor().WithTitle(title).WithDescription(GetText(strs.empty_page));
 
-                    return _eb.Create().WithTitle(title).WithDescription(pageItems.Join('\n')).WithOkColor();
+                    return new EmbedBuilder().WithTitle(title).WithDescription(pageItems.Join('\n')).WithOkColor();
                 },
                 items.Length,
                 10);
@@ -130,13 +130,13 @@ public partial class Permissions
 
             if (action == AddRemove.Add)
             {
-                await ReplyConfirmLocalizedAsync(strs.blacklisted(Format.Code(type.ToString()),
-                    Format.Code(id.ToString())));
+                await Response().Confirm(strs.blacklisted(Format.Code(type.ToString()),
+                    Format.Code(id.ToString()))).SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.unblacklisted(Format.Code(type.ToString()),
-                    Format.Code(id.ToString())));
+                await Response().Confirm(strs.unblacklisted(Format.Code(type.ToString()),
+                    Format.Code(id.ToString()))).SendAsync();
             }
         }
     }

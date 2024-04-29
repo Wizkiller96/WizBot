@@ -38,7 +38,7 @@ public partial class Administration
                 || (ctx.User.Id != ownerId && targetMaxRole >= modMaxRole)
                 || target.Id == ownerId)
             {
-                await ReplyErrorLocalizedAsync(strs.hierarchy);
+                await Response().Error(strs.hierarchy).SendAsync();
                 return false;
             }
 
@@ -65,7 +65,7 @@ public partial class Administration
             var dmFailed = false;
             try
             {
-                await user.EmbedAsync(_eb.Create()
+                await user.EmbedAsync(new EmbedBuilder()
                                          .WithErrorColor()
                                          .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
                                          .AddField(GetText(strs.moderator), ctx.User.ToString())
@@ -84,16 +84,16 @@ public partial class Administration
             catch (Exception ex)
             {
                 Log.Warning(ex, "Exception occured while warning a user");
-                var errorEmbed = _eb.Create().WithErrorColor().WithDescription(GetText(strs.cant_apply_punishment));
+                var errorEmbed = new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.cant_apply_punishment));
 
                 if (dmFailed)
                     errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-                await ctx.Channel.EmbedAsync(errorEmbed);
+                await Response().Embed(errorEmbed).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create().WithOkColor();
+            var embed = new EmbedBuilder().WithOkColor();
             if (punishment is null)
                 embed.WithDescription(GetText(strs.user_warned(Format.Bold(user.ToString()))));
             else
@@ -105,7 +105,7 @@ public partial class Administration
             if (dmFailed)
                 embed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -118,9 +118,9 @@ public partial class Administration
             var expireDays = await _service.GetWarnExpire(ctx.Guild.Id);
 
             if (expireDays == 0)
-                await ReplyConfirmLocalizedAsync(strs.warns_dont_expire);
+                await Response().Confirm(strs.warns_dont_expire).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.warns_expire_in(expireDays));
+                await Response().Error(strs.warns_expire_in(expireDays)).SendAsync();
         }
 
         [Cmd]
@@ -140,14 +140,14 @@ public partial class Administration
             await _service.WarnExpireAsync(ctx.Guild.Id, days, opts.Delete);
             if (days == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_reset);
+                await Response().Confirm(strs.warn_expire_reset).SendAsync();
                 return;
             }
 
             if (opts.Delete)
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_delete(Format.Bold(days.ToString())));
+                await Response().Confirm(strs.warn_expire_set_delete(Format.Bold(days.ToString()))).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.warn_expire_set_clear(Format.Bold(days.ToString())));
+                await Response().Confirm(strs.warn_expire_set_clear(Format.Bold(days.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -200,7 +200,7 @@ public partial class Administration
                     var warnings = allWarnings.Skip(page * 9).Take(9).ToArray();
 
                     var user = (ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString();
-                    var embed = _eb.Create().WithOkColor().WithTitle(GetText(strs.warnlog_for(user)));
+                    var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.warnlog_for(user)));
 
                     if (!warnings.Any())
                         embed.WithDescription(GetText(strs.warnings_none));
@@ -260,7 +260,7 @@ public partial class Administration
                                                 + $" | {total} ({all} - {forgiven})";
                                      });
 
-                    return _eb.Create()
+                    return new EmbedBuilder()
                               .WithOkColor()
                               .WithTitle(GetText(strs.warnings_list))
                               .WithDescription(string.Join("\n", ws));
@@ -285,13 +285,13 @@ public partial class Administration
             var success = await _service.WarnClearAsync(ctx.Guild.Id, userId, index, ctx.User.ToString());
             var userStr = Format.Bold((ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString());
             if (index == 0)
-                await ReplyErrorLocalizedAsync(strs.warnings_cleared(userStr));
+                await Response().Error(strs.warnings_cleared(userStr)).SendAsync();
             else
             {
                 if (success)
-                    await ReplyConfirmLocalizedAsync(strs.warning_cleared(Format.Bold(index.ToString()), userStr));
+                    await Response().Confirm(strs.warning_cleared(Format.Bold(index.ToString()), userStr)).SendAsync();
                 else
-                    await ReplyErrorLocalizedAsync(strs.warning_clear_fail);
+                    await Response().Error(strs.warning_clear_fail).SendAsync();
             }
         }
 
@@ -310,7 +310,7 @@ public partial class Administration
             if (ctx.Guild.OwnerId != ctx.User.Id
                 && role.Position >= ((IGuildUser)ctx.User).GetRoles().Max(x => x.Position))
             {
-                await ReplyErrorLocalizedAsync(strs.role_too_high);
+                await Response().Error(strs.role_too_high).SendAsync();
                 return;
             }
 
@@ -321,14 +321,18 @@ public partial class Administration
 
             if (time is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_punish_set(Format.Bold(punish.ToString()),
-                    Format.Bold(number.ToString())));
+                await Response()
+                      .Confirm(strs.warn_punish_set(Format.Bold(punish.ToString()),
+                          Format.Bold(number.ToString())))
+                      .SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
-                    Format.Bold(number.ToString()),
-                    Format.Bold(time.Input)));
+                await Response()
+                      .Confirm(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
+                          Format.Bold(number.ToString()),
+                          Format.Bold(time.Input)))
+                      .SendAsync();
             }
         }
 
@@ -353,14 +357,18 @@ public partial class Administration
 
             if (time is null)
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_punish_set(Format.Bold(punish.ToString()),
-                    Format.Bold(number.ToString())));
+                await Response()
+                      .Confirm(strs.warn_punish_set(Format.Bold(punish.ToString()),
+                          Format.Bold(number.ToString())))
+                      .SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
-                    Format.Bold(number.ToString()),
-                    Format.Bold(time.Input)));
+                await Response()
+                      .Confirm(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
+                          Format.Bold(number.ToString()),
+                          Format.Bold(time.Input)))
+                      .SendAsync();
             }
         }
 
@@ -372,7 +380,7 @@ public partial class Administration
             if (!_service.WarnPunishRemove(ctx.Guild.Id, number))
                 return;
 
-            await ReplyConfirmLocalizedAsync(strs.warn_punish_rem(Format.Bold(number.ToString())));
+            await Response().Confirm(strs.warn_punish_rem(Format.Bold(number.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -391,7 +399,7 @@ public partial class Administration
             else
                 list = GetText(strs.warnpl_none);
 
-            await SendConfirmAsync(GetText(strs.warn_punish_list), list);
+            await Response().Confirm(GetText(strs.warn_punish_list), list).SendAsync();
         }
 
         [Cmd]
@@ -401,7 +409,7 @@ public partial class Administration
         [Priority(1)]
         public Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
             => Ban(time, user.Id, msg);
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
@@ -413,7 +421,7 @@ public partial class Administration
                 return;
 
             var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
-            
+
 
             if (guildUser is not null && !await CheckRoleHierarchy(guildUser))
                 return;
@@ -438,10 +446,10 @@ public partial class Administration
             var user = await ctx.Client.GetUserAsync(userId);
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
             await _mute.TimedBan(ctx.Guild, userId, time.Time, (ctx.User + " | " + msg).TrimTo(512), banPrune);
-            var toSend = _eb.Create()
+            var toSend = new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle("⛔️ " + GetText(strs.banned_user))
-                            .AddField(GetText(strs.username),  user?.ToString() ?? userId.ToString(), true)
+                            .AddField(GetText(strs.username), user?.ToString() ?? userId.ToString(), true)
                             .AddField("ID", userId.ToString(), true)
                             .AddField(GetText(strs.duration),
                                 time.Time.Humanize(3, minUnit: TimeUnit.Minute, culture: Culture),
@@ -450,7 +458,7 @@ public partial class Administration
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(toSend);
+            await Response().Embed(toSend).SendAsync();
         }
 
         [Cmd]
@@ -466,7 +474,7 @@ public partial class Administration
                 var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
                 await ctx.Guild.AddBanAsync(userId, banPrune, (ctx.User + " | " + msg).TrimTo(512));
 
-                await ctx.Channel.EmbedAsync(_eb.Create()
+                await ctx.Channel.EmbedAsync(new EmbedBuilder()
                                                 .WithOkColor()
                                                 .WithTitle("⛔️ " + GetText(strs.banned_user))
                                                 .AddField("ID", userId.ToString(), true));
@@ -502,7 +510,7 @@ public partial class Administration
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
             await ctx.Guild.AddBanAsync(user, banPrune, (ctx.User + " | " + msg).TrimTo(512));
 
-            var toSend = _eb.Create()
+            var toSend = new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle("⛔️ " + GetText(strs.banned_user))
                             .AddField(GetText(strs.username), user.ToString(), true)
@@ -511,7 +519,7 @@ public partial class Administration
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(toSend);
+            await Response().Embed(toSend).SendAsync();
         }
 
         [Cmd]
@@ -522,16 +530,16 @@ public partial class Administration
         {
             if (days < 0 || days > 7)
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_input);
+                await Response().Error(strs.invalid_input).SendAsync();
                 return;
             }
-            
+
             await _service.SetBanPruneAsync(ctx.Guild.Id, days);
-            
+
             if (days == 0)
-                await ReplyConfirmLocalizedAsync(strs.ban_prune_disabled);
+                await Response().Confirm(strs.ban_prune_disabled).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.ban_prune(days));
+                await Response().Confirm(strs.ban_prune(days)).SendAsync();
         }
 
         [Cmd]
@@ -545,11 +553,11 @@ public partial class Administration
                 var template = _service.GetBanTemplate(ctx.Guild.Id);
                 if (template is null)
                 {
-                    await ReplyConfirmLocalizedAsync(strs.banmsg_default);
+                    await Response().Confirm(strs.banmsg_default).SendAsync();
                     return;
                 }
 
-                await SendConfirmAsync(template);
+                await Response().Confirm(template).SendAsync();
                 return;
             }
 
@@ -586,10 +594,14 @@ public partial class Administration
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
         {
             var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), reason));
-            var embed = await _service.GetBanUserDmEmbed(Context, (IGuildUser)ctx.User, defaultMessage, reason, duration);
+            var embed = await _service.GetBanUserDmEmbed(Context,
+                (IGuildUser)ctx.User,
+                defaultMessage,
+                reason,
+                duration);
 
             if (embed is null)
-                await ConfirmLocalizedAsync(strs.banmsg_disabled);
+                await Response().Confirm(strs.banmsg_disabled).SendAsync();
             else
             {
                 try
@@ -598,7 +610,7 @@ public partial class Administration
                 }
                 catch (Exception)
                 {
-                    await ReplyErrorLocalizedAsync(strs.unable_to_dm_user);
+                    await Response().Error(strs.unable_to_dm_user).SendAsync();
                     return;
                 }
 
@@ -618,7 +630,7 @@ public partial class Administration
 
             if (bun is null)
             {
-                await ReplyErrorLocalizedAsync(strs.user_not_found);
+                await Response().Error(strs.user_not_found).SendAsync();
                 return;
             }
 
@@ -635,7 +647,7 @@ public partial class Administration
 
             if (bun is null)
             {
-                await ReplyErrorLocalizedAsync(strs.user_not_found);
+                await Response().Error(strs.user_not_found).SendAsync();
                 return;
             }
 
@@ -646,7 +658,7 @@ public partial class Administration
         {
             await ctx.Guild.RemoveBanAsync(user);
 
-            await ReplyConfirmLocalizedAsync(strs.unbanned_user(Format.Bold(user.ToString())));
+            await Response().Confirm(strs.unbanned_user(Format.Bold(user.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -678,7 +690,10 @@ public partial class Administration
 
             try
             {
-                await user.SendErrorAsync(_eb, GetText(strs.sbdm(Format.Bold(ctx.Guild.Name), msg)));
+                await Response()
+                      .Channel(await user.CreateDMChannelAsync())
+                      .Error(GetText(strs.sbdm(Format.Bold(ctx.Guild.Name), msg)))
+                      .SendAsync();
             }
             catch
             {
@@ -690,7 +705,7 @@ public partial class Administration
             try { await ctx.Guild.RemoveBanAsync(user); }
             catch { await ctx.Guild.RemoveBanAsync(user); }
 
-            var toSend = _eb.Create()
+            var toSend = new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle("☣ " + GetText(strs.sb_user))
                             .AddField(GetText(strs.username), user.ToString(), true)
@@ -699,7 +714,7 @@ public partial class Administration
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(toSend);
+            await Response().Embed(toSend).SendAsync();
         }
 
         [Cmd]
@@ -733,7 +748,10 @@ public partial class Administration
 
             try
             {
-                await user.SendErrorAsync(_eb, GetText(strs.kickdm(Format.Bold(ctx.Guild.Name), msg)));
+                await Response()
+                      .Channel(await user.CreateDMChannelAsync())
+                      .Error(GetText(strs.kickdm(Format.Bold(ctx.Guild.Name), msg)))
+                      .SendAsync();
             }
             catch
             {
@@ -742,7 +760,7 @@ public partial class Administration
 
             await user.KickAsync((ctx.User + " | " + msg).TrimTo(512));
 
-            var toSend = _eb.Create()
+            var toSend = new EmbedBuilder()
                             .WithOkColor()
                             .WithTitle(GetText(strs.kicked_user))
                             .AddField(GetText(strs.username), user.ToString(), true)
@@ -751,21 +769,21 @@ public partial class Administration
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(toSend);
+            await Response().Embed(toSend).SendAsync();
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ModerateMembers)]
         [BotPerm(GuildPerm.ModerateMembers)]
         [Priority(2)]
-        public async Task Timeout(IUser globalUser, StoopidTime time,  [Leftover] string msg = null)
+        public async Task Timeout(IUser globalUser, StoopidTime time, [Leftover] string msg = null)
         {
             var user = await ctx.Guild.GetUserAsync(globalUser.Id);
 
             if (user is null)
                 return;
-            
+
             if (!await CheckRoleHierarchy(user))
                 return;
 
@@ -774,27 +792,27 @@ public partial class Administration
             try
             {
                 var dmMessage = GetText(strs.timeoutdm(Format.Bold(ctx.Guild.Name), msg));
-                await user.EmbedAsync(_eb.Create(ctx)
-                        .WithPendingColor()
-                        .WithDescription(dmMessage));
+                await user.EmbedAsync(new EmbedBuilder()
+                                         .WithPendingColor()
+                                         .WithDescription(dmMessage));
             }
             catch
             {
                 dmFailed = true;
             }
-            
+
             await user.SetTimeOutAsync(time.Time);
 
-            var toSend = _eb.Create()
-                .WithOkColor()
-                .WithTitle("⏳ " + GetText(strs.timedout_user))
-                .AddField(GetText(strs.username), user.ToString(), true)
-                .AddField("ID", user.Id.ToString(), true);
+            var toSend = new EmbedBuilder()
+                            .WithOkColor()
+                            .WithTitle("⏳ " + GetText(strs.timedout_user))
+                            .AddField(GetText(strs.username), user.ToString(), true)
+                            .AddField("ID", user.Id.ToString(), true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
 
-            await ctx.Channel.EmbedAsync(toSend);
+            await Response().Embed(toSend).SendAsync();
         }
 
         [Cmd]
@@ -846,12 +864,12 @@ public partial class Administration
             if (string.IsNullOrWhiteSpace(missStr))
                 missStr = "-";
 
-            var toSend = _eb.Create(ctx)
+            var toSend = new EmbedBuilder()
                             .WithDescription(GetText(strs.mass_ban_in_progress(banning.Count)))
                             .AddField(GetText(strs.invalid(missing.Count)), missStr)
                             .WithPendingColor();
 
-            var banningMessage = await ctx.Channel.EmbedAsync(toSend);
+            var banningMessage = await Response().Embed(toSend).SendAsync();
 
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
             foreach (var toBan in banning)
@@ -866,7 +884,7 @@ public partial class Administration
                 }
             }
 
-            await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
+            await banningMessage.ModifyAsync(x => x.Embed = new EmbedBuilder()
                                                                .WithDescription(
                                                                    GetText(strs.mass_ban_completed(banning.Count())))
                                                                .AddField(GetText(strs.invalid(missing.Count)), missStr)
@@ -891,7 +909,7 @@ public partial class Administration
                 missStr = "-";
 
             //send a message but don't wait for it
-            var banningMessageTask = ctx.Channel.EmbedAsync(_eb.Create()
+            var banningMessageTask = ctx.Channel.EmbedAsync(new EmbedBuilder()
                                                                .WithDescription(
                                                                    GetText(strs.mass_kill_in_progress(bans.Count())))
                                                                .AddField(GetText(strs.invalid(missing)), missStr)
@@ -911,7 +929,7 @@ public partial class Administration
             //wait for the message and edit it
             var banningMessage = await banningMessageTask;
 
-            await banningMessage.ModifyAsync(x => x.Embed = _eb.Create()
+            await banningMessage.ModifyAsync(x => x.Embed = new EmbedBuilder()
                                                                .WithDescription(
                                                                    GetText(strs.mass_kill_completed(bans.Count())))
                                                                .AddField(GetText(strs.invalid(missing)), missStr)

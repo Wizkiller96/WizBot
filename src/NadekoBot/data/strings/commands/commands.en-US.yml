@@ -2264,7 +2264,7 @@ eval:
   args:
     - "123 / 4.5f"
     - "await ctx.OkAsync();"
-    - 'await ctx.SendConfirmAsync("uwu");'
+    - 'await ctx.Response().Confirm("uwu").SendAsync();'
 betdraw:
   desc: |-
     Bet on the card value and/or color. Specify the amount followed by your guess. 

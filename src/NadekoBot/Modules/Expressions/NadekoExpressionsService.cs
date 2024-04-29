@@ -33,14 +33,14 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         """;
 
     private static readonly ISerializer _exportSerializer = new SerializerBuilder()
-        .WithEventEmitter(args
-            => new MultilineScalarFlowStyleEmitter(args))
-        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-        .WithIndentedSequences()
-        .ConfigureDefaultValuesHandling(DefaultValuesHandling
-            .OmitDefaults)
-        .DisableAliases()
-        .Build();
+                                                            .WithEventEmitter(args
+                                                                => new MultilineScalarFlowStyleEmitter(args))
+                                                            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                                            .WithIndentedSequences()
+                                                            .ConfigureDefaultValuesHandling(DefaultValuesHandling
+                                                                .OmitDefaults)
+                                                            .DisableAliases()
+                                                            .Build();
 
     public int Priority
         => 0;
@@ -112,36 +112,39 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private async Task ReloadInternal(IReadOnlyList<ulong> allGuildIds)
     {
         await using var uow = _db.GetDbContext();
-        var guildItems = await uow.Set<NadekoExpression>().AsNoTracking()
-            .Where(x => allGuildIds.Contains(x.GuildId.Value))
-            .ToListAsync();
+        var guildItems = await uow.Set<NadekoExpression>()
+                                  .AsNoTracking()
+                                  .Where(x => allGuildIds.Contains(x.GuildId.Value))
+                                  .ToListAsync();
 
         newguildExpressions = guildItems.GroupBy(k => k.GuildId!.Value)
-            .ToDictionary(g => g.Key,
-                g => g.Select(x =>
-                    {
-                        x.Trigger = x.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
-                        return x;
-                    })
-                    .ToArray())
-            .ToConcurrent();
+                                        .ToDictionary(g => g.Key,
+                                            g => g.Select(x =>
+                                                  {
+                                                      x.Trigger = x.Trigger.Replace(MENTION_PH,
+                                                          _client.CurrentUser.Mention);
+                                                      return x;
+                                                  })
+                                                  .ToArray())
+                                        .ToConcurrent();
 
         _disabledGlobalExpressionGuilds = new(await uow.Set<GuildConfig>()
-            .Where(x => x.DisableGlobalExpressions)
-            .Select(x => x.GuildId)
-            .ToListAsyncLinqToDB());
+                                                       .Where(x => x.DisableGlobalExpressions)
+                                                       .Select(x => x.GuildId)
+                                                       .ToListAsyncLinqToDB());
 
         lock (_gexprWriteLock)
         {
-            var globalItems = uow.Set<NadekoExpression>().AsNoTracking()
-                .Where(x => x.GuildId == null || x.GuildId == 0)
-                .AsEnumerable()
-                .Select(x =>
-                {
-                    x.Trigger = x.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
-                    return x;
-                })
-                .ToArray();
+            var globalItems = uow.Set<NadekoExpression>()
+                                 .AsNoTracking()
+                                 .Where(x => x.GuildId == null || x.GuildId == 0)
+                                 .AsEnumerable()
+                                 .Select(x =>
+                                 {
+                                     x.Trigger = x.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
+                                     return x;
+                                 })
+                                 .ToArray();
 
             globalExpressions = globalItems;
         }
@@ -262,7 +265,10 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
                         try
                         {
-                            await msg.Channel.SendErrorAsync(_eb, permissionMessage);
+                            await msg.Channel
+                                     .Response(_strings, _eb)
+                                     .Error(permissionMessage)
+                                     .SendAsync();
                         }
                         catch
                         {
@@ -552,19 +558,20 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         foreach (var entry in data)
         {
             var trigger = entry.Key;
-            await uow.Set<NadekoExpression>().AddRangeAsync(entry.Value
-                .Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
-                .Select(expr => new NadekoExpression
-                {
-                    GuildId = guildId,
-                    Response = expr.Res,
-                    Reactions = expr.React?.Join("@@@"),
-                    Trigger = trigger,
-                    AllowTarget = expr.At,
-                    ContainsAnywhere = expr.Ca,
-                    DmResponse = expr.Dm,
-                    AutoDeleteTrigger = expr.Ad
-                }));
+            await uow.Set<NadekoExpression>()
+                     .AddRangeAsync(entry.Value
+                                         .Where(expr => !string.IsNullOrWhiteSpace(expr.Res))
+                                         .Select(expr => new NadekoExpression
+                                         {
+                                             GuildId = guildId,
+                                             Response = expr.Res,
+                                             Reactions = expr.React?.Join("@@@"),
+                                             Trigger = trigger,
+                                             AllowTarget = expr.At,
+                                             ContainsAnywhere = expr.Ca,
+                                             DmResponse = expr.Dm,
+                                             AutoDeleteTrigger = expr.Ad
+                                         }));
         }
 
         await uow.SaveChangesAsync();
@@ -651,8 +658,13 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
     #region Basic Operations
 
-    public async Task<NadekoExpression> AddAsync(ulong? guildId, string key, string message,
-        bool ca = false, bool ad = false, bool dm = false)
+    public async Task<NadekoExpression> AddAsync(
+        ulong? guildId,
+        string key,
+        string message,
+        bool ca = false,
+        bool ad = false,
+        bool dm = false)
     {
         key = key.ToLowerInvariant();
         var expr = new NadekoExpression
@@ -679,8 +691,13 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         return expr;
     }
 
-    public async Task<NadekoExpression> EditAsync(ulong? guildId, int id, string message,
-        bool? ca = null, bool? ad = null, bool? dm = null)
+    public async Task<NadekoExpression> EditAsync(
+        ulong? guildId,
+        int id,
+        string message,
+        bool? ca = null,
+        bool? ad = null,
+        bool? dm = null)
     {
         await using var uow = _db.GetDbContext();
         var expr = uow.Set<NadekoExpression>().GetById(id);
@@ -756,17 +773,19 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     }
 
 
-    public async Task<(IReadOnlyCollection<NadekoExpression> Exprs, int TotalCount)> FindExpressionsAsync(ulong guildId,
-        string query, int page)
+    public async Task<(IReadOnlyCollection<NadekoExpression> Exprs, int TotalCount)> FindExpressionsAsync(
+        ulong guildId,
+        string query,
+        int page)
     {
         await using var ctx = _db.GetDbContext();
 
         if (newguildExpressions.TryGetValue(guildId, out var exprs))
         {
             return (exprs.Where(x => x.Trigger.Contains(query))
-                .Skip(page * 9)
-                .Take(9)
-                .ToArray(), exprs.Length);
+                         .Skip(page * 9)
+                         .Take(9)
+                         .ToArray(), exprs.Length);
         }
 
         return ([], 0);

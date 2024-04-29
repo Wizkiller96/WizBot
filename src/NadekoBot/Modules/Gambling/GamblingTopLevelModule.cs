@@ -26,13 +26,13 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
             return false;
         if (amount < Config.MinBet)
         {
-            await ReplyErrorLocalizedAsync(strs.min_bet_limit(Format.Bold(Config.MinBet.ToString()) + CurrencySign));
+            await Response().Error(strs.min_bet_limit(Format.Bold(Config.MinBet.ToString()) + CurrencySign)).SendAsync();
             return false;
         }
 
         if (Config.MaxBet > 0 && amount > Config.MaxBet)
         {
-            await ReplyErrorLocalizedAsync(strs.max_bet_limit(Format.Bold(Config.MaxBet.ToString()) + CurrencySign));
+            await Response().Error(strs.max_bet_limit(Format.Bold(Config.MaxBet.ToString()) + CurrencySign)).SendAsync();
             return false;
         }
 

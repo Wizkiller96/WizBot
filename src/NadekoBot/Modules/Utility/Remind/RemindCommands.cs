@@ -41,10 +41,10 @@ public partial class Utility
         {
             if (!_service.TryParseRemindMessage(remindString, out var remindData))
             {
-                await ReplyErrorLocalizedAsync(strs.remind_invalid);
+                await Response().Error(strs.remind_invalid).SendAsync();
                 return;
             }
-            
+
             ulong target;
             target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
             if (!await RemindInternal(target,
@@ -52,7 +52,7 @@ public partial class Utility
                     remindData.Time,
                     remindData.What,
                     ReminderType.User))
-                await ReplyErrorLocalizedAsync(strs.remind_too_long);
+                await Response().Error(strs.remind_too_long).SendAsync();
         }
 
         [Cmd]
@@ -64,19 +64,19 @@ public partial class Utility
             var perms = ((IGuildUser)ctx.User).GetPermissions(channel);
             if (!perms.SendMessages || !perms.ViewChannel)
             {
-                await ReplyErrorLocalizedAsync(strs.cant_read_or_send);
+                await Response().Error(strs.cant_read_or_send).SendAsync();
                 return;
             }
 
             if (!_service.TryParseRemindMessage(remindString, out var remindData))
             {
-                await ReplyErrorLocalizedAsync(strs.remind_invalid);
+                await Response().Error(strs.remind_invalid).SendAsync();
                 return;
             }
 
 
             if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What, ReminderType.User))
-                await ReplyErrorLocalizedAsync(strs.remind_too_long);
+                await Response().Error(strs.remind_too_long).SendAsync();
         }
 
         [Cmd]
@@ -96,7 +96,7 @@ public partial class Utility
             if (--page < 0)
                 return;
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 
@@ -128,7 +128,7 @@ public partial class Utility
                 embed.WithDescription(GetText(strs.reminders_none));
 
             embed.AddPaginatedFooter(page + 1, null);
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -165,9 +165,9 @@ public partial class Utility
             }
 
             if (rem is null)
-                await ReplyErrorLocalizedAsync(strs.reminder_not_exist);
+                await Response().Error(strs.reminder_not_exist).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.reminder_deleted(index + 1));
+                await Response().Confirm(strs.reminder_deleted(index + 1)).SendAsync();
         }
 
         private async Task<bool> RemindInternal(
@@ -208,13 +208,14 @@ public partial class Utility
             var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
             try
             {
-                await SendConfirmAsync("⏰ "
-                                       + GetText(strs.remind(
-                                           Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
-                                           Format.Bold(message),
-                                           ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
-                                           gTime,
-                                           gTime)));
+                await Response()
+                      .Confirm($"\u23f0 {GetText(strs.remind(
+                          Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
+                          Format.Bold(message),
+                          ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
+                          gTime,
+                          gTime))}")
+                      .SendAsync();
             }
             catch
             {

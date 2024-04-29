@@ -27,7 +27,7 @@ public partial class Permissions
             var channel = (ITextChannel)ctx.Channel;
             if (secs is < 0 or > 3600)
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_second_param_between(0, 3600));
+                await Response().Error(strs.invalid_second_param_between(0, 3600)).SendAsync();
                 return;
             }
 
@@ -56,10 +56,10 @@ public partial class Permissions
             if (secs == 0)
             {
                 _service.ClearCooldowns(ctx.Guild.Id, cmdName);
-                await ReplyConfirmLocalizedAsync(strs.cmdcd_cleared(Format.Bold(name)));
+                await Response().Confirm(strs.cmdcd_cleared(Format.Bold(name))).SendAsync();
             }
             else
-                await ReplyConfirmLocalizedAsync(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString())));
+                await Response().Confirm(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString()))).SendAsync();
         }
         
         [Cmd]
@@ -85,7 +85,7 @@ public partial class Permissions
             var localSet = _service.GetCommandCooldowns(ctx.Guild.Id);
 
             if (!localSet.Any())
-                await ReplyConfirmLocalizedAsync(strs.cmdcd_none);
+                await Response().Confirm(strs.cmdcd_none).SendAsync();
             else
             {
                 await ctx.SendPaginatedConfirmAsync(page, curPage =>
@@ -94,7 +94,7 @@ public partial class Permissions
                         .Take(15)
                         .Select(x => $"{Format.Code(x.CommandName)}: {x.Seconds.Seconds().Humanize(maxUnit: TimeUnit.Second, culture: Culture)}");
 
-                    return _eb.Create(ctx)
+                    return new EmbedBuilder()
                         .WithOkColor()
                         .WithDescription(items.Join("\n"));
 

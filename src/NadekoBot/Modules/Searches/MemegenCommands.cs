@@ -46,7 +46,7 @@ public partial class Searches
                     var templates = string.Empty;
                     foreach (var template in data.Skip(curPage * 15).Take(15))
                         templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
-                    var embed = _eb.Create().WithOkColor().WithDescription(templates);
+                    var embed = new EmbedBuilder().WithOkColor().WithDescription(templates);
 
                     return embed;
                 },

@@ -21,17 +21,17 @@ public partial class Utility
 
             if (result is null)
             {
-                await ReplyErrorLocalizedAsync(strs.index_out_of_range);
+                await Response().Error(strs.index_out_of_range).SendAsync();
                 return;
             }
 
             if (result is true)
             {
-                await ReplyConfirmLocalizedAsync(strs.repeater_skip_next);
+                await Response().Confirm(strs.repeater_skip_next).SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(strs.repeater_dont_skip_next);
+                await Response().Confirm(strs.repeater_dont_skip_next).SendAsync();
             }
         }
 
@@ -45,7 +45,7 @@ public partial class Utility
 
             var success = await _service.TriggerExternal(ctx.Guild.Id, index);
             if (!success)
-                await ReplyErrorLocalizedAsync(strs.repeat_invoke_none);
+                await Response().Error(strs.repeat_invoke_none).SendAsync();
         }
 
         [Cmd]
@@ -59,15 +59,15 @@ public partial class Utility
             var removed = await _service.RemoveByIndexAsync(ctx.Guild.Id, index);
             if (removed is null)
             {
-                await ReplyErrorLocalizedAsync(strs.repeater_remove_fail);
+                await Response().Error(strs.repeater_remove_fail).SendAsync();
                 return;
             }
 
             var description = GetRepeaterInfoString(removed);
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_removed(index + 1)))
-                .WithDescription(description));
+                .WithDescription(description)).SendAsync();
         }
 
         [Cmd]
@@ -82,14 +82,14 @@ public partial class Utility
 
             if (result is null)
             {
-                await ReplyErrorLocalizedAsync(strs.index_out_of_range);
+                await Response().Error(strs.index_out_of_range).SendAsync();
                 return;
             }
 
             if (result.Value)
-                await ReplyErrorLocalizedAsync(strs.repeater_redundant_no(index + 1));
+                await Response().Error(strs.repeater_redundant_no(index + 1)).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.repeater_redundant_yes(index + 1));
+                await Response().Confirm(strs.repeater_redundant_yes(index + 1)).SendAsync();
         }
 
         [Cmd]
@@ -182,15 +182,15 @@ public partial class Utility
 
             if (runner is null)
             {
-                await ReplyErrorLocalizedAsync(strs.repeater_exceed_limit(5));
+                await Response().Error(strs.repeater_exceed_limit(5)).SendAsync();
                 return;
             }
 
             var description = GetRepeaterInfoString(runner);
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_created))
-                .WithDescription(description));
+                .WithDescription(description)).SendAsync();
         }
 
         [Cmd]
@@ -201,11 +201,11 @@ public partial class Utility
             var repeaters = _service.GetRepeaters(ctx.Guild.Id);
             if (repeaters.Count == 0)
             {
-                await ReplyConfirmLocalizedAsync(strs.repeaters_none);
+                await Response().Confirm(strs.repeaters_none).SendAsync();
                 return;
             }
 
-            var embed = _eb.Create().WithTitle(GetText(strs.list_of_repeaters)).WithOkColor();
+            var embed = new EmbedBuilder().WithTitle(GetText(strs.list_of_repeaters)).WithOkColor();
 
             var i = 0;
             foreach (var runner in repeaters.OrderBy(r => r.Repeater.Id))
@@ -215,7 +215,7 @@ public partial class Utility
                 embed.AddField(name, description);
             }
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private string GetRepeaterInfoString(RunningRepeater runner)

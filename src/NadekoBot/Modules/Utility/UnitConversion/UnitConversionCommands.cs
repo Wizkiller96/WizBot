@@ -13,7 +13,7 @@ public partial class Utility
         {
             var units = await _service.GetUnitsAsync();
 
-            var embed = _eb.Create().WithTitle(GetText(strs.convertlist)).WithOkColor();
+            var embed = new EmbedBuilder().WithTitle(GetText(strs.convertlist)).WithOkColor();
 
 
             foreach (var g in units.GroupBy(x => x.UnitType))
@@ -22,7 +22,7 @@ public partial class Utility
                     string.Join(", ", g.Select(x => x.Triggers.FirstOrDefault()).OrderBy(x => x)));
             }
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -36,14 +36,16 @@ public partial class Utility
                 => x.Triggers.Select(y => y.ToUpperInvariant()).Contains(target.ToUpperInvariant()));
             if (originUnit is null || targetUnit is null)
             {
-                await ReplyErrorLocalizedAsync(strs.convert_not_found(Format.Bold(origin), Format.Bold(target)));
+                await Response().Error(strs.convert_not_found(Format.Bold(origin), Format.Bold(target))).SendAsync();
                 return;
             }
 
             if (originUnit.UnitType != targetUnit.UnitType)
             {
-                await ReplyErrorLocalizedAsync(strs.convert_type_error(Format.Bold(originUnit.Triggers.First()),
-                    Format.Bold(targetUnit.Triggers.First())));
+                await Response()
+                      .Error(strs.convert_type_error(Format.Bold(originUnit.Triggers.First()),
+                          Format.Bold(targetUnit.Triggers.First())))
+                      .SendAsync();
                 return;
             }
 
@@ -87,10 +89,12 @@ public partial class Utility
 
             res = Math.Round(res, 4);
 
-            await SendConfirmAsync(GetText(strs.convert(value,
-                originUnit.Triggers.Last(),
-                res,
-                targetUnit.Triggers.Last())));
+            await Response()
+                  .Confirm(GetText(strs.convert(value,
+                      originUnit.Triggers.Last(),
+                      res,
+                      targetUnit.Triggers.Last())))
+                  .SendAsync();
         }
     }
 }

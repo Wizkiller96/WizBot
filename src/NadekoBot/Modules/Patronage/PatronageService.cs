@@ -30,11 +30,13 @@ public sealed class PatronageService
     private readonly DiscordSocketClient _client;
     private readonly ISubscriptionHandler _subsHandler;
     private readonly IEmbedBuilderService _eb;
-    private static readonly TypedKey<long> _quotaKey 
+
+    private static readonly TypedKey<long> _quotaKey
         = new($"quota:last_hourly_reset");
 
     private readonly IBotCache _cache;
     private readonly IBotCredsProvider _creds;
+    private readonly IMessageSenderService _sender;
 
     public PatronageService(
         PatronageConfig pConf,
@@ -42,8 +44,9 @@ public sealed class PatronageService
         DiscordSocketClient client,
         ISubscriptionHandler subsHandler,
         IEmbedBuilderService eb,
-        IBotCache cache, 
-        IBotCredsProvider creds)
+        IBotCache cache,
+        IBotCredsProvider creds,
+        IMessageSenderService sender)
     {
         _pConf = pConf;
         _db = db;
@@ -52,6 +55,7 @@ public sealed class PatronageService
         _eb = eb;
         _cache = cache;
         _creds = creds;
+        _sender = sender;
     }
 
     public Task OnReadyAsync()
@@ -167,7 +171,7 @@ public sealed class PatronageService
         {
             if (subscriber.LastCharge is null)
                 continue;
-        
+
             var lastChargeUtc = subscriber.LastCharge.Value.ToUniversalTime();
             var dateInOneMonth = lastChargeUtc.Date.AddMonths(1);
             // await using var tran = await ctx.Database.BeginTransactionAsync();
@@ -176,7 +180,7 @@ public sealed class PatronageService
                 var dbPatron = await ctx.GetTable<PatronUser>()
                                         .FirstOrDefaultAsync(x
                                             => x.UniquePlatformUserId == subscriber.UniquePlatformUserId);
-        
+
                 if (dbPatron is null)
                 {
                     // if the user is not in the database alrady
@@ -189,16 +193,17 @@ public sealed class PatronageService
                                             LastCharge = lastChargeUtc,
                                             ValidThru = dateInOneMonth,
                                         });
-        
+
                     // await tran.CommitAsync();
-        
+
                     var newPatron = PatronUserToPatron(dbPatron);
                     _ = SendWelcomeMessage(newPatron);
                     await OnNewPatronPayment(newPatron);
                 }
                 else
                 {
-                    if (dbPatron.LastCharge.Month < lastChargeUtc.Month || dbPatron.LastCharge.Year < lastChargeUtc.Year)
+                    if (dbPatron.LastCharge.Month < lastChargeUtc.Month
+                        || dbPatron.LastCharge.Year < lastChargeUtc.Year)
                     {
                         // user is charged again for this month
                         // if his sub would end in teh future, extend it by one month.
@@ -215,16 +220,16 @@ public sealed class PatronageService
                                                      ? old.ValidThru.AddMonths(1)
                                                      : dateInOneMonth,
                                              });
-        
+
                         // this should never happen
                         if (count == 0)
                         {
                             // await tran.RollbackAsync();
                             continue;
                         }
-        
+
                         // await tran.CommitAsync();
-        
+
                         await OnNewPatronPayment(PatronUserToPatron(dbPatron));
                     }
                     else if (dbPatron.AmountCents != subscriber.Cents // if user changed the amount 
@@ -245,7 +250,7 @@ public sealed class PatronageService
                         var newPatron = dbPatron.Clone();
                         newPatron.AmountCents = cents;
                         newPatron.UserId = subscriber.UserId;
-                        
+
                         // idk what's going on but UpdateWithOutputAsync doesn't work properly here
                         // nor does firstordefault after update. I'm not seeing something obvious
                         await OnPatronUpdated(
@@ -261,31 +266,32 @@ public sealed class PatronageService
                     subscriber.UserId);
             }
         }
-        
+
         var expiredDate = DateTime.MinValue;
         foreach (var patron in subscribers.Where(x => x.ChargeStatus == SubscriptionChargeStatus.Refunded))
         {
             // if the subscription is refunded, Disable user's valid thru 
             var changedCount = await ctx.GetTable<PatronUser>()
-                                  .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId
-                                              && x.ValidThru != expiredDate)
-                                  .UpdateAsync(old => new()
-                                  {
-                                      ValidThru = expiredDate
-                                  });
-        
+                                        .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId
+                                                    && x.ValidThru != expiredDate)
+                                        .UpdateAsync(old => new()
+                                        {
+                                            ValidThru = expiredDate
+                                        });
+
             if (changedCount == 0)
                 continue;
 
             var updated = await ctx.GetTable<PatronUser>()
-                                  .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId)
-                                  .FirstAsync();
-            
+                                   .Where(x => x.UniquePlatformUserId == patron.UniquePlatformUserId)
+                                   .FirstAsync();
+
             await OnPatronRefunded(PatronUserToPatron(updated));
         }
     }
 
-    public async Task<bool> ExecPreCommandAsync(ICommandContext ctx,
+    public async Task<bool> ExecPreCommandAsync(
+        ICommandContext ctx,
         string moduleName,
         CommandInfo command)
     {
@@ -303,7 +309,7 @@ public sealed class PatronageService
             _ => false,
             ins =>
             {
-                var eb = _eb.Create(ctx)
+                var eb = new EmbedBuilder()
                             .WithPendingColor()
                             .WithTitle("Insufficient Patron Tier")
                             .AddField("For", $"{ins.FeatureType}: `{ins.Feature}`", true)
@@ -322,7 +328,10 @@ public sealed class PatronageService
                 _ = ctx.WarningAsync();
 
                 if (ctx.Guild?.OwnerId == ctx.User.Id)
-                    _ = ctx.Channel.EmbedAsync(eb, replyTo: ctx.Message);
+                    _ = _sender.Response(ctx)
+                               .Context(ctx)
+                               .Embed(eb)
+                               .SendAsync();
                 else
                     _ = ctx.User.EmbedAsync(eb);
 
@@ -330,7 +339,7 @@ public sealed class PatronageService
             },
             quota =>
             {
-                var eb = _eb.Create(ctx)
+                var eb = new EmbedBuilder()
                             .WithPendingColor()
                             .WithTitle("Quota Limit Reached");
 
@@ -356,7 +365,9 @@ public sealed class PatronageService
 
                 // send the message in the server in case it's the owner
                 if (ctx.Guild?.OwnerId == ctx.User.Id)
-                    _ = ctx.Channel.EmbedAsync(eb, replyTo: ctx.Message);
+                    _ = _sender.Response(ctx)
+                               .Embed(eb)
+                               .SendAsync();
                 else
                     _ = ctx.User.EmbedAsync(eb);
 
@@ -386,7 +397,8 @@ public sealed class PatronageService
     /// <summary>
     /// Returns either the current usage counter if limit wasn't reached, or QuotaLimit if it is.
     /// </summary>
-    public async ValueTask<OneOf<(uint Hourly, uint Daily, uint Monthly), QuotaLimit>> TryIncrementQuotaCounterAsync(ulong userId,
+    public async ValueTask<OneOf<(uint Hourly, uint Daily, uint Monthly), QuotaLimit>> TryIncrementQuotaCounterAsync(
+        ulong userId,
         bool isSelf,
         FeatureType featureType,
         string featureName,
@@ -698,8 +710,8 @@ public sealed class PatronageService
                 Quota = defaultValue,
                 IsPatronLimit = false
             };
-        
-        
+
+
         if (!conf.Quotas.Features.TryGetValue(key.Key, out var data))
             return new()
             {
@@ -769,7 +781,7 @@ public sealed class PatronageService
             if (user is null)
                 return;
 
-            var eb = _eb.Create()
+            var eb = new EmbedBuilder()
                         .WithOkColor()
                         .WithTitle("❤️ Thank you for supporting NadekoBot! ❤️")
                         .WithDescription(
@@ -782,15 +794,15 @@ public sealed class PatronageService
                             true)
                         .AddField("Instructions",
                             """
-                                *- Within the next **1-2 minutes** you will have all of the benefits of the Tier you've subscribed to.*
-                                *- You can check your benefits on <https://www.patreon.com/join/nadekobot>*
-                                *- You can use the `.patron` command in this chat to check your current quota usage for the Patron-only commands*
-                                *- **ALL** of the servers that you **own** will enjoy your Patron benefits.*
-                                *- You can use any of the commands available in your tier on any server (assuming you have sufficient permissions to run those commands)*
-                                *- Any user in any of your servers can use Patron-only commands, but they will spend **your quota**, which is why it's recommended to use Nadeko's command cooldown system (.h .cmdcd) or permission system to limit the command usage for your server members.*
-                                *- Permission guide can be found here if you're not familiar with it: <https://nadekobot.readthedocs.io/en/latest/permissions-system/>*
-                                """,
-                            isInline: false)
+                            *- Within the next **1-2 minutes** you will have all of the benefits of the Tier you've subscribed to.*
+                            *- You can check your benefits on <https://www.patreon.com/join/nadekobot>*
+                            *- You can use the `.patron` command in this chat to check your current quota usage for the Patron-only commands*
+                            *- **ALL** of the servers that you **own** will enjoy your Patron benefits.*
+                            *- You can use any of the commands available in your tier on any server (assuming you have sufficient permissions to run those commands)*
+                            *- Any user in any of your servers can use Patron-only commands, but they will spend **your quota**, which is why it's recommended to use Nadeko's command cooldown system (.h .cmdcd) or permission system to limit the command usage for your server members.*
+                            *- Permission guide can be found here if you're not familiar with it: <https://nadekobot.readthedocs.io/en/latest/permissions-system/>*
+                            """,
+                            inline: false)
                         .WithFooter($"platform id: {patron.UniquePlatformUserId}");
 
             await user.EmbedAsync(eb);
@@ -806,11 +818,11 @@ public sealed class PatronageService
         await using var ctx = _db.GetDbContext();
 
         var patrons = await ctx.GetTable<PatronUser>()
-                 .Where(x => x.ValidThru > DateTime.UtcNow)
-                 .ToArrayAsync();
+                               .Where(x => x.ValidThru > DateTime.UtcNow)
+                               .ToArrayAsync();
 
         var text = SmartText.CreateFrom(message);
-        
+
         var succ = 0;
         var fail = 0;
         foreach (var patron in patrons)
@@ -828,7 +840,7 @@ public sealed class PatronageService
 
             await Task.Delay(1000);
         }
-        
+
         return (succ, fail);
     }
 

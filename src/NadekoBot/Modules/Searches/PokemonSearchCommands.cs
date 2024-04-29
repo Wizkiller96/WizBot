@@ -25,7 +25,7 @@ public partial class Searches
                 if (kvp.Key.ToUpperInvariant() == pokemon.ToUpperInvariant())
                 {
                     var p = kvp.Value;
-                    await EmbedAsync(_eb.Create()
+                    await Response().Embed(new EmbedBuilder()
                                                     .WithOkColor()
                                                     .WithTitle(kvp.Key.ToTitleCase())
                                                     .WithDescription(p.BaseStats.ToString())
@@ -37,12 +37,12 @@ public partial class Searches
                                                         true)
                                                     .AddField(GetText(strs.abilities),
                                                         string.Join("\n", p.Abilities.Select(a => a.Value)),
-                                                        true));
+                                                        true)).SendAsync();
                     return;
                 }
             }
 
-            await ReplyErrorLocalizedAsync(strs.pokemon_none);
+            await Response().Error(strs.pokemon_none).SendAsync();
         }
 
         [Cmd]
@@ -55,7 +55,7 @@ public partial class Searches
             {
                 if (kvp.Key.ToUpperInvariant() == ability)
                 {
-                    await EmbedAsync(_eb.Create()
+                    await Response().Embed(new EmbedBuilder()
                                                     .WithOkColor()
                                                     .WithTitle(kvp.Value.Name)
                                                     .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)
@@ -63,12 +63,12 @@ public partial class Searches
                                                         : kvp.Value.Desc)
                                                     .AddField(GetText(strs.rating),
                                                         kvp.Value.Rating.ToString(Culture),
-                                                        true));
+                                                        true)).SendAsync();
                     return;
                 }
             }
 
-            await ReplyErrorLocalizedAsync(strs.pokemon_ability_none);
+            await Response().Error(strs.pokemon_ability_none).SendAsync();
         }
     }
 }

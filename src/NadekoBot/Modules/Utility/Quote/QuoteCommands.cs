@@ -14,24 +14,24 @@ public partial class Utility
     {
         private const string PREPEND_EXPORT =
             """
-                # Keys are keywords, Each key has a LIST of quotes in the following format:
-                # - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.) 
-                #   an: Author name 
-                #   aid: Author id 
-                #   txt: Quote text
+            # Keys are keywords, Each key has a LIST of quotes in the following format:
+            # - id: Alphanumeric id used for commands related to the quote. (Note, when using .quotesimport, a new id will be generated.)
+            #   an: Author name
+            #   aid: Author id
+            #   txt: Quote text
 
-                """;
+            """;
 
         private static readonly ISerializer _exportSerializer = new SerializerBuilder()
-            .WithEventEmitter(args
-                => new MultilineScalarFlowStyleEmitter(args))
-            .WithNamingConvention(
-                CamelCaseNamingConvention.Instance)
-            .WithIndentedSequences()
-            .ConfigureDefaultValuesHandling(DefaultValuesHandling
-                .OmitDefaults)
-            .DisableAliases()
-            .Build();
+                                                                .WithEventEmitter(args
+                                                                    => new MultilineScalarFlowStyleEmitter(args))
+                                                                .WithNamingConvention(
+                                                                    CamelCaseNamingConvention.Instance)
+                                                                .WithIndentedSequences()
+                                                                .ConfigureDefaultValuesHandling(DefaultValuesHandling
+                                                                    .OmitDefaults)
+                                                                .DisableAliases()
+                                                                .Build();
 
         private readonly DbService _db;
         private readonly IHttpClientFactory _http;
@@ -67,13 +67,15 @@ public partial class Utility
 
             if (quotes.Any())
             {
-                await SendConfirmAsync(GetText(strs.quotes_page(page + 1)),
-                    string.Join("\n",
-                        quotes.Select(q
-                            => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")));
+                await Response()
+                      .Confirm(GetText(strs.quotes_page(page + 1)),
+                          string.Join("\n",
+                              quotes.Select(q
+                                  => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
+                      .SendAsync();
             }
             else
-                await ReplyErrorLocalizedAsync(strs.quotes_page_none);
+                await Response().Error(strs.quotes_page_none).SendAsync();
         }
 
         [Cmd]
@@ -121,7 +123,7 @@ public partial class Utility
 
             if (quote is null)
             {
-                await ReplyErrorLocalizedAsync(strs.quotes_notfound);
+                await Response().Error(strs.quotes_notfound).SendAsync();
                 return;
             }
 
@@ -130,26 +132,26 @@ public partial class Utility
 
         private async Task ShowQuoteData(Quote data)
         {
-            var eb = _eb.Create(ctx)
-                          .WithOkColor()
-                          .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
-                          .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
-                          .AddField(GetText(strs.trigger), data.Keyword)
-                          .WithFooter(
-                              GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
-                          .Build();
+            var eb = new EmbedBuilder()
+                        .WithOkColor()
+                        .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
+                        .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
+                        .AddField(GetText(strs.trigger), data.Keyword)
+                        .WithFooter(
+                            GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
+                        .Build();
 
             if (!(data.Text.Length > 4096))
             {
                 await ctx.Channel.SendMessageAsync(embed: eb);
                 return;
             }
-            
+
             await ctx.Channel.SendFileAsync(
                 attachment: new FileAttachment(await data.Text.ToStream(), "quote.txt"),
                 embed: eb);
         }
-            
+
         private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
         {
             if (string.IsNullOrWhiteSpace(textOrAuthor))
@@ -177,7 +179,7 @@ public partial class Utility
         [Priority(0)]
         public Task QuoteSearch(string textOrAuthor)
             => QuoteSearchinternalAsync(null, textOrAuthor);
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
@@ -202,7 +204,7 @@ public partial class Utility
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
             {
-                await SendErrorAsync(GetText(strs.quotes_notfound));
+                await Response().Error(GetText(strs.quotes_notfound)).SendAsync();
                 return;
             }
 
@@ -228,18 +230,19 @@ public partial class Utility
             Quote q;
             await using (var uow = _db.GetDbContext())
             {
-                uow.Set<Quote>().Add(q = new()
-                {
-                    AuthorId = ctx.Message.Author.Id,
-                    AuthorName = ctx.Message.Author.Username,
-                    GuildId = ctx.Guild.Id,
-                    Keyword = keyword,
-                    Text = text
-                });
+                uow.Set<Quote>()
+                   .Add(q = new()
+                   {
+                       AuthorId = ctx.Message.Author.Id,
+                       AuthorName = ctx.Message.Author.Username,
+                       GuildId = ctx.Guild.Id,
+                       Keyword = keyword,
+                       Text = text
+                   });
                 await uow.SaveChangesAsync();
             }
 
-            await ReplyConfirmLocalizedAsync(strs.quote_added_new(Format.Code(q.Id.ToString())));
+            await Response().Confirm(strs.quote_added_new(Format.Code(q.Id.ToString()))).SendAsync();
         }
 
         [Cmd]
@@ -266,16 +269,16 @@ public partial class Utility
             }
 
             if (success)
-                await SendConfirmAsync(response);
+                await Response().Confirm(response).SendAsync();
             else
-                await SendErrorAsync(response);
+                await Response().Error(response).SendAsync();
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public Task QuoteDeleteAuthor(IUser user)
             => QuoteDeleteAuthor(user.Id);
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteDeleteAuthor(ulong userId)
@@ -285,11 +288,11 @@ public partial class Utility
             if (userId == ctx.User.Id || hasManageMessages)
             {
                 var deleted = await _qs.DeleteAllAuthorQuotesAsync(ctx.Guild.Id, userId);
-                await ReplyConfirmLocalizedAsync(strs.quotes_deleted_count(deleted));
+                await Response().Confirm(strs.quotes_deleted_count(deleted)).SendAsync();
             }
             else
             {
-                await ReplyErrorLocalizedAsync(strs.insuf_perms_u);
+                await Response().Error(strs.insuf_perms_u).SendAsync();
             }
         }
 
@@ -310,7 +313,7 @@ public partial class Utility
                 await uow.SaveChangesAsync();
             }
 
-            await ReplyConfirmLocalizedAsync(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions())));
+            await Response().Confirm(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions()))).SendAsync();
         }
 
         [Cmd]
@@ -325,7 +328,7 @@ public partial class Utility
             }
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
-                .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
+                                  .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
 
             var text = PREPEND_EXPORT + _exportSerializer.Serialize(exprsDict).UnescapeUnicodeCodePoints();
 
@@ -351,7 +354,7 @@ public partial class Utility
                 var attachment = ctx.Message.Attachments.FirstOrDefault();
                 if (attachment is null)
                 {
-                    await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                    await Response().Error(strs.expr_import_no_input).SendAsync();
                     return;
                 }
 
@@ -360,7 +363,7 @@ public partial class Utility
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    await ReplyErrorLocalizedAsync(strs.expr_import_no_input);
+                    await Response().Error(strs.expr_import_no_input).SendAsync();
                     return;
                 }
             }
@@ -368,7 +371,7 @@ public partial class Utility
             var succ = await ImportExprsAsync(ctx.Guild.Id, input);
             if (!succ)
             {
-                await ReplyErrorLocalizedAsync(strs.expr_import_invalid_data);
+                await Response().Error(strs.expr_import_invalid_data).SendAsync();
                 return;
             }
 
@@ -393,15 +396,16 @@ public partial class Utility
             foreach (var entry in data)
             {
                 var keyword = entry.Key;
-                await uow.Set<Quote>().AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
-                    .Select(quote => new Quote
-                    {
-                        GuildId = guildId,
-                        Keyword = keyword,
-                        Text = quote.Txt,
-                        AuthorId = quote.Aid,
-                        AuthorName = quote.An
-                    }));
+                await uow.Set<Quote>()
+                         .AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
+                                             .Select(quote => new Quote
+                                             {
+                                                 GuildId = guildId,
+                                                 Keyword = keyword,
+                                                 Text = quote.Txt,
+                                                 AuthorId = quote.Aid,
+                                                 AuthorName = quote.An
+                                             }));
             }
 
             await uow.SaveChangesAsync();

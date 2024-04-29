@@ -69,7 +69,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
                 || msg.Content.Equals(output, StringComparison.InvariantCultureIgnoreCase))
                 return;
 
-            var embed = _eb.Create().WithOkColor();
+            var embed = new EmbedBuilder().WithOkColor();
 
             if (autoDelete)
             {

@@ -33,14 +33,14 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (userVoiceChannelId is null)
         {
-            await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+            await Response().Error(strs.must_be_in_voice).SendAsync();
             return false;
         }
 
         var currentUser = await ctx.Guild.GetCurrentUserAsync();
         if (currentUser.VoiceChannel?.Id != userVoiceChannelId)
         {
-            await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
+            await Response().Error(strs.not_with_bot_in_voice).SendAsync();
             return false;
         }
 
@@ -69,7 +69,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (voiceChannelId is null)
         {
-            await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+            await Response().Error(strs.must_be_in_voice).SendAsync();
             return false;
         }
 
@@ -80,7 +80,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (botUser.VoiceChannel?.Id != voiceChannelId)
         {
-            await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
+            await Response().Error(strs.not_with_bot_in_voice).SendAsync();
             return false;
         }
 
@@ -96,20 +96,20 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         var (trackInfo, index) = await mp.TryEnqueueTrackAsync(query, ctx.User.ToString(), asNext, forcePlatform);
         if (trackInfo is null)
         {
-            await ReplyErrorLocalizedAsync(strs.track_not_found);
+            await Response().Error(strs.track_not_found).SendAsync();
             return;
         }
 
         try
         {
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithAuthor(GetText(strs.queued_track) + " #" + (index + 1), MUSIC_ICON_URL)
                            .WithDescription($"{trackInfo.PrettyName()}\n{GetText(strs.queue)} ")
@@ -122,7 +122,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             queuedMessage?.DeleteAfter(10, _logService);
             if (mp.IsStopped)
             {
-                var msg = await ReplyPendingLocalizedAsync(strs.queue_stopped(Format.Code(prefix + "play")));
+                var msg = await Response().Pending(strs.queue_stopped(Format.Code(prefix + "play"))).SendAsync();
                 msg.DeleteAfter(10, _logService);
             }
         }
@@ -144,7 +144,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -162,7 +162,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (voiceChannelId is null)
         {
-            await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+            await Response().Error(strs.must_be_in_voice).SendAsync();
             return;
         }
 
@@ -218,7 +218,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         if (vol is < 0 or > 100)
         {
-            await ReplyErrorLocalizedAsync(strs.volume_input_invalid);
+            await Response().Error(strs.volume_input_invalid).SendAsync();
             return;
         }
 
@@ -227,7 +227,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             return;
 
         await _service.SetVolumeAsync(ctx.Guild.Id, vol);
-        await ReplyConfirmLocalizedAsync(strs.volume_set(vol));
+        await Response().Confirm(strs.volume_set(vol)).SendAsync();
     }
 
     [Cmd]
@@ -240,7 +240,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         var success = await _service.PlayAsync(ctx.Guild.Id, ((IGuildUser)ctx.User).VoiceChannel.Id);
         if (!success)
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
     }
 
     // list queue, relevant page
@@ -251,7 +251,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         // show page with the current track
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -269,11 +269,11 @@ public sealed partial class Music : NadekoModule<IMusicService>
         IReadOnlyCollection<IQueuedTrackInfo> tracks;
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp) || (tracks = mp.GetQueuedTracks()).Count == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
-        IEmbedBuilder PrintAction(int curPage)
+        EmbedBuilder PrintAction(int curPage)
         {
             var desc = string.Empty;
             var current = mp.GetCurrentTrack(out var currentIndex);
@@ -315,7 +315,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
             if (!string.IsNullOrWhiteSpace(add))
                 desc = add + "\n" + desc;
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithAuthor(GetText(strs.player_queue(curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1)),
                                MUSIC_ICON_URL)
                            .WithDescription(desc)
@@ -339,13 +339,13 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (videos.Count == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.track_not_found);
+            await Response().Error(strs.track_not_found).SendAsync();
             return;
         }
 
         var resultsString = videos.Select((x, i) => $"`{i + 1}.`\n\t{Format.Bold(x.Title)}\n\t{x.Url}").Join('\n');
 
-        var msg = await SendConfirmAsync(resultsString);
+        var msg = await Response().Confirm(resultsString).SendAsync();
 
         try
         {
@@ -388,7 +388,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         if (index < 1)
         {
-            await ReplyErrorLocalizedAsync(strs.removed_track_error);
+            await Response().Error(strs.removed_track_error).SendAsync();
             return;
         }
 
@@ -398,17 +398,17 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         if (!mp.TryRemoveTrackAt(index - 1, out var track))
         {
-            await ReplyErrorLocalizedAsync(strs.removed_track_error);
+            await Response().Error(strs.removed_track_error).SendAsync();
             return;
         }
 
-        var embed = _eb.Create()
+        var embed = new EmbedBuilder()
                        .WithAuthor(GetText(strs.removed_track) + " #" + index, MUSIC_ICON_URL)
                        .WithDescription(track.PrettyName())
                        .WithFooter(track.PrettyInfo())
@@ -428,12 +428,12 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         mp.Clear();
-        await ReplyConfirmLocalizedAsync(strs.queue_cleared);
+        await Response().Confirm(strs.queue_cleared).SendAsync();
     }
 
     [Cmd]
@@ -446,7 +446,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp))
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -473,11 +473,11 @@ public sealed partial class Music : NadekoModule<IMusicService>
         await _service.SetRepeatAsync(ctx.Guild.Id, InputToDbType(type));
 
         if (type == InputRepeatType.None)
-            await ReplyConfirmLocalizedAsync(strs.repeating_none);
+            await Response().Confirm(strs.repeating_none).SendAsync();
         else if (type == InputRepeatType.Queue)
-            await ReplyConfirmLocalizedAsync(strs.repeating_queue);
+            await Response().Confirm(strs.repeating_queue).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.repeating_track);
+            await Response().Confirm(strs.repeating_track).SendAsync();
     }
 
     [Cmd]
@@ -490,7 +490,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (!_service.TryGetMusicPlayer(ctx.Guild.Id, out var mp) || mp.GetCurrentTrack(out _) is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -521,7 +521,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (voiceChannelId is null)
         {
-            await ReplyErrorLocalizedAsync(strs.must_be_in_voice);
+            await Response().Error(strs.must_be_in_voice).SendAsync();
             return;
         }
 
@@ -532,20 +532,20 @@ public sealed partial class Music : NadekoModule<IMusicService>
 
         if (botUser.VoiceChannel?.Id != voiceChannelId)
         {
-            await ReplyErrorLocalizedAsync(strs.not_with_bot_in_voice);
+            await Response().Error(strs.not_with_bot_in_voice).SendAsync();
             return;
         }
 
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         await _service.EnqueueDirectoryAsync(mp, dirPath, ctx.User.ToString());
 
-        await ReplyConfirmLocalizedAsync(strs.dir_queue_complete);
+        await Response().Confirm(strs.dir_queue_complete).SendAsync();
     }
 
     [Cmd]
@@ -554,7 +554,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         if (--from < 0 || --to < 0 || from == to)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_input);
+            await Response().Error(strs.invalid_input).SendAsync();
             return;
         }
 
@@ -565,18 +565,18 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         var track = mp.MoveTrack(from, to);
         if (track is null)
         {
-            await ReplyErrorLocalizedAsync(strs.invalid_input);
+            await Response().Error(strs.invalid_input).SendAsync();
             return;
         }
 
-        var embed = _eb.Create()
+        var embed = new EmbedBuilder()
                        .WithTitle(track.Title.TrimTo(65))
                        .WithAuthor(GetText(strs.track_moved), MUSIC_ICON_URL)
                        .AddField(GetText(strs.from_position), $"#{from + 1}", true)
@@ -586,7 +586,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         if (Uri.IsWellFormedUriString(track.Url, UriKind.Absolute))
             embed.WithUrl(track.Url);
 
-        await EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -603,7 +603,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -613,7 +613,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var queuedCount = await _service.EnqueueYoutubePlaylistAsync(mp, playlistQuery, ctx.User.ToString());
         if (queuedCount == 0)
         {
-            await ReplyErrorLocalizedAsync(strs.no_search_results);
+            await Response().Error(strs.no_search_results).SendAsync();
             return;
         }
 
@@ -627,7 +627,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
@@ -635,7 +635,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
         if (currentTrack is null)
             return;
 
-        var embed = _eb.Create()
+        var embed = new EmbedBuilder()
                        .WithOkColor()
                        .WithAuthor(GetText(strs.now_playing), MUSIC_ICON_URL)
                        .WithDescription(currentTrack.PrettyName())
@@ -643,7 +643,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
                        .WithFooter(
                            $"{mp.PrettyVolume()} | {mp.PrettyTotalTime()} | {currentTrack.Platform} | {currentTrack.Queuer}");
 
-        await ctx.Channel.EmbedAsync(embed);
+        await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -657,12 +657,12 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var mp = await _service.GetOrCreateMusicPlayerAsync((ITextChannel)ctx.Channel);
         if (mp is null)
         {
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
             return;
         }
 
         mp.ShuffleQueue();
-        await ReplyConfirmLocalizedAsync(strs.queue_shuffled);
+        await Response().Confirm(strs.queue_shuffled).SendAsync();
     }
 
     [Cmd]
@@ -672,7 +672,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
 
-        await ReplyConfirmLocalizedAsync(strs.set_music_channel);
+        await Response().Confirm(strs.set_music_channel).SendAsync();
     }
 
     [Cmd]
@@ -682,7 +682,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         await _service.SetMusicChannelAsync(ctx.Guild.Id, null);
 
-        await ReplyConfirmLocalizedAsync(strs.unset_music_channel);
+        await Response().Confirm(strs.unset_music_channel).SendAsync();
     }
 
     [Cmd]
@@ -692,9 +692,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
         var newState = await _service.ToggleAutoDisconnectAsync(ctx.Guild.Id);
 
         if (newState)
-            await ReplyConfirmLocalizedAsync(strs.autodc_enable);
+            await Response().Confirm(strs.autodc_enable).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.autodc_disable);
+            await Response().Confirm(strs.autodc_disable).SendAsync();
     }
 
     [Cmd]
@@ -703,7 +703,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     public async Task MusicQuality()
     {
         var quality = await _service.GetMusicQualityAsync(ctx.Guild.Id);
-        await ReplyConfirmLocalizedAsync(strs.current_music_quality(Format.Bold(quality.ToString())));
+        await Response().Confirm(strs.current_music_quality(Format.Bold(quality.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -712,7 +712,7 @@ public sealed partial class Music : NadekoModule<IMusicService>
     public async Task MusicQuality(QualityPreset preset)
     {
         await _service.SetMusicQualityAsync(ctx.Guild.Id, preset);
-        await ReplyConfirmLocalizedAsync(strs.music_quality_set(Format.Bold(preset.ToString())));
+        await Response().Confirm(strs.music_quality_set(Format.Bold(preset.ToString()))).SendAsync();
     }
 
     [Cmd]
@@ -721,9 +721,9 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         var newValue = await _service.ToggleQueueAutoPlayAsync(ctx.Guild.Id);
         if (newValue)
-            await ReplyConfirmLocalizedAsync(strs.music_autoplay_on);
+            await Response().Confirm(strs.music_autoplay_on).SendAsync();
         else
-            await ReplyConfirmLocalizedAsync(strs.music_autoplay_off);
+            await Response().Confirm(strs.music_autoplay_off).SendAsync();
     }
 
     [Cmd]
@@ -732,8 +732,8 @@ public sealed partial class Music : NadekoModule<IMusicService>
     {
         var newValue = await _service.FairplayAsync(ctx.Guild.Id);
         if (newValue)
-            await ReplyConfirmLocalizedAsync(strs.music_fairplay);
+            await Response().Confirm(strs.music_fairplay).SendAsync();
         else
-            await ReplyErrorLocalizedAsync(strs.no_player);
+            await Response().Error(strs.no_player).SendAsync();
     }
 }

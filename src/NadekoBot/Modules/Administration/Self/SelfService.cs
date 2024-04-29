@@ -225,7 +225,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 {
                     try
                     {
-                        await ownerCh.SendConfirmAsync(_eb, title, toSend);
+                        await ownerCh.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
                     }
                     catch
                     {
@@ -238,7 +238,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 try
                 {
                     if (_client.GetChannel(cid) is ITextChannel ch)
-                        await ch.SendConfirmAsync(_eb, title, toSend);
+                        await ch.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
                 }
                 catch
                 {
@@ -252,7 +252,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 {
                     try
                     {
-                        await firstOwnerChannel.SendConfirmAsync(_eb, title, toSend);
+                        await firstOwnerChannel.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
                     }
                     catch
                     {

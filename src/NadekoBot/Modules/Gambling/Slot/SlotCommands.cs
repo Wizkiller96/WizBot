@@ -59,7 +59,7 @@ public partial class Gambling
 
             if (await InternalSlotAsync(amount) is not SlotResult result)
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                 return;
             }
 
@@ -69,7 +69,7 @@ public partial class Gambling
             await using var imgStream = await image.ToStreamAsync();
 
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithAuthor(ctx.User)
                 .WithDescription(Format.Bold(text))
                 .WithImageUrl($"attachment://result.png")

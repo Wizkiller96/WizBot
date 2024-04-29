@@ -27,7 +27,7 @@ public partial class Gambling
 
             if (picked > 0)
             {
-                var msg = await ReplyConfirmLocalizedAsync(strs.picked(N(picked)));
+                var msg = await Response().Confirm(strs.picked(N(picked))).SendAsync();
                 msg.DeleteAfter(10);
             }
 
@@ -66,7 +66,7 @@ public partial class Gambling
                 pass);
 
             if (!success)
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
         }
 
         [Cmd]
@@ -79,9 +79,9 @@ public partial class Gambling
         {
             var enabled = _service.ToggleCurrencyGeneration(ctx.Guild.Id, ctx.Channel.Id);
             if (enabled)
-                await ReplyConfirmLocalizedAsync(strs.curgen_enabled);
+                await Response().Confirm(strs.curgen_enabled).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.curgen_disabled);
+                await Response().Confirm(strs.curgen_disabled).SendAsync();
         }
 
         [Cmd]
@@ -100,9 +100,9 @@ public partial class Gambling
                     var items = enabledIn.Skip(page * 9).Take(9).ToList();
 
                     if (!items.Any())
-                        return _eb.Create().WithErrorColor().WithDescription("-");
+                        return new EmbedBuilder().WithErrorColor().WithDescription("-");
 
-                    return items.Aggregate(_eb.Create().WithOkColor(),
+                    return items.Aggregate(new EmbedBuilder().WithOkColor(),
                         (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
                 },
                 enabledIn.Count(),

@@ -43,7 +43,7 @@ public partial class Games
                 }
             }
             else
-                await ReplyErrorLocalizedAsync(strs.acro_running);
+                await Response().Error(strs.acro_running).SendAsync();
 
             Task ClientMessageReceived(SocketMessage msg)
             {
@@ -67,18 +67,18 @@ public partial class Games
 
         private Task Game_OnStarted(AcrophobiaGame game)
         {
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia))
                            .WithDescription(
                                GetText(strs.acro_started(Format.Bold(string.Join(".", game.StartingLetters)))))
                            .WithFooter(GetText(strs.acro_started_footer(game.Opts.SubmissionTime)));
 
-            return EmbedAsync(embed);
+            return Response().Embed(embed).SendAsync();
         }
 
         private Task Game_OnUserVoted(string user)
-            => SendConfirmAsync(GetText(strs.acrophobia), GetText(strs.acro_vote_cast(Format.Bold(user))));
+            => Response().Confirm(GetText(strs.acrophobia), GetText(strs.acro_vote_cast(Format.Bold(user)))).SendAsync();
 
         private async Task Game_OnVotingStarted(
             AcrophobiaGame game,
@@ -86,24 +86,24 @@ public partial class Games
         {
             if (submissions.Length == 0)
             {
-                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_ended_no_sub));
+                await Response().Error(GetText(strs.acrophobia), GetText(strs.acro_ended_no_sub)).SendAsync();
                 return;
             }
 
             if (submissions.Length == 1)
             {
-                await EmbedAsync(_eb.Create()
+                await Response().Embed(new EmbedBuilder()
                                                 .WithOkColor()
                                                 .WithDescription(GetText(
                                                     strs.acro_winner_only(
                                                         Format.Bold(submissions.First().Key.UserName))))
-                                                .WithFooter(submissions.First().Key.Input));
+                                                .WithFooter(submissions.First().Key.Input)).SendAsync();
                 return;
             }
 
 
             var i = 0;
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia) + " - " + GetText(strs.submissions_closed))
                            .WithDescription(GetText(strs.acro_nym_was(
@@ -114,27 +114,27 @@ public partial class Games
 --")))
                            .WithFooter(GetText(strs.acro_vote));
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         private async Task Game_OnEnded(AcrophobiaGame game, ImmutableArray<KeyValuePair<AcrophobiaUser, int>> votes)
         {
             if (!votes.Any() || votes.All(x => x.Value == 0))
             {
-                await SendErrorAsync(GetText(strs.acrophobia), GetText(strs.acro_no_votes_cast));
+                await Response().Error(GetText(strs.acrophobia), GetText(strs.acro_no_votes_cast)).SendAsync();
                 return;
             }
 
             var table = votes.OrderByDescending(v => v.Value);
             var winner = table.First();
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia))
                            .WithDescription(GetText(strs.acro_winner(Format.Bold(winner.Key.UserName),
                                Format.Bold(winner.Value.ToString()))))
                            .WithFooter(winner.Key.Input);
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
     }
 }

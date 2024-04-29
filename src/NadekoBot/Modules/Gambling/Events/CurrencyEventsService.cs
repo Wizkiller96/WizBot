@@ -25,7 +25,7 @@ public class CurrencyEventsService : INService
         ulong channelId,
         CurrencyEvent.Type type,
         EventOptions opts,
-        Func<CurrencyEvent.Type, EventOptions, long, IEmbedBuilder> embed)
+        Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embed)
     {
         var g = _client.GetGuild(guildId);
         if (g?.GetChannel(channelId) is not ITextChannel ch)

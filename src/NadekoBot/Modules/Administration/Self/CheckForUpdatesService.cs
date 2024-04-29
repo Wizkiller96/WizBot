@@ -78,7 +78,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                             if (user is null)
                                 return;
 
-                            var eb = _ebs.Create()
+                            var eb = new EmbedBuilder()
                                 .WithOkColor()
                                 .WithAuthor($"NadekoBot v{latestVersion} Released!")
                                 .WithTitle("Changelog")

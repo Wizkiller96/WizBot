@@ -45,7 +45,7 @@ public partial class Gambling
         {
             if (count is > 10 or < 1)
             {
-                await ReplyErrorLocalizedAsync(strs.flip_invalid(10));
+                await Response().Error(strs.flip_invalid(10)).SendAsync();
                 return;
             }
 
@@ -84,7 +84,7 @@ public partial class Gambling
                     ? Format.Bold(GetText(strs.heads))
                     : Format.Bold(GetText(strs.tails))));
             
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .WithDescription(msg)
@@ -104,7 +104,7 @@ public partial class Gambling
             var res = await _service.BetFlipAsync(ctx.User.Id, amount, (byte)guess);
             if (!res.TryPickT0(out var result, out _))
             {
-                await ReplyErrorLocalizedAsync(strs.not_enough(CurrencySign));
+                await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
                 return;
             }
 
@@ -130,11 +130,11 @@ public partial class Gambling
                 str = Format.Bold(GetText(strs.better_luck));
             }
 
-            await EmbedAsync(_eb.Create()
+            await Response().Embed(new EmbedBuilder()
                 .WithAuthor(ctx.User)
                                             .WithDescription(str)
                                             .WithOkColor()
-                                            .WithImageUrl(imageToSend.ToString()));
+                                            .WithImageUrl(imageToSend.ToString())).SendAsync();
         }
     }
 }

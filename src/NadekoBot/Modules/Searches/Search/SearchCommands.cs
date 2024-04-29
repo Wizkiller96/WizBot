@@ -24,7 +24,7 @@ public partial class Searches
 
             if (string.IsNullOrWhiteSpace(query))
             {
-                await ErrorLocalizedAsync(strs.specify_search_params);
+                await Response().Error(strs.specify_search_params).SendAsync();
                 return;
             }
 
@@ -35,7 +35,7 @@ public partial class Searches
 
             if (data is null or { Entries: null or { Count: 0 } })
             {
-                await ReplyErrorLocalizedAsync(strs.no_results);
+                await Response().Error(strs.no_results).SendAsync();
                 return;
             }
 
@@ -59,7 +59,7 @@ public partial class Searches
 
             descStr = descStr.TrimTo(4096);
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithAuthor(ctx.User)
                            .WithTitle(query.TrimTo(64)!)
@@ -68,7 +68,7 @@ public partial class Searches
                                GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
                                "https://i.imgur.com/G46fm8J.png");
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -78,7 +78,7 @@ public partial class Searches
 
             if (string.IsNullOrWhiteSpace(query))
             {
-                await ErrorLocalizedAsync(strs.specify_search_params);
+                await Response().Error(strs.specify_search_params).SendAsync();
                 return;
             }
 
@@ -89,16 +89,16 @@ public partial class Searches
 
             if (data is null or { Entries: null or { Count: 0 } })
             {
-                await ReplyErrorLocalizedAsync(strs.no_search_results);
+                await Response().Error(strs.no_search_results).SendAsync();
                 return;
             }
 
-            var embeds = new List<IEmbedBuilder>(4);
+            var embeds = new List<EmbedBuilder>(4);
 
 
-            IEmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
+            EmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
             {
-                return _eb.Create(ctx)
+                return new EmbedBuilder()
                           .WithOkColor()
                           .WithAuthor(ctx.User)
                           .WithTitle(query)
@@ -121,7 +121,7 @@ public partial class Searches
                 embeds.Add(CreateEmbed(entry));
             }
 
-            await EmbedAsync(null, embeds: embeds);
+            await Response().Embeds(embeds).SendAsync();
         }
 
         private TypedKey<string> GetYtCacheKey(string query)
@@ -150,7 +150,7 @@ public partial class Searches
 
             if (string.IsNullOrWhiteSpace(query))
             {
-                await ErrorLocalizedAsync(strs.specify_search_params);
+                await Response().Error(strs.specify_search_params).SendAsync();
                 return;
             }
 
@@ -160,7 +160,7 @@ public partial class Searches
                               ?? await _searchFactory.GetYoutubeSearchService().SearchAsync(query);
             if (maybeResult is not {} result || result is {Url: null})
             {
-                await ReplyErrorLocalizedAsync(strs.no_results);
+                await Response().Error(strs.no_results).SendAsync();
                 return;
             }
 
@@ -180,7 +180,7 @@ public partial class Searches
 //         var data = await _service.DuckDuckGoSearchAsync(query);
 //         if (data is null)
 //         {
-//             await ReplyErrorLocalizedAsync(strs.no_results);
+//             await Response().Error(strs.no_results).SendAsync();
 //             return;
 //         }
 //
@@ -190,13 +190,13 @@ public partial class Searches
 //
 //         var descStr = string.Join("\n\n", desc);
 //
-//         var embed = _eb.Create()
+//         var embed = new EmbedBuilder()
 //                        .WithAuthor(ctx.User.ToString(),
 //                            "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
 //                        .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)
 //                        .WithOkColor();
 //
-//         await EmbedAsync(embed);
+//         await Response().Embed(embed).SendAsync();
 //     }
     }
 }

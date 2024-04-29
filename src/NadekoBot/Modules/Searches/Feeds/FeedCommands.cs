@@ -28,7 +28,7 @@ public partial class Searches
         {
             var m = _ytChannelRegex.Match(url);
             if (!m.Success)
-                return ReplyErrorLocalizedAsync(strs.invalid_input);
+                return Response().Error(strs.invalid_input).SendAsync();
 
             if (!((IGuildUser)ctx.User).GetPermissions(channel).MentionEveryone)
                 message = message?.SanitizeAllMentions();
@@ -55,7 +55,7 @@ public partial class Searches
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)
                 || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
-                await ReplyErrorLocalizedAsync(strs.feed_invalid_url);
+                await Response().Error(strs.feed_invalid_url).SendAsync();
                 return;
             }
 
@@ -70,7 +70,7 @@ public partial class Searches
             catch (Exception ex)
             {
                 Log.Information(ex, "Unable to get feeds from that url");
-                await ReplyErrorLocalizedAsync(strs.feed_cant_parse);
+                await Response().Error(strs.feed_cant_parse).SendAsync();
                 return;
             }
 
@@ -80,19 +80,19 @@ public partial class Searches
             var result = _service.AddFeed(ctx.Guild.Id, channel.Id, url, message);
             if (result == FeedAddResult.Success)
             {
-                await ReplyConfirmLocalizedAsync(strs.feed_added);
+                await Response().Confirm(strs.feed_added).SendAsync();
                 return;
             }
 
             if (result == FeedAddResult.Duplicate)
             {
-                await ReplyErrorLocalizedAsync(strs.feed_duplicate);
+                await Response().Error(strs.feed_duplicate).SendAsync();
                 return;
             }
 
             if (result == FeedAddResult.LimitReached)
             {
-                await ReplyErrorLocalizedAsync(strs.feed_limit_reached);
+                await Response().Error(strs.feed_limit_reached).SendAsync();
                 return;
             }
         }
@@ -103,9 +103,9 @@ public partial class Searches
         public async Task FeedRemove(int index)
         {
             if (_service.RemoveFeed(ctx.Guild.Id, --index))
-                await ReplyConfirmLocalizedAsync(strs.feed_removed);
+                await Response().Confirm(strs.feed_removed).SendAsync();
             else
-                await ReplyErrorLocalizedAsync(strs.feed_out_of_range);
+                await Response().Error(strs.feed_out_of_range).SendAsync();
         }
 
         [Cmd]
@@ -117,14 +117,14 @@ public partial class Searches
 
             if (!feeds.Any())
             {
-                await EmbedAsync(_eb.Create().WithOkColor().WithDescription(GetText(strs.feed_no_feed)));
+                await Response().Embed(new EmbedBuilder().WithOkColor().WithDescription(GetText(strs.feed_no_feed))).SendAsync();
                 return;
             }
 
             await ctx.SendPaginatedConfirmAsync(0,
                 cur =>
                 {
-                    var embed = _eb.Create().WithOkColor();
+                    var embed = new EmbedBuilder().WithOkColor();
                     var i = 0;
                     var fs = string.Join("\n",
                         feeds.Skip(cur * 10).Take(10).Select(x => $"`{(cur * 10) + ++i}.` <#{x.ChannelId}> {x.Url}"));

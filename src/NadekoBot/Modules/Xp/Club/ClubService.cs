@@ -57,7 +57,7 @@ public class ClubService : INService, IClubService
     public OneOf<ClubInfo, ClubTransferError> TransferClub(IUser from, IUser newOwner)
     {
         using var uow = _db.GetDbContext();
-        var club = uow.Set<ClubInfo>().GetByOwner(@from.Id);
+        var club = uow.Set<ClubInfo>().GetByOwner(from.Id);
         var newOwnerUser = uow.GetOrCreateUser(newOwner);
 
         if (club is null || club.Owner.UserId != from.Id)

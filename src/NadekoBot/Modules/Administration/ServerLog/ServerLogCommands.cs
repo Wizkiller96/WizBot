@@ -17,9 +17,9 @@ public partial class Administration
         {
             await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value);
             if (action.Value)
-                await ReplyConfirmLocalizedAsync(strs.log_all);
+                await Response().Confirm(strs.log_all).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.log_disabled);
+                await Response().Confirm(strs.log_disabled).SendAsync();
         }
 
         [Cmd]
@@ -35,7 +35,7 @@ public partial class Administration
             var usrs = settings?.LogIgnores.Where(x => x.ItemType == IgnoredItemType.User).ToList()
                        ?? new List<IgnoredLogItem>();
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                         .WithOkColor()
                         .AddField(GetText(strs.log_ignored_channels),
                             chs.Count == 0
@@ -46,7 +46,7 @@ public partial class Administration
                                 ? "-"
                                 : string.Join('\n', usrs.Select(x => $"{x.LogItemId} | <@{x.LogItemId}>")));
 
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
         }
 
         [Cmd]
@@ -59,13 +59,17 @@ public partial class Administration
 
             if (!removed)
             {
-                await ReplyConfirmLocalizedAsync(
-                    strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await Response()
+                      .Confirm(
+                          strs.log_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")))
+                      .SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(
-                    strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await Response()
+                      .Confirm(
+                          strs.log_not_ignore_chan(Format.Bold(target.Mention + "(" + target.Id + ")")))
+                      .SendAsync();
             }
         }
 
@@ -79,13 +83,15 @@ public partial class Administration
 
             if (!removed)
             {
-                await ReplyConfirmLocalizedAsync(
-                    strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await Response()
+                      .Confirm(strs.log_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")))
+                      .SendAsync();
             }
             else
             {
-                await ReplyConfirmLocalizedAsync(
-                    strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")));
+                await Response()
+                      .Confirm(strs.log_not_ignore_user(Format.Bold(target.Mention + "(" + target.Id + ")")))
+                      .SendAsync();
             }
         }
 
@@ -106,7 +112,7 @@ public partial class Administration
                         return Format.Bold(x);
                     }));
 
-            await SendConfirmAsync(Format.Bold(GetText(strs.log_events)) + "\n" + str);
+            await Response().Confirm(Format.Bold(GetText(strs.log_events)) + "\n" + str).SendAsync();
         }
 
         private static ulong? GetLogProperty(LogSetting l, LogType type)
@@ -163,9 +169,9 @@ public partial class Administration
             var val = _service.Log(ctx.Guild.Id, ctx.Channel.Id, type);
 
             if (val)
-                await ReplyConfirmLocalizedAsync(strs.log(Format.Bold(type.ToString())));
+                await Response().Confirm(strs.log(Format.Bold(type.ToString()))).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.log_stop(Format.Bold(type.ToString())));
+                await Response().Confirm(strs.log_stop(Format.Bold(type.ToString()))).SendAsync();
         }
     }
 }

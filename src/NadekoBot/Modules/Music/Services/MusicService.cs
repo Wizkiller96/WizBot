@@ -159,7 +159,7 @@ public sealed class MusicService : IMusicService
         return mp;
     }
 
-    public async Task<IUserMessage?> SendToOutputAsync(ulong guildId, IEmbedBuilder embed)
+    public async Task<IUserMessage?> SendToOutputAsync(ulong guildId, EmbedBuilder embed)
     {
         if (_outputChannels.TryGetValue(guildId, out var chan))
         {
@@ -176,7 +176,7 @@ public sealed class MusicService : IMusicService
         return async (mp, trackInfo) =>
         {
             _ = lastFinishedMessage?.DeleteAsync();
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
                 .WithDescription(trackInfo.PrettyName())
@@ -192,7 +192,7 @@ public sealed class MusicService : IMusicService
         return async (mp, trackInfo, index) =>
         {
             _ = lastPlayingMessage?.DeleteAsync();
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                 .WithOkColor()
                 .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
                 .WithDescription(trackInfo.PrettyName())

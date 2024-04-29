@@ -20,13 +20,13 @@ public partial class Searches
                 await ctx.Channel.TriggerTypingAsync();
                 var translation = await _service.Translate(from, to, text);
 
-                var embed = _eb.Create(ctx).WithOkColor().AddField(from, text).AddField(to, translation);
+                var embed = new EmbedBuilder().WithOkColor().AddField(from, text).AddField(to, translation);
 
-                await EmbedAsync(embed);
+                await Response().Embed(embed).SendAsync();
             }
             catch
             {
-                await ReplyErrorLocalizedAsync(strs.bad_input_format);
+                await Response().Error(strs.bad_input_format).SendAsync();
             }
         }
 
@@ -40,9 +40,9 @@ public partial class Searches
             var toggle =
                 await _service.ToggleAtl(ctx.Guild.Id, ctx.Channel.Id, autoDelete == AutoDeleteAutoTranslate.Del);
             if (toggle)
-                await ReplyConfirmLocalizedAsync(strs.atl_started);
+                await Response().Confirm(strs.atl_started).SendAsync();
             else
-                await ReplyConfirmLocalizedAsync(strs.atl_stopped);
+                await Response().Confirm(strs.atl_stopped).SendAsync();
         }
 
         [Cmd]
@@ -50,7 +50,7 @@ public partial class Searches
         public async Task AutoTransLang()
         {
             if (await _service.UnregisterUser(ctx.Channel.Id, ctx.User.Id))
-                await ReplyConfirmLocalizedAsync(strs.atl_removed);
+                await Response().Confirm(strs.atl_removed).SendAsync();
         }
 
         [Cmd]
@@ -61,17 +61,17 @@ public partial class Searches
 
             if (succ is null)
             {
-                await ReplyErrorLocalizedAsync(strs.atl_not_enabled);
+                await Response().Error(strs.atl_not_enabled).SendAsync();
                 return;
             }
 
             if (succ is false)
             {
-                await ReplyErrorLocalizedAsync(strs.invalid_lang);
+                await Response().Error(strs.invalid_lang).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.atl_set(from, to));
+            await Response().Confirm(strs.atl_set(from, to)).SendAsync();
         }
 
         [Cmd]
@@ -80,16 +80,16 @@ public partial class Searches
         {
             var langs = _service.GetLanguages().ToList();
             
-            var eb = _eb.Create()
+            var eb = new EmbedBuilder()
                         .WithTitle(GetText(strs.supported_languages))
                         .WithOkColor();
 
             foreach (var chunk in langs.Chunk(15))
             {
-                eb.AddField("󠀁", chunk.Join("\n"), isInline: true);
+                eb.AddField("󠀁", chunk.Join("\n"), inline: true);
             }
 
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
         }
     }
 }

@@ -13,16 +13,16 @@ public partial class Utility
         {
             if (duration > TimeSpan.FromDays(30))
             {
-                await ReplyErrorLocalizedAsync(strs.giveaway_duration_invalid);
+                await Response().Error(strs.giveaway_duration_invalid).SendAsync();
                 return;
             }
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithPendingColor()
                 .WithTitle(GetText(strs.giveaway_starting))
                 .WithDescription(message);
 
-            var startingMsg = await EmbedAsync(eb);
+            var startingMsg = await Response().Embed(eb).SendAsync();
 
             var maybeId =
                 await _service.StartGiveawayAsync(ctx.Guild.Id, ctx.Channel.Id, startingMsg.Id, duration, message);
@@ -31,7 +31,7 @@ public partial class Utility
             if (maybeId is not int id)
             {
                 await startingMsg.DeleteAsync();
-                await ReplyErrorLocalizedAsync(strs.giveaway_max_amount_reached);
+                await Response().Error(strs.giveaway_max_amount_reached).SendAsync();
                 return;
             }
 
@@ -52,7 +52,7 @@ public partial class Utility
 
            if(!success)
            {
-               await ReplyErrorLocalizedAsync(strs.giveaway_not_found);
+               await Response().Error(strs.giveaway_not_found).SendAsync();
                return;
            }
 
@@ -67,7 +67,7 @@ public partial class Utility
             var success = await _service.RerollGiveawayAsync(ctx.Guild.Id, id);
             if (!success)
             {
-                await ReplyErrorLocalizedAsync(strs.giveaway_not_found);
+                await Response().Error(strs.giveaway_not_found).SendAsync();
                 return;
             }
             
@@ -84,11 +84,11 @@ public partial class Utility
 
             if (!success)
             {
-                await ReplyConfirmLocalizedAsync(strs.giveaway_not_found);
+                await Response().Confirm(strs.giveaway_not_found).SendAsync();
                 return;
             }
 
-            await ReplyConfirmLocalizedAsync(strs.giveaway_cancelled);
+            await Response().Confirm(strs.giveaway_cancelled).SendAsync();
         }
 
         [Cmd]
@@ -99,11 +99,11 @@ public partial class Utility
 
             if (!giveaways.Any())
             {
-                await ReplyErrorLocalizedAsync(strs.no_givaways);
+                await Response().Error(strs.no_givaways).SendAsync();
                 return;
             }
 
-            var eb = _eb.Create(ctx)
+            var eb = new EmbedBuilder()
                 .WithTitle(GetText(strs.giveaway_list))
                 .WithOkColor();
 
@@ -112,7 +112,7 @@ public partial class Utility
                 eb.AddField($"id:  {new kwum(g.Id)}", g.Message, true);
             }
 
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
         }
     }
 }

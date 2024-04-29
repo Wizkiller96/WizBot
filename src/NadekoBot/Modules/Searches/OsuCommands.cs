@@ -31,7 +31,7 @@ public partial class Searches
             {
                 if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
                 {
-                    await ReplyErrorLocalizedAsync(strs.osu_api_key);
+                    await Response().Error(strs.osu_api_key).SendAsync();
                     return;
                 }
 
@@ -42,14 +42,14 @@ public partial class Searches
 
                 if (objs.Count == 0)
                 {
-                    await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
+                    await Response().Error(strs.osu_user_not_found).SendAsync();
                     return;
                 }
 
                 var obj = objs[0];
                 var userId = obj.UserId;
 
-                await EmbedAsync(_eb.Create()
+                await Response().Embed(new EmbedBuilder()
                                                 .WithOkColor()
                                                 .WithTitle($"osu! {smode} profile for {user}")
                                                 .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
@@ -61,15 +61,15 @@ public partial class Searches
                                                 .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
                                                 .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
                                                 .AddField("Playcount", obj.Playcount, true)
-                                                .AddField("Level", Math.Round(obj.Level), true));
+                                                .AddField("Level", Math.Round(obj.Level), true)).SendAsync();
             }
             catch (ArgumentOutOfRangeException)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
+                await Response().Error(strs.osu_user_not_found).SendAsync();
             }
             catch (Exception ex)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_failed);
+                await Response().Error(strs.osu_failed).SendAsync();
                 Log.Warning(ex, "Osu command failed");
             }
         }
@@ -86,7 +86,7 @@ public partial class Searches
             var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
             if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
             {
-                await ReplyErrorLocalizedAsync(strs.osu_user_not_found);
+                await Response().Error(strs.osu_user_not_found).SendAsync();
                 return;
             }
 
@@ -95,7 +95,7 @@ public partial class Searches
             var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
             var userStats = statsResponse.Stats;
 
-            var embed = _eb.Create()
+            var embed = new EmbedBuilder()
                            .WithOkColor()
                            .WithTitle($"osu!Gatari {modeStr} profile for {user}")
                            .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
@@ -109,7 +109,7 @@ public partial class Searches
                            .AddField("Playcount", userStats.Playcount, true)
                            .AddField("Level", userStats.Level, true);
 
-            await EmbedAsync(embed);
+            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -117,13 +117,13 @@ public partial class Searches
         {
             if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
             {
-                await SendErrorAsync("An osu! API key is required.");
+                await Response().Error("An osu! API key is required.").SendAsync();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(user))
             {
-                await SendErrorAsync("Please provide a username.");
+                await Response().Error("Please provide a username.").SendAsync();
                 return;
             }
 
@@ -166,13 +166,13 @@ public partial class Searches
                 return (title, desc);
             });
 
-            var eb = _eb.Create().WithOkColor().WithTitle($"Top 5 plays for {user}");
+            var eb = new EmbedBuilder().WithOkColor().WithTitle($"Top 5 plays for {user}");
 
             var mapData = await mapTasks.WhenAll();
             foreach (var (title, desc) in mapData.Where(x => x != default))
                 eb.AddField(title, desc);
 
-            await EmbedAsync(eb);
+            await Response().Embed(eb).SendAsync();
         }
 
         //https://osu.ppy.sh/wiki/Accuracy

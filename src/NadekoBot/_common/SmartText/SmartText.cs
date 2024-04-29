@@ -17,6 +17,9 @@ public abstract record SmartText
     [JsonIgnore]
     public bool IsEmbedArray
         => this is SmartEmbedTextArray;
+
+    public static implicit operator SmartText(string input)
+        => new SmartPlainText(input);
     
     public static SmartText operator +(SmartText text, string input)
         => text switch
