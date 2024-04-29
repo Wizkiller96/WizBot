@@ -12,7 +12,6 @@ public sealed class DmContextAdapter : DmContext
     
     
     private readonly IServiceProvider _services;
-    private readonly Lazy<IEmbedBuilderService> _ebs;
     private readonly Lazy<IBotStrings> _botStrings;
     private readonly Lazy<ILocalization> _localization;
 
@@ -32,13 +31,9 @@ public sealed class DmContextAdapter : DmContext
         Bot = ctx.Client.CurrentUser;
         
         
-        _ebs = new(_services.GetRequiredService<IEmbedBuilderService>());
         _botStrings = new(_services.GetRequiredService<IBotStrings>);
         _localization = new(_services.GetRequiredService<ILocalization>());
     }
-
-    public override EmbedBuilder Embed()
-        => new EmbedBuilder();
 
     public override string GetText(string key, object[]? args = null)
     {

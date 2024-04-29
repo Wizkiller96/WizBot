@@ -20,9 +20,7 @@ public class ChatterBotService : IExecOnMessage
     private readonly DiscordSocketClient _client;
     private readonly IPermissionChecker _perms;
     private readonly CommandHandler _cmd;
-    private readonly IBotStrings _strings;
     private readonly IBotCredentials _creds;
-    private readonly IEmbedBuilderService _eb;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IPatronageService _ps;
     private readonly GamesConfigService _gcs;
@@ -33,10 +31,8 @@ public class ChatterBotService : IExecOnMessage
         IPermissionChecker perms,
         IBot bot,
         CommandHandler cmd,
-        IBotStrings strings,
         IHttpClientFactory factory,
         IBotCredentials creds,
-        IEmbedBuilderService eb,
         IPatronageService ps,
         GamesConfigService gcs,
         IMessageSenderService sender)
@@ -44,14 +40,12 @@ public class ChatterBotService : IExecOnMessage
         _client = client;
         _perms = perms;
         _cmd = cmd;
-        _strings = strings;
         _creds = creds;
-        _eb = eb;
+        _sender = sender;
         _httpFactory = factory;
         _ps = ps;
         _perms = perms;
         _gcs = gcs;
-        _sender = sender;
 
         _flKey = new FeatureLimitKey()
         {
@@ -166,8 +160,7 @@ public class ChatterBotService : IExecOnMessage
                 {
                     if (ql.Quota == 0)
                     {
-                        await channel
-                              .Response(_strings, _eb)
+                        await _sender.Response(channel)
                               .Error(null,
                                   text:
                                   "In order to use the cleverbot feature, the owner of this server should be [Patron Tier X](https://patreon.com/join/nadekobot) on patreon.",
@@ -178,7 +171,7 @@ public class ChatterBotService : IExecOnMessage
                         return true;
                     }
 
-                    await channel.Response(_strings, _eb)
+                    await _sender.Response(channel)
                                  .Error(
                                      null!,
                                      $"You've reached your quota limit of **{ql.Quota}** responses {ql.QuotaPeriod.ToFullName()} for the cleverbot feature.",

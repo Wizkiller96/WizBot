@@ -26,7 +26,7 @@ public class TicTacToe
     private readonly IBotStrings _strings;
     private readonly DiscordSocketClient _client;
     private readonly Options _options;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     public TicTacToe(
         IBotStrings strings,
@@ -34,13 +34,13 @@ public class TicTacToe
         ITextChannel channel,
         IGuildUser firstUser,
         Options options,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _channel = channel;
         _strings = strings;
         _client = client;
         _options = options;
-        _eb = eb;
+        _sender = sender;
 
         _users = new[] { firstUser, null };
         _state = new int?[,] { { null, null, null }, { null, null, null }, { null, null, null } };
@@ -115,13 +115,13 @@ public class TicTacToe
     {
         if (phase is Phase.Started or Phase.Ended)
         {
-            await _channel.Response(_strings, _eb).Error(user.Mention + GetText(strs.ttt_already_running)).SendAsync();
+            await _sender.Response(_channel).Error(user.Mention + GetText(strs.ttt_already_running)).SendAsync();
             return;
         }
 
         if (_users[0] == user)
         {
-            await _channel.Response(_strings, _eb).Error(user.Mention + GetText(strs.ttt_against_yourself)).SendAsync();
+            await _sender.Response(_channel).Error(user.Mention + GetText(strs.ttt_against_yourself)).SendAsync();
             return;
         }
 
@@ -144,7 +144,7 @@ public class TicTacToe
                         var del = previousMessage?.DeleteAsync();
                         try
                         {
-                            await _channel.EmbedAsync(GetEmbed(GetText(strs.ttt_time_expired)));
+                            await _sender.Response(_channel).Embed(GetEmbed(GetText(strs.ttt_time_expired))).SendAsync();
                             if (del is not null)
                                 await del;
                         }
@@ -166,7 +166,7 @@ public class TicTacToe
         _client.MessageReceived += Client_MessageReceived;
 
 
-        previousMessage = await _channel.EmbedAsync(GetEmbed(GetText(strs.game_started)));
+        previousMessage = await _sender.Response(_channel).Embed(GetEmbed(GetText(strs.game_started))).SendAsync();
     }
 
     private bool IsDraw()
@@ -259,7 +259,7 @@ public class TicTacToe
                     {
                         var del1 = msg.DeleteAsync();
                         var del2 = previousMessage?.DeleteAsync();
-                        try { previousMessage = await _channel.EmbedAsync(GetEmbed(reason)); }
+                        try { previousMessage = await _sender.Response(_channel).Embed(GetEmbed(reason)).SendAsync(); }
                         catch { }
 
                         try { await del1; }

@@ -141,7 +141,7 @@ public partial class Searches : NadekoModule<SearchesService>
                  .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
                  .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
-        await ctx.Channel.SendMessageAsync(embed: eb.Build());
+        await Response().Embed(eb).SendAsync();
     }
 
     [Cmd]
@@ -441,7 +441,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
             await Response().Error(strs.wiki_page_not_found).SendAsync();
         else
-            await ctx.Channel.SendMessageAsync(data.Query.Pages[0].FullUrl);
+            await Response().Text(data.Query.Pages[0].FullUrl).SendAsync();
     }
 
     [Cmd]
@@ -514,7 +514,7 @@ public partial class Searches : NadekoModule<SearchesService>
             var url = Uri.EscapeDataString($"https://{target}.fandom.com/wiki/{title}");
             var response = $@"`{GetText(strs.title)}` {title.SanitizeMentions()}
 `{GetText(strs.url)}:` {url}";
-            await ctx.Channel.SendMessageAsync(response);
+            await Response().Text(response).SendAsync();
         }
         catch
         {
@@ -575,7 +575,7 @@ public partial class Searches : NadekoModule<SearchesService>
         //    .AddField(GetText(strs.price), gameData.IsFree ? GetText(strs.FREE) : game, true)
         //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
         //    .WithFooter(GetText(strs.recommendations(gameData.TotalRecommendations)));
-        await ctx.Channel.SendMessageAsync($"https://store.steampowered.com/app/{appId}");
+        await Response().Text($"https://store.steampowered.com/app/{appId}").SendAsync();
     }
 
     private async Task<bool> ValidateQuery([MaybeNullWhen(false)] string query)

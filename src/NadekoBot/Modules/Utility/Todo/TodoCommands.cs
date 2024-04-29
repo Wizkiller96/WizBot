@@ -1,4 +1,5 @@
 ﻿using NadekoBot.Db.Models;
+using System.Text;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -86,8 +87,8 @@ public partial class Utility
                 (curPage) =>
                 {
                     var eb = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithTitle(GetText(strs.todo_list));
+                             .WithOkColor()
+                             .WithTitle(GetText(strs.todo_list));
 
                     ShowTodoItem(todos, curPage, eb);
 
@@ -99,15 +100,15 @@ public partial class Utility
 
         private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, int curPage, EmbedBuilder eb)
         {
+            var sb = new StringBuilder();
             foreach (var todo in todos.Skip(curPage * 9).Take(9))
             {
-                // green circle and yellow circle emojis
-                eb.AddField($"-",
-                    $"{(todo.IsDone
-                        ? "✅"
-                        : "🟡")} {Format.Code(new kwum(todo.Id).ToString())} {todo.Todo}",
-                    false);
+                sb.AppendLine($"{(todo.IsDone ? "✔" : "□")} {Format.Code(new kwum(todo.Id).ToString())} {todo.Todo}");
+
+                sb.AppendLine("---");
             }
+
+            eb.WithDescription(sb.ToString());
         }
 
         [Group("archive")]
@@ -150,8 +151,8 @@ public partial class Utility
                     (curPage) =>
                     {
                         var eb = new EmbedBuilder()
-                            .WithTitle(GetText(strs.todo_archive_list))
-                            .WithOkColor();
+                                 .WithTitle(GetText(strs.todo_archive_list))
+                                 .WithOkColor();
 
                         foreach (var archivedList in archivedTodoLists.Skip(curPage * 9).Take(9))
                         {
@@ -179,8 +180,8 @@ public partial class Utility
                     (curPage) =>
                     {
                         var eb = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.todo_list));
+                                 .WithOkColor()
+                                 .WithTitle(GetText(strs.todo_list));
 
                         ShowTodoItem(list.Items, curPage, eb);
 

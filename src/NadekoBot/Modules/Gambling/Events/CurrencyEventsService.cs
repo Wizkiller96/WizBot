@@ -12,12 +12,15 @@ public class CurrencyEventsService : INService
     private readonly GamblingConfigService _configService;
 
     private readonly ConcurrentDictionary<ulong, ICurrencyEvent> _events = new();
+    private readonly IMessageSenderService _sender;
 
-    public CurrencyEventsService(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService configService)
+    public CurrencyEventsService(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService configService,
+        IMessageSenderService sender)
     {
         _client = client;
         _cs = cs;
         _configService = configService;
+        _sender = sender;
     }
 
     public async Task<bool> TryCreateEventAsync(
@@ -34,9 +37,9 @@ public class CurrencyEventsService : INService
         ICurrencyEvent ce;
 
         if (type == CurrencyEvent.Type.Reaction)
-            ce = new ReactionEvent(_client, _cs, g, ch, opts, _configService.Data, embed);
+            ce = new ReactionEvent(_client, _cs, g, ch, opts, _configService.Data, _sender, embed);
         else if (type == CurrencyEvent.Type.GameStatus)
-            ce = new GameStatusEvent(_client, _cs, g, ch, opts, embed);
+            ce = new GameStatusEvent(_client, _cs, g, ch, opts, _sender, embed);
         else
             return false;
 

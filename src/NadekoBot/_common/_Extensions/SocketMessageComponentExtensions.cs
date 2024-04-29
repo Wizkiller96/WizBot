@@ -60,31 +60,34 @@ public static class SocketMessageComponentExtensions
     
     public static Task RespondAsync(
         this SocketMessageComponent ch,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         string text,
         MsgType type,
         bool ephemeral = false,
         NadekoInteraction? inter = null)
     {
-        var builder = new EmbedBuilder().WithDescription(text);
+        var embed = new EmbedBuilder().WithDescription(text);
 
-        builder = (type switch
+        embed = (type switch
         {
-            MsgType.Error => builder.WithErrorColor(),
-            MsgType.Ok => builder.WithOkColor(),
-            MsgType.Pending => builder.WithPendingColor(),
+            MsgType.Error => embed.WithErrorColor(),
+            MsgType.Ok => embed.WithOkColor(),
+            MsgType.Pending => embed.WithPendingColor(),
             _ => throw new ArgumentOutOfRangeException(nameof(type))
         });
 
-        return ch.EmbedAsync(builder, inter: inter, ephemeral: ephemeral);
+        return sender.Response(ch)
+                     .Embed(embed)
+                     .Interaction(inter)
+                     .SendAsync(ephemeral: ephemeral);
     }
     
     // embed title and optional footer overloads
 
     public static Task RespondConfirmAsync(
         this SocketMessageComponent smc,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         string text,
         bool ephemeral = false)
-        => smc.RespondAsync(eb, text, MsgType.Ok, ephemeral);
+        => smc.RespondAsync(sender, text, MsgType.Ok, ephemeral);
 }

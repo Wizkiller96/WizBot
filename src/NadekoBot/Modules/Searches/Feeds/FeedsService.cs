@@ -14,7 +14,7 @@ public class FeedsService : INService
     private readonly DbService _db;
     private readonly ConcurrentDictionary<string, List<FeedSub>> _subs;
     private readonly DiscordSocketClient _client;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     private readonly ConcurrentDictionary<string, DateTime> _lastPosts = new();
     private readonly Dictionary<string, uint> _errorCounters = new();
@@ -23,7 +23,7 @@ public class FeedsService : INService
         IBot bot,
         DbService db,
         DiscordSocketClient client,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _db = db;
 
@@ -42,7 +42,7 @@ public class FeedsService : INService
         }
 
         _client = client;
-        _eb = eb;
+        _sender = sender;
 
         _ = Task.Run(TrackFeeds);
     }

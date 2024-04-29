@@ -8,20 +8,20 @@ public sealed class PermissionChecker : IPermissionChecker, INService
     private readonly PermissionService _perms;
     private readonly GlobalPermissionService _gperm;
     private readonly CmdCdService _cmdCds;
-    private readonly IEmbedBuilderService _ebs;
+    private readonly IMessageSenderService _sender;
     private readonly CommandHandler _ch;
 
     public PermissionChecker(
         PermissionService perms,
         GlobalPermissionService gperm,
         CmdCdService cmdCds,
-        IEmbedBuilderService ebs,
+        IMessageSenderService sender,
         CommandHandler ch)
     {
         _perms = perms;
         _gperm = gperm;
         _cmdCds = cmdCds;
-        _ebs = ebs;
+        _sender = sender;
         _ch = ch;
     }
 

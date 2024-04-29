@@ -71,7 +71,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
     private readonly IBotStrings _strings;
     private readonly IBot _bot;
     private readonly IPubSub _pubSub;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly IReplacementService _repSvc;
     private readonly Random _rng;
 
@@ -85,7 +85,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         DiscordSocketClient client,
         ICommandHandler cmd,
         IPubSub pubSub,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         IReplacementService repSvc,
         IPermissionChecker permChecker)
     {
@@ -95,7 +95,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         _strings = strings;
         _bot = bot;
         _pubSub = pubSub;
-        _eb = eb;
+        _sender = sender;
         _repSvc = repSvc;
         _permChecker = permChecker;
         _rng = new NadekoRandom();
@@ -265,8 +265,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
                         try
                         {
-                            await msg.Channel
-                                     .Response(_strings, _eb)
+                            await _sender.Response(msg.Channel)
                                      .Error(permissionMessage)
                                      .SendAsync();
                         }

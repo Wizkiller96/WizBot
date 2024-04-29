@@ -69,7 +69,7 @@ public partial class Searches
             }
 
             memeUrl += ".png";
-            await ctx.Channel.SendMessageAsync(memeUrl);
+            await Response().Text(memeUrl).SendAsync();
         }
 
         private static string Replace(string input)

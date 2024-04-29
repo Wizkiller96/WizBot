@@ -12,7 +12,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
 {
     private readonly IGoogleApiService _google;
     private readonly DbService _db;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly IBot _bot;
 
     private readonly ConcurrentDictionary<ulong, bool> _atcs = new();
@@ -21,12 +21,12 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
     public TranslateService(
         IGoogleApiService google,
         DbService db,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         IBot bot)
     {
         _google = google;
         _db = db;
-        _eb = eb;
+        _sender = sender;
         _bot = bot;
     }
 
@@ -77,7 +77,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
                      .AddField(langs.From, um.Content)
                      .AddField(langs.To, output);
 
-                await tch.EmbedAsync(embed);
+                await _sender.Response(tch).Embed(embed).SendAsync();
 
                 try
                 {

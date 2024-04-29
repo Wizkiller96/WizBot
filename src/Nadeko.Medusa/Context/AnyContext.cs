@@ -40,13 +40,4 @@ public abstract class AnyContext
     /// <param name="args">Arguments (if any) to format in</param>
     /// <returns>A formatted localized string</returns>
     public abstract string GetText(string key, object[]? args = null);
-    
-    /// <summary>
-    /// Creates a context-aware <see cref="IEmbedBuilder"/> instance
-    /// (future feature for guild-based embed colors)
-    /// Any code dealing with embeds should use it for future-proofness
-    /// instead of manually creating embedbuilder instances
-    /// </summary>
-    /// <returns>A context-aware <see cref="IEmbedBuilder"/> instance </returns>
-    public abstract EmbedBuilder Embed();
 }

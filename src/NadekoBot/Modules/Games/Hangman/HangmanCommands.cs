@@ -23,7 +23,7 @@ public partial class Games
             /-\
             """;
 
-        public static EmbedBuilder GetEmbed(IEmbedBuilderService eb, HangmanGame.State state)
+        public static EmbedBuilder GetEmbed(HangmanGame.State state)
         {
             if (state.Phase == HangmanGame.Phase.Running)
             {
@@ -60,7 +60,7 @@ public partial class Games
                 return;
             }
 
-            var eb = GetEmbed(_eb, hangman);
+            var eb = GetEmbed(hangman);
             eb.WithDescription(GetText(strs.hangman_game_started));
             await Response().Embed(eb).SendAsync();
         }

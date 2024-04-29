@@ -169,7 +169,7 @@ public partial class Gambling
                 }
                 else
                     await Response()
-                          .Confirm(GetText(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon)))
+                          .Confirm(strs.animal_race_join(ctx.User.Mention, user.Animal.Icon))
                           .SendAsync();
             }
             catch (ArgumentOutOfRangeException)

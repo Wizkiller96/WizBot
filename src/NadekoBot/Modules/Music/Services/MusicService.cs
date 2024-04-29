@@ -15,7 +15,7 @@ public sealed class MusicService : IMusicService
     private readonly IBotStrings _strings;
     private readonly IGoogleApiService _googleApiService;
     private readonly YtLoader _ytLoader;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     private readonly ConcurrentDictionary<ulong, IMusicPlayer> _players;
     private readonly ConcurrentDictionary<ulong, (ITextChannel Default, ITextChannel? Override)> _outputChannels;
@@ -31,7 +31,7 @@ public sealed class MusicService : IMusicService
         IBotStrings strings,
         IGoogleApiService googleApiService,
         YtLoader ytLoader,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _voiceStateService = voiceStateService;
         _trackResolveProvider = trackResolveProvider;
@@ -42,7 +42,7 @@ public sealed class MusicService : IMusicService
         _strings = strings;
         _googleApiService = googleApiService;
         _ytLoader = ytLoader;
-        _eb = eb;
+        _sender = sender;
 
         _players = new();
         _outputChannels = new ConcurrentDictionary<ulong, (ITextChannel, ITextChannel?)>();

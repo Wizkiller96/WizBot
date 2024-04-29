@@ -10,16 +10,16 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
     private readonly IBotCredsProvider _bcp;
     private readonly IHttpClientFactory _httpFactory;
     private readonly DiscordSocketClient _client;
-    private readonly IEmbedBuilderService _ebs;
+    private readonly IMessageSenderService _sender;
 
     public CheckForUpdatesService(BotConfigService bcs, IBotCredsProvider bcp, IHttpClientFactory httpFactory,
-        DiscordSocketClient client, IEmbedBuilderService ebs)
+        DiscordSocketClient client, IMessageSenderService sender)
     {
         _bcs = bcs;
         _bcp = bcp;
         _httpFactory = httpFactory;
         _client = client;
-        _ebs = ebs;
+        _sender = sender;
     }
     
     public async Task OnReadyAsync()
@@ -86,7 +86,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                                 .WithDescription(thisVersionChangelog.TrimTo(4096))
                                 .WithFooter("You may disable these messages by typing '.conf bot checkforupdates false'");
 
-                            await user.EmbedAsync(eb);
+                            await _sender.Response(user).Embed(eb).SendAsync();
                         }).WhenAll();
                 }
             }

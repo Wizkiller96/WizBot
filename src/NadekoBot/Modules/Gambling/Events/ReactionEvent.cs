@@ -30,6 +30,7 @@ public class ReactionEvent : ICurrencyEvent
     private readonly object _stopLock = new();
 
     private readonly object _potLock = new();
+    private readonly IMessageSenderService _sender;
 
     public ReactionEvent(
         DiscordSocketClient client,
@@ -38,6 +39,7 @@ public class ReactionEvent : ICurrencyEvent
         ITextChannel ch,
         EventOptions opt,
         GamblingConfig config,
+        IMessageSenderService sender,
         Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
     {
         _client = client;
@@ -51,6 +53,7 @@ public class ReactionEvent : ICurrencyEvent
         _noRecentlyJoinedServer = false;
         _opts = opt;
         _config = config;
+        _sender = sender;
 
         _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
@@ -102,7 +105,7 @@ public class ReactionEvent : ICurrencyEvent
             emote = parsedEmote;
         else
             emote = new Emoji(_config.Currency.Sign);
-        msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        msg = await _sender.Response(_channel).Embed(GetEmbed(_opts.PotSize)).SendAsync();
         await msg.AddReactionAsync(emote);
         _client.MessageDeleted += OnMessageDeleted;
         _client.ReactionAdded += HandleReaction;

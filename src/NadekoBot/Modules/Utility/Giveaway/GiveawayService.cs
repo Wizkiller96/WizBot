@@ -13,7 +13,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
     private readonly DbService _db;
     private readonly IBotCredentials _creds;
     private readonly DiscordSocketClient _client;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly IBotStrings _strings;
     private readonly ILocalization _localization;
     private readonly IMemoryCache _cache;
@@ -22,12 +22,12 @@ public sealed class GiveawayService : INService, IReadyExecutor
     private readonly ConcurrentDictionary<int, GiveawayRerollData> _rerolls = new();
 
     public GiveawayService(DbService db, IBotCredentials creds, DiscordSocketClient client,
-        IEmbedBuilderService eb, IBotStrings strings, ILocalization localization, IMemoryCache cache)
+        IMessageSenderService sender, IBotStrings strings, ILocalization localization, IMemoryCache cache)
     {
         _db = db;
         _creds = creds;
         _client = client;
-        _eb = eb;
+        _sender = sender;
         _strings = strings;
         _localization = localization;
         _cache = cache;
@@ -317,8 +317,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
                {Format.Code(winner.UserId.ToString())}
                """;
 
-        var eb = _eb
-            .Create()
+        var eb = new EmbedBuilder()
             .WithOkColor()
             .WithTitle(GetText(strs.giveaway_ended))
             .WithDescription(ga.Message)
@@ -334,7 +333,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
         catch
         {
             _ = msg.DeleteAsync();
-            await ch.EmbedAsync(eb);
+            await _sender.Response(ch).Embed(eb).SendAsync();
         }
     }
 

@@ -51,7 +51,7 @@ public partial class Games
 
             if (_service.RunningTrivias.TryGetValue(ctx.Guild.Id, out var tg))
             {
-                await Response().Error(GetText(strs.trivia_already_running)).SendAsync();
+                await Response().Error(strs.trivia_already_running).SendAsync();
                 await tg.TriggerQuestionAsync();
             }
         }

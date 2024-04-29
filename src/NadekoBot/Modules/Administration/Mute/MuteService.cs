@@ -31,13 +31,13 @@ public class MuteService : INService
 
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
-    public MuteService(DiscordSocketClient client, DbService db, IEmbedBuilderService eb)
+    public MuteService(DiscordSocketClient client, DbService db, IMessageSenderService sender)
     {
         _client = client;
         _db = db;
-        _eb = eb;
+        _sender = sender;
 
         using (var uow = db.GetDbContext())
         {
@@ -122,13 +122,13 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
-                                                           .WithDescription(
-                                                               $"You've been muted in {user.Guild} server")
-                                                           .AddField("Mute Type", type.ToString())
-                                                           .AddField("Moderator", mod.ToString())
-                                                           .AddField("Reason", reason)
-                                                           .Build()));
+        _ = Task.Run(() => _sender.Response(user)
+                                  .Embed(new EmbedBuilder()
+                                         .WithDescription($"You've been muted in {user.Guild} server")
+                                         .AddField("Mute Type", type.ToString())
+                                         .AddField("Moderator", mod.ToString())
+                                         .AddField("Reason", reason))
+                                  .SendAsync());
     }
 
     private void OnUserUnmuted(
@@ -140,13 +140,13 @@ public class MuteService : INService
         if (string.IsNullOrWhiteSpace(reason))
             return;
 
-        _ = Task.Run(() => user.SendMessageAsync(embed: new EmbedBuilder()
-                                                           .WithDescription(
-                                                               $"You've been unmuted in {user.Guild} server")
-                                                           .AddField("Unmute Type", type.ToString())
-                                                           .AddField("Moderator", mod.ToString())
-                                                           .AddField("Reason", reason)
-                                                           .Build()));
+        _ = Task.Run(() => _sender.Response(user)
+                                  .Embed(new EmbedBuilder()
+                                         .WithDescription($"You've been unmuted in {user.Guild} server")
+                                         .AddField("Unmute Type", type.ToString())
+                                         .AddField("Moderator", mod.ToString())
+                                         .AddField("Reason", reason))
+                                  .SendAsync());
     }
 
     private Task Client_UserJoined(IGuildUser usr)

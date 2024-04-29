@@ -13,7 +13,7 @@ public sealed class CurrencyRewardService : INService, IDisposable
     private readonly ICurrencyService _cs;
     private readonly IPatronageService _ps;
     private readonly DbService _db;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly GamblingConfigService _config;
     private readonly DiscordSocketClient _client;
 
@@ -21,14 +21,14 @@ public sealed class CurrencyRewardService : INService, IDisposable
         ICurrencyService cs,
         IPatronageService ps,
         DbService db,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         GamblingConfigService config,
         DiscordSocketClient client)
     {
         _cs = cs;
         _ps = ps;
         _db = db;
-        _eb = eb;
+        _sender = sender;
         _config = config;
         _client = client;
 
@@ -175,7 +175,7 @@ public sealed class CurrencyRewardService : INService, IDisposable
                         .WithOkColor()
                         .WithDescription(message);
             
-            await user.EmbedAsync(eb);
+            await _sender.Response(user).Embed(eb).SendAsync();
         }
         catch
         {

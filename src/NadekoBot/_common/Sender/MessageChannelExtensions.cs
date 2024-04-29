@@ -2,10 +2,6 @@
 
 public static class MessageChannelExtensions
 {
-    public static ResponseBuilder Response(this IMessageChannel channel, IBotStrings bs, IEmbedBuilderService ebs)
-        => new ResponseBuilder(bs, ebs)
-            .Channel(channel);
-
     // main overload that all other send methods reduce to
     public static Task<IUserMessage> SendAsync(
         this IMessageChannel channel,
@@ -92,7 +88,7 @@ public static class MessageChannelExtensions
         this IMessageChannel ch,
         EmbedBuilder? embed,
         string plainText = "",
-        IReadOnlyCollection<IEmbedBuilder>? embeds = null,
+        IReadOnlyCollection<EmbedBuilder>? embeds = null,
         NadekoInteraction? inter = null,
         IUserMessage? replyTo = null)
         => ch.SendAsync(plainText,

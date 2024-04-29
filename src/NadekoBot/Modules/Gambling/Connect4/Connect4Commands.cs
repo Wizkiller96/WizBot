@@ -109,7 +109,7 @@ public partial class Gambling
                         RepostCounter++;
                         if (RepostCounter == 0)
                         {
-                            try { msg = await ctx.Channel.SendMessageAsync("", embed: (Embed)msg.Embeds.First()); }
+                            try { msg = await Response().Embed(msg.Embeds.First().ToEmbedBuilder()).SendAsync(); }
                             catch { }
                         }
                     }

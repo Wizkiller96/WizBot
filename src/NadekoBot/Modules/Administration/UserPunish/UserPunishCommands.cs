@@ -65,11 +65,13 @@ public partial class Administration
             var dmFailed = false;
             try
             {
-                await user.EmbedAsync(new EmbedBuilder()
-                                         .WithErrorColor()
-                                         .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
-                                         .AddField(GetText(strs.moderator), ctx.User.ToString())
-                                         .AddField(GetText(strs.reason), reason ?? "-"));
+                await _sender.Response(user)
+                             .Embed(new EmbedBuilder()
+                                    .WithErrorColor()
+                                    .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
+                                    .AddField(GetText(strs.moderator), ctx.User.ToString())
+                                    .AddField(GetText(strs.reason), reason ?? "-"))
+                             .SendAsync();
             }
             catch
             {
@@ -84,7 +86,8 @@ public partial class Administration
             catch (Exception ex)
             {
                 Log.Warning(ex, "Exception occured while warning a user");
-                var errorEmbed = new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.cant_apply_punishment));
+                var errorEmbed = new EmbedBuilder().WithErrorColor()
+                                                   .WithDescription(GetText(strs.cant_apply_punishment));
 
                 if (dmFailed)
                     errorEmbed.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -261,9 +264,9 @@ public partial class Administration
                                      });
 
                     return new EmbedBuilder()
-                              .WithOkColor()
-                              .WithTitle(GetText(strs.warnings_list))
-                              .WithDescription(string.Join("\n", ws));
+                           .WithOkColor()
+                           .WithTitle(GetText(strs.warnings_list))
+                           .WithDescription(string.Join("\n", ws));
                 },
                 warnings.Length,
                 15);
@@ -433,9 +436,10 @@ public partial class Administration
                 try
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
-                    var embed = await _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
-                    if (embed is not null)
-                        await guildUser.SendAsync(embed);
+                    var smartText =
+                        await _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
+                    if (smartText is not null)
+                        await Response().User(guildUser).Text(smartText).SendAsync();
                 }
                 catch
                 {
@@ -447,13 +451,13 @@ public partial class Administration
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
             await _mute.TimedBan(ctx.Guild, userId, time.Time, (ctx.User + " | " + msg).TrimTo(512), banPrune);
             var toSend = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle("⛔️ " + GetText(strs.banned_user))
-                            .AddField(GetText(strs.username), user?.ToString() ?? userId.ToString(), true)
-                            .AddField("ID", userId.ToString(), true)
-                            .AddField(GetText(strs.duration),
-                                time.Time.Humanize(3, minUnit: TimeUnit.Minute, culture: Culture),
-                                true);
+                         .WithOkColor()
+                         .WithTitle("⛔️ " + GetText(strs.banned_user))
+                         .AddField(GetText(strs.username), user?.ToString() ?? userId.ToString(), true)
+                         .AddField("ID", userId.ToString(), true)
+                         .AddField(GetText(strs.duration),
+                             time.Time.Humanize(3, minUnit: TimeUnit.Minute, culture: Culture),
+                             true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -475,9 +479,9 @@ public partial class Administration
                 await ctx.Guild.AddBanAsync(userId, banPrune, (ctx.User + " | " + msg).TrimTo(512));
 
                 await ctx.Channel.EmbedAsync(new EmbedBuilder()
-                                                .WithOkColor()
-                                                .WithTitle("⛔️ " + GetText(strs.banned_user))
-                                                .AddField("ID", userId.ToString(), true));
+                                             .WithOkColor()
+                                             .WithTitle("⛔️ " + GetText(strs.banned_user))
+                                             .AddField("ID", userId.ToString(), true));
             }
             else
                 await Ban(user, msg);
@@ -500,7 +504,7 @@ public partial class Administration
                 var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
                 var embed = await _service.GetBanUserDmEmbed(Context, user, defaultMessage, msg, null);
                 if (embed is not null)
-                    await user.SendAsync(embed);
+                    await Response().User(user).Text(embed).SendAsync();
             }
             catch
             {
@@ -511,10 +515,10 @@ public partial class Administration
             await ctx.Guild.AddBanAsync(user, banPrune, (ctx.User + " | " + msg).TrimTo(512));
 
             var toSend = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle("⛔️ " + GetText(strs.banned_user))
-                            .AddField(GetText(strs.username), user.ToString(), true)
-                            .AddField("ID", user.Id.ToString(), true);
+                         .WithOkColor()
+                         .WithTitle("⛔️ " + GetText(strs.banned_user))
+                         .AddField(GetText(strs.username), user.ToString(), true)
+                         .AddField("ID", user.Id.ToString(), true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -594,19 +598,19 @@ public partial class Administration
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
         {
             var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), reason));
-            var embed = await _service.GetBanUserDmEmbed(Context,
+            var smartText = await _service.GetBanUserDmEmbed(Context,
                 (IGuildUser)ctx.User,
                 defaultMessage,
                 reason,
                 duration);
 
-            if (embed is null)
+            if (smartText is null)
                 await Response().Confirm(strs.banmsg_disabled).SendAsync();
             else
             {
                 try
                 {
-                    await ctx.User.SendAsync(embed);
+                    await Response().User(ctx.User).Text(smartText).SendAsync();
                 }
                 catch (Exception)
                 {
@@ -692,7 +696,7 @@ public partial class Administration
             {
                 await Response()
                       .Channel(await user.CreateDMChannelAsync())
-                      .Error(GetText(strs.sbdm(Format.Bold(ctx.Guild.Name), msg)))
+                      .Error(strs.sbdm(Format.Bold(ctx.Guild.Name), msg))
                       .SendAsync();
             }
             catch
@@ -706,10 +710,10 @@ public partial class Administration
             catch { await ctx.Guild.RemoveBanAsync(user); }
 
             var toSend = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle("☣ " + GetText(strs.sb_user))
-                            .AddField(GetText(strs.username), user.ToString(), true)
-                            .AddField("ID", user.Id.ToString(), true);
+                         .WithOkColor()
+                         .WithTitle("☣ " + GetText(strs.sb_user))
+                         .AddField(GetText(strs.username), user.ToString(), true)
+                         .AddField("ID", user.Id.ToString(), true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -761,10 +765,10 @@ public partial class Administration
             await user.KickAsync((ctx.User + " | " + msg).TrimTo(512));
 
             var toSend = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.kicked_user))
-                            .AddField(GetText(strs.username), user.ToString(), true)
-                            .AddField("ID", user.Id.ToString(), true);
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.kicked_user))
+                         .AddField(GetText(strs.username), user.ToString(), true)
+                         .AddField("ID", user.Id.ToString(), true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -792,9 +796,11 @@ public partial class Administration
             try
             {
                 var dmMessage = GetText(strs.timeoutdm(Format.Bold(ctx.Guild.Name), msg));
-                await user.EmbedAsync(new EmbedBuilder()
-                                         .WithPendingColor()
-                                         .WithDescription(dmMessage));
+                await _sender.Response(user)
+                             .Embed(new EmbedBuilder()
+                                    .WithPendingColor()
+                                    .WithDescription(dmMessage))
+                             .SendAsync();
             }
             catch
             {
@@ -804,10 +810,10 @@ public partial class Administration
             await user.SetTimeOutAsync(time.Time);
 
             var toSend = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle("⏳ " + GetText(strs.timedout_user))
-                            .AddField(GetText(strs.username), user.ToString(), true)
-                            .AddField("ID", user.Id.ToString(), true);
+                         .WithOkColor()
+                         .WithTitle("⏳ " + GetText(strs.timedout_user))
+                         .AddField(GetText(strs.username), user.ToString(), true)
+                         .AddField("ID", user.Id.ToString(), true);
 
             if (dmFailed)
                 toSend.WithFooter("⚠️ " + GetText(strs.unable_to_dm_user));
@@ -865,9 +871,9 @@ public partial class Administration
                 missStr = "-";
 
             var toSend = new EmbedBuilder()
-                            .WithDescription(GetText(strs.mass_ban_in_progress(banning.Count)))
-                            .AddField(GetText(strs.invalid(missing.Count)), missStr)
-                            .WithPendingColor();
+                         .WithDescription(GetText(strs.mass_ban_in_progress(banning.Count)))
+                         .AddField(GetText(strs.invalid(missing.Count)), missStr)
+                         .WithPendingColor();
 
             var banningMessage = await Response().Embed(toSend).SendAsync();
 
@@ -885,11 +891,11 @@ public partial class Administration
             }
 
             await banningMessage.ModifyAsync(x => x.Embed = new EmbedBuilder()
-                                                               .WithDescription(
-                                                                   GetText(strs.mass_ban_completed(banning.Count())))
-                                                               .AddField(GetText(strs.invalid(missing.Count)), missStr)
-                                                               .WithOkColor()
-                                                               .Build());
+                                                            .WithDescription(
+                                                                GetText(strs.mass_ban_completed(banning.Count())))
+                                                            .AddField(GetText(strs.invalid(missing.Count)), missStr)
+                                                            .WithOkColor()
+                                                            .Build());
         }
 
         [Cmd]
@@ -910,10 +916,10 @@ public partial class Administration
 
             //send a message but don't wait for it
             var banningMessageTask = ctx.Channel.EmbedAsync(new EmbedBuilder()
-                                                               .WithDescription(
-                                                                   GetText(strs.mass_kill_in_progress(bans.Count())))
-                                                               .AddField(GetText(strs.invalid(missing)), missStr)
-                                                               .WithPendingColor());
+                                                            .WithDescription(
+                                                                GetText(strs.mass_kill_in_progress(bans.Count())))
+                                                            .AddField(GetText(strs.invalid(missing)), missStr)
+                                                            .WithPendingColor());
 
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
             //do the banning
@@ -930,11 +936,11 @@ public partial class Administration
             var banningMessage = await banningMessageTask;
 
             await banningMessage.ModifyAsync(x => x.Embed = new EmbedBuilder()
-                                                               .WithDescription(
-                                                                   GetText(strs.mass_kill_completed(bans.Count())))
-                                                               .AddField(GetText(strs.invalid(missing)), missStr)
-                                                               .WithOkColor()
-                                                               .Build());
+                                                            .WithDescription(
+                                                                GetText(strs.mass_kill_completed(bans.Count())))
+                                                            .AddField(GetText(strs.invalid(missing)), missStr)
+                                                            .WithOkColor()
+                                                            .Build());
         }
 
         public class WarnExpireOptions : INadekoCommandOptions

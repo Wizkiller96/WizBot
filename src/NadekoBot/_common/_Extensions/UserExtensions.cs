@@ -4,21 +4,6 @@ namespace NadekoBot.Extensions;
 
 public static class UserExtensions
 {
-    public static async Task<IUserMessage> EmbedAsync(this IUser user, EmbedBuilder embed, string msg = "")
-    {
-        var ch = await user.CreateDMChannelAsync();
-        return await ch.EmbedAsync(embed, msg);
-    }
-
-    public static async Task<IUserMessage> SendAsync(this IUser user, SmartText text, bool sanitizeAll = false)
-    {
-        var ch = await user.CreateDMChannelAsync();
-        return await ch.SendAsync(text, sanitizeAll);
-    }
-
-    public static async Task<IUserMessage> SendConfirmAsync(this IUser user, IEmbedBuilderService eb, string text)
-        => await user.SendMessageAsync("", embed: new EmbedBuilder().WithOkColor().WithDescription(text).Build());
-
     // This method is used by everything that fetches the avatar from a user
     public static Uri RealAvatarUrl(this IUser usr, ushort size = 256)
         => usr.AvatarId is null ? new(usr.GetDefaultAvatarUrl()) : new Uri(usr.GetAvatarUrl(ImageFormat.Auto, size));

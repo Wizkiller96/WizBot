@@ -25,7 +25,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     private readonly ConcurrentHashSet<ulong> _deleteOnOfflineServers;
 
     private readonly IPubSub _pubSub;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly SearchesConfigService _config;
     private readonly IReplacementService _repSvc;
 
@@ -49,7 +49,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         IHttpClientFactory httpFactory,
         IBot bot,
         IPubSub pubSub,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         SearchesConfigService config,
         IReplacementService repSvc)
     {
@@ -57,7 +57,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         _client = client;
         _strings = strings;
         _pubSub = pubSub;
-        _eb = eb;
+        _sender = sender;
         _config = config;
         _repSvc = repSvc;
 
@@ -285,7 +285,10 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                             ? ""
                             : await _repSvc.ReplaceAsync(fs.Message, repCtx);
 
-                        var msg = await textChannel.EmbedAsync(GetEmbed(fs.GuildId, stream, false), message);
+                        var msg = await _sender.Response(textChannel)
+                                               .Embed(GetEmbed(fs.GuildId, stream, false))
+                                               .Text(message)
+                                               .SendAsync();
 
                         // only cache the ids of channel/message pairs 
                         if (_deleteOnOfflineServers.Contains(fs.GuildId))

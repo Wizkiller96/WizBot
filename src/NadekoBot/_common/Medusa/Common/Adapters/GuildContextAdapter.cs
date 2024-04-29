@@ -5,7 +5,6 @@ public sealed class GuildContextAdapter : GuildContext
 {
     private readonly IServiceProvider _services;
     private readonly ICommandContext _ctx;
-    private readonly Lazy<IEmbedBuilderService> _ebs;
     private readonly Lazy<IBotStrings> _botStrings;
     private readonly Lazy<ILocalization> _localization;
     
@@ -17,9 +16,6 @@ public sealed class GuildContextAdapter : GuildContext
         => _ctx.Message;
 
     public override IGuildUser User { get; } 
-
-    public override EmbedBuilder Embed()
-        => _ebs.Value.Create();
 
     public GuildContextAdapter(ICommandContext ctx, IMedusaStrings strings, IServiceProvider services)
     {
@@ -33,7 +29,6 @@ public sealed class GuildContextAdapter : GuildContext
         Bot = ctx.Client.CurrentUser;
 
         _services = services;
-        _ebs = new(_services.GetRequiredService<IEmbedBuilderService>());
         _botStrings = new(_services.GetRequiredService<IBotStrings>);
         _localization = new(_services.GetRequiredService<ILocalization>());
 

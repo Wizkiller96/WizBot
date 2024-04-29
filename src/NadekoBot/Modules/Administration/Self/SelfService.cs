@@ -25,7 +25,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     private readonly IHttpClientFactory _httpFactory;
     private readonly BotConfigService _bss;
     private readonly IPubSub _pubSub;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
 
     //keys
     private readonly TypedKey<ActivityPubData> _activitySetKey;
@@ -40,7 +40,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         IHttpClientFactory factory,
         BotConfigService bss,
         IPubSub pubSub,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _cmdHandler = cmdHandler;
         _db = db;
@@ -50,7 +50,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         _httpFactory = factory;
         _bss = bss;
         _pubSub = pubSub;
-        _eb = eb;
+        _sender = sender;
         _activitySetKey = new("activity.set");
         _guildLeaveKey = new("guild.leave");
 
@@ -225,7 +225,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 {
                     try
                     {
-                        await ownerCh.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
+                        await _sender.Response(ownerCh).Confirm(title, toSend).SendAsync();
                     }
                     catch
                     {
@@ -238,7 +238,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 try
                 {
                     if (_client.GetChannel(cid) is ITextChannel ch)
-                        await ch.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
+                        await _sender.Response(ch).Confirm(title, toSend).SendAsync();
                 }
                 catch
                 {
@@ -252,7 +252,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 {
                     try
                     {
-                        await firstOwnerChannel.Response(_strings, _eb).Confirm(title, toSend).SendAsync();
+                        await _sender.Response(firstOwnerChannel).Confirm(title, toSend).SendAsync();
                     }
                     catch
                     {

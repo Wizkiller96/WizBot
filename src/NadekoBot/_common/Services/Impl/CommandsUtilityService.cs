@@ -8,7 +8,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
     private readonly CommandHandler _ch;
     private readonly IBotStrings _strings;
     private readonly DiscordPermOverrideService _dpos;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly ILocalization _loc;
     private readonly IMedusaLoaderService _medusae;
 
@@ -16,14 +16,14 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         CommandHandler ch,
         IBotStrings strings,
         DiscordPermOverrideService dpos,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         ILocalization loc,
         IMedusaLoaderService medusae)
     {
         _ch = ch;
         _strings = strings;
         _dpos = dpos;
-        _eb = eb;
+        _sender = sender;
         _loc = loc;
         _medusae = medusae;
     }

@@ -14,13 +14,13 @@
 //
 //     // unlocalized
 //     public static Task<IUserMessage> SendConfirmAsync(this IMessageChannel ch, AnyContext ctx, string msg)
-//         => ch.EmbedAsync(ctx.Embed().WithOkColor().WithDescription(msg));
+//         => _sender.Response(ch).Embed(ctx.Embed().WithOkColor().WithDescription(msg)).SendAsync();
 //
 //     public static Task<IUserMessage> SendPendingAsync(this IMessageChannel ch, AnyContext ctx, string msg)
-//         => ch.EmbedAsync(ctx.Embed().WithPendingColor().WithDescription(msg));
+//         => _sender.Response(ch).Embed(ctx.Embed().WithPendingColor().WithDescription(msg)).SendAsync();
 //
 //     public static Task<IUserMessage> SendErrorAsync(this IMessageChannel ch, AnyContext ctx, string msg)
-//         => ch.EmbedAsync(ctx.Embed().WithErrorColor().WithDescription(msg));
+//         => _sender.Response(ch).Embed(ctx.Embed().WithErrorColor().WithDescription(msg)).SendAsync();
 //
 //     // unlocalized
 //     public static Task<IUserMessage> SendConfirmAsync(this AnyContext ctx, string msg)

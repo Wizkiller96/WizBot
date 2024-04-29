@@ -65,7 +65,7 @@ public partial class Gambling
 
             try
             {
-                await ctx.User.EmbedAsync(eb);
+                await Response().User(ctx.User).Embed(eb).SendAsync();
                 await ctx.OkAsync();
             }
             catch

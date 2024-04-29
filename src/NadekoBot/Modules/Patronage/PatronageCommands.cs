@@ -31,10 +31,12 @@ public partial class Patronage : NadekoModule
         _ = ctx.Channel.TriggerTypingAsync();
         var result = await _service.SendMessageToPatronsAsync(tierAndHigher, message);
 
-        await Response().Confirm(strs.patron_msg_sent(
-            Format.Code(tierAndHigher.ToString()),
-            Format.Bold(result.Success.ToString()),
-            Format.Bold(result.Failed.ToString()))).SendAsync();
+        await Response()
+              .Confirm(strs.patron_msg_sent(
+                  Format.Code(tierAndHigher.ToString()),
+                  Format.Bold(result.Success.ToString()),
+                  Format.Bold(result.Failed.ToString())))
+              .SendAsync();
     }
 
     // [OwnerOnly]
@@ -69,9 +71,9 @@ public partial class Patronage : NadekoModule
         var quotaStats = await _service.GetUserQuotaStatistic(user.Id);
 
         var eb = new EmbedBuilder()
-            .WithAuthor(user)
-            .WithTitle(GetText(strs.patron_info))
-            .WithOkColor();
+                 .WithAuthor(user)
+                 .WithTitle(GetText(strs.patron_info))
+                 .WithOkColor();
 
         if (quotaStats.Commands.Count == 0
             && quotaStats.Groups.Count == 0
@@ -82,7 +84,7 @@ public partial class Patronage : NadekoModule
         else
         {
             eb.AddField(GetText(strs.tier), Format.Bold(patron.Tier.ToFullName()), true)
-                .AddField(GetText(strs.pledge), $"**{patron.Amount / 100.0f:N1}$**", true);
+              .AddField(GetText(strs.pledge), $"**{patron.Amount / 100.0f:N1}$**", true);
 
             if (patron.Tier != PatronTier.None)
                 eb.AddField(GetText(strs.expires), patron.ValidThru.AddDays(1).ToShortAndRelativeTimestampTag(), true);
@@ -114,7 +116,7 @@ public partial class Patronage : NadekoModule
 
         try
         {
-            await ctx.User.EmbedAsync(eb);
+            await Response().User(ctx.User).Embed(eb).SendAsync();
             _ = ctx.OkAsync();
         }
         catch

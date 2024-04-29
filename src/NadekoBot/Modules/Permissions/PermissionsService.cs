@@ -17,7 +17,6 @@ public class PermissionService : IExecPreCommand, INService
     private readonly DbService _db;
     private readonly CommandHandler _cmd;
     private readonly IBotStrings _strings;
-    private readonly IEmbedBuilderService _eb;
     private readonly IMessageSenderService _sender;
 
     public PermissionService(
@@ -25,13 +24,11 @@ public class PermissionService : IExecPreCommand, INService
         DbService db,
         CommandHandler cmd,
         IBotStrings strings,
-        IEmbedBuilderService eb,
         IMessageSenderService sender)
     {
         _db = db;
         _cmd = cmd;
         _strings = strings;
-        _eb = eb;
         _sender = sender;
 
         using var uow = _db.GetDbContext();

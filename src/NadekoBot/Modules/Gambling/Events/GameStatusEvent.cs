@@ -36,6 +36,7 @@ public class GameStatusEvent : ICurrencyEvent
     private readonly object _stopLock = new();
 
     private readonly object _potLock = new();
+    private readonly IMessageSenderService _sender;
 
     public GameStatusEvent(
         DiscordSocketClient client,
@@ -43,6 +44,7 @@ public class GameStatusEvent : ICurrencyEvent
         SocketGuild g,
         ITextChannel ch,
         EventOptions opt,
+        IMessageSenderService sender,
         Func<CurrencyEvent.Type, EventOptions, long, EmbedBuilder> embedFunc)
     {
         _client = client;
@@ -54,6 +56,7 @@ public class GameStatusEvent : ICurrencyEvent
         _isPotLimited = PotSize > 0;
         _channel = ch;
         _opts = opt;
+        _sender = sender;
         // generate code
         _code = new(_sneakyGameStatusChars.Shuffle().Take(5).ToArray());
 
@@ -106,7 +109,7 @@ public class GameStatusEvent : ICurrencyEvent
 
     public async Task StartEvent()
     {
-        msg = await _channel.EmbedAsync(GetEmbed(_opts.PotSize));
+        msg = await _sender.Response(_channel).Embed(GetEmbed(_opts.PotSize)).SendAsync();
         await _client.SetGameAsync(_code);
         _client.MessageDeleted += OnMessageDeleted;
         _client.MessageReceived += HandleMessage;

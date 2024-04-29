@@ -74,7 +74,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         var stats = await _gamblingTxTracker.GetAllAsync();
 
         var eb = new EmbedBuilder()
-                    .WithOkColor();
+            .WithOkColor();
 
         var str = "` Feature `｜`   Bet  `｜`Paid Out`｜`  RoI  `\n";
         str += "――――――――――――――――――――\n";
@@ -119,15 +119,15 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         // [21:03] Bob Page: Kinda remids me of US economy
         var embed = new EmbedBuilder()
-                       .WithTitle(GetText(strs.economy_state))
-                       .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
-                       .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
-                       .AddField(GetText(strs.currency_planted), N(ec.Planted))
-                       .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
-                       .AddField(GetText(strs.bot_currency), N(ec.Bot))
-                       .AddField(GetText(strs.bank_accounts), N(ec.Bank))
-                       .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
-                       .WithOkColor();
+                    .WithTitle(GetText(strs.economy_state))
+                    .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
+                    .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
+                    .AddField(GetText(strs.currency_planted), N(ec.Planted))
+                    .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
+                    .AddField(GetText(strs.bot_currency), N(ec.Bot))
+                    .AddField(GetText(strs.bank_accounts), N(ec.Bank))
+                    .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
+                    .WithOkColor();
 
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
         await Response().Embed(embed).SendAsync();
@@ -151,7 +151,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             GetText(strs.timely_time),
             ReminderType.Timely);
 
-        await smc.RespondConfirmAsync(_eb, GetText(strs.remind_timely(tt)), ephemeral: true);
+        await smc.RespondConfirmAsync(_sender, GetText(strs.remind_timely(tt)), ephemeral: true);
     }
 
     private NadekoInteraction CreateRemindMeInteraction(int period)
@@ -311,9 +311,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var embed = new EmbedBuilder()
-                       .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
-                                                            ?? $"{userId}")))
-                       .WithOkColor();
+                    .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
+                                                         ?? $"{userId}")))
+                    .WithOkColor();
 
         var sb = new StringBuilder();
         foreach (var tr in trs)
@@ -415,7 +415,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         await N(balance)
               .Pipe(strs.bank_balance)
               .Pipe(GetText)
-              .Pipe(text => smc.RespondConfirmAsync(_eb, text, ephemeral: true));
+              .Pipe(text => smc.RespondConfirmAsync(_sender, text, ephemeral: true));
     }
 
     private NadekoInteraction CreateCashInteraction()
@@ -460,7 +460,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        if (!await _cs.TransferAsync(_eb, ctx.User, receiver, amount, msg, N(amount)))
+        if (!await _cs.TransferAsync(_sender, ctx.User, receiver, amount, msg, N(amount)))
         {
             await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
             return;
@@ -732,10 +732,10 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var eb = new EmbedBuilder()
-                    .WithAuthor(ctx.User)
-                    .WithDescription(Format.Bold(str))
-                    .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
-                    .WithOkColor();
+                 .WithAuthor(ctx.User)
+                 .WithDescription(Format.Bold(str))
+                 .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
+                 .WithOkColor();
 
         await Response().Embed(eb).SendAsync();
     }
@@ -923,11 +923,11 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var eb = new EmbedBuilder()
-                    .WithOkColor()
-                    .WithDescription(sb.ToString())
-                    .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)
-                    .AddField(GetText(strs.won), $"{(long)result.Won}", true)
-                    .WithAuthor(ctx.User);
+                 .WithOkColor()
+                 .WithDescription(sb.ToString())
+                 .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)
+                 .AddField(GetText(strs.won), $"{(long)result.Won}", true)
+                 .WithAuthor(ctx.User);
 
 
         await Response().Embed(eb).SendAsync();

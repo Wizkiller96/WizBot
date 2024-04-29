@@ -51,10 +51,10 @@ public sealed partial class Music
             }
 
             var embed = new EmbedBuilder()
-                           .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
-                           .WithDescription(string.Join("\n",
-                               playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
-                           .WithOkColor();
+                        .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
+                        .WithDescription(string.Join("\n",
+                            playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
+                        .WithOkColor();
 
             await Response().Embed(embed).SendAsync();
         }
@@ -111,7 +111,9 @@ public sealed partial class Music
                         mpl.Songs.Skip(cur * 20)
                            .Take(20)
                            .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                    return new EmbedBuilder().WithTitle($"\"{mpl.Name}\" by {mpl.Author}").WithOkColor().WithDescription(str);
+                    return new EmbedBuilder().WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
+                                             .WithOkColor()
+                                             .WithDescription(str);
                 },
                 mpl.Songs.Count,
                 20);
@@ -151,11 +153,13 @@ public sealed partial class Music
                 await uow.SaveChangesAsync();
             }
 
-            await Response().Embed(new EmbedBuilder()
-                                .WithOkColor()
-                                .WithTitle(GetText(strs.playlist_saved))
-                                .AddField(GetText(strs.name), name)
-                                .AddField(GetText(strs.id), playlist.Id.ToString())).SendAsync();
+            await Response()
+                  .Embed(new EmbedBuilder()
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.playlist_saved))
+                         .AddField(GetText(strs.name), name)
+                         .AddField(GetText(strs.id), playlist.Id.ToString()))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -208,8 +212,9 @@ public sealed partial class Music
                 IUserMessage msg = null;
                 try
                 {
-                    msg = await ctx.Channel.SendMessageAsync(
-                        GetText(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString()))));
+                    msg = await Response()
+                                .Pending(strs.attempting_to_queue(Format.Bold(mpl.Songs.Count.ToString())))
+                                .SendAsync();
                 }
                 catch (Exception)
                 {

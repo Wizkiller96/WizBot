@@ -19,18 +19,21 @@ public class GreetService : INService, IReadyExecutor
     private readonly GreetGrouper<IUser> _byes = new();
     private readonly BotConfigService _bss;
     private readonly IReplacementService _repSvc;
+    private readonly IMessageSenderService _sender;
 
     public GreetService(
         DiscordSocketClient client,
         IBot bot,
         DbService db,
         BotConfigService bss,
+        IMessageSenderService sender,
         IReplacementService repSvc)
     {
         _db = db;
         _client = client;
         _bss = bss;
         _repSvc = repSvc;
+        _sender = sender;
 
         _guildConfigsCache = new(bot.AllGuildConfigs.ToDictionary(g => g.GuildId, GreetSettings.Create));
 
@@ -281,6 +284,7 @@ public class GreetService : INService, IReadyExecutor
             FullMode = BoundedChannelFullMode.DropNewest
         });
 
+
     private async Task<bool> GreetDmUser(GreetSettings conf, IGuildUser user)
     {
         var completionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -298,32 +302,32 @@ public class GreetService : INService, IReadyExecutor
             // .Build();
 
             var repCtx = new ReplacementContext(client: _client, guild: user.Guild, users: user);
-            var text = SmartText.CreateFrom(conf.DmGreetMessageText);
-            text = await _repSvc.ReplaceAsync(text, repCtx);
+            var smartText = SmartText.CreateFrom(conf.DmGreetMessageText);
+            smartText = await _repSvc.ReplaceAsync(smartText, repCtx);
 
-            if (text is SmartPlainText pt)
+            if (smartText is SmartPlainText pt)
             {
-                text = new SmartEmbedText()
+                smartText = new SmartEmbedText()
                 {
                     Description = pt.Text
                 };
             }
 
-            if (text is SmartEmbedText set)
+            if (smartText is SmartEmbedText set)
             {
-                text = set with
+                smartText = set with
                 {
                     Footer = CreateFooterSource(user)
                 };
             }
-            else if (text is SmartEmbedTextArray seta)
+            else if (smartText is SmartEmbedTextArray seta)
             {
                 // if the greet dm message is a text array
                 var ebElem = seta.Embeds.LastOrDefault();
                 if (ebElem is null)
                 {
                     // if there are no embeds, add an embed with the footer
-                    text = seta with
+                    smartText = seta with
                     {
                         Embeds = new[]
                         {
@@ -355,7 +359,7 @@ public class GreetService : INService, IReadyExecutor
                 }
             }
 
-            await user.SendAsync(text);
+            await _sender.Response(user).Text(smartText).SendAsync();
         }
         catch
         {

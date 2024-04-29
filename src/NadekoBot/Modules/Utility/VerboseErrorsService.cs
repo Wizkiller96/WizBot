@@ -9,16 +9,19 @@ public class VerboseErrorsService : INService
     private readonly DbService _db;
     private readonly CommandHandler _ch;
     private readonly ICommandsUtilityService _hs;
+    private readonly IMessageSenderService _sender;
 
     public VerboseErrorsService(
         IBot bot,
         DbService db,
         CommandHandler ch,
+        IMessageSenderService sender,
         ICommandsUtilityService hs)
     {
         _db = db;
         _ch = ch;
         _hs = hs;
+        _sender = sender;
 
         _ch.CommandErrored += LogVerboseError;
 
@@ -38,7 +41,7 @@ public class VerboseErrorsService : INService
                            .WithFooter("Admin may disable verbose errors via `.ve` command")
                            .WithErrorColor();
 
-            await channel.EmbedAsync(embed);
+            await _sender.Response(channel).Embed(embed).SendAsync();
         }
         catch
         {

@@ -11,25 +11,26 @@ namespace NadekoBot.Modules.Utility.Services;
 public class RemindService : INService, IReadyExecutor, IRemindService
 {
     private readonly Regex _regex =
-        new(@"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
+        new(
+            @"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
             RegexOptions.Compiled | RegexOptions.Multiline);
-    
+
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
     private readonly IBotCredentials _creds;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly CultureInfo _culture;
 
     public RemindService(
         DiscordSocketClient client,
         DbService db,
         IBotCredentials creds,
-        IEmbedBuilderService eb)
+        IMessageSenderService sender)
     {
         _client = client;
         _db = db;
         _creds = creds;
-        _eb = eb;
+        _sender = sender;
 
         try
         {
@@ -120,7 +121,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         if (!string.IsNullOrWhiteSpace(dateString))
         {
             var now = DateTime.UtcNow;
-            
+
             if (!DateTime.TryParse(dateString, _culture, DateTimeStyles.None, out var dt))
             {
                 Log.Warning("Invalid remind datetime format");
@@ -162,6 +163,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
                 values[groupName] = value;
             }
+
             ts = new TimeSpan((30 * values["mo"]) + (7 * values["w"]) + values["d"], values["h"], values["m"], 0);
         }
 
@@ -197,22 +199,24 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
             if (st is SmartEmbedText set)
             {
-                await ch.SendMessageAsync(null, embed: set.GetEmbed().Build());
+                await _sender.Response(ch).Embed(set.GetEmbed()).SendAsync();
             }
             else if (st is SmartEmbedTextArray seta)
             {
-                await ch.SendMessageAsync(null, embeds: seta.GetEmbedBuilders().Map(x => x.Build()));
+                await _sender.Response(ch).Embeds(seta.GetEmbedBuilders()).SendAsync();
             }
             else
             {
-                await ch.EmbedAsync(new EmbedBuilder()
-                        .WithOkColor()
-                        .WithTitle("Reminder")
-                        .AddField("Created At",
-                            r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                        .AddField("By",
-                            (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()),
-                    r.Message);
+                await _sender.Response(ch)
+                             .Embed(new EmbedBuilder()
+                                    .WithOkColor()
+                                    .WithTitle("Reminder")
+                                    .AddField("Created At",
+                                        r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
+                                    .AddField("By",
+                                        (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()))
+                             .Text(r.Message)
+                             .SendAsync();
             }
         }
         catch (Exception ex)
@@ -227,7 +231,8 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         public TimeSpan Time { get; set; }
     }
 
-    public async Task AddReminderAsync(ulong userId,
+    public async Task AddReminderAsync(
+        ulong userId,
         ulong targetId,
         ulong? guildId,
         bool isPrivate,
@@ -242,7 +247,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             ServerId = guildId ?? 0,
             IsPrivate = isPrivate,
             When = time,
-            Message = message, 
+            Message = message,
             Type = reminderType
         };
 

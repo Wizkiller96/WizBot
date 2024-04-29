@@ -133,23 +133,23 @@ public partial class Utility
         private async Task ShowQuoteData(Quote data)
         {
             var eb = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
-                        .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
-                        .AddField(GetText(strs.trigger), data.Keyword)
-                        .WithFooter(
-                            GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")))
-                        .Build();
+                     .WithOkColor()
+                     .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
+                     .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
+                     .AddField(GetText(strs.trigger), data.Keyword)
+                     .WithFooter(
+                         GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")));
 
             if (!(data.Text.Length > 4096))
             {
-                await ctx.Channel.SendMessageAsync(embed: eb);
+                await Response().Embed(eb).SendAsync();
                 return;
             }
 
+            // todo all send files should go through response system too
             await ctx.Channel.SendFileAsync(
                 attachment: new FileAttachment(await data.Text.ToStream(), "quote.txt"),
-                embed: eb);
+                embed: eb.Build());
         }
 
         private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
@@ -168,10 +168,12 @@ public partial class Utility
             if (quote is null)
                 return;
 
-            await ctx.Channel.SendMessageAsync($"`#{quote.Id}` 💬 "
-                                               + quote.Keyword.ToLowerInvariant()
-                                               + ":  "
-                                               + quote.Text.SanitizeAllMentions());
+            await Response()
+                  .Confirm($"`#{quote.Id}` 💬 ",
+                      quote.Keyword.ToLowerInvariant()
+                      + ":  "
+                      + quote.Text.SanitizeAllMentions())
+                  .SendAsync();
         }
 
         [Cmd]
@@ -204,7 +206,7 @@ public partial class Utility
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
             {
-                await Response().Error(GetText(strs.quotes_notfound)).SendAsync();
+                await Response().Error(strs.quotes_notfound).SendAsync();
                 return;
             }
 

@@ -342,7 +342,6 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         var sis = LoadSneksFromAssembly(safeName, a);
         typeReaders = LoadTypeReadersFromAssembly(a, strings);
         
-        // todo allow this
         if (sis.Count == 0)
         {
             _kernel.Unload(safeName);

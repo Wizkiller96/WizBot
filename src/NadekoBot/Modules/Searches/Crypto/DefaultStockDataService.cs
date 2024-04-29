@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace NadekoBot.Modules.Searches;
 
-// todo fix stock
 public sealed class DefaultStockDataService : IStockDataService, INService
 {
     private readonly IHttpClientFactory _httpClientFactory;

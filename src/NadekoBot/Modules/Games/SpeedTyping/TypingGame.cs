@@ -78,10 +78,11 @@ public class TypingGame
 
             var time = _options.StartTime;
 
-            var msg = await Channel.SendMessageAsync($"Starting new typing contest in **{time}**...");
+            var msg = await _sender.Response(Channel).Confirm($"Starting new typing contest in **{time}**...").SendAsync();
 
             do
             {
+                // todo fix all modifies
                 await Task.Delay(2000);
                 time -= 2;
                 try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**.."); }
@@ -144,13 +145,15 @@ public class TypingGame
                     var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                     _finishedUserIds.Add(msg.Author.Id);
 
+                    var embed = new EmbedBuilder()
+                                .WithOkColor()
+                                .WithTitle($"{msg.Author} finished the race!")
+                                .AddField("Place", $"#{_finishedUserIds.Count}", true)
+                                .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
+                                .AddField("Errors", distance.ToString(), true);
+                    
                     await _sender.Response(Channel)
-                                 .Embed(eb => new EmbedBuilder()
-                                                  .WithOkColor()
-                                                  .WithTitle($"{msg.Author} finished the race!")
-                                                  .AddField("Place", $"#{_finishedUserIds.Count}", true)
-                                                  .AddField("WPM", $"{wpm:F1} *[{elapsed.TotalSeconds:F2}sec]*", true)
-                                                  .AddField("Errors", distance.ToString(), true))
+                                 .Embed(embed)
                                  .SendAsync();
 
                     if (_finishedUserIds.Count % 4 == 0)

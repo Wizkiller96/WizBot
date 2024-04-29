@@ -90,10 +90,10 @@ public partial class Utility
             res = Math.Round(res, 4);
 
             await Response()
-                  .Confirm(GetText(strs.convert(value,
+                  .Confirm(strs.convert(value,
                       originUnit.Triggers.Last(),
                       res,
-                      targetUnit.Triggers.Last())))
+                      targetUnit.Triggers.Last()))
                   .SendAsync();
         }
     }

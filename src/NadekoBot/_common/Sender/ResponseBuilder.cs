@@ -14,13 +14,14 @@ public sealed class ResponseBuilder
     private object[] locParams = [];
     private bool shouldReply = true;
     private readonly IBotStrings _bs;
-    private readonly IEmbedBuilderService _ebs;
     private EmbedBuilder? embedBuilder = null;
+    private NadekoInteraction? inter;
+    private Stream? fileStream = null;
+    private string? fileName = null;
 
-    public ResponseBuilder(IBotStrings bs, IEmbedBuilderService ebs)
+    public ResponseBuilder(IBotStrings bs)
     {
         _bs = bs;
-        _ebs = ebs;
     }
 
     private MessageReference? CreateMessageReference(IMessageChannel targetChannel)
@@ -43,8 +44,9 @@ public sealed class ResponseBuilder
             failIfNotExists: false);
     }
 
-    public async Task<IUserMessage> SendAsync()
+    public async Task<IUserMessage> SendAsync(bool ephemeral = false)
     {
+        // todo use ephemeral in interactions
         var targetChannel = InternalResolveChannel() ?? throw new ArgumentNullException(nameof(channel));
         var msgReference = CreateMessageReference(targetChannel);
 
@@ -52,6 +54,15 @@ public sealed class ResponseBuilder
 
         if (sanitizeMentions)
             txt = txt?.SanitizeMentions(true);
+
+        if (this.fileStream is Stream stream)
+            return await targetChannel.SendFileAsync(stream,
+                filename: fileName,
+                txt,
+                embed: embed ?? embedBuilder?.Build(),
+                components: null,
+                allowedMentions: sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All,
+                messageReference: msgReference);
 
         return await targetChannel.SendMessageAsync(
             txt,
@@ -65,6 +76,7 @@ public sealed class ResponseBuilder
     private ulong? InternalResolveGuildId(IMessageChannel? targetChannel)
         => ctx?.Guild?.Id ?? (targetChannel as ITextChannel)?.GuildId;
 
+    // todo not good, has to go to the user
     private IMessageChannel? InternalResolveChannel()
         => channel ?? ctx?.Channel ?? msg?.Channel;
 
@@ -188,17 +200,11 @@ public sealed class ResponseBuilder
     private IUser? InternalResolveUser()
         => ctx?.User ?? user ?? msg?.Author;
 
+    // todo embed colors
+
     public ResponseBuilder Embed(EmbedBuilder eb)
     {
         embedBuilder = eb;
-        return this;
-    }
-
-    public ResponseBuilder Embed(Func<IEmbedBuilderService, EmbedBuilder> embedFactory)
-    {
-        // todo colors
-        this.embed = embedFactory(_ebs).Build();
-
         return this;
     }
 
@@ -238,15 +244,23 @@ public sealed class ResponseBuilder
         return this;
     }
 
-    public ResponseBuilder Interaction(NadekoInteraction inter)
+    public ResponseBuilder Interaction(NadekoInteraction? interaction)
     {
         // todo implement
+        inter = interaction;
         return this;
     }
 
     public ResponseBuilder Embeds(IReadOnlyCollection<EmbedBuilder> inputEmbeds)
     {
         embeds = inputEmbeds;
+        return this;
+    }
+
+    public ResponseBuilder FileName(Stream fileStream, string fileName)
+    {
+        this.fileStream = fileStream;
+        this.fileName = fileName;
         return this;
     }
 }

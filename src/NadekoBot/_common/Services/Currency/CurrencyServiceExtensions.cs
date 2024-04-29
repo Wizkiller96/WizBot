@@ -9,11 +9,11 @@ public static class CurrencyServiceExtensions
         var wallet = await cs.GetWalletAsync(userId);
         return await wallet.GetBalance();
     }
-    
+
     // FUTURE should be a transaction
     public static async Task<bool> TransferAsync(
         this ICurrencyService cs,
-        IEmbedBuilderService ebs,
+        IMessageSenderService sender,
         IUser from,
         IUser to,
         long amount,
@@ -29,17 +29,20 @@ public static class CurrencyServiceExtensions
         {
             try
             {
-                await to.SendConfirmAsync(ebs,
-                    string.IsNullOrWhiteSpace(note)
-                        ? $"Received {formattedAmount} from {from} "
-                        : $"Received {formattedAmount} from {from}: {note}");
+                await sender.Response(to)
+                            .Confirm(string.IsNullOrWhiteSpace(note)
+                                ? $"Received {formattedAmount} from {from} "
+                                : $"Received {formattedAmount} from {from}: {note}")
+                            .SendAsync();
             }
             catch
             {
                 //ignored
             }
+
             return true;
         }
+
         return false;
     }
 }

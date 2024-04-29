@@ -31,7 +31,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly IHttpClientFactory _httpFactory;
     private readonly XpConfigService _xpConfig;
     private readonly IPubSub _pubSub;
-    private readonly IEmbedBuilderService _eb;
 
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles;
     private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
@@ -62,7 +61,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         IHttpClientFactory http,
         XpConfigService xpConfig,
         IPubSub pubSub,
-        IEmbedBuilderService eb,
         IPatronageService ps,
         IMessageSenderService sender)
     {
@@ -75,14 +73,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _httpFactory = http;
         _xpConfig = xpConfig;
         _pubSub = pubSub;
-        _eb = eb;
+        _sender = sender;
         _excludedServers = new();
         _excludedChannels = new();
         _client = client;
         _xpTemplateReloadKey = new("xp.template.reload");
         _ps = ps;
         _c = c;
-        _sender = sender;
 
         InternalReloadXpTemplate();
 
@@ -393,11 +390,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         {
             if (notifyLoc == XpNotificationLocation.Dm)
             {
-                await user.SendConfirmAsync(_eb,
-                    _strings.GetText(strs.level_up_dm(user.Mention,
-                            Format.Bold(newLevel.ToString()),
-                            Format.Bold(guild.ToString() ?? "-")),
-                        guild.Id));
+                await _sender.Response(user)
+                             .Confirm(_strings.GetText(strs.level_up_dm(user.Mention,
+                                     Format.Bold(newLevel.ToString()),
+                                     Format.Bold(guild.ToString() ?? "-")),
+                                 guild.Id))
+                             .SendAsync();
             }
             else // channel
             {

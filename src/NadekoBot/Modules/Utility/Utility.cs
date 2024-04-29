@@ -337,7 +337,7 @@ public partial class Utility : NadekoModule
         if (string.IsNullOrWhiteSpace(result))
             await Response().Error(strs.showemojis_none).SendAsync();
         else
-            await ctx.Channel.SendMessageAsync(result.TrimTo(2000));
+            await Response().Text(result.TrimTo(2000)).SendAsync();
     }
 
     [Cmd]
@@ -613,7 +613,7 @@ public partial class Utility : NadekoModule
         try
         {
             var sw = Stopwatch.StartNew();
-            var msg = await ctx.Channel.SendMessageAsync("🏓");
+            var msg = await Response().Text("🏓").SendAsync();
             sw.Stop();
             msg.DeleteAfter(0);
 

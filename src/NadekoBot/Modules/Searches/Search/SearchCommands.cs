@@ -165,7 +165,7 @@ public partial class Searches
             }
 
             await AddYoutubeUrlToCacheAsync(query, result.Url);
-            await ctx.Channel.SendMessageAsync(result.Url);
+            await Response().Text(result.Url).SendAsync();
         }
 
 //     [Cmd]

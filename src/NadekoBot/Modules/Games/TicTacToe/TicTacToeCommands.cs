@@ -35,7 +35,7 @@ public partial class Games
                     return;
                 }
 
-                game = new(Strings, _client, channel, (IGuildUser)ctx.User, options, _eb);
+                game = new(Strings, _client, channel, (IGuildUser)ctx.User, options, _sender);
                 _service.TicTacToeGames.Add(channel.Id, game);
                 await Response().Confirm(strs.ttt_created).SendAsync();
 

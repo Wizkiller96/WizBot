@@ -376,7 +376,7 @@ public sealed class Help : NadekoModule<HelpService>
         }
 
         var embed = _cus.GetCommandHelp(com, ctx.Guild);
-        await channel.EmbedAsync(embed);
+        await _sender.Response(channel).Embed(embed).SendAsync();
     }
 
     [Cmd]
@@ -510,7 +510,7 @@ public sealed class Help : NadekoModule<HelpService>
 
 
     private Task SelfhostAction(SocketMessageComponent smc, object _)
-        => smc.RespondConfirmAsync(_eb,
+        => smc.RespondConfirmAsync(_sender,
             """
             - In case you don't want or cannot Donate to NadekoBot project, but you
             - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer or server for free.

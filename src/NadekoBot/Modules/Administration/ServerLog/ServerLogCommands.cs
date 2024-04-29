@@ -145,8 +145,6 @@ public partial class Administration
                     return l.LogUserPresenceId;
                 case LogType.VoicePresence:
                     return l.LogVoicePresenceId;
-                case LogType.VoicePresenceTts:
-                    return l.LogVoicePresenceTTSId;
                 case LogType.UserMuted:
                     return l.UserMutedId;
                 case LogType.UserWarned:

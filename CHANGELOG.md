@@ -52,6 +52,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.poll` commands removed, discord added polls.
 - `.scpl` and other music soundcloud commands have been removed as soundcloud isn't issuing new api tokens for years now
 - Removed a lot of useless and nsfw commands
+- Removed log voice presence TTS
 
 ## [4.3.22] - 23.04.2023
 

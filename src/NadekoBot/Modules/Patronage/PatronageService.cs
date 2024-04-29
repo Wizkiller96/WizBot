@@ -29,7 +29,6 @@ public sealed class PatronageService
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
     private readonly ISubscriptionHandler _subsHandler;
-    private readonly IEmbedBuilderService _eb;
 
     private static readonly TypedKey<long> _quotaKey
         = new($"quota:last_hourly_reset");
@@ -43,7 +42,6 @@ public sealed class PatronageService
         DbService db,
         DiscordSocketClient client,
         ISubscriptionHandler subsHandler,
-        IEmbedBuilderService eb,
         IBotCache cache,
         IBotCredsProvider creds,
         IMessageSenderService sender)
@@ -52,10 +50,9 @@ public sealed class PatronageService
         _db = db;
         _client = client;
         _subsHandler = subsHandler;
-        _eb = eb;
+        _sender = sender;
         _cache = cache;
         _creds = creds;
-        _sender = sender;
     }
 
     public Task OnReadyAsync()
@@ -310,12 +307,12 @@ public sealed class PatronageService
             ins =>
             {
                 var eb = new EmbedBuilder()
-                            .WithPendingColor()
-                            .WithTitle("Insufficient Patron Tier")
-                            .AddField("For", $"{ins.FeatureType}: `{ins.Feature}`", true)
-                            .AddField("Required Tier",
-                                $"[{ins.RequiredTier.ToFullName()}](https://patreon.com/join/nadekobot)",
-                                true);
+                         .WithPendingColor()
+                         .WithTitle("Insufficient Patron Tier")
+                         .AddField("For", $"{ins.FeatureType}: `{ins.Feature}`", true)
+                         .AddField("Required Tier",
+                             $"[{ins.RequiredTier.ToFullName()}](https://patreon.com/join/nadekobot)",
+                             true);
 
                 if (ctx.Guild is null || ctx.Guild?.OwnerId == ctx.User.Id)
                     eb.WithDescription("You don't have the sufficent Patron Tier to run this command.")
@@ -333,15 +330,15 @@ public sealed class PatronageService
                                .Embed(eb)
                                .SendAsync();
                 else
-                    _ = ctx.User.EmbedAsync(eb);
+                    _ = _sender.Response(ctx).User(ctx.User).Embed(eb).SendAsync();
 
                 return true;
             },
             quota =>
             {
                 var eb = new EmbedBuilder()
-                            .WithPendingColor()
-                            .WithTitle("Quota Limit Reached");
+                         .WithPendingColor()
+                         .WithTitle("Quota Limit Reached");
 
                 if (quota.IsOwnQuota || ctx.User.Id == ownerId)
                 {
@@ -369,7 +366,7 @@ public sealed class PatronageService
                                .Embed(eb)
                                .SendAsync();
                 else
-                    _ = ctx.User.EmbedAsync(eb);
+                    _ = _sender.Response(ctx).User(ctx.User).Embed(eb).SendAsync();
 
                 return true;
             });
@@ -782,30 +779,30 @@ public sealed class PatronageService
                 return;
 
             var eb = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithTitle("❤️ Thank you for supporting NadekoBot! ❤️")
-                        .WithDescription(
-                            "Your donation has been processed and you will receive the rewards shortly.\n"
-                            + "You can visit <https://www.patreon.com/join/nadekobot> to see rewards for your tier. 🎉")
-                        .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
-                        .AddField("Pledge", $"**{patron.Amount / 100.0f:N1}$**", true)
-                        .AddField("Expires",
-                            patron.ValidThru.AddDays(1).ToShortAndRelativeTimestampTag(),
-                            true)
-                        .AddField("Instructions",
-                            """
-                            *- Within the next **1-2 minutes** you will have all of the benefits of the Tier you've subscribed to.*
-                            *- You can check your benefits on <https://www.patreon.com/join/nadekobot>*
-                            *- You can use the `.patron` command in this chat to check your current quota usage for the Patron-only commands*
-                            *- **ALL** of the servers that you **own** will enjoy your Patron benefits.*
-                            *- You can use any of the commands available in your tier on any server (assuming you have sufficient permissions to run those commands)*
-                            *- Any user in any of your servers can use Patron-only commands, but they will spend **your quota**, which is why it's recommended to use Nadeko's command cooldown system (.h .cmdcd) or permission system to limit the command usage for your server members.*
-                            *- Permission guide can be found here if you're not familiar with it: <https://nadekobot.readthedocs.io/en/latest/permissions-system/>*
-                            """,
-                            inline: false)
-                        .WithFooter($"platform id: {patron.UniquePlatformUserId}");
+                     .WithOkColor()
+                     .WithTitle("❤️ Thank you for supporting NadekoBot! ❤️")
+                     .WithDescription(
+                         "Your donation has been processed and you will receive the rewards shortly.\n"
+                         + "You can visit <https://www.patreon.com/join/nadekobot> to see rewards for your tier. 🎉")
+                     .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
+                     .AddField("Pledge", $"**{patron.Amount / 100.0f:N1}$**", true)
+                     .AddField("Expires",
+                         patron.ValidThru.AddDays(1).ToShortAndRelativeTimestampTag(),
+                         true)
+                     .AddField("Instructions",
+                         """
+                         *- Within the next **1-2 minutes** you will have all of the benefits of the Tier you've subscribed to.*
+                         *- You can check your benefits on <https://www.patreon.com/join/nadekobot>*
+                         *- You can use the `.patron` command in this chat to check your current quota usage for the Patron-only commands*
+                         *- **ALL** of the servers that you **own** will enjoy your Patron benefits.*
+                         *- You can use any of the commands available in your tier on any server (assuming you have sufficient permissions to run those commands)*
+                         *- Any user in any of your servers can use Patron-only commands, but they will spend **your quota**, which is why it's recommended to use Nadeko's command cooldown system (.h .cmdcd) or permission system to limit the command usage for your server members.*
+                         *- Permission guide can be found here if you're not familiar with it: <https://nadekobot.readthedocs.io/en/latest/permissions-system/>*
+                         """,
+                         inline: false)
+                     .WithFooter($"platform id: {patron.UniquePlatformUserId}");
 
-            await user.EmbedAsync(eb);
+            await _sender.Response(user).Embed(eb).SendAsync();
         }
         catch
         {
@@ -830,7 +827,7 @@ public sealed class PatronageService
             try
             {
                 var user = await _client.GetUserAsync(patron.UserId);
-                await user.SendAsync(text);
+                await _sender.Response(user).Text(text).SendAsync();
                 ++succ;
             }
             catch

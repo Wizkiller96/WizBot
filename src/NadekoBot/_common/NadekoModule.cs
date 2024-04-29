@@ -16,7 +16,6 @@ public abstract class NadekoModule : ModuleBase
     public IBotStrings Strings { get; set; }
     public ICommandHandler _cmdHandler { get; set; }
     public ILocalization _localization { get; set; }
-    public IEmbedBuilderService _eb { get; set; }
     public INadekoInteractionService _inter { get; set; }
     public IReplacementService repSvc { get; set; }
     public IMessageSenderService _sender { get; set; }
@@ -28,7 +27,7 @@ public abstract class NadekoModule : ModuleBase
         => Context;
 
     public ResponseBuilder Response()
-        => new ResponseBuilder(Strings, _eb)
+        => new ResponseBuilder(Strings)
             .Context(ctx);
 
     protected override void BeforeExecute(CommandInfo command)

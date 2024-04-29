@@ -9,7 +9,7 @@ public sealed class HangmanService : IHangmanService, IExecNoCommand
 {
     private readonly ConcurrentDictionary<ulong, HangmanGame> _hangmanGames = new();
     private readonly IHangmanSource _source;
-    private readonly IEmbedBuilderService _eb;
+    private readonly IMessageSenderService _sender;
     private readonly GamesConfigService _gcs;
     private readonly ICurrencyService _cs;
     private readonly IMemoryCache _cdCache;
@@ -17,13 +17,13 @@ public sealed class HangmanService : IHangmanService, IExecNoCommand
 
     public HangmanService(
         IHangmanSource source,
-        IEmbedBuilderService eb,
+        IMessageSenderService sender,
         GamesConfigService gcs,
         ICurrencyService cs,
         IMemoryCache cdCache)
     {
         _source = source;
-        _eb = eb;
+        _sender = sender;
         _gcs = gcs;
         _cs = cs;
         _cdCache = cdCache;
@@ -116,7 +116,7 @@ public sealed class HangmanService : IHangmanService, IExecNoCommand
         string content,
         HangmanGame.State state)
     {
-        var embed = Games.HangmanCommands.GetEmbed(_eb, state);
+        var embed = Games.HangmanCommands.GetEmbed(state);
         if (state.GuessResult == HangmanGame.GuessResult.Guess)
             embed.WithDescription($"{user} guessed the letter {content}!").WithOkColor();
         else if (state.GuessResult == HangmanGame.GuessResult.Incorrect && state.Failed)
@@ -131,6 +131,6 @@ public sealed class HangmanService : IHangmanService, IExecNoCommand
         if (!string.IsNullOrWhiteSpace(state.ImageUrl) && Uri.IsWellFormedUriString(state.ImageUrl, UriKind.Absolute))
             embed.WithImageUrl(state.ImageUrl);
 
-        return channel.EmbedAsync(embed);
+        return _sender.Response(channel).Embed(embed).SendAsync();
     }
 }
