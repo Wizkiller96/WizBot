@@ -96,7 +96,7 @@ public static class MessageChannelExtensions
             embed: embed?.Build(),
             embeds: embeds?.Map(x => x.Build()),
             replyTo: replyTo);
-    
+
     // embed title and optional footer overloads
 
     public static Task SendPaginatedConfirmAsync(

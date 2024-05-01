@@ -70,7 +70,7 @@ public partial class Searches
             if (page-- < 1)
                 return;
 
-            var streams = new List<FollowedStream>();
+            var allStreams = new List<FollowedStream>();
             await using (var uow = _db.GetDbContext())
             {
                 var all = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
@@ -83,34 +83,32 @@ public partial class Searches
                     if (((SocketGuild)ctx.Guild).GetTextChannel(fs.ChannelId) is null)
                         await _service.UnfollowStreamAsync(fs.GuildId, index);
                     else
-                        streams.Insert(0, fs);
+                        allStreams.Insert(0, fs);
                 }
             }
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var elements = streams
-                                   .Skip(cur * 12)
-                                   .Take(12)
-                                   .ToList();
+            await Response()
+                  .Paginated()
+                  .Items(allStreams)
+                  .PageSize(12)
+                  .CurrentPage(page)
+                  .Page((elements, cur) =>
+                  {
+                      if (elements.Count == 0)
+                          return new EmbedBuilder().WithDescription(GetText(strs.streams_none)).WithErrorColor();
 
-                    if (elements.Count == 0)
-                        return new EmbedBuilder().WithDescription(GetText(strs.streams_none)).WithErrorColor();
+                      var eb = new EmbedBuilder().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
+                      for (var index = 0; index < elements.Count; index++)
+                      {
+                          var elem = elements[index];
+                          eb.AddField($"**#{index + 1 + (12 * cur)}** {elem.Username.ToLower()}",
+                              $"【{elem.Type}】\n<#{elem.ChannelId}>\n{elem.Message?.TrimTo(50)}",
+                              true);
+                      }
 
-                    var eb = new EmbedBuilder().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
-                    for (var index = 0; index < elements.Count; index++)
-                    {
-                        var elem = elements[index];
-                        eb.AddField($"**#{index + 1 + (12 * cur)}** {elem.Username.ToLower()}",
-                            $"【{elem.Type}】\n<#{elem.ChannelId}>\n{elem.Message?.TrimTo(50)}",
-                            true);
-                    }
-
-                    return eb;
-                },
-                streams.Count,
-                12);
+                      return eb;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

@@ -37,36 +37,39 @@ public partial class Utility
 
             var invites = await channel.GetInvitesAsync();
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var i = 1;
-                    var invs = invites.Skip(cur * 9).Take(9).ToList();
 
-                    if (!invs.Any())
-                        return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.no_invites));
+            await Response()
+                  .Paginated()
+                  .Items(invites)
+                  .PageSize(9)
+                  .Page((invs, _) =>
+                  {
+                      var i = 1;
 
-                    var embed = new EmbedBuilder().WithOkColor();
-                    foreach (var inv in invites)
-                    {
-                        var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
-                            ? "∞"
-                            : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow).ToString(
-                                """d\.hh\:mm\:ss""");
-                        var creator = inv.Inviter.ToString().TrimTo(25);
-                        var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
+                      if (!invs.Any())
+                          return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.no_invites));
 
-                        var desc = $@"`{GetText(strs.inv_uses)}` **{usesString}**
+                      var embed = new EmbedBuilder().WithOkColor();
+                      foreach (var inv in invs)
+                      {
+                          var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null
+                              ? "∞"
+                              : (inv.CreatedAt.Value.AddSeconds(inv.MaxAge.Value).UtcDateTime - DateTime.UtcNow)
+                              .ToString(
+                                  """d\.hh\:mm\:ss""");
+                          var creator = inv.Inviter.ToString().TrimTo(25);
+                          var usesString = $"{inv.Uses} / {(inv.MaxUses == 0 ? "∞" : inv.MaxUses?.ToString())}";
+
+                          var desc = $@"`{GetText(strs.inv_uses)}` **{usesString}**
 `{GetText(strs.inv_expire)}` **{expiryString}**
-
+                        
 {inv.Url} ";
-                        embed.AddField($"#{i++} {creator}", desc);
-                    }
+                          embed.AddField($"#{i++} {creator}", desc);
+                      }
 
-                    return embed;
-                },
-                invites.Count,
-                9);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

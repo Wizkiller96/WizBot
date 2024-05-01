@@ -1,6 +1,6 @@
 ﻿namespace NadekoBot.Extensions;
 
-public sealed class ResponseBuilder
+public sealed partial class ResponseBuilder
 {
     private ICommandContext? ctx = null;
     private IMessageChannel? channel = null;
@@ -44,33 +44,53 @@ public sealed class ResponseBuilder
             failIfNotExists: false);
     }
 
-    public async Task<IUserMessage> SendAsync(bool ephemeral = false)
+    public ResponseMessageModel Build(bool ephemeral = false)
     {
         // todo use ephemeral in interactions
         var targetChannel = InternalResolveChannel() ?? throw new ArgumentNullException(nameof(channel));
         var msgReference = CreateMessageReference(targetChannel);
 
         var txt = GetText(locTxt);
+        // todo check message  sanitization
 
-        if (sanitizeMentions)
-            txt = txt?.SanitizeMentions(true);
+        var buildModel = new ResponseMessageModel()
+        {
+            TargetChannel = targetChannel,
+            MessageReference = msgReference,
+            Text = txt,
+            User = ctx?.User,
+            Embed = embed ?? embedBuilder?.Build(),
+            Embeds = embeds?.Map(x => x.Build()),
+            SanitizeMentions = sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All
+        };
 
+        return buildModel;
+    }
+
+    public Task<IUserMessage> SendAsync(bool ephemeral = false)
+    {
+        var model = Build(ephemeral);
+        return SendAsync(model);
+    }
+
+    public async Task<IUserMessage> SendAsync(ResponseMessageModel model)
+    {
         if (this.fileStream is Stream stream)
-            return await targetChannel.SendFileAsync(stream,
+            return await model.TargetChannel.SendFileAsync(stream,
                 filename: fileName,
-                txt,
-                embed: embed ?? embedBuilder?.Build(),
+                model.Text,
+                embed: model.Embed,
                 components: null,
-                allowedMentions: sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All,
-                messageReference: msgReference);
+                allowedMentions: model.SanitizeMentions,
+                messageReference: model.MessageReference);
 
-        return await targetChannel.SendMessageAsync(
-            txt,
-            embed: embed ?? embedBuilder?.Build(),
-            embeds: embeds?.Map(x => x.Build()),
+        return await model.TargetChannel.SendMessageAsync(
+            model.Text,
+            embed: model.Embed,
+            embeds: model.Embeds,
             components: null,
-            allowedMentions: sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All,
-            messageReference: msgReference);
+            allowedMentions: model.SanitizeMentions,
+            messageReference: model.MessageReference);
     }
 
     private ulong? InternalResolveGuildId(IMessageChannel? targetChannel)
@@ -262,5 +282,95 @@ public sealed class ResponseBuilder
         this.fileStream = fileStream;
         this.fileName = fileName;
         return this;
+    }
+
+    public PaginatedResponseBuilder Paginated()
+        => new(this);
+}
+
+public class PaginatedResponseBuilder
+{
+    protected readonly ResponseBuilder _builder;
+
+    public PaginatedResponseBuilder(ResponseBuilder builder)
+    {
+        _builder = builder;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Items<T>(IReadOnlyCollection<T> items)
+        => new SourcedPaginatedResponseBuilder<T>(_builder)
+            .Items(items);
+}
+
+public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilder
+{
+    private IReadOnlyCollection<T>? items;
+    public Func<IReadOnlyList<T>, int, Task<EmbedBuilder>> PageFunc { get; private set; }
+    public Func<int, Task<IEnumerable<T>>> ItemsFunc { get; set; }
+    public int TotalElements { get; private set; } = 1;
+    public int ItemsPerPage { get; private set; } = 9;
+    public bool AddPaginatedFooter { get; private set; } = true;
+    public bool IsEphemeral { get; private set; }
+
+    public SourcedPaginatedResponseBuilder(ResponseBuilder builder)
+        : base(builder)
+    {
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Items(IReadOnlyCollection<T> items)
+    {
+        this.items = items;
+        ItemsFunc = (i) => Task.FromResult(this.items.Skip(i * ItemsPerPage).Take(ItemsPerPage));
+        return this;
+    }
+
+
+    public SourcedPaginatedResponseBuilder<T> PageSize(int i)
+    {
+        ItemsPerPage = i;
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> CurrentPage(int i)
+    {
+        InitialPage = i;
+        return this;
+    }
+
+    // todo use it
+    public int InitialPage { get; set; }
+
+    public SourcedPaginatedResponseBuilder<T> Page(Func<IReadOnlyList<T>, int, EmbedBuilder> pageFunc)
+    {
+        this.PageFunc = (xs, x) => Task.FromResult(pageFunc(xs, x));
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Page(Func<IReadOnlyList<T>, int, Task<EmbedBuilder>> pageFunc)
+    {
+        this.PageFunc = pageFunc;
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> AddFooter()
+    {
+        AddPaginatedFooter = true;
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Ephemeral()
+    {
+        IsEphemeral = true;
+        return this;
+    }
+
+
+    public Task SendAsync()
+    {
+        var paginationSender = new ResponseBuilder.PaginationSender<T>(
+            this,
+            _builder);
+
+        return paginationSender.SendAsync(IsEphemeral);
     }
 }

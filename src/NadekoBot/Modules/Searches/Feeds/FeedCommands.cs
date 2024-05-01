@@ -120,7 +120,7 @@ public partial class Searches
                 await Response().Embed(new EmbedBuilder().WithOkColor().WithDescription(GetText(strs.feed_no_feed))).SendAsync();
                 return;
             }
-
+            
             await ctx.SendPaginatedConfirmAsync(0,
                 cur =>
                 {

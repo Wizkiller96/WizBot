@@ -29,12 +29,14 @@ public partial class Xp
             }
             else
             {
-                await Response().Confirm(
-                    strs.club_transfered(
-                        Format.Bold(club.Name),
-                        Format.Bold(newOwner.ToString())
-                    )
-                ).SendAsync();
+                await Response()
+                      .Confirm(
+                          strs.club_transfered(
+                              Format.Bold(club.Name),
+                              Format.Bold(newOwner.ToString())
+                          )
+                      )
+                      .SendAsync();
             }
         }
 
@@ -65,7 +67,7 @@ public partial class Xp
                 await Response().Error(strs.club_name_too_long).SendAsync();
                 return;
             }
-            
+
             if (result == ClubCreateResult.NameTaken)
             {
                 await Response().Error(strs.club_name_taken).SendAsync();
@@ -110,49 +112,52 @@ public partial class Xp
         private async Task InternalClubInfoAsync(ClubInfo club)
         {
             var lvl = new LevelStats(club.Xp);
-            var users = club.Members.OrderByDescending(x =>
-            {
-                var l = new LevelStats(x.TotalXp).Level;
-                if (club.OwnerId == x.Id)
-                    return int.MaxValue;
-                if (x.IsClubAdmin)
-                    return (int.MaxValue / 2) + l;
-                return l;
-            });
+            var allUsers = club.Members.OrderByDescending(x =>
+                               {
+                                   var l = new LevelStats(x.TotalXp).Level;
+                                   if (club.OwnerId == x.Id)
+                                       return int.MaxValue;
+                                   if (x.IsClubAdmin)
+                                       return (int.MaxValue / 2) + l;
+                                   return l;
+                               })
+                               .ToList();
 
-            await ctx.SendPaginatedConfirmAsync(0,
-                page =>
-                {
-                    var embed = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithTitle($"{club}")
-                        .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
-                        .AddField(GetText(strs.desc),
-                            string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description)
-                        .AddField(GetText(strs.owner), club.Owner.ToString(), true)
-                        // .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
-                        .AddField(GetText(strs.members),
-                            string.Join("\n",
-                                users.Skip(page * 10)
-                                    .Take(10)
-                                    .Select(x =>
-                                    {
-                                        var l = new LevelStats(x.TotalXp);
-                                        var lvlStr = Format.Bold($" ⟪{l.Level}⟫");
-                                        if (club.OwnerId == x.Id)
-                                            return x + "🌟" + lvlStr;
-                                        if (x.IsClubAdmin)
-                                            return x + "⭐" + lvlStr;
-                                        return x + lvlStr;
-                                    })));
+            await Response()
+                  .Paginated()
+                  .Items(allUsers)
+                  .PageSize(10)
+                  .CurrentPage(0)
+                  .Page((users, _) =>
+                  {
+                      var embed = new EmbedBuilder()
+                                  .WithOkColor()
+                                  .WithTitle($"{club}")
+                                  .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
+                                  .AddField(GetText(strs.desc),
+                                      string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description)
+                                  .AddField(GetText(strs.owner), club.Owner.ToString(), true)
+                                  // .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
+                                  .AddField(GetText(strs.members),
+                                      string.Join("\n",
+                                          users
+                                              .Select(x =>
+                                              {
+                                                  var l = new LevelStats(x.TotalXp);
+                                                  var lvlStr = Format.Bold($" ⟪{l.Level}⟫");
+                                                  if (club.OwnerId == x.Id)
+                                                      return x + "🌟" + lvlStr;
+                                                  if (x.IsClubAdmin)
+                                                      return x + "⭐" + lvlStr;
+                                                  return x + lvlStr;
+                                              })));
 
-                    if (Uri.IsWellFormedUriString(club.ImageUrl, UriKind.Absolute))
-                        return embed.WithThumbnailUrl(club.ImageUrl);
+                      if (Uri.IsWellFormedUriString(club.ImageUrl, UriKind.Absolute))
+                          return embed.WithThumbnailUrl(club.ImageUrl);
 
-                    return embed;
-                },
-                club.Members.Count,
-                10);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]
@@ -204,14 +209,16 @@ public partial class Xp
             return ctx.SendPaginatedConfirmAsync(page,
                 _ =>
                 {
-                    var toShow = string.Join("\n", bans
-                        .Skip(page * 10).Take(10)
-                        .Select(x => x.ToString()));
+                    var toShow = string.Join("\n",
+                        bans
+                            .Skip(page * 10)
+                            .Take(10)
+                            .Select(x => x.ToString()));
 
                     return new EmbedBuilder()
-                        .WithTitle(GetText(strs.club_bans_for(club.ToString())))
-                        .WithDescription(toShow)
-                        .WithOkColor();
+                           .WithTitle(GetText(strs.club_bans_for(club.ToString())))
+                           .WithDescription(toShow)
+                           .WithOkColor();
                 },
                 bans.Length,
                 10);
@@ -235,9 +242,9 @@ public partial class Xp
                     var toShow = string.Join("\n", apps.Skip(page * 10).Take(10).Select(x => x.ToString()));
 
                     return new EmbedBuilder()
-                        .WithTitle(GetText(strs.club_apps_for(club.ToString())))
-                        .WithDescription(toShow)
-                        .WithOkColor();
+                           .WithTitle(GetText(strs.club_apps_for(club.ToString())))
+                           .WithDescription(toShow)
+                           .WithOkColor();
                 },
                 apps.Length,
                 10);
@@ -283,7 +290,7 @@ public partial class Xp
             else if (result == ClubAcceptResult.NotOwnerOrAdmin)
                 await Response().Error(strs.club_admin_perms).SendAsync();
         }
-        
+
         [Cmd]
         [Priority(1)]
         public Task ClubReject(IUser user)
@@ -296,9 +303,9 @@ public partial class Xp
             var result = _service.RejectApplication(ctx.User.Id, userName, out var discordUser);
             if (result == ClubDenyResult.Rejected)
                 await Response().Confirm(strs.club_rejected(Format.Bold(discordUser.ToString()))).SendAsync();
-            else if(result == ClubDenyResult.NoSuchApplicant)
+            else if (result == ClubDenyResult.NoSuchApplicant)
                 await Response().Error(strs.club_accept_invalid_applicant).SendAsync();
-            else if(result == ClubDenyResult.NotOwnerOrAdmin)
+            else if (result == ClubDenyResult.NotOwnerOrAdmin)
                 await Response().Error(strs.club_admin_perms).SendAsync();
         }
 
@@ -327,8 +334,10 @@ public partial class Xp
             var result = _service.Kick(ctx.User.Id, userName, out var club);
             if (result == ClubKickResult.Success)
             {
-                return Response().Confirm(strs.club_user_kick(Format.Bold(userName),
-                    Format.Bold(club.ToString()))).SendAsync();
+                return Response()
+                       .Confirm(strs.club_user_kick(Format.Bold(userName),
+                           Format.Bold(club.ToString())))
+                       .SendAsync();
             }
 
             if (result == ClubKickResult.Hierarchy)
@@ -352,8 +361,10 @@ public partial class Xp
             var result = _service.Ban(ctx.User.Id, userName, out var club);
             if (result == ClubBanResult.Success)
             {
-                return Response().Confirm(strs.club_user_banned(Format.Bold(userName),
-                    Format.Bold(club.ToString()))).SendAsync();
+                return Response()
+                       .Confirm(strs.club_user_banned(Format.Bold(userName),
+                           Format.Bold(club.ToString())))
+                       .SendAsync();
             }
 
             if (result == ClubBanResult.Unbannable)
@@ -378,8 +389,10 @@ public partial class Xp
 
             if (result == ClubUnbanResult.Success)
             {
-                return Response().Confirm(strs.club_user_unbanned(Format.Bold(userName),
-                    Format.Bold(club.ToString()))).SendAsync();
+                return Response()
+                       .Confirm(strs.club_user_unbanned(Format.Bold(userName),
+                           Format.Bold(club.ToString())))
+                       .SendAsync();
             }
 
             if (result == ClubUnbanResult.WrongUser)
@@ -400,10 +413,10 @@ public partial class Xp
                     : desc;
 
                 var eb = new EmbedBuilder()
-                    .WithAuthor(ctx.User)
-                    .WithTitle(GetText(strs.club_desc_update))
-                    .WithOkColor()
-                    .WithDescription(desc);
+                         .WithAuthor(ctx.User)
+                         .WithTitle(GetText(strs.club_desc_update))
+                         .WithOkColor()
+                         .WithDescription(desc);
 
                 await Response().Embed(eb).SendAsync();
             }
@@ -450,11 +463,11 @@ public partial class Xp
                     await Response().Error(strs.club_name_too_long).SendAsync();
                     return;
                 case ClubRenameResult.Success:
-                {
-                    var embed = new EmbedBuilder().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
-                    await Response().Embed(embed).SendAsync();
-                    return;
-                }
+                    {
+                        var embed = new EmbedBuilder().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
+                        await Response().Embed(embed).SendAsync();
+                        return;
+                    }
                 case ClubRenameResult.NameTaken:
                     await Response().Error(strs.club_name_taken).SendAsync();
                     return;

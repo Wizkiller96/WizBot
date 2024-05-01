@@ -20,7 +20,7 @@ public partial class Permissions
                 throw new ArgumentOutOfRangeException(nameof(page));
 
             var list = _service.GetBlacklist();
-            var items = await list.Where(x => x.Type == type)
+            var allItems = await list.Where(x => x.Type == type)
                                   .Select(async i =>
                                   {
                                       try
@@ -52,18 +52,25 @@ public partial class Permissions
                                   })
                                   .WhenAll();
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var pageItems = items.Skip(10 * curPage).Take(10).ToList();
+            await Response()
+                  .Paginated()
+                  .Items(allItems)
+                  .PageSize(10)
+                  .CurrentPage(page)
+                  .Page((pageItems, _) =>
+                  {
+                      if (pageItems.Count == 0)
+                          return new EmbedBuilder()
+                                 .WithOkColor()
+                                 .WithTitle(title)
+                                 .WithDescription(GetText(strs.empty_page));
 
-                    if (pageItems.Count == 0)
-                        return new EmbedBuilder().WithOkColor().WithTitle(title).WithDescription(GetText(strs.empty_page));
-
-                    return new EmbedBuilder().WithTitle(title).WithDescription(pageItems.Join('\n')).WithOkColor();
-                },
-                items.Length,
-                10);
+                      return new EmbedBuilder()
+                             .WithTitle(title)
+                             .WithDescription(allItems.Join('\n'))
+                             .WithOkColor();
+                  })
+                  .SendAsync();
         }
 
         [Cmd]
@@ -130,13 +137,17 @@ public partial class Permissions
 
             if (action == AddRemove.Add)
             {
-                await Response().Confirm(strs.blacklisted(Format.Code(type.ToString()),
-                    Format.Code(id.ToString()))).SendAsync();
+                await Response()
+                      .Confirm(strs.blacklisted(Format.Code(type.ToString()),
+                          Format.Code(id.ToString())))
+                      .SendAsync();
             }
             else
             {
-                await Response().Confirm(strs.unblacklisted(Format.Code(type.ToString()),
-                    Format.Code(id.ToString()))).SendAsync();
+                await Response()
+                      .Confirm(strs.unblacklisted(Format.Code(type.ToString()),
+                          Format.Code(id.ToString())))
+                      .SendAsync();
             }
         }
     }
