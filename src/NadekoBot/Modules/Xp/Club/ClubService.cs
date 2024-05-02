@@ -110,7 +110,7 @@ public class ClubService : INService, IClubService
             if (!temp.IsImage()) 
                 return SetClubIconResult.InvalidFileType;
             
-            if (temp.GetContentLength() > 5.Megabytes().Bytes)
+            if (temp.GetContentLength() > 5.Megabytes())
                 return SetClubIconResult.TooLarge;
         }
 

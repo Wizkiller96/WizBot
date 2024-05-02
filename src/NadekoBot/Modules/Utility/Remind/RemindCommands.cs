@@ -1,9 +1,7 @@
 ﻿#nullable disable
-using Humanizer.Localisation;
 using NadekoBot.Db;
 using NadekoBot.Modules.Utility.Services;
 using NadekoBot.Db.Models;
-using System.Resources;
 
 namespace NadekoBot.Modules.Utility;
 
@@ -118,7 +116,7 @@ public partial class Utility
                     var diff = when - DateTime.UtcNow;
                     embed.AddField(
                         $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC "
-                        + $"(in {diff.Humanize(2, minUnit: TimeUnit.Minute, culture: Culture)})",
+                        + $"(in {diff.ToPrettyStringHm()})",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}");
@@ -212,7 +210,7 @@ public partial class Utility
                       .Confirm($"\u23f0 {GetText(strs.remind(
                           Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                           Format.Bold(message),
-                          ts.Humanize(3, minUnit: TimeUnit.Second, culture: Culture),
+                          ts.ToPrettyStringHm(),
                           gTime,
                           gTime))}")
                       .SendAsync();

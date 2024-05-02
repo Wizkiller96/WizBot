@@ -344,7 +344,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
             return false;
         }
 
-        if (sr.GetContentLength() > 8.Megabytes().Bytes)
+        if (sr.GetContentLength() > 8.Megabytes())
         {
             return false;
         }

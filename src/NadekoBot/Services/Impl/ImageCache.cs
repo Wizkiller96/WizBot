@@ -35,7 +35,7 @@ public sealed class ImageCache : IImageCache, INService
                 var bytes = await http.GetByteArrayAsync(url);
                 return bytes;
             },
-            expiry: 48.Hours());
+            expiry: TimeSpan.FromHours(48));
 
     private async Task<byte[]?> GetRandomImageDataAsync(Uri[] urls)
     {

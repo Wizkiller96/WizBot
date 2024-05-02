@@ -105,10 +105,7 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                    .ToList();
     }
 
-    private static CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture)
-    {
-        PrepareHeaderForMatch = args => args.Header.Humanize(LetterCasing.Title)
-    };
+    private static CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture);
 
     public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
     {

@@ -1080,12 +1080,14 @@
   "giveaway_list": "List of active giveways",
   "todo_list_empty": "Your todo list is empty." ,
   "todo_list": "Todo List",
-  "todo_add_max_limit": "You've reached the maximum amount of todos you can have.",
+  "todo_stats": "{0} items | {1} completed | {2} remaining",
+  "todo_add_max_limit": "You'reached the maximum amount of todos you can have.",
   "todo_not_found": "Todo not found.",
   "todo_cleared": "All unarchived todos have been cleared.",
   "todo_no_todos": "There are no todos in your todo list.",
   "todo_archive_max_limit": "You've reached the maximum amount of archived todos you can have.",
   "todo_archive_empty": "You have no archived todos.",
   "todo_archive_list": "Archived Todo Lists",
-  "todo_archive_not_found": "Archived todo list not found."
+  "todo_archive_not_found": "Archived todo list not found.",
+  "todo_archived_list": "Archived Todo List"
 }

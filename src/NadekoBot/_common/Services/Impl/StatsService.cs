@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Humanizer.Localisation;
 using NadekoBot.Common.ModuleBehaviors;
 using System.Diagnostics;
 
@@ -178,13 +177,23 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
     public string GetUptimeString(string separator = ", ")
     {
         var time = GetUptime();
-        return time.Humanize(3, maxUnit: TimeUnit.Day, minUnit: TimeUnit.Minute);
+        
+        if (time.Days > 0)
+            return $"{time.Days}d {time.Hours}h {time.Minutes}m";
+        
+        if (time.Hours > 0)
+            return $"{time.Hours}h {time.Minutes}m";
+        
+        if (time.Minutes > 0)
+            return $"{time.Minutes}m {time.Seconds}s";
+        
+        return $"{time.Seconds}s";
     }
-
+    
     public double GetPrivateMemoryMegabytes()
     {
         _currentProcess.Refresh();
-        return _currentProcess.PrivateMemorySize64 / 1.Megabytes().Bytes;
+        return _currentProcess.PrivateMemorySize64 / 1.Megabytes();
     }
 
     public GuildInfo GetGuildInfo(string name)

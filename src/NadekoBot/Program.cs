@@ -1,6 +1,3 @@
-using Humanizer.Localisation;
-using System.Resources;
-
 var pid = Environment.ProcessId;
 
 var shardId = 0;

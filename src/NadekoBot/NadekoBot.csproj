@@ -77,11 +77,6 @@
         <PackageReference Include="YamlDotNet" Version="15.1.2" />
         <PackageReference Include="SharpToken" Version="2.0.2" />
 
-        <PackageReference Include="Humanizer" Version="2.14.1">
-            <PrivateAssets>all</PrivateAssets>
-            <Publish>True</Publish>
-        </PackageReference>
-
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
 
 

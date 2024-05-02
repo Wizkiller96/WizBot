@@ -29,7 +29,17 @@ public static class StringExtensions
         => Regex.Replace(input, "<.*?>", string.Empty);
 
     public static string? TrimTo(this string? str, int maxLength, bool hideDots = false)
-        => hideDots ? str?.Truncate(maxLength, string.Empty) : str?.Truncate(maxLength);
+    {
+        if (hideDots)
+        {
+            return str?.Substring(0, maxLength);
+        }
+
+        if (str is null || str.Length <= maxLength)
+            return str;
+
+        return string.Concat(str.AsSpan(0, maxLength - 1), "…");
+    }
 
     public static string ToTitleCase(this string str)
     {

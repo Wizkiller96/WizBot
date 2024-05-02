@@ -396,8 +396,8 @@ public partial class Gambling : GamblingModule<GamblingService>
             ("rps", _, _) => $"Rock Paper Scissors - {subType}",
             (null, _, _) => null,
             (_, null, _) => null,
-            (_, _, ulong userId) => $"{type.Titleize()} - {subType.Titleize()} | [{userId}]",
-            _ => $"{type.Titleize()} - {subType.Titleize()}"
+            (_, _, ulong userId) => $"{type} - {subType} | [{userId}]",
+            _ => $"{type} - {subType}"
         };
 
     [Cmd]

@@ -9,7 +9,13 @@ public static class PatronExtensions
         };
 
     public static string ToFullName(this QuotaPer per)
-        => per.Humanize(LetterCasing.LowerCase);
+        => per switch
+        {
+            QuotaPer.PerDay => "per day",
+            QuotaPer.PerHour => "per hour",
+            QuotaPer.PerMonth => "per month",
+            _ => "Unknown",
+        };
 
     public static DateTime DayOfNextMonth(this DateTime date, int day)
     {

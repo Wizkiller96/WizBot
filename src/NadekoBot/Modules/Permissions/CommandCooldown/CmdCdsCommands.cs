@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Humanizer.Localisation;
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Db;
@@ -81,7 +80,6 @@ public partial class Permissions
             if (--page < 0)
                 return;
 
-            var channel = (ITextChannel)ctx.Channel;
             var localSet = _service.GetCommandCooldowns(ctx.Guild.Id);
 
             if (!localSet.Any())
@@ -96,7 +94,7 @@ public partial class Permissions
                       .Page((items, _) =>
                       {
                           var output = items.Select(x =>
-                              $"{Format.Code(x.CommandName)}: {x.Seconds.Seconds().Humanize(maxUnit: TimeUnit.Second, culture: Culture)}");
+                              $"{Format.Code(x.CommandName)}: {x.Seconds}s");
 
                           return _sender.CreateEmbed()
                                  .WithOkColor()

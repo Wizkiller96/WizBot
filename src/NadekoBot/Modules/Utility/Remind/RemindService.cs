@@ -11,8 +11,7 @@ namespace NadekoBot.Modules.Utility.Services;
 public class RemindService : INService, IReadyExecutor, IRemindService
 {
     private readonly Regex _regex =
-        new(
-            @"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
+        new(@"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
             RegexOptions.Compiled | RegexOptions.Multiline);
 
     private readonly DiscordSocketClient _client;
@@ -62,7 +61,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
             Log.Information("Executing {ReminderCount} reminders", reminders.Count);
 
-            // make groups of 5, with 1.5 second inbetween each one to ensure against ratelimits
+            // make groups of 5, with 1.5 second in between each one to ensure against ratelimits
             foreach (var group in reminders.Chunk(5))
             {
                 var executedReminders = group.ToList();

@@ -44,7 +44,26 @@ public partial class Utility
                 return;
             }
 
-            await ShowTodosAsync(todos);
+            await Response()
+                  .Paginated()
+                  .Items(todos)
+                  .PageSize(9)
+                  .AddFooter(false)
+                  .Page((items, _) =>
+                  {
+                      var eb = _sender.CreateEmbed()
+                                      .WithOkColor()
+                                      .WithTitle(GetText(strs.todo_list));
+
+                      ShowTodoItem(items, eb);
+
+                      eb.WithFooter(GetText(strs.todo_stats(todos.Length,
+                          todos.Count(x => x.IsDone),
+                          todos.Count(x => !x.IsDone))));
+
+                      return eb;
+                  })
+                  .SendAsync();
         }
 
 
@@ -80,23 +99,6 @@ public partial class Utility
             await Response().Confirm(strs.todo_cleared).SendAsync();
         }
 
-
-        private Task ShowTodosAsync(TodoModel[] todos)
-            => Response()
-               .Paginated()
-               .Items(todos)
-               .PageSize(9)
-               .Page((items, _) =>
-               {
-                   var eb = _sender.CreateEmbed()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.todo_list));
-
-                   ShowTodoItem(items, eb);
-
-                   return eb;
-               })
-               .SendAsync();
 
         private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, EmbedBuilder eb)
         {
@@ -155,8 +157,8 @@ public partial class Utility
                       .Page((items, _) =>
                       {
                           var eb = _sender.CreateEmbed()
-                                   .WithTitle(GetText(strs.todo_archive_list))
-                                   .WithOkColor();
+                                          .WithTitle(GetText(strs.todo_archive_list))
+                                          .WithOkColor();
 
                           foreach (var archivedList in items)
                           {
@@ -182,13 +184,18 @@ public partial class Utility
                       .Paginated()
                       .Items(list.Items)
                       .PageSize(9)
+                      .AddFooter(false)
                       .Page((items, _) =>
                       {
                           var eb = _sender.CreateEmbed()
-                                   .WithOkColor()
-                                   .WithTitle(GetText(strs.todo_list));
+                                          .WithOkColor()
+                                          .WithTitle(GetText(strs.todo_archived_list));
 
                           ShowTodoItem(items, eb);
+
+                          eb.WithFooter(GetText(strs.todo_stats(list.Items.Count,
+                              list.Items.Count(x => x.IsDone),
+                              list.Items.Count(x => !x.IsDone))));
 
                           return eb;
                       })

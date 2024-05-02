@@ -3,7 +3,6 @@ global using NonBlocking;
 
 // packages
 global using Serilog;
-global using Humanizer;
 
 // nadekobot
 global using NadekoBot;

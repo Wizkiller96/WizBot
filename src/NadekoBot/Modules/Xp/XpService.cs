@@ -127,7 +127,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         _ = Task.Run(() => _levelUpQueue.RunAsync());
 
-        using var timer = new PeriodicTimer(5.Seconds());
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
         while (await timer.WaitForNextTickAsync())
         {
             await UpdateXp();
@@ -1364,7 +1364,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     using (var http = _httpFactory.CreateClient())
                     using (var temp = await http.GetAsync(imgUrl, HttpCompletionOption.ResponseHeadersRead))
                     {
-                        if (!temp.IsImage() || temp.GetContentLength() > 11.Megabytes().Bytes)
+                        if (!temp.IsImage() || temp.GetContentLength() > 11 * 1024 * 1024)
                             return;
 
                         var imgData = await temp.Content.ReadAsByteArrayAsync();

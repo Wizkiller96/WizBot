@@ -1,4 +1,3 @@
-using Humanizer.Localisation;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
@@ -11,7 +10,7 @@ public static class Extensions
 {
     private static readonly Regex _urlRegex =
         new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
-    
+
     /// <summary>
     ///     Converts <see cref="DateTime"/> to <see cref="DateOnly"/>
     /// </summary>
@@ -51,7 +50,7 @@ public static class Extensions
 
     public static ulong[] GetGuildIds(this DiscordSocketClient client)
         => client.Guilds
-            .Map(x => x.Id);
+                 .Map(x => x.Id);
 
     /// <summary>
     ///     Generates a string in the format HHH:mm if timespan is &gt;= 2m.
@@ -60,7 +59,30 @@ public static class Extensions
     /// <param name="span">Timespan to convert to string</param>
     /// <returns>Formatted duration string</returns>
     public static string ToPrettyStringHm(this TimeSpan span)
-        => span.Humanize(2, minUnit: TimeUnit.Second);
+    {
+        if(span > TimeSpan.FromHours(24))
+            return $"{span.Days:00}d:{span.Hours:00}h";
+        
+        if (span > TimeSpan.FromMinutes(2))
+            return $"{span.Hours:00}h:{span.Minutes:00}m";
+
+        return $"{span.Minutes:00}m:{span.Seconds:00}s";
+    }
+
+    public static double Megabytes(this int mb)
+        => mb * 1024d * 1024;
+
+    public static TimeSpan Hours(this int hours)
+        => TimeSpan.FromHours(hours);
+
+    public static TimeSpan Minutes(this int minutes)
+        => TimeSpan.FromMinutes(minutes);
+    
+    public static TimeSpan Days(this int days)
+        => TimeSpan.FromDays(days);
+
+    public static TimeSpan Seconds(this int seconds)
+        => TimeSpan.FromSeconds(seconds);
 
     public static bool TryGetUrlPath(this string input, out string path)
     {

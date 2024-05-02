@@ -1,6 +1,5 @@
 #nullable disable
 using CommandLine;
-using Humanizer.Localisation;
 using NadekoBot.Common.TypeReaders.Models;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Db.Models;
@@ -458,7 +457,7 @@ public partial class Administration
                          .AddField(GetText(strs.username), user?.ToString() ?? userId.ToString(), true)
                          .AddField("ID", userId.ToString(), true)
                          .AddField(GetText(strs.duration),
-                             time.Time.Humanize(3, minUnit: TimeUnit.Minute, culture: Culture),
+                             time.Time.ToPrettyStringHm(),
                              true);
 
             if (dmFailed)
