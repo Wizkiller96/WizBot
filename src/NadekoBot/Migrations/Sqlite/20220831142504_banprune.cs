@@ -4,22 +4,22 @@
 
 namespace NadekoBot.Migrations
 {
-    public partial class feedtext : Migration
+    public partial class banprune : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Message",
-                table: "FeedSub",
-                type: "TEXT",
+            migrationBuilder.AddColumn<int>(
+                name: "PruneDays",
+                table: "BanTemplates",
+                type: "INTEGER",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Message",
-                table: "FeedSub");
+                name: "PruneDays",
+                table: "BanTemplates");
         }
     }
 }

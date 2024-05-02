@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    [Migration("20221122204432_feed-text")]
-    partial class feedtext
+    [Migration("20221021192758_toggle-global-expressions")]
+    partial class toggleglobalexpressions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -977,10 +977,6 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext")
-                        .HasColumnName("message");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -1523,14 +1519,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.Property<ulong?>("MessageUpdatedId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("messageupdatedid");
-
-                    b.Property<ulong?>("ThreadCreatedId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("threadcreatedid");
-
-                    b.Property<ulong?>("ThreadDeletedId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("threaddeletedid");
 
                     b.Property<ulong?>("UserBannedId")
                         .HasColumnType("bigint unsigned")

@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20221122204324_feed-text")]
-    partial class feedtext
+    [Migration("20220916191702_autopub")]
+    partial class autopub
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -767,9 +767,6 @@ namespace NadekoBot.Migrations
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -869,32 +866,6 @@ namespace NadekoBot.Migrations
                     b.ToTable("FilterWordsChannelId");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GamblingStats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Bet")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("PaidOut")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Feature")
-                        .IsUnique();
-
-                    b.ToTable("GamblingStats");
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
@@ -989,9 +960,6 @@ namespace NadekoBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("DeleteStreamOnlineMessage")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("DisableGlobalExpressions")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("DmGreetMessageText")
@@ -1189,12 +1157,6 @@ namespace NadekoBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("MessageUpdatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadCreatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadDeletedId")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("UserBannedId")

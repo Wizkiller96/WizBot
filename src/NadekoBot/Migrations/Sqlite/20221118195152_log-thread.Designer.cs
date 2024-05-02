@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20221122204324_feed-text")]
-    partial class feedtext
+    [Migration("20221118195152_log-thread")]
+    partial class logthread
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -766,9 +766,6 @@ namespace NadekoBot.Migrations
 
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .IsRequired()

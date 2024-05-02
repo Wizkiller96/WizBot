@@ -2,24 +2,24 @@
 
 #nullable disable
 
-namespace NadekoBot.Migrations
+namespace NadekoBot.Migrations.Mysql
 {
-    public partial class feedtext : Migration
+    public partial class shoprolereq : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Message",
-                table: "FeedSub",
-                type: "TEXT",
+            migrationBuilder.AddColumn<ulong>(
+                name: "rolerequirement",
+                table: "shopentry",
+                type: "bigint unsigned",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Message",
-                table: "FeedSub");
+                name: "rolerequirement",
+                table: "shopentry");
         }
     }
 }

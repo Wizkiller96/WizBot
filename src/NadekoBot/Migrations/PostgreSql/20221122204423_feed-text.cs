@@ -2,24 +2,24 @@
 
 #nullable disable
 
-namespace NadekoBot.Migrations
+namespace NadekoBot.Migrations.PostgreSql
 {
     public partial class feedtext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Message",
-                table: "FeedSub",
-                type: "TEXT",
+                name: "message",
+                table: "feedsub",
+                type: "text",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Message",
-                table: "FeedSub");
+                name: "message",
+                table: "feedsub");
         }
     }
 }

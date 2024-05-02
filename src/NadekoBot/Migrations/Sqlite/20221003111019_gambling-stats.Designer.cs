@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20221122204324_feed-text")]
-    partial class feedtext
+    [Migration("20221003111019_gambling-stats")]
+    partial class gamblingstats
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -767,9 +767,6 @@ namespace NadekoBot.Migrations
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -991,9 +988,6 @@ namespace NadekoBot.Migrations
                     b.Property<bool>("DeleteStreamOnlineMessage")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("DisableGlobalExpressions")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("TEXT");
 
@@ -1189,12 +1183,6 @@ namespace NadekoBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("MessageUpdatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadCreatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadDeletedId")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("UserBannedId")

@@ -11,59 +11,13 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20221122204324_feed-text")]
-    partial class feedtext
+    [Migration("20220409170828_clubs-refactor")]
+    partial class clubsrefactor
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
-
-            modelBuilder.Entity("NadekoBot.Db.Models.AutoPublishChannel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuildId")
-                        .IsUnique();
-
-                    b.ToTable("AutoPublishChannel");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.BankUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("Balance")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("BankUsers");
-                });
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
             modelBuilder.Entity("NadekoBot.Db.Models.ClubApplicants", b =>
                 {
@@ -159,15 +113,25 @@ namespace NadekoBot.Migrations
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(false);
 
+                    b.Property<DateTime>("LastLevelUp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now')");
+
+                    b.Property<DateTime>("LastXpGain")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now', '-1 years')");
+
                     b.Property<int>("NotifyOnLevelUp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasDefaultValue(0);
 
-                    b.Property<long>("TotalXp")
+                    b.Property<int>("TotalXp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasDefaultValue(0L);
+                        .HasDefaultValue(0);
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
@@ -222,115 +186,6 @@ namespace NadekoBot.Migrations
                     b.HasIndex("GuildConfigId");
 
                     b.ToTable("FollowedStream");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.PatronQuota", b =>
-                {
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("FeatureType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("TEXT");
-
-                    b.Property<uint>("DailyCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<uint>("HourlyCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<uint>("MonthlyCount")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UserId", "FeatureType", "Feature");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PatronQuotas");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.PatronUser", b =>
-                {
-                    b.Property<ulong>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AmountCents")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LastCharge")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UniquePlatformUserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ValidThru")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("UniquePlatformUserId")
-                        .IsUnique();
-
-                    b.ToTable("Patrons");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.StreamOnlineMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<ulong>("MessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StreamOnlineMessages");
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.XpShopOwnedItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsUsing")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ItemKey")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "ItemType", "ItemKey")
-                        .IsUnique();
-
-                    b.ToTable("XpShopOwnedItem");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.AntiAltSetting", b =>
@@ -554,9 +409,6 @@ namespace NadekoBot.Migrations
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("PruneDays")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
@@ -767,9 +619,6 @@ namespace NadekoBot.Migrations
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -869,32 +718,6 @@ namespace NadekoBot.Migrations
                     b.ToTable("FilterWordsChannelId");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GamblingStats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Bet")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("PaidOut")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Feature")
-                        .IsUnique();
-
-                    b.ToTable("GamblingStats");
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
@@ -988,12 +811,6 @@ namespace NadekoBot.Migrations
                     b.Property<bool>("DeleteMessageOnCommand")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("DeleteStreamOnlineMessage")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("DisableGlobalExpressions")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("TEXT");
 
@@ -1049,9 +866,7 @@ namespace NadekoBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("VerboseErrors")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(true);
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("VerbosePermissions")
                         .HasColumnType("INTEGER");
@@ -1138,9 +953,6 @@ namespace NadekoBot.Migrations
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId")
@@ -1182,19 +994,10 @@ namespace NadekoBot.Migrations
                     b.Property<ulong?>("LogVoicePresenceTTSId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong?>("LogWarnsId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<ulong?>("MessageDeletedId")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("MessageUpdatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadCreatedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<ulong?>("ThreadDeletedId")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong?>("UserBannedId")
@@ -1588,7 +1391,32 @@ namespace NadekoBot.Migrations
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleV2", b =>
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmoteName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ReactionRoleMessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReactionRoleMessageId");
+
+                    b.ToTable("ReactionRole");
+                });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1600,33 +1428,23 @@ namespace NadekoBot.Migrations
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Emote")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Group")
+                    b.Property<bool>("Exclusive")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("GuildId")
+                    b.Property<int>("GuildConfigId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LevelReq")
+                    b.Property<int>("Index")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<ulong>("RoleId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildId");
+                    b.HasIndex("GuildConfigId");
 
-                    b.HasIndex("MessageId", "Emote")
-                        .IsUnique();
-
-                    b.ToTable("ReactionRoles");
+                    b.ToTable("ReactionRoleMessage");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.Reminder", b =>
@@ -1704,7 +1522,7 @@ namespace NadekoBot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("AmountRewardedThisMonth")
+                    b.Property<int>("AmountRewardedThisMonth")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -1713,7 +1531,7 @@ namespace NadekoBot.Migrations
                     b.Property<DateTime>("LastReward")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PlatformUserId")
+                    b.Property<string>("PatreonUserId")
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("UserId")
@@ -1721,7 +1539,7 @@ namespace NadekoBot.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlatformUserId")
+                    b.HasIndex("PatreonUserId")
                         .IsUnique();
 
                     b.ToTable("RewardedUsers");
@@ -1807,9 +1625,6 @@ namespace NadekoBot.Migrations
 
                     b.Property<string>("RoleName")
                         .HasColumnType("TEXT");
-
-                    b.Property<ulong?>("RoleRequirement")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
@@ -2053,7 +1868,7 @@ namespace NadekoBot.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("AwardedXp")
+                    b.Property<int>("AwardedXp")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateAdded")
@@ -2062,13 +1877,18 @@ namespace NadekoBot.Migrations
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("LastLevelUp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now')");
+
                     b.Property<int>("NotifyOnLevelUp")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Xp")
+                    b.Property<int>("Xp")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -2612,6 +2432,25 @@ namespace NadekoBot.Migrations
                         .HasForeignKey("PollId");
                 });
 
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRole", b =>
+                {
+                    b.HasOne("NadekoBot.Services.Database.Models.ReactionRoleMessage", null)
+                        .WithMany("ReactionRoles")
+                        .HasForeignKey("ReactionRoleMessageId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
+                {
+                    b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", "GuildConfig")
+                        .WithMany("ReactionRoleMessages")
+                        .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GuildConfig");
+                });
+
             modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>
                 {
                     b.HasOne("NadekoBot.Services.Database.Models.GuildConfig", null)
@@ -2839,6 +2678,8 @@ namespace NadekoBot.Migrations
 
                     b.Navigation("Permissions");
 
+                    b.Navigation("ReactionRoleMessages");
+
                     b.Navigation("SelfAssignableRoleGroupNames");
 
                     b.Navigation("ShopEntries");
@@ -2877,6 +2718,11 @@ namespace NadekoBot.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("NadekoBot.Services.Database.Models.ReactionRoleMessage", b =>
+                {
+                    b.Navigation("ReactionRoles");
                 });
 
             modelBuilder.Entity("NadekoBot.Services.Database.Models.ShopEntry", b =>

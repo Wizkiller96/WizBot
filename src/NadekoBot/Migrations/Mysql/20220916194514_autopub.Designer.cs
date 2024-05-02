@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    [Migration("20221122204432_feed-text")]
-    partial class feedtext
+    [Migration("20220916194514_autopub")]
+    partial class autopub
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -977,10 +977,6 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext")
-                        .HasColumnName("message");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -1107,39 +1103,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.ToTable("filterwordschannelid", (string)null);
                 });
 
-            modelBuilder.Entity("NadekoBot.Services.Database.Models.GamblingStats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<decimal>("Bet")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("bet");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("feature");
-
-                    b.Property<decimal>("PaidOut")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("paidout");
-
-                    b.HasKey("Id")
-                        .HasName("pk_gamblingstats");
-
-                    b.HasIndex("Feature")
-                        .IsUnique()
-                        .HasDatabaseName("ix_gamblingstats_feature");
-
-                    b.ToTable("gamblingstats", (string)null);
-                });
-
             modelBuilder.Entity("NadekoBot.Services.Database.Models.GCChannelId", b =>
                 {
                     b.Property<int>("Id")
@@ -1263,10 +1226,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.Property<bool>("DeleteStreamOnlineMessage")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("deletestreamonlinemessage");
-
-                    b.Property<bool>("DisableGlobalExpressions")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("disableglobalexpressions");
 
                     b.Property<string>("DmGreetMessageText")
                         .HasColumnType("longtext")
@@ -1523,14 +1482,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.Property<ulong?>("MessageUpdatedId")
                         .HasColumnType("bigint unsigned")
                         .HasColumnName("messageupdatedid");
-
-                    b.Property<ulong?>("ThreadCreatedId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("threadcreatedid");
-
-                    b.Property<ulong?>("ThreadDeletedId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("threaddeletedid");
 
                     b.Property<ulong?>("UserBannedId")
                         .HasColumnType("bigint unsigned")

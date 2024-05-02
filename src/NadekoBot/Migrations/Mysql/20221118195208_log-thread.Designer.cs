@@ -11,8 +11,8 @@ using NadekoBot.Services.Database;
 namespace NadekoBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    [Migration("20221122204432_feed-text")]
-    partial class feedtext
+    [Migration("20221118195208_log-thread")]
+    partial class logthread
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -976,10 +976,6 @@ namespace NadekoBot.Migrations.Mysql
                     b.Property<int>("GuildConfigId")
                         .HasColumnType("int")
                         .HasColumnName("guildconfigid");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext")
-                        .HasColumnName("message");
 
                     b.Property<string>("Url")
                         .IsRequired()
