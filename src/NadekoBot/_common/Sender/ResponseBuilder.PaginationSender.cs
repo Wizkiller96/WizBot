@@ -7,24 +7,20 @@ public partial class ResponseBuilder
         private const string BUTTON_LEFT = "BUTTON_LEFT";
         private const string BUTTON_RIGHT = "BUTTON_RIGHT";
 
-        private static readonly IEmote _arrowLeft = Emote.Parse("<:x:1232256519844790302>");
-        private static readonly IEmote _arrowRight = Emote.Parse("<:x:1232256515298295838>");
-
         private readonly SourcedPaginatedResponseBuilder<T> _paginationBuilder;
-        private readonly ResponseBuilder builder;
-        private readonly DiscordSocketClient client;
+        private readonly ResponseBuilder _builder;
+        private readonly DiscordSocketClient _client;
         private int currentPage;
 
         public PaginationSender(
             SourcedPaginatedResponseBuilder<T> paginationBuilder,
-            ResponseBuilder builder
-        )
+            ResponseBuilder builder)
         {
-            this._paginationBuilder = paginationBuilder;
-            this.builder = builder;
+            _paginationBuilder = paginationBuilder;
+            _builder = builder;
 
-            client = (DiscordSocketClient)builder.ctx.Client;
-            currentPage = 0;
+            _client = builder.Client;
+            currentPage = paginationBuilder.InitialPage;
         }
 
         public async Task SendAsync(bool ephemeral = false)
@@ -38,7 +34,7 @@ public partial class ResponseBuilder
             if (_paginationBuilder.AddPaginatedFooter)
                 embed.AddPaginatedFooter(currentPage, lastPage);
 
-            SimpleInteraction<T>? maybeInter = null;
+            SimpleInteractionBase? maybeInter = null;
 
             async Task<ComponentBuilder> GetComponentBuilder()
             {
@@ -48,22 +44,22 @@ public partial class ResponseBuilder
                               .WithStyle(ButtonStyle.Primary)
                               .WithCustomId(BUTTON_LEFT)
                               .WithDisabled(lastPage == 0)
-                              .WithEmote(_arrowLeft)
+                              .WithEmote(InteractionHelpers.ArrowLeft)
                               .WithDisabled(currentPage <= 0));
-                // todo
-                // if (interFactory is not null)
-                // {
-                //     maybeInter = await interFactory(currentPage);
-                //
-                //     if (maybeInter is not null)
-                //         cb.WithButton(maybeInter.Button);
-                // }
+
+                if (_paginationBuilder.InteractionFunc is not null)
+                {
+                    maybeInter = await _paginationBuilder.InteractionFunc(currentPage);
+
+                    if (maybeInter is not null)
+                        cb.WithButton(maybeInter.Button);
+                }
 
                 cb.WithButton(new ButtonBuilder()
                               .WithStyle(ButtonStyle.Primary)
                               .WithCustomId(BUTTON_RIGHT)
                               .WithDisabled(lastPage == 0 || currentPage >= lastPage)
-                              .WithEmote(_arrowRight));
+                              .WithEmote(InteractionHelpers.ArrowRight));
 
                 return cb;
             }
@@ -84,7 +80,7 @@ public partial class ResponseBuilder
                 });
             }
 
-            var model = builder.Build(ephemeral);
+            var model = await _builder.BuildAsync(ephemeral);
 
             var component = (await GetComponentBuilder()).Build();
             var msg = await model.TargetChannel
@@ -104,7 +100,8 @@ public partial class ResponseBuilder
                         return;
 
                     await si.DeferAsync();
-                    if (smc.User.Id != model.User.Id)
+
+                    if (smc.User.Id != model.User?.Id)
                         return;
 
                     if (smc.Data.CustomId == BUTTON_LEFT)
@@ -134,20 +131,15 @@ public partial class ResponseBuilder
                     Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
                 }
             }
-            // todo re-add
-            // if (lastPage == 0 && interFactory is null)
-            //     return;
 
-            if (lastPage == 0)
+            if (lastPage == 0 && _paginationBuilder.InteractionFunc is null)
                 return;
 
-            var client = this.client;
-
-            client.InteractionCreated += OnInteractionAsync;
+            _client.InteractionCreated += OnInteractionAsync;
 
             await Task.Delay(30_000);
 
-            client.InteractionCreated -= OnInteractionAsync;
+            _client.InteractionCreated -= OnInteractionAsync;
 
             await msg.ModifyAsync(mp => mp.Components = new ComponentBuilder().Build());
         }

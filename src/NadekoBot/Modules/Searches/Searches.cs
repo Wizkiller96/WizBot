@@ -54,7 +54,7 @@ public partial class Searches : NadekoModule<SearchesService>
         if (!await ValidateQuery(query))
             return;
 
-        var embed = new EmbedBuilder();
+        var embed = _sender.CreateEmbed();
         var data = await _service.GetWeatherDataAsync(query);
 
         if (data is null)
@@ -134,7 +134,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
                  .WithOkColor()
                  .WithTitle(GetText(strs.time_new))
                  .WithDescription(Format.Code(data.Time.ToString(Culture)))
@@ -160,7 +160,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
 
         await Response()
-              .Embed(new EmbedBuilder()
+              .Embed(_sender.CreateEmbed()
                      .WithOkColor()
                      .WithTitle(movie.Title)
                      .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
@@ -191,7 +191,7 @@ public partial class Searches : NadekoModule<SearchesService>
     private Task InternalRandomImage(SearchesService.ImageTag tag)
     {
         var url = _service.GetRandomImageUrl(tag);
-        return Response().Embed(new EmbedBuilder().WithOkColor().WithImageUrl(url)).SendAsync();
+        return Response().Embed(_sender.CreateEmbed().WithOkColor().WithImageUrl(url)).SendAsync();
     }
 
     [Cmd]
@@ -242,7 +242,7 @@ public partial class Searches : NadekoModule<SearchesService>
         }
 
         await Response()
-              .Embed(new EmbedBuilder()
+              .Embed(_sender.CreateEmbed()
                      .WithOkColor()
                      .AddField(GetText(strs.original_url), $"<{query}>")
                      .AddField(GetText(strs.short_url), $"<{shortLink}>"))
@@ -264,7 +264,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
 
-        var embed = new EmbedBuilder()
+        var embed = _sender.CreateEmbed()
                     .WithOkColor()
                     .WithTitle(card.Name)
                     .WithDescription(card.Description)
@@ -297,7 +297,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
 
-        var embed = new EmbedBuilder().WithOkColor().WithImageUrl(card.Img);
+        var embed = _sender.CreateEmbed().WithOkColor().WithImageUrl(card.Img);
 
         if (!string.IsNullOrWhiteSpace(card.Flavor))
             embed.WithDescription(card.Flavor);
@@ -318,21 +318,24 @@ public partial class Searches : NadekoModule<SearchesService>
                 $"https://api.urbandictionary.com/v0/define?term={Uri.EscapeDataString(query)}");
             try
             {
-                var items = JsonConvert.DeserializeObject<UrbanResponse>(res).List;
-                if (items.Any())
+                var allItems = JsonConvert.DeserializeObject<UrbanResponse>(res).List;
+                if (allItems.Any())
                 {
-                    await ctx.SendPaginatedConfirmAsync(0,
-                        p =>
-                        {
-                            var item = items[p];
-                            return new EmbedBuilder()
-                                   .WithOkColor()
-                                   .WithUrl(item.Permalink)
-                                   .WithTitle(item.Word)
-                                   .WithDescription(item.Definition);
-                        },
-                        items.Length,
-                        1);
+                    await Response()
+                          .Paginated()
+                          .Items(allItems)
+                          .PageSize(1)
+                          .CurrentPage(0)
+                          .Page((items, _) =>
+                          {
+                              var item = items[0];
+                              return _sender.CreateEmbed()
+                                     .WithOkColor()
+                                     .WithUrl(item.Permalink)
+                                     .WithTitle(item.Word)
+                                     .WithDescription(item.Definition);
+                          })
+                          .SendAsync();
                     return;
                 }
             }
@@ -362,52 +365,54 @@ public partial class Searches : NadekoModule<SearchesService>
                                                + WebUtility.UrlEncode(word));
                 });
 
-            var data = JsonConvert.DeserializeObject<DefineModel>(res);
+            var responseModel = JsonConvert.DeserializeObject<DefineModel>(res);
 
-            var datas = data.Results
-                            .Where(x => x.Senses is not null
-                                        && x.Senses.Count > 0
-                                        && x.Senses[0].Definition is not null)
-                            .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
-                            .ToList();
+            var data = responseModel.Results
+                                    .Where(x => x.Senses is not null
+                                                && x.Senses.Count > 0
+                                                && x.Senses[0].Definition is not null)
+                                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
+                                    .ToList();
 
-            if (!datas.Any())
+            if (!data.Any())
             {
                 Log.Warning("Definition not found: {Word}", word);
                 await Response().Error(strs.define_unknown).SendAsync();
             }
 
 
-            var col = datas.Select(x => (
-                               Definition: x.Sense.Definition is string
-                                   ? x.Sense.Definition.ToString()
-                                   : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
-                               Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
-                                   ? string.Empty
-                                   : x.Sense.Examples[0].Text, Word: word,
-                               WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
-                           .ToList();
+            var col = data.Select(x => (
+                              Definition: x.Sense.Definition is string
+                                  ? x.Sense.Definition.ToString()
+                                  : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
+                              Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
+                                  ? string.Empty
+                                  : x.Sense.Examples[0].Text, Word: word,
+                              WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
+                          .ToList();
 
             Log.Information("Sending {Count} definition for: {Word}", col.Count, word);
 
-            await ctx.SendPaginatedConfirmAsync(0,
-                page =>
-                {
-                    var model = col.Skip(page).First();
-                    var embed = new EmbedBuilder()
-                                .WithDescription(ctx.User.Mention)
-                                .AddField(GetText(strs.word), model.Word, true)
-                                .AddField(GetText(strs._class), model.WordType, true)
-                                .AddField(GetText(strs.definition), model.Definition)
-                                .WithOkColor();
+            await Response()
+                  .Paginated()
+                  .Items(col)
+                  .PageSize(1)
+                  .Page((items, _) =>
+                  {
+                      var model = items.First();
+                      var embed = _sender.CreateEmbed()
+                                  .WithDescription(ctx.User.Mention)
+                                  .AddField(GetText(strs.word), model.Word, true)
+                                  .AddField(GetText(strs._class), model.WordType, true)
+                                  .AddField(GetText(strs.definition), model.Definition)
+                                  .WithOkColor();
 
-                    if (!string.IsNullOrWhiteSpace(model.Example))
-                        embed.AddField(GetText(strs.example), model.Example);
+                      if (!string.IsNullOrWhiteSpace(model.Example))
+                          embed.AddField(GetText(strs.example), model.Example);
 
-                    return embed;
-                },
-                col.Count,
-                1);
+                      return embed;
+                  })
+                  .SendAsync();
         }
         catch (Exception ex)
         {
@@ -474,7 +479,7 @@ public partial class Searches : NadekoModule<SearchesService>
 
         await Response()
               .Embed(
-                  new EmbedBuilder()
+                  _sender.CreateEmbed()
                       .WithOkColor()
                       .AddField("Username", usr.ToString())
                       .AddField("Avatar Url", avatarUrl)
@@ -542,7 +547,7 @@ public partial class Searches : NadekoModule<SearchesService>
         {
             var v = obj.Verses[0];
             await Response()
-                  .Embed(new EmbedBuilder()
+                  .Embed(_sender.CreateEmbed()
                          .WithOkColor()
                          .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
                          .WithDescription(v.Text))
@@ -565,7 +570,7 @@ public partial class Searches : NadekoModule<SearchesService>
             return;
         }
 
-        //var embed = new EmbedBuilder()
+        //var embed = _sender.CreateEmbed()
         //    .WithOkColor()
         //    .WithDescription(gameData.ShortDescription)
         //    .WithTitle(gameData.Name)

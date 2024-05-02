@@ -59,10 +59,10 @@ public partial class Xp : NadekoModule<XpService>
         var globalSetting = _service.GetNotificationType(ctx.User);
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
-        var embed = new EmbedBuilder()
-                       .WithOkColor()
-                       .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
-                       .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
+        var embed = _sender.CreateEmbed()
+                           .WithOkColor()
+                           .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
+                           .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
 
         await Response().Embed(embed).SendAsync();
     }
@@ -147,18 +147,21 @@ public partial class Xp : NadekoModule<XpService>
         desc += "\n\n" + rolesStr + chansStr;
 
         var lines = desc.Split('\n');
-        await ctx.SendPaginatedConfirmAsync(0,
-            curpage =>
-            {
-                var embed = new EmbedBuilder()
-                               .WithTitle(GetText(strs.exclusion_list))
-                               .WithDescription(string.Join('\n', lines.Skip(15 * curpage).Take(15)))
-                               .WithOkColor();
+        await Response()
+              .Paginated()
+              .Items(lines)
+              .PageSize(15)
+              .CurrentPage(0)
+              .Page((items, _) =>
+              {
+                  var embed = _sender.CreateEmbed()
+                                     .WithTitle(GetText(strs.exclusion_list))
+                                     .WithDescription(string.Join('\n', items))
+                                     .WithOkColor();
 
-                return embed;
-            },
-            lines.Length,
-            15);
+                  return embed;
+              })
+              .SendAsync();
     }
 
     [Cmd]
@@ -182,53 +185,54 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.Channel.TriggerTypingAsync();
 
         var socketGuild = (SocketGuild)ctx.Guild;
-        var allUsers = new List<UserXpStats>();
+        var allCleanUsers = new List<UserXpStats>();
         if (opts.Clean)
         {
             await ctx.Channel.TriggerTypingAsync();
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
-            allUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
-                               .Where(user => socketGuild.GetUser(user.UserId) is not null)
-                               .ToList();
+            allCleanUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
+                                    .Where(user => socketGuild.GetUser(user.UserId) is not null)
+                                    .ToList();
         }
 
-        await ctx.SendPaginatedConfirmAsync(page,
-            curPage =>
-            {
-                var embed = new EmbedBuilder().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
+        await Response()
+              .Paginated()
+              .PageItems<UserXpStats>(opts.Clean
+                  ? (curPage) => Task.FromResult<IEnumerable<UserXpStats>>(allCleanUsers.Skip(curPage * 9)
+                      .Take(9)
+                      .ToList())
+                  : (curPage) => Task.FromResult<IEnumerable<UserXpStats>>(_service.GetUserXps(ctx.Guild.Id, curPage)))
+              .PageSize(9)
+              .CurrentPage(page)
+              .AddFooter(false)
+              .Page((users, curPage) =>
+              {
+                  var embed = _sender.CreateEmbed().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
 
-                List<UserXpStats> users;
-                if (opts.Clean)
-                    users = allUsers.Skip(curPage * 9).Take(9).ToList();
-                else
-                    users = _service.GetUserXps(ctx.Guild.Id, curPage);
+                  if (!users.Any())
+                      return embed.WithDescription("-");
 
-                if (!users.Any())
-                    return embed.WithDescription("-");
+                  for (var i = 0; i < users.Count; i++)
+                  {
+                      var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
+                      var user = ((SocketGuild)ctx.Guild).GetUser(users[i].UserId);
 
-                for (var i = 0; i < users.Count; i++)
-                {
-                    var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
-                    var user = ((SocketGuild)ctx.Guild).GetUser(users[i].UserId);
+                      var userXpData = users[i];
 
-                    var userXpData = users[i];
+                      var awardStr = string.Empty;
+                      if (userXpData.AwardedXp > 0)
+                          awardStr = $"(+{userXpData.AwardedXp})";
+                      else if (userXpData.AwardedXp < 0)
+                          awardStr = $"({userXpData.AwardedXp})";
 
-                    var awardStr = string.Empty;
-                    if (userXpData.AwardedXp > 0)
-                        awardStr = $"(+{userXpData.AwardedXp})";
-                    else if (userXpData.AwardedXp < 0)
-                        awardStr = $"({userXpData.AwardedXp})";
+                      embed.AddField($"#{i + 1 + (curPage * 9)} {user?.ToString() ?? users[i].UserId.ToString()}",
+                          $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
+                  }
 
-                    embed.AddField($"#{i + 1 + (curPage * 9)} {user?.ToString() ?? users[i].UserId.ToString()}",
-                        $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
-                }
-
-                return embed;
-            },
-            900,
-            9,
-            false);
+                  return embed;
+              })
+              .SendAsync();
     }
 
     [Cmd]
@@ -239,7 +243,7 @@ public partial class Xp : NadekoModule<XpService>
             return;
         var users = _service.GetUserXps(page);
 
-        var embed = new EmbedBuilder().WithTitle(GetText(strs.global_leaderboard)).WithOkColor();
+        var embed = _sender.CreateEmbed().WithTitle(GetText(strs.global_leaderboard)).WithOkColor();
 
         if (!users.Any())
             embed.WithDescription("-");
@@ -317,7 +321,9 @@ public partial class Xp : NadekoModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset(ulong userId)
     {
-        var embed = new EmbedBuilder().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_user_confirm));
+        var embed = _sender.CreateEmbed()
+                           .WithTitle(GetText(strs.reset))
+                           .WithDescription(GetText(strs.reset_user_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
@@ -332,7 +338,9 @@ public partial class Xp : NadekoModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset()
     {
-        var embed = new EmbedBuilder().WithTitle(GetText(strs.reset)).WithDescription(GetText(strs.reset_server_confirm));
+        var embed = _sender.CreateEmbed()
+                           .WithTitle(GetText(strs.reset))
+                           .WithDescription(GetText(strs.reset_server_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
@@ -383,94 +391,102 @@ public partial class Xp : NadekoModule<XpService>
         if (page < 0)
             return;
 
-        var items = type == XpShopInputType.Backgrounds
+        var allItems = type == XpShopInputType.Backgrounds
             ? await _service.GetShopBgs()
             : await _service.GetShopFrames();
 
-        if (items is null)
+        if (allItems is null)
         {
             await Response().Error(strs.xp_shop_disabled).SendAsync();
             return;
         }
 
-        if (items.Count == 0)
+        if (allItems.Count == 0)
         {
             await Response().Error(strs.not_found).SendAsync();
             return;
         }
 
-        await ctx.SendPaginatedConfirmAsync<(string, XpShopItemType)?>(page,
-            current =>
-            {
-                var (key, item) = items.Skip(current).First();
+        await Response()
+              .Paginated()
+              .Items(allItems)
+              .PageSize(1)
+              .CurrentPage(page)
+              .AddFooter(false)
+              .Page((items, _) =>
+              {
+                  if (!items.Any())
+                      return _sender.CreateEmbed()
+                                    .WithDescription(GetText(strs.not_found))
+                                    .WithErrorColor();
 
-                var eb = new EmbedBuilder()
-                            .WithOkColor()
-                            .WithTitle(item.Name)
-                            .AddField(GetText(strs.price),
-                                CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()),
-                                true)
-                            .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
-                                ? item.Url
-                                : item.Preview);
+                  var (key, item) = items.FirstOrDefault();
 
-                if (!string.IsNullOrWhiteSpace(item.Desc))
-                    eb.AddField(GetText(strs.desc), item.Desc);
+                  var eb = _sender.CreateEmbed()
+                                  .WithOkColor()
+                                  .WithTitle(item.Name)
+                                  .AddField(GetText(strs.price),
+                                      CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()),
+                                      true)
+                                  .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
+                                      ? item.Url
+                                      : item.Preview);
 
-                if (key == "default")
-                    eb.WithDescription(GetText(strs.xpshop_website));
+                  if (!string.IsNullOrWhiteSpace(item.Desc))
+                      eb.AddField(GetText(strs.desc), item.Desc);
+
+                  if (key == "default")
+                      eb.WithDescription(GetText(strs.xpshop_website));
 
 
-                var tier = _service.GetXpShopTierRequirement(type);
-                if (tier != PatronTier.None)
-                {
-                    eb.WithFooter(GetText(strs.xp_shop_buy_required_tier(tier.ToString())));
-                }
+                  var tier = _service.GetXpShopTierRequirement(type);
+                  if (tier != PatronTier.None)
+                  {
+                      eb.WithFooter(GetText(strs.xp_shop_buy_required_tier(tier.ToString())));
+                  }
 
-                return Task.FromResult(eb);
-            },
-            async current =>
-            {
-                var (key, _) = items.Skip(current).First();
+                  return eb;
+              })
+              .Interaction(async current =>
+              {
+                  var (key, _) = allItems.Skip(current).First();
 
-                var itemType = type == XpShopInputType.Backgrounds
-                    ? XpShopItemType.Background
-                    : XpShopItemType.Frame;
+                  var itemType = type == XpShopInputType.Backgrounds
+                      ? XpShopItemType.Background
+                      : XpShopItemType.Frame;
 
-                var ownedItem = await _service.GetUserItemAsync(ctx.User.Id, itemType, key);
-                if (ownedItem is not null)
-                {
-                    var button = new ButtonBuilder(ownedItem.IsUsing
-                            ? GetText(strs.in_use)
-                            : GetText(strs.use),
-                        "xpshop:use",
-                        emote: Emoji.Parse("👐"),
-                        isDisabled: ownedItem.IsUsing);
+                  var ownedItem = await _service.GetUserItemAsync(ctx.User.Id, itemType, key);
+                  if (ownedItem is not null)
+                  {
+                      var button = new ButtonBuilder(ownedItem.IsUsing
+                              ? GetText(strs.in_use)
+                              : GetText(strs.use),
+                          "xpshop:use",
+                          emote: Emoji.Parse("👐"),
+                          isDisabled: ownedItem.IsUsing);
 
-                    var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
-                        button,
-                        OnShopUse,
-                        (key, itemType));
+                      var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                          button,
+                          OnShopUse,
+                          (key, itemType));
 
-                    return inter;
-                }
-                else
-                {
-                    var button = new ButtonBuilder(GetText(strs.buy),
-                        "xpshop:buy",
-                        emote: Emoji.Parse("💰"));
+                      return inter;
+                  }
+                  else
+                  {
+                      var button = new ButtonBuilder(GetText(strs.buy),
+                          "xpshop:buy",
+                          emote: Emoji.Parse("💰"));
 
-                    var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
-                        button,
-                        OnShopBuy,
-                        (key, itemType));
+                      var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                          button,
+                          OnShopBuy,
+                          (key, itemType));
 
-                    return inter;
-                }
-            },
-            items.Count,
-            1,
-            addPaginatedFooter: false);
+                      return inter;
+                  }
+              })
+              .SendAsync();
     }
 
     [Cmd]

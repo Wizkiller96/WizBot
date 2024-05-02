@@ -25,8 +25,10 @@ public partial class Administration
             var aggregatePerms = perms.Aggregate((acc, seed) => seed | acc);
             await _service.AddOverride(ctx.Guild.Id, cmd.Name, aggregatePerms);
 
-            await Response().Confirm(strs.perm_override(Format.Bold(aggregatePerms.ToString()),
-                Format.Code(cmd.Name))).SendAsync();
+            await Response()
+                  .Confirm(strs.perm_override(Format.Bold(aggregatePerms.ToString()),
+                      Format.Code(cmd.Name)))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -34,9 +36,9 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         public async Task DiscordPermOverrideReset()
         {
-            var result = await PromptUserConfirmAsync(new EmbedBuilder()
-                                                         .WithOkColor()
-                                                         .WithDescription(GetText(strs.perm_override_all_confirm)));
+            var result = await PromptUserConfirmAsync(_sender.CreateEmbed()
+                                                      .WithOkColor()
+                                                      .WithDescription(GetText(strs.perm_override_all_confirm)));
 
             if (!result)
                 return;
@@ -54,27 +56,28 @@ public partial class Administration
             if (--page < 0)
                 return;
 
-            var overrides = await _service.GetAllOverrides(ctx.Guild.Id);
+            var allOverrides = await _service.GetAllOverrides(ctx.Guild.Id);
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var eb = new EmbedBuilder().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
+            await Response()
+                  .Paginated()
+                  .Items(allOverrides)
+                  .PageSize(9)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var eb = _sender.CreateEmbed().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
 
-                    var thisPageOverrides = overrides.Skip(9 * curPage).Take(9).ToList();
+                      if (items.Count == 0)
+                          eb.WithDescription(GetText(strs.perm_override_page_none));
+                      else
+                      {
+                          eb.WithDescription(items.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")
+                                                  .Join("\n"));
+                      }
 
-                    if (thisPageOverrides.Count == 0)
-                        eb.WithDescription(GetText(strs.perm_override_page_none));
-                    else
-                    {
-                        eb.WithDescription(thisPageOverrides.Select(ov => $"{ov.Command} => {ov.Perm.ToString()}")
-                                                            .Join("\n"));
-                    }
-
-                    return eb;
-                },
-                overrides.Count,
-                9);
+                      return eb;
+                  })
+                  .SendAsync();
         }
     }
 }

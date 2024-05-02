@@ -96,7 +96,7 @@ public partial class Utility
             if (--page < 0)
                 return;
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 

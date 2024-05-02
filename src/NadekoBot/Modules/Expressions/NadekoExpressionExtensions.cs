@@ -14,7 +14,7 @@ public static class NadekoExpressionExtensions
         IUserMessage ctx,
         IReplacementService repSvc,
         DiscordSocketClient client,
-        bool sanitize)
+        IMessageSenderService sender)
     {
         var channel = cr.DmResponse ? await ctx.Author.CreateDMChannelAsync() : ctx.Channel;
 
@@ -46,7 +46,7 @@ public static class NadekoExpressionExtensions
         var text = SmartText.CreateFrom(cr.Response);
         text = await repSvc.ReplaceAsync(text, repCtx);
 
-        return await channel.SendAsync(text, sanitize);
+        return await sender.Response(channel).Text(text).Sanitize(false).SendAsync();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

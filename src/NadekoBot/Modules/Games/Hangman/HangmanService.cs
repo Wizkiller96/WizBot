@@ -116,7 +116,7 @@ public sealed class HangmanService : IHangmanService, IExecNoCommand
         string content,
         HangmanGame.State state)
     {
-        var embed = Games.HangmanCommands.GetEmbed(state);
+        var embed = Games.HangmanCommands.GetEmbed(_sender, state);
         if (state.GuessResult == HangmanGame.GuessResult.Guess)
             embed.WithDescription($"{user} guessed the letter {content}!").WithOkColor();
         else if (state.GuessResult == HangmanGame.GuessResult.Incorrect && state.Failed)

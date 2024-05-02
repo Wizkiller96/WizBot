@@ -2,17 +2,27 @@
 
 public static class ResponseBuilderExtensions
 {
-    // todo delete this
-
-    public static EmbedBuilder WithColor(this EmbedBuilder eb, EmbedColor color)
-        => eb;
-
     public static EmbedBuilder WithPendingColor(this EmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Error);
+    {
+        if (eb is NadekoEmbedBuilder neb)
+            return neb.WithPendingColor();
+
+        return eb;
+    }
 
     public static EmbedBuilder WithOkColor(this EmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Ok);
+    {
+        if (eb is NadekoEmbedBuilder neb)
+            return neb.WithOkColor();
+
+        return eb;
+    }
 
     public static EmbedBuilder WithErrorColor(this EmbedBuilder eb)
-        => eb.WithColor(EmbedColor.Error);
+    {
+        if (eb is NadekoEmbedBuilder neb)
+            return neb.WithErrorColor();
+
+        return eb;
+    }
 }

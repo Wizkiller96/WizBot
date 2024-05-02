@@ -49,7 +49,7 @@ public partial class Patronage : NadekoModule
     //     
     //     var patron = _service.GiftPatronAsync(user, amount);
     //
-    //     var eb = new EmbedBuilder();
+    //     var eb = _sender.CreateEmbed();
     //
     //     await Response().Embed(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
     //                                    .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
@@ -70,7 +70,7 @@ public partial class Patronage : NadekoModule
         var patron = await _service.GetPatronAsync(user.Id);
         var quotaStats = await _service.GetUserQuotaStatistic(user.Id);
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
                  .WithAuthor(user)
                  .WithTitle(GetText(strs.patron_info))
                  .WithOkColor();

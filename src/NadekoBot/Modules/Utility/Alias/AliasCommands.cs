@@ -121,17 +121,19 @@ public partial class Utility
 
             var arr = maps.ToArray();
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    return new EmbedBuilder()
-                              .WithOkColor()
-                              .WithTitle(GetText(strs.alias_list))
-                              .WithDescription(string.Join("\n",
-                                  arr.Skip(curPage * 10).Take(10).Select(x => $"`{x.Key}` => `{x.Value}`")));
-                },
-                arr.Length,
-                10);
+            await Response()
+                  .Paginated()
+                  .Items(arr)
+                  .PageSize(10)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      return _sender.CreateEmbed()
+                             .WithOkColor()
+                             .WithTitle(GetText(strs.alias_list))
+                             .WithDescription(string.Join("\n", items.Select(x => $"`{x.Key}` => `{x.Value}`")));
+                  })
+                  .SendAsync();
         }
     }
 }

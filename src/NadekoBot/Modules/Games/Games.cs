@@ -38,7 +38,7 @@ public partial class Games : NadekoModule<GamesService>
             return;
 
         var res = _service.GetEightballResponse(ctx.User.Id, question);
-        await Response().Embed(new EmbedBuilder()
+        await Response().Embed(_sender.CreateEmbed()
             .WithOkColor()
             .WithDescription(ctx.User.ToString())
             .AddField("❓ " + GetText(strs.question), question)

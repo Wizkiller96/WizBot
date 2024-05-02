@@ -40,18 +40,21 @@ public partial class Searches
 
             var data = JsonConvert.DeserializeObject<List<MemegenTemplate>>(rawJson)!;
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var templates = string.Empty;
-                    foreach (var template in data.Skip(curPage * 15).Take(15))
-                        templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
-                    var embed = new EmbedBuilder().WithOkColor().WithDescription(templates);
+            await Response()
+                  .Paginated()
+                  .Items(data)
+                  .PageSize(15)
+                  .CurrentPage(page)
+                  .Page((items, curPage) =>
+                  {
+                      var templates = string.Empty;
+                      foreach (var template in items)
+                          templates += $"**{template.Name}:**\n key: `{template.Id}`\n";
+                      var embed = _sender.CreateEmbed().WithOkColor().WithDescription(templates);
 
-                    return embed;
-                },
-                data.Count,
-                15);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

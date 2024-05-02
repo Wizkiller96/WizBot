@@ -19,24 +19,27 @@ public sealed class RepeaterService : IReadyExecutor, INService
     private readonly ConcurrentHashSet<int> _skipNext = new();
 
     private readonly object _queueLocker = new();
+    private readonly IMessageSenderService _sender;
 
     public RepeaterService(
         DiscordSocketClient client,
         DbService db,
         IReplacementService repSvc,
-        IBotCredentials creds)
+        IBotCredentials creds,
+        IMessageSenderService sender)
     {
         _db = db;
         _repSvc = repSvc;
         _creds = creds;
         _client = client;
+        _sender = sender;
 
         using var uow = _db.GetDbContext();
         var shardRepeaters = uow.Set<Repeater>()
-            .Where(x => (int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards
-                        == _client.ShardId)
-            .AsNoTracking()
-            .ToList();
+                                .Where(x => (int)(x.GuildId / Math.Pow(2, 22)) % _creds.TotalShards
+                                            == _client.ShardId)
+                                .AsNoTracking()
+                                .ToList();
 
         _noRedundant = new(shardRepeaters.Where(x => x.NoRedundant).Select(x => x.Id));
 
@@ -125,10 +128,11 @@ public sealed class RepeaterService : IReadyExecutor, INService
     {
         await using var uow = _db.GetDbContext();
 
-        var toTrigger = await uow.Set<Repeater>().AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+        var toTrigger = await uow.Set<Repeater>()
+                                 .AsNoTracking()
+                                 .Where(x => x.GuildId == guildId)
+                                 .Skip(index)
+                                 .FirstOrDefaultAsyncEF();
 
         if (toTrigger is null)
             return false;
@@ -265,7 +269,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
             var text = SmartText.CreateFrom(repeater.Message);
             text = await _repSvc.ReplaceAsync(text, repCtx);
 
-            var newMsg = await channel.SendAsync(text);
+            var newMsg = await _sender.Response(channel).Text(text).SendAsync();
             _ = newMsg.AddReactionAsync(new Emoji("🔄"));
 
             if (_noRedundant.Contains(repeater.Id))
@@ -308,12 +312,13 @@ public sealed class RepeaterService : IReadyExecutor, INService
     private async Task SetRepeaterLastMessageInternal(int repeaterId, ulong lastMsgId)
     {
         await using var uow = _db.GetDbContext();
-        await uow.Set<Repeater>().AsQueryable()
-            .Where(x => x.Id == repeaterId)
-            .UpdateAsync(rep => new()
-            {
-                LastMessageId = lastMsgId
-            });
+        await uow.Set<Repeater>()
+                 .AsQueryable()
+                 .Where(x => x.Id == repeaterId)
+                 .UpdateAsync(rep => new()
+                 {
+                     LastMessageId = lastMsgId
+                 });
     }
 
     public async Task<RunningRepeater?> AddRepeaterAsync(
@@ -358,10 +363,11 @@ public sealed class RepeaterService : IReadyExecutor, INService
             throw new ArgumentOutOfRangeException(nameof(index));
 
         await using var uow = _db.GetDbContext();
-        var toRemove = await uow.Set<Repeater>().AsNoTracking()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+        var toRemove = await uow.Set<Repeater>()
+                                .AsNoTracking()
+                                .Where(x => x.GuildId == guildId)
+                                .Skip(index)
+                                .FirstOrDefaultAsyncEF();
 
         if (toRemove is null)
             return null;
@@ -389,10 +395,11 @@ public sealed class RepeaterService : IReadyExecutor, INService
     public async Task<bool?> ToggleRedundantAsync(ulong guildId, int index)
     {
         await using var uow = _db.GetDbContext();
-        var toToggle = await uow.Set<Repeater>().AsQueryable()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+        var toToggle = await uow.Set<Repeater>()
+                                .AsQueryable()
+                                .Where(x => x.GuildId == guildId)
+                                .Skip(index)
+                                .FirstOrDefaultAsyncEF();
 
         if (toToggle is null)
             return null;
@@ -411,9 +418,9 @@ public sealed class RepeaterService : IReadyExecutor, INService
     {
         await using var ctx = _db.GetDbContext();
         var toSkip = await ctx.Set<Repeater>()
-            .Where(x => x.GuildId == guildId)
-            .Skip(index)
-            .FirstOrDefaultAsyncEF();
+                              .Where(x => x.GuildId == guildId)
+                              .Skip(index)
+                              .FirstOrDefaultAsyncEF();
 
         if (toSkip is null)
             return null;

@@ -58,7 +58,7 @@ namespace NadekoBot.Tests
                 aliasesPath);
 
             var methodNames = GetCommandMethodNames();
-
+            
             var isSuccess = true;
             foreach (var methodName in methodNames)
             {

@@ -1,8 +1,20 @@
 ﻿namespace NadekoBot;
 
-public class SimpleInteraction<T>
+public static class InteractionHelpers
 {
-    public ButtonBuilder Button { get; }
+    public static readonly IEmote ArrowLeft = Emote.Parse("<:x:1232256519844790302>");
+    public static readonly IEmote ArrowRight = Emote.Parse("<:x:1232256515298295838>");
+}
+
+public abstract class SimpleInteractionBase
+{
+    public abstract Task TriggerAsync(SocketMessageComponent smc);
+    public abstract ButtonBuilder Button { get; }
+}
+
+public class SimpleInteraction<T> : SimpleInteractionBase
+{
+    public override ButtonBuilder Button { get; }
     private readonly Func<SocketMessageComponent, T, Task> _onClick;
     private readonly T? _state;
 
@@ -13,7 +25,7 @@ public class SimpleInteraction<T>
         _state = state;
     }
 
-    public async Task TriggerAsync(SocketMessageComponent smc)
+    public override async Task TriggerAsync(SocketMessageComponent smc)
     {
         await _onClick(smc, _state!);
     }

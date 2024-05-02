@@ -23,11 +23,11 @@ public partial class Games
             /-\
             """;
 
-        public static EmbedBuilder GetEmbed(HangmanGame.State state)
+        public static EmbedBuilder GetEmbed(IMessageSenderService sender, HangmanGame.State state)
         {
             if (state.Phase == HangmanGame.Phase.Running)
             {
-                return new EmbedBuilder()
+                return sender.CreateEmbed()
                          .WithOkColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
@@ -36,14 +36,14 @@ public partial class Games
 
             if (state.Phase == HangmanGame.Phase.Ended && state.Failed)
             {
-                return new EmbedBuilder()
+                return sender.CreateEmbed()
                          .WithErrorColor()
                          .AddField("Hangman", Draw(state))
                          .AddField("Guess", Format.Code(state.Word))
                          .WithFooter(state.MissedLetters.Join(' '));
             }
 
-            return new EmbedBuilder()
+            return sender.CreateEmbed()
                      .WithOkColor()
                      .AddField("Hangman", Draw(state))
                      .AddField("Guess", Format.Code(state.Word))
@@ -60,7 +60,7 @@ public partial class Games
                 return;
             }
 
-            var eb = GetEmbed(hangman);
+            var eb = GetEmbed(_sender, hangman);
             eb.WithDescription(GetText(strs.hangman_game_started));
             await Response().Embed(eb).SendAsync();
         }

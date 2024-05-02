@@ -30,7 +30,7 @@ public partial class Permissions
                 return;
             }
 
-            var embed = new EmbedBuilder().WithOkColor();
+            var embed = _sender.CreateEmbed().WithOkColor();
 
             if (blockedModule.Any())
                 embed.AddField(GetText(strs.blocked_modules), string.Join("\n", _service.BlockedModules));

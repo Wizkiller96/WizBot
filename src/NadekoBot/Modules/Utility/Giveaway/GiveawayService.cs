@@ -317,7 +317,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
                {Format.Code(winner.UserId.ToString())}
                """;
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
             .WithOkColor()
             .WithTitle(GetText(strs.giveaway_ended))
             .WithDescription(ga.Message)

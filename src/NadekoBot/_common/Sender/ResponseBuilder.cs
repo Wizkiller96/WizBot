@@ -1,28 +1,38 @@
-﻿namespace NadekoBot.Extensions;
+﻿using NadekoBot.Common.Configs;
+using NadekoBot.Db.Models;
+
+namespace NadekoBot.Extensions;
 
 public sealed partial class ResponseBuilder
 {
-    private ICommandContext? ctx = null;
-    private IMessageChannel? channel = null;
-    private Embed? embed = null;
-    private string? plainText = null;
-    private IReadOnlyCollection<EmbedBuilder>? embeds = null;
-    private IUserMessage? msg = null;
-    private IUser? user = null;
+    private ICommandContext? ctx;
+    private IMessageChannel? channel;
+    private string? plainText;
+    private IReadOnlyCollection<EmbedBuilder>? embeds;
+    private IUserMessage? msg;
+    private IUser? user;
     private bool sanitizeMentions = true;
     private LocStr? locTxt;
     private object[] locParams = [];
     private bool shouldReply = true;
     private readonly IBotStrings _bs;
-    private EmbedBuilder? embedBuilder = null;
+    private readonly BotConfigService _bcs;
+    private EmbedBuilder? embedBuilder;
     private NadekoInteraction? inter;
-    private Stream? fileStream = null;
-    private string? fileName = null;
+    private Stream? fileStream;
+    private string? fileName;
+    private EmbedColor color = EmbedColor.Ok;
+    private LocStr? embedLocDesc;
 
-    public ResponseBuilder(IBotStrings bs)
+    public DiscordSocketClient Client { get; set; }
+
+    public ResponseBuilder(IBotStrings bs, BotConfigService bcs, DiscordSocketClient client)
     {
         _bs = bs;
+        _bcs = bcs;
+        Client = client;
     }
+
 
     private MessageReference? CreateMessageReference(IMessageChannel targetChannel)
     {
@@ -44,72 +54,116 @@ public sealed partial class ResponseBuilder
             failIfNotExists: false);
     }
 
-    public ResponseMessageModel Build(bool ephemeral = false)
+    public async Task<ResponseMessageModel> BuildAsync(bool ephemeral)
     {
-        // todo use ephemeral in interactions
-        var targetChannel = InternalResolveChannel() ?? throw new ArgumentNullException(nameof(channel));
+        var targetChannel = await InternalResolveChannel() ?? throw new ArgumentNullException(nameof(channel));
         var msgReference = CreateMessageReference(targetChannel);
 
-        var txt = GetText(locTxt);
-        // todo check message  sanitization
+        var txt = GetText(locTxt, targetChannel);
+
+        if (embedLocDesc is LocStr ls)
+        {
+            InternalCreateEmbed(null, GetText(ls, targetChannel));
+        }
+
+        if (embedBuilder is not null)
+            PaintEmbedInternal(embedBuilder);
+
+        var finalEmbed = embedBuilder?.Build();
+
 
         var buildModel = new ResponseMessageModel()
         {
             TargetChannel = targetChannel,
             MessageReference = msgReference,
             Text = txt,
-            User = ctx?.User,
-            Embed = embed ?? embedBuilder?.Build(),
+            User = user ?? ctx?.User,
+            Embed = finalEmbed,
             Embeds = embeds?.Map(x => x.Build()),
-            SanitizeMentions = sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All
+            SanitizeMentions = sanitizeMentions ? new(AllowedMentionTypes.Users) : AllowedMentions.All,
+            Ephemeral = ephemeral,
+            Interaction = inter
         };
 
         return buildModel;
     }
 
-    public Task<IUserMessage> SendAsync(bool ephemeral = false)
+    public async Task<IUserMessage> SendAsync(bool ephemeral = false)
     {
-        var model = Build(ephemeral);
-        return SendAsync(model);
+        var model = await BuildAsync(ephemeral);
+        var sentMsg = await SendAsync(model);
+
+
+        return sentMsg;
     }
 
     public async Task<IUserMessage> SendAsync(ResponseMessageModel model)
     {
-        if (this.fileStream is Stream stream)
-            return await model.TargetChannel.SendFileAsync(stream,
+        IUserMessage sentMsg;
+        if (fileStream is Stream stream)
+        {
+            sentMsg = await model.TargetChannel.SendFileAsync(stream,
                 filename: fileName,
                 model.Text,
                 embed: model.Embed,
-                components: null,
+                components: inter?.CreateComponent(),
                 allowedMentions: model.SanitizeMentions,
                 messageReference: model.MessageReference);
+        }
+        else
+        {
+            sentMsg = await model.TargetChannel.SendMessageAsync(
+                model.Text,
+                embed: model.Embed,
+                embeds: model.Embeds,
+                components: inter?.CreateComponent(),
+                allowedMentions: model.SanitizeMentions,
+                messageReference: model.MessageReference);
+        }
 
-        return await model.TargetChannel.SendMessageAsync(
-            model.Text,
-            embed: model.Embed,
-            embeds: model.Embeds,
-            components: null,
-            allowedMentions: model.SanitizeMentions,
-            messageReference: model.MessageReference);
+        if (model.Interaction is not null)
+        {
+            await model.Interaction.RunAsync(sentMsg);
+        }
+
+        return sentMsg;
     }
+
+    private EmbedBuilder PaintEmbedInternal(EmbedBuilder eb)
+        => color switch
+        {
+            EmbedColor.Ok => eb.WithOkColor(),
+            EmbedColor.Pending => eb.WithPendingColor(),
+            EmbedColor.Error => eb.WithErrorColor(),
+            _ => throw new NotSupportedException()
+        };
 
     private ulong? InternalResolveGuildId(IMessageChannel? targetChannel)
         => ctx?.Guild?.Id ?? (targetChannel as ITextChannel)?.GuildId;
 
-    // todo not good, has to go to the user
-    private IMessageChannel? InternalResolveChannel()
-        => channel ?? ctx?.Channel ?? msg?.Channel;
-
-    private string? GetText(LocStr? locStr)
+    private async Task<IMessageChannel?> InternalResolveChannel()
     {
-        var targetChannel = InternalResolveChannel();
+        if (user is not null)
+        {
+            var ch = await user.CreateDMChannelAsync();
+
+            if (ch is not null)
+            {
+                return ch;
+            }
+        }
+
+        return channel ?? ctx?.Channel ?? msg?.Channel;
+    }
+
+    private string? GetText(LocStr? locStr, IMessageChannel targetChannel)
+    {
         var guildId = InternalResolveGuildId(targetChannel);
         return locStr is LocStr ls ? _bs.GetText(ls.Key, guildId, locParams) : plainText;
     }
 
-    private string GetText(LocStr locStr)
+    private string GetText(LocStr locStr, IMessageChannel targetChannel)
     {
-        var targetChannel = InternalResolveChannel();
         var guildId = InternalResolveGuildId(targetChannel);
         return _bs.GetText(locStr.Key, guildId, locStr.Params);
     }
@@ -125,91 +179,108 @@ public sealed partial class ResponseBuilder
         if (text is SmartPlainText spt)
             plainText = spt.Text;
         else if (text is SmartEmbedText set)
-            embed = set.GetEmbed().Build();
+            embedBuilder = set.GetEmbed();
         else if (text is SmartEmbedTextArray ser)
             embeds = ser.GetEmbedBuilders();
 
         return this;
     }
 
-    private ResponseBuilder InternalColoredText(string text, EmbedColor color)
-    {
-        embed = new EmbedBuilder()
-                .WithColor(color)
-                .WithDescription(text)
-                .Build();
-
-        return this;
-    }
-
-    private EmbedBuilder CreateEmbedInternal(
+    private void InternalCreateEmbed(
         string? title,
-        string? text,
-        string? url,
-        string? footer = null)
-    {
-        var embed = new EmbedBuilder()
-                    .WithTitle(title)
-                    .WithDescription(text);
-
-        if (!string.IsNullOrWhiteSpace(url))
-            embed = embed.WithUrl(url);
-
-        if (!string.IsNullOrWhiteSpace(footer))
-            embed = embed.WithFooter(footer);
-
-        return embed;
-    }
-
-    private EmbedBuilder PaintEmbedInternal(EmbedBuilder eb, EmbedColor color)
-        => color switch
-        {
-            EmbedColor.Ok => eb.WithOkColor(),
-            EmbedColor.Pending => eb.WithPendingColor(),
-            EmbedColor.Error => eb.WithErrorColor(),
-        };
-
-    public ResponseBuilder Error(
-        string? title,
-        string? text,
+        string text,
         string? url = null,
         string? footer = null)
     {
-        var eb = CreateEmbedInternal(title, text, url, footer);
-        embed = PaintEmbedInternal(eb, EmbedColor.Error).Build();
-        return this;
-    }
+        var eb = new NadekoEmbedBuilder(_bcs)
+            .WithDescription(text);
 
+        if (!string.IsNullOrWhiteSpace(title))
+            eb.WithTitle(title);
+
+        if (!string.IsNullOrWhiteSpace(url))
+            eb = eb.WithUrl(url);
+
+        if (!string.IsNullOrWhiteSpace(footer))
+            eb = eb.WithFooter(footer);
+
+        embedBuilder = eb;
+    }
 
     public ResponseBuilder Confirm(
         string? title,
-        string? text,
+        string text,
         string? url = null,
         string? footer = null)
     {
-        var eb = CreateEmbedInternal(title, text, url, footer);
-        embed = PaintEmbedInternal(eb, EmbedColor.Error).Build();
+        InternalCreateEmbed(title, text, url, footer);
+        color = EmbedColor.Ok;
+        return this;
+    }
+
+    public ResponseBuilder Error(
+        string? title,
+        string text,
+        string? url = null,
+        string? footer = null)
+    {
+        InternalCreateEmbed(title, text, url, footer);
+        color = EmbedColor.Error;
+        return this;
+    }
+
+    public ResponseBuilder Pending(
+        string? title,
+        string text,
+        string? url = null,
+        string? footer = null)
+    {
+        InternalCreateEmbed(title, text, url, footer);
+        color = EmbedColor.Pending;
         return this;
     }
 
     public ResponseBuilder Confirm(string text)
-        => InternalColoredText(text, EmbedColor.Ok);
+    {
+        InternalCreateEmbed(null, text);
+        color = EmbedColor.Ok;
+        return this;
+    }
 
     public ResponseBuilder Confirm(LocStr str)
-        => Confirm(GetText(str));
+    {
+        embedLocDesc = str;
+        color = EmbedColor.Ok;
+        return this;
+    }
 
     public ResponseBuilder Pending(string text)
-        => InternalColoredText(text, EmbedColor.Ok);
+    {
+        InternalCreateEmbed(null, text);
+        color = EmbedColor.Pending;
+        return this;
+    }
 
     public ResponseBuilder Pending(LocStr str)
-        => Pending(GetText(str));
+    {
+        embedLocDesc = str;
+        color = EmbedColor.Pending;
+        return this;
+    }
 
     public ResponseBuilder Error(string text)
-        => InternalColoredText(text, EmbedColor.Error);
+    {
+        InternalCreateEmbed(null, text);
+        color = EmbedColor.Error;
+        return this;
+    }
 
     public ResponseBuilder Error(LocStr str)
-        => Error(GetText(str));
-
+    {
+        embedLocDesc = str;
+        color = EmbedColor.Error;
+        return this;
+    }
 
     public ResponseBuilder UserBasedMentions()
     {
@@ -220,17 +291,15 @@ public sealed partial class ResponseBuilder
     private IUser? InternalResolveUser()
         => ctx?.User ?? user ?? msg?.Author;
 
-    // todo embed colors
-
     public ResponseBuilder Embed(EmbedBuilder eb)
     {
         embedBuilder = eb;
         return this;
     }
 
-    public ResponseBuilder Channel(IMessageChannel channel)
+    public ResponseBuilder Channel(IMessageChannel ch)
     {
-        this.channel = channel;
+        channel = ch;
         return this;
     }
 
@@ -240,21 +309,21 @@ public sealed partial class ResponseBuilder
         return this;
     }
 
-    public ResponseBuilder Context(ICommandContext ctx)
+    public ResponseBuilder Context(ICommandContext context)
     {
-        this.ctx = ctx;
+        ctx = context;
         return this;
     }
 
-    public ResponseBuilder Message(IUserMessage msg)
+    public ResponseBuilder Message(IUserMessage message)
     {
-        this.msg = msg;
+        msg = message;
         return this;
     }
 
-    public ResponseBuilder User(IUser user)
+    public ResponseBuilder User(IUser usr)
     {
-        this.user = user;
+        user = usr;
         return this;
     }
 
@@ -266,7 +335,6 @@ public sealed partial class ResponseBuilder
 
     public ResponseBuilder Interaction(NadekoInteraction? interaction)
     {
-        // todo implement
         inter = interaction;
         return this;
     }
@@ -277,10 +345,10 @@ public sealed partial class ResponseBuilder
         return this;
     }
 
-    public ResponseBuilder FileName(Stream fileStream, string fileName)
+    public ResponseBuilder File(Stream stream, string name)
     {
-        this.fileStream = fileStream;
-        this.fileName = fileName;
+        fileStream = stream;
+        fileName = name;
         return this;
     }
 
@@ -300,27 +368,51 @@ public class PaginatedResponseBuilder
     public SourcedPaginatedResponseBuilder<T> Items<T>(IReadOnlyCollection<T> items)
         => new SourcedPaginatedResponseBuilder<T>(_builder)
             .Items(items);
+
+    public SourcedPaginatedResponseBuilder<T> PageItems<T>(Func<int, Task<IEnumerable<T>>> items)
+        => new SourcedPaginatedResponseBuilder<T>(_builder)
+            .PageItems(items);
 }
 
 public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilder
 {
     private IReadOnlyCollection<T>? items;
-    public Func<IReadOnlyList<T>, int, Task<EmbedBuilder>> PageFunc { get; private set; }
-    public Func<int, Task<IEnumerable<T>>> ItemsFunc { get; set; }
+
+    public Func<IReadOnlyList<T>, int, Task<EmbedBuilder>> PageFunc { get; private set; } = static delegate
+    {
+        return Task.FromResult<EmbedBuilder>(new());
+    };
+
+    public Func<int, Task<IEnumerable<T>>> ItemsFunc { get; set; } = static delegate
+    {
+        return Task.FromResult(Enumerable.Empty<T>());
+    };
+
+    public Func<int, Task<SimpleInteractionBase>>? InteractionFunc { get; private set; }
+
     public int TotalElements { get; private set; } = 1;
     public int ItemsPerPage { get; private set; } = 9;
     public bool AddPaginatedFooter { get; private set; } = true;
     public bool IsEphemeral { get; private set; }
+
+    public int InitialPage { get; set; }
 
     public SourcedPaginatedResponseBuilder(ResponseBuilder builder)
         : base(builder)
     {
     }
 
-    public SourcedPaginatedResponseBuilder<T> Items(IReadOnlyCollection<T> items)
+    public SourcedPaginatedResponseBuilder<T> Items(IReadOnlyCollection<T> col)
     {
-        this.items = items;
-        ItemsFunc = (i) => Task.FromResult(this.items.Skip(i * ItemsPerPage).Take(ItemsPerPage));
+        items = col;
+        TotalElements = col.Count;
+        ItemsFunc = (i) => Task.FromResult(items.Skip(i * ItemsPerPage).Take(ItemsPerPage));
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> PageItems(Func<int, Task<IEnumerable<T>>> func)
+    {
+        ItemsFunc = func;
         return this;
     }
 
@@ -337,24 +429,22 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
         return this;
     }
 
-    // todo use it
-    public int InitialPage { get; set; }
 
     public SourcedPaginatedResponseBuilder<T> Page(Func<IReadOnlyList<T>, int, EmbedBuilder> pageFunc)
     {
-        this.PageFunc = (xs, x) => Task.FromResult(pageFunc(xs, x));
+        PageFunc = (xs, x) => Task.FromResult(pageFunc(xs, x));
         return this;
     }
 
     public SourcedPaginatedResponseBuilder<T> Page(Func<IReadOnlyList<T>, int, Task<EmbedBuilder>> pageFunc)
     {
-        this.PageFunc = pageFunc;
+        PageFunc = pageFunc;
         return this;
     }
 
-    public SourcedPaginatedResponseBuilder<T> AddFooter()
+    public SourcedPaginatedResponseBuilder<T> AddFooter(bool addFooter = true)
     {
-        AddPaginatedFooter = true;
+        AddPaginatedFooter = addFooter;
         return this;
     }
 
@@ -372,5 +462,11 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
             _builder);
 
         return paginationSender.SendAsync(IsEphemeral);
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Interaction(Func<int, Task<SimpleInteractionBase>> func)
+    {
+        InteractionFunc = async (i) => await func(i);
+        return this;
     }
 }

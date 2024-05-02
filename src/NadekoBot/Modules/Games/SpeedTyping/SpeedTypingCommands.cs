@@ -94,7 +94,7 @@ public partial class Games
             if (removed is null)
                 return;
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithTitle($"Removed typing article #{index + 1}")
                            .WithDescription(removed.Text.TrimTo(50))
                            .WithOkColor();

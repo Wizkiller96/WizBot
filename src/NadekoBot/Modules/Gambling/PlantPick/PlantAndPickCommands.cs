@@ -92,21 +92,23 @@ public partial class Gambling
         {
             if (--page < 0)
                 return Task.CompletedTask;
+            
             var enabledIn = _service.GetAllGeneratingChannels();
 
-            return ctx.SendPaginatedConfirmAsync(page,
-                _ =>
-                {
-                    var items = enabledIn.Skip(page * 9).Take(9).ToList();
+            return Response()
+                   .Paginated()
+                   .Items(enabledIn.ToList())
+                   .PageSize(9)
+                   .CurrentPage(page)
+                   .Page((items, _) =>
+                   {
+                       if (!items.Any())
+                           return _sender.CreateEmbed().WithErrorColor().WithDescription("-");
 
-                    if (!items.Any())
-                        return new EmbedBuilder().WithErrorColor().WithDescription("-");
-
-                    return items.Aggregate(new EmbedBuilder().WithOkColor(),
-                        (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
-                },
-                enabledIn.Count(),
-                9);
+                       return items.Aggregate(_sender.CreateEmbed().WithOkColor(),
+                           (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
+                   })
+                   .SendAsync();
         }
     }
 }

@@ -9,17 +9,24 @@ namespace NadekoBot.Extensions;
 
 public static class Extensions
 {
+    private static readonly Regex _urlRegex =
+        new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
+    
+    /// <summary>
+    ///     Converts <see cref="DateTime"/> to <see cref="DateOnly"/>
+    /// </summary>
+    /// <param name="dateTime"> The <see cref="DateTime"/> to convert. </param>
+    /// <returns> The <see cref="DateOnly"/>. </returns>
     public static DateOnly ToDateOnly(this DateTime dateTime)
         => DateOnly.FromDateTime(dateTime);
 
+    /// <summary>
+    ///     Determines if <see cref="DateTime"/> is before today
+    /// </summary>
+    /// <param name="date"> The <see cref="DateTime"/> to check. </param>
+    /// <returns> True if <see cref="DateTime"/> is before today. </returns>
     public static bool IsBeforeToday(this DateTime date)
         => date < DateTime.UtcNow.Date;
-
-    private static readonly Regex _urlRegex =
-        new(@"^(https?|ftp)://(?<path>[^\s/$.?#].[^\s]*)$", RegexOptions.Compiled);
-
-    // public static EmbedBuilder WithAuthor(this EmbedBuilder eb, IUser author)
-        // => eb.WithAuthor(author.ToString()!, author.RealAvatarUrl().ToString());
 
     public static Task EditAsync(this IUserMessage msg, SmartText text)
         => text switch

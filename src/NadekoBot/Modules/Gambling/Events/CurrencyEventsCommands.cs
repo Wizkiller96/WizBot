@@ -30,12 +30,12 @@ public partial class Gambling
         private EmbedBuilder GetEmbed(CurrencyEvent.Type type, EventOptions opts, long currentPot)
             => type switch
             {
-                CurrencyEvent.Type.Reaction => new EmbedBuilder()
+                CurrencyEvent.Type.Reaction => _sender.CreateEmbed()
                                                   .WithOkColor()
                                                   .WithTitle(GetText(strs.event_title(type.ToString())))
                                                   .WithDescription(GetReactionDescription(opts.Amount, currentPot))
                                                   .WithFooter(GetText(strs.event_duration_footer(opts.Hours))),
-                CurrencyEvent.Type.GameStatus => new EmbedBuilder()
+                CurrencyEvent.Type.GameStatus => _sender.CreateEmbed()
                                                     .WithOkColor()
                                                     .WithTitle(GetText(strs.event_title(type.ToString())))
                                                     .WithDescription(GetGameStatusDescription(opts.Amount, currentPot))

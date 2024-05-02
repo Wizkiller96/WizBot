@@ -33,17 +33,20 @@ public partial class Administration
                                                if (flip)
                                                    return $"{offset} {Format.Code(nameStr)}";
                                                return $"{Format.Code(offset)} {nameStr}";
-                                           });
+                                           })
+                                           .ToList();
 
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage => new EmbedBuilder()
-                              .WithOkColor()
-                              .WithTitle(GetText(strs.timezones_available))
-                              .WithDescription(string.Join("\n",
-                                  timezoneStrings.Skip(curPage * timezonesPerPage).Take(timezonesPerPage))),
-                timezones.Length,
-                timezonesPerPage);
+            await Response()
+                  .Paginated()
+                  .Items(timezoneStrings)
+                  .PageSize(timezonesPerPage)
+                  .CurrentPage(page)
+                  .Page((items, _) => _sender.CreateEmbed()
+                                      .WithOkColor()
+                                      .WithTitle(GetText(strs.timezones_available))
+                                      .WithDescription(string.Join("\n", items)))
+                  .SendAsync();
         }
 
         [Cmd]

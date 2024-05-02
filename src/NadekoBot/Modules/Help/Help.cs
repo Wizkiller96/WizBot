@@ -84,32 +84,32 @@ public sealed class Help : NadekoModule<HelpService>
                 topLevelModules.Add(m);
         }
 
-        await ctx.SendPaginatedConfirmAsync(page,
-            cur =>
-            {
-                var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.list_of_modules));
+        await Response()
+              .Paginated()
+              .Items(topLevelModules)
+              .CurrentPage(page)
+              .AddFooter(false)
+              .Page((items, _) =>
+              {
+                  var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.list_of_modules));
 
-                var localModules = topLevelModules.Skip(12 * cur).Take(12).ToList();
+                  if (!items.Any())
+                  {
+                      embed = embed.WithOkColor().WithDescription(GetText(strs.module_page_empty));
+                      return embed;
+                  }
 
-                if (!localModules.Any())
-                {
-                    embed = embed.WithOkColor().WithDescription(GetText(strs.module_page_empty));
-                    return embed;
-                }
+                  items.OrderBy(module => module.Name)
+                       .ToList()
+                       .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
+                           GetModuleDescription(module.Name)
+                           + "\n"
+                           + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
+                           true));
 
-                localModules.OrderBy(module => module.Name)
-                            .ToList()
-                            .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
-                                GetModuleDescription(module.Name)
-                                + "\n"
-                                + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
-                                true));
-
-                return embed;
-            },
-            topLevelModules.Count(),
-            12,
-            false);
+                  return embed;
+              })
+              .SendAsync();
     }
 
     private string GetModuleDescription(string moduleName)
@@ -271,7 +271,7 @@ public sealed class Help : NadekoModule<HelpService>
 
         var cnt = 0;
         var groups = cmdsWithGroup.GroupBy(_ => cnt++ / 48).ToArray();
-        var embed = new EmbedBuilder().WithOkColor();
+        var embed = _sender.CreateEmbed().WithOkColor();
         foreach (var g in groups)
         {
             var last = g.Count();
@@ -303,9 +303,9 @@ public sealed class Help : NadekoModule<HelpService>
 
     private async Task Group(ModuleInfo group)
     {
-        var eb = new EmbedBuilder()
-                    .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
-                    .WithOkColor();
+        var eb = _sender.CreateEmbed()
+                 .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
+                 .WithOkColor();
 
         foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
@@ -358,7 +358,8 @@ public sealed class Help : NadekoModule<HelpService>
                 var data = await GetHelpString();
                 if (data == default)
                     return;
-                await ch.SendAsync(data);
+                
+                await Response().Text(data).SendAsync();
                 try
                 {
                     await ctx.OkAsync();
@@ -534,9 +535,9 @@ public sealed class Help : NadekoModule<HelpService>
                     label: "Selfhosting"),
                 SelfhostAction));
 
-        var eb = new EmbedBuilder()
-                    .WithOkColor()
-                    .WithTitle("Thank you for considering to donate to the NadekoBot project!");
+        var eb = _sender.CreateEmbed()
+                 .WithOkColor()
+                 .WithTitle("Thank you for considering to donate to the NadekoBot project!");
 
         eb
             .WithDescription("NadekoBot relies on donations to keep the servers, services and APIs running.\n"
@@ -575,7 +576,12 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
 
         try
         {
-            await (await ctx.User.CreateDMChannelAsync()).EmbedAsync(eb, inter: selfhostInter);
+            await Response()
+                  .Channel(await ctx.User.CreateDMChannelAsync())
+                  .Embed(eb)
+                  .Interaction(selfhostInter)
+                  .SendAsync();
+            
             _ = ctx.OkAsync();
         }
         catch

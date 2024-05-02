@@ -98,53 +98,54 @@ public partial class Administration
 
             var (exclusive, roles, groups) = _service.GetRoles(ctx.Guild);
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var rolesStr = new StringBuilder();
-                    var roleGroups = roles.OrderBy(x => x.Model.Group)
-                                          .Skip(cur * 20)
-                                          .Take(20)
-                                          .GroupBy(x => x.Model.Group)
-                                          .OrderBy(x => x.Key);
+            await Response()
+                  .Paginated()
+                  .Items(roles.OrderBy(x => x.Model.Group).ToList())
+                  .PageSize(20)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var rolesStr = new StringBuilder();
+                      var roleGroups = items
+                                       .GroupBy(x => x.Model.Group)
+                                       .OrderBy(x => x.Key);
 
-                    foreach (var kvp in roleGroups)
-                    {
-                        string groupNameText;
-                        if (!groups.TryGetValue(kvp.Key, out var name))
-                            groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
-                        else
-                            groupNameText = Format.Bold($"{kvp.Key} - {name.TrimTo(25, true)}");
+                      foreach (var kvp in roleGroups)
+                      {
+                          string groupNameText;
+                          if (!groups.TryGetValue(kvp.Key, out var name))
+                              groupNameText = Format.Bold(GetText(strs.self_assign_group(kvp.Key)));
+                          else
+                              groupNameText = Format.Bold($"{kvp.Key} - {name.TrimTo(25, true)}");
 
-                        rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
-                        foreach (var (model, role) in kvp.AsEnumerable())
-                        {
-                            if (role is null)
-                            {
-                            }
-                            else
-                            {
-                                // first character is invisible space
-                                if (model.LevelRequirement == 0)
-                                    rolesStr.AppendLine("‌‌   " + role.Name);
-                                else
-                                    rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
-                            }
-                        }
+                          rolesStr.AppendLine("\t\t\t\t ⟪" + groupNameText + "⟫");
+                          foreach (var (model, role) in kvp.AsEnumerable())
+                          {
+                              if (role is null)
+                              {
+                              }
+                              else
+                              {
+                                  // first character is invisible space
+                                  if (model.LevelRequirement == 0)
+                                      rolesStr.AppendLine("‌‌   " + role.Name);
+                                  else
+                                      rolesStr.AppendLine("‌‌   " + role.Name + $" (lvl {model.LevelRequirement}+)");
+                              }
+                          }
 
-                        rolesStr.AppendLine();
-                    }
+                          rolesStr.AppendLine();
+                      }
 
-                    return new EmbedBuilder()
-                              .WithOkColor()
-                              .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
-                              .WithDescription(rolesStr.ToString())
-                              .WithFooter(exclusive
-                                  ? GetText(strs.self_assign_are_exclusive)
-                                  : GetText(strs.self_assign_are_not_exclusive));
-                },
-                roles.Count(),
-                20);
+                      return _sender.CreateEmbed()
+                             .WithOkColor()
+                             .WithTitle(Format.Bold(GetText(strs.self_assign_list(roles.Count()))))
+                             .WithDescription(rolesStr.ToString())
+                             .WithFooter(exclusive
+                                 ? GetText(strs.self_assign_are_exclusive)
+                                 : GetText(strs.self_assign_are_not_exclusive));
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

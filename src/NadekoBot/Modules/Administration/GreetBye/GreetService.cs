@@ -97,7 +97,7 @@ public class GreetService : INService, IReadyExecutor
         {
             var newContent = await _repSvc.ReplaceAsync(toSend,
                 new(client: _client, guild: user.Guild, channel: channel, users: user));
-            var toDelete = await channel.SendAsync(newContent);
+            var toDelete = await _sender.Response(channel).Text(newContent).SendAsync();
             if (conf.BoostMessageDeleteAfter > 0)
                 toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
 
@@ -217,12 +217,12 @@ public class GreetService : INService, IReadyExecutor
         text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
-            var toDelete = await channel.SendAsync(text);
+            var toDelete = await _sender.Response(channel).Text(text).SendAsync();
             if (conf.AutoDeleteByeMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions ||
-                                       ex.DiscordCode == DiscordErrorCode.UnknownChannel)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions
+                                       || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex,
                 "Missing permissions to send a bye message, the bye message will be disabled on server: {GuildId}",
@@ -258,12 +258,12 @@ public class GreetService : INService, IReadyExecutor
         text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
-            var toDelete = await channel.SendAsync(text);
+            var toDelete = await _sender.Response(channel).Text(text).SendAsync();
             if (conf.AutoDeleteGreetMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
-        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions ||
-                                       ex.DiscordCode == DiscordErrorCode.UnknownChannel)
+        catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions
+                                       || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex,
                 "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}",
@@ -352,9 +352,10 @@ public class GreetService : INService, IReadyExecutor
                     {
                         // if there is less than 10 embeds, add an embed with footer only
                         seta.Embeds = seta.Embeds.Append(new SmartEmbedArrayElementText()
-                        {
-                            Footer = CreateFooterSource(user)
-                        }).ToArray();
+                                          {
+                                              Footer = CreateFooterSource(user)
+                                          })
+                                          .ToArray();
                     }
                 }
             }

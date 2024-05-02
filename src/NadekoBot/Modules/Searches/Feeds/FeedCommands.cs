@@ -111,28 +111,36 @@ public partial class Searches
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task FeedList()
+        public async Task FeedList(int page = 1)
         {
+            if (--page < 0)
+                return;
+            
             var feeds = _service.GetFeeds(ctx.Guild.Id);
 
             if (!feeds.Any())
             {
-                await Response().Embed(new EmbedBuilder().WithOkColor().WithDescription(GetText(strs.feed_no_feed))).SendAsync();
+                await Response()
+                      .Embed(_sender.CreateEmbed().WithOkColor().WithDescription(GetText(strs.feed_no_feed)))
+                      .SendAsync();
                 return;
             }
-            
-            await ctx.SendPaginatedConfirmAsync(0,
-                cur =>
-                {
-                    var embed = new EmbedBuilder().WithOkColor();
-                    var i = 0;
-                    var fs = string.Join("\n",
-                        feeds.Skip(cur * 10).Take(10).Select(x => $"`{(cur * 10) + ++i}.` <#{x.ChannelId}> {x.Url}"));
 
-                    return embed.WithDescription(fs);
-                },
-                feeds.Count,
-                10);
+            await Response()
+                  .Paginated()
+                  .Items(feeds)
+                  .PageSize(10)
+                  .CurrentPage(page)
+                  .Page((items, cur) =>
+                  {
+                      var embed = _sender.CreateEmbed().WithOkColor();
+                      var i = 0;
+                      var fs = string.Join("\n",
+                          items.Select(x => $"`{(cur * 10) + ++i}.` <#{x.ChannelId}> {x.Url}"));
+
+                      return embed.WithDescription(fs);
+                  })
+                  .SendAsync();
         }
     }
 }

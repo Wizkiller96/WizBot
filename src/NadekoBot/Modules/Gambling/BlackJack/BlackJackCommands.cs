@@ -95,7 +95,7 @@ public partial class Gambling
 
                 var cStr = string.Concat(c.Select(x => x[..^1] + " "));
                 cStr += "\n" + string.Concat(c.Select(x => x.Last() + " "));
-                var embed = new EmbedBuilder()
+                var embed = _sender.CreateEmbed()
                                .WithOkColor()
                                .WithTitle("BlackJack")
                                .AddField($"{dealerIcon} Dealer's Hand | Value: {bj.Dealer.GetHandValue()}", cStr);

@@ -11,7 +11,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
     {
         _repo = repo;
     }
-    
+
     [Cmd]
     [OwnerOnly]
     public async Task MedusaLoad(string? name = null)
@@ -21,11 +21,11 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             var loaded = _service.GetLoadedMedusae()
                                  .Select(x => x.Name)
                                  .ToHashSet();
-            
+
             var unloaded = _service.GetAllMedusae()
-                    .Where(x => !loaded.Contains(x))
-                    .Select(x => Format.Code(x.ToString()))
-                    .ToArray();
+                                   .Where(x => !loaded.Contains(x))
+                                   .Select(x => Format.Code(x.ToString()))
+                                   .ToArray();
 
             if (unloaded.Length == 0)
             {
@@ -33,16 +33,18 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 return;
             }
 
-            await ctx.SendPaginatedConfirmAsync(0,
-                page =>
-                {
-                    return new EmbedBuilder()
-                              .WithOkColor()
-                              .WithTitle(GetText(strs.list_of_unloaded))
-                              .WithDescription(unloaded.Skip(10 * page).Take(10).Join('\n'));
-                },
-                unloaded.Length,
-                10);
+            await Response()
+                  .Paginated()
+                  .Items(unloaded)
+                  .PageSize(10)
+                  .Page((items, _) =>
+                  {
+                      return _sender.CreateEmbed()
+                             .WithOkColor()
+                             .WithTitle(GetText(strs.list_of_unloaded))
+                             .WithDescription(items.Join('\n'));
+                  })
+                  .SendAsync();
             return;
         }
 
@@ -63,7 +65,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             await Response().Error(locStr).SendAsync();
         }
     }
-    
+
     [Cmd]
     [OwnerOnly]
     public async Task MedusaUnload(string? name = null)
@@ -77,15 +79,17 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
                 return;
             }
 
-            await Response().Embed(new EmbedBuilder()
-                                            .WithOkColor()
-                                            .WithTitle(GetText(strs.loaded_medusae))
-                                            .WithDescription(loaded.Select(x => x.Name)
-                                                                   .Join("\n"))).SendAsync();
-            
+            await Response()
+                  .Embed(_sender.CreateEmbed()
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.loaded_medusae))
+                         .WithDescription(loaded.Select(x => x.Name)
+                                                .Join("\n")))
+                  .SendAsync();
+
             return;
         }
-        
+
         var res = await _service.UnloadMedusaAsync(name);
         if (res == MedusaUnloadResult.Success)
             await Response().Confirm(strs.medusa_unloaded(Format.Code(name))).SendAsync();
@@ -113,27 +117,29 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             await Response().Pending(strs.no_medusa_available).SendAsync();
             return;
         }
-        
+
         var loaded = _service.GetLoadedMedusae()
                              .Select(x => x.Name)
                              .ToHashSet();
 
         var output = all
-            .Select(m =>
-            {
-                var emoji = loaded.Contains(m) ? "`✅`" : "`🔴`";
-                return $"{emoji} `{m}`";
-            })
-            .ToArray();
+                     .Select(m =>
+                     {
+                         var emoji = loaded.Contains(m) ? "`✅`" : "`🔴`";
+                         return $"{emoji} `{m}`";
+                     })
+                     .ToArray();
 
 
-        await ctx.SendPaginatedConfirmAsync(0,
-            page => new EmbedBuilder()
-                       .WithOkColor()
-                       .WithTitle(GetText(strs.list_of_medusae))
-                       .WithDescription(output.Skip(page * 10).Take(10).Join('\n')),
-            output.Length,
-            10);
+        await Response()
+              .Paginated()
+              .Items(output)
+              .PageSize(10)
+              .Page((items, _) => _sender.CreateEmbed()
+                                  .WithOkColor()
+                                  .WithTitle(GetText(strs.list_of_medusae))
+                                  .WithDescription(items.Join('\n')))
+              .SendAsync();
     }
 
     [Cmd]
@@ -147,7 +153,7 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             var found = medusae.FirstOrDefault(x => string.Equals(x.Name,
                 name,
                 StringComparison.InvariantCultureIgnoreCase));
-            
+
             if (found is null)
             {
                 await Response().Error(strs.medusa_name_not_found).SendAsync();
@@ -156,26 +162,26 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
 
             var cmdCount = found.Sneks.Sum(x => x.Commands.Count);
             var cmdNames = found.Sneks
-                                   .SelectMany(x => Format.Code(string.IsNullOrWhiteSpace(x.Prefix)
-                                       ? x.Name
-                                       : $"{x.Prefix} {x.Name}"))
-                                   .Join("\n");
+                                .SelectMany(x => Format.Code(string.IsNullOrWhiteSpace(x.Prefix)
+                                    ? x.Name
+                                    : $"{x.Prefix} {x.Name}"))
+                                .Join("\n");
 
-            var eb = new EmbedBuilder()
-                        .WithOkColor()
-                        .WithAuthor(GetText(strs.medusa_info))
-                        .WithTitle(found.Name)
-                        .WithDescription(found.Description)
-                        .AddField(GetText(strs.sneks_count(found.Sneks.Count)),
-                            found.Sneks.Count == 0
-                                ? "-"
-                                : found.Sneks.Select(x => x.Name).Join('\n'),
-                            true)
-                        .AddField(GetText(strs.commands_count(cmdCount)),
-                            string.IsNullOrWhiteSpace(cmdNames)
-                                ? "-"
-                                : cmdNames,
-                            true);
+            var eb = _sender.CreateEmbed()
+                     .WithOkColor()
+                     .WithAuthor(GetText(strs.medusa_info))
+                     .WithTitle(found.Name)
+                     .WithDescription(found.Description)
+                     .AddField(GetText(strs.sneks_count(found.Sneks.Count)),
+                         found.Sneks.Count == 0
+                             ? "-"
+                             : found.Sneks.Select(x => x.Name).Join('\n'),
+                         true)
+                     .AddField(GetText(strs.commands_count(cmdCount)),
+                         string.IsNullOrWhiteSpace(cmdNames)
+                             ? "-"
+                             : cmdNames,
+                         true);
 
             await Response().Embed(eb).SendAsync();
             return;
@@ -186,42 +192,49 @@ public partial class Medusa : NadekoModule<IMedusaLoaderService>
             await Response().Pending(strs.no_medusa_loaded).SendAsync();
             return;
         }
-        
-        await ctx.SendPaginatedConfirmAsync(0,
-            page =>
-            {
-                var eb = new EmbedBuilder()
-                            .WithOkColor();
 
-                foreach (var medusa in medusae.Skip(page * 9).Take(9))
-                {
-                    eb.AddField(medusa.Name,
-                        $"""
-                            `Sneks:` {medusa.Sneks.Count}
-                            `Commands:` {medusa.Sneks.Sum(x => x.Commands.Count)}
-                            --
-                            {medusa.Description}
-                            """);
-                }
+        await Response()
+              .Paginated()
+              .Items(medusae)
+              .PageSize(9)
+              .CurrentPage(0)
+              .Page((items, _) =>
+              {
+                  var eb = _sender.CreateEmbed()
+                      .WithOkColor();
 
-                return eb;
-            }, medusae.Count, 9);
+                  foreach (var medusa in items)
+                  {
+                      eb.AddField(medusa.Name,
+                          $"""
+                           `Sneks:` {medusa.Sneks.Count}
+                           `Commands:` {medusa.Sneks.Sum(x => x.Commands.Count)}
+                           --
+                           {medusa.Description}
+                           """);
+                  }
+
+                  return eb;
+              })
+              .SendAsync();
     }
 
     [Cmd]
     [OwnerOnly]
     public async Task MedusaSearch()
     {
-        var eb = new EmbedBuilder()
-                    .WithTitle(GetText(strs.list_of_medusae))
-                    .WithOkColor();
-        
+        var eb = _sender.CreateEmbed()
+                 .WithTitle(GetText(strs.list_of_medusae))
+                 .WithOkColor();
+
         foreach (var item in await _repo.GetModuleItemsAsync())
         {
-            eb.AddField(item.Name, $"""
-                {item.Description}
-                `{item.Command}`
-                """, true);
+            eb.AddField(item.Name,
+                $"""
+                 {item.Description}
+                 `{item.Command}`
+                 """,
+                true);
         }
 
         await Response().Embed(eb).SendAsync();

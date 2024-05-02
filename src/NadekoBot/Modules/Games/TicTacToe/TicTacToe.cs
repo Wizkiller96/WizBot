@@ -73,7 +73,7 @@ public class TicTacToe
 
     public EmbedBuilder GetEmbed(string title = null)
     {
-        var embed = new EmbedBuilder()
+        var embed = _sender.CreateEmbed()
                        .WithOkColor()
                        .WithDescription(Environment.NewLine + GetState())
                        .WithAuthor(GetText(strs.vs(_users[0], _users[1])));

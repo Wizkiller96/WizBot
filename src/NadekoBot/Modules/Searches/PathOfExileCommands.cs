@@ -135,7 +135,7 @@ public partial class Searches
             }
             catch
             {
-                var embed = new EmbedBuilder().WithDescription(GetText(strs.account_not_found)).WithErrorColor();
+                var embed = _sender.CreateEmbed().WithDescription(GetText(strs.account_not_found)).WithErrorColor();
 
                 await Response().Embed(embed).SendAsync();
                 return;
@@ -144,37 +144,38 @@ public partial class Searches
             if (!string.IsNullOrWhiteSpace(league))
                 characters.RemoveAll(c => c.League != league);
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var embed = new EmbedBuilder()
-                                   .WithAuthor($"Characters on {usr}'s account",
-                                       "https://web.poecdn.com/image/favicon/ogimage.png",
-                                       $"{PROFILE_URL}{usr}")
-                                   .WithOkColor();
+            await Response()
+                  .Paginated()
+                  .Items(characters)
+                  .PageSize(9)
+                  .CurrentPage(page)
+                  .Page((items, curPage) =>
+                  {
+                      var embed = _sender.CreateEmbed()
+                                  .WithAuthor($"Characters on {usr}'s account",
+                                      "https://web.poecdn.com/image/favicon/ogimage.png",
+                                      $"{PROFILE_URL}{usr}")
+                                  .WithOkColor();
 
-                    var tempList = characters.Skip(curPage * 9).Take(9).ToList();
+                      if (characters.Count == 0)
+                          return embed.WithDescription("This account has no characters.");
 
-                    if (characters.Count == 0)
-                        return embed.WithDescription("This account has no characters.");
+                      var sb = new StringBuilder();
+                      sb.AppendLine($"```{"#",-5}{"Character Name",-23}{"League",-10}{"Class",-13}{"Level",-3}");
+                      for (var i = 0; i < items.Count; i++)
+                      {
+                          var character = items[i];
 
-                    var sb = new StringBuilder();
-                    sb.AppendLine($"```{"#",-5}{"Character Name",-23}{"League",-10}{"Class",-13}{"Level",-3}");
-                    for (var i = 0; i < tempList.Count; i++)
-                    {
-                        var character = tempList[i];
+                          sb.AppendLine(
+                              $"#{i + 1 + (curPage * 9),-4}{character.Name,-23}{ShortLeagueName(character.League),-10}{character.Class,-13}{character.Level,-3}");
+                      }
 
-                        sb.AppendLine(
-                            $"#{i + 1 + (curPage * 9),-4}{character.Name,-23}{ShortLeagueName(character.League),-10}{character.Class,-13}{character.Level,-3}");
-                    }
+                      sb.AppendLine("```");
+                      embed.WithDescription(sb.ToString());
 
-                    sb.AppendLine("```");
-                    embed.WithDescription(sb.ToString());
-
-                    return embed;
-                },
-                characters.Count,
-                9);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]
@@ -190,17 +191,17 @@ public partial class Searches
             }
             catch
             {
-                var eembed = new EmbedBuilder().WithDescription(GetText(strs.leagues_not_found)).WithErrorColor();
+                var eembed = _sender.CreateEmbed().WithDescription(GetText(strs.leagues_not_found)).WithErrorColor();
 
                 await Response().Embed(eembed).SendAsync();
                 return;
             }
 
-            var embed = new EmbedBuilder()
-                           .WithAuthor("Path of Exile Leagues",
-                               "https://web.poecdn.com/image/favicon/ogimage.png",
-                               "https://www.pathofexile.com")
-                           .WithOkColor();
+            var embed = _sender.CreateEmbed()
+                        .WithAuthor("Path of Exile Leagues",
+                            "https://web.poecdn.com/image/favicon/ogimage.png",
+                            "https://www.pathofexile.com")
+                        .WithOkColor();
 
             var sb = new StringBuilder();
             sb.AppendLine($"```{"#",-5}{"League Name",-23}");
@@ -273,19 +274,19 @@ public partial class Searches
                         CultureInfo.InvariantCulture);
                 }
 
-                var embed = new EmbedBuilder()
-                               .WithAuthor($"{leagueName} Currency Exchange",
-                                   "https://web.poecdn.com/image/favicon/ogimage.png",
-                                   "http://poe.ninja")
-                               .AddField("Currency Type", cleanCurrency, true)
-                               .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
-                               .WithOkColor();
+                var embed = _sender.CreateEmbed()
+                            .WithAuthor($"{leagueName} Currency Exchange",
+                                "https://web.poecdn.com/image/favicon/ogimage.png",
+                                "http://poe.ninja")
+                            .AddField("Currency Type", cleanCurrency, true)
+                            .AddField($"{cleanConvert} Equivalent", chaosEquivalent / conversionEquivalent, true)
+                            .WithOkColor();
 
                 await Response().Embed(embed).SendAsync();
             }
             catch
             {
-                var embed = new EmbedBuilder().WithDescription(GetText(strs.ninja_not_found)).WithErrorColor();
+                var embed = _sender.CreateEmbed().WithDescription(GetText(strs.ninja_not_found)).WithErrorColor();
 
                 await Response().Embed(embed).SendAsync();
             }

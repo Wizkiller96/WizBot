@@ -29,9 +29,9 @@ public partial class Permissions
         [RequireContext(ContextType.Guild)]
         public async Task FilterList()
         {
-            var embed = new EmbedBuilder()
-                .WithOkColor()
-                .WithTitle("Server filter settings");
+            var embed = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithTitle("Server filter settings");
 
             var config = await _service.GetFilterSettings(ctx.Guild.Id);
 
@@ -41,14 +41,14 @@ public partial class Permissions
             async Task<string> GetChannelListAsync(IReadOnlyCollection<ulong> channels)
             {
                 var toReturn = (await channels
-                        .Select(async cid =>
-                        {
-                            var ch = await ctx.Guild.GetChannelAsync(cid);
-                            return ch is null
-                                ? $"{cid} *missing*"
-                                : $"<#{cid}>";
-                        })
-                        .WhenAll())
+                                      .Select(async cid =>
+                                      {
+                                          var ch = await ctx.Guild.GetChannelAsync(cid);
+                                          return ch is null
+                                              ? $"{cid} *missing*"
+                                              : $"<#{cid}>";
+                                      })
+                                      .WhenAll())
                     .Join('\n');
 
                 if (string.IsNullOrWhiteSpace(toReturn))
@@ -312,13 +312,16 @@ public partial class Permissions
 
             var fws = fwHash.ToArray();
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage => new EmbedBuilder()
-                              .WithTitle(GetText(strs.filter_word_list))
-                              .WithDescription(string.Join("\n", fws.Skip(curPage * 10).Take(10)))
-                              .WithOkColor(),
-                fws.Length,
-                10);
+            await Response()
+                  .Paginated()
+                  .Items(fws)
+                  .PageSize(10)
+                  .CurrentPage(page)
+                  .Page((items, _) => _sender.CreateEmbed()
+                                      .WithTitle(GetText(strs.filter_word_list))
+                                      .WithDescription(string.Join("\n", items))
+                                      .WithOkColor())
+                  .SendAsync();
         }
     }
 }

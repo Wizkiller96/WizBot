@@ -49,7 +49,7 @@ public partial class Searches
                 var obj = objs[0];
                 var userId = obj.UserId;
 
-                await Response().Embed(new EmbedBuilder()
+                await Response().Embed(_sender.CreateEmbed()
                                                 .WithOkColor()
                                                 .WithTitle($"osu! {smode} profile for {user}")
                                                 .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
@@ -95,7 +95,7 @@ public partial class Searches
             var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
             var userStats = statsResponse.Stats;
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithTitle($"osu!Gatari {modeStr} profile for {user}")
                            .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
@@ -166,7 +166,7 @@ public partial class Searches
                 return (title, desc);
             });
 
-            var eb = new EmbedBuilder().WithOkColor().WithTitle($"Top 5 plays for {user}");
+            var eb = _sender.CreateEmbed().WithOkColor().WithTitle($"Top 5 plays for {user}");
 
             var mapData = await mapTasks.WhenAll();
             foreach (var (title, desc) in mapData.Where(x => x != default))

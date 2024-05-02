@@ -51,7 +51,6 @@ public partial class Administration
         {
             var downloadUsersTask = guild.DownloadUsersAsync();
             var message = await Response().Pending(strs.cache_users_pending).SendAsync();
-            using var dbContext = _db.GetDbContext();
 
             await downloadUsersTask;
 
@@ -62,10 +61,10 @@ public partial class Administration
             var (added, updated) = await _service.RefreshUsersAsync(users);
 
             await message.ModifyAsync(x =>
-                x.Embed = new EmbedBuilder()
-                             .WithDescription(GetText(strs.cache_users_done(added, updated)))
-                             .WithOkColor()
-                             .Build()
+                x.Embed = _sender.CreateEmbed()
+                          .WithDescription(GetText(strs.cache_users_done(added, updated)))
+                          .WithOkColor()
+                          .Build()
             );
         }
 
@@ -81,6 +80,7 @@ public partial class Administration
                 && ctx.Message is SocketUserMessage msg)
             {
                 var fakeMessage = new DoAsUserMessage(msg, user, message);
+                
 
                 await _cmdHandler.TryRunCommand(sg, ch, fakeMessage);
             }
@@ -113,14 +113,16 @@ public partial class Administration
             };
             _service.AddNewAutoCommand(cmd);
 
-            await Response().Embed(new EmbedBuilder()
-                                .WithOkColor()
-                                .WithTitle(GetText(strs.scadd))
-                                .AddField(GetText(strs.server),
-                                    cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
-                                    true)
-                                .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                                .AddField(GetText(strs.command_text), cmdText)).SendAsync();
+            await Response()
+                  .Embed(_sender.CreateEmbed()
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.scadd))
+                         .AddField(GetText(strs.server),
+                             cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
+                             true)
+                         .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                         .AddField(GetText(strs.command_text), cmdText))
+                  .SendAsync();
         }
 
         [Cmd]
@@ -328,18 +330,21 @@ public partial class Administration
                                                      + $"| {st.GuildCount.ToString().PadBoth(maxGuildCountLength)} `";
                                           })
                                           .ToArray();
-            await ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var str = string.Join("\n", allShardStrings.Skip(25 * curPage).Take(25));
+            await Response()
+                  .Paginated()
+                  .Items(allShardStrings)
+                  .PageSize(25)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var str = string.Join("\n", items);
 
-                    if (string.IsNullOrWhiteSpace(str))
-                        str = GetText(strs.no_shards_on_page);
+                      if (string.IsNullOrWhiteSpace(str))
+                          str = GetText(strs.no_shards_on_page);
 
-                    return new EmbedBuilder().WithOkColor().WithDescription($"{status}\n\n{str}");
-                },
-                allShardStrings.Length,
-                25);
+                      return _sender.CreateEmbed().WithOkColor().WithDescription($"{status}\n\n{str}");
+                  })
+                  .SendAsync();
         }
 
         private static string ConnectionStateToEmoji(ShardStatus status)
@@ -566,7 +571,7 @@ public partial class Administration
                     return;
 
                 text = await repSvc.ReplaceAsync(text, repCtx);
-                await ch.SendAsync(text);
+                await Response().Channel(ch).Text(text).SendAsync();
             }
             else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
             {
@@ -577,7 +582,7 @@ public partial class Administration
 
                 var ch = await user.CreateDMChannelAsync();
                 text = await repSvc.ReplaceAsync(text, repCtx);
-                await ch.SendAsync(text);
+                await Response().Channel(ch).Text(text).SendAsync();
             }
             else
             {

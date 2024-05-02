@@ -95,7 +95,7 @@ public partial class Administration : NadekoModule<AdministrationService>
         var guild = (SocketGuild)ctx.Guild;
         var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
 
-        var embed = new EmbedBuilder()
+        var embed = _sender.CreateEmbed()
                        .WithOkColor()
                        .WithTitle(GetText(strs.server_delmsgoncmd))
                        .WithDescription(enabled ? "✅" : "❌");

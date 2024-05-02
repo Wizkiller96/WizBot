@@ -39,7 +39,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         var culture = _loc.GetCultureInfo(guild);
 
-        var em = new EmbedBuilder()
+        var em = _sender.CreateEmbed()
                     .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);

@@ -48,27 +48,29 @@ public partial class Gambling
             var entries = uow.GuildConfigsForId(ctx.Guild.Id,
                                  set => set.Include(x => x.ShopEntries).ThenInclude(x => x.Items))
                              .ShopEntries.ToIndexed();
-            return ctx.SendPaginatedConfirmAsync(page,
-                curPage =>
-                {
-                    var theseEntries = entries.Skip(curPage * 9).Take(9).ToArray();
 
-                    if (!theseEntries.Any())
-                        return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.shop_none));
-                    var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.shop));
+            return Response()
+                   .Paginated()
+                   .Items(entries.ToList())
+                   .PageSize(9)
+                   .CurrentPage(page)
+                   .Page((items, curPage) =>
+                   {
+                       if (!items.Any())
+                           return _sender.CreateEmbed().WithErrorColor().WithDescription(GetText(strs.shop_none));
+                       var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.shop));
 
-                    for (var i = 0; i < theseEntries.Length; i++)
-                    {
-                        var entry = theseEntries[i];
-                        embed.AddField($"#{(curPage * 9) + i + 1} - {N(entry.Price)}",
-                            EntryToString(entry),
-                            true);
-                    }
+                       for (var i = 0; i < items.Count; i++)
+                       {
+                           var entry = items[i];
+                           embed.AddField($"#{(curPage * 9) + i + 1} - {N(entry.Price)}",
+                               EntryToString(entry),
+                               true);
+                       }
 
-                    return embed;
-                },
-                entries.Count,
-                9);
+                       return embed;
+                   })
+                   .SendAsync();
         }
 
         [Cmd]
@@ -187,7 +189,7 @@ public partial class Gambling
                     {
                         await Response()
                               .User(ctx.User)
-                              .Embed(new EmbedBuilder()
+                              .Embed(_sender.CreateEmbed()
                                      .WithOkColor()
                                      .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
                                      .AddField(GetText(strs.item), item.Text)
@@ -246,7 +248,7 @@ public partial class Gambling
                 else
                 {
                     var cmd = entry.Command.Replace("%you%", ctx.User.Id.ToString());
-                    var eb = new EmbedBuilder()
+                    var eb = _sender.CreateEmbed()
                              .WithPendingColor()
                              .WithTitle("Executing shop command")
                              .WithDescription(cmd);
@@ -268,10 +270,11 @@ public partial class Gambling
                     try
                     {
                         var pendingMsg = await msgTask;
-                        await pendingMsg.EditAsync(SmartEmbedText.FromEmbed(eb
-                                                                            .WithOkColor()
-                                                                            .WithTitle("Shop command executed")
-                                                                            .Build()));
+                        await pendingMsg.EditAsync(
+                            SmartEmbedText.FromEmbed(eb
+                                                     .WithOkColor()
+                                                     .WithTitle("Shop command executed")
+                                                     .Build()));
                     }
                     catch
                     {
@@ -531,7 +534,7 @@ public partial class Gambling
 
         public EmbedBuilder EntryToEmbed(ShopEntry entry)
         {
-            var embed = new EmbedBuilder().WithOkColor();
+            var embed = _sender.CreateEmbed().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
             {

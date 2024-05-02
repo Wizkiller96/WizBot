@@ -7,4 +7,6 @@ public interface IMessageSenderService
     ResponseBuilder Response(IUser user);
 
     ResponseBuilder Response(SocketMessageComponent smc);
+
+    NadekoEmbedBuilder CreateEmbed();
 }

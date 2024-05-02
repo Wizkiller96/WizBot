@@ -50,7 +50,7 @@ public sealed partial class Music
                 playlists = uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
             }
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                         .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
                         .WithDescription(string.Join("\n",
                             playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
@@ -103,20 +103,22 @@ public sealed partial class Music
                 mpl = uow.Set<MusicPlaylist>().GetWithSongs(id);
             }
 
-            await ctx.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var i = 0;
-                    var str = string.Join("\n",
-                        mpl.Songs.Skip(cur * 20)
-                           .Take(20)
-                           .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                    return new EmbedBuilder().WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
-                                             .WithOkColor()
-                                             .WithDescription(str);
-                },
-                mpl.Songs.Count,
-                20);
+            await Response()
+                  .Paginated()
+                  .Items(mpl.Songs)
+                  .PageSize(20)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var i = 0;
+                      var str = string.Join("\n",
+                          items
+                              .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
+                      return _sender.CreateEmbed().WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
+                                               .WithOkColor()
+                                               .WithDescription(str);
+                  })
+                  .SendAsync();
         }
 
         [Cmd]
@@ -154,7 +156,7 @@ public sealed partial class Music
             }
 
             await Response()
-                  .Embed(new EmbedBuilder()
+                  .Embed(_sender.CreateEmbed()
                          .WithOkColor()
                          .WithTitle(GetText(strs.playlist_saved))
                          .AddField(GetText(strs.name), name)

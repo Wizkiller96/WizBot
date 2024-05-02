@@ -83,9 +83,10 @@ public partial class Utility : NadekoModule
         var repCtx = new ReplacementContext(Context);
         message = await repSvc.ReplaceAsync(message, repCtx);
 
-        await channel.SendAsync(message,
-            !((IGuildUser)ctx.User).GuildPermissions.MentionEveryone,
-            replyTo: ctx.Message);
+        await Response()
+              .Text(message)
+              .UserBasedMentions()
+              .SendAsync();
     }
 
     [Cmd]
@@ -154,21 +155,22 @@ public partial class Utility : NadekoModule
                              .Select(u => $"`{u.Id,18}` {u}")
                              .ToArray();
 
-        await ctx.SendPaginatedConfirmAsync(page,
-            cur =>
-            {
-                var pageUsers = roleUsers.Skip(cur * 20).Take(20).ToList();
+        await Response()
+              .Paginated()
+              .Items(roleUsers)
+              .PageSize(20)
+              .CurrentPage(page)
+              .Page((pageUsers, _) =>
+              {
+                  if (pageUsers.Count == 0)
+                      return _sender.CreateEmbed().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
 
-                if (pageUsers.Count == 0)
-                    return new EmbedBuilder().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
-
-                return new EmbedBuilder()
-                          .WithOkColor()
-                          .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"), roleUsers.Length)))
-                          .WithDescription(string.Join("\n", pageUsers));
-            },
-            roleUsers.Length,
-            20);
+                  return _sender.CreateEmbed()
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"), roleUsers.Length)))
+                         .WithDescription(string.Join("\n", pageUsers));
+              })
+              .SendAsync();
     }
 
     [Cmd]
@@ -301,30 +303,32 @@ public partial class Utility : NadekoModule
         if (string.IsNullOrWhiteSpace(ownerIds))
             ownerIds = "-";
 
-        await Response().Embed(new EmbedBuilder()
-                            .WithOkColor()
-                            .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
-                                "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
-                                "https://nadekobot.readthedocs.io/en/latest/")
-                            .AddField(GetText(strs.author), _stats.Author, true)
-                            .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
-                            .AddField(GetText(strs.shard),
-                                $"#{_client.ShardId} / {_creds.TotalShards}",
-                                true)
-                            .AddField(GetText(strs.commands_ran), _stats.CommandsRan.ToString(), true)
-                            .AddField(GetText(strs.messages),
-                                $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
-                                true)
-                            .AddField(GetText(strs.memory),
-                                FormattableString.Invariant($"{_stats.GetPrivateMemoryMegabytes():F2} MB"),
-                                true)
-                            .AddField(GetText(strs.owner_ids), ownerIds, true)
-                            .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
-                            .AddField(GetText(strs.presence),
-                                GetText(strs.presence_txt(_coord.GetGuildCount(),
-                                    _stats.TextChannels,
-                                    _stats.VoiceChannels)),
-                                true)).SendAsync();
+        await Response()
+              .Embed(_sender.CreateEmbed()
+                     .WithOkColor()
+                     .WithAuthor($"NadekoBot v{StatsService.BotVersion}",
+                         "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/avatar.png",
+                         "https://nadekobot.readthedocs.io/en/latest/")
+                     .AddField(GetText(strs.author), _stats.Author, true)
+                     .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
+                     .AddField(GetText(strs.shard),
+                         $"#{_client.ShardId} / {_creds.TotalShards}",
+                         true)
+                     .AddField(GetText(strs.commands_ran), _stats.CommandsRan.ToString(), true)
+                     .AddField(GetText(strs.messages),
+                         $"{_stats.MessageCounter} ({_stats.MessagesPerSecond:F2}/sec)",
+                         true)
+                     .AddField(GetText(strs.memory),
+                         FormattableString.Invariant($"{_stats.GetPrivateMemoryMegabytes():F2} MB"),
+                         true)
+                     .AddField(GetText(strs.owner_ids), ownerIds, true)
+                     .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
+                     .AddField(GetText(strs.presence),
+                         GetText(strs.presence_txt(_coord.GetGuildCount(),
+                             _stats.TextChannels,
+                             _stats.VoiceChannels)),
+                         true))
+              .SendAsync();
     }
 
     [Cmd]
@@ -517,7 +521,7 @@ public partial class Utility : NadekoModule
             return;
         }
 
-        var embed = new EmbedBuilder().WithOkColor();
+        var embed = _sender.CreateEmbed().WithOkColor();
         foreach (var guild in guilds)
             embed.AddField(guild.Name, GetText(strs.listservers(guild.Id, guild.MemberCount, guild.OwnerId)));
 
@@ -660,6 +664,7 @@ public partial class Utility : NadekoModule
                          .WithReferences(this.GetType().Assembly)
                          .WithImports(
                              "System",
+                             "System.Linq",
                              "NadekoBot",
                              "NadekoBot.Extensions",
                              "Microsoft.Extensions.DependencyInjection",
@@ -683,10 +688,10 @@ public partial class Utility : NadekoModule
             var output = result.ReturnValue?.ToString();
             if (!string.IsNullOrWhiteSpace(output))
             {
-                var eb = new EmbedBuilder()
-                            .WithOkColor()
-                            .AddField("Code", scriptText)
-                            .AddField("Output", output.TrimTo(512)!);
+                var eb = _sender.CreateEmbed()
+                         .WithOkColor()
+                         .AddField("Code", scriptText)
+                         .AddField("Output", output.TrimTo(512)!);
 
                 _ = Response().Embed(eb).SendAsync();
             }

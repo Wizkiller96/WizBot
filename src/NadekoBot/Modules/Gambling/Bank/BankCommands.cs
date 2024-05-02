@@ -59,7 +59,7 @@ public partial class Gambling
         {
             var bal = await _bank.GetBalanceAsync(ctx.User.Id);
 
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                         .WithOkColor()
                         .WithDescription(GetText(strs.bank_balance(N(bal))));
 

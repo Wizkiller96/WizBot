@@ -61,7 +61,7 @@ public partial class Permissions
             else
                 await Response().Confirm(strs.cmdcd_add(Format.Bold(name), Format.Bold(secs.ToString()))).SendAsync();
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
@@ -80,7 +80,7 @@ public partial class Permissions
         {
             if (--page < 0)
                 return;
-            
+
             var channel = (ITextChannel)ctx.Channel;
             var localSet = _service.GetCommandCooldowns(ctx.Guild.Id);
 
@@ -88,17 +88,21 @@ public partial class Permissions
                 await Response().Confirm(strs.cmdcd_none).SendAsync();
             else
             {
-                await ctx.SendPaginatedConfirmAsync(page, curPage =>
-                {
-                    var items = localSet.Skip(curPage * 15)
-                        .Take(15)
-                        .Select(x => $"{Format.Code(x.CommandName)}: {x.Seconds.Seconds().Humanize(maxUnit: TimeUnit.Second, culture: Culture)}");
+                await Response()
+                      .Paginated()
+                      .Items(localSet)
+                      .PageSize(15)
+                      .CurrentPage(page)
+                      .Page((items, _) =>
+                      {
+                          var output = items.Select(x =>
+                              $"{Format.Code(x.CommandName)}: {x.Seconds.Seconds().Humanize(maxUnit: TimeUnit.Second, culture: Culture)}");
 
-                    return new EmbedBuilder()
-                        .WithOkColor()
-                        .WithDescription(items.Join("\n"));
-
-                }, localSet.Count, 15);
+                          return _sender.CreateEmbed()
+                                 .WithOkColor()
+                                 .WithDescription(output.Join("\n"));
+                      })
+                      .SendAsync();
             }
         }
     }

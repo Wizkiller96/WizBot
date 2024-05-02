@@ -84,7 +84,7 @@ public partial class Gambling
                     ? Format.Bold(GetText(strs.heads))
                     : Format.Bold(GetText(strs.tails))));
             
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .WithDescription(msg)
@@ -130,7 +130,7 @@ public partial class Gambling
                 str = Format.Bold(GetText(strs.better_luck));
             }
 
-            await Response().Embed(new EmbedBuilder()
+            await Response().Embed(_sender.CreateEmbed()
                 .WithAuthor(ctx.User)
                                             .WithDescription(str)
                                             .WithOkColor()

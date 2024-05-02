@@ -81,27 +81,27 @@ public partial class Utility
         }
 
 
-        private async Task ShowTodosAsync(TodoModel[] todos)
-        {
-            await ctx.SendPaginatedConfirmAsync(0,
-                (curPage) =>
-                {
-                    var eb = new EmbedBuilder()
-                             .WithOkColor()
-                             .WithTitle(GetText(strs.todo_list));
+        private Task ShowTodosAsync(TodoModel[] todos)
+            => Response()
+               .Paginated()
+               .Items(todos)
+               .PageSize(9)
+               .Page((items, _) =>
+               {
+                   var eb = _sender.CreateEmbed()
+                            .WithOkColor()
+                            .WithTitle(GetText(strs.todo_list));
 
-                    ShowTodoItem(todos, curPage, eb);
+                   ShowTodoItem(items, eb);
 
-                    return eb;
-                },
-                todos.Length,
-                9);
-        }
+                   return eb;
+               })
+               .SendAsync();
 
-        private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, int curPage, EmbedBuilder eb)
+        private static void ShowTodoItem(IReadOnlyCollection<TodoModel> todos, EmbedBuilder eb)
         {
             var sb = new StringBuilder();
-            foreach (var todo in todos.Skip(curPage * 9).Take(9))
+            foreach (var todo in todos)
             {
                 sb.AppendLine($"{(todo.IsDone ? "✔" : "□")} {Format.Code(new kwum(todo.Id).ToString())} {todo.Todo}");
 
@@ -147,23 +147,25 @@ public partial class Utility
                     return;
                 }
 
-                await ctx.SendPaginatedConfirmAsync(page,
-                    (curPage) =>
-                    {
-                        var eb = new EmbedBuilder()
-                                 .WithTitle(GetText(strs.todo_archive_list))
-                                 .WithOkColor();
+                await Response()
+                      .Paginated()
+                      .Items(archivedTodoLists)
+                      .PageSize(9)
+                      .CurrentPage(page)
+                      .Page((items, _) =>
+                      {
+                          var eb = _sender.CreateEmbed()
+                                   .WithTitle(GetText(strs.todo_archive_list))
+                                   .WithOkColor();
 
-                        foreach (var archivedList in archivedTodoLists.Skip(curPage * 9).Take(9))
-                        {
-                            eb.AddField($"id: {archivedList.Id.ToString()}", archivedList.Name, true);
-                        }
+                          foreach (var archivedList in items)
+                          {
+                              eb.AddField($"id: {archivedList.Id.ToString()}", archivedList.Name, true);
+                          }
 
-                        return eb;
-                    },
-                    archivedTodoLists.Count,
-                    9,
-                    true);
+                          return eb;
+                      })
+                      .SendAsync();
             }
 
             [Cmd]
@@ -176,19 +178,21 @@ public partial class Utility
                     return;
                 }
 
-                await ctx.SendPaginatedConfirmAsync(0,
-                    (curPage) =>
-                    {
-                        var eb = new EmbedBuilder()
-                                 .WithOkColor()
-                                 .WithTitle(GetText(strs.todo_list));
+                await Response()
+                      .Paginated()
+                      .Items(list.Items)
+                      .PageSize(9)
+                      .Page((items, _) =>
+                      {
+                          var eb = _sender.CreateEmbed()
+                                   .WithOkColor()
+                                   .WithTitle(GetText(strs.todo_list));
 
-                        ShowTodoItem(list.Items, curPage, eb);
+                          ShowTodoItem(items, eb);
 
-                        return eb;
-                    },
-                    list.Items.Count,
-                    9);
+                          return eb;
+                      })
+                      .SendAsync();
             }
 
             [Cmd]

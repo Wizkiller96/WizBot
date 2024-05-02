@@ -31,14 +31,14 @@ public class FeedsService : INService
         {
             var guildConfigIds = bot.AllGuildConfigs.Select(x => x.Id).ToList();
             _subs = uow.Set<GuildConfig>()
-                .AsQueryable()
-                .Where(x => guildConfigIds.Contains(x.Id))
-                .Include(x => x.FeedSubs)
-                .ToList()
-                .SelectMany(x => x.FeedSubs)
-                .GroupBy(x => x.Url.ToLower())
-                .ToDictionary(x => x.Key, x => x.ToList())
-                .ToConcurrent();
+                       .AsQueryable()
+                       .Where(x => guildConfigIds.Contains(x.Id))
+                       .Include(x => x.FeedSubs)
+                       .ToList()
+                       .SelectMany(x => x.FeedSubs)
+                       .GroupBy(x => x.Url.ToLower())
+                       .ToDictionary(x => x.Key, x => x.ToList())
+                       .ToConcurrent();
         }
 
         _client = client;
@@ -61,7 +61,7 @@ public class FeedsService : INService
                 // remove from db
                 await using var ctx = _db.GetDbContext();
                 await ctx.GetTable<FeedSub>()
-                    .DeleteAsync(x => ids.Contains(x.Id));
+                         .DeleteAsync(x => ids.Contains(x.Id));
 
                 // remove from the local cache
                 _subs.TryRemove(url, out _);
@@ -95,14 +95,14 @@ public class FeedsService : INService
                     var feed = await FeedReader.ReadAsync(rssUrl);
 
                     var items = feed
-                        .Items.Select(item => (Item: item,
-                            LastUpdate: item.PublishingDate?.ToUniversalTime()
-                                        ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
-                        .Where(data => data.LastUpdate is not null)
-                        .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
-                        .OrderByDescending(data => data.LastUpdate)
-                        .Reverse() // start from the oldest
-                        .ToList();
+                                .Items.Select(item => (Item: item,
+                                    LastUpdate: item.PublishingDate?.ToUniversalTime()
+                                                ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
+                                .Where(data => data.LastUpdate is not null)
+                                .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
+                                .OrderByDescending(data => data.LastUpdate)
+                                .Reverse() // start from the oldest
+                                .ToList();
 
                     if (!_lastPosts.TryGetValue(kvp.Key, out var lastFeedUpdate))
                     {
@@ -115,7 +115,7 @@ public class FeedsService : INService
                         if (itemUpdateDate <= lastFeedUpdate)
                             continue;
 
-                        var embed = new EmbedBuilder().WithFooter(rssUrl);
+                        var embed = _sender.CreateEmbed().WithFooter(rssUrl);
 
                         _lastPosts[kvp.Key] = itemUpdateDate;
 
@@ -141,12 +141,12 @@ public class FeedsService : INService
                         if (!gotImage && feedItem.SpecificItem is AtomFeedItem afi)
                         {
                             var previewElement = afi.Element.Elements()
-                                .FirstOrDefault(x => x.Name.LocalName == "preview");
+                                                    .FirstOrDefault(x => x.Name.LocalName == "preview");
 
                             if (previewElement is null)
                             {
                                 previewElement = afi.Element.Elements()
-                                    .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
+                                                    .FirstOrDefault(x => x.Name.LocalName == "thumbnail");
                             }
 
                             if (previewElement is not null)
@@ -170,11 +170,23 @@ public class FeedsService : INService
 
                         //send the created embed to all subscribed channels
                         var feedSendTasks = kvp.Value
-                            .Where(x => x.GuildConfig is not null)
-                            .Select(x => _client.GetGuild(x.GuildConfig.GuildId)
-                                ?.GetTextChannel(x.ChannelId)
-                                ?.EmbedAsync(embed, string.IsNullOrWhiteSpace(x.Message) ? "" : x.Message))
-                            .Where(x => x is not null);
+                                               .Where(x => x.GuildConfig is not null)
+                                               .Select(x =>
+                                               {
+                                                   var ch = _client.GetGuild(x.GuildConfig.GuildId)
+                                                                   ?.GetTextChannel(x.ChannelId);
+
+                                                   if (ch is null)
+                                                       return null;
+
+                                                   return _sender.Response(ch)
+                                                                 .Embed(embed)
+                                                                 .Text(string.IsNullOrWhiteSpace(x.Message)
+                                                                     ? string.Empty
+                                                                     : x.Message)
+                                                                 .SendAsync();
+                                               })
+                                               .Where(x => x is not null);
 
                         allSendTasks.Add(feedSendTasks.WhenAll());
 
@@ -202,11 +214,15 @@ public class FeedsService : INService
     {
         using var uow = _db.GetDbContext();
         return uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
-            .FeedSubs.OrderBy(x => x.Id)
-            .ToList();
+                  .FeedSubs.OrderBy(x => x.Id)
+                  .ToList();
     }
 
-    public FeedAddResult AddFeed(ulong guildId, ulong channelId, string rssFeed, string message)
+    public FeedAddResult AddFeed(
+        ulong guildId,
+        ulong channelId,
+        string rssFeed,
+        string message)
     {
         ArgumentNullException.ThrowIfNull(rssFeed, nameof(rssFeed));
 
@@ -252,8 +268,8 @@ public class FeedsService : INService
 
         using var uow = _db.GetDbContext();
         var items = uow.GuildConfigsForId(guildId, set => set.Include(x => x.FeedSubs))
-            .FeedSubs.OrderBy(x => x.Id)
-            .ToList();
+                       .FeedSubs.OrderBy(x => x.Id)
+                       .ToList();
 
         if (items.Count <= index)
             return false;

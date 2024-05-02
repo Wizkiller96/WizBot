@@ -106,7 +106,10 @@ public partial class Utility
             var text = SmartText.CreateFrom(quote.Text);
             text = await repSvc.ReplaceAsync(text, repCtx);
 
-            await ctx.Channel.SendAsync($"`#{quote.Id}` 📣 " + text, true, replyTo: ctx.Message);
+            await Response()
+                  .Text($"`#{quote.Id}` 📣 " + text)
+                  .Sanitize()
+                  .SendAsync();
         }
 
         [Cmd]
@@ -132,13 +135,13 @@ public partial class Utility
 
         private async Task ShowQuoteData(Quote data)
         {
-            var eb = new EmbedBuilder()
-                     .WithOkColor()
-                     .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
-                     .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
-                     .AddField(GetText(strs.trigger), data.Keyword)
-                     .WithFooter(
-                         GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")));
+            var eb = _sender.CreateEmbed()
+                            .WithOkColor()
+                            .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
+                            .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
+                            .AddField(GetText(strs.trigger), data.Keyword)
+                            .WithFooter(
+                                GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")));
 
             if (!(data.Text.Length > 4096))
             {
@@ -146,10 +149,12 @@ public partial class Utility
                 return;
             }
 
-            // todo all send files should go through response system too
-            await ctx.Channel.SendFileAsync(
-                attachment: new FileAttachment(await data.Text.ToStream(), "quote.txt"),
-                embed: eb.Build());
+            await using var textStream = await data.Text.ToStream();
+
+            await Response()
+                  .Embed(eb)
+                  .File(textStream, "quote.txt")
+                  .SendAsync();
         }
 
         private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
@@ -217,7 +222,10 @@ public partial class Utility
 
             var text = SmartText.CreateFrom(quote.Text);
             text = await repSvc.ReplaceAsync(text, repCtx);
-            await ctx.Channel.SendAsync(infoText + text, true, replyTo: ctx.Message);
+            await Response()
+                  .Text(infoText + text)
+                  .Sanitize()
+                  .SendAsync();
         }
 
         [Cmd]

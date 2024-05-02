@@ -150,7 +150,7 @@ public partial class Gambling
                 else
                     title = GetText(strs.connect4_draw);
 
-                return msg.ModifyAsync(x => x.Embed = new EmbedBuilder()
+                return msg.ModifyAsync(x => x.Embed = _sender.CreateEmbed()
                                                          .WithTitle(title)
                                                          .WithDescription(GetGameStateText(game))
                                                          .WithOkColor()
@@ -160,7 +160,7 @@ public partial class Gambling
 
         private async Task Game_OnGameStateUpdated(Connect4Game game)
         {
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
                            .WithDescription(GetGameStateText(game))
                            .WithOkColor();

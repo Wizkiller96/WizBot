@@ -24,7 +24,7 @@ public partial class Searches
         //         return;
         //     }
         //
-        //     var embed = new EmbedBuilder()
+        //     var embed = _sender.CreateEmbed()
         //         .WithOkColor()
         //         .WithDescription(novelData.Description.Replace("<br>", Environment.NewLine, StringComparison.InvariantCulture))
         //         .WithTitle(novelData.Title)
@@ -86,7 +86,7 @@ public partial class Searches
                                       .Select(x => x.TextContent.Split(':').Select(y => y.Trim()).ToArray())
                                       .ToArray();
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithTitle(GetText(strs.mal_profile(name)))
                            .AddField("💚 " + GetText(strs.watching), stats[0], true)
@@ -151,7 +151,7 @@ public partial class Searches
                 return;
             }
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithDescription(animeData.Synopsis.Replace("<br>",
                                Environment.NewLine,
@@ -183,7 +183,7 @@ public partial class Searches
                 return;
             }
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithDescription(mangaData.Synopsis.Replace("<br>",
                                Environment.NewLine,

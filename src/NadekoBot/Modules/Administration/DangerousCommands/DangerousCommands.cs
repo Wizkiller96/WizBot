@@ -35,22 +35,22 @@ public partial class Administration
         {
             var result = _ds.SelectSql(sql);
 
-            return ctx.SendPaginatedConfirmAsync(0,
-                cur =>
-                {
-                    var items = result.Results.Skip(cur * 20).Take(20).ToList();
+            return Response()
+                   .Paginated()
+                   .Items(result.Results)
+                   .PageSize(20)
+                   .Page((items, _) =>
+                   {
+                       if (!items.Any())
+                           return _sender.CreateEmbed().WithErrorColor().WithFooter(sql).WithDescription("-");
 
-                    if (!items.Any())
-                        return new EmbedBuilder().WithErrorColor().WithFooter(sql).WithDescription("-");
-
-                    return new EmbedBuilder()
+                       return _sender.CreateEmbed()
                               .WithOkColor()
                               .WithFooter(sql)
                               .WithTitle(string.Join(" ║ ", result.ColumnNames))
                               .WithDescription(string.Join('\n', items.Select(x => string.Join(" ║ ", x))));
-                },
-                result.Results.Count,
-                20);
+                   })
+                   .SendAsync();
         }
 
         [Cmd]
@@ -99,9 +99,9 @@ public partial class Administration
         {
             try
             {
-                var embed = new EmbedBuilder()
-                               .WithTitle(GetText(strs.sql_confirm_exec))
-                               .WithDescription(Format.Code(sql));
+                var embed = _sender.CreateEmbed()
+                            .WithTitle(GetText(strs.sql_confirm_exec))
+                            .WithDescription(Format.Code(sql));
 
                 if (!await PromptUserConfirmAsync(embed))
                     return;
@@ -119,8 +119,8 @@ public partial class Administration
         [OwnerOnly]
         public async Task PurgeUser(ulong userId)
         {
-            var embed = new EmbedBuilder()
-                           .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
+            var embed = _sender.CreateEmbed()
+                .WithDescription(GetText(strs.purge_user_confirm(Format.Bold(userId.ToString()))));
 
             if (!await PromptUserConfirmAsync(embed))
                 return;

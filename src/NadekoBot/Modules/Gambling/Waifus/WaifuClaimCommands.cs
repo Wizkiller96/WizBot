@@ -20,9 +20,9 @@ public partial class Gambling
         public async Task WaifuReset()
         {
             var price = _service.GetResetPrice(ctx.User);
-            var embed = new EmbedBuilder()
-                           .WithTitle(GetText(strs.waifu_reset_confirm))
-                           .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
+            var embed = _sender.CreateEmbed()
+                        .WithTitle(GetText(strs.waifu_reset_confirm))
+                        .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
 
             if (!await PromptUserConfirmAsync(embed))
                 return;
@@ -222,7 +222,7 @@ public partial class Gambling
                 return;
             }
 
-            var embed = new EmbedBuilder().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
+            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
 
             var i = 0;
             foreach (var w in waifus)
@@ -306,25 +306,25 @@ public partial class Gambling
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
 
-            var embed = new EmbedBuilder()
-                           .WithOkColor()
-                           .WithTitle(GetText(strs.waifu)
-                                      + " "
-                                      + (wi.FullName ?? name ?? targetId.ToString())
-                                      + " - \"the "
-                                      + _service.GetClaimTitle(wi.ClaimCount)
-                                      + "\"")
-                           .AddField(GetText(strs.price), N(wi.Price), true)
-                           .AddField(GetText(strs.claimed_by), wi.ClaimerName ?? nobody, true)
-                           .AddField(GetText(strs.likes), wi.AffinityName ?? nobody, true)
-                           .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
-                           .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
-                           .AddField("\u200B", "\u200B", true)
-                           .AddField(GetText(strs.fans(fansList.Count)), fansStr, true)
-                           .AddField($"Waifus ({wi.ClaimCount})",
-                               wi.ClaimCount == 0 ? nobody : claimsStr,
-                               true)
-                           .AddField(GetText(strs.gifts), itemsStr, true);
+            var embed = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithTitle(GetText(strs.waifu)
+                                   + " "
+                                   + (wi.FullName ?? name ?? targetId.ToString())
+                                   + " - \"the "
+                                   + _service.GetClaimTitle(wi.ClaimCount)
+                                   + "\"")
+                        .AddField(GetText(strs.price), N(wi.Price), true)
+                        .AddField(GetText(strs.claimed_by), wi.ClaimerName ?? nobody, true)
+                        .AddField(GetText(strs.likes), wi.AffinityName ?? nobody, true)
+                        .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
+                        .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
+                        .AddField("\u200B", "\u200B", true)
+                        .AddField(GetText(strs.fans(fansList.Count)), fansStr, true)
+                        .AddField($"Waifus ({wi.ClaimCount})",
+                            wi.ClaimCount == 0 ? nobody : claimsStr,
+                            true)
+                        .AddField(GetText(strs.gifts), itemsStr, true);
 
             await Response().Embed(embed).SendAsync();
         }
@@ -338,25 +338,27 @@ public partial class Gambling
                 return;
 
             var waifuItems = _service.GetWaifuItems();
-            await ctx.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var embed = new EmbedBuilder().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
+            await Response()
+                  .Paginated()
+                  .Items(waifuItems.OrderBy(x => x.Negative)
+                                   .ThenBy(x => x.Price)
+                                   .ToList())
+                  .PageSize(9)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var embed = _sender.CreateEmbed().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
+                      
+                      items
+                          .ToList()
+                          .ForEach(x => embed.AddField(
+                              $"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
+                              Format.Bold(N(x.Price)),
+                              true));
 
-                    waifuItems.OrderBy(x => x.Negative)
-                              .ThenBy(x => x.Price)
-                              .Skip(9 * cur)
-                              .Take(9)
-                              .ToList()
-                              .ForEach(x => embed.AddField(
-                                  $"{(!x.Negative ? string.Empty : "\\💔")} {x.ItemEmoji} {x.Name}",
-                                  Format.Bold(N(x.Price)),
-                                  true));
-
-                    return embed;
-                },
-                waifuItems.Count,
-                9);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

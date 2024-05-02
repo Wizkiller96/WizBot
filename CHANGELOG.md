@@ -32,6 +32,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
   - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
+- Added a page parameter to `.feedlist`
 
 ### Changed
 
@@ -46,6 +47,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
 - `.say` will now correctly report errors if the user or the bot don't have sufficent perms to send a message in the targeted channel
+- Fixed a bug in .invitelist not paginating correctly
 
 ### Removed
 

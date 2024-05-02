@@ -16,10 +16,10 @@ public partial class Xp
         [UserPerm(GuildPerm.Administrator)]
         public async Task XpRewsReset()
         {
-            var promptEmbed = new EmbedBuilder()
-                                 .WithPendingColor()
-                                 .WithDescription(GetText(strs.xprewsreset_confirm));
-            
+            var promptEmbed = _sender.CreateEmbed()
+                              .WithPendingColor()
+                              .WithDescription(GetText(strs.xprewsreset_confirm));
+
             var reply = await PromptUserConfirmAsync(promptEmbed);
 
             if (!reply)
@@ -66,24 +66,25 @@ public partial class Xp
                                      .OrderBy(x => x.Key)
                                      .ToList();
 
-            return Context.SendPaginatedConfirmAsync(page,
-                cur =>
-                {
-                    var embed = new EmbedBuilder().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
+            return Response()
+                   .Paginated()
+                   .Items(allRewards)
+                   .PageSize(9)
+                   .CurrentPage(page)
+                   .Page((items, _) =>
+                   {
+                       var embed = _sender.CreateEmbed().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
 
-                    var localRewards = allRewards.Skip(cur * 9).Take(9).ToList();
+                       if (!items.Any())
+                           return embed.WithDescription(GetText(strs.no_level_up_rewards));
 
-                    if (!localRewards.Any())
-                        return embed.WithDescription(GetText(strs.no_level_up_rewards));
+                       foreach (var reward in items)
+                           embed.AddField(GetText(strs.level_x(reward.Key)),
+                               string.Join("\n", reward.Select(y => y.Item2)));
 
-                    foreach (var reward in localRewards)
-                        embed.AddField(GetText(strs.level_x(reward.Key)),
-                            string.Join("\n", reward.Select(y => y.Item2)));
-
-                    return embed;
-                },
-                allRewards.Count,
-                9);
+                       return embed;
+                   })
+                   .SendAsync();
         }
 
         [Cmd]
@@ -112,8 +113,10 @@ public partial class Xp
                 await Response().Confirm(strs.xp_role_reward_add_role(level, Format.Bold(role.ToString()))).SendAsync();
             else
             {
-                await Response().Confirm(strs.xp_role_reward_remove_role(Format.Bold(level.ToString()),
-                    Format.Bold(role.ToString()))).SendAsync();
+                await Response()
+                      .Confirm(strs.xp_role_reward_remove_role(Format.Bold(level.ToString()),
+                          Format.Bold(role.ToString())))
+                      .SendAsync();
             }
         }
 
@@ -129,8 +132,10 @@ public partial class Xp
             if (amount == 0)
                 await Response().Confirm(strs.cur_reward_cleared(level, _cp.GetCurrencySign())).SendAsync();
             else
-                await Response().Confirm(strs.cur_reward_added(level,
-                    Format.Bold(amount + _cp.GetCurrencySign()))).SendAsync();
+                await Response()
+                      .Confirm(strs.cur_reward_added(level,
+                          Format.Bold(amount + _cp.GetCurrencySign())))
+                      .SendAsync();
         }
     }
 }

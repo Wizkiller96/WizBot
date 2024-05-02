@@ -20,7 +20,7 @@ public partial class Searches
                 await ctx.Channel.TriggerTypingAsync();
                 var translation = await _service.Translate(from, to, text);
 
-                var embed = new EmbedBuilder().WithOkColor().AddField(from, text).AddField(to, translation);
+                var embed = _sender.CreateEmbed().WithOkColor().AddField(from, text).AddField(to, translation);
 
                 await Response().Embed(embed).SendAsync();
             }
@@ -80,7 +80,7 @@ public partial class Searches
         {
             var langs = _service.GetLanguages().ToList();
             
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                         .WithTitle(GetText(strs.supported_languages))
                         .WithOkColor();
 

@@ -35,7 +35,7 @@ public partial class Searches
                 }
 
                 var symbol = symbols.First();
-                var promptEmbed = new EmbedBuilder()
+                var promptEmbed = _sender.CreateEmbed()
                                      .WithDescription(symbol.Description)
                                      .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
                 
@@ -79,7 +79,7 @@ public partial class Searches
             
             var price = stock.Price.ToString("C2", localCulture);
 
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                         .WithOkColor()
                         .WithAuthor(stock.Symbol)
                         .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
@@ -127,7 +127,7 @@ public partial class Searches
 
             if (nearest is not null)
             {
-                var embed = new EmbedBuilder()
+                var embed = _sender.CreateEmbed()
                                .WithTitle(GetText(strs.crypto_not_found))
                                .WithDescription(
                                    GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
@@ -160,7 +160,7 @@ public partial class Searches
             await using var sparkline = await _service.GetSparklineAsync(crypto.Id, usd.PercentChange7d >= 0);
             var fileName = $"{crypto.Slug}_7d.png";
             
-            var toSend = new EmbedBuilder()
+            var toSend = _sender.CreateEmbed()
                             .WithOkColor()
                             .WithAuthor($"#{crypto.CmcRank}")
                             .WithTitle($"{crypto.Name} ({crypto.Symbol})")

@@ -60,12 +60,12 @@ public partial class Permissions
                   .Page((pageItems, _) =>
                   {
                       if (pageItems.Count == 0)
-                          return new EmbedBuilder()
+                          return _sender.CreateEmbed()
                                  .WithOkColor()
                                  .WithTitle(title)
                                  .WithDescription(GetText(strs.empty_page));
 
-                      return new EmbedBuilder()
+                      return _sender.CreateEmbed()
                              .WithTitle(title)
                              .WithDescription(allItems.Join('\n'))
                              .WithOkColor();

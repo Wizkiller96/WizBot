@@ -73,7 +73,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     {
         var stats = await _gamblingTxTracker.GetAllAsync();
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
             .WithOkColor();
 
         var str = "` Feature `｜`   Bet  `｜`Paid Out`｜`  RoI  `\n";
@@ -118,7 +118,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         // [21:03] Bob Page: Kinda remids me of US economy
-        var embed = new EmbedBuilder()
+        var embed = _sender.CreateEmbed()
                     .WithTitle(GetText(strs.economy_state))
                     .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
                     .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
@@ -310,7 +310,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             trs = await uow.Set<CurrencyTransaction>().GetPageFor(userId, page);
         }
 
-        var embed = new EmbedBuilder()
+        var embed = _sender.CreateEmbed()
                     .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
                                                          ?? $"{userId}")))
                     .WithOkColor();
@@ -360,7 +360,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var eb = new EmbedBuilder().WithOkColor();
+        var eb = _sender.CreateEmbed().WithOkColor();
 
         eb.WithAuthor(ctx.User);
         eb.WithTitle(GetText(strs.transaction));
@@ -624,7 +624,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var embed = new EmbedBuilder().WithOkColor().WithTitle(GetText(strs.roll_duel));
+        var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.roll_duel));
 
         var description = string.Empty;
 
@@ -731,7 +731,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             str = GetText(strs.better_luck);
         }
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
                  .WithAuthor(ctx.User)
                  .WithDescription(Format.Bold(str))
                  .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
@@ -758,68 +758,64 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-        List<DiscordUser> cleanRichest;
+        // List<DiscordUser> cleanRichest;
         // it's pointless to have clean on dm context
         if (ctx.Guild is null)
         {
             opts.Clean = false;
         }
 
-        if (opts.Clean)
+
+        async Task<IEnumerable<DiscordUser>> GetTopRichest(int curPage)
         {
-            await using (var uow = _db.GetDbContext())
+            if (opts.Clean)
             {
-                cleanRichest = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, 0, 10_000);
+                await ctx.Channel.TriggerTypingAsync();
+                await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
+
+                await using var uow = _db.GetDbContext();
+
+                var cleanRichest = await uow.Set<DiscordUser>()
+                                            .GetTopRichest(_client.CurrentUser.Id, 0, 10_000);
+
+                var sg = (SocketGuild)ctx.Guild!;
+                return cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
             }
-
-            await ctx.Channel.TriggerTypingAsync();
-            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
-
-            var sg = (SocketGuild)ctx.Guild!;
-            cleanRichest = cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
-        }
-        else
-        {
-            await using var uow = _db.GetDbContext();
-            cleanRichest = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, page);
-        }
-
-        await ctx.SendPaginatedConfirmAsync(page,
-            async curPage =>
+            else
             {
-                var embed = new EmbedBuilder().WithOkColor().WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
+                await using var uow = _db.GetDbContext();
+                return await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, curPage);
+            }
+        }
 
-                List<DiscordUser> toSend;
-                if (!opts.Clean)
-                {
-                    await using var uow = _db.GetDbContext();
-                    toSend = await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, curPage);
-                }
-                else
-                {
-                    toSend = cleanRichest.Skip(curPage * 9).Take(9).ToList();
-                }
+        await Response()
+              .Paginated()
+              .PageItems(GetTopRichest)
+              .PageSize(9)
+              .CurrentPage(page)
+              .Page((toSend, curPage) =>
+              {
+                  var embed = _sender.CreateEmbed().WithOkColor()
+                                                .WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
 
-                if (!toSend.Any())
-                {
-                    embed.WithDescription(GetText(strs.no_user_on_this_page));
-                    return embed;
-                }
+                  if (!toSend.Any())
+                  {
+                      embed.WithDescription(GetText(strs.no_user_on_this_page));
+                      return Task.FromResult(embed);
+                  }
 
-                for (var i = 0; i < toSend.Count; i++)
-                {
-                    var x = toSend[i];
-                    var usrStr = x.ToString().TrimTo(20, true);
+                  for (var i = 0; i < toSend.Count; i++)
+                  {
+                      var x = toSend[i];
+                      var usrStr = x.ToString().TrimTo(20, true);
 
-                    var j = i;
-                    embed.AddField("#" + ((9 * curPage) + j + 1) + " " + usrStr, N(x.CurrencyAmount), true);
-                }
+                      var j = i;
+                      embed.AddField("#" + ((9 * curPage) + j + 1) + " " + usrStr, N(x.CurrencyAmount), true);
+                  }
 
-                return embed;
-            },
-            opts.Clean ? cleanRichest.Count() : 9000,
-            9,
-            opts.Clean);
+                  return Task.FromResult(embed);
+              })
+              .SendAsync();
     }
 
     public enum InputRpsPick : byte
@@ -861,7 +857,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var embed = new EmbedBuilder();
+        var embed = _sender.CreateEmbed();
 
         string msg;
         if (result.Result == RpsResultType.Draw)
@@ -922,7 +918,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             sb.AppendLine();
         }
 
-        var eb = new EmbedBuilder()
+        var eb = _sender.CreateEmbed()
                  .WithOkColor()
                  .WithDescription(sb.ToString())
                  .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)

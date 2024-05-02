@@ -59,7 +59,7 @@ public partial class Searches
 
             descStr = descStr.TrimTo(4096);
 
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                            .WithOkColor()
                            .WithAuthor(ctx.User)
                            .WithTitle(query.TrimTo(64)!)
@@ -98,7 +98,7 @@ public partial class Searches
 
             EmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
             {
-                return new EmbedBuilder()
+                return _sender.CreateEmbed()
                           .WithOkColor()
                           .WithAuthor(ctx.User)
                           .WithTitle(query)
@@ -190,7 +190,7 @@ public partial class Searches
 //
 //         var descStr = string.Join("\n\n", desc);
 //
-//         var embed = new EmbedBuilder()
+//         var embed = _sender.CreateEmbed()
 //                        .WithAuthor(ctx.User.ToString(),
 //                            "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
 //                        .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)

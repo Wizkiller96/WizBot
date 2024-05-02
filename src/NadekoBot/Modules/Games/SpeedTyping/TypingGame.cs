@@ -82,7 +82,6 @@ public class TypingGame
 
             do
             {
-                // todo fix all modifies
                 await Task.Delay(2000);
                 time -= 2;
                 try { await msg.ModifyAsync(m => m.Content = $"Starting new typing contest in **{time}**.."); }
@@ -145,7 +144,7 @@ public class TypingGame
                     var wpm = CurrentSentence.Length / WORD_VALUE / elapsed.TotalSeconds * 60;
                     _finishedUserIds.Add(msg.Author.Id);
 
-                    var embed = new EmbedBuilder()
+                    var embed = _sender.CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle($"{msg.Author} finished the race!")
                                 .AddField("Place", $"#{_finishedUserIds.Count}", true)

@@ -128,7 +128,7 @@ public partial class Gambling
                 raceMessage = await Response().Confirm(text).SendAsync();
             else
             {
-                await msg.ModifyAsync(x => x.Embed = new EmbedBuilder()
+                await msg.ModifyAsync(x => x.Embed = _sender.CreateEmbed()
                                                         .WithTitle(GetText(strs.animal_race))
                                                         .WithDescription(text)
                                                         .WithOkColor()

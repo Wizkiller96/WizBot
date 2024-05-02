@@ -12,7 +12,7 @@ public partial class Administration
         {
             _rero = rero;
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
@@ -29,15 +29,16 @@ public partial class Administration
 
             if (levelReq < 0)
                 return;
-            
+
             var msg = await ctx.Channel.GetMessageAsync(messageId);
             if (msg is null)
             {
                 await Response().Error(strs.not_found).SendAsync();
                 return;
             }
-            
-            if (ctx.User.Id != ctx.Guild.OwnerId && ((IGuildUser)ctx.User).GetRoles().Max(x => x.Position) <= role.Position)
+
+            if (ctx.User.Id != ctx.Guild.OwnerId
+                && ((IGuildUser)ctx.User).GetRoles().Max(x => x.Position) <= role.Position)
             {
                 await Response().Error(strs.hierarchy).SendAsync();
                 return;
@@ -71,48 +72,52 @@ public partial class Administration
         {
             if (--page < 0)
                 return;
-            
-            var reros = await _rero.GetReactionRolesAsync(ctx.Guild.Id);
 
-            await ctx.SendPaginatedConfirmAsync(page, curPage =>
-            {
-                var embed = new EmbedBuilder()
-                               .WithOkColor();
+            var allReros = await _rero.GetReactionRolesAsync(ctx.Guild.Id);
 
-                var content = string.Empty;
-                foreach (var g in reros.OrderBy(x => x.Group)
-                                       .Skip(curPage * 10)
-                                       .GroupBy(x => x.MessageId)
-                                       .OrderBy(x => x.Key))
-                {
-                    var messageId = g.Key;
-                    content +=
-                        $"[{messageId}](https://discord.com/channels/{ctx.Guild.Id}/{g.First().ChannelId}/{g.Key})\n";
+            await Response()
+                  .Paginated()
+                  .Items(allReros.OrderBy(x => x.Group).ToList())
+                  .PageSize(10)
+                  .CurrentPage(page)
+                  .Page((items, _) =>
+                  {
+                      var embed = _sender.CreateEmbed()
+                          .WithOkColor();
 
-                    var groupGroups = g.GroupBy(x => x.Group);
+                      var content = string.Empty;
+                      foreach (var g in items
+                                        .GroupBy(x => x.MessageId)
+                                        .OrderBy(x => x.Key))
+                      {
+                          var messageId = g.Key;
+                          content +=
+                              $"[{messageId}](https://discord.com/channels/{ctx.Guild.Id}/{g.First().ChannelId}/{g.Key})\n";
 
-                    foreach (var ggs in groupGroups)
-                    {
-                        content += $"`< {(g.Key == 0 ? ("Not Exclusive (Group 0)") : ($"Group {ggs.Key}"))} >`\n";
+                          var groupGroups = g.GroupBy(x => x.Group);
 
-                        foreach (var rero in ggs)
-                        {
-                            content +=
-                                $"\t{rero.Emote} -> {(ctx.Guild.GetRole(rero.RoleId)?.Mention ?? "<missing role>")}";
-                            if (rero.LevelReq > 0)
-                                content += $" (lvl {rero.LevelReq}+)";
-                            content += '\n';
-                        }
-                    }
+                          foreach (var ggs in groupGroups)
+                          {
+                              content += $"`< {(g.Key == 0 ? ("Not Exclusive (Group 0)") : ($"Group {ggs.Key}"))} >`\n";
 
-                }
+                              foreach (var rero in ggs)
+                              {
+                                  content +=
+                                      $"\t{rero.Emote} -> {(ctx.Guild.GetRole(rero.RoleId)?.Mention ?? "<missing role>")}";
+                                  if (rero.LevelReq > 0)
+                                      content += $" (lvl {rero.LevelReq}+)";
+                                  content += '\n';
+                              }
+                          }
+                      }
 
-                embed.WithDescription(string.IsNullOrWhiteSpace(content)
-                    ? "There are no reaction roles on this server"
-                    : content);
+                      embed.WithDescription(string.IsNullOrWhiteSpace(content)
+                          ? "There are no reaction roles on this server"
+                          : content);
 
-                return embed;
-            }, reros.Count, 10);
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         [Cmd]

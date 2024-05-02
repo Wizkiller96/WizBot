@@ -163,7 +163,9 @@ public sealed class MusicService : IMusicService
     {
         if (_outputChannels.TryGetValue(guildId, out var chan))
         {
-            var msg = await (chan.Override ?? chan.Default).EmbedAsync(embed);
+            var msg = await _sender.Response(chan.Override ?? chan.Default)
+                                   .Embed(embed)
+                                   .SendAsync();
             return msg;
         }
 
@@ -176,11 +178,11 @@ public sealed class MusicService : IMusicService
         return async (mp, trackInfo) =>
         {
             _ = lastFinishedMessage?.DeleteAsync();
-            var embed = new EmbedBuilder()
-                .WithOkColor()
-                .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
-                .WithDescription(trackInfo.PrettyName())
-                .WithFooter(trackInfo.PrettyTotalTime());
+            var embed = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
+                        .WithDescription(trackInfo.PrettyName())
+                        .WithFooter(trackInfo.PrettyTotalTime());
 
             lastFinishedMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -192,11 +194,11 @@ public sealed class MusicService : IMusicService
         return async (mp, trackInfo, index) =>
         {
             _ = lastPlayingMessage?.DeleteAsync();
-            var embed = new EmbedBuilder()
-                .WithOkColor()
-                .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
-                .WithDescription(trackInfo.PrettyName())
-                .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
+            var embed = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
+                        .WithDescription(trackInfo.PrettyName())
+                        .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
             lastPlayingMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -279,9 +281,9 @@ public sealed class MusicService : IMusicService
         yield return ("%music.playing%", () =>
         {
             var randomPlayingTrack = _players.Select(x => x.Value.GetCurrentTrack(out _))
-                .Where(x => x is not null)
-                .Shuffle()
-                .FirstOrDefault();
+                                             .Where(x => x is not null)
+                                             .Shuffle()
+                                             .FirstOrDefault();
 
             if (randomPlayingTrack is null)
                 return "-";

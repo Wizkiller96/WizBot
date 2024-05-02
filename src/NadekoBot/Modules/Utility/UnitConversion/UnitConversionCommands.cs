@@ -13,7 +13,7 @@ public partial class Utility
         {
             var units = await _service.GetUnitsAsync();
 
-            var embed = new EmbedBuilder().WithTitle(GetText(strs.convertlist)).WithOkColor();
+            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.convertlist)).WithOkColor();
 
 
             foreach (var g in units.GroupBy(x => x.UnitType))

@@ -47,9 +47,9 @@ public partial class Utility
                       var i = 1;
 
                       if (!invs.Any())
-                          return new EmbedBuilder().WithErrorColor().WithDescription(GetText(strs.no_invites));
+                          return _sender.CreateEmbed().WithErrorColor().WithDescription(GetText(strs.no_invites));
 
-                      var embed = new EmbedBuilder().WithOkColor();
+                      var embed = _sender.CreateEmbed().WithOkColor();
                       foreach (var inv in invs)
                       {
                           var expiryString = inv.MaxAge is null or 0 || inv.CreatedAt is null

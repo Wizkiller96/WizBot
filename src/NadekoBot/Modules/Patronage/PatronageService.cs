@@ -306,7 +306,7 @@ public sealed class PatronageService
             _ => false,
             ins =>
             {
-                var eb = new EmbedBuilder()
+                var eb = _sender.CreateEmbed()
                          .WithPendingColor()
                          .WithTitle("Insufficient Patron Tier")
                          .AddField("For", $"{ins.FeatureType}: `{ins.Feature}`", true)
@@ -336,7 +336,7 @@ public sealed class PatronageService
             },
             quota =>
             {
-                var eb = new EmbedBuilder()
+                var eb = _sender.CreateEmbed()
                          .WithPendingColor()
                          .WithTitle("Quota Limit Reached");
 
@@ -778,7 +778,7 @@ public sealed class PatronageService
             if (user is null)
                 return;
 
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                      .WithOkColor()
                      .WithTitle("❤️ Thank you for supporting NadekoBot! ❤️")
                      .WithDescription(

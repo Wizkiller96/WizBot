@@ -171,7 +171,7 @@ public sealed class CurrencyRewardService : INService, IDisposable
             if (user is null)
                 return;
 
-            var eb = new EmbedBuilder()
+            var eb = _sender.CreateEmbed()
                         .WithOkColor()
                         .WithDescription(message);
             

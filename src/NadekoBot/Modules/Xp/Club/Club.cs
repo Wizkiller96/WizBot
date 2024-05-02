@@ -127,10 +127,9 @@ public partial class Xp
                   .Paginated()
                   .Items(allUsers)
                   .PageSize(10)
-                  .CurrentPage(0)
                   .Page((users, _) =>
                   {
-                      var embed = new EmbedBuilder()
+                      var embed = _sender.CreateEmbed()
                                   .WithOkColor()
                                   .WithTitle($"{club}")
                                   .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
@@ -206,22 +205,21 @@ public partial class Xp
 
             var bans = club.Bans.Select(x => x.User).ToArray();
 
-            return ctx.SendPaginatedConfirmAsync(page,
-                _ =>
-                {
-                    var toShow = string.Join("\n",
-                        bans
-                            .Skip(page * 10)
-                            .Take(10)
-                            .Select(x => x.ToString()));
+            return Response()
+                   .Paginated()
+                   .Items(bans)
+                   .PageSize(10)
+                   .CurrentPage(page)
+                   .Page((items, _) =>
+                   {
+                       var toShow = string.Join("\n", items.Select(x => x.ToString()));
 
-                    return new EmbedBuilder()
-                           .WithTitle(GetText(strs.club_bans_for(club.ToString())))
-                           .WithDescription(toShow)
-                           .WithOkColor();
-                },
-                bans.Length,
-                10);
+                       return _sender.CreateEmbed()
+                              .WithTitle(GetText(strs.club_bans_for(club.ToString())))
+                              .WithDescription(toShow)
+                              .WithOkColor();
+                   })
+                   .SendAsync();
         }
 
         [Cmd]
@@ -236,18 +234,21 @@ public partial class Xp
 
             var apps = club.Applicants.Select(x => x.User).ToArray();
 
-            return ctx.SendPaginatedConfirmAsync(page,
-                _ =>
-                {
-                    var toShow = string.Join("\n", apps.Skip(page * 10).Take(10).Select(x => x.ToString()));
+            return Response()
+                   .Paginated()
+                   .Items(apps)
+                   .PageSize(10)
+                   .CurrentPage(page)
+                   .Page((items, _) =>
+                   {
+                       var toShow = string.Join("\n", items.Select(x => x.ToString()));
 
-                    return new EmbedBuilder()
-                           .WithTitle(GetText(strs.club_apps_for(club.ToString())))
-                           .WithDescription(toShow)
-                           .WithOkColor();
-                },
-                apps.Length,
-                10);
+                       return _sender.CreateEmbed()
+                              .WithTitle(GetText(strs.club_apps_for(club.ToString())))
+                              .WithDescription(toShow)
+                              .WithOkColor();
+                   })
+                   .SendAsync();
         }
 
         [Cmd]
@@ -412,7 +413,7 @@ public partial class Xp
                     ? "-"
                     : desc;
 
-                var eb = new EmbedBuilder()
+                var eb = _sender.CreateEmbed()
                          .WithAuthor(ctx.User)
                          .WithTitle(GetText(strs.club_desc_update))
                          .WithOkColor()
@@ -443,7 +444,7 @@ public partial class Xp
 
             var clubs = _service.GetClubLeaderboardPage(page);
 
-            var embed = new EmbedBuilder().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
+            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
 
             var i = page * 9;
             foreach (var club in clubs)
@@ -464,7 +465,7 @@ public partial class Xp
                     return;
                 case ClubRenameResult.Success:
                     {
-                        var embed = new EmbedBuilder().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
+                        var embed = _sender.CreateEmbed().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
                         await Response().Embed(embed).SendAsync();
                         return;
                     }

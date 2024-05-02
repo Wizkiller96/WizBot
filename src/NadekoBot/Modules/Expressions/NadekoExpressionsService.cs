@@ -280,7 +280,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                 }
             }
 
-            var sentMsg = await expr.Send(msg, _repSvc, _client, false);
+            var sentMsg = await expr.Send(msg, _repSvc, _client, _sender);
 
             var reactions = expr.GetReactions();
             foreach (var reaction in reactions)

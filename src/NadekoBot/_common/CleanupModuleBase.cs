@@ -7,7 +7,7 @@ public abstract class CleanupModuleBase : NadekoModule
     {
         try
         {
-            var embed = new EmbedBuilder()
+            var embed = _sender.CreateEmbed()
                 .WithTitle(GetText(strs.sql_confirm_exec))
                 .WithDescription(name);
 
