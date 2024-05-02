@@ -22,6 +22,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - `.todo done <id>` - completes a todo (marks it with a checkmark)
   - `.todo list` - lists all todos
   - `.todo edit <id> <new message>` - edits a todo item message
+  - `.todo show <id>` - Shows the text of the specified todo item
   - In addition to that, there are also Todo archive commands
     - `.todo archive add <name>` - adds all current todos (completed and not completed) to the archived list, your current todo list will become cleared
     - `.todo archive list` - lists all your archived todo lists
@@ -38,8 +39,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 - Users who have manage messages perm in the channel will now be excluded from link and invite filtering (`.sfi` and `.sfl`)
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
-- `.cmds <module name>` looks better / simpler
-- Cleanup: Removed a lot of obsolete aliases.
+- `.cmds <module name>`, `.cmds <group name` and `.mdls` looks better / cleaner / simpler
 - The bot will now send a discord Reply to every command
 - A lot of code cleanup (still a lot to be done) and Quality of Life improvements
 
@@ -51,10 +51,11 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 
 ### Removed
 
-- `.poll` commands removed, discord added polls.
+- `.poll` commands removed as discord added polls
 - `.scpl` and other music soundcloud commands have been removed as soundcloud isn't issuing new api tokens for years now
 - Removed a lot of useless and nsfw commands
 - Removed log voice presence TTS
+- Cleanup: Removed a lot of obsolete aliases from aliases.yml
 
 ## [4.3.22] - 23.04.2023
 

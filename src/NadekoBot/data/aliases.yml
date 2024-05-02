@@ -1160,19 +1160,19 @@ pathofexilecurrency:
   - poec
 rollduel:
   - rollduel
-reactionroleadd:
-  - reactionroleadd
+reroadd:
+  - reroadd
   - reroa
-reactionroleslist:
-  - reactionroleslist
+rerolist:
+  - rerolist
   - reroli
-reactionrolesremove:
-  - reactionrolesremove
+reroremove:
+  - reroremove
   - rerorm
-reactionrolesdeleteall:
+rerodeleteall:
   - rerodeleteall
   - rerodela
-reactionrolestransfer:
+rerotransfer:
   - rerotransfer
   - rerot
 blackjack:
@@ -1387,5 +1387,9 @@ todoarchivedelete:
 todoedit:
   - edit
   - change
+todoshow:
+  - show
+  - sh
+  - see
 stickyroles:
   - stickyroles

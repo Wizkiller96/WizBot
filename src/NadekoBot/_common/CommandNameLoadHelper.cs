@@ -17,7 +17,7 @@ public static class CommandNameLoadHelper
 
     public static string[] GetAliasesFor(string methodName)
         => _lazyCommandAliases.Value.TryGetValue(methodName.ToLowerInvariant(), out var aliases) && aliases.Length > 1
-            ? aliases.Skip(1).ToArray()
+            ? aliases.ToArray()
             : Array.Empty<string>();
 
     public static string GetCommandNameFor(string methodName)

@@ -66,6 +66,22 @@ public partial class Utility
                   .SendAsync();
         }
 
+        [Cmd]
+        public async Task TodoShow(kwum todoId)
+        {
+            var todo = await _service.GetTodoAsync(ctx.User.Id, todoId);
+
+            if (todo is null)
+            {
+                await Response().Error(strs.todo_not_found).SendAsync();
+                return;
+            }
+
+            await Response()
+                  .Confirm($"`{new kwum(todo.Id)}` {todo.Todo}")
+                  .SendAsync();
+        }
+
 
         [Cmd]
         public async Task TodoComplete(kwum todoId)
@@ -105,13 +121,16 @@ public partial class Utility
             var sb = new StringBuilder();
             foreach (var todo in todos)
             {
-                sb.AppendLine($"{(todo.IsDone ? "✔" : "□")} {Format.Code(new kwum(todo.Id).ToString())} {todo.Todo}");
+                sb.AppendLine(InternalItemShow(todo));
 
                 sb.AppendLine("---");
             }
 
             eb.WithDescription(sb.ToString());
         }
+
+        private static string InternalItemShow(TodoModel todo)
+            => $"{(todo.IsDone ? "✔" : "□")} {Format.Code(new kwum(todo.Id).ToString())} {todo.Todo}";
 
         [Group("archive")]
         public partial class ArchiveCommands : NadekoModule<TodoService>

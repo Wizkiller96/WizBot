@@ -664,11 +664,17 @@ public partial class Utility : NadekoModule
                          .WithReferences(this.GetType().Assembly)
                          .WithImports(
                              "System",
+                             "System.Collections.Generic",
+                             "System.IO",
                              "System.Linq",
+                             "System.Net.Http",
+                             "System.Threading",
+                             "System.Threading.Tasks",
                              "NadekoBot",
                              "NadekoBot.Extensions",
                              "Microsoft.Extensions.DependencyInjection",
                              "NadekoBot.Common",
+                             "NadekoBot.Modules",
                              "System.Text",
                              "System.Text.Json"),
             globalsType: typeof(EvalGlobals));

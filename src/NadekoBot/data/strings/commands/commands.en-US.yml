@@ -2067,7 +2067,7 @@ rollduel:
   args:
     - "50 @Someone"
     - "@Challenger"
-reactionroleadd:
+reroadd:
   desc: |-
     Specify a message id, emote and a role name to have the bot assign the specified role to the user who reacts to the specified message (in this channel) with the specified emoji.
     You can optionally specify an exclusivity group. Default is group 0 which is non-exclusive. Other groups are exclusive. Exclusive groups will let the user only have one of the roles specified in that group.
@@ -2078,19 +2078,19 @@ reactionroleadd:
     - 971276352684691466 😢 emo 1
     - 971276352684691466 🤔 philosopher 5 20
     - 971276352684691466 👨 normie 5 20
-reactionroleslist:
+rerolist:
   desc: "Lists all ReactionRole messages on this server with their message ids. Clicking/Tapping message ids will send you to that message."
   args:
     - ""
-reactionrolesremove:
+reroremove:
   desc: "Remove all reaction roles from message specified by the id"
   args:
     - "971276352684691466"
-reactionrolesdeleteall:
+rerodeleteall:
   desc: "Deletes all reaction roles on the server. This action is irreversible."
   args:
     - ""
-reactionrolestransfer:
+rerotransfer:
   desc: "Transfers reaction roles from one message to another by specifying their ids. If the target message has reaction roles specified already, the reaction roles will be MERGED, not overwritten."
   args:
     - "971276352684691466 971427748448964628"
@@ -2371,6 +2371,10 @@ todoarchiveshow:
   desc: "Shows the archived todo list with the specified ID."
   args:
     - "3c"
+todoshow:
+  desc: "Shows the text of the todo with the specified ID."
+  args:
+    - "4a"
 todoarchivedelete:
   desc: "Deletes the archived todo list with the specified ID."
   args:

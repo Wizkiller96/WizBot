@@ -283,14 +283,13 @@ public sealed class Help : NadekoModule<HelpService>
                                        //if cross is specified, and the command doesn't satisfy the requirements, cross it out
                                        if (opts.View == CommandsOptions.ViewType.Cross)
                                        {
-                                           return
-                                               $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
+                                           return $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
                                        }
 
                                        if (x.Aliases.Count == 1)
                                            return prefix + x.Aliases[0];
 
-                                       return prefix + x.Aliases[0] + " / " + prefix + x.Aliases[1];
+                                       return prefix + x.Aliases[0] + " | " + prefix + x.Aliases[1];
                                    });
 
                 embed.AddField(g.ElementAt(i).Key, "" + string.Join("\n", transformed) + "", true);
@@ -304,12 +303,18 @@ public sealed class Help : NadekoModule<HelpService>
     private async Task Group(ModuleInfo group)
     {
         var eb = _sender.CreateEmbed()
-                 .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
-                 .WithOkColor();
+                        .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
+                        .WithOkColor();
 
         foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
-            eb.AddField(prefix + cmd.Aliases.First(), cmd.RealSummary(_strings, _medusae, Culture, prefix));
+            string cmdName;
+            if (cmd.Aliases.Count > 1)
+                cmdName = Format.Code(prefix +cmd.Aliases[0]) + " | " + Format.Code(prefix + cmd.Aliases[1]);
+            else
+                cmdName = Format.Code(prefix + cmd.Aliases.First());
+
+            eb.AddField(cmdName, cmd.RealSummary(_strings, _medusae, Culture, prefix));
         }
 
         await Response().Embed(eb).SendAsync();
@@ -358,7 +363,7 @@ public sealed class Help : NadekoModule<HelpService>
                 var data = await GetHelpString();
                 if (data == default)
                     return;
-                
+
                 await Response().Text(data).SendAsync();
                 try
                 {
@@ -536,8 +541,8 @@ public sealed class Help : NadekoModule<HelpService>
                 SelfhostAction));
 
         var eb = _sender.CreateEmbed()
-                 .WithOkColor()
-                 .WithTitle("Thank you for considering to donate to the NadekoBot project!");
+                        .WithOkColor()
+                        .WithTitle("Thank you for considering to donate to the NadekoBot project!");
 
         eb
             .WithDescription("NadekoBot relies on donations to keep the servers, services and APIs running.\n"
@@ -581,7 +586,7 @@ Nadeko will DM you the welcome instructions, and you may start using the patron-
                   .Embed(eb)
                   .Interaction(selfhostInter)
                   .SendAsync();
-            
+
             _ = ctx.OkAsync();
         }
         catch

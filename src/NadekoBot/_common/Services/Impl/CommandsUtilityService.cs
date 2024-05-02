@@ -35,7 +35,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         var str = $"**`{prefix + com.Aliases.First()}`**";
         var alias = com.Aliases.Skip(1).FirstOrDefault();
         if (alias is not null)
-            str += $" **/ `{prefix + alias}`**";
+            str += $" **| `{prefix + alias}`**";
 
         var culture = _loc.GetCultureInfo(guild);
 

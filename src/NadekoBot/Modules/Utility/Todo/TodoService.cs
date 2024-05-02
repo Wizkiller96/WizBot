@@ -179,4 +179,14 @@ public sealed class TodoService
 
         return count > 0;
     }
+
+    public async Task<TodoModel?> GetTodoAsync(ulong userId, int todoId)
+    {
+        await using var ctx = _db.GetDbContext();
+        
+        return await ctx
+            .GetTable<TodoModel>()
+            .Where(x => x.UserId == userId && x.Id == todoId)
+            .FirstOrDefaultAsyncLinqToDB();
+    }
 }
