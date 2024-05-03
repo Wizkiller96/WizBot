@@ -283,8 +283,8 @@ public partial class Gambling
             }
         }
 
-        private static long GetProfitAmount(int price)
-            => (int)Math.Ceiling(0.90 * price);
+        private long GetProfitAmount(int price)
+            => (int)Math.Ceiling((1.0m - Config.BotCuts.ShopSaleCut) * price);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]

@@ -1,12 +1,12 @@
 # DO NOT CHANGE
-version: 6
+version: 7
 # Currency settings
 currency:
-# What is the emoji/character which represents the currency
+  # What is the emoji/character which represents the currency
   sign: "🌸"
   # What is the name of the currency
   name: Nadeko Flower
-  # For how long will the transactions be kept in the database (curtrs)
+  # For how long (in days) will the transactions be kept in the database (curtrs)
   # Set 0 to disable cleanup (keep transactions forever)
   transactionsLifetime: 0
 # Minimum amount users can bet (>=0)
@@ -16,13 +16,13 @@ minBet: 0
 maxBet: 0
 # Settings for betflip command
 betFlip:
-# Bet multiplier if user guesses correctly
+  # Bet multiplier if user guesses correctly
   multiplier: 1.95
 # Settings for betroll command
 betRoll:
-# When betroll is played, user will roll a number 0-100.
-# This setting will describe which multiplier is used for when the roll is higher than the given number.
-# Doesn't have to be ordered.
+  # When betroll is played, user will roll a number 0-100.
+  # This setting will describe which multiplier is used for when the roll is higher than the given number.
+  # Doesn't have to be ordered.
   pairs:
     - whenAbove: 99
       multiplyBy: 10
@@ -32,9 +32,9 @@ betRoll:
       multiplyBy: 2
 # Automatic currency generation settings.
 generation:
-# when currency is generated, should it also have a random password
-# associated with it which users have to type after the .pick command
-# in order to get it
+  # when currency is generated, should it also have a random password
+  # associated with it which users have to type after the .pick command
+  # in order to get it
   hasPassword: true
   # Every message sent has a certain % chance to generate the currency
   # specify the percentage here (1 being 100%, 0 being 0% - for example
@@ -50,16 +50,16 @@ generation:
 # Settings for timely command
 # (letting people claim X amount of currency every Y hours)
 timely:
-# How much currency will the users get every time they run .timely command
-# setting to 0 or less will disable this feature
+  # How much currency will the users get every time they run .timely command
+  # setting to 0 or less will disable this feature
   amount: 120
   # How often (in hours) can users claim currency with .timely command
   # setting to 0 or less will disable this feature
   cooldown: 12
 # How much will each user's owned currency decay over time.
 decay:
-# Percentage of user's current currency which will be deducted every 24h.
-# 0 - 1 (1 is 100%, 0.5 50%, 0 disabled)
+  # Percentage of user's current currency which will be deducted every 24h.
+  # 0 - 1 (1 is 100%, 0.5 50%, 0 disabled)
   percent: 0
   # Maximum amount of user's currency that can decay at each interval. 0 for unlimited.
   maxDecay: 0
@@ -67,9 +67,17 @@ decay:
   minThreshold: 99
   # How often, in hours, does the decay run. Default is 24 hours
   hourInterval: 24
+# What is the bot's cut on some transactions
+botCuts:
+  # Shop sale cut percentage.
+  # Whenever a user buys something from the shop, bot will take a cut equal to this percentage.
+  # The rest goes to the user who posted the item/role/whatever to the shop.
+  # This is a good way to reduce the amount of currency in circulation therefore keeping the inflation in check.
+  # Default 0.1 (10%).
+  shopSaleCut: 0.1
 # Settings for LuckyLadder command
 luckyLadder:
-# Self-Explanatory. Has to have 8 values, otherwise the command won't work.
+  # Self-Explanatory. Has to have 8 values, otherwise the command won't work.
   multipliers:
     - 2.4
     - 1.7
@@ -81,12 +89,12 @@ luckyLadder:
     - 0.1
 # Settings related to waifus
 waifu:
-# Minimum price a waifu can have
+  # Minimum price a waifu can have
   minPrice: 50
   multipliers:
-  # Multiplier for waifureset. Default 150.
-  # Formula (at the time of writing this):
-  # price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up
+    # Multiplier for waifureset. Default 150.
+    # Formula (at the time of writing this):
+    # price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up
     waifuReset: 150
     # The minimum amount of currency that you have to pay
     # in order to buy a waifu who doesn't have a crush on you.
@@ -117,9 +125,9 @@ waifu:
   # Settings for periodic waifu price decay.
   # Waifu price decays only if the waifu has no claimer.
   decay:
-  # Percentage (0 - 100) of the waifu value to reduce.
-  # Set 0 to disable
-  # For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
+    # Percentage (0 - 100) of the waifu value to reduce.
+    # Set 0 to disable
+    # For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
     percent: 0
     # How often to decay waifu values, in hours
     hourInterval: 24
@@ -257,5 +265,5 @@ patreonCurrencyPerCent: 1
 voteReward: 100
 # Slot config
 slots:
-# Hex value of the color which the numbers on the slot image will have.
+  # Hex value of the color which the numbers on the slot image will have.
   currencyFontColor: ff0000

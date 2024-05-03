@@ -33,6 +33,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
   - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
+  - You can now configure whether nadeko ignores other bots in `bot.yml`
+  - You can now configure shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
 - Added seconds/sec/s to .convert command
 

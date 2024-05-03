@@ -13,7 +13,7 @@ namespace NadekoBot.Common.Configs;
 public sealed partial class BotConfig : ICloneable<BotConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 6;
+    public int Version { get; set; } = 7;
 
     [Comment("""
         Most commands, when executed, have a small colored line
@@ -51,6 +51,14 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
         This option will only work when ForwardToAllOwners is set to false
         """)]
     public ulong? ForwardToChannel { get; set; }
+    
+    [Comment("""
+             Should the bot ignore messages from other bots?
+             Settings this to false might get your bot banned if it gets into a spam loop with another bot.
+             This will only affect command executions, other features will still block bots from access.
+             Default true
+             """)]
+    public bool IgnoreOtherBots { get; set; }
 
     [Comment("""
         When a user DMs the bot with a message which is not a command

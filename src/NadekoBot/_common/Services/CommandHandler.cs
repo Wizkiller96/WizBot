@@ -23,7 +23,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 
     private readonly DiscordSocketClient _client;
     private readonly CommandService _commandService;
-    private readonly BotConfigService _bss;
+    private readonly BotConfigService _bcs;
     private readonly IBot _bot;
     private readonly IBehaviorHandler _behaviorHandler;
     private readonly IServiceProvider _services;
@@ -31,21 +31,24 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
     private readonly ConcurrentDictionary<ulong, string> _prefixes;
 
     private readonly DbService _db;
+
+    private readonly BotConfig _bc;
     // private readonly InteractionService _interactions;
 
     public CommandHandler(
         DiscordSocketClient client,
         DbService db,
         CommandService commandService,
-        BotConfigService bss,
+        BotConfigService bcs,
         IBot bot,
         IBehaviorHandler behaviorHandler,
         // InteractionService interactions,
         IServiceProvider services)
     {
-    _client = client;
-    _commandService = commandService;
-        _bss = bss;
+        _client = client;
+        _commandService = commandService;
+        _bc = bcs.Data;
+        _bcs = bcs;
         _bot = bot;
         _behaviorHandler = behaviorHandler;
         _db = db;
@@ -55,7 +58,6 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         _prefixes = bot.AllGuildConfigs.Where(x => x.Prefix is not null)
                        .ToDictionary(x => x.GuildId, x => x.Prefix)
                        .ToConcurrent();
-
     }
 
     public async Task OnReadyAsync()
@@ -72,7 +74,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
     public string GetPrefix(ulong? id = null)
     {
         if (id is null || !_prefixes.TryGetValue(id.Value, out var prefix))
-            return _bss.Data.Prefix;
+            return _bcs.Data.Prefix;
 
         return prefix;
     }
@@ -82,7 +84,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         if (string.IsNullOrWhiteSpace(prefix))
             throw new ArgumentNullException(nameof(prefix));
 
-        _bss.ModifyConfig(bs =>
+        _bcs.ModifyConfig(bs =>
         {
             bs.Prefix = prefix;
         });
@@ -146,15 +148,15 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 
     private Task LogSuccessfulExecution(IUserMessage usrMsg, ITextChannel channel, params int[] execPoints)
     {
-        if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
+        if (_bcs.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
             Log.Information("""
-                Command Executed after {ExecTime}s
-                	User: {User}
-                	Server: {Server}
-                	Channel: {Channel}
-                	Message: {Message}
-                """,
+                            Command Executed after {ExecTime}s
+                            	User: {User}
+                            	Server: {Server}
+                            	Channel: {Channel}
+                            	Message: {Message}
+                            """,
                 string.Join("/", execPoints.Select(x => (x * ONE_THOUSANDTH).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
                 channel is null ? "PRIVATE" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
@@ -179,16 +181,16 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         ITextChannel channel,
         params int[] execPoints)
     {
-        if (_bss.Data.ConsoleOutputType == ConsoleOutputType.Normal)
+        if (_bcs.Data.ConsoleOutputType == ConsoleOutputType.Normal)
         {
             Log.Warning("""
-                Command Errored after {ExecTime}s
-                	User: {User}
-                	Server: {Guild}
-                	Channel: {Channel}
-                	Message: {Message}
-                	Error: {ErrorMessage}
-                """,
+                        Command Errored after {ExecTime}s
+                        	User: {User}
+                        	Server: {Guild}
+                        	Channel: {Channel}
+                        	Message: {Message}
+                        	Error: {ErrorMessage}
+                        """,
                 string.Join("/", execPoints.Select(x => (x * ONE_THOUSANDTH).ToString("F3"))),
                 usrMsg.Author + " [" + usrMsg.Author.Id + "]",
                 channel is null ? "DM" : channel.Guild.Name + " [" + channel.Guild.Id + "]",
@@ -199,9 +201,9 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         else
         {
             Log.Warning("""
-                Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
-                	Err: {ErrorMessage}
-                """,
+                        Err | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}
+                        	Err: {ErrorMessage}
+                        """,
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
                 usrMsg.Author.Id,
@@ -212,8 +214,15 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 
     private Task MessageReceivedHandler(SocketMessage msg)
     {
-        //no bots, wait until bot connected and initialized
-        if (msg.Author.IsBot || !_bot.IsReady)
+        if (!_bot.IsReady)
+            return Task.CompletedTask;
+
+        if (_bc.IgnoreOtherBots)
+        {
+            if (msg.Author.IsBot)
+                return Task.CompletedTask;
+        }
+        else if (msg.Author.Id == _client.CurrentUser.Id)
             return Task.CompletedTask;
 
         if (msg is not SocketUserMessage usrMsg)
@@ -267,7 +276,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
                 isPrefixCommand ? 1 : prefix.Length,
                 _services,
                 MultiMatchHandling.Best);
-            
+
             startTime = Environment.TickCount - startTime;
 
             // if a command is found
@@ -287,10 +296,10 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
                 {
                     error = HumanizeError(error);
                     LogErroredExecution(error, usrMsg, channel as ITextChannel, blockTime, startTime);
-                    
+
                     if (guild is not null)
                         await CommandErrored(info, channel as ITextChannel, error);
-                    
+
                     return;
                 }
             }
@@ -355,9 +364,9 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
                 {
                     case MultiMatchHandling.Best:
                         argList = parseResult.ArgValues
-                            .Map(x => x.Values.MaxBy(y => y.Score));
+                                             .Map(x => x.Values.MaxBy(y => y.Score));
                         paramList = parseResult.ParamValues
-                            .Map(x => x.Values.MaxBy(y => y.Score));
+                                               .Map(x => x.Values.MaxBy(y => y.Score));
                         parseResult = ParseResult.FromSuccess(argList, paramList);
                         break;
                 }

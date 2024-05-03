@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 5
+version: 7
 # Most commands, when executed, have a small colored line
 # next to the response. The color depends whether the command
 # is completed, errored or in progress (pending)
@@ -7,7 +7,7 @@ version: 5
 # To get color's hex, you can go here https://htmlcolorcodes.com/
 # and copy the hex code fo your selected color (marked as #)
 color:
-# Color used for embed responses when command successfully executes
+  # Color used for embed responses when command successfully executes
   ok: 00e584
   # Color used for embed responses when command has an error
   error: ee281f
@@ -28,6 +28,11 @@ forwardToAllOwners: false
 # Any messages sent by users in Bot's DM to be forwarded to the specified channel.
 # This option will only work when ForwardToAllOwners is set to false
 forwardToChannel: 
+# Should the bot ignore messages from other bots?
+# Settings this to false might get your bot banned if it gets into a spam loop with another bot.
+# This will only affect command executions, other features will still block bots from access.
+# Default true
+ignoreOtherBots: true
 # When a user DMs the bot with a message which is not a command
 # they will receive this message. Leave empty for no response. The string which will be sent whenever someone DMs the bot.
 # Supports embeds. How it looks: https://puu.sh/B0BLV.png

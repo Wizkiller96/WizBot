@@ -42,6 +42,9 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 
     [Comment("""How much will each user's owned currency decay over time.""")]
     public DecayConfig Decay { get; set; }
+    
+    [Comment("""What is the bot's cut on some transactions""")]
+    public BotCutConfig BotCuts { get; set; }
 
     [Comment("""Settings for LuckyLadder command""")]
     public LuckyLadderSettings LuckyLadder { get; set; }
@@ -75,6 +78,7 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
         Decay = new();
         Slots = new();
         LuckyLadder = new();
+        BotCuts = new();
     }
 }
 
@@ -384,4 +388,17 @@ public sealed partial class BetRollPair
 {
     public int WhenAbove { get; set; }
     public float MultiplyBy { get; set; }
+}
+
+[Cloneable]
+public sealed partial class BotCutConfig
+{
+    [Comment("""
+             Shop sale cut percentage.
+             Whenever a user buys something from the shop, bot will take a cut equal to this percentage.
+             The rest goes to the user who posted the item/role/whatever to the shop.
+             This is a good way to reduce the amount of currency in circulation therefore keeping the inflation in check.
+             Default 0.1 (10%).
+             """)]
+    public decimal ShopSaleCut { get; set; } = 0.1m;
 }
