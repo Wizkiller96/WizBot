@@ -1,4 +1,5 @@
 #nullable disable
+using Discord.Rest;
 using NadekoBot.Modules.Administration.Services;
 using NadekoBot.Db.Models;
 using Nadeko.Common.Medusa;
@@ -62,9 +63,9 @@ public partial class Administration
 
             await message.ModifyAsync(x =>
                 x.Embed = _sender.CreateEmbed()
-                          .WithDescription(GetText(strs.cache_users_done(added, updated)))
-                          .WithOkColor()
-                          .Build()
+                                 .WithDescription(GetText(strs.cache_users_done(added, updated)))
+                                 .WithOkColor()
+                                 .Build()
             );
         }
 
@@ -80,7 +81,7 @@ public partial class Administration
                 && ctx.Message is SocketUserMessage msg)
             {
                 var fakeMessage = new DoAsUserMessage(msg, user, message);
-                
+
 
                 await _cmdHandler.TryRunCommand(sg, ch, fakeMessage);
             }
@@ -115,13 +116,13 @@ public partial class Administration
 
             await Response()
                   .Embed(_sender.CreateEmbed()
-                         .WithOkColor()
-                         .WithTitle(GetText(strs.scadd))
-                         .AddField(GetText(strs.server),
-                             cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
-                             true)
-                         .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                         .AddField(GetText(strs.command_text), cmdText))
+                                .WithOkColor()
+                                .WithTitle(GetText(strs.scadd))
+                                .AddField(GetText(strs.server),
+                                    cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
+                                    true)
+                                .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                                .AddField(GetText(strs.command_text), cmdText))
                   .SendAsync();
         }
 
@@ -546,51 +547,41 @@ public partial class Administration
             await Response().Confirm(strs.set_stream).SendAsync();
         }
 
+        public enum SendWhere
+        {
+            User = 0,
+            U = 0,
+            Usr = 0,
+
+            Channel = 1,
+            Ch = 1,
+            Chan = 1,
+        }
+
         [Cmd]
         [OwnerOnly]
-        public async Task Send(string where, [Leftover] SmartText text = null)
+        public async Task Send(SendWhere to, ulong id, [Leftover] SmartText text)
         {
-            var ids = where.Split('|');
-            if (ids.Length != 2)
-                return;
-
-            var sid = ulong.Parse(ids[0]);
-            var server = _client.Guilds.FirstOrDefault(s => s.Id == sid);
-
-            if (server is null)
-                return;
-
-            // var repSvc = new ReplacementBuilder().WithDefault(Context).Build();
-            var repCtx = new ReplacementContext(Context);
-
-            if (ids[1].ToUpperInvariant().StartsWith("C:", StringComparison.InvariantCulture))
+            var ch = to switch
             {
-                var cid = ulong.Parse(ids[1][2..]);
-                var ch = server.TextChannels.FirstOrDefault(c => c.Id == cid);
-                if (ch is null)
-                    return;
+                SendWhere.User => await ((await _client.Rest.GetUserAsync(id))?.CreateDMChannelAsync()
+                                         ?? Task.FromResult<RestDMChannel>(null)),
+                SendWhere.Channel => await _client.Rest.GetChannelAsync(id) as IMessageChannel,
+                _ => null
+            };
 
-                text = await repSvc.ReplaceAsync(text, repCtx);
-                await Response().Channel(ch).Text(text).SendAsync();
-            }
-            else if (ids[1].ToUpperInvariant().StartsWith("U:", StringComparison.InvariantCulture))
-            {
-                var uid = ulong.Parse(ids[1][2..]);
-                var user = server.Users.FirstOrDefault(u => u.Id == uid);
-                if (user is null)
-                    return;
-
-                var ch = await user.CreateDMChannelAsync();
-                text = await repSvc.ReplaceAsync(text, repCtx);
-                await Response().Channel(ch).Text(text).SendAsync();
-            }
-            else
+            if (ch is null)
             {
                 await Response().Error(strs.invalid_format).SendAsync();
                 return;
             }
 
-            await Response().Confirm(strs.message_sent).SendAsync();
+            
+            var repCtx = new ReplacementContext(ctx);
+            text = await repSvc.ReplaceAsync(text, repCtx);
+            await Response().Channel(ch).Text(text).SendAsync();
+         
+            await ctx.OkAsync();;
         }
 
         [Cmd]

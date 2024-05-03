@@ -413,10 +413,10 @@ setgame:
     - "Watching anime."
     - "Listening music."
 send:
-  desc: "Sends a message to someone on a different server through the bot.  Separate server and channel/user ids with `|` and prefix the channel id with `c:` and the user id with `u:`."
+  desc: "Sends a message to a channel or user. Channel or user can be "
   args:
-    - "serverid|c:channelid message"
-    - "serverid|u:userid message"
+    - "channel 123123123132312 Stop spamming commands plz"
+    - "user 1231231232132 I can see in the console what you're doing."
 savechat:
   desc: "Saves a number of messages to a text file and sends it to you."
   args:

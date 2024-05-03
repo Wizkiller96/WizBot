@@ -466,7 +466,13 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
 
     public SourcedPaginatedResponseBuilder<T> Interaction(Func<int, Task<SimpleInteractionBase>> func)
     {
-        InteractionFunc = async (i) => await func(i);
+        InteractionFunc = func; //async (i) => await func(i);
+        return this;
+    }
+
+    public SourcedPaginatedResponseBuilder<T> Interaction(SimpleInteractionBase inter)
+    {
+        InteractionFunc = _ => Task.FromResult(inter);
         return this;
     }
 }
