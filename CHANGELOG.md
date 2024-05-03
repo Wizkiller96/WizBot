@@ -34,10 +34,13 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - For self-hosters:
   - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
 - Added a page parameter to `.feedlist`
+- Added seconds/sec/s to .convert command
 
 ### Changed
 
 - Users who have manage messages perm in the channel will now be excluded from link and invite filtering (`.sfi` and `.sfl`)
+- `.send` command should work consistently and correctly now. You can have targets from other shards too. The usage has been changed. refer to `.h .send` for more info
+- `.serverinfo` no longer takes a server name. It only takes an id or no arguments
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 - `.cmds <module name>`, `.cmds <group name` and `.mdls` looks better / cleaner / simpler
 - The bot will now send a discord Reply to every command
@@ -48,6 +51,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
 - `.say` will now correctly report errors if the user or the bot don't have sufficent perms to send a message in the targeted channel
 - Fixed a bug in .invitelist not paginating correctly
+- `.serverinfo` will now correctly work for other shards
+- `.send` will now correctly work for other shards
 
 ### Removed
 

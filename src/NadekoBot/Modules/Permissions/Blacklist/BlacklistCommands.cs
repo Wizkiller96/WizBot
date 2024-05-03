@@ -33,7 +33,7 @@ public partial class Permissions
                                                                           ?? ""),
                                               BlacklistType.User => Format.Code(i.ItemId.ToString())
                                                                     + " "
-                                                                    + ((await _client.Rest.GetUserAsync(i.ItemId))
+                                                                    + ((_client.GetUser(i.ItemId))
                                                                        ?.ToString()
                                                                        ?? ""),
                                               BlacklistType.Server => Format.Code(i.ItemId.ToString())

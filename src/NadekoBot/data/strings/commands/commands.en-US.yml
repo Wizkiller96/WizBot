@@ -437,9 +437,9 @@ remindlist:
     - "1"
     - "server 2"
 serverinfo:
-  desc: "Shows info about the server the bot is on. If no server is supplied, it defaults to current one."
+  desc: "Shows info about the server with the specified ID. The bot has to be on that server. If no server is supplied, it defaults to current one."
   args:
-    - "Some Server"
+    - "123123132233"
 channelinfo:
   desc: "Shows info about the channel. If no channel is supplied, it defaults to current one."
   args:

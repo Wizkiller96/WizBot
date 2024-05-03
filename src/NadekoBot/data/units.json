@@ -721,6 +721,17 @@
   },
   {
     "Triggers": [
+      "second",
+      "seconds",
+      "sec",
+      "secs",
+      "s"
+    ],
+    "UnitType": "time",
+    "Modifier": 1
+  },
+  {
+    "Triggers": [
       "year",
       "years",
       "year",

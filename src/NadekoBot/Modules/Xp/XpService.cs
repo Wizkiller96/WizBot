@@ -422,8 +422,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 return;
 
             await _sender.Response(chan)
-                         .Confirm(
-                             _strings.GetText(strs.level_up_global(user.Mention,
+                         .Confirm(_strings.GetText(strs.level_up_global(user.Mention,
                                      Format.Bold(newLevel.ToString())),
                                  guild.Id))
                          .SendAsync();

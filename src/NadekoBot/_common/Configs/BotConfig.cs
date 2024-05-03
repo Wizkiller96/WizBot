@@ -13,7 +13,7 @@ namespace NadekoBot.Common.Configs;
 public sealed partial class BotConfig : ICloneable<BotConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 5;
+    public int Version { get; set; } = 6;
 
     [Comment("""
         Most commands, when executed, have a small colored line

@@ -22,31 +22,25 @@ public partial class Utility
 
         [Cmd]
         [OwnerOnly]
-        public Task ServerInfo([Leftover] string guildName)
-            => InternalServerInfo(guildName);
+        public Task ServerInfo(ulong guildId)
+            => InternalServerInfo(guildId);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public Task ServerInfo()
-            => InternalServerInfo();
+            => InternalServerInfo(ctx.Guild.Id);
 
-        private async Task InternalServerInfo(string guildName = null)
+        private async Task InternalServerInfo(ulong guildId)
         {
-            var channel = (ITextChannel)ctx.Channel;
-            guildName = guildName?.ToUpperInvariant();
-            SocketGuild guild;
-
-            if (string.IsNullOrWhiteSpace(guildName))
-                guild = (SocketGuild)channel.Guild;
-            else
-                guild = _client.Guilds.FirstOrDefault(g => g.Name.ToUpperInvariant() == guildName.ToUpperInvariant());
-
+            var guild = (IGuild)_client.GetGuild(guildId)
+                        ?? await _client.Rest.GetGuildAsync(guildId);
+            
             if (guild is null)
                 return;
 
-            var ownername = guild.GetUser(guild.OwnerId);
-            var textchn = guild.TextChannels.Count;
-            var voicechn = guild.VoiceChannels.Count;
+            var ownername = await guild.GetUserAsync(guild.OwnerId);
+            var textchn = (await guild.GetTextChannelsAsync()).Count;
+            var voicechn = (await guild.GetVoiceChannelsAsync()).Count;
             var channels = $@"{GetText(strs.text_channels(textchn))}
 {GetText(strs.voice_channels(voicechn))}";
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(guild.Id >> 22);
@@ -55,16 +49,16 @@ public partial class Utility
                 features = "-";
 
             var embed = _sender.CreateEmbed()
-                           .WithAuthor(GetText(strs.server_info))
-                           .WithTitle(guild.Name)
-                           .AddField(GetText(strs.id), guild.Id.ToString(), true)
-                           .AddField(GetText(strs.owner), ownername.ToString(), true)
-                           .AddField(GetText(strs.members), guild.MemberCount.ToString(), true)
-                           .AddField(GetText(strs.channels), channels, true)
-                           .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                           .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
-                           .AddField(GetText(strs.features), features)
-                           .WithOkColor();
+                               .WithAuthor(GetText(strs.server_info))
+                               .WithTitle(guild.Name)
+                               .AddField(GetText(strs.id), guild.Id.ToString(), true)
+                               .AddField(GetText(strs.owner), ownername.ToString(), true)
+                               .AddField(GetText(strs.members), (guild as SocketGuild)?.MemberCount ?? guild.ApproximateMemberCount, true)
+                               .AddField(GetText(strs.channels), channels, true)
+                               .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                               .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
+                               .AddField(GetText(strs.features), features)
+                               .WithOkColor();
 
             if (Uri.IsWellFormedUriString(guild.IconUrl, UriKind.Absolute))
                 embed.WithThumbnailUrl(guild.IconUrl);
@@ -88,39 +82,41 @@ public partial class Utility
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
             var usercount = (await ch.GetUsersAsync().FlattenAsync()).Count();
             var embed = _sender.CreateEmbed()
-                           .WithTitle(ch.Name)
-                           .WithDescription(ch.Topic?.SanitizeMentions(true))
-                           .AddField(GetText(strs.id), ch.Id.ToString(), true)
-                           .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                           .AddField(GetText(strs.users), usercount.ToString(), true)
-                           .WithOkColor();
+                               .WithTitle(ch.Name)
+                               .WithDescription(ch.Topic?.SanitizeMentions(true))
+                               .AddField(GetText(strs.id), ch.Id.ToString(), true)
+                               .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                               .AddField(GetText(strs.users), usercount.ToString(), true)
+                               .WithOkColor();
             await Response().Embed(embed).SendAsync();
         }
-        
+
         [Cmd]
         [RequireUserPermission(GuildPermission.ManageRoles)]
         public async Task RoleInfo([Leftover] SocketRole role)
         {
             if (role.IsEveryone)
                 return;
-            
+
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                 .AddMilliseconds(role.Id >> 22);
             var usercount = role.Members.LongCount();
             var embed = _sender.CreateEmbed()
-                .WithTitle(role.Name.TrimTo(128))
-                .WithDescription(role.Permissions.ToList().Join(" | "))
-                .AddField(GetText(strs.id), role.Id.ToString(), true)
-                .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
-                .AddField(GetText(strs.users), usercount.ToString(), true)
-                .AddField(GetText(strs.color), $"#{role.Color.R:X2}{role.Color.G:X2}{role.Color.B:X2}", true)
-                .AddField(GetText(strs.mentionable), role.IsMentionable.ToString(), true)
-                .AddField(GetText(strs.hoisted), role.IsHoisted.ToString(), true)
-                .WithOkColor();
+                               .WithTitle(role.Name.TrimTo(128))
+                               .WithDescription(role.Permissions.ToList().Join(" | "))
+                               .AddField(GetText(strs.id), role.Id.ToString(), true)
+                               .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
+                               .AddField(GetText(strs.users), usercount.ToString(), true)
+                               .AddField(GetText(strs.color),
+                                   $"#{role.Color.R:X2}{role.Color.G:X2}{role.Color.B:X2}",
+                                   true)
+                               .AddField(GetText(strs.mentionable), role.IsMentionable.ToString(), true)
+                               .AddField(GetText(strs.hoisted), role.IsHoisted.ToString(), true)
+                               .WithOkColor();
 
             if (!string.IsNullOrWhiteSpace(role.GetIconUrl()))
                 embed = embed.WithThumbnailUrl(role.GetIconUrl());
-            
+
             await Response().Embed(embed).SendAsync();
         }
 
@@ -133,12 +129,13 @@ public partial class Utility
             if (user is null)
                 return;
 
-            var embed = _sender.CreateEmbed().AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
+            var embed = _sender.CreateEmbed()
+                               .AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
             if (!string.IsNullOrWhiteSpace(user.Nickname))
                 embed.AddField(GetText(strs.nickname), user.Nickname, true);
 
             var joinedAt = GetJoinedAt(user);
-            
+
             embed.AddField(GetText(strs.id), user.Id.ToString(), true)
                  .AddField(GetText(strs.joined_server), $"{joinedAt?.ToString("dd.MM.yyyy HH:mm") ?? "?"}", true)
                  .AddField(GetText(strs.joined_discord), $"{user.CreatedAt:dd.MM.yyyy HH:mm}", true)
@@ -148,7 +145,7 @@ public partial class Utility
                  .WithOkColor();
 
             var patron = await _ps.GetPatronAsync(user.Id);
-            
+
             if (patron.Tier != PatronTier.None)
             {
                 embed.WithFooter(patron.Tier switch
@@ -160,11 +157,11 @@ public partial class Utility
                     _ => "❤️",
                 });
             }
-            
+
             var av = user.RealAvatarUrl();
             if (av.IsAbsoluteUri)
                 embed.WithThumbnailUrl(av.ToString());
-            
+
             await Response().Embed(embed).SendAsync();
         }
 
@@ -204,12 +201,14 @@ public partial class Utility
                     kvp.Value)));
             }
 
-            await Response().Embed(_sender.CreateEmbed()
-                                            .WithTitle(GetText(strs.activity_page(page + 1)))
-                                            .WithOkColor()
-                                            .WithFooter(GetText(
-                                                strs.activity_users_total(_cmdHandler.UserMessagesSent.Count)))
-                                            .WithDescription(str.ToString())).SendAsync();
+            await Response()
+                  .Embed(_sender.CreateEmbed()
+                                .WithTitle(GetText(strs.activity_page(page + 1)))
+                                .WithOkColor()
+                                .WithFooter(GetText(
+                                    strs.activity_users_total(_cmdHandler.UserMessagesSent.Count)))
+                                .WithDescription(str.ToString()))
+                  .SendAsync();
         }
     }
 }
