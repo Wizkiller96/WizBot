@@ -6,6 +6,7 @@ global using Serilog;
 
 // nadekobot
 global using NadekoBot;
+global using NadekoBot.Db;
 global using NadekoBot.Services;
 global using Nadeko.Common; // new project
 global using NadekoBot.Common; // old + nadekobot specific things
