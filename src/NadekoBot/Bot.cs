@@ -132,7 +132,6 @@ public sealed class Bot : IBot
         foreach (var a in _loadedAssemblies)
         {
             svcs.AddConfigServices(a)
-                .AddConfigMigrators(a)
                 .AddLifetimeServices(a);
         }
 
@@ -157,9 +156,6 @@ public sealed class Bot : IBot
         Services = svcs;
         Services.GetRequiredService<IBehaviorHandler>().Initialize();
 
-        if (Client.ShardId == 0)
-            ApplyConfigMigrations();
-
         foreach (var a in _loadedAssemblies)
         {
             LoadTypeReaders(a);
@@ -167,14 +163,6 @@ public sealed class Bot : IBot
 
         sw.Stop();
         Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
-    }
-
-    private void ApplyConfigMigrations()
-    {
-        // execute all migrators
-        var migrators = Services.GetServices<IConfigMigrator>();
-        foreach (var migrator in migrators)
-            migrator.EnsureMigrated();
     }
 
     private void LoadTypeReaders(Assembly assembly)

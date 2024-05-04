@@ -1,6 +1,4 @@
-﻿using NadekoBot.Medusa;
-using Ninject.Modules;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace NadekoBot.Medusa;
 
@@ -13,5 +11,5 @@ public sealed record ResolvedMedusa(
     IReadOnlyCollection<ICustomBehavior> Execs
 )
 {
-    public required INinjectModule KernelModule { get; set; }
+    public required IIocModule IocModule { get; set; }
 }

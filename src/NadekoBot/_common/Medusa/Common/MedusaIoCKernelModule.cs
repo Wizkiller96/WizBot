@@ -1,22 +1,27 @@
-﻿using System.Reflection;
-using Ninject;
-using Ninject.Activation;
-using Ninject.Activation.Caching;
-using Ninject.Modules;
-using Ninject.Planning;
+﻿using DryIoc;
+using System.Reflection;
 using System.Text.Json;
 
 namespace NadekoBot.Medusa;
 
-public sealed class MedusaNinjectModule : NinjectModule
+public interface IIocModule
 {
-    public override string Name { get; }
+    public string Name { get; }
+    public void Load();
+    public void Unload();
+}
+
+public sealed class MedusaNinjectIocModule : IIocModule, IDisposable
+{
+    public string Name { get; }
     private volatile bool isLoaded = false;
     private readonly Dictionary<Type, Type[]> _types;
+    private readonly IContainer _cont;
 
-    public MedusaNinjectModule(Assembly assembly, string name)
+    public MedusaNinjectIocModule(IContainer cont, Assembly assembly, string name)
     {
         Name = name;
+        _cont = cont;
         _types = assembly.GetExportedTypes()
             .Where(t => t.IsClass)
             .Where(t => t.GetCustomAttribute<svcAttribute>() is not null)
@@ -24,7 +29,7 @@ public sealed class MedusaNinjectModule : NinjectModule
                 type => type.GetInterfaces().ToArray());
     }
 
-    public override void Load()
+    public void Load()
     {
         if (isLoaded)
             return;
@@ -32,59 +37,27 @@ public sealed class MedusaNinjectModule : NinjectModule
         foreach (var (type, data) in _types)
         {
             var attribute = type.GetCustomAttribute<svcAttribute>()!;
-            var scope = GetScope(attribute.Lifetime);
 
-            Bind(type)
-                .ToSelf()
-                .InScope(scope);
+            var reuse = attribute.Lifetime == Lifetime.Singleton
+                ? Reuse.Singleton
+                : Reuse.Transient;
             
-            foreach (var inter in data)
-            {
-                Bind(inter)
-                    .ToMethod(x => x.Kernel.Get(type))
-                    .InScope(scope);
-            }
+            _cont.RegisterMany([type], reuse);
         }
 
         isLoaded = true;
     }
 
-    private Func<IContext, object?> GetScope(Lifetime lt)
-        => _ => lt switch
-        {
-            Lifetime.Singleton => this,
-            Lifetime.Transient => null,
-            _ => null,
-        };
-
-    public override void Unload()
+    public void Unload()
     {
         if (!isLoaded)
             return;
-
-        var planner = (RemovablePlanner)Kernel!.Components.Get<IPlanner>();
-        var cache = Kernel.Components.Get<ICache>();
-        foreach (var binding in this.Bindings)
+        
+        foreach (var type in _types.Keys)
         {
-            Kernel.RemoveBinding(binding);
+            _cont.Unregister(type);
         }
-
-        foreach (var type in _types.SelectMany(x => x.Value).Concat(_types.Keys))
-        {
-            var binds = Kernel.GetBindings(type);
-
-            if (!binds.Any())
-            {
-                Unbind(type);
-                
-                planner.RemovePlan(type);
-            }
-        }
-
-
-        Bindings.Clear();
-
-        cache.Clear(this);
+        
         _types.Clear();
         
         // in case the library uses System.Text.Json
@@ -95,4 +68,7 @@ public sealed class MedusaNinjectModule : NinjectModule
         
         isLoaded = false;
     }
+
+    public void Dispose()
+        => _types.Clear();
 }

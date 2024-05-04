@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Nadeko.Common.Medusa;
 using Nadeko.Medusa.Adapters;
 using NadekoBot.Common.ModuleBehaviors;
-using Ninject;
-using Ninject.Modules;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -21,7 +19,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
     private readonly IBehaviorHandler _behHandler;
     private readonly IPubSub _pubSub;
     private readonly IMedusaConfigService _medusaConfig;
-    private readonly IContainer _kernel;
+    private readonly IContainer _cont;
 
     private readonly ConcurrentDictionary<string, ResolvedMedusa> _resolved = new();
     private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
@@ -35,7 +33,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
 
     public MedusaLoaderService(
         CommandService cmdService,
-        IContainer kernel,
+        IContainer cont,
         IBehaviorHandler behHandler,
         IPubSub pubSub,
         IMedusaConfigService medusaConfig)
@@ -44,7 +42,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         _behHandler = behHandler;
         _pubSub = pubSub;
         _medusaConfig = medusaConfig;
-        _kernel = kernel;
+        _cont = cont;
 
         // has to be done this way to support this feature on sharded bots
         _pubSub.Sub(_loadKey, async name => await InternalLoadAsync(name));
@@ -200,7 +198,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             if (LoadAssemblyInternal(safeName,
                     out var ctx,
                     out var snekData,
-                    out var kernelModule,
+                    out var iocModule,
                     out var strings,
                     out var typeReaders))
             {
@@ -219,7 +217,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                             await sub.Instance.InitializeAsync();
                         }
 
-                        var module = await LoadModuleInternalAsync(name, point, strings, kernelModule);
+                        var module = await LoadModuleInternalAsync(name, point, strings, iocModule);
                         moduleInfos.Add(module);
                     }
                     catch (Exception ex)
@@ -240,7 +238,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                     typeReaders,
                     execs)
                 {
-                    KernelModule = kernelModule
+                    IocModule = iocModule
                 };
 
 
@@ -273,11 +271,11 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         var behs = new List<ICustomBehavior>();
         foreach (var snek in snekData)
         {
-            behs.Add(new BehaviorAdapter(new(snek.Instance), strings, _kernel));
+            behs.Add(new BehaviorAdapter(new(snek.Instance), strings, _cont));
 
             foreach (var sub in snek.Subsneks)
             {
-                behs.Add(new BehaviorAdapter(new(sub.Instance), strings, _kernel));
+                behs.Add(new BehaviorAdapter(new(sub.Instance), strings, _cont));
             }
         }
 
@@ -315,7 +313,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         string safeName,
         [NotNullWhen(true)] out WeakReference<MedusaAssemblyLoadContext>? ctxWr,
         [NotNullWhen(true)] out IReadOnlyCollection<SnekInfo>? snekData,
-        [NotNullWhen(true)] out INinjectModule? ninjectModule,
+        [NotNullWhen(true)] out IIocModule? iocModule,
         out IMedusaStrings strings,
         out Dictionary<Type, TypeReader> typeReaders)
     {
@@ -337,18 +335,15 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         ctx.LoadDependencies(a);
 
         // load services
-        ninjectModule = new MedusaNinjectModule(a, safeName);
-        
-        // todo medusa won't work, uncomment
-        // _kernel.Load(ninjectModule);
+        iocModule = new MedusaNinjectIocModule(_cont, a, safeName);
+        iocModule.Load();
         
         var sis = LoadSneksFromAssembly(safeName, a);
         typeReaders = LoadTypeReadersFromAssembly(a, strings);
         
         if (sis.Count == 0)
         {
-            // todo uncomment
-            // _kernel.Unload(safeName);
+            iocModule.Unload();
             return false;
         }
 
@@ -375,12 +370,12 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         var typeReaders = new Dictionary<Type, TypeReader>();
         foreach (var parserType in paramParsers)
         {
-            var parserObj = ActivatorUtilities.CreateInstance(_kernel, parserType);
+            var parserObj = ActivatorUtilities.CreateInstance(_cont, parserType);
 
             var targetType = parserType.BaseType!.GetGenericArguments()[0];
             var typeReaderInstance = (TypeReader)Activator.CreateInstance(
                 typeof(ParamParserAdapter<>).MakeGenericType(targetType),
-                args: new[] { parserObj, strings, _kernel })!;
+                args: new[] { parserObj, strings, _cont })!;
 
             typeReaders.Add(targetType, typeReaderInstance);
         }
@@ -393,7 +388,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         string medusaName,
         SnekInfo snekInfo,
         IMedusaStrings strings,
-        INinjectModule services)
+        IIocModule services)
     {
         var module = await _cmdService.CreateModuleAsync(snekInfo.Instance.Prefix,
             CreateModuleFactory(medusaName, snekInfo, strings, services));
@@ -406,7 +401,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         string medusaName,
         SnekInfo snekInfo,
         IMedusaStrings strings,
-        INinjectModule kernelModule)
+        IIocModule iocModule)
         => mb =>
         {
             var m = mb.WithName(snekInfo.Name);
@@ -427,7 +422,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             }
 
             foreach (var subInfo in snekInfo.Subsneks)
-                m.AddModule(subInfo.Instance.Prefix, CreateModuleFactory(medusaName, subInfo, strings, kernelModule));
+                m.AddModule(subInfo.Instance.Prefix, CreateModuleFactory(medusaName, subInfo, strings, iocModule));
         };
 
     private static readonly RequireContextAttribute _reqGuild = new RequireContextAttribute(ContextType.Guild);
@@ -511,7 +506,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                 return;
             }
 
-            var paramObjs = ParamObjs(contextType, cmdData, parameters, context, svcs, _kernel, strings);
+            var paramObjs = ParamObjs(contextType, cmdData, parameters, context, svcs, _cont, strings);
 
             try
             {
@@ -605,12 +600,11 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             await DisposeSnekInstances(lsi);
 
             var lc = lsi.LoadContext;
-            var km = lsi.KernelModule;
-            lsi.KernelModule = null!;
-           
-            // todo uncomment
-            // _kernel.Unload(km.Name);
+            var km = lsi.IocModule;
             
+            lsi.IocModule.Unload();
+            lsi.IocModule = null!;
+           
             if (km is IDisposable d)
                 d.Dispose();
             
@@ -748,7 +742,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         var filters = type.GetCustomAttributes<FilterAttribute>(true)
                           .ToArray();
 
-        var instance = (Snek)ActivatorUtilities.CreateInstance(_kernel, type);
+        var instance = (Snek)ActivatorUtilities.CreateInstance(_cont, type);
 
         var module = new SnekInfo(instance.Name,
             parentData,
