@@ -1,12 +1,10 @@
 #nullable disable
+using DryIoc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using NadekoBot.Db;
 using NadekoBot.Common.Configs;
 using NadekoBot.Common.ModuleBehaviors;
 using NadekoBot.Db.Models;
-using Ninject;
-using Ninject.Planning;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
@@ -21,7 +19,7 @@ public sealed class Bot : IBot
     public DiscordSocketClient Client { get; }
     public IReadOnlyCollection<GuildConfig> AllGuildConfigs { get; private set; }
 
-    private IKernel Services { get; set; }
+    private IContainer Services { get; set; }
 
     public bool IsReady { get; private set; }
     public int ShardId { get; set; }
@@ -37,8 +35,7 @@ public sealed class Bot : IBot
 
     public Bot(int shardId, int? totalShards, string credPath = null)
     {
-        if (shardId < 0)
-            throw new ArgumentOutOfRangeException(nameof(shardId));
+        ArgumentOutOfRangeException.ThrowIfLessThan(shardId, 0);
 
         ShardId = shardId;
         _credsProvider = new BotCredsProvider(totalShards, credPath);
@@ -105,15 +102,17 @@ public sealed class Bot : IBot
             AllGuildConfigs = uow.Set<GuildConfig>().GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
         }
 
-        var svcs = new StandardKernel(new NinjectSettings()
-        {
-            // ThrowOnGetServiceNotFound = true,
-            ActivationCacheDisabled = true,
-        });
+        // var svcs = new StandardKernel(new NinjectSettings()
+        // {
+        //     // ThrowOnGetServiceNotFound = true,
+        //     ActivationCacheDisabled = true,
+        // });
+
+        var svcs = new Container();
         
         // this is required in order for medusa unloading to work
-        svcs.Components.Remove<IPlanner, Planner>();
-        svcs.Components.Add<IPlanner, RemovablePlanner>();
+        // svcs.Components.Remove<IPlanner, Planner>();
+        // svcs.Components.Add<IPlanner, RemovablePlanner>();
 
         svcs.AddSingleton<IBotCredentials, IBotCredentials>(_ => _credsProvider.GetCreds());
         svcs.AddSingleton<DbService, DbService>(_db);

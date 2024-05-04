@@ -1,43 +1,51 @@
-using Ninject;
+using DryIoc;
 
 namespace NadekoBot.Extensions;
 
-public static class NinjectIKernelExtensions
+public static class DryIocExtensions
 {
-    public static IKernel AddSingleton<TImpl>(this IKernel kernel)
+    public static IContainer AddSingleton<TSvc, TImpl>(this IContainer container)
+        where TImpl : TSvc
     {
-        kernel.Bind<TImpl>().ToSelf().InSingletonScope();
-        return kernel;
+        container.Register<TSvc, TImpl>(Reuse.Singleton);
+
+        return container;
+    }
+    
+    public static IContainer AddSingleton<TSvc, TImpl>(this IContainer container, TImpl obj)
+        where TImpl : TSvc
+    {
+        container.RegisterInstance<TSvc>(obj);
+
+        return container;
     }
 
-    public static IKernel AddSingleton<TInterface, TImpl>(this IKernel kernel)
-        where TImpl : TInterface
+    public static IContainer AddSingleton<TSvc, TImpl>(this IContainer container, Func<IResolverContext, TSvc> factory)
+        where TImpl : TSvc
     {
-        kernel.Bind<TInterface>().To<TImpl>().InSingletonScope();
-        return kernel;
+        container.RegisterDelegate(factory, Reuse.Singleton);
+
+        return container;
     }
 
-    public static IKernel AddSingleton<TImpl>(this IKernel kernel, TImpl obj)
-        => kernel.AddSingleton<TImpl, TImpl>(obj);
-
-    public static IKernel AddSingleton<TInterface, TImpl>(this IKernel kernel, TImpl obj)
-        where TImpl : TInterface
+    public static IContainer AddSingleton<TImpl>(this IContainer container)
     {
-        kernel.Bind<TInterface>().ToConstant(obj).InSingletonScope();
-        return kernel;
+        container.Register<TImpl>(Reuse.Singleton);
+
+        return container;
     }
 
-    public static IKernel AddSingleton<TImpl, TInterface>(
-        this IKernel kernel,
-        Func<Ninject.Activation.IContext, TImpl> factory)
-        where TImpl : TInterface
+    public static IContainer AddSingleton<TImpl>(this IContainer container, TImpl obj)
     {
-        kernel.Bind<TInterface>().ToMethod(factory).InSingletonScope();
-        return kernel;
-    }
+        container.RegisterInstance<TImpl>(obj);
 
-    public static IKernel AddSingleton<TImpl>(
-        this IKernel kernel,
-        Func<Ninject.Activation.IContext, TImpl> factory)
-        => kernel.AddSingleton<TImpl, TImpl>(factory);
+        return container;
+    }
+    
+    public static IContainer AddSingleton<TImpl>(this IContainer container, Func<IResolverContext, TImpl> factory)
+    {
+        container.RegisterDelegate(factory);
+
+        return container;
+    }
 }

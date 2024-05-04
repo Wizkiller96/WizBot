@@ -4,7 +4,7 @@ using NadekoBot.Db.Models;
 
 namespace NadekoBot.Modules.Utility;
 
-public sealed class TodoService
+public sealed class TodoService : INService
 {
     private const int ARCHIVE_MAX_COUNT = 9;
     private const int TODO_MAX_COUNT = 27;

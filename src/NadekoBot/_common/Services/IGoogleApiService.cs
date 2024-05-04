@@ -7,7 +7,7 @@ public interface IGoogleApiService
     IReadOnlyDictionary<string, string> Languages { get; }
 
     Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1);
-    Task<IEnumerable<(string Name, string Id, string Url)>> GetVideoInfosByKeywordAsync(string keywords, int count = 1);
+    Task<IEnumerable<(string Name, string Id, string Url, string Thumbnail)>> GetVideoInfosByKeywordAsync(string keywords, int count = 1);
     Task<IEnumerable<string>> GetPlaylistIdsByKeywordsAsync(string keywords, int count = 1);
     Task<IEnumerable<string>> GetRelatedVideosAsync(string id, int count = 1, string user = null);
     Task<IEnumerable<string>> GetPlaylistTracksAsync(string playlistId, int count = 50);

@@ -61,7 +61,7 @@ public abstract class NadekoModule : ModuleBase
     }
 
     // TypeConverter typeConverter = TypeDescriptor.GetConverter(propType); ?
-    public async Task<string> GetUserInputAsync(ulong userId, ulong channelId)
+    public async Task<string> GetUserInputAsync(ulong userId, ulong channelId, Func<string, bool> validate = null)
     {
         var userInputTask = new TaskCompletionSource<string>();
         var dsc = (DiscordSocketClient)ctx.Client;
@@ -89,6 +89,9 @@ public abstract class NadekoModule : ModuleBase
                     || userMsg.Channel.Id != channelId)
                     return Task.CompletedTask;
 
+                if (validate is not null && !validate(arg.Content))
+                    return Task.CompletedTask;
+                
                 if (userInputTask.TrySetResult(arg.Content))
                     userMsg.DeleteAfter(1);
 

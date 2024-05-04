@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace NadekoBot.Modules.Music.Services;
 
-public sealed partial class YtLoader
+public sealed partial class YtLoader : INService
 {
     private static readonly byte[] _ytResultInitialData = Encoding.UTF8.GetBytes("var ytInitialData = ");
     private static readonly byte[] _ytResultJsonEnd = Encoding.UTF8.GetBytes(";<");
@@ -93,7 +93,7 @@ public sealed partial class YtLoader
                 continue;
 
             var videoId = elem.GetProperty("videoId").GetString();
-            // var thumb = elem.GetProperty("thumbnail").GetProperty("thumbnails")[0].GetProperty("url").GetString();
+            var thumb = elem.GetProperty("thumbnail").GetProperty("thumbnails")[0].GetProperty("url").GetString();
             var title = elem.GetProperty("title").GetProperty("runs")[0].GetProperty("text").GetString();
             var durationString = elem.GetProperty("lengthText").GetProperty("simpleText").GetString();
 
@@ -106,7 +106,7 @@ public sealed partial class YtLoader
                 continue;
             }
 
-            tracks.Add(new YtTrackInfo(title, videoId, duration));
+            tracks.Add(new YtTrackInfo(title, videoId, thumb, duration));
             if (tracks.Count >= 5)
                 break;
         }

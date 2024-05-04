@@ -10,7 +10,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - type `.h .shopadd` for more info
 - Added `.stickyroles` Users leaving the server will have their roles saved to the database and reapplied if they rejoin within 30 days.
 - Giveaway commands
-  - `.ga start` starts the giveway with the specified duration and message (prize). You may have up to 5 giveaways on the server at once
+  - `.ga start <duration> <text>` starts the giveway with the specified duration and message (prize). You may have up to 5 giveaways on the server at once
   - `.ga end <id>` prematurely ends the giveaway and selects a winner
   - `.ga cancel <id>` cancels the giveaway and doesn't select the winner
   - `.ga list` lists active giveaways on the current server
@@ -37,6 +37,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
   - You can now configure shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
 - Added seconds/sec/s to .convert command
+- Added `.prunecancel` to cancel an active prune
+- Added progress reporting when using `.prune`. The bot will periodically update on how many messages have been deleted
 
 ### Changed
 
@@ -46,6 +48,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
 - `.cmds <module name>`, `.cmds <group name` and `.mdls` looks better / cleaner / simpler
 - The bot will now send a discord Reply to every command
+- `.queuesearch` / `.qs` will now show the results with respective video thumbnails
 - A lot of code cleanup (still a lot to be done) and Quality of Life improvements
 
 ### Fixed

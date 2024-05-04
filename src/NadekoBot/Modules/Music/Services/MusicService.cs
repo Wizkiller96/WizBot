@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NadekoBot.Modules.Music.Services;
 
-public sealed class MusicService : IMusicService
+public sealed class MusicService : IMusicService, IPlaceholderProvider
 {
     private readonly AyuVoiceStateService _voiceStateService;
     private readonly ITrackResolveProvider _trackResolveProvider;
@@ -233,23 +233,23 @@ public sealed class MusicService : IMusicService
         return true;
     }
 
-    private async Task<IList<(string Title, string Url)>> SearchYtLoaderVideosAsync(string query)
+    private async Task<IList<(string Title, string Url, string Thumb)>> SearchYtLoaderVideosAsync(string query)
     {
         var result = await _ytLoader.LoadResultsAsync(query);
-        return result.Select(x => (x.Title, x.Url)).ToList();
+        return result.Select(x => (x.Title, x.Url, x.Thumb)).ToList();
     }
 
-    private async Task<IList<(string Title, string Url)>> SearchGoogleApiVideosAsync(string query)
+    private async Task<IList<(string Title, string Url, string Thumb)>> SearchGoogleApiVideosAsync(string query)
     {
         var result = await _googleApiService.GetVideoInfosByKeywordAsync(query, 5);
-        return result.Select(x => (x.Name, x.Url)).ToList();
+        return result.Select(x => (x.Name, x.Url, x.Thumbnail)).ToList();
     }
 
-    public async Task<IList<(string Title, string Url)>> SearchVideosAsync(string query)
+    public async Task<IList<(string Title, string Url, string Thumbnail)>> SearchVideosAsync(string query)
     {
         try
         {
-            IList<(string, string)> videos = await SearchYtLoaderVideosAsync(query);
+            IList<(string, string, string)> videos = await SearchYtLoaderVideosAsync(query);
             if (videos.Count > 0)
                 return videos;
         }
@@ -269,7 +269,7 @@ public sealed class MusicService : IMusicService
                 ex.Message);
         }
 
-        return Array.Empty<(string, string)>();
+        return Array.Empty<(string, string, string)>();
     }
 
     private string GetText(ulong guildId, LocStr str)

@@ -4,21 +4,29 @@ namespace NadekoBot.Modules.Administration.Services;
 public class PruneService : INService
 {
     //channelids where prunes are currently occuring
-    private readonly ConcurrentHashSet<ulong> _pruningGuilds = new();
+    private readonly ConcurrentDictionary<ulong, CancellationTokenSource> _pruningGuilds = new();
     private readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
     private readonly ILogCommandService _logService;
 
     public PruneService(ILogCommandService logService)
         => _logService = logService;
 
-    public async Task PruneWhere(ITextChannel channel, int amount, Func<IMessage, bool> predicate, ulong? after = null)
+    public async Task PruneWhere(
+        ITextChannel channel,
+        int amount,
+        Func<IMessage, bool> predicate,
+        IProgress<(int deleted, int total)> progress,
+        ulong? after = null
+    )
     {
         ArgumentNullException.ThrowIfNull(channel, nameof(channel));
 
+        var originalAmount = amount;
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
 
-        if (!_pruningGuilds.Add(channel.GuildId))
+        using var cancelSource = new CancellationTokenSource();
+        if (!_pruningGuilds.TryAdd(channel.GuildId, cancelSource))
             return;
 
         try
@@ -26,16 +34,22 @@ public class PruneService : INService
             var now = DateTime.UtcNow;
             IMessage[] msgs;
             IMessage lastMessage = null;
-            var dled = await channel.GetMessagesAsync(50).FlattenAsync();
-            
-            msgs = dled
-                .Where(predicate)
-                .Where(x => after is ulong a ? x.Id > a : true)
-                .Take(amount)
-                .ToArray();
-            
-            while (amount > 0 && msgs.Any())
+
+            while (amount > 0 && !cancelSource.IsCancellationRequested)
             {
+                var dled = lastMessage is null
+                    ? await channel.GetMessagesAsync(50).FlattenAsync()
+                    : await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync();
+
+                msgs = dled
+                       .Where(predicate)
+                       .Where(x => after is not ulong a || x.Id > a)
+                       .Take(amount)
+                       .ToArray();
+
+                if (!msgs.Any())
+                    return;
+
                 lastMessage = msgs[^1];
 
                 var bulkDeletable = new List<IMessage>();
@@ -53,27 +67,17 @@ public class PruneService : INService
                 if (bulkDeletable.Count > 0)
                 {
                     await channel.DeleteMessagesAsync(bulkDeletable);
-                    await Task.Delay(2000);
+                    amount -= msgs.Length;
+                    progress.Report((originalAmount - amount, originalAmount));
+                    await Task.Delay(2000, cancelSource.Token);
                 }
 
                 foreach (var group in singleDeletable.Chunk(5))
                 {
                     await group.Select(x => x.DeleteAsync()).WhenAll();
-                    await Task.Delay(5000);
-                }
-
-                //this isn't good, because this still work as if i want to remove only specific user's messages from the last
-                //100 messages, Maybe this needs to be reduced by msgs.Length instead of 100
-                amount -= 50;
-                if (amount > 0)
-                {
-                    dled = await channel.GetMessagesAsync(lastMessage, Direction.Before, 50).FlattenAsync();
-
-                    msgs = dled
-                        .Where(predicate)
-                        .Where(x => after is ulong a ? x.Id > a : true)
-                        .Take(amount)
-                        .ToArray();
+                    amount -= 5;
+                    progress.Report((originalAmount - amount, originalAmount));
+                    await Task.Delay(5000, cancelSource.Token);
                 }
             }
         }
@@ -83,7 +87,16 @@ public class PruneService : INService
         }
         finally
         {
-            _pruningGuilds.TryRemove(channel.GuildId);
+            _pruningGuilds.TryRemove(channel.GuildId, out _);
         }
+    }
+
+    public async Task<bool> CancelAsync(ulong guildId)
+    {
+        if (!_pruningGuilds.TryRemove(guildId, out var source))
+            return false;
+
+        await source.CancelAsync();
+        return true;
     }
 }

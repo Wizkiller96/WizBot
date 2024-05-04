@@ -93,7 +93,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId);
     }
 
-    public async Task<IEnumerable<(string Name, string Id, string Url)>> GetVideoInfosByKeywordAsync(
+    public async Task<IEnumerable<(string Name, string Id, string Url, string Thumbnail)>> GetVideoInfosByKeywordAsync(
         string keywords,
         int count = 1)
     {
@@ -108,7 +108,10 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         query.Q = keywords;
         query.Type = "video";
         return (await query.ExecuteAsync()).Items.Select(i
-            => (i.Snippet.Title.TrimTo(50), i.Id.VideoId, "https://www.youtube.com/watch?v=" + i.Id.VideoId));
+            => (i.Snippet.Title.TrimTo(50),
+                    i.Id.VideoId,
+                    "https://www.youtube.com/watch?v=" + i.Id.VideoId,
+                    i.Snippet.Thumbnails.High.Url));
     }
 
     public Task<string> ShortenUrl(Uri url)

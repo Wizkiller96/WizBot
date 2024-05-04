@@ -32,7 +32,7 @@ public static class StringExtensions
     {
         if (hideDots)
         {
-            return str?.Substring(0, maxLength);
+            return str?.Substring(0, Math.Min(str?.Length ?? 0, maxLength));
         }
 
         if (str is null || str.Length <= maxLength)

@@ -54,10 +54,11 @@
         <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0"/>
 
         <!-- DI -->
-        <PackageReference Include="Ninject" Version="3.3.6"/>
-        <PackageReference Include="Ninject.Extensions.Conventions" Version="3.3.0"/>
+<!--        <PackageReference Include="Ninject" Version="3.3.6"/>-->
+<!--        <PackageReference Include="Ninject.Extensions.Conventions" Version="3.3.0"/>-->
         <!--        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />-->
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1"/>
+        <PackageReference Include="DryIoc.dll" Version="5.4.3" />
         <!--        <PackageReference Include="Scrutor" Version="4.2.0" />-->
 
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>

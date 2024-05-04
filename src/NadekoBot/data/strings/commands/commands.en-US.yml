@@ -385,6 +385,10 @@ prune:
     - "@Someone --safe"
     - "@Someone X"
     - "@Someone X -s"
+prunecancel:
+  desc: "Cancels an active prune if there is any."
+  args:
+    - ""
 die:
   desc: "Shuts the bot down."
   args:

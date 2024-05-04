@@ -1,4 +1,5 @@
 ﻿using Discord.Commands.Builders;
+using DryIoc;
 using Microsoft.Extensions.DependencyInjection;
 using Nadeko.Common.Medusa;
 using Nadeko.Medusa.Adapters;
@@ -20,7 +21,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
     private readonly IBehaviorHandler _behHandler;
     private readonly IPubSub _pubSub;
     private readonly IMedusaConfigService _medusaConfig;
-    private readonly IKernel _kernel;
+    private readonly IContainer _kernel;
 
     private readonly ConcurrentDictionary<string, ResolvedMedusa> _resolved = new();
     private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
@@ -34,7 +35,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
 
     public MedusaLoaderService(
         CommandService cmdService,
-        IKernel kernel,
+        IContainer kernel,
         IBehaviorHandler behHandler,
         IPubSub pubSub,
         IMedusaConfigService medusaConfig)
@@ -337,14 +338,17 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
 
         // load services
         ninjectModule = new MedusaNinjectModule(a, safeName);
-        _kernel.Load(ninjectModule);
+        
+        // todo medusa won't work, uncomment
+        // _kernel.Load(ninjectModule);
         
         var sis = LoadSneksFromAssembly(safeName, a);
         typeReaders = LoadTypeReadersFromAssembly(a, strings);
         
         if (sis.Count == 0)
         {
-            _kernel.Unload(safeName);
+            // todo uncomment
+            // _kernel.Unload(safeName);
             return false;
         }
 
@@ -604,7 +608,8 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             var km = lsi.KernelModule;
             lsi.KernelModule = null!;
            
-            _kernel.Unload(km.Name);
+            // todo uncomment
+            // _kernel.Unload(km.Name);
             
             if (km is IDisposable d)
                 d.Dispose();

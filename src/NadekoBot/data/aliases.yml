@@ -185,6 +185,9 @@ threaddelete:
 prune:
   - prune
   - clear
+prunecancel:
+  - prunecancel
+  - prunec
 die:
   - die
 setname:
