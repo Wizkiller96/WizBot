@@ -133,6 +133,10 @@
         </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Modules\Utility\GuildColors\" />
+    </ItemGroup>
+
     <PropertyGroup Condition=" '$(Configuration)' == 'GlobalNadeko' ">
         <!-- Define trace doesn't seem to affect the build at all so I had to remove $(DefineConstants)-->
         <DefineTrace>false</DefineTrace>

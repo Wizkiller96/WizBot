@@ -62,6 +62,9 @@ public abstract class NadekoContext : DbContext
     
     public DbSet<TodoModel> Todos { get; set; }
     public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
+    
+    // todo add guild colors
+    // public DbSet<GuildColors> GuildColors { get; set; }
 
 
     #region Mandatory Provider-Specific Values
