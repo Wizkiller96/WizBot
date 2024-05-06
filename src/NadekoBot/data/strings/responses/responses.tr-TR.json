@@ -640,7 +640,7 @@
   "clpa_fail": "Aşağıdaki nedenlerden biriyle ödül talebinde bulunamadı:",
   "clpa_fail_already": "Belki de bu ay için ödülünüzü zaten almışsınızdır. Bağış miktarınızı artırmadıkça, yalnızca ayda bir kez ödül alabilirsiniz.",
   "clpa_fail_already_title": "Zaten ödüllendirildi",
-  "clpa_fail_conn": "Discord hesabınız Patreon\u0027a bağlı olmayabilir. Bunun ne anlama geldiğinden emin değilseniz veya nasıl bağlanacağınızı bilmiyorsanız - [Patreon hesap ayarları sayfasına] (https://patreon.com/settings/account) adresine gidin ve \u0027Bağlantı\u0027 butonuna tıklayın.",
+  "clpa_fail_conn": "Discord hesabınız Patreon\u0027a bağlı olmayabilir. Bunun ne anlama geldiğinden emin değilseniz veya nasıl bağlanacağınızı bilmiyorsanız - [Patreon hesap ayarları sayfasına] (https://patreon.com/settings/apps/discord) adresine gidin ve \u0027Bağlantı\u0027 butonuna tıklayın.",
   "clpa_fail_conn_title": "Discord hesabı bağlı değil",
   "clpa_fail_sup": "Ödül için uygun olabilmeniz için, projeyi patreon\u0027da bağış yapmanız gerek. Bağlantıyı almak için {0} komutunu kullanabilirsiniz.",
   "clpa_fail_sup_title": "Desteklemiyor",

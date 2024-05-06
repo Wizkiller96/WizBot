@@ -640,7 +640,7 @@
   "clpa_fail": "Misslyckad anpråk av pris på grund av följande anledningar:",
   "clpa_fail_already": "Du har kanske redan mottagit din pris för denna månaden. Du kan bara motta priser en gång per månad om inte du ökar din pledge.",
   "clpa_fail_already_title": "Redan belönat",
-  "clpa_fail_conn": "Din discord konto är kanske inte ansluten till Patreon. Om du inte är säker om vad det betyder, eller inte vet hur du skall ansluta det - du måse då gå till [Patreon account settings page]\n(https://patreon.com/settings/account) och klicka på \u0027Connect to discord\u0027 knappen.",
+  "clpa_fail_conn": "Din discord konto är kanske inte ansluten till Patreon. Om du inte är säker om vad det betyder, eller inte vet hur du skall ansluta det - du måse då gå till [Patreon account settings page]\n(https://patreon.com/settings/apps/discord) och klicka på \u0027Connect to discord\u0027 knappen.",
   "clpa_fail_conn_title": "Discord konto är icke ansluten.",
   "clpa_fail_sup": "För att vara berättigad till priset så måste du stödja projektet på patreon. Du kan använda {0} kommandot för att få länken.",
   "clpa_fail_sup_title": "Ingen stöd",

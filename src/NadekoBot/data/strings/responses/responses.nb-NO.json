@@ -640,7 +640,7 @@
   "clpa_fail": "Kunne ikke hevde premie p.g.a. én av følgende grunner:",
   "clpa_fail_already": "Det er mulig du allerede har mottatt premien din for denne måneden. Du kan bare hevde premien én gang i måneden med mindre du øker summen.",
   "clpa_fail_already_title": "Allerede belønnet.",
-  "clpa_fail_conn": "Din Discord konto er ikke tilkoblet Patreon. Om du er usikker på hva dette betyr, eller ikke er sikker på hvordan du gjør det, kan du gå til [Patreon kontoinnstillinger](https://patreon.com/settings/account) og klikk på \u0027Connect to Discord\u0027-knappen.",
+  "clpa_fail_conn": "Din Discord konto er ikke tilkoblet Patreon. Om du er usikker på hva dette betyr, eller ikke er sikker på hvordan du gjør det, kan du gå til [Patreon kontoinnstillinger](https://patreon.com/settings/apps/discord) og klikk på \u0027Connect to Discord\u0027-knappen.",
   "clpa_fail_conn_title": "Discord kontoen er ikke tilknyttet.",
   "clpa_fail_sup": "For å være kvalifisert for belønning, må du støtte prosjektet på Patreon. Du kan bruke {0} kommandoen for å få link.",
   "clpa_fail_sup_title": "Støttes ikke",

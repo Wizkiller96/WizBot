@@ -640,7 +640,7 @@
   "clpa_fail": "Nepodařilo se získat odměnu kvůli jednomu z následujících důvodů:",
   "clpa_fail_already": "Možná už jsi tento měsíc získal svou odměnu. Můžeš dostat pouze jednu odměnu měsíčně, dokud nezvýšíš příspěvek.",
   "clpa_fail_already_title": "Již odměněn",
-  "clpa_fail_conn": "Tvůj Discord účet nemusí být připojen k Patreonu. Pokud si nejseš jistý nebo nevíš jak je propojit - musíš jít na [účet na Patreonu, stránka Nastavení](https://patreon.com/settings/account) and kliknout na tlačítko \u0027Connect to discord\u0027.",
+  "clpa_fail_conn": "Tvůj Discord účet nemusí být připojen k Patreonu. Pokud si nejseš jistý nebo nevíš jak je propojit - musíš jít na [účet na Patreonu, stránka Nastavení](https://patreon.com/settings/apps/discord) and kliknout na tlačítko \u0027Connect to discord\u0027.",
   "clpa_fail_conn_title": "Účet Discordu není připojen.",
   "clpa_fail_sup": "Aby si mohl dostat odměnu, musíš podpořit tento projekt na Patreonu. Můžeš použít příkaz {0}, abys získal odkaz.",
   "clpa_fail_sup_title": "Nepodporuješ",

@@ -640,7 +640,7 @@
   "clpa_fail": "Hibás igénylés a jutalmakra a következő ok(ok) miatt:",
   "clpa_fail_already": "Talán már megkaptad a jutalmad a hónapra. Havonta csak egyszer kaphatsz jutalmakat kivéve ha növeled a felajánlást.",
   "clpa_fail_already_title": "Már jutalmazva",
-  "clpa_fail_conn": "A discord felhasználód nincs csatlakoztatva a Patreonhoz. Ha nem vagy biztos benne mit jelent ez, vagy nem tudod hogyan csatlakoztasd - Menj a [Patreon account settings oldalra] (https://patreon.com/settings/account) és kattints a \u0027Connect to discord\u0027 gombra.",
+  "clpa_fail_conn": "A discord felhasználód nincs csatlakoztatva a Patreonhoz. Ha nem vagy biztos benne mit jelent ez, vagy nem tudod hogyan csatlakoztasd - Menj a [Patreon account settings oldalra] (https://patreon.com/settings/apps/discord) és kattints a \u0027Connect to discord\u0027 gombra.",
   "clpa_fail_conn_title": "Discord fiók nincs csatlakoztatva",
   "clpa_fail_sup": "Hogy jogosult legyél jutalmakra, támogatnod kell a projektet patreonon. Használd a {0} parancsot a linkért!",
   "clpa_fail_sup_title": "Nem támogatod",

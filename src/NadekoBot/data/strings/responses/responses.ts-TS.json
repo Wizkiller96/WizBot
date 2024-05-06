@@ -640,7 +640,7 @@
   "clpa_fail": "Looks like I can\u0027t give them to ya for one of these reasons:",
   "clpa_fail_already": "You might\u0027ve already grabbed your reward for this month, and you can only get them once a month unless you increase your pledge...",
   "clpa_fail_already_title": "You already got it... hmph.",
-  "clpa_fail_conn": "Your discord account might not be connected to Patreon, and that\u0027s totally a big problem, to connect it, go to [Patreon account settings page](https://patreon.com/settings/account) and click the \u0027Connect to discord\u0027 button. ",
+  "clpa_fail_conn": "Your discord account might not be connected to Patreon, and that\u0027s totally a big problem, to connect it, go to [Patreon account settings page](https://patreon.com/settings/apps/discord) and click the \u0027Connect to discord\u0027 button. ",
   "clpa_fail_conn_title": "Discord account\u0027s not connected.",
   "clpa_fail_sup": "Well, to get the reward you need to support the project on patreon, using {0}",
   "clpa_fail_sup_title": "Not gonna support this dude",

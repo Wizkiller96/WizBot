@@ -640,7 +640,7 @@
   "clpa_fail": "Belønningen fejlede grundet en af følgende grunde:",
   "clpa_fail_already": "Måske har du allerede fået din belønning for den her måned. Du kan kun få belønninger en gang om måneden med mindre at du øger din støtte.",
   "clpa_fail_already_title": "Belønningen er allerede givet",
-  "clpa_fail_conn": "Din discord-profil er muligvis ikke forbundet til Patreon. Hvis du ikke ved hvad dette betyder, eller ikke ved hvordan man forbinder den - så skal du gå til [Patreon account settings page] (https://patreon.com/settings/account) og klikke \u0027Connect to discord\u0027 knappen.",
+  "clpa_fail_conn": "Din discord-profil er muligvis ikke forbundet til Patreon. Hvis du ikke ved hvad dette betyder, eller ikke ved hvordan man forbinder den - så skal du gå til [Patreon account settings page] (https://patreon.com/settings/apps/discord) og klikke \u0027Connect to discord\u0027 knappen.",
   "clpa_fail_conn_title": "Discord kontoen er ikke forbundet",
   "clpa_fail_sup": "For at kunne få denne belønning skal du støtte projektet på patreon. Du kan bruge {0} kommandoen for at få et link.",
   "clpa_fail_sup_title": "Ikke understøttende",

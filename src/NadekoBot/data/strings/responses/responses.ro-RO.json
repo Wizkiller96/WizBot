@@ -640,7 +640,7 @@
   "clpa_fail": "Nu ai primit premiul din cauza următoarelor motive:",
   "clpa_fail_already": "Poate că v-ați primit deja recompensa pentru această lună. Puteți primi recompense numai o dată pe lună dacă nu vă măriți angajamentul.",
   "clpa_fail_already_title": "Deja recompensat",
-  "clpa_fail_conn": "Contul tău de discord s-ar putea să nu fie conectat la Patreon. Daca nu ești sigur ce înseamnă asta, sau nu știi cum să te conectezi - trebuie să mergi în [Pagina de setări cont patreon]\n(https://patreon.com/settings/account) și să dai click pe butonul \u0027Connect to discord\u0027.",
+  "clpa_fail_conn": "Contul tău de discord s-ar putea să nu fie conectat la Patreon. Daca nu ești sigur ce înseamnă asta, sau nu știi cum să te conectezi - trebuie să mergi în [Pagina de setări cont patreon]\n(https://patreon.com/settings/apps/discord) și să dai click pe butonul \u0027Connect to discord\u0027.",
   "clpa_fail_conn_title": "Contul discord nu este conectat",
   "clpa_fail_sup": "Pentru a fi eligibil pentru recompensa, trebuie să sprijiniți proiectul pe patreon. Puteți utiliza comanda {0} pentru a obține linkul.",
   "clpa_fail_sup_title": "Nu suportă",
