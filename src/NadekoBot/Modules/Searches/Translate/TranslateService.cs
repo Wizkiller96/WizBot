@@ -100,7 +100,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
         if (string.IsNullOrWhiteSpace(text))
             throw new ArgumentException("Text is empty or null", nameof(text));
 
-        var res = await _google.Translate(text, source, target);
+        var res = await _google.Translate(text, source.ToLowerInvariant(), target.ToLowerInvariant());
         return res.SanitizeMentions(true);
     }
 
