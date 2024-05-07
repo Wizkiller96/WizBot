@@ -99,31 +99,33 @@ namespace NadekoBot.Tests
                 Assert.Warn("There are some unused entries in data/aliases.yml");
         }
         
-        // [Test]
-        // public void NoObsoleteCommandStrings()
-        // {
-        //     var stringsSource = new LocalFileStringsSource(responsesPath, commandsPath);
-        //
-        //     var culture = new CultureInfo("en-US");
-        //
-        //     var isSuccess = true;
-        //     var allCommandNames = CommandNameLoadHelper.LoadCommandNames(aliasesPath);
-        //     var enUsCommandNames = allCommandNames
-        //         .Select(x => x.Value[0]) // first alias is command name
-        //         .ToHashSet();
-        //     foreach (var entry in stringsSource.GetCommandStrings()[culture.Name])
-        //     {
-        //         // key is command name which should be specified in aliases[0] of any method name
-        //         var cmdName = entry.Key;
-        //
-        //         if (!enUsCommandNames.Contains(cmdName))
-        //         {
-        //             TestContext.Out.WriteLine($"'{cmdName}' It's either obsolete or missing an alias entry.");
-        //             isSuccess = false;
-        //         }
-        //     }
-        //
-        //     Assert.IsTrue(isSuccess);
-        // }
+        [Test]
+        public void NoObsoleteCommandStrings()
+        {
+            var stringsSource = new LocalFileStringsSource(responsesPath, commandsPath);
+        
+            var culture = new CultureInfo("en-US");
+            
+            var methodNames = GetCommandMethodNames()
+                            .ToHashSet();
+        
+            var isSuccess = true;
+            // var allCommandNames = CommandNameLoadHelper.LoadCommandStrings(commandsPath));
+            foreach (var entry in stringsSource.GetCommandStrings()[culture.Name])
+            {
+                var cmdName = entry.Key;
+        
+                if (!methodNames.Contains(cmdName))
+                {
+                    TestContext.Out.WriteLine($"'{cmdName}' from commands.en-US.yml doesn't have a matching command method.");
+                    isSuccess = false;
+                }
+            }
+        
+            if(isSuccess)
+                Assert.IsTrue(isSuccess);
+            else
+                Assert.Warn("There are some unused command strings in data/strings/commands.en-US.yml");
+        }
     }
 }
