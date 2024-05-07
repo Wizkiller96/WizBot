@@ -21,30 +21,32 @@ public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
     }
 }
 
-public sealed class ModuleOrCrTypeReader : NadekoTypeReader<ModuleOrCrInfo>
+public sealed class ModuleOrExprTypeReader : NadekoTypeReader<ModuleOrExpr>
 {
     private readonly CommandService _cmds;
 
-    public ModuleOrCrTypeReader(CommandService cmds)
+    public ModuleOrExprTypeReader(CommandService cmds)
         => _cmds = cmds;
 
-    public override ValueTask<TypeReaderResult<ModuleOrCrInfo>> ReadAsync(ICommandContext context, string input)
+    public override ValueTask<TypeReaderResult<ModuleOrExpr>> ReadAsync(ICommandContext context, string input)
     {
         input = input.ToUpperInvariant();
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
                           .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
                           ?.Key;
         if (module is null && input != "ACTUALEXPRESSIONS")
-            return new(TypeReaderResult.FromError<ModuleOrCrInfo>(CommandError.ParseFailed, "No such module found."));
+            return new(TypeReaderResult.FromError<ModuleOrExpr>(CommandError.ParseFailed, "No such module found."));
 
-        return new(TypeReaderResult.FromSuccess(new ModuleOrCrInfo
+        return new(TypeReaderResult.FromSuccess(new ModuleOrExpr
         {
             Name = input
         }));
     }
 }
 
-public sealed class ModuleOrCrInfo
+// todo chagne commands.en-us to have the new type name
+
+public sealed class ModuleOrExpr
 {
     public string Name { get; set; }
 }

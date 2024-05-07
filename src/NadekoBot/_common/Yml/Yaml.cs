@@ -7,7 +7,9 @@ namespace NadekoBot.Common.Yml;
 public class Yaml
 {
     public static ISerializer Serializer
-        => new SerializerBuilder().WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
+        => new SerializerBuilder()
+           .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
+                                  .DisableAliases()
                                   .WithEmissionPhaseObjectGraphVisitor(args
                                       => new CommentsObjectGraphVisitor(args.InnerVisitor))
                                   .WithEventEmitter(args => new MultilineScalarFlowStyleEmitter(args))

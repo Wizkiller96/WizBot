@@ -1,3 +1,4 @@
+using NadekoBot.Common.Yml;
 using YamlDotNet.Serialization;
 
 namespace NadekoBot.Common.Attributes;
@@ -13,6 +14,14 @@ public static class CommandNameLoadHelper
     {
         var text = File.ReadAllText(aliasesFilePath);
         return _deserializer.Deserialize<Dictionary<string, string[]>>(text);
+    }
+
+    public static Dictionary<string, CommandStrings> LoadCommandStrings(
+        string commandsFilePath = "data/strings/commands.yml")
+    {
+        var text = File.ReadAllText(commandsFilePath);
+
+        return Yaml.Deserializer.Deserialize<Dictionary<string, CommandStrings>>(text);
     }
 
     public static string[] GetAliasesFor(string methodName)

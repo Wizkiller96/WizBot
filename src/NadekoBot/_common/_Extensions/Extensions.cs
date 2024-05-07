@@ -154,7 +154,7 @@ public static class Extensions
         }
         else
         {
-            args = strings.GetCommandStrings(cmd.Summary, culture).Args;
+            args = strings.GetCommandStrings(cmd.Summary, culture).Examples;
         }
 
         return args.Map(arg => GetFullUsage(cmd.Aliases.First(), arg, prefix));
