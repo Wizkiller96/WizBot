@@ -1688,7 +1688,7 @@ trackremove:
         desc: "The position of the song to be removed from the playlist."
     - _:
         desc: "The number of items to be removed from the list."
-trackove:
+trackmove:
   desc: Moves a song from one position to another.
   ex:
     - 5 3
