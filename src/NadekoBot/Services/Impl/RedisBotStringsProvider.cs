@@ -1,8 +1,11 @@
 #nullable disable
 using StackExchange.Redis;
+using System.Text.Json;
 using System.Web;
 
 namespace NadekoBot.Services;
+
+// todo fix 
 
 /// <summary>
 ///     Uses <see cref="IStringsSource" /> to load strings into redis hash (only on Shard 0)
@@ -10,6 +13,8 @@ namespace NadekoBot.Services;
 /// </summary>
 public class RedisBotStringsProvider : IBotStringsProvider
 {
+    private const string COMMANDS_KEY = "commands_v5";
+
     private readonly ConnectionMultiplexer _redis;
     private readonly IStringsSource _source;
     private readonly IBotCredentials _creds;
@@ -36,20 +41,28 @@ public class RedisBotStringsProvider : IBotStringsProvider
 
     public CommandStrings GetCommandStrings(string localeName, string commandName)
     {
-        string argsStr = _redis.GetDatabase()
-                               .HashGet($"{_creds.RedisKey()}:commands:{localeName}", $"{commandName}::args");
-        if (argsStr == default)
+        string examplesStr = _redis.GetDatabase()
+                                   .HashGet($"{_creds.RedisKey()}:{COMMANDS_KEY}:{localeName}",
+                                       $"{commandName}::examples");
+        if (examplesStr == default)
             return null;
 
         var descStr = _redis.GetDatabase()
-                            .HashGet($"{_creds.RedisKey()}:commands:{localeName}", $"{commandName}::desc");
+                            .HashGet($"{_creds.RedisKey()}:{COMMANDS_KEY}:{localeName}", $"{commandName}::desc");
         if (descStr == default)
             return null;
 
-        var args = argsStr.Split('&').Map(HttpUtility.UrlDecode);
+        var ex = examplesStr.Split('&').Map(HttpUtility.UrlDecode);
+
+        var paramsStr = _redis.GetDatabase()
+                              .HashGet($"{_creds.RedisKey()}:{COMMANDS_KEY}:{localeName}", $"{commandName}::params");
+        if (paramsStr == default)
+            return null;
+
         return new()
         {
-            Args = args,
+            Examples = ex,
+            Params = JsonSerializer.Deserialize<Dictionary<string, CommandStringParam>[]>(paramsStr),
             Desc = descStr
         };
     }
@@ -67,12 +80,14 @@ public class RedisBotStringsProvider : IBotStringsProvider
         foreach (var (localeName, localeStrings) in _source.GetCommandStrings())
         {
             var hashFields = localeStrings
-                             .Select(x => new HashEntry($"{x.Key}::args",
-                                 string.Join('&', x.Value.Args.Map(HttpUtility.UrlEncode))))
+                             .Select(x => new HashEntry($"{x.Key}::examples",
+                                 string.Join('&', x.Value.Examples.Map(HttpUtility.UrlEncode))))
                              .Concat(localeStrings.Select(x => new HashEntry($"{x.Key}::desc", x.Value.Desc)))
+                             .Concat(localeStrings.Select(x
+                                 => new HashEntry($"{x.Key}::params", JsonSerializer.Serialize(x.Value.Params))))
                              .ToArray();
 
-            redisDb.HashSet($"{_creds.RedisKey()}:commands:{localeName}", hashFields);
+            redisDb.HashSet($"{_creds.RedisKey()}:{COMMANDS_KEY}:{localeName}", hashFields);
         }
     }
 }

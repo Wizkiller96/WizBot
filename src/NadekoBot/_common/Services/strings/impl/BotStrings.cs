@@ -81,8 +81,9 @@ public class BotStrings : IBotStrings
 
                 return new CommandStrings()
                 {
-                    Args = new[] { "" },
-                    Desc = "?"
+                    Examples = new[] { "" },
+                    Desc = "?",
+                    Params = []
                 };
             }
 
