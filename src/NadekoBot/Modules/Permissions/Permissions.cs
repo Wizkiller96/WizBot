@@ -229,7 +229,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task SrvrMdl(ModuleOrCrInfo module, PermissionAction action)
+    public async Task SrvrMdl(ModuleOrExpr module, PermissionAction action)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -282,7 +282,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task UsrMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IGuildUser user)
+    public async Task UsrMdl(ModuleOrExpr module, PermissionAction action, [Leftover] IGuildUser user)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2
@@ -350,7 +350,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task RoleMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] IRole role)
+    public async Task RoleMdl(ModuleOrExpr module, PermissionAction action, [Leftover] IRole role)
     {
         if (role == role.Guild.EveryoneRole)
             return;
@@ -419,7 +419,7 @@ public partial class Permissions : NadekoModule<PermissionService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ChnlMdl(ModuleOrCrInfo module, PermissionAction action, [Leftover] ITextChannel chnl)
+    public async Task ChnlMdl(ModuleOrExpr module, PermissionAction action, [Leftover] ITextChannel chnl)
     {
         await _service.AddPermissions(ctx.Guild.Id,
             new Permissionv2

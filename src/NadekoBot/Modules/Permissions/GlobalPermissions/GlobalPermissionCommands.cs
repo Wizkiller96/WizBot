@@ -43,7 +43,7 @@ public partial class Permissions
 
         [Cmd]
         [OwnerOnly]
-        public async Task GlobalModule(ModuleOrCrInfo module)
+        public async Task GlobalModule(ModuleOrExpr module)
         {
             var moduleName = module.Name.ToLowerInvariant();
 
