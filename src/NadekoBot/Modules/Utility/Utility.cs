@@ -152,7 +152,7 @@ public partial class Utility : NadekoModule
         );
 
         var roleUsers = users.Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))
-                             .Select(u => $"`{u.Id,18}` {u}")
+                             .Select(u => $"{u.Mention} {Format.Spoiler(Format.Code(u.Username))}")
                              .ToArray();
 
         await Response()

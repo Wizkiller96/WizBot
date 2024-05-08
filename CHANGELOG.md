@@ -51,6 +51,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - The bot will now send a discord Reply to every command
 - `.queuesearch` / `.qs` will now show the results with respective video thumbnails
 - A lot of code cleanup (still a lot to be done) and Quality of Life improvements
+- `.inrole` will now show mentions primarily, and use a spoiler to show usersnames too (so that you can see the username in case the mention doesn't work)
 
 ### Fixed
 
