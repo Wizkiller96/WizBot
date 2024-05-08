@@ -21,11 +21,11 @@ public partial class Permissions
 
             var list = _service.GetBlacklist();
             var allItems = await list.Where(x => x.Type == type)
-                                  .Select(async i =>
+                                  .Select(i =>
                                   {
                                       try
                                       {
-                                          return i.Type switch
+                                          return Task.FromResult(i.Type switch
                                           {
                                               BlacklistType.Channel => Format.Code(i.ItemId.ToString())
                                                                        + " "
@@ -40,14 +40,15 @@ public partial class Permissions
                                                                       + " "
                                                                       + (_client.GetGuild(i.ItemId)?.ToString() ?? ""),
                                               _ => Format.Code(i.ItemId.ToString())
-                                          };
+                                          });
                                       }
                                       catch
                                       {
                                           Log.Warning("Can't get {BlacklistType} [{BlacklistItemId}]",
                                               i.Type,
                                               i.ItemId);
-                                          return Format.Code(i.ItemId.ToString());
+                                          
+                                          return Task.FromResult(Format.Code(i.ItemId.ToString()));
                                       }
                                   })
                                   .WhenAll();

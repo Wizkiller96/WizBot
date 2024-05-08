@@ -1200,36 +1200,39 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 {
                     var avatarUrl = stats.User.RealAvatarUrl();
 
-                    var result = await _c.GetImageDataAsync(avatarUrl);
-                    if (!result.TryPickT0(out var data, out _))
+                    if (avatarUrl is not null)
                     {
-                        using (var http = _httpFactory.CreateClient())
+                        var result = await _c.GetImageDataAsync(avatarUrl);
+                        if (!result.TryPickT0(out var data, out _))
                         {
-                            var avatarData = await http.GetByteArrayAsync(avatarUrl);
-                            using (var tempDraw = Image.Load<Rgba32>(avatarData))
+                            using (var http = _httpFactory.CreateClient())
                             {
-                                tempDraw.Mutate(x => x
-                                                     .Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y)
-                                                     .ApplyRoundedCorners(Math.Max(template.User.Icon.Size.X,
-                                                                              template.User.Icon.Size.Y)
-                                                                          / 2.0f));
-                                await using (var stream = await tempDraw.ToStreamAsync())
+                                var avatarData = await http.GetByteArrayAsync(avatarUrl);
+                                using (var tempDraw = Image.Load<Rgba32>(avatarData))
                                 {
-                                    data = stream.ToArray();
+                                    tempDraw.Mutate(x => x
+                                                         .Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y)
+                                                         .ApplyRoundedCorners(Math.Max(template.User.Icon.Size.X,
+                                                                                  template.User.Icon.Size.Y)
+                                                                              / 2.0f));
+                                    await using (var stream = await tempDraw.ToStreamAsync())
+                                    {
+                                        data = stream.ToArray();
+                                    }
                                 }
                             }
+
+                            await _c.SetImageDataAsync(avatarUrl, data);
                         }
 
-                        await _c.SetImageDataAsync(avatarUrl, data);
+                        using var toDraw = Image.Load(data);
+                        if (toDraw.Size() != new Size(template.User.Icon.Size.X, template.User.Icon.Size.Y))
+                            toDraw.Mutate(x => x.Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y));
+
+                        img.Mutate(x => x.DrawImage(toDraw,
+                            new Point(template.User.Icon.Pos.X, template.User.Icon.Pos.Y),
+                            1));
                     }
-
-                    using var toDraw = Image.Load(data);
-                    if (toDraw.Size() != new Size(template.User.Icon.Size.X, template.User.Icon.Size.Y))
-                        toDraw.Mutate(x => x.Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y));
-
-                    img.Mutate(x => x.DrawImage(toDraw,
-                        new Point(template.User.Icon.Pos.X, template.User.Icon.Pos.Y),
-                        1));
                 }
                 catch (Exception ex)
                 {

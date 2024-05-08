@@ -60,7 +60,7 @@ public class StreamRoleService : IReadyExecutor, INService
     /// <param name="guild">Guild</param>
     /// <param name="action">Add or rem action</param>
     /// <param name="userId">User's Id</param>
-    /// <param name="userName">User's name#discrim</param>
+    /// <param name="userName">User's name</param>
     /// <returns>Whether the operation was successful</returns>
     public async Task<bool> ApplyListAction(
         StreamRoleListType listType,

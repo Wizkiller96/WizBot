@@ -13,14 +13,14 @@ public partial class Searches
         }
 
         [Cmd]
-        public async Task Translate(string from, string to, [Leftover] string text = null)
+        public async Task Translate(string fromLang, string toLang, [Leftover] string text = null)
         {
             try
             {
                 await ctx.Channel.TriggerTypingAsync();
-                var translation = await _service.Translate(from, to, text);
+                var translation = await _service.Translate(fromLang, toLang, text);
 
-                var embed = _sender.CreateEmbed().WithOkColor().AddField(from, text).AddField(to, translation);
+                var embed = _sender.CreateEmbed().WithOkColor().AddField(fromLang, text).AddField(toLang, translation);
 
                 await Response().Embed(embed).SendAsync();
             }
@@ -55,9 +55,9 @@ public partial class Searches
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task AutoTransLang(string from, string to)
+        public async Task AutoTransLang(string fromLang, string toLang)
         {
-            var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, from.ToLower(), to.ToLower());
+            var succ = await _service.RegisterUserAsync(ctx.User.Id, ctx.Channel.Id, fromLang.ToLower(), toLang.ToLower());
 
             if (succ is null)
             {
@@ -71,7 +71,7 @@ public partial class Searches
                 return;
             }
 
-            await Response().Confirm(strs.atl_set(from, to)).SendAsync();
+            await Response().Confirm(strs.atl_set(fromLang, toLang)).SendAsync();
         }
 
         [Cmd]

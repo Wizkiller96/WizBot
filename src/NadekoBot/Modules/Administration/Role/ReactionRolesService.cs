@@ -103,7 +103,10 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
             {
                 if (user.RoleIds.Contains(role.Id))
                 {
-                    await user.RemoveRoleAsync(role.Id);
+                    await user.RemoveRoleAsync(role.Id, new RequestOptions()
+                    {
+                        AuditLogReason = $"Reaction role"
+                    });
                 }
             }
             finally
@@ -176,11 +179,22 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                         var exclusive = reros
                                         .Where(x => x.Group == rero.Group && x.RoleId != role.Id)
                                         .Select(x => x.RoleId)
-                                        .Distinct();
+                                        .Distinct()
+                                        .ToArray();
 
 
-                        try { await user.RemoveRolesAsync(exclusive); }
-                        catch { }
+                        if (exclusive.Any())
+                        {
+                            try
+                            {
+                                await user.RemoveRolesAsync(exclusive,
+                                    new RequestOptions()
+                                    {
+                                        AuditLogReason = "Reaction role exclusive group"
+                                    });
+                            }
+                            catch { }
+                        }
 
                         // remove user's previous reaction
                         try
@@ -203,7 +217,10 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                         }
                     }
 
-                    await user.AddRoleAsync(role.Id);
+                    await user.AddRoleAsync(role.Id, new()
+                    {
+                        AuditLogReason = "Reaction role"
+                    });
                 }
             }
             finally

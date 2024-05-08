@@ -5,8 +5,6 @@ using System.Web;
 
 namespace NadekoBot.Services;
 
-// todo fix 
-
 /// <summary>
 ///     Uses <see cref="IStringsSource" /> to load strings into redis hash (only on Shard 0)
 ///     and retrieves them from redis via <see cref="GetText" />

@@ -34,7 +34,10 @@ public partial class Administration
                 return;
             try
             {
-                await targetUser.AddRoleAsync(roleToAdd);
+                await targetUser.AddRoleAsync(roleToAdd, new RequestOptions()
+                {
+                    AuditLogReason = $"Added by [{ctx.User.Username}]"
+                });
 
                 await Response().Confirm(strs.setrole(Format.Bold(roleToAdd.Name),
                     Format.Bold(targetUser.ToString()))).SendAsync();

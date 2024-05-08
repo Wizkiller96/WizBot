@@ -207,7 +207,10 @@ public partial class Administration : NadekoModule<AdministrationService>
     [BotPerm(GuildPerm.ManageChannels)]
     public async Task DelTxtChanl([Leftover] ITextChannel toDelete)
     {
-        await toDelete.DeleteAsync();
+        await toDelete.DeleteAsync(new RequestOptions()
+        {
+            AuditLogReason = $"Deleted by {ctx.User.Username}"
+        });
         await Response().Confirm(strs.deltextchan(Format.Bold(toDelete.Name))).SendAsync();
     }
 

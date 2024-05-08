@@ -44,8 +44,6 @@ public sealed class ModuleOrExprTypeReader : NadekoTypeReader<ModuleOrExpr>
     }
 }
 
-// todo chagne commands.en-us to have the new type name
-
 public sealed class ModuleOrExpr
 {
     public string Name { get; set; }

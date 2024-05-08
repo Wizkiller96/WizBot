@@ -16,6 +16,3 @@ public sealed class CmdAttribute : CommandAttribute
         Summary = memberName.ToLowerInvariant();
     }
 }
-
-[AttributeUsage(AttributeTargets.Method)]
-public sealed class PromptableAttribute: Attribute;

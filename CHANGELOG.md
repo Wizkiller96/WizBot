@@ -39,6 +39,7 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Added seconds/sec/s to .convert command
 - Added `.prunecancel` to cancel an active prune
 - Added progress reporting when using `.prune`. The bot will periodically update on how many messages have been deleted
+- Audit log reason will be automatically added when using `.setrole`, reaction role and `.dtch` commands
 
 ### Changed
 
@@ -58,6 +59,8 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Fixed a bug in .invitelist not paginating correctly
 - `.serverinfo` will now correctly work for other shards
 - `.send` will now correctly work for other shards
+- `.translate` command will no longer fail if the user capitalizes the language name 
+- Fixed xp card user avatar not showing for some users
 
 ### Removed
 
