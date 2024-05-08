@@ -30,7 +30,7 @@ You can also donate to us through [PayPal][paypal] for one-time donations using 
 
 [![img][paypal-button]][paypal]
 
-[gitlab]: https://gitlab.com/Kwoth/nadekobot
+[gitlab]: https://gitlab.com/nadeko/nadekobot
 [discord-server]: https://discord.nadeko.bot/
 [patreon]: https://www.patreon.com/nadekobot
 [patreon-button]: ./assets/patreon.png

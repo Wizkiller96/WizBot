@@ -1,6 +1,6 @@
 # Changelog
 
-Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
+Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
 ## [5.0.0]
 
@@ -12,10 +12,10 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
 - Giveaway commands
   - `.ga start <duration> <text>` starts the giveway with the specified duration and message (prize). You may have up to 5 giveaways on the server at once
   - `.ga end <id>` prematurely ends the giveaway and selects a winner
-  - `.ga cancel <id>` cancels the giveaway and doesn't select the winner
+  - `.ga cancel <id>` cancels the giveaway and doesn't select a winner
   - `.ga list` lists active giveaways on the current server
   - `.ga reroll <id>` rerolls the winner on the completed giveaway. This only works for 24 hours after the giveaway has ended, or until the bot restarts.
-  - After the giveaway has started, user join the giveaway by adding a :tada: reaction
+  - Users can join the giveaway by adding a :tada: reaction
 - Added Todo Commands
   - `.todo add <name>` - adds a new todo
   - `.todo delete <id>` - deletes a todo item
@@ -29,35 +29,35 @@ Experimental changelog. Mostly based on [keepachangelog](https://keepachangelog.
     - `.todo archive show <id>` - shows the todo items from one of your archived lists
     - `.todo archive delete <id>` - deletes and archived todo list
 - Added `.queufairplay` / `.qfp` (music feature) re-added but it works differently
-  - Once you run it, it will reorganize currently queued songs so that they're in a fair order. It has no effect on any subsequently queued songs
+  - Once you run it, it will reorganize currently queued songs so that they're in a fair order.
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
   - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
-  - You can now configure whether nadeko ignores other bots in `bot.yml`
-  - You can now configure shop sale cut in `gambling.yml`
+  - You can set whether nadeko ignores other bots in `bot.yml`
+  - You can set shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
-- Added seconds/sec/s to .convert command
+- Added seconds/sec/s to `.convert` command
 - Added `.prunecancel` to cancel an active prune
-- Added progress reporting when using `.prune`. The bot will periodically update on how many messages have been deleted
-- Audit log reason will be automatically added when using `.setrole`, reaction role and `.dtch` commands
+- Added progress reporting when using `.prune`. 
+- Added audit log reason for `.setrole` and some other features
 
 ### Changed
 
 - Users who have manage messages perm in the channel will now be excluded from link and invite filtering (`.sfi` and `.sfl`)
 - `.send` command should work consistently and correctly now. You can have targets from other shards too. The usage has been changed. refer to `.h .send` for more info
 - `.serverinfo` no longer takes a server name. It only takes an id or no arguments
-- You can now target a different channel with .repeat, for example `.repeat #some-other 1h Hello every hour`
-- `.cmds <module name>`, `.cmds <group name` and `.mdls` looks better / cleaner / simpler
+- You can now target a different channel with .repeat
+- `.cmds <module name>`, `.cmds <group name` and `.mdls` looks better
 - The bot will now send a discord Reply to every command
 - `.queuesearch` / `.qs` will now show the results with respective video thumbnails
 - A lot of code cleanup (still a lot to be done) and Quality of Life improvements
-- `.inrole` will now show mentions primarily, and use a spoiler to show usersnames too (so that you can see the username in case the mention doesn't work)
+- `.inrole` will now show mentions primarily, and use a spoiler to show usernames
 
 ### Fixed
 
 - `.feed` should now correctly accept (and show) the message which can be passed as the third parameter
 - `.say` will now correctly report errors if the user or the bot don't have sufficent perms to send a message in the targeted channel
-- Fixed a bug in .invitelist not paginating correctly
+- Fixed `.invitelist` not paginating correctly
 - `.serverinfo` will now correctly work for other shards
 - `.send` will now correctly work for other shards
 - `.translate` command will no longer fail if the user capitalizes the language name 

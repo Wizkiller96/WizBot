@@ -8,7 +8,7 @@ Permissions are very handy at setting who can use what commands in a server. All
 
 Several commands still require that you have the correct permissions on Discord to be able to use them, so for users to be able to use commands like `.kick` and `.voicemute`, they need **Kick** and **Mute Members** server permissions, respectively.
 
-With the permissions system it possible to restrict who can skip the current song, pick NadekoFlowers or use the NSFW module.
+With the permissions system it possible to restrict who can skip the current song.
 
 ## First Time Setup
 
@@ -63,15 +63,6 @@ To allow users to only see the current song and have a DJ role for queuing follo
     - Enables the "listqueue" command for everyone
 4. `.rm Music enable DJ`
     - Enables all music commands only for the DJ role
-
-#### How do I create a NSFW role?
-
-Say you want to only enable NSFW commands for a specific role, just do the following two steps.
-
-1. `.sm NSFW disable`
-    - Disables the NSFW module from being used
-2. `.rm NSFW enable Lewd`
-    - Enables usage of the NSFW module for the Lewd role
 
 #### How do I disable Expressions from triggering?
 

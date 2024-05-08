@@ -8,7 +8,7 @@ Medusa system allows you to write independent medusae (known as "modules", "cogs
   
 The system itself borrows some design from the current way Nadeko's Modules are written but mostly from never-released `Ayu.Commands` system which was designed to be used for a full Nadeko v3 rewrite. 
 
-The medusa base classes used for development are open source [here](https://gitlab.com/Kwoth/nadekobot/-/tree/v4/src/Nadeko.Medusa) in case you need reference, as there is no generated documentation at the moment.
+The medusa base classes used for development are open source [here](https://gitlab.com/nadeko/nadekobot/-/tree/v5/src/Nadeko.Medusa) in case you need reference, as there is no generated documentation at the moment.
 
 ### Term list
 
@@ -161,7 +161,7 @@ This section will guide you through how to create a simple custom medusa. You ca
         </PackageReference>
 
         <!-- Note: If you want to use NadekoBot services etc... You will have to manually clone 
-          the gitlab.com/kwoth/nadekobot repo locally and reference the NadekoBot.csproj because there is no NadekoBot package atm.
+          the https://gitlab.com/nadeko/nadekobot repo locally and reference the NadekoBot.csproj because there is no NadekoBot package atm.
           It is strongly recommended that you checkout a specific tag which matches your version of nadeko,
           as there could be breaking changes even between minor versions of NadekoBot.
           For example if you're running NadekoBot 4.1.0 locally for which you want to create a medusa for,

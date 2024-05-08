@@ -38,7 +38,7 @@ Some features have their own specific placeholders which are noted in that featu
 - `%channel.name%` - Channel name
 - `%channel.id%` - Channel ID
 - `%channel.created%` - Channel creation date
-- `%channel.nsfw%` - Returns either `True` or `False`, depending on if the channel is designated as NSFW using discord
+- `%channel.nsfw%` - Returns either `True` or `False`, depending on if the channel is designated as age-restricted in discord
 - `%channel.topic%` - Channel topic
 
 ### User placeholders
