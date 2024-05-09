@@ -115,7 +115,7 @@ build-installer:
    - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
    - iscc.exe "/O+" ".\exe_builder.iss"
  tags:
-   - windows
+   - saas-windows-medium-amd64
 
 publish-medusa-package:
  stage: publish-medusa-package
