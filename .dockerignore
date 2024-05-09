@@ -3,19 +3,9 @@
 
 # Don't ignore nugetconfig
 !./NuGet.Config
+
 # Don't ignore src projects
-!src/Nadeko.Econ/**
-!src/Nadeko.Common/**
-# Use Nadeko.Medusa project
-!src/Nadeko.Medusa/**
-# Use NadekoBot project
-!src/NadekoBot/**
-# Use NadekoBot.Coordinator project
-!src/NadekoBot.Coordinator/**
-# Use Generators project
-!src/NadekoBot.Generators/**
-# Use Ayu stuff
-!src/ayu/**
+!src/**
 !docker-entrypoint.sh
 
 # ignore bin and obj folders in projects
