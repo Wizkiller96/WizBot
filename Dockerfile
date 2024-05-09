@@ -15,7 +15,7 @@ RUN set -xe; \
     dotnet --version; \
     dotnet publish -c Release -o /app --no-restore; \
     mv /app/data /app/data_init; \
-    rm -Rf runtimes/win* runtimes/osx* runtimes/linux-arm* runtimes/linux-mips*; \
+    rm -Rf libopus* libsodium* opus.* runtimes/win* runtimes/osx* runtimes/linux-arm* runtimes/linux-mips*; \
     find /app -type f -exec chmod -x {} \; ;\
     chmod +x /app/NadekoBot
 
@@ -26,7 +26,7 @@ WORKDIR /app
 RUN set -xe; \
     useradd -m nadeko; \
     apt-get update; \
-    apt-get install -y --no-install-recommends libsqlite3-0 curl ffmpeg python3 sudo; \
+    apt-get install -y --no-install-recommends libopus0 libsodium23 libsqlite3-0 curl ffmpeg python3 sudo; \
     update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1; \
     echo 'Defaults>nadeko env_keep+="ASPNETCORE_* DOTNET_* NadekoBot_* shard_id total_shards TZ"' > /etc/sudoers.d/nadeko; \
     curl -Lo /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp; \

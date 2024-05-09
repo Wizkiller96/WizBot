@@ -87,7 +87,7 @@ release:
        --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}" \
        --assets-link "{\"name\":\"${WIN_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}\"}" \
        --assets-link "{\"name\":\"${MACOS_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}"
+       --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}" \
        --assets-link "{\"name\":\"${INSTALLER_FILE_NAME}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}\"}"
 
 test:
