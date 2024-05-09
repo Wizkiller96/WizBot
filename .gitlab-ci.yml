@@ -6,7 +6,6 @@ stages:
   - build-installer
   - upload-builds
   - release
-  - upload-windows-updater-release
   - publish-medusa-package
 
 variables:
