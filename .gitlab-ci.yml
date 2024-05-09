@@ -3,11 +3,11 @@ image: mcr.microsoft.com/dotnet/sdk:8.0
 stages:
   - build
   - test
-  # - upload-builds
-  # - release
-  # - publish-windows
-  # - upload-windows-updater-release
-  # - publish-medusa-package
+  - build-installer
+  - upload-builds
+  - release
+  - upload-windows-updater-release
+  - publish-medusa-package
 
 variables:
   project: "NadekoBot"
@@ -25,7 +25,6 @@ variables:
   WIN_ARM64_OUTPUT_DIR: "nadekobot-windows-arm64"
   WIN_ARM64_RELEASE: "$CI_COMMIT_TAG-windows-arm64-build.zip"
   PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/NadekoBot-build/${CI_COMMIT_TAG}"
-  INSTALLER_OUTPUT_DIR: "nadeko-installers/${CI_COMMIT_TAG}"
   INSTALLER_FILE_NAME: "nadeko-setup-${CI_COMMIT_TAG}.exe"
 
 build:
@@ -46,45 +45,49 @@ build:
       - "$MACOS_X64_OUTPUT_DIR/"
       - "$MACOS_ARM64_OUTPUT_DIR/"
 
-# upload-builds:
-#   stage: upload-builds
-#   image: alpine:latest
-#   rules:
-#     - if: $CI_COMMIT_TAG
-#   script:
-#     - apk add --no-cache curl tar zip
-#     - "tar cvf $LINUX_X64_RELEASE $LINUX_X64_OUTPUT_DIR/*"
-#     - "tar cvf $LINUX_ARM64_RELEASE $LINUX_ARM64_OUTPUT_DIR/*"
-#     - "tar cvf $MACOS_X64_RELEASE $MACOS_X64_OUTPUT_DIR/*"
-#     - "tar cvf $MACOS_ARM64_RELEASE $MACOS_ARM64_OUTPUT_DIR/*"
-#     - "zip -r $WIN_X64_RELEASE $WIN_X64_OUTPUT_DIR/*"
-#     - "zip -r $WIN_ARM64_RELEASE $WIN_ARM64_OUTPUT_DIR/*"
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_X64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_X64_RELEASE
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_ARM64_RELEASE
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_X64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_X64_RELEASE
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_ARM64_RELEASE
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_X64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_X64_RELEASE
-#     - |
-#       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_ARM64_RELEASE
-# release:
-#   stage: release
-#   image: registry.gitlab.com/gitlab-org/release-cli:latest
-#   rules:
-#     - if: $CI_COMMIT_TAG
-#   script:
-#     - |
-#       release-cli create --name "NadekoBot v$CI_COMMIT_TAG" --description "## [Changelog](https://gitlab.com/nadeko/nadekobot/-/blob/v5/CHANGELOG.md#$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))" --tag-name $CI_COMMIT_TAG \
-#         --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
-#         --assets-link "{\"name\":\"${LINUX_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}\"}" \
-#         --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}" \
-#         --assets-link "{\"name\":\"${WIN_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}\"}" \
-#         --assets-link "{\"name\":\"${MACOS_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}\"}" \
-#         --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}"
+upload-builds:
+ stage: upload-builds
+ image: alpine:latest
+ rules:
+   - if: $CI_COMMIT_TAG
+ script:
+   - apk add --no-cache curl tar zip
+   - "tar cvf $LINUX_X64_RELEASE $LINUX_X64_OUTPUT_DIR/*"
+   - "tar cvf $LINUX_ARM64_RELEASE $LINUX_ARM64_OUTPUT_DIR/*"
+   - "tar cvf $MACOS_X64_RELEASE $MACOS_X64_OUTPUT_DIR/*"
+   - "tar cvf $MACOS_ARM64_RELEASE $MACOS_ARM64_OUTPUT_DIR/*"
+   - "zip -r $WIN_X64_RELEASE $WIN_X64_OUTPUT_DIR/*"
+   - "zip -r $WIN_ARM64_RELEASE $WIN_ARM64_OUTPUT_DIR/*"
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_X64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_X64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $LINUX_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$LINUX_ARM64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_X64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_X64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $WIN_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$WIN_ARM64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_X64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_X64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $MACOS_ARM64_RELEASE $PACKAGE_REGISTRY_URL/$MACOS_ARM64_RELEASE
+   - |
+     curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $INSTALLER_FILE_NAME $PACKAGE_REGISTRY_URL/$INSTALLER_FILE_NAME
+
+release:
+ stage: release
+ image: registry.gitlab.com/gitlab-org/release-cli:latest
+ rules:
+   - if: $CI_COMMIT_TAG
+ script:
+   - |
+     release-cli create --name "NadekoBot v$CI_COMMIT_TAG" --description "## [Changelog](https://gitlab.com/nadeko/nadekobot/-/blob/v5/CHANGELOG.md#$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))" --tag-name $CI_COMMIT_TAG \
+       --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
+       --assets-link "{\"name\":\"${LINUX_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}\"}" \
+       --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}" \
+       --assets-link "{\"name\":\"${WIN_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}\"}" \
+       --assets-link "{\"name\":\"${MACOS_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}\"}" \
+       --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}"
+       --assets-link "{\"name\":\"${INSTALLER_FILE_NAME}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}\"}"
 
 test:
   stage: test
@@ -94,76 +97,62 @@ test:
     - "cd $tests_path"
     - "dotnet test"
 
-# publish-windows:
-#   stage: publish-windows
-#   rules:
-#     - if: "$CI_COMMIT_TAG"
-#   image: scottyhardy/docker-wine
-#   before_script:
-#     - choco install dotnet-runtime --version=7.0.2 -y
-#     - choco install dotnet-sdk --version=7.0.102 -y
-#     - choco install innosetup -y
-#   artifacts:
-#     paths:
-#       - "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-#   script:
-#     - dotnet clean
-#     - dotnet restore -f --no-cache -v n
-#     - dotnet publish -c Release -p:PublishSingleFile=true --runtime win-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
-#     - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
-#     - iscc.exe "/O+" ".\exe_builder.iss"
-#   tags:
-#     - windows
+build-installer:
+ stage: build-installer
+ rules:
+   - if: "$CI_COMMIT_TAG"
+ image: scottyhardy/docker-wine
+ before_script:
+   - choco install dotnet-runtime --version=8.0.4 -y
+   - choco install dotnet-sdk --version=8.0.204 -y
+   - choco install innosetup -y
+ artifacts:
+   paths:
+     - "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
+ script:
+   - dotnet clean
+   - dotnet restore -f --no-cache -v n
+   - dotnet publish -c Release -p:PublishSingleFile=true --runtime win-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
+   - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
+   - iscc.exe "/O+" ".\exe_builder.iss"
+ tags:
+   - windows
 
-# upload-windows-updater-release:
-#   stage: upload-windows-updater-release
-#   rules:
-#     - if: "$CI_COMMIT_TAG"
-#   image:
-#     name: amazon/aws-cli
-#     entrypoint: [""]
-#   script:
-#     - sed -i "s/_INSTALLER_FILE_NAME_/$INSTALLER_FILE_NAME/g" releases-v3.json
-#     - sed -i "s/_VERSION_/$CI_COMMIT_TAG/g" releases-v3.json
-#     - aws --version
-#     - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/$INSTALLER_FILE_NAME" --acl public-read --body "$INSTALLER_OUTPUT_DIR/$INSTALLER_FILE_NAME"
-#     - aws --endpoint-url $AWS_SERVICE_URL s3api put-object --bucket "$AWS_BUCKET_NAME" --key "dl/bot/releases-v3.json" --acl public-read --body "releases-v3.json"
+publish-medusa-package:
+ stage: publish-medusa-package
+ rules:
+   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
+ script:
+   - LAST_TAG=$(git describe --tags --abbrev=0)
+   - if [ $CI_COMMIT_TAG ];then MEDUSA_VERSION="$CI_COMMIT_TAG"; else MEDUSA_VERSION="$LAST_TAG-$CI_COMMIT_SHORT_SHA"; fi
+   - cd src/Nadeko.Medusa/
+   - dotnet pack -c Release /p:Version=$MEDUSA_VERSION -o bin/Release/packed
+   - dotnet nuget push bin/Release/packed/ --source https://www.myget.org/F/nadeko/api/v2/package --api-key "$MYGET_API_KEY"
 
-# publish-medusa-package:
-#   stage: publish-medusa-package
-#   rules:
-#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
-#   script:
-#     - LAST_TAG=$(git describe --tags --abbrev=0)
-#     - if [ $CI_COMMIT_TAG ];then MEDUSA_VERSION="$CI_COMMIT_TAG"; else MEDUSA_VERSION="$LAST_TAG-$CI_COMMIT_SHORT_SHA"; fi
-#     - cd src/Nadeko.Medusa/
-#     - dotnet pack -c Release /p:Version=$MEDUSA_VERSION -o bin/Release/packed
-#     - dotnet nuget push bin/Release/packed/ --source https://www.myget.org/F/nadeko/api/v2/package --api-key "$MYGET_API_KEY"
-
-# docker-build:
-#   # Use the official docker image.
-#   image: docker:latest
-#   stage: build
-#   allow_failure: true
-#   services:
-#     - docker:dind
-#   before_script:
-#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-#   # Default branch leaves tag empty (= latest tag)
-#   # All other branches are tagged with the escaped branch name (commit ref slug)
-#   script:
-#     - |
-#       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-#         tag=""
-#         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-#       else
-#         tag=":$CI_COMMIT_SHA"
-#         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
-#       fi
-#     - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
-#     - docker push "$CI_REGISTRY_IMAGE${tag}"
-#   # Run this job in a branch where a Dockerfile exists
-#   rules:
-#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
-#       exists:
-#         - Dockerfile
+docker-build:
+ # Use the official docker image.
+ image: docker:latest
+ stage: build
+ allow_failure: true
+ services:
+   - docker:dind
+ before_script:
+   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+ # Default branch leaves tag empty (= latest tag)
+ # All other branches are tagged with the escaped branch name (commit ref slug)
+ script:
+   - |
+     if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+       tag=""
+       echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+     else
+       tag=":$CI_COMMIT_SHA"
+       echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+     fi
+   - docker build --pull -t "$CI_REGISTRY_IMAGE${tag}" .
+   - docker push "$CI_REGISTRY_IMAGE${tag}"
+ # Run this job in a branch where a Dockerfile exists
+ rules:
+   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
+     exists:
+       - Dockerfile
