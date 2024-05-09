@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.0.0]
+## [5.0.1] - 09.05.2024
 
 ### Added
 
@@ -71,7 +71,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - Removed log voice presence TTS
 - Cleanup: Removed a lot of obsolete aliases from aliases.yml
 
-## [4.3.22] - 23.04.2023
+## [4.3.22] - 23.04.2024
 
 ### Added
 - Added `.setbanner` command (thx cata)
@@ -80,7 +80,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - Fixed pagination error due to a missing emoji
 
 
-## [4.3.21] - 19.04.2023
+## [4.3.21] - 19.04.2024
 
 ### Fixed
 - Possible fix for a duplicate in `.h bank`
