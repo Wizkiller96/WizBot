@@ -1,7 +1,7 @@
 #define sysfolder "system"
 #define version GetEnv("NADEKOBOT_INSTALL_VERSION")
-#define target "win7-x64"
-#define platform "net6.0"
+#define target "win-x64"
+#define platform "net8.0"
 
 [Setup]
 AppName = {param:botname|NadekoBot}
