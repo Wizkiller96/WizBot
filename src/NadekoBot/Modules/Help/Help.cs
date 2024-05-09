@@ -519,7 +519,7 @@ public sealed class Help : NadekoModule<HelpService>
         => smc.RespondConfirmAsync(_sender,
             """
             - In case you don't want or cannot Donate to NadekoBot project, but you
-            - NadekoBot is a completely free and fully [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer or server for free.
+            - NadekoBot is a free and [open source](https://gitlab.com/nadeko/nadekobot) project which means you can run your own "selfhosted" instance on your computer.
 
             *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
 
@@ -532,7 +532,6 @@ public sealed class Help : NadekoModule<HelpService>
     [OnlyPublicBot]
     public async Task Donate()
     {
-        // => new NadekoInteractionData(new Emoji("🖥️"), "donate:selfhosting", "Selfhosting");
         var selfhostInter = _inter.Create(ctx.User.Id,
             new SimpleInteraction<object>(new ButtonBuilder(
                     emote: new Emoji("🖥️"),
@@ -545,33 +544,33 @@ public sealed class Help : NadekoModule<HelpService>
                         .WithTitle("Thank you for considering to donate to the NadekoBot project!");
 
         eb
-            .WithDescription("NadekoBot relies on donations to keep the servers, services and APIs running.\n"
-                             + "Donating will give you access to some exclusive features. You can read about them on the [patreon page](https://patreon.com/join/nadekobot)")
+            .WithDescription("""
+                             NadekoBot relies on donations to keep the servers, services and APIs running.
+                             Donating will give you access to some exclusive features. You can read about them on the [patreon page](https://patreon.com/join/nadekobot)
+                             """)
             .AddField("Donation Instructions",
-                $@"
-🗒️ Before pledging it is recommended to open your DMs as Nadeko will send you a welcome message with instructions after you pledge has been processed and confirmed.
+                $"""
+                 🗒️ Before pledging it is recommended to open your DMs as Nadeko will send you a welcome message with instructions after you pledge has been processed and confirmed.
 
-**Step 1:** ❤️ Pledge on Patreon ❤️
+                 **Step 1:** ❤️ Pledge on Patreon ❤️
 
-`1.` Go to <https://patreon.com/join/nadekobot> and choose a tier.
-`2.` Make sure your payment is processed and accepted.
+                 `1.` Go to <https://patreon.com/join/nadekobot> and choose a tier.
+                 `2.` Make sure your payment is processed and accepted.
 
-**Step 2** 🤝 Connect your Discord account 🤝
+                 **Step 2** 🤝 Connect your Discord account 🤝
 
-`1.` Go to your profile settings on Patreon and connect your Discord account to it.
-*please make sure you're logged into the correct Discord account*
+                 `1.` Go to your profile settings on Patreon and connect your Discord account to it.
+                 *please make sure you're logged into the correct Discord account*
 
-If you do not know how to do it, you may follow instructions in this link:
-<https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron->
+                 If you do not know how to do it, you may [follow instructions here](https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron-)
 
-**Step 3** ⏰ Wait a short while (usually 1-3 minutes) ⏰
-  
-Nadeko will DM you the welcome instructions, and you may start using the patron-only commands and features!
-🎉 **Enjoy!** 🎉
-")
+                 **Step 3** ⏰ Wait a short while (usually 1-3 minutes) ⏰
+                   
+                 Nadeko will DM you the welcome instructions, and you may will receive your rewards!
+                 🎉 **Enjoy!** 🎉
+                 """)
             .AddField("Troubleshooting",
                 """
-
                 *In case you didn't receive the rewards within 5 minutes:*
                 `1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
                 `2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.

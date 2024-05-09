@@ -1,9 +1,15 @@
 ﻿using System.Net.Http.Json;
 using System.Text;
 using NadekoBot.Common.ModuleBehaviors;
+using System.Text.Json.Serialization;
 
 namespace NadekoBot.Modules.Administration.Self;
 
+public sealed class GitlabReleaseModel
+{
+    [JsonPropertyName("tag_name")]
+    public required string TagName { get; init; }
+}
 public sealed class CheckForUpdatesService : INService, IReadyExecutor
 {
     private readonly BotConfigService _bcs;
@@ -12,8 +18,15 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
     private readonly DiscordSocketClient _client;
     private readonly IMessageSenderService _sender;
 
-    public CheckForUpdatesService(BotConfigService bcs, IBotCredsProvider bcp, IHttpClientFactory httpFactory,
-        DiscordSocketClient client, IMessageSenderService sender)
+
+    private const string RELEASES_URL = "https://gitlab.com/api/v4/projects/57687445/releases";
+
+    public CheckForUpdatesService(
+        BotConfigService bcs,
+        IBotCredsProvider bcp,
+        IHttpClientFactory httpFactory,
+        DiscordSocketClient client,
+        IMessageSenderService sender)
     {
         _bcs = bcs;
         _bcp = bcp;
@@ -21,12 +34,12 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
         _client = client;
         _sender = sender;
     }
-    
+
     public async Task OnReadyAsync()
     {
         if (_client.ShardId != 0)
             return;
-        
+
         using var timer = new PeriodicTimer(TimeSpan.FromHours(1));
         while (await timer.WaitForNextTickAsync())
         {
@@ -34,17 +47,17 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
 
             if (!conf.CheckForUpdates)
                 continue;
-            
+
             try
             {
-                const string URL = "https://cdn.nadeko.bot/cmds/versions.json";
                 using var http = _httpFactory.CreateClient();
-                var versions = await http.GetFromJsonAsync<string[]>(URL);
+                var gitlabRelease = (await http.GetFromJsonAsync<GitlabReleaseModel[]>(RELEASES_URL))
+                    ?.FirstOrDefault();
 
-                if (versions is null)
+                if (gitlabRelease?.TagName is null)
                     continue;
-                
-                var latest = versions[0];
+
+                var latest = gitlabRelease.TagName;
                 var latestVersion = Version.Parse(latest);
                 var lastKnownVersion = GetLastKnownVersion();
 
@@ -53,13 +66,13 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                     UpdateLastKnownVersion(latestVersion);
                     continue;
                 }
-                
+
                 if (latestVersion > lastKnownVersion)
                 {
                     UpdateLastKnownVersion(latestVersion);
-                    
+
                     // pull changelog
-                    var changelog = await http.GetStringAsync("https://gitlab.com/Kwoth/nadekobot/-/raw/v4/CHANGELOG.md");
+                    var changelog = await http.GetStringAsync("https://gitlab.com/nadeko/nadekobot/-/raw/v5/CHANGELOG.md");
 
                     var thisVersionChangelog = GetVersionChangelog(latestVersion, changelog);
 
@@ -72,22 +85,24 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
 
                     var creds = _bcp.GetCreds();
                     await creds.OwnerIds
-                        .Select(async x =>
-                        {
-                            var user = await _client.GetUserAsync(x);
-                            if (user is null)
-                                return;
+                               .Select(async x =>
+                               {
+                                   var user = await _client.GetUserAsync(x);
+                                   if (user is null)
+                                       return;
 
-                            var eb = _sender.CreateEmbed()
-                                .WithOkColor()
-                                .WithAuthor($"NadekoBot v{latestVersion} Released!")
-                                .WithTitle("Changelog")
-                                .WithUrl("https://gitlab.com/Kwoth/nadekobot/-/blob/v4/CHANGELOG.md")
-                                .WithDescription(thisVersionChangelog.TrimTo(4096))
-                                .WithFooter("You may disable these messages by typing '.conf bot checkforupdates false'");
+                                   var eb = _sender.CreateEmbed()
+                                                   .WithOkColor()
+                                                   .WithAuthor($"NadekoBot v{latest} Released!")
+                                                   .WithTitle("Changelog")
+                                                   .WithUrl("https://gitlab.com/nadeko/nadekobot/-/blob/v5/CHANGELOG.md")
+                                                   .WithDescription(thisVersionChangelog.TrimTo(4096))
+                                                   .WithFooter(
+                                                       "You may disable these messages by typing '.conf bot checkforupdates false'");
 
-                            await _sender.Response(user).Embed(eb).SendAsync();
-                        }).WhenAll();
+                                   await _sender.Response(user).Embed(eb).SendAsync();
+                               })
+                               .WhenAll();
                 }
             }
             catch (Exception ex)
@@ -111,7 +126,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                 // if we got to previous version, end
                 if (line.StartsWith("## ["))
                     break;
-                
+
                 // if we're reading a new segment, reformat it to print it better to discord
                 if (line.StartsWith("### "))
                 {
@@ -136,11 +151,12 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
     }
 
     private const string LAST_KNOWN_VERSION_PATH = "data/last_known_version.txt";
+
     private Version? GetLastKnownVersion()
     {
         if (!File.Exists(LAST_KNOWN_VERSION_PATH))
             return null;
-        
+
         return Version.TryParse(File.ReadAllText(LAST_KNOWN_VERSION_PATH), out var ver)
             ? ver
             : null;

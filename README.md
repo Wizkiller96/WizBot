@@ -5,5 +5,5 @@
 [![nadeko2](https://cdn.nadeko.bot/tutorial/docs-bot.png)](https://nadeko.bot/commands)
 
 ### Useful links
-- [Self hosting Guides and Docs](https://nadekobot.readthedocs.io/en/v4)
+- [Self hosting Guides and Docs](https://nadekobot.readthedocs.io/en/latest)
 - [Discord support server](https://discord.nadeko.bot)
