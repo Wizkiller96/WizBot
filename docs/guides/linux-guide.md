@@ -28,7 +28,7 @@
 
 Follow the following few steps only if you're migrating from v3. If not, skip to installation instructions.
 
-Use the new installer script:  `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+Use the new installer script:  `cd ~ && wget -N https://gitlab.com/nadeko/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 > - Install prerequisites (type `1` and press `enter`)
 > - Download (type `2` and press `enter`)
 > - Run (type `3` and press `enter`)
@@ -38,7 +38,7 @@ Use the new installer script:  `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-
 
 Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
-1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/nadeko/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
 3. Download the bot (type `2` and press enter)
 4. Exit the installer (type `6` and press enter)
@@ -50,13 +50,13 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
        - `CTRL` + `X`
        - `Y`
        - `Enter`
-8. Run the installer script again `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+8. Run the installer script again `cd ~ && wget -N https://gitlab.com/nadeko/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 9. Run the bot (type `3` and press enter)
 
 ##### Source Update Instructions
 
 1. ⚠ Stop the bot ⚠
-2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/Kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/nadeko/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
 5. 🎉 
@@ -74,7 +74,7 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 3. Make sure your python is version 3+ with `python --version`
     - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
 
-*You can use nadeko bash script [prerequisites installer](https://gitlab.com/Kwoth/nadeko-bash-installer/-/blob/v5/n-prereq.sh) as a reference*
+*You can use nadeko bash script [prerequisites installer](https://gitlab.com/nadeko/nadeko-bash-installer/-/blob/v5/n-prereq.sh) as a reference*
 
 ##### Installation Instructions
 
