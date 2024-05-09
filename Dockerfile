@@ -27,7 +27,7 @@ RUN set -xe; \
     useradd -m nadeko; \
     apt-get update; \
     apt-get install -y --no-install-recommends libopus0 libsodium23 libsqlite3-0 curl ffmpeg python3 sudo; \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1; \
+    update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 1; \
     echo 'Defaults>nadeko env_keep+="ASPNETCORE_* DOTNET_* NadekoBot_* shard_id total_shards TZ"' > /etc/sudoers.d/nadeko; \
     curl -Lo /usr/local/bin/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp; \
     chmod a+rx /usr/local/bin/yt-dlp; \
