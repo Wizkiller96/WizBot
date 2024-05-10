@@ -396,7 +396,7 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
 
     public Func<int, Task<SimpleInteractionBase>>? InteractionFunc { get; private set; }
 
-    public int TotalElements { get; private set; } = 1;
+    public int Elems { get; private set; } = 1;
     public int ItemsPerPage { get; private set; } = 9;
     public bool AddPaginatedFooter { get; private set; } = true;
     public bool IsEphemeral { get; private set; }
@@ -411,8 +411,14 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
     public SourcedPaginatedResponseBuilder<T> Items(IReadOnlyCollection<T> col)
     {
         items = col;
-        TotalElements = col.Count;
+        Elems = col.Count;
         ItemsFunc = (i) => Task.FromResult(items.Skip(i * ItemsPerPage).Take(ItemsPerPage));
+        return this;
+    }
+    
+    public SourcedPaginatedResponseBuilder<T> TotalElements(int i)
+    {
+        Elems = i;
         return this;
     }
 

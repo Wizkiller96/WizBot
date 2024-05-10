@@ -113,7 +113,7 @@ public static class ServiceCollectionExtensions
             typeof(IInputTransformer),
             typeof(INService)
         ];
-
+        
         foreach (var svc in a.GetTypes()
                            .Where(type => type.IsClass && types.Any(t => type.IsAssignableTo(t)) && !type.HasAttribute<DIIgnoreAttribute>()
 #if GLOBAL_NADEKO

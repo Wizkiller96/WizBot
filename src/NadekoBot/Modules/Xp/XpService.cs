@@ -1194,7 +1194,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             }
 
             //avatar
-            if (stats.User.AvatarId is not null && template.User.Icon.Show)
+            if (template.User.Icon.Show)
             {
                 try
                 {

@@ -25,7 +25,7 @@ public partial class ResponseBuilder
 
         public async Task SendAsync(bool ephemeral = false)
         {
-            var lastPage = (_paginationBuilder.TotalElements - 1)
+            var lastPage = (_paginationBuilder.Elems - 1)
                            / _paginationBuilder.ItemsPerPage;
 
             var items = (await _paginationBuilder.ItemsFunc(currentPage)).ToArray();

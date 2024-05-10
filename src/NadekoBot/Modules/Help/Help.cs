@@ -10,7 +10,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;
 
-public sealed class Help : NadekoModule<HelpService>
+public sealed partial class Help : NadekoModule<HelpService>
 {
     public const string PATREON_URL = "https://patreon.com/nadekobot";
     public const string PAYPAL_URL = "https://paypal.me/Kwoth";
@@ -72,13 +72,18 @@ public sealed class Help : NadekoModule<HelpService>
             return;
 
         var topLevelModules = new List<ModuleInfo>();
-        foreach (var m in _cmds.Modules.GroupBy(x => x.GetTopLevelModule()).Select(x => x.Key))
+        foreach (var m in _cmds.Modules.GroupBy(x => x.GetTopLevelModule()).OrderBy(x => x.Key.Name).Select(x => x.Key))
         {
             var result = await _perms.CheckPermsAsync(ctx.Guild,
                 ctx.Channel,
                 ctx.User,
                 m.Name,
                 null);
+
+#if GLOBAL_NADEKO
+            if (m.Preconditions.Any(x => x is NoPublicBotAttribute))
+                continue;
+#endif
 
             if (result.IsAllowed)
                 topLevelModules.Add(m);
@@ -100,13 +105,13 @@ public sealed class Help : NadekoModule<HelpService>
                       return embed;
                   }
 
-                  items.OrderBy(module => module.Name)
-                       .ToList()
-                       .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
-                           GetModuleDescription(module.Name)
-                           + "\n"
-                           + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
-                           true));
+                  items
+                      .ToList()
+                      .ForEach(module => embed.AddField($"{GetModuleEmoji(module.Name)} {module.Name}",
+                          GetModuleDescription(module.Name)
+                          + "\n"
+                          + Format.Code(GetText(strs.module_footer(prefix, module.Name.ToLowerInvariant()))),
+                          true));
 
                   return embed;
               })
@@ -311,7 +316,7 @@ public sealed class Help : NadekoModule<HelpService>
         {
             string cmdName;
             if (cmd.Aliases.Count > 1)
-                cmdName = Format.Code(prefix +cmd.Aliases[0]) + " | " + Format.Code(prefix + cmd.Aliases[1]);
+                cmdName = Format.Code(prefix + cmd.Aliases[0]) + " | " + Format.Code(prefix + cmd.Aliases[1]);
             else
                 cmdName = Format.Code(prefix + cmd.Aliases.First());
 
@@ -355,17 +360,16 @@ public sealed class Help : NadekoModule<HelpService>
     public async Task H([Leftover] CommandInfo com = null)
     {
         var channel = ctx.Channel;
-
         if (com is null)
         {
-            var ch = channel is ITextChannel ? await ctx.User.CreateDMChannelAsync() : channel;
             try
             {
+                var ch = channel is ITextChannel ? await ctx.User.CreateDMChannelAsync() : channel;
                 var data = await GetHelpString();
                 if (data == default)
                     return;
 
-                await Response().Text(data).SendAsync();
+                await Response().Channel(ch).Text(data).SendAsync();
                 try
                 {
                     await ctx.OkAsync();

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace NadekoBot.Common;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-[SuppressMessage("Style", "IDE0022:Use expression body for methods")]
 public sealed class NoPublicBotAttribute : PreconditionAttribute
 {
     public override Task<PreconditionResult> CheckPermissionsAsync(
