@@ -14,7 +14,7 @@
 version: "3.7"
 services:
   nadeko:
-    image: registry.gitlab.com/nadeko/nadekobot:latest
+    image: registry.gitlab.com/kwoth/nadekobot:latest
     depends_on:
       - redis
     environment:

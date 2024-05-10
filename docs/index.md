@@ -36,6 +36,6 @@ If you're unsure whether something is an issue, ask in our support server first.
 [macos-guide]: ./guides/osx-guide.md
 [from-source-guide]: ./guides/from-source.md
 [discord-server]: https://discord.nadeko.bot/
-[gitlab]: https://gitlab.com/nadeko/nadekobot
-[issues]: https://gitlab.com/nadeko/nadekobot/issues
+[gitlab]: https://gitlab.com/kwoth/nadekobot
+[issues]: https://gitlab.com/kwoth/nadekobot/issues
 [donate]: ./donate.md

@@ -75,7 +75,7 @@ You can still install them manually:
 
 Open PowerShell (press windows button on your keyboard and type powershell, it should show up; alternatively, right click the start menu and select Windows PowerShell), and navigate to the location where you want to install the bot (for example `cd ~/Desktop/`)
 
-1. `git clone https://gitlab.com/nadeko/nadekobot -b v5 --depth 1`
+1. `git clone https://gitlab.com/kwoth/nadekobot -b v5 --depth 1`
 2. `cd nadekobot`
 3. `dotnet publish -c Release -o output/ src/NadekoBot/`
 4. `cd output`
