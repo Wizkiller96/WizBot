@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using NadekoBot.Modules.Permissions;
+
 namespace NadekoBot.Common.TypeReaders;
 
 public sealed class ModuleTypeReader : NadekoTypeReader<ModuleInfo>
@@ -34,7 +36,7 @@ public sealed class ModuleOrExprTypeReader : NadekoTypeReader<ModuleOrExpr>
         var module = _cmds.Modules.GroupBy(m => m.GetTopLevelModule())
                           .FirstOrDefault(m => m.Key.Name.ToUpperInvariant() == input)
                           ?.Key;
-        if (module is null && input != "ACTUALEXPRESSIONS")
+        if (module is null && input != "ACTUALEXPRESSIONS" && input != CleverBotResponseStr.CLEVERBOT_RESPONSE)
             return new(TypeReaderResult.FromError<ModuleOrExpr>(CommandError.ParseFailed, "No such module found."));
 
         return new(TypeReaderResult.FromSuccess(new ModuleOrExpr

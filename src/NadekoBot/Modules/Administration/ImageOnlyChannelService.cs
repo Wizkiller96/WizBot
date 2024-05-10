@@ -175,7 +175,7 @@ public sealed class SomethingOnlyChannelService : IExecOnMessage
         // ignore owner and admin
         if (user.Id == tch.Guild.OwnerId || user.GuildPermissions.Administrator)
         {
-            Log.Information("{Type}-Only Channel: Ignoring owner od admin ({ChannelId})", type, msg.Channel.Id);
+            Log.Information("{Type}-Only Channel: Ignoring owner or admin ({ChannelId})", type, msg.Channel.Id);
             return false;
         }
 

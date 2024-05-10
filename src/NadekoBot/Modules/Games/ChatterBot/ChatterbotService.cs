@@ -67,7 +67,7 @@ public class ChatterBotService : IExecOnMessage
                 if (!string.IsNullOrWhiteSpace(_creds.CleverbotApiKey))
                     return new OfficialCleverbotSession(_creds.CleverbotApiKey, _httpFactory);
 
-                Log.Information("Cleverbot will not work as the api key is missing.");
+                Log.Information("Cleverbot will not work as the api key is missing");
                 return null;
             case ChatBotImplementation.Gpt3:
                 if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
@@ -80,7 +80,7 @@ public class ChatterBotService : IExecOnMessage
                         _client.CurrentUser.Username,
                         _httpFactory);
 
-                Log.Information("Gpt3 will not work as the api key is missing.");
+                Log.Information("Gpt3 will not work as the api key is missing");
                 return null;
             default:
                 return null;
@@ -128,7 +128,7 @@ public class ChatterBotService : IExecOnMessage
             var res = await _perms.CheckPermsAsync(sg,
                 usrMsg.Channel,
                 usrMsg.Author,
-                "games",
+                CleverBotResponseStr.CLEVERBOT_RESPONSE,
                 CleverBotResponseStr.CLEVERBOT_RESPONSE);
 
             if (!res.IsAllowed)

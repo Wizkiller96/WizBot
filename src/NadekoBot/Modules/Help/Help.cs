@@ -87,6 +87,7 @@ public sealed class Help : NadekoModule<HelpService>
         await Response()
               .Paginated()
               .Items(topLevelModules)
+              .PageSize(12)
               .CurrentPage(page)
               .AddFooter(false)
               .Page((items, _) =>

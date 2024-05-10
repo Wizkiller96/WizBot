@@ -3,6 +3,7 @@
 namespace NadekoBot.Modules;
 
 [OwnerOnly]
+[NoPublicBot]
 public partial class Medusa : NadekoModule<IMedusaLoaderService>
 {
     private readonly IMedusaeRepositoryService _repo;
