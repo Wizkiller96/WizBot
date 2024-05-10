@@ -1,4 +1,6 @@
-﻿namespace Nadeko.Econ.Gambling.Betdraw;
+﻿using Nadeko.Econ;
+
+namespace NadekoBot.Modules.Gambling.Betdraw;
 
 public readonly struct BetdrawResult
 {

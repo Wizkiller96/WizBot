@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.0.2] - 09.05.2024
+## [5.0.3] - 10.05.2024
 
 ### Added
 

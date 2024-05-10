@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Econ.Gambling;
+﻿namespace NadekoBot.Modules.Gambling;
 
 public readonly struct BetflipResult
 {

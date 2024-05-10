@@ -1,7 +1,7 @@
 ﻿#nullable disable
-using Nadeko.Econ.Gambling;
-using Nadeko.Econ.Gambling.Betdraw;
-using Nadeko.Econ.Gambling.Rps;
+using NadekoBot.Modules.Gambling;
+using NadekoBot.Modules.Gambling.Betdraw;
+using NadekoBot.Modules.Gambling.Rps;
 using NadekoBot.Modules.Gambling.Services;
 using OneOf;
 

@@ -11,7 +11,7 @@ using NadekoBot.Services.Currency;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
-using Nadeko.Econ.Gambling.Rps;
+using NadekoBot.Modules.Gambling.Rps;
 using NadekoBot.Common.TypeReaders;
 using NadekoBot.Modules.Patronage;
 

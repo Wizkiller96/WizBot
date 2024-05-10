@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Econ.Gambling.Rps;
+﻿namespace NadekoBot.Modules.Gambling.Rps;
 
 public sealed class RpsGame
 {

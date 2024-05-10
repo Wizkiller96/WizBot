@@ -1,4 +1,4 @@
-﻿namespace Nadeko.Econ.Gambling.Betdraw;
+﻿namespace NadekoBot.Modules.Gambling.Betdraw;
 
 public enum BetdrawColorGuess
 {
