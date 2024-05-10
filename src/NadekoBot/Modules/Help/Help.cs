@@ -519,7 +519,7 @@ public sealed class Help : NadekoModule<HelpService>
         => smc.RespondConfirmAsync(_sender,
             """
             - In case you don't want or cannot Donate to NadekoBot project, but you
-            - NadekoBot is a free and [open source](https://gitlab.com/nadeko/nadekobot) project which means you can run your own "selfhosted" instance on your computer.
+            - NadekoBot is a free and [open source](https://gitlab.com/kwoth/nadekobot) project which means you can run your own "selfhosted" instance on your computer.
 
             *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
 

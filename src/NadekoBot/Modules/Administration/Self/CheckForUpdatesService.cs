@@ -19,7 +19,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
     private readonly IMessageSenderService _sender;
 
 
-    private const string RELEASES_URL = "https://gitlab.com/api/v4/projects/57687445/releases";
+    private const string RELEASES_URL = "https://gitlab.com/api/v4/projects/9321079/releases";
 
     public CheckForUpdatesService(
         BotConfigService bcs,
@@ -72,7 +72,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                     UpdateLastKnownVersion(latestVersion);
 
                     // pull changelog
-                    var changelog = await http.GetStringAsync("https://gitlab.com/nadeko/nadekobot/-/raw/v5/CHANGELOG.md");
+                    var changelog = await http.GetStringAsync("https://gitlab.com/kwoth/nadekobot/-/raw/v5/CHANGELOG.md");
 
                     var thisVersionChangelog = GetVersionChangelog(latestVersion, changelog);
 
@@ -95,7 +95,7 @@ public sealed class CheckForUpdatesService : INService, IReadyExecutor
                                                    .WithOkColor()
                                                    .WithAuthor($"NadekoBot v{latest} Released!")
                                                    .WithTitle("Changelog")
-                                                   .WithUrl("https://gitlab.com/nadeko/nadekobot/-/blob/v5/CHANGELOG.md")
+                                                   .WithUrl("https://gitlab.com/kwoth/nadekobot/-/blob/v5/CHANGELOG.md")
                                                    .WithDescription(thisVersionChangelog.TrimTo(4096))
                                                    .WithFooter(
                                                        "You may disable these messages by typing '.conf bot checkforupdates false'");
