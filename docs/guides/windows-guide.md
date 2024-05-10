@@ -93,8 +93,12 @@ Open PowerShell as described above and run the following commands:
   - ⚠️ Make sure you don't have your database, credentials or any other nadekobot folder open in some application, this might prevent some of the steps from executing succesfully
 2. Navigate to your bot's folder, example:
     - `cd ~/Desktop/nadekobot`
-3. Pull the new version
-    - `git pull`
+3. Pull the new version, and make sure you're on the v5 branch
+    - *⚠️ the first 3 lines can be omitted if you're already on v5. If you're updating from v4, you must run them*
+        - `git remote set-branches origin '*'`
+        - `git fetch -v --depth=1`
+        - `git checkout v5`
+    - `git pull` 
     - ⚠️ If this fails, you may want to stash or remove your code changes if you don't know how to resolve merge conflicts
 4. **Backup** old output in case your data is overwritten
     - `cp -r -fo output/ output-old`

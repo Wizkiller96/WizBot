@@ -40,7 +40,7 @@ public sealed partial class ReplacementPatternStore
         Register("%server.id%", static (IGuild g) => g.Id.ToString());
         Register("%server.name%", static (IGuild g) => g.Name);
         Register("%server.icon%", static (IGuild g) => g.IconUrl);
-        Register("%server.members%", static (IGuild g) => g.ApproximateMemberCount?.ToString() ?? "?");
+        Register("%server.members%", static async (IGuild g) => (g as SocketGuild)?.MemberCount.ToString() ?? "?");
         Register("%server.boosters%", static (IGuild g) => g.PremiumSubscriptionCount.ToString());
         Register("%server.boost_level%", static (IGuild g) => ((int)g.PremiumTier).ToString());
     }
