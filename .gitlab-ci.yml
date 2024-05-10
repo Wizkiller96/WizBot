@@ -30,12 +30,12 @@ variables:
 build:
   stage: build
   script:
-    - "dotnet publish -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o $LINUX_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r linux-arm64 --self-contained -p:PublishSingleFile=true -o $LINUX_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o $WIN_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r win-arm64 --self-contained -p:PublishSingleFile=true -o $WIN_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -o $MACOS_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
-    - "dotnet publish -c Release -r osx-arm64 --self-contained -p:PublishSingleFile=true -o $MACOS_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r linux-x64 --self-contained -o $LINUX_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r linux-arm64 --self-contained -o $LINUX_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r win-x64 --self-contained -o $WIN_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r win-arm64 --self-contained -o $WIN_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r osx-x64 --self-contained -o $MACOS_X64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
+    - "dotnet publish -c Release -r osx-arm64 --self-contained -o $MACOS_ARM64_OUTPUT_DIR src/NadekoBot/NadekoBot.csproj"
   artifacts:
     paths:
       - "$LINUX_X64_OUTPUT_DIR/"
@@ -113,7 +113,7 @@ build-installer:
  script:
    - dotnet clean
    - dotnet restore -f --no-cache -v n
-   - dotnet publish -c Release --runtime win-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
+   - dotnet publish -c Release --self-contained --runtime win-x64 /p:Version=$CI_COMMIT_TAG src/NadekoBot
    - $env:NADEKOBOT_INSTALL_VERSION = $CI_COMMIT_TAG
    - iscc.exe "/O+" ".\exe_builder.iss"
  tags:

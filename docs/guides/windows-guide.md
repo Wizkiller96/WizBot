@@ -67,7 +67,7 @@ You can still install them manually:
 ##### Prerequisites
 
 **Install these before proceeding or your bot will not work!**
-- [.net 7](https://dotnet.microsoft.com/en-us/download)  - needed to compile and run the bot
+- [.net 8](https://dotnet.microsoft.com/en-us/download)  - needed to compile and run the bot
 - [git](https://git-scm.com/downloads) - needed to clone the repository (you can also download the zip manually and extract it, but this guide assumes you're using git)
 - [Redis] (OPTIONAL)- to cache things needed by some features and persist through restarts
 
