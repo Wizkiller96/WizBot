@@ -2,6 +2,12 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.0.5] - 
+
+### Fixed
+
+- `%server.members%` placeholder fixed
+
 ## [5.0.4] - 10.05.2024
 
 ### Added

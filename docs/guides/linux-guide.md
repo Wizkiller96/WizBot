@@ -15,11 +15,13 @@
 
 ##### Compatible operating systems:
 
-- Ubuntu: 20.04, 22.04, 22.10 +
-- Debian: 11 +
-- CentOS: 7
-- openSUSE 15
-- Fedora: 33, 34, 35
+- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10, 22.04
+- Mint: 19, 20
+- Debian: 10, 11, 12
+- RockyLinux: 8, 9
+- AlmaLinux: 8, 9
+- openSUSE Leap: 15.5, 15.6 & Tumbleweed
+- Fedora: 38, 39, 40, 41, 42
 
 ## Linux From Source 
 
