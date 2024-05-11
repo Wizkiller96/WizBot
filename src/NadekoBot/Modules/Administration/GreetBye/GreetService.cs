@@ -222,6 +222,7 @@ public class GreetService : INService, IReadyExecutor
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions
+                                       || ex.DiscordCode == DiscordErrorCode.MissingPermissions
                                        || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex,
@@ -263,6 +264,7 @@ public class GreetService : INService, IReadyExecutor
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
         catch (HttpException ex) when (ex.DiscordCode == DiscordErrorCode.InsufficientPermissions
+                                       || ex.DiscordCode == DiscordErrorCode.MissingPermissions
                                        || ex.DiscordCode == DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex,
