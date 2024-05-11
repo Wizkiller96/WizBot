@@ -357,9 +357,10 @@ public sealed partial class ResponseBuilder
         fileName = name;
         return this;
     }
-
+    
     public PaginatedResponseBuilder Paginated()
         => new(this);
+
 }
 
 public class PaginatedResponseBuilder

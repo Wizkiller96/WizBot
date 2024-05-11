@@ -97,7 +97,7 @@ public class GreetService : INService, IReadyExecutor
         {
             var newContent = await _repSvc.ReplaceAsync(toSend,
                 new(client: _client, guild: user.Guild, channel: channel, users: user));
-            var toDelete = await _sender.Response(channel).Text(newContent).SendAsync();
+            var toDelete = await _sender.Response(channel).Text(newContent).Sanitize(false).SendAsync();
             if (conf.BoostMessageDeleteAfter > 0)
                 toDelete.DeleteAfter(conf.BoostMessageDeleteAfter);
 
@@ -217,7 +217,7 @@ public class GreetService : INService, IReadyExecutor
         text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
-            var toDelete = await _sender.Response(channel).Text(text).SendAsync();
+            var toDelete = await _sender.Response(channel).Text(text).Sanitize(false).SendAsync();
             if (conf.AutoDeleteByeMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteByeMessagesTimer);
         }
@@ -258,7 +258,7 @@ public class GreetService : INService, IReadyExecutor
         text = await _repSvc.ReplaceAsync(text, repCtx);
         try
         {
-            var toDelete = await _sender.Response(channel).Text(text).SendAsync();
+            var toDelete = await _sender.Response(channel).Text(text).Sanitize(false).SendAsync();
             if (conf.AutoDeleteGreetMessagesTimer > 0)
                 toDelete.DeleteAfter(conf.AutoDeleteGreetMessagesTimer);
         }
@@ -360,7 +360,7 @@ public class GreetService : INService, IReadyExecutor
                 }
             }
 
-            await _sender.Response(user).Text(smartText).SendAsync();
+            await _sender.Response(user).Text(smartText).Sanitize(false).SendAsync();
         }
         catch
         {
@@ -573,8 +573,6 @@ public class GreetService : INService, IReadyExecutor
 
     public bool SetBoostMessage(ulong guildId, ref string message)
     {
-        message = message.SanitizeMentions();
-
         using var uow = _db.GetDbContext();
         var conf = uow.GuildConfigsForId(guildId, set => set);
         conf.BoostMessage = message;

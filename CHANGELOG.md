@@ -2,11 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.0.5] - 
+## [5.0.5] - 11.05.2024
 
 ### Fixed
 
 - `%server.members%` placeholder fixed
+- `.say #channel <message>` should now be working properly again
+- `.repeat`, `.greet`, `.bye` and `.boost` command can now once again mention anyone
 
 ## [5.0.4] - 10.05.2024
 

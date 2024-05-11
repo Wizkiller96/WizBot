@@ -269,7 +269,11 @@ public sealed class RepeaterService : IReadyExecutor, INService
             var text = SmartText.CreateFrom(repeater.Message);
             text = await _repSvc.ReplaceAsync(text, repCtx);
 
-            var newMsg = await _sender.Response(channel).Text(text).SendAsync();
+            var newMsg = await _sender.Response(channel)
+                                      .Text(text)
+                                      .Sanitize(false)
+                                      .SendAsync();
+            
             _ = newMsg.AddReactionAsync(new Emoji("🔄"));
 
             if (_noRedundant.Contains(repeater.Id))
