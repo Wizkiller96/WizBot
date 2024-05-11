@@ -15,7 +15,7 @@
 
 ##### Compatible operating systems:
 
-- Ubuntu: 16.04, 18.04, 20.04, 21.04, 21.10, 22.04
+- Ubuntu: 20.04, 21.04, 21.10, 22.04
 - Mint: 19, 20
 - Debian: 10, 11, 12
 - RockyLinux: 8, 9
