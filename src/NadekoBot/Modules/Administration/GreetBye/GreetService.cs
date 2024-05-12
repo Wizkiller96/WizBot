@@ -202,12 +202,6 @@ public class GreetService : INService, IReadyExecutor
         if (!users.Any())
             return;
 
-        // var rep = new ReplacementBuilder().WithChannel(channel)
-        // .WithClient(_client)
-        // .WithServer(_client, (SocketGuild)channel.Guild)
-        // .WithManyUsers(users)
-        // .Build();
-
         var repCtx = new ReplacementContext(client: _client,
             guild: channel.Guild,
             channel: channel,
@@ -244,17 +238,11 @@ public class GreetService : INService, IReadyExecutor
         if (users.Count == 0)
             return;
 
-        // var rep = new ReplacementBuilder()
-        // .WithChannel(channel)
-        // .WithClient(_client)
-        // .WithServer(_client, (SocketGuild)channel.Guild)
-        // .WithManyUsers(users)
-        // .Build();
-
         var repCtx = new ReplacementContext(client: _client,
             guild: channel.Guild,
             channel: channel,
             users: users.ToArray());
+        
         var text = SmartText.CreateFrom(conf.ChannelGreetMessageText);
         text = await _repSvc.ReplaceAsync(text, repCtx);
         try

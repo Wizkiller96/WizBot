@@ -229,25 +229,15 @@ public class SearchesService : INService
     {
         var subpath = tag.ToString().ToLowerInvariant();
 
-        int max;
-        switch (tag)
+        var max = tag switch
         {
-            case ImageTag.Food:
-                max = 773;
-                break;
-            case ImageTag.Dogs:
-                max = 750;
-                break;
-            case ImageTag.Cats:
-                max = 773;
-                break;
-            case ImageTag.Birds:
-                max = 578;
-                break;
-            default:
-                max = 100;
-                break;
-        }
+            ImageTag.Food => 773,
+            ImageTag.Dogs => 750,
+            ImageTag.Cats => 773,
+            ImageTag.Birds => 578,
+            _ => 100,
+        };
+
 
         return $"https://nadeko-pictures.nyc3.digitaloceanspaces.com/{subpath}/"
                + _rng.Next(1, max).ToString("000")
@@ -427,7 +417,7 @@ public class SearchesService : INService
             async () =>
             {
                 using var http = _httpFactory.CreateClient();
-                
+
                 // https://api.steampowered.com/ISteamApps/GetAppList/v2/
                 var gamesStr = await http.GetStringAsync("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
                 var apps = JsonConvert
@@ -449,7 +439,7 @@ public class SearchesService : INService
 
         if (gamesMap is null)
             return -1;
-        
+
         query = query.Trim();
 
         var keyList = gamesMap.Keys.ToList();
