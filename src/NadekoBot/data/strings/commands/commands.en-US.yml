@@ -187,12 +187,19 @@ repeatinvoke:
     - index:
         desc: "The index at which to display the repeat message."
 repeat:
-  desc: Repeat a message once every specified amount of time in the current channel. You can instead specify time of day for the message to be repeated daily (make sure you've set your server's timezone). If you've specified time of day, you can still override the default daily interval with your own interval. You can have up to 5 repeating messages on the server in total.
+  desc: |-
+    Repeat a message once every specified amount of time in the current channel. 
+    You can specify a different channel as the first argument.
+    You can instead specify time of day for the message to be repeated daily (make sure you've set your server's timezone). 
+    If you've specified time of day, you can still override the default daily interval with your own interval. 
+    You can have up to 5 repeating messages on the server in total.
   ex:
     - Hello there
-    - 1h5m Hello @erryone
-    - 10:00 Daily have a nice day! This will execute once every 24h.
-    - 21:00 30m Starting at 21 and every 30 minutes after that i will send this message!
+    - '#other-channel hello there'
+    - '1h5m Hello @erryone'
+    - '10:00 Daily have a nice day! This will execute once every 24h.'
+    - '#other-channel 10:00 Daily have a nice day! This will execute once every 24h.'
+    - '21:00 30m Starting at 21 and every 30 minutes after that i will send this message!'
   params:
     - message:
         desc: "The text to be repeated at the specified intervals or times."
