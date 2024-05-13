@@ -480,7 +480,7 @@ public partial class Utility : NadekoModule
         try
         {
             if (tags.Length == 0)
-                tags = new[] { name };
+                tags = [name];
 
             await ctx.Guild.CreateStickerAsync(
                 name,

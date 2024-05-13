@@ -140,7 +140,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                           => alias.Equals(commandName, StringComparison.InvariantCultureIgnoreCase)))
                       ?.OptionalStrings
                       .Args
-               ?? new[] { string.Empty };
+               ?? [string.Empty];
     }
 
     public Task ReloadStrings()
@@ -375,7 +375,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             var targetType = parserType.BaseType!.GetGenericArguments()[0];
             var typeReaderInstance = (TypeReader)Activator.CreateInstance(
                 typeof(ParamParserAdapter<>).MakeGenericType(targetType),
-                args: new[] { parserObj, strings, _cont })!;
+                args: [parserObj, strings, _cont])!;
 
             typeReaders.Add(targetType, typeReaderInstance);
         }
@@ -888,7 +888,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             var cmdAttribute = method.GetCustomAttribute<cmdAttribute>(true)!;
             var aliases = cmdAttribute.Aliases;
             if (aliases.Length == 0)
-                aliases = new[] { method.Name.ToLowerInvariant() };
+                aliases = [method.Name.ToLowerInvariant()];
 
             cmds.Add(new(
                 aliases,

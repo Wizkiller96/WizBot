@@ -80,10 +80,10 @@ public sealed class Bot : IBot
         // _interactionService = new(Client.Rest);
 
         Client.Log += Client_Log;
-        _loadedAssemblies = new[]
-        {
-            typeof(Bot).Assembly, // bot
-        };
+        _loadedAssemblies =
+        [
+            typeof(Bot).Assembly // bot
+        ];
     }
 
 

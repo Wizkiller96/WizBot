@@ -202,10 +202,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                 _trackCounter[key].Add(info.GuildId);
             else
             {
-                _trackCounter[key] = new()
-                {
-                    info.GuildId
-                };
+                _trackCounter[key] = [info.GuildId];
             }
         }
 
@@ -572,12 +569,12 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         {
             if (map.TryGetValue(guildId, out var set))
                 return set;
-            return map[guildId] = new();
+            return map[guildId] = [];
         }
 
         _shardTrackedStreams[key] = new()
         {
-            { guildId, new() }
+            { guildId, [] }
         };
         return _shardTrackedStreams[key][guildId];
     }

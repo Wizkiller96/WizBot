@@ -28,9 +28,9 @@ public static class WaifuExtensions
     public static IEnumerable<WaifuLbResult> GetTop(this DbSet<WaifuInfo> waifus, int count, int skip = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
-        
+
         if (count == 0)
-            return new List<WaifuLbResult>();
+            return [];
 
         return waifus.Include(wi => wi.Waifu)
                      .Include(wi => wi.Affinity)

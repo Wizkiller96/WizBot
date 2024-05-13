@@ -259,10 +259,10 @@ public class Deck
         }
 
         private readonly string[] _regIndicators =
-        {
+        [
             "🇦", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":keycap_ten:",
             "🇯", "🇶", "🇰"
-        };
+        ];
 
         public Card(CardSuit s, int cardNum)
         {

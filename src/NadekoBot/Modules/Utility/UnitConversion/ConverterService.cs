@@ -58,13 +58,13 @@ public class ConverterService : INService, IReadyExecutor
         var currencyRates = await GetCurrencyRates();
         var baseType = new ConvertUnit
         {
-            Triggers = new[] { currencyRates.Base },
+            Triggers = [currencyRates.Base],
             Modifier = decimal.One,
             UnitType = unitTypeString
         };
         var units = currencyRates.ConversionRates.Select(u => new ConvertUnit
                                  {
-                                     Triggers = new[] { u.Key },
+                                     Triggers = [u.Key],
                                      Modifier = u.Value,
                                      UnitType = unitTypeString
                                  })

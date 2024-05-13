@@ -11,9 +11,9 @@ public sealed partial class YtLoader : INService
     private static readonly byte[] _ytResultJsonEnd = Encoding.UTF8.GetBytes(";<");
 
     private static readonly string[] _durationFormats =
-    {
+    [
         @"m\:ss", @"mm\:ss", @"h\:mm\:ss", @"hh\:mm\:ss", @"hhh\:mm\:ss"
-    };
+    ];
 
     private readonly IHttpClientFactory _httpFactory;
 

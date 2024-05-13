@@ -23,8 +23,8 @@ public class SearchesService : INService
         Birds
     }
 
-    public List<WoWJoke> WowJokes { get; } = new();
-    public List<MagicItem> MagicItems { get; } = new();
+    public List<WoWJoke> WowJokes { get; } = [];
+    public List<MagicItem> MagicItems { get; } = [];
     private readonly IHttpClientFactory _httpFactory;
     private readonly IGoogleApiService _google;
     private readonly IImageCache _imgs;
@@ -68,7 +68,7 @@ public class SearchesService : INService
             _yomamaJokes = File.ReadAllLines("data/yomama.txt").Shuffle().ToList();
         else
         {
-            _yomamaJokes = new();
+            _yomamaJokes = [];
             Log.Warning("data/yomama.txt is missing. .yomama command won't work");
         }
     }

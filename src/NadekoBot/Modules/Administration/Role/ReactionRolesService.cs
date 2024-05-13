@@ -305,10 +305,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         lock (_cacheLock)
         {
             _cache.AddOrUpdate(msg.Id,
-                _ => new()
-                {
-                    obj
-                },
+                _ => [obj],
                 (_, list) =>
                 {
                     list.RemoveAll(x => x.Emote == emote);

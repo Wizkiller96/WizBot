@@ -16,7 +16,7 @@ public partial class Gambling
 
         private static readonly Regex _fudgeRegex = new(@"^(?<n1>\d+)d(?:F|f)$", RegexOptions.Compiled);
 
-        private static readonly char[] _fateRolls = { '-', ' ', '+' };
+        private static readonly char[] _fateRolls = ['-', ' ', '+'];
         private readonly IImageCache _images;
 
         public DiceRollCommands(IImageCache images)

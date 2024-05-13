@@ -12,9 +12,9 @@ public partial class Gambling
     public partial class Connect4Commands : GamblingSubmodule<GamblingService>
     {
         private static readonly string[] _numbers =
-        {
+        [
             ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:"
-        };
+        ];
 
         private int RepostCounter
         {

@@ -162,7 +162,7 @@ public partial class Searches
                            .AddField(GetText(strs.episodes), animeData.TotalEpisodes.ToString(), true)
                            .AddField(GetText(strs.status), animeData.AiringStatus, true)
                            .AddField(GetText(strs.genres),
-                               string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : new[] { "none" }),
+                               string.Join(",\n", animeData.Genres.Any() ? animeData.Genres : ["none"]),
                                true)
                            .WithFooter($"{GetText(strs.score)} {animeData.AverageScore} / 100");
             await Response().Embed(embed).SendAsync();
@@ -194,7 +194,7 @@ public partial class Searches
                            .AddField(GetText(strs.chapters), mangaData.TotalChapters.ToString(), true)
                            .AddField(GetText(strs.status), mangaData.PublishingStatus, true)
                            .AddField(GetText(strs.genres),
-                               string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : new[] { "none" }),
+                               string.Join(",\n", mangaData.Genres.Any() ? mangaData.Genres : ["none"]),
                                true)
                            .WithFooter($"{GetText(strs.score)} {mangaData.AverageScore} / 100");
 

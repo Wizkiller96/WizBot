@@ -247,10 +247,7 @@ public class FeedsService : INService
         foreach (var feed in gc.FeedSubs)
         {
             _subs.AddOrUpdate(feed.Url.ToLower(),
-                new List<FeedSub>
-                {
-                    feed
-                },
+                [feed],
                 (_, old) =>
                 {
                     old.Add(feed);
@@ -275,7 +272,7 @@ public class FeedsService : INService
             return false;
         var toRemove = items[index];
         _subs.AddOrUpdate(toRemove.Url.ToLower(),
-            new List<FeedSub>(),
+            [],
             (_, old) =>
             {
                 old.Remove(toRemove);

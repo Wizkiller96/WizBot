@@ -28,11 +28,10 @@ public sealed class AyuVoiceStateService : INService
         _dnetApiClient = prop.GetValue(_client, null);
         _sendVoiceStateUpdateMethodInfo = _dnetApiClient.GetType()
                                                         .GetMethod("SendVoiceStateUpdateAsync",
-                                                            new[]
-                                                            {
-                                                                typeof(ulong), typeof(ulong?), typeof(bool),
+                                                        [
+                                                            typeof(ulong), typeof(ulong?), typeof(bool),
                                                                 typeof(bool), typeof(RequestOptions)
-                                                            });
+                                                        ]);
 
         _client.LeftGuild += ClientOnLeftGuild;
     }
@@ -55,7 +54,7 @@ public sealed class AyuVoiceStateService : INService
             bool isMuted = false)
         // return _voiceStateUpdate(guildId, channelId, isDeafened, isMuted);
         => (Task)_sendVoiceStateUpdateMethodInfo.Invoke(_dnetApiClient,
-            new object[] { guildId, channelId, isMuted, isDeafened, null });
+            [guildId, channelId, isMuted, isDeafened, null]);
 
     private Task SendLeaveVoiceChannelInternalAsync(ulong guildId)
         => InvokeSendVoiceStateUpdateAsync(guildId);

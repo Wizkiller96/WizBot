@@ -42,7 +42,7 @@ public sealed class AcrophobiaGame : IDisposable
     private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly NadekoRandom _rng;
 
-    private readonly HashSet<ulong> _usersWhoVoted = new();
+    private readonly HashSet<ulong> _usersWhoVoted = [];
 
     public AcrophobiaGame(Options options)
     {

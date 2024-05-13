@@ -17,9 +17,9 @@ public class TicTacToe
     private IGuildUser winner;
 
     private readonly string[] _numbers =
-    {
+    [
         ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:"
-    };
+    ];
 
     private IUserMessage previousMessage;
     private Timer timeoutTimer;
@@ -42,7 +42,7 @@ public class TicTacToe
         _options = options;
         _sender = sender;
 
-        _users = new[] { firstUser, null };
+        _users = [firstUser, null];
         _state = new int?[,] { { null, null, null }, { null, null, null }, { null, null, null } };
 
         phase = Phase.Starting;

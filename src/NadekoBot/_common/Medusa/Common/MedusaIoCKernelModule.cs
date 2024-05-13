@@ -64,7 +64,7 @@ public sealed class MedusaNinjectIocModule : IIocModule, IDisposable
         var assembly = typeof(JsonSerializerOptions).Assembly;
         var updateHandlerType = assembly.GetType("System.Text.Json.JsonSerializerOptionsUpdateHandler");
         var clearCacheMethod = updateHandlerType?.GetMethod("ClearCache", BindingFlags.Static | BindingFlags.Public);
-        clearCacheMethod?.Invoke(null, new object?[] { null }); 
+        clearCacheMethod?.Invoke(null, [null]); 
         
         isLoaded = false;
     }

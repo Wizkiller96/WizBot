@@ -6,10 +6,13 @@ namespace NadekoBot.Extensions;
 
 public static class StringExtensions
 {
-    private static readonly HashSet<char> _lettersAndDigits = new(Enumerable.Range(48, 10)
-                                                                            .Concat(Enumerable.Range(65, 26))
-                                                                            .Concat(Enumerable.Range(97, 26))
-                                                                            .Select(x => (char)x));
+    private static readonly HashSet<char> _lettersAndDigits =
+    [
+        ..Enumerable.Range(48, 10)
+                    .Concat(Enumerable.Range(65, 26))
+                    .Concat(Enumerable.Range(97, 26))
+                    .Select(x => (char)x)
+    ];
 
     private static readonly Regex _filterRegex = new(@"discord(?:\.gg|\.io|\.me|\.li|(?:app)?\.com\/invite)\/(\w+)",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -43,7 +46,7 @@ public static class StringExtensions
 
     public static string ToTitleCase(this string str)
     {
-        var tokens = str.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+        var tokens = str.Split([" "], StringSplitOptions.RemoveEmptyEntries);
         for (var i = 0; i < tokens.Length; i++)
         {
             var token = tokens[i];

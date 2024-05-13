@@ -7,9 +7,9 @@ namespace NadekoBot.Modules.Music;
 public sealed class YtdlYoutubeResolver : IYoutubeResolver
 {
     private static readonly string[] _durationFormats =
-    {
+    [
         "ss", "m\\:ss", "mm\\:ss", "h\\:mm\\:ss", "hh\\:mm\\:ss", "hhh\\:mm\\:ss"
-    };
+    ];
 
     private static readonly Regex _expiryRegex = new(@"(?:[\?\&]expire\=(?<timestamp>\d+))");
 

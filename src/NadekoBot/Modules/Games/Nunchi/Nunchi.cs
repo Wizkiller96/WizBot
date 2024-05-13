@@ -33,8 +33,8 @@ public sealed class NunchiGame : IDisposable
 
     private readonly SemaphoreSlim _locker = new(1, 1);
 
-    private HashSet<(ulong Id, string Name)> participants = new();
-    private readonly HashSet<(ulong Id, string Name)> _passed = new();
+    private HashSet<(ulong Id, string Name)> participants = [];
+    private readonly HashSet<(ulong Id, string Name)> _passed = [];
     private Timer killTimer;
 
     public NunchiGame(ulong creatorId, string creatorName)

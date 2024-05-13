@@ -146,14 +146,14 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
         Prefix = ".";
         RotateStatuses = false;
         GroupGreets = false;
-        DmHelpTextKeywords = new()
-        {
+        DmHelpTextKeywords =
+        [
             "help",
             "commands",
             "cmds",
             "module",
             "can you do"
-        };
+        ];
     }
 
 //         [Comment(@"Whether the prefix will be a suffix, or prefix.
@@ -178,8 +178,8 @@ public sealed partial class BlockedConfig
 
     public BlockedConfig()
     {
-        Modules = new();
-        Commands = new();
+        Modules = [];
+        Commands = [];
     }
 }
 

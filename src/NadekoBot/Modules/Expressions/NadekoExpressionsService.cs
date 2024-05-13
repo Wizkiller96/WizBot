@@ -356,7 +356,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         if (maybeGuildId is { } guildId)
         {
             newguildExpressions.AddOrUpdate(guildId,
-                new[] { expr },
+                [expr],
                 (_, old) =>
                 {
                     var newArray = old.ToArray();
@@ -389,7 +389,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         expr.Trigger = expr.Trigger.Replace(MENTION_PH, _client.CurrentUser.Mention);
 
         if (maybeGuildId is { } guildId)
-            newguildExpressions.AddOrUpdate(guildId, new[] { expr }, (_, old) => old.With(expr));
+            newguildExpressions.AddOrUpdate(guildId, [expr], (_, old) => old.With(expr));
         else
             return _pubSub.Pub(_gexprAddedKey, expr);
 

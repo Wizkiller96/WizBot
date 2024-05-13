@@ -319,13 +319,13 @@ public class GreetService : INService, IReadyExecutor
                     // if there are no embeds, add an embed with the footer
                     smartText = seta with
                     {
-                        Embeds = new[]
-                        {
+                        Embeds =
+                        [
                             new SmartEmbedArrayElementText()
                             {
                                 Footer = CreateFooterSource(user)
                             }
-                        }
+                        ]
                     };
                 }
                 else

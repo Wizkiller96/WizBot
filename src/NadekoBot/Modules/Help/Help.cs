@@ -249,13 +249,16 @@ public sealed partial class Help : NadekoModule<HelpService>
         var succ = new HashSet<CommandInfo>();
         if (opts.View != CommandsOptions.ViewType.All)
         {
-            succ = new((await cmds.Select(async x =>
-                                  {
-                                      var pre = await x.CheckPreconditionsAsync(Context, _services);
-                                      return (Cmd: x, Succ: pre.IsSuccess);
-                                  })
-                                  .WhenAll()).Where(x => x.Succ)
-                                             .Select(x => x.Cmd));
+            succ =
+            [
+                ..(await cmds.Select(async x =>
+                             {
+                                 var pre = await x.CheckPreconditionsAsync(Context, _services);
+                                 return (Cmd: x, Succ: pre.IsSuccess);
+                             })
+                             .WhenAll()).Where(x => x.Succ)
+                                        .Select(x => x.Cmd)
+            ];
 
             if (opts.View == CommandsOptions.ViewType.Hide)
                 // if hidden is specified, completely remove these commands from the list

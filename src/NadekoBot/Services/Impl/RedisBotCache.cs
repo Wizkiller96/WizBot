@@ -8,13 +8,13 @@ namespace NadekoBot.Common;
 
 public sealed class RedisBotCache : IBotCache
 {
-    private static readonly Type[] _supportedTypes = new []
-    {
+    private static readonly Type[] _supportedTypes =
+    [
         typeof(bool), typeof(int), typeof(uint), typeof(long),
         typeof(ulong), typeof(float), typeof(double),
         typeof(string), typeof(byte[]), typeof(ReadOnlyMemory<byte>), typeof(Memory<byte>),
-        typeof(RedisValue),
-    };
+        typeof(RedisValue)
+    ];
 
     private static readonly JsonSerializerOptions _opts = new()
     {

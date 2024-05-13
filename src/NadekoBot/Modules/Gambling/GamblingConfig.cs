@@ -131,8 +131,8 @@ public partial class BetRollConfig
     public BetRollPair[] Pairs { get; set; } = Array.Empty<BetRollPair>();
 
     public BetRollConfig()
-        => Pairs = new BetRollPair[]
-        {
+        => Pairs =
+        [
             new()
             {
                 WhenAbove = 99,
@@ -148,7 +148,7 @@ public partial class BetRollConfig
                 WhenAbove = 66,
                 MultiplyBy = 2
             }
-        };
+        ];
 }
 
 [Cloneable]
@@ -207,7 +207,7 @@ public partial class LuckyLadderSettings
     public decimal[] Multipliers { get; set; }
 
     public LuckyLadderSettings()
-        => Multipliers = new[] { 2.4M, 1.7M, 1.5M, 1.2M, 0.5M, 0.3M, 0.2M, 0.1M };
+        => Multipliers = [2.4M, 1.7M, 1.5M, 1.2M, 0.5M, 0.3M, 0.2M, 0.1M];
 }
 
 [Cloneable]
@@ -228,11 +228,11 @@ public sealed partial class WaifuConfig
         List of items available for gifting.
         If negative is true, gift will instead reduce waifu value.
         """)]
-    public List<WaifuItemModel> Items { get; set; } = new();
+    public List<WaifuItemModel> Items { get; set; } = [];
 
     public WaifuConfig()
-        => Items = new()
-        {
+        => Items =
+        [
             new("🥔", 5, "Potato"),
             new("🍪", 10, "Cookie"),
             new("🥖", 20, "Bread"),
@@ -269,7 +269,7 @@ public sealed partial class WaifuConfig
             new("🚁", 20000, "Helicopter"),
             new("🚀", 30000, "Spaceship"),
             new("🌕", 50000, "Moon")
-        };
+        ];
 
     public class WaifuDecayConfig
     {

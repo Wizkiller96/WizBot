@@ -66,10 +66,7 @@ public sealed class TwitchHelixProvider : Provider
 
     public override async Task<StreamData?> GetStreamDataAsync(string login)
     {
-        var data = await GetStreamDataAsync(new List<string>
-        {
-            login
-        });
+        var data = await GetStreamDataAsync([login]);
 
         return data.FirstOrDefault();
     }
@@ -125,7 +122,7 @@ public sealed class TwitchHelixProvider : Provider
             catch (Exception ex)
             {
                 Log.Warning(ex, "Something went wrong retreiving {StreamPlatform} streams", Platform);
-                return new List<StreamData>();
+                return [];
             }
         }
         
@@ -163,7 +160,7 @@ public sealed class TwitchHelixProvider : Provider
             catch (Exception ex)
             {
                 Log.Warning(ex, "Something went wrong retreiving {StreamPlatform} streams", Platform);
-                return new List<StreamData>();
+                return [];
             }
         }
 

@@ -24,8 +24,8 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
     };
 
     [Comment("List of responses for the .8ball command. A random one will be selected every time")]
-    public List<string> EightBallResponses { get; set; } = new()
-    {
+    public List<string> EightBallResponses { get; set; } =
+    [
         "Most definitely yes.",
         "For sure.",
         "Totally!",
@@ -49,52 +49,59 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
         "Don't even think about it.",
         "Definitely no.",
         "NO - It may cause disease contraction!"
-    };
+    ];
 
     [Comment("List of animals which will be used for the animal race game (.race)")]
-    public List<RaceAnimal> RaceAnimals { get; set; } = new()
-    {
+    public List<RaceAnimal> RaceAnimals { get; set; } =
+    [
         new()
         {
             Icon = "🐼",
             Name = "Panda"
         },
+
         new()
         {
             Icon = "🐻",
             Name = "Bear"
         },
+
         new()
         {
             Icon = "🐧",
             Name = "Pengu"
         },
+
         new()
         {
             Icon = "🐨",
             Name = "Koala"
         },
+
         new()
         {
             Icon = "🐬",
             Name = "Dolphin"
         },
+
         new()
         {
             Icon = "🐞",
             Name = "Ladybird"
         },
+
         new()
         {
             Icon = "🦀",
             Name = "Crab"
         },
+
         new()
         {
             Icon = "🦄",
             Name = "Unicorn"
         }
-    };
+    ];
 
     [Comment(@"Which chatbot API should bot use.
 'cleverbot' - bot will use Cleverbot API. 

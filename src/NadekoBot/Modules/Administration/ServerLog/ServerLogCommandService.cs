@@ -24,7 +24,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
     private readonly GuildTimezoneService _tz;
     private readonly IMemoryCache _memoryCache;
 
-    private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = new();
+    private readonly ConcurrentHashSet<ulong> _ignoreMessageIds = [];
     private readonly UserPunishService _punishService;
     private readonly IMessageSenderService _sender;
 
@@ -115,10 +115,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                               strs.user_status_change("👤" + Format.Bold(gu.Username),
                                   Format.Bold(after.Status.ToString())));
                 PresenceUpdates.AddOrUpdate(logChannel,
-                    new List<string>
-                    {
-                        str
-                    },
+                    [str],
                     (_, list) =>
                     {
                         list.Add(str);
@@ -130,10 +127,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 var str =
                     $"👾`{PrettyCurrentTime(gu.Guild)}`👤__**{gu.Username}**__ is now playing **{after.Activities.FirstOrDefault()?.Name ?? "-"}**.";
                 PresenceUpdates.AddOrUpdate(logChannel,
-                    new List<string>
-                    {
-                        str
-                    },
+                    [str],
                     (_, list) =>
                     {
                         list.Add(str);
@@ -881,10 +875,7 @@ public sealed class LogCommandService : ILogCommandService, IReadyExecutor
                 if (!string.IsNullOrWhiteSpace(str))
                 {
                     PresenceUpdates.AddOrUpdate(logChannel,
-                        new List<string>
-                        {
-                            str
-                        },
+                        [str],
                         (_, list) =>
                         {
                             list.Add(str);

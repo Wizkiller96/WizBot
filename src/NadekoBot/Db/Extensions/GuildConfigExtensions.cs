@@ -7,19 +7,20 @@ namespace NadekoBot.Db;
 public static class GuildConfigExtensions
 {
     private static List<WarningPunishment> DefaultWarnPunishments
-        => new()
-        {
+        =>
+        [
             new()
             {
                 Count = 3,
                 Punishment = PunishmentAction.Kick
             },
+
             new()
             {
                 Count = 5,
                 Punishment = PunishmentAction.Ban
             }
-        };
+        ];
 
     /// <summary>
     ///     Gets full stream role settings for the guild with the specified id.

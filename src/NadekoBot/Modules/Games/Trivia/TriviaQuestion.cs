@@ -9,13 +9,13 @@ public class TriviaQuestion
     public const int MAX_STRING_LENGTH = 22;
 
     //represents the min size to judge levDistance with
-    private static readonly HashSet<Tuple<int, int>> _strictness = new()
-    {
+    private static readonly HashSet<Tuple<int, int>> _strictness =
+    [
         new(9, 0),
         new(14, 1),
         new(19, 2),
         new(22, 3)
-    };
+    ];
 
     public string Category
         => _qModel.Category;
