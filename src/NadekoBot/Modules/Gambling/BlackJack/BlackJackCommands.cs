@@ -50,12 +50,12 @@ public partial class Gambling
                 bj.GameEnded += Bj_GameEnded;
                 bj.Start();
 
-                await Response().Confirm(strs.bj_created(ctx.User.ToString())).SendAsync();
+                await Response().NoReply().Confirm(strs.bj_created(ctx.User.ToString())).SendAsync();
             }
             else
             {
                 if (await bj.Join(ctx.User, amount))
-                    await Response().Confirm(strs.bj_joined(ctx.User.ToString())).SendAsync();
+                    await Response().NoReply().Confirm(strs.bj_joined(ctx.User.ToString())).SendAsync();
                 else
                 {
                     Log.Information("{User} can't join a blackjack game as it's in {BlackjackState} state already",

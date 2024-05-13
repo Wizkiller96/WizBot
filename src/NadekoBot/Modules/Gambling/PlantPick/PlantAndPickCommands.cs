@@ -27,7 +27,7 @@ public partial class Gambling
 
             if (picked > 0)
             {
-                var msg = await Response().Confirm(strs.picked(N(picked))).SendAsync();
+                var msg = await Response().NoReply().Confirm(strs.picked(N(picked))).SendAsync();
                 msg.DeleteAfter(10);
             }
 
@@ -92,7 +92,7 @@ public partial class Gambling
         {
             if (--page < 0)
                 return Task.CompletedTask;
-            
+
             var enabledIn = _service.GetAllGeneratingChannels();
 
             return Response()
