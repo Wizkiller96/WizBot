@@ -39,7 +39,6 @@ public sealed class NadekoRandom : Random
     public long NextLong(long minValue, long maxValue)
     {
         ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
-        
         if (minValue == maxValue)
             return minValue;
         var bytes = new byte[sizeof(long)];

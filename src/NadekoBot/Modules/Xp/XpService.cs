@@ -1469,7 +1469,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
 
         await using var ctx = _db.GetDbContext();
-        // await using var tran = await ctx.Database.BeginTransactionAsync();
         try
         {
             if (await ctx.GetTable<XpShopOwnedItem>()

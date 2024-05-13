@@ -417,8 +417,7 @@ namespace NadekoBot.Coordinator
         {
             lock (locker)
             {
-                if (shardId >= _shardStatuses.Length)
-                    throw new ArgumentOutOfRangeException(nameof(shardId));
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(shardId, _shardStatuses.Length);
 
                 return _shardStatuses[shardId];
             }

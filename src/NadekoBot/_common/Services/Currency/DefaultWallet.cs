@@ -20,10 +20,10 @@ public class DefaultWallet : IWallet
         await using var ctx = _db.GetDbContext();
         var userId = UserId;
         return await ctx
-            .GetTable<DiscordUser>()
-            .Where(x => x.UserId == userId)
-            .Select(x => x.CurrencyAmount)
-            .FirstOrDefaultAsync();
+                     .GetTable<DiscordUser>()
+                     .Where(x => x.UserId == userId)
+                     .Select(x => x.CurrencyAmount)
+                     .FirstOrDefaultAsync();
     }
 
     public async Task<bool> Take(long amount, TxData? txData)
@@ -35,12 +35,12 @@ public class DefaultWallet : IWallet
 
         var userId = UserId;
         var changed = await ctx
-            .GetTable<DiscordUser>()
-            .Where(x => x.UserId == userId && x.CurrencyAmount >= amount)
-            .UpdateAsync(x => new()
-            {
-                CurrencyAmount = x.CurrencyAmount - amount
-            });
+                            .GetTable<DiscordUser>()
+                            .Where(x => x.UserId == userId && x.CurrencyAmount >= amount)
+                            .UpdateAsync(x => new()
+                            {
+                                CurrencyAmount = x.CurrencyAmount - amount
+                            });
 
         if (changed == 0)
             return false;
@@ -48,17 +48,17 @@ public class DefaultWallet : IWallet
         if (txData is not null)
         {
             await ctx
-                .GetTable<CurrencyTransaction>()
-                .InsertAsync(() => new()
-                {
-                    Amount = -amount,
-                    Note = txData.Note,
-                    UserId = userId,
-                    Type = txData.Type,
-                    Extra = txData.Extra,
-                    OtherId = txData.OtherId,
-                    DateAdded = DateTime.UtcNow
-                });
+                  .GetTable<CurrencyTransaction>()
+                  .InsertAsync(() => new()
+                  {
+                      Amount = -amount,
+                      Note = txData.Note,
+                      UserId = userId,
+                      Type = txData.Type,
+                      Extra = txData.Extra,
+                      OtherId = txData.OtherId,
+                      DateAdded = DateTime.UtcNow
+                  });
         }
 
         return true;
@@ -72,43 +72,37 @@ public class DefaultWallet : IWallet
         await using var ctx = _db.GetDbContext();
         var userId = UserId;
 
-        await using (var tran = await ctx.Database.BeginTransactionAsync())
-        {
-            var changed = await ctx
-                .GetTable<DiscordUser>()
-                .Where(x => x.UserId == userId)
-                .UpdateAsync(x => new()
-                {
-                    CurrencyAmount = x.CurrencyAmount + amount
-                });
 
-            if (changed == 0)
-            {
-                await ctx
-                    .GetTable<DiscordUser>()
-                    .Value(x => x.UserId, userId)
-                    .Value(x => x.Username, "Unknown")
-                    .Value(x => x.Discriminator, "????")
-                    .Value(x => x.CurrencyAmount, amount)
-                    .InsertAsync();
-            }
-
-            await tran.CommitAsync();
-        }
+        await ctx.GetTable<DiscordUser>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         UserId = userId,
+                         Username = "Unknown",
+                         Discriminator = "????",
+                         CurrencyAmount = amount,
+                     },
+                     (old) => new()
+                     {
+                         CurrencyAmount = old.CurrencyAmount + amount
+                     },
+                     () => new()
+                     {
+                         UserId = userId
+                     });
 
         if (txData is not null)
         {
             await ctx.GetTable<CurrencyTransaction>()
-                .InsertAsync(() => new()
-                {
-                    Amount = amount,
-                    UserId = userId,
-                    Note = txData.Note,
-                    Type = txData.Type,
-                    Extra = txData.Extra,
-                    OtherId = txData.OtherId,
-                    DateAdded = DateTime.UtcNow
-                });
+                     .InsertAsync(() => new()
+                     {
+                         Amount = amount,
+                         UserId = userId,
+                         Note = txData.Note,
+                         Type = txData.Type,
+                         Extra = txData.Extra,
+                         OtherId = txData.OtherId,
+                         DateAdded = DateTime.UtcNow
+                     });
         }
     }
 }

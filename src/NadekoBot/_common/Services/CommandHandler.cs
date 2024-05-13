@@ -94,10 +94,8 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 
     public string SetPrefix(IGuild guild, string prefix)
     {
-        if (string.IsNullOrWhiteSpace(prefix))
-            throw new ArgumentNullException(nameof(prefix));
-        if (guild is null)
-            throw new ArgumentNullException(nameof(guild));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(prefix);
+        ArgumentNullException.ThrowIfNull(guild);
 
         using (var uow = _db.GetDbContext())
         {

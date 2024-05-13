@@ -111,7 +111,6 @@ public sealed class PatronageService
                 var lastDate = lastRun.ToDateOnly();
 
                 await using var ctx = _db.GetDbContext();
-                await using var tran = await ctx.Database.BeginTransactionAsync();
 
                 if ((lastDate.Day == 1 || (lastDate.Month != nowDate.Month)) && nowDate.Day > 1)
                 {
@@ -141,7 +140,6 @@ public sealed class PatronageService
 
                 // assumes that the code above runs in less than an hour
                 await _cache.AddAsync(_quotaKey, now.ToBinary());
-                await tran.CommitAsync();
             }
             catch (Exception ex)
             {
@@ -171,7 +169,6 @@ public sealed class PatronageService
 
             var lastChargeUtc = subscriber.LastCharge.Value.ToUniversalTime();
             var dateInOneMonth = lastChargeUtc.Date.AddMonths(1);
-            // await using var tran = await ctx.Database.BeginTransactionAsync();
             try
             {
                 var dbPatron = await ctx.GetTable<PatronUser>()

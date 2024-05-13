@@ -130,8 +130,7 @@ public class VcRoleService : INService
 
     public void AddVcRole(ulong guildId, IRole role, ulong vcId)
     {
-        if (role is null)
-            throw new ArgumentNullException(nameof(role));
+        ArgumentNullException.ThrowIfNull(role);
 
         var guildVcRoles = VcRoles.GetOrAdd(guildId, new ConcurrentDictionary<ulong, IRole>());
 

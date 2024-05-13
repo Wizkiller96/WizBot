@@ -291,8 +291,7 @@ public class MuteService : INService
 
     public async Task<IRole> GetMuteRole(IGuild guild)
     {
-        if (guild is null)
-            throw new ArgumentNullException(nameof(guild));
+        ArgumentNullException.ThrowIfNull(guild);
 
         const string defaultMuteRoleName = "nadeko-mute";
 

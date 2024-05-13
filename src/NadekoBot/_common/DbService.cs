@@ -12,5 +12,5 @@ public abstract class DbService
     public abstract Task SetupAsync();
 
     public abstract DbContext CreateRawDbContext(string dbType, string connString);
-    public abstract DbContext GetDbContext();
+    public abstract NadekoContext GetDbContext();
 }

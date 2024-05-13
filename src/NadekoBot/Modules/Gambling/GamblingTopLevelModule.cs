@@ -24,6 +24,7 @@ public abstract class GamblingModule<TService> : NadekoModule<TService>
     {
         if (amount < 1)
             return false;
+        
         if (amount < Config.MinBet)
         {
             await Response().Error(strs.min_bet_limit(Format.Bold(Config.MinBet.ToString()) + CurrencySign)).SendAsync();

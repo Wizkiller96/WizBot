@@ -267,20 +267,8 @@ public sealed partial class MusicQueue : IMusicQueue
     {
         lock (_locker)
         {
-            var list = tracks.ToList();
-
-            for (var i = 0; i < list.Count; i++)
-            {
-                var struck = rng.Next(i, list.Count);
-                (list[struck], list[i]) = (list[i], list[struck]);
-
-                // could preserving the index during shuffling be done better?
-                if (i == index)
-                    index = struck;
-                else if (struck == index)
-                    index = i;
-            }
-
+            var list = tracks.ToArray();
+            rng.Shuffle(list);
             tracks = new(list);
         }
     }
