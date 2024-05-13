@@ -1,3 +1,0 @@
-files:
-  - source: src/NadekoBot/data/strings/responses/responses.en-US.json
-    translation: src/NadekoBot/data/strings/responses/responses.%locale%.json
