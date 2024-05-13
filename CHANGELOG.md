@@ -7,6 +7,11 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 ### Changed 
 
 - `.greet` and `.bye` will now be automatically disabled if the bot losses permissions to post in the specified channel
+- Removed response replies from `.blackjack` and `.pick` as the original message will always be deleted
+
+### Fixed
+
+- Fixed `.blackjack` response string as it contained no user name
 
 ## [5.0.5] - 11.05.2024
 
