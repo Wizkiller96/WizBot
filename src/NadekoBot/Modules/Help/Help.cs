@@ -1,12 +1,9 @@
 #nullable disable
-using Amazon.S3;
 using NadekoBot.Modules.Help.Common;
 using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json;
 using Nadeko.Common.Medusa;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NadekoBot.Modules.Help;
 
@@ -427,90 +424,8 @@ public sealed partial class Help : NadekoModule<HelpService>
                                      .ToList());
 
         var readableData = JsonConvert.SerializeObject(cmdData, Formatting.Indented);
-        var uploadData = JsonConvert.SerializeObject(cmdData, Formatting.None);
-
-        // for example https://nyc.digitaloceanspaces.com (without your space name)
-        var serviceUrl = Environment.GetEnvironmentVariable("do_spaces_address");
-
-        // generate spaces access key on https://cloud.digitalocean.com/account/api/tokens
-        // you will get 2 keys, first, shorter one is id, longer one is secret
-        var accessKey = Environment.GetEnvironmentVariable("do_access_key_id");
-        var secretAcccessKey = Environment.GetEnvironmentVariable("do_access_key_secret");
-
-        // if all env vars are set, upload the unindented file (to save space) there
-        if (!(serviceUrl is null || accessKey is null || secretAcccessKey is null))
-        {
-            var config = new AmazonS3Config
-            {
-                ServiceURL = serviceUrl
-            };
-
-            using var dlClient = new AmazonS3Client(accessKey, secretAcccessKey, config);
-
-            using (var client = new AmazonS3Client(accessKey, secretAcccessKey, config))
-            {
-                await client.PutObjectAsync(new()
-                {
-                    BucketName = "nadeko-pictures",
-                    ContentType = "application/json",
-                    ContentBody = uploadData,
-                    // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
-                    Key = $"cmds/{StatsService.BotVersion}.json",
-                    CannedACL = S3CannedACL.PublicRead
-                });
-            }
-
-
-            var versionListString = "[]";
-            try
-            {
-                using var oldVersionObject = await dlClient.GetObjectAsync(new()
-                {
-                    BucketName = "nadeko-pictures",
-                    Key = "cmds/versions.json"
-                });
-
-                await using var ms = new MemoryStream();
-                await oldVersionObject.ResponseStream.CopyToAsync(ms);
-                versionListString = Encoding.UTF8.GetString(ms.ToArray());
-            }
-            catch (Exception)
-            {
-                Log.Information("No old version list found. Creating a new one");
-            }
-
-            var versionList = JsonSerializer.Deserialize<List<string>>(versionListString);
-            if (versionList is not null && !versionList.Contains(StatsService.BotVersion))
-            {
-                // save the file with new version added
-                // versionList.Add(StatsService.BotVersion);
-                versionListString = JsonSerializer.Serialize(versionList.Prepend(StatsService.BotVersion),
-                    new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    });
-
-                // upload the updated version list
-                using var client = new AmazonS3Client(accessKey, secretAcccessKey, config);
-                await client.PutObjectAsync(new()
-                {
-                    BucketName = "nadeko-pictures",
-                    ContentType = "application/json",
-                    ContentBody = versionListString,
-                    // either use a path provided in the argument or the default one for public nadeko, other/cmds.json
-                    Key = "cmds/versions.json",
-                    CannedACL = S3CannedACL.PublicRead
-                });
-            }
-            else
-            {
-                Log.Warning(
-                    "Version {Version} already exists in the version file. " + "Did you forget to increment it?",
-                    StatsService.BotVersion);
-            }
-        }
-
-        // also send the file, but indented one, to chat
+        
+        // send the indented file to chat
         await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
     }
