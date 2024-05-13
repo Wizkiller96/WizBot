@@ -42,7 +42,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Html2Markdown" Version="6.2.0.3"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.5.0"/>
 
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
@@ -76,7 +75,7 @@
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14"/>
         <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009"/>
         <PackageReference Include="StackExchange.Redis" Version="2.7.33"/>
-        <PackageReference Include="YamlDotNet" Version="15.1.2"/>
+        <PackageReference Include="YamlDotNet" Version="15.1.4" />
         <PackageReference Include="SharpToken" Version="2.0.2"/>
 
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
@@ -101,7 +100,7 @@
         <PackageReference Include="TwitchLib.Api" Version="3.4.1"/>
 
         <!-- sqlselectcsv and stock -->
-        <PackageReference Include="CsvHelper" Version="28.0.1"/>
+        <PackageReference Include="CsvHelper" Version="32.0.3" />
 
     </ItemGroup>
 

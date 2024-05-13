@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using Html2Markdown;
 using NadekoBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -370,11 +369,11 @@ public class SearchesService : INService
                 return null;
             if (!string.IsNullOrWhiteSpace(data.Img))
                 data.Img = await _google.ShortenUrl(data.Img);
-            if (!string.IsNullOrWhiteSpace(data.Text))
-            {
-                var converter = new Converter();
-                data.Text = converter.Convert(data.Text);
-            }
+            // if (!string.IsNullOrWhiteSpace(data.Text))
+            // {
+            //     var converter = new Converter();
+            //     data.Text = converter.Convert(data.Text);
+            // }
 
             return data;
         }

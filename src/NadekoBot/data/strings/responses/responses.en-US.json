@@ -507,7 +507,7 @@
   "city_not_found": "City not found.",
   "magicitems_not_loaded": "Magic Items not loaded.",
   "mal_profile": "{0}'s MAL profile",
-  "mashape_api_missing": "Bot owner didn't specify MashapeApiKey. You can't use this functionality.",
+  "mashape_api_missing": "Bot owner didn't specify RapidApi api key. You can't use this functionality.",
   "min_max": "Min/Max",
   "no_channel_found": "No channel found.",
   "on_hold": "On-hold",
