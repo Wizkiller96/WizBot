@@ -20,9 +20,8 @@ public sealed class NewGamblingService : IGamblingService, INService
     
     public async Task<OneOf<LuLaResult, GamblingError>> LulaAsync(ulong userId, long amount)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-        
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
+
         if (amount > 0)
         {
             var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("lula", "bet"));
@@ -47,8 +46,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<BetrollResult, GamblingError>> BetRollAsync(ulong userId, long amount)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
 
         if (amount > 0)
         {
@@ -77,11 +75,9 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<BetflipResult, GamblingError>> BetFlipAsync(ulong userId, long amount, byte guess)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
 
-        if (guess > 1)
-            throw new ArgumentOutOfRangeException(nameof(guess));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(guess, 1);
 
         if (amount > 0)
         {
@@ -105,19 +101,18 @@ public sealed class NewGamblingService : IGamblingService, INService
         return result;
     }
     
-    public async Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(ulong userId, long amount, byte? guessValue, byte? guessColor)
+    public async Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(ulong userId, long amount, byte? maybeGuessValue, byte? maybeGuessColor)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
 
-        if (guessColor is null && guessValue is null)
+        if (maybeGuessColor is null && maybeGuessValue is null)
             throw new ArgumentNullException();
 
-        if (guessColor > 1)
-            throw new ArgumentOutOfRangeException(nameof(guessColor));
+        if (maybeGuessColor > 1)
+            throw new ArgumentOutOfRangeException(nameof(maybeGuessColor));
         
-        if (guessValue > 1)
-            throw new ArgumentOutOfRangeException(nameof(guessValue));
+        if (maybeGuessValue > 1)
+            throw new ArgumentOutOfRangeException(nameof(maybeGuessValue));
 
         if (amount > 0)
         {
@@ -130,7 +125,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         }
 
         var game = new BetdrawGame();
-        var result = game.Draw((BetdrawValueGuess?)guessValue, (BetdrawColorGuess?)guessColor, amount);
+        var result = game.Draw((BetdrawValueGuess?)maybeGuessValue, (BetdrawColorGuess?)maybeGuessColor, amount);
         
         var won = (long)result.Won;
         if (won > 0)
@@ -143,9 +138,8 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<SlotResult, GamblingError>> SlotAsync(ulong userId, long amount)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-        
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
+
         if (amount > 0)
         {
             var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("slot", "bet"));
@@ -170,9 +164,8 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public Task<FlipResult[]> FlipAsync(int count)
     {
-        if (count < 1)
-            throw new ArgumentOutOfRangeException(nameof(count));
-        
+        ArgumentOutOfRangeException.ThrowIfLessThan(count, 1);
+
         var game = new BetflipGame(0);
 
         var results = new FlipResult[count];
@@ -242,11 +235,8 @@ public sealed class NewGamblingService : IGamblingService, INService
 
     public async Task<OneOf<RpsResult, GamblingError>> RpsAsync(ulong userId, long amount, byte pick)
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-
-        if (pick > 2)
-            throw new ArgumentOutOfRangeException(nameof(pick));
+        ArgumentOutOfRangeException.ThrowIfNegative(amount);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(pick, 2);
         
         if (amount > 0)
         {

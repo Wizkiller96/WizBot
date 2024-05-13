@@ -112,9 +112,8 @@ public sealed class CmdCdService : IExecPreCommand, IReadyExecutor, INService
 
     public void AddCooldown(ulong guildId, string name, int secs)
     {
-        if (secs <= 0)
-            throw new ArgumentOutOfRangeException(nameof(secs));
-        
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(secs);
+
         var sett = _settings.GetOrAdd(guildId, static _ => new());
         sett[name] = secs;
 

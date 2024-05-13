@@ -16,8 +16,7 @@ public partial class Permissions
 
         private async Task ListBlacklistInternal(string title, BlacklistType type, int page = 0)
         {
-            if (page < 0)
-                throw new ArgumentOutOfRangeException(nameof(page));
+            ArgumentOutOfRangeException.ThrowIfNegative(page);
 
             var list = _service.GetBlacklist();
             var allItems = await list.Where(x => x.Type == type)

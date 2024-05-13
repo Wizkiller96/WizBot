@@ -332,8 +332,7 @@ public class ClubService : INService, IClubService
 
     public List<ClubInfo> GetClubLeaderboardPage(int page)
     {
-        if (page < 0)
-            throw new ArgumentOutOfRangeException(nameof(page));
+        ArgumentOutOfRangeException.ThrowIfNegative(page);
 
         using var uow = _db.GetDbContext();
         return uow.Set<ClubInfo>().GetClubLeaderboardPage(page);

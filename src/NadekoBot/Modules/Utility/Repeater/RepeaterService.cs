@@ -363,8 +363,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
     public async Task<RunningRepeater?> RemoveByIndexAsync(ulong guildId, int index)
     {
-        if (index > MAX_REPEATERS * 2)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(index, MAX_REPEATERS * 2);
 
         await using var uow = _db.GetDbContext();
         var toRemove = await uow.Set<Repeater>()

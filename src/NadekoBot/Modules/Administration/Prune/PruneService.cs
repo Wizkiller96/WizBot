@@ -22,8 +22,7 @@ public class PruneService : INService
         ArgumentNullException.ThrowIfNull(channel, nameof(channel));
 
         var originalAmount = amount;
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
         using var cancelSource = new CancellationTokenSource();
         if (!_pruningGuilds.TryAdd(channel.GuildId, cancelSource))

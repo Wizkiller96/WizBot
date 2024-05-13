@@ -9,8 +9,7 @@ public sealed class RatelimitAttribute : PreconditionAttribute
 
     public RatelimitAttribute(int seconds)
     {
-        if (seconds <= 0)
-            throw new ArgumentOutOfRangeException(nameof(seconds));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(seconds);
 
         Seconds = seconds;
     }

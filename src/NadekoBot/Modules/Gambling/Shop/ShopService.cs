@@ -20,10 +20,8 @@ public class ShopService : IShopService, INService
 
     public async Task<bool> ChangeEntryPriceAsync(ulong guildId, int index, int newPrice)
     {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
-        if (newPrice <= 0)
-            throw new ArgumentOutOfRangeException(nameof(newPrice));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(newPrice);
 
         await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
@@ -38,8 +36,8 @@ public class ShopService : IShopService, INService
 
     public async Task<bool> ChangeEntryNameAsync(ulong guildId, int index, string newName)
     {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        
         if (string.IsNullOrWhiteSpace(newName))
             throw new ArgumentNullException(nameof(newName));
 
@@ -56,10 +54,8 @@ public class ShopService : IShopService, INService
 
     public async Task<bool> SwapEntriesAsync(ulong guildId, int index1, int index2)
     {
-        if (index1 < 0)
-            throw new ArgumentOutOfRangeException(nameof(index1));
-        if (index2 < 0)
-            throw new ArgumentOutOfRangeException(nameof(index2));
+        ArgumentOutOfRangeException.ThrowIfNegative(index1);
+        ArgumentOutOfRangeException.ThrowIfNegative(index2);
 
         await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
@@ -76,10 +72,8 @@ public class ShopService : IShopService, INService
 
     public async Task<bool> MoveEntryAsync(ulong guildId, int fromIndex, int toIndex)
     {
-        if (fromIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(fromIndex));
-        if (toIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(toIndex));
+        ArgumentOutOfRangeException.ThrowIfNegative(fromIndex);
+        ArgumentOutOfRangeException.ThrowIfNegative(toIndex);
 
         await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);

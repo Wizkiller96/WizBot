@@ -43,8 +43,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
         var match = _plRegex.Match(keywords);
         if (match.Length > 1)
@@ -62,9 +61,8 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(id))
             throw new ArgumentNullException(nameof(id));
 
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
-        
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
+
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
         query.Q = id;
@@ -82,8 +80,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
@@ -100,8 +97,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
 
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
         var query = _yt.Search.List("snippet");
         query.MaxResults = count;
@@ -150,8 +146,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         if (string.IsNullOrWhiteSpace(playlistId))
             throw new ArgumentNullException(nameof(playlistId));
 
-        if (count <= 0)
-            throw new ArgumentOutOfRangeException(nameof(count));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(count);
 
         string nextPageToken = null;
 

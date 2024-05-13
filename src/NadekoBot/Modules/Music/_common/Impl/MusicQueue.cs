@@ -201,12 +201,9 @@ public sealed partial class MusicQueue : IMusicQueue
 
     public IQueuedTrackInfo? MoveTrack(int from, int to)
     {
-        if (from < 0)
-            throw new ArgumentOutOfRangeException(nameof(from));
-        if (to < 0)
-            throw new ArgumentOutOfRangeException(nameof(to));
-        if (to == from)
-            throw new ArgumentException($"{nameof(from)} and {nameof(to)} must be different");
+        ArgumentOutOfRangeException.ThrowIfNegative(from);
+        ArgumentOutOfRangeException.ThrowIfNegative(to);
+        ArgumentOutOfRangeException.ThrowIfEqual(to, from);
 
         lock (_locker)
         {

@@ -9,8 +9,7 @@ public sealed class QueueRunner
 
     public QueueRunner(int delayMs = 0, int maxCapacity = -1)
     {
-        if (delayMs < 0)
-            throw new ArgumentOutOfRangeException(nameof(delayMs));
+        ArgumentOutOfRangeException.ThrowIfNegative(delayMs);
 
         _delayMs = delayMs;
         _channel = maxCapacity switch

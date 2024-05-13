@@ -2,7 +2,7 @@
 
 public class PlainGoogleScrapeSearchResult : ISearchResult
 {
-    public string? Answer { get; init;  } = null!;
-    public IReadOnlyCollection<ISearchResultEntry> Entries { get; init; } = null!;
-    public ISearchResultInformation Info { get; init; } = null!;
+    public required string? Answer { get; init;  } 
+    public required IReadOnlyCollection<ISearchResultEntry> Entries { get; init; }
+    public required ISearchResultInformation Info { get; init; } 
 }

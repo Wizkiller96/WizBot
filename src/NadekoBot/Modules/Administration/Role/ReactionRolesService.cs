@@ -250,11 +250,9 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         int group = 0,
         int levelReq = 0)
     {
-        if (group < 0)
-            throw new ArgumentOutOfRangeException(nameof(group));
+        ArgumentOutOfRangeException.ThrowIfNegative(group);
 
-        if (levelReq < 0)
-            throw new ArgumentOutOfRangeException(nameof(group));
+        ArgumentOutOfRangeException.ThrowIfNegative(levelReq);
 
         await using var ctx = _db.GetDbContext();
 

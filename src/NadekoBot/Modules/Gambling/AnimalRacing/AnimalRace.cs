@@ -61,8 +61,7 @@ public sealed class AnimalRace : IDisposable
 
     public async Task<AnimalRacingUser> JoinRace(ulong userId, string userName, long bet = 0)
     {
-        if (bet < 0)
-            throw new ArgumentOutOfRangeException(nameof(bet));
+        ArgumentOutOfRangeException.ThrowIfNegative(bet);
 
         var user = new AnimalRacingUser(userName, userId, bet);
 

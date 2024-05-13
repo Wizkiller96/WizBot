@@ -17,8 +17,7 @@ public sealed class BankService : IBankService, INService
 
     public async Task<bool> AwardAsync(ulong userId, long amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
         await using var ctx = _db.GetDbContext();
         await ctx.GetTable<BankUser>()
@@ -41,9 +40,8 @@ public sealed class BankService : IBankService, INService
     
     public async Task<bool> TakeAsync(ulong userId, long amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-        
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
         await using var ctx = _db.GetDbContext();
         var rows = await ctx.Set<BankUser>()
             .ToLinqToDBTable()
@@ -58,9 +56,8 @@ public sealed class BankService : IBankService, INService
 
     public async Task<bool> DepositAsync(ulong userId, long amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-        
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
         if (!await _cur.RemoveAsync(userId, amount, new("bank", "deposit")))
             return false;
 
@@ -86,9 +83,8 @@ public sealed class BankService : IBankService, INService
 
     public async Task<bool> WithdrawAsync(ulong userId, long amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException(nameof(amount));
-        
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
         await using var ctx = _db.GetDbContext();
         var rows = await ctx.Set<BankUser>()
                  .ToLinqToDBTable()

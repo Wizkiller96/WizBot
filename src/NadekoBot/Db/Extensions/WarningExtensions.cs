@@ -22,8 +22,7 @@ public static class WarningExtensions
         string mod,
         int index)
     {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
 
         var warn = warnings.AsQueryable()
                            .Where(x => x.GuildId == guildId && x.UserId == userId)

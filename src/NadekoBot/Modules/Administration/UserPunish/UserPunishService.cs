@@ -64,8 +64,7 @@ public class UserPunishService : INService, IReadyExecutor
         long weight,
         string reason)
     {
-        if (weight <= 0)
-            throw new ArgumentOutOfRangeException(nameof(weight));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(weight);
 
         var modName = mod.ToString();
 

@@ -69,8 +69,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
 
     public async Task<string> RemovePlayingAsync(int index)
     {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
 
         await using var uow = _db.GetDbContext();
         var toRemove = await uow.Set<RotatingPlayingStatus>().AsQueryable().AsNoTracking().Skip(index).FirstOrDefaultAsync();

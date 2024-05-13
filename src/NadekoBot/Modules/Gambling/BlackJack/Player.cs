@@ -49,8 +49,7 @@ public class User : Player
 
     public User(IUser user, long bet)
     {
-        if (bet <= 0)
-            throw new ArgumentOutOfRangeException(nameof(bet));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(bet);
 
         Bet = bet;
         DiscordUser = user;
