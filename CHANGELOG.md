@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.0.6]
+## [5.0.6] - 14.05.2024
 
 ### Changed 
 
@@ -12,6 +12,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 ### Fixed
 
 - Fixed `.blackjack` response string as it contained no user name
+- Fixed `.ttt` and `.gift` strings not mentioning the user 
 
 ## [5.0.5] - 11.05.2024
 

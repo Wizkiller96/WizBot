@@ -466,7 +466,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        await Response().Confirm(strs.gifted(N(amount), Format.Bold(receiver.ToString()))).SendAsync();
+        await Response().Confirm(strs.gifted(N(amount), Format.Bold(receiver.ToString()), ctx.User)).SendAsync();
     }
 
     [Cmd]
@@ -508,7 +508,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         await _cs.AddAsync(usr.Id, amount, new("award", ctx.User.ToString()!, msg, ctx.User.Id));
-        await Response().Confirm(strs.awarded(N(amount), $"<@{usrId}>")).SendAsync();
+        await Response().Confirm(strs.awarded(N(amount), $"<@{usrId}>", ctx.User)).SendAsync();
     }
 
     [Cmd]
