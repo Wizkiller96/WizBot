@@ -143,6 +143,10 @@ public partial class Searches
             if (--index < 0)
                 return;
 
+            var canMentionEveryone = (ctx.User as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
+            if (!canMentionEveryone)
+                message = message?.SanitizeAllMentions();
+
             if (!_service.SetStreamMessage(ctx.Guild.Id, index, message, out var fs))
             {
                 await Response().Confirm(strs.stream_not_following).SendAsync();
@@ -160,6 +164,10 @@ public partial class Searches
         [UserPerm(GuildPerm.ManageMessages)]
         public async Task StreamMessageAll([Leftover] string message)
         {
+            var canMentionEveryone = (ctx.User as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
+            if (!canMentionEveryone)
+                message = message?.SanitizeAllMentions();
+            
             var count = _service.SetStreamMessageForAll(ctx.Guild.Id, message);
 
             if (count == 0)

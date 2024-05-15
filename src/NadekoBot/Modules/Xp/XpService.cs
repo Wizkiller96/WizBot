@@ -563,22 +563,23 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         uow.SaveChanges();
     }
 
-    public List<UserXpStats> GetUserXps(ulong guildId, int page)
+    public async Task<IReadOnlyCollection<UserXpStats>> GetUserXps(ulong guildId, int page)
     {
-        using var uow = _db.GetDbContext();
-        return uow.Set<UserXpStats>().GetUsersFor(guildId, page);
+        await using var uow = _db.GetDbContext();
+        return await uow.Set<UserXpStats>().GetUsersFor(guildId, page);
     }
 
-    public List<UserXpStats> GetTopUserXps(ulong guildId, int count)
+    public async Task<IReadOnlyCollection<UserXpStats>> GetTopUserXps(ulong guildId, int count)
     {
-        using var uow = _db.GetDbContext();
-        return uow.Set<UserXpStats>().GetTopUserXps(guildId, count);
+        await using var uow = _db.GetDbContext();
+        return await uow.Set<UserXpStats>().GetTopUserXps(guildId, count);
     }
 
-    public DiscordUser[] GetUserXps(int page, int perPage = 9)
+    public Task<IReadOnlyCollection<DiscordUser>> GetUserXps(int page, int perPage = 9)
     {
         using var uow = _db.GetDbContext();
-        return uow.Set<DiscordUser>().GetUsersXpLeaderboardFor(page, perPage);
+        return uow.Set<DiscordUser>()
+                  .GetUsersXpLeaderboardFor(page, perPage);
     }
 
     public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)
@@ -884,7 +885,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         var du = uow.GetOrCreateUser(user, set => set.Include(x => x.Club));
         var totalXp = du.TotalXp;
         var globalRank = uow.Set<DiscordUser>().GetUserGlobalRank(user.Id);
-        var guildRank = uow.Set<UserXpStats>().GetUserGuildRanking(user.Id, user.GuildId);
+        var guildRank = await uow.Set<UserXpStats>().GetUserGuildRanking(user.Id, user.GuildId);
         var stats = uow.GetOrCreateUserXpStats(user.GuildId, user.Id);
         await uow.SaveChangesAsync();
 

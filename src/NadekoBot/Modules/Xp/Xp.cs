@@ -1,7 +1,6 @@
 #nullable disable warnings
 using NadekoBot.Modules.Xp.Services;
 using NadekoBot.Db.Models;
-using NadekoBot.Db;
 using NadekoBot.Modules.Patronage;
 
 namespace NadekoBot.Modules.Xp;
@@ -191,21 +190,22 @@ public partial class Xp : NadekoModule<XpService>
             await ctx.Channel.TriggerTypingAsync();
             await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
-            allCleanUsers = _service.GetTopUserXps(ctx.Guild.Id, 1000)
-                                    .Where(user => socketGuild.GetUser(user.UserId) is not null)
-                                    .ToList();
+            allCleanUsers = (await _service.GetTopUserXps(ctx.Guild.Id, 1000))
+                            .Where(user => socketGuild.GetUser(user.UserId) is not null)
+                            .ToList();
         }
 
-        await Response()
+        var res = opts.Clean
+            ? Response()
               .Paginated()
-              .PageItems<UserXpStats>(opts.Clean
-                  ? (curPage) => Task.FromResult<IEnumerable<UserXpStats>>(allCleanUsers.Skip(curPage * 9)
-                      .Take(9)
-                      .ToList())
-                  : (curPage) => Task.FromResult<IEnumerable<UserXpStats>>(_service.GetUserXps(ctx.Guild.Id, curPage)))
+              .Items(allCleanUsers)
+            : Response()
+              .Paginated()
+              .PageItems((curPage) => _service.GetUserXps(ctx.Guild.Id, curPage));
+
+        await res
               .PageSize(9)
               .CurrentPage(page)
-              .AddFooter(false)
               .Page((users, curPage) =>
               {
                   var embed = _sender.CreateEmbed().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
@@ -241,23 +241,33 @@ public partial class Xp : NadekoModule<XpService>
     {
         if (--page < 0 || page > 99)
             return;
-        var users = _service.GetUserXps(page);
 
-        var embed = _sender.CreateEmbed().WithTitle(GetText(strs.global_leaderboard)).WithOkColor();
+        await Response()
+              .Paginated()
+              .PageItems(async curPage => await _service.GetUserXps(curPage))
+              .PageSize(9)
+              .Page((users, curPage) =>
+              {
+                  var embed = _sender.CreateEmbed()
+                                     .WithOkColor()
+                                     .WithTitle(GetText(strs.global_leaderboard));
 
-        if (!users.Any())
-            embed.WithDescription("-");
-        else
-        {
-            for (var i = 0; i < users.Length; i++)
-            {
-                var user = users[i];
-                embed.AddField($"#{i + 1 + (page * 9)} {user.ToString()}",
-                    $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
-            }
-        }
+                  if (!users.Any())
+                  {
+                      embed.WithDescription("-");
+                      return embed;
+                  }
 
-        await Response().Embed(embed).SendAsync();
+                  for (var i = 0; i < users.Count; i++)
+                  {
+                      var user = users[i];
+                      embed.AddField($"#{i + 1 + (curPage * 9)} {user}",
+                          $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
+                  }
+
+                  return embed;
+              })
+              .SendAsync();
     }
 
     [Cmd]

@@ -2,6 +2,15 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.0.7] - 15.05.2024
+
+### Fixed
+
+- `.streammessage` will once again be able to mention anyone (as long as the user setting the message has the permission to mention everyone)
+- `.streammsgall` fixed
+- `.xplb` and `.xpglb` pagination fixed
+- Fixed page number when the total number of elements is unknown
+
 ## [5.0.6] - 14.05.2024
 
 ### Changed 

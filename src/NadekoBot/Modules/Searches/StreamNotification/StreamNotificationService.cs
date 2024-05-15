@@ -294,6 +294,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                                             var msg = await _sender.Response(textChannel)
                                                                    .Embed(GetEmbed(fs.GuildId, stream, false))
                                                                    .Text(message)
+                                                                   .Sanitize(false)
                                                                    .SendAsync();
 
                                             // only cache the ids of channel/message pairs 
@@ -615,7 +616,9 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     {
         using var uow = _db.GetDbContext();
 
-        var all = uow.Set<FollowedStream>().ToList();
+        var all = uow.Set<FollowedStream>()
+                     .Where(x => x.GuildId == guildId)
+                     .ToList();
 
         if (all.Count == 0)
             return 0;
@@ -623,6 +626,19 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         all.ForEach(x => x.Message = message);
 
         uow.SaveChanges();
+        
+        lock (_shardLock)
+        {
+            foreach (var fs in all)
+            {
+                var streams = GetLocalGuildStreams(fs.CreateKey(), guildId);
+
+                // message doesn't participate in equality checking
+                // removing and adding = update
+                streams.Remove(fs);
+                streams.Add(fs);
+            }
+        }
 
         return all.Count;
     }

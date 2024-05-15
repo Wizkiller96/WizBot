@@ -1,5 +1,6 @@
 ﻿using NadekoBot.Common.Configs;
 using NadekoBot.Db.Models;
+using System.Collections.ObjectModel;
 
 namespace NadekoBot.Extensions;
 
@@ -357,10 +358,9 @@ public sealed partial class ResponseBuilder
         fileName = name;
         return this;
     }
-    
+
     public PaginatedResponseBuilder Paginated()
         => new(this);
-
 }
 
 public class PaginatedResponseBuilder
@@ -376,7 +376,7 @@ public class PaginatedResponseBuilder
         => new SourcedPaginatedResponseBuilder<T>(_builder)
             .Items(items);
 
-    public SourcedPaginatedResponseBuilder<T> PageItems<T>(Func<int, Task<IEnumerable<T>>> items)
+    public SourcedPaginatedResponseBuilder<T> PageItems<T>(Func<int, Task<IReadOnlyCollection<T>>> items)
         => new SourcedPaginatedResponseBuilder<T>(_builder)
             .PageItems(items);
 }
@@ -390,14 +390,14 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
         return Task.FromResult<EmbedBuilder>(new());
     };
 
-    public Func<int, Task<IEnumerable<T>>> ItemsFunc { get; set; } = static delegate
+    public Func<int, Task<IReadOnlyCollection<T>>> ItemsFunc { get; set; } = static delegate
     {
-        return Task.FromResult(Enumerable.Empty<T>());
+        return Task.FromResult<IReadOnlyCollection<T>>(ReadOnlyCollection<T>.Empty);
     };
 
     public Func<int, Task<SimpleInteractionBase>>? InteractionFunc { get; private set; }
 
-    public int Elems { get; private set; } = 1;
+    public int? Elems { get; private set; } = 1;
     public int ItemsPerPage { get; private set; } = 9;
     public bool AddPaginatedFooter { get; private set; } = true;
     public bool IsEphemeral { get; private set; }
@@ -413,18 +413,19 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
     {
         items = col;
         Elems = col.Count;
-        ItemsFunc = (i) => Task.FromResult(items.Skip(i * ItemsPerPage).Take(ItemsPerPage));
+        ItemsFunc = (i) => Task.FromResult(items.Skip(i * ItemsPerPage).Take(ItemsPerPage).ToArray() as IReadOnlyCollection<T>);
         return this;
     }
-    
+
     public SourcedPaginatedResponseBuilder<T> TotalElements(int i)
     {
         Elems = i;
         return this;
     }
 
-    public SourcedPaginatedResponseBuilder<T> PageItems(Func<int, Task<IEnumerable<T>>> func)
+    public SourcedPaginatedResponseBuilder<T> PageItems(Func<int, Task<IReadOnlyCollection<T>>> func)
     {
+        Elems = null;
         ItemsFunc = func;
         return this;
     }

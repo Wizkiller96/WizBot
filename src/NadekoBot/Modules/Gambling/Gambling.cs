@@ -766,7 +766,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
 
-        async Task<IEnumerable<DiscordUser>> GetTopRichest(int curPage)
+        async Task<IReadOnlyCollection<DiscordUser>> GetTopRichest(int curPage)
         {
             if (opts.Clean)
             {

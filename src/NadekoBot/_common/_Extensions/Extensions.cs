@@ -167,7 +167,8 @@ public static class Extensions
     {
         if (lastPage is not null)
             return embed.WithFooter($"{curPage + 1} / {lastPage + 1}");
-        return embed.WithFooter(curPage.ToString());
+        
+        return embed.WithFooter((curPage + 1).ToString());
     }
 
     // public static EmbedBuilder WithOkColor(this EmbedBuilder eb)

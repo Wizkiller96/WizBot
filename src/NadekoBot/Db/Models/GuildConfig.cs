@@ -3,6 +3,7 @@ namespace NadekoBot.Db.Models;
 
 public class GuildConfig : DbEntity
 {
+    // public bool Keep { get; set; }
     public ulong GuildId { get; set; }
 
     public string Prefix { get; set; }

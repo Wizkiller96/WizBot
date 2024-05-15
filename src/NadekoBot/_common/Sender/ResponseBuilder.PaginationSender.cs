@@ -58,7 +58,7 @@ public partial class ResponseBuilder
                 cb.WithButton(new ButtonBuilder()
                               .WithStyle(ButtonStyle.Primary)
                               .WithCustomId(BUTTON_RIGHT)
-                              .WithDisabled(lastPage == 0 || currentPage >= lastPage)
+                              .WithDisabled(lastPage is not null && (lastPage == 0 || currentPage >= lastPage))
                               .WithEmote(InteractionHelpers.ArrowRight));
 
                 return cb;
