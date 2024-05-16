@@ -70,11 +70,11 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 
 1. (Optional) Installing Redis
     - ubuntu installation command: `sudo apt-get install redis-server`
-2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `youtube-dl` (which in turn requires python3)
-    - ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
+2. Playing music requires `ffmpeg`, `libopus`, `libsodium` and `yt-dlp` (which in turn requires python3)
+    - Ubuntu installation command: `sudo apt-get install ffmpeg libopus0 opus-tools libopus-dev libsodium-dev -y`
+    - yt-dlp installation command: `sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && sudo chmod a+rx /usr/local/bin/yt-dlp` 
 3. Make sure your python is version 3+ with `python --version`
     - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
-
 *You can use nadeko bash script [prerequisites installer](https://gitlab.com/kwoth/nadeko-bash-installer/-/blob/v5/n-prereq.sh) as a reference*
 
 ##### Installation Instructions
@@ -268,7 +268,7 @@ This method is similar to the one above, but requires one extra step, with the a
     echo '#!/bin/bash'
     echo ""
     echo "echo \"Running NadekoBot in the background with auto restart\"
-    youtube-dl -U
+    yt-dlp -U
     
     # If you want Nadeko to be compiled prior to every startup, uncomment the lines
     # below. Note  that it's not necessary unless you are personally modifying the
@@ -300,7 +300,7 @@ This method is similar to the one above, but requires one extra step, with the a
         
         echo \"Waiting for 5 seconds...\"
         sleep 5
-        youtube-dl -U
+        yt-dlp -U
         echo \"Restarting NadekoBot...\"
     done
     
