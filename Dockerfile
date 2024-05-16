@@ -5,7 +5,6 @@ WORKDIR /source
 # Copy the .csproj files for each project
 COPY src/Nadeko.Medusa/*.csproj src/Nadeko.Medusa/
 COPY src/NadekoBot/*.csproj src/NadekoBot/
-COPY src/NadekoBot/creds_example.yml src/NadekoBot/
 COPY src/NadekoBot.Coordinator/*.csproj src/NadekoBot.Coordinator/
 COPY src/NadekoBot.Generators/*.csproj src/NadekoBot.Generators/
 COPY src/NadekoBot.Voice/*.csproj src/NadekoBot.Voice/
@@ -43,12 +42,6 @@ RUN set -xe; \
     chmod a+rx /usr/local/bin/yt-dlp; \
     apt-get autoremove -y; \
     apt-get autoclean -y
-
-# Copy creds_example.yml from the build stage
-COPY --from=build /source/src/NadekoBot/creds_example.yml /source/src/NadekoBot/
-
-# Check if creds.yml exists, if not, copy and rename creds_example.yml
-RUN mkdir -p /app/data && if [ ! -f /app/data/creds.yml ]; then cp /source/src/NadekoBot/creds_example.yml /app/data/creds.yml; fi
 
 # Copy the built application and the entrypoint script from the build stage
 COPY --from=build /app ./
