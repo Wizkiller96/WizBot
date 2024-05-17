@@ -809,6 +809,20 @@ setgame:
         desc: "The activity type determines whether the bot is engaged in a game, listening to audio, or watching a video."
       game:
         desc: "The current state of the bot's activity in the game."
+setserverbanner:
+  desc: Sets a new banner image for the current server. Parameter is a direct link to an image.
+  ex:
+    - https://i.imgur.com/xTG3a1I.jpg
+  params:
+    - img:
+        desc: "The URL of the image file to be displayed as the bot's banner."
+setservericon:
+  desc: Sets a new icon image for the current server. Parameter is a direct link to an image.
+  ex:
+    - https://i.imgur.com/xTG3a1I.jpg
+  params:
+    - img:
+        desc: "The URL of the image file to be displayed as the bot's banner."
 send:
   desc: 'Sends a message to a channel or user. Channel or user can be '
   ex:

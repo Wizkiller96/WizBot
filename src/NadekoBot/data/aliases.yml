@@ -195,6 +195,12 @@ setname:
   - newnm
 setnick:
   - setnick
+setserverbanner:
+  - setserverbanner
+  - serverbanner
+setservericon:
+  - setservericon
+  - servericon
 setavatar:
   - setavatar
   - setav

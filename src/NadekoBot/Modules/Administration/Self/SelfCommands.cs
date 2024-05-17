@@ -459,42 +459,7 @@ public partial class Administration
 
             await Response().Confirm(strs.bot_name(Format.Bold(newName))).SendAsync();
         }
-
-        [Cmd]
-        [UserPerm(GuildPerm.ManageNicknames)]
-        [BotPerm(GuildPerm.ChangeNickname)]
-        [Priority(0)]
-        public async Task SetNick([Leftover] string newNick = null)
-        {
-            if (string.IsNullOrWhiteSpace(newNick))
-                return;
-            var curUser = await ctx.Guild.GetCurrentUserAsync();
-            await curUser.ModifyAsync(u => u.Nickname = newNick);
-
-            await Response().Confirm(strs.bot_nick(Format.Bold(newNick) ?? "-")).SendAsync();
-        }
-
-        [Cmd]
-        [BotPerm(GuildPerm.ManageNicknames)]
-        [UserPerm(GuildPerm.ManageNicknames)]
-        [Priority(1)]
-        public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
-        {
-            var sg = (SocketGuild)ctx.Guild;
-            if (sg.OwnerId == gu.Id
-                || gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
-            {
-                await Response().Error(strs.insuf_perms_i).SendAsync();
-                return;
-            }
-
-            await gu.ModifyAsync(u => u.Nickname = newNick);
-
-            await Response()
-                  .Confirm(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"))
-                  .SendAsync();
-        }
-
+        
         [Cmd]
         [OwnerOnly]
         public async Task SetStatus([Leftover] SettableUserStatus status)
