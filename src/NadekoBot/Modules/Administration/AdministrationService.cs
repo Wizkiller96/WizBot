@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
+using NadekoBot.Modules.Administration._common.results;
 
 namespace NadekoBot.Modules.Administration.Services;
 
@@ -13,17 +14,20 @@ public class AdministrationService : INService
     private readonly DbService _db;
     private readonly IReplacementService _repSvc;
     private readonly ILogCommandService _logService;
+    private readonly IHttpClientFactory _httpFactory;
 
     public AdministrationService(
         IBot bot,
         CommandHandler cmdHandler,
         DbService db,
         IReplacementService repSvc,
-        ILogCommandService logService)
+        ILogCommandService logService,
+        IHttpClientFactory factory)
     {
         _db = db;
         _repSvc = repSvc;
         _logService = logService;
+        _httpFactory = factory;
 
         DeleteMessagesOnCommand = new(bot.AllGuildConfigs.Where(g => g.DeleteMessageOnCommand).Select(g => g.GuildId));
 
@@ -158,4 +162,45 @@ public class AdministrationService : INService
 
         await umsg.EditAsync(text);
     }
+
+    public async Task<SetServerBannerResult> SetServerBannerAsync(IGuild guild, string img)
+    {
+        if (!IsValidUri(img)) return SetServerBannerResult.InvalidURL;
+        
+        var uri = new Uri(img);
+
+        using var http = _httpFactory.CreateClient();
+        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+        
+        if (!sr.IsImage()) return SetServerBannerResult.InvalidFileType;
+
+        if (sr.GetContentLength() > 8.Megabytes())
+        {
+            return SetServerBannerResult.Toolarge;
+        }
+        
+        await using var imageStream = await sr.Content.ReadAsStreamAsync();
+
+        await guild.ModifyAsync(x => x.Banner = new Image(imageStream));
+        return SetServerBannerResult.Success;
+    }
+
+    public async Task<SetServerIconResult> SetServerIconAsync(IGuild guild, string img)
+    {
+        if (!IsValidUri(img)) return SetServerIconResult.InvalidURL;
+        
+        var uri = new Uri(img);
+
+        using var http = _httpFactory.CreateClient();
+        using var sr = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+        
+        if (!sr.IsImage()) return SetServerIconResult.InvalidFileType;
+        
+        await using var imageStream = await sr.Content.ReadAsStreamAsync();
+
+        await guild.ModifyAsync(x => x.Icon = new Image(imageStream));
+        return SetServerIconResult.Success;
+    }
+ 
+    private bool IsValidUri(string img) => !string.IsNullOrWhiteSpace(img) && Uri.IsWellFormedUriString(img, UriKind.Absolute);
 }

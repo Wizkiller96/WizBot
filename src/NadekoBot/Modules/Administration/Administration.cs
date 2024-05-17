@@ -1,5 +1,6 @@
 #nullable disable
 using NadekoBot.Common.TypeReaders.Models;
+using NadekoBot.Modules.Administration._common.results;
 using NadekoBot.Modules.Administration.Services;
 
 namespace NadekoBot.Modules.Administration;
@@ -403,6 +404,94 @@ public partial class Administration : NadekoModule<AdministrationService>
         else
         {
             await Response().Confirm(strs.autopublish_disable).SendAsync();
+        }
+    }
+    
+    [Cmd]
+    [UserPerm(GuildPerm.ManageNicknames)]
+    [BotPerm(GuildPerm.ChangeNickname)]
+    [Priority(0)]
+    public async Task SetNick([Leftover] string newNick = null)
+    {
+        if (string.IsNullOrWhiteSpace(newNick))
+            return;
+        var curUser = await ctx.Guild.GetCurrentUserAsync();
+        await curUser.ModifyAsync(u => u.Nickname = newNick);
+
+        await Response().Confirm(strs.bot_nick(Format.Bold(newNick) ?? "-")).SendAsync();
+    }
+
+    [Cmd]
+    [BotPerm(GuildPerm.ManageNicknames)]
+    [UserPerm(GuildPerm.ManageNicknames)]
+    [Priority(1)]
+    public async Task SetNick(IGuildUser gu, [Leftover] string newNick = null)
+    {
+        var sg = (SocketGuild)ctx.Guild;
+        if (sg.OwnerId == gu.Id
+            || gu.GetRoles().Max(r => r.Position) >= sg.CurrentUser.GetRoles().Max(r => r.Position))
+        {
+            await Response().Error(strs.insuf_perms_i).SendAsync();
+            return;
+        }
+
+        await gu.ModifyAsync(u => u.Nickname = newNick);
+
+        await Response()
+              .Confirm(strs.user_nick(Format.Bold(gu.ToString()), Format.Bold(newNick) ?? "-"))
+              .SendAsync();
+    }
+
+
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPermission.ManageGuild)]
+    public async Task SetServerBanner([Leftover] string img = null)
+    {
+        // Tier2 or higher is required to set a banner.
+        if (ctx.Guild.PremiumTier is PremiumTier.Tier1 or PremiumTier.None) return;
+        
+        var result = await _service.SetServerBannerAsync(ctx.Guild, img);
+
+        switch (result)
+        {
+            case SetServerBannerResult.Success:
+                await Response().Confirm(strs.set_srvr_banner).SendAsync();
+                break;
+            case SetServerBannerResult.InvalidFileType:
+                await Response().Error(strs.srvr_banner_invalid).SendAsync();
+                break;
+            case SetServerBannerResult.Toolarge:
+                await Response().Error(strs.srvr_banner_too_large).SendAsync();
+                break;
+            case SetServerBannerResult.InvalidURL:
+                await Response().Error(strs.srvr_banner_invalid_url).SendAsync();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPermission.ManageGuild)]
+    public async Task SetServerIcon([Leftover] string img = null)
+    {
+        var result = await _service.SetServerIconAsync(ctx.Guild, img);
+
+        switch (result)
+        {
+            case SetServerIconResult.Success:
+                await Response().Confirm(strs.set_srvr_icon).SendAsync();
+                break;
+            case SetServerIconResult.InvalidFileType:
+                await Response().Error(strs.srvr_banner_invalid).SendAsync();
+                break;
+            case SetServerIconResult.InvalidURL:
+                await Response().Error(strs.srvr_banner_invalid_url).SendAsync();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }
