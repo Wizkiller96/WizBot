@@ -6,6 +6,7 @@ using NadekoBot.Db;
 using NadekoBot.Db.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;
+using NadekoBot.Modules.Permissions.Services;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -77,6 +78,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
 
     private bool ready;
     private ConcurrentHashSet<ulong> _disabledGlobalExpressionGuilds;
+    private readonly PermissionService _pc;
 
     public NadekoExpressionsService(
         DbService db,
@@ -87,7 +89,8 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         IPubSub pubSub,
         IMessageSenderService sender,
         IReplacementService repSvc,
-        IPermissionChecker permChecker)
+        IPermissionChecker permChecker,
+        PermissionService pc)
     {
         _db = db;
         _client = client;
@@ -98,6 +101,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
         _sender = sender;
         _repSvc = repSvc;
         _permChecker = permChecker;
+        _pc = pc;
         _rng = new NadekoRandom();
 
         _pubSub.Sub(_exprsReloadedKey, OnExprsShouldReload);
@@ -138,6 +142,7 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
             var globalItems = uow.Set<NadekoExpression>()
                                  .AsNoTracking()
                                  .Where(x => x.GuildId == null || x.GuildId == 0)
+                                 .Where(x => x.Trigger != null)
                                  .AsEnumerable()
                                  .Select(x =>
                                  {
@@ -254,26 +259,30 @@ public sealed class NadekoExpressionsService : IExecOnMessage, IReadyExecutor
                     "ACTUALEXPRESSIONS",
                     expr.Trigger
                 );
-
+                
                 if (!result.IsAllowed)
                 {
-                    if (result.TryPickT3(out var disallowed, out _))
+                    var cache = _pc.GetCacheFor(guild.Id);
+                    if (cache.Verbose)
                     {
-                        var permissionMessage = _strings.GetText(strs.perm_prevent(disallowed.PermIndex + 1,
-                                Format.Bold(disallowed.PermText)),
-                            sg.Id);
-
-                        try
+                        if (result.TryPickT3(out var disallowed, out _))
                         {
-                            await _sender.Response(msg.Channel)
-                                     .Error(permissionMessage)
-                                     .SendAsync();
-                        }
-                        catch
-                        {
-                        }
+                            var permissionMessage = _strings.GetText(strs.perm_prevent(disallowed.PermIndex + 1,
+                                    Format.Bold(disallowed.PermText)),
+                                sg.Id);
 
-                        Log.Information("{PermissionMessage}", permissionMessage);
+                            try
+                            {
+                                await _sender.Response(msg.Channel)
+                                             .Error(permissionMessage)
+                                             .SendAsync();
+                            }
+                            catch
+                            {
+                            }
+
+                            Log.Information("{PermissionMessage}", permissionMessage);
+                        }
                     }
 
                     return true;
