@@ -356,7 +356,7 @@
   "hangman_running": "Hangman game already running on this channel.",
   "hangman_types": "List of \"{0}hangman\" term types:",
   "leaderboard": "Leaderboard",
-  "picked": "picked {0}",
+  "picked": "{1} picked {0}",
   "planted": "{0} planted {1}",
   "trivia_already_running": "Trivia game is already running on this server.",
   "trivia_game": "Trivia Game",
