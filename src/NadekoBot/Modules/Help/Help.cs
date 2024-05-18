@@ -343,8 +343,12 @@ public sealed partial class Help : NadekoModule<HelpService>
 
         var group = _cmds.Modules
                          .SelectMany(x => x.Submodules)
-                         .Where(x => !string.IsNullOrWhiteSpace(x.Group))
-                         .FirstOrDefault(x => x.Group.Equals(fail, StringComparison.InvariantCultureIgnoreCase));
+                         .FirstOrDefault(x => string.Equals(x.Name?.Replace("Commands", string.Empty),
+                                                  fail,
+                                                  StringComparison.InvariantCultureIgnoreCase)
+                                              || string.Equals(x.Group,
+                                                  fail,
+                                                  StringComparison.InvariantCultureIgnoreCase));
 
         if (group is not null)
         {
@@ -424,7 +428,7 @@ public sealed partial class Help : NadekoModule<HelpService>
                                      .ToList());
 
         var readableData = JsonConvert.SerializeObject(cmdData, Formatting.Indented);
-        
+
         // send the indented file to chat
         await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
