@@ -489,17 +489,9 @@ public sealed partial class Help : NadekoModule<HelpService>
 
                  **Step 3** ⏰ Wait a short while (usually 1-3 minutes) ⏰
                    
-                 Nadeko will DM you the welcome instructions, and you may will receive your rewards!
+                 Nadeko will DM you the welcome instructions, and you will receive your rewards!
                  🎉 **Enjoy!** 🎉
-                 """)
-            .AddField("Troubleshooting",
-                """
-                *In case you didn't receive the rewards within 5 minutes:*
-                `1.` Make sure your DMs are open to everyone. Maybe your pledge was processed successfully but the bot was unable to DM you. Use the `.patron` command to check your status.
-                `2.` Make sure you've connected the CORRECT Discord account. Quite often users log in to different Discord accounts in their browser. You may also try disconnecting and reconnecting your account.
-                `3.` Make sure your payment has been processed and not declined by Patreon.
-                `4.` If any of the previous steps don't help, you can join the nadeko support server <https://discord.nadeko.bot> and ask for help in the #help channel
-                """);
+                 """);
 
         try
         {

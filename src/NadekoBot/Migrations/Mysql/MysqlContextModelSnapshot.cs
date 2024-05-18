@@ -673,7 +673,7 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<int?>("GuildConfigId")
+                    b.Property<int>("GuildConfigId")
                         .HasColumnType("int")
                         .HasColumnName("guildconfigid");
 
@@ -1421,36 +1421,6 @@ namespace NadekoBot.Migrations.Mysql
                         .HasDatabaseName("ix_ignoredlogchannels_logsettingid_logitemid_itemtype");
 
                     b.ToTable("ignoredlogchannels", (string)null);
-                });
-
-            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredVoicePresenceChannel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<ulong>("ChannelId")
-                        .HasColumnType("bigint unsigned")
-                        .HasColumnName("channelid");
-
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("dateadded");
-
-                    b.Property<int?>("LogSettingId")
-                        .HasColumnType("int")
-                        .HasColumnName("logsettingid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_ignoredvoicepresencechannels");
-
-                    b.HasIndex("LogSettingId")
-                        .HasDatabaseName("ix_ignoredvoicepresencechannels_logsettingid");
-
-                    b.ToTable("ignoredvoicepresencechannels", (string)null);
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.ImageOnlyChannel", b =>
@@ -2510,7 +2480,7 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<int?>("StreamRoleSettingsId")
+                    b.Property<int>("StreamRoleSettingsId")
                         .HasColumnType("int")
                         .HasColumnName("streamrolesettingsid");
 
@@ -2587,7 +2557,7 @@ namespace NadekoBot.Migrations.Mysql
                         .HasColumnType("datetime(6)")
                         .HasColumnName("dateadded");
 
-                    b.Property<int?>("StreamRoleSettingsId")
+                    b.Property<int>("StreamRoleSettingsId")
                         .HasColumnType("int")
                         .HasColumnName("streamrolesettingsid");
 
@@ -3226,14 +3196,12 @@ namespace NadekoBot.Migrations.Mysql
 
             modelBuilder.Entity("NadekoBot.Db.Models.AntiRaidSetting", b =>
                 {
-                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithOne("AntiRaidSetting")
                         .HasForeignKey("NadekoBot.Db.Models.AntiRaidSetting", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_antiraidsetting_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamIgnore", b =>
@@ -3241,19 +3209,18 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.AntiSpamSetting", null)
                         .WithMany("IgnoredChannels")
                         .HasForeignKey("AntiSpamSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_antispamignore_antispamsetting_antispamsettingid");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.AntiSpamSetting", b =>
                 {
-                    b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
+                    b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithOne("AntiSpamSetting")
                         .HasForeignKey("NadekoBot.Db.Models.AntiSpamSetting", "GuildConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_antispamsetting_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.AutoTranslateUser", b =>
@@ -3326,6 +3293,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("CommandAliases")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_commandalias_guildconfigs_guildconfigid");
                 });
 
@@ -3334,6 +3302,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("CommandCooldowns")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_commandcooldown_guildconfigs_guildconfigid");
                 });
 
@@ -3342,6 +3311,8 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("DelMsgOnCmdChannels")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_delmsgoncmdchannel_guildconfigs_guildconfigid");
                 });
 
@@ -3358,10 +3329,13 @@ namespace NadekoBot.Migrations.Mysql
 
             modelBuilder.Entity("NadekoBot.Db.Models.ExcludedItem", b =>
                 {
-                    b.HasOne("NadekoBot.Db.Models.XpSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.XpSettings", "XpSettings")
                         .WithMany("ExclusionList")
                         .HasForeignKey("XpSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_excludeditem_xpsettings_xpsettingsid");
+
+                    b.Navigation("XpSettings");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.FeedSub", b =>
@@ -3381,6 +3355,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterInvitesChannelIds")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_filterchannelid_guildconfigs_guildconfigid");
                 });
 
@@ -3389,6 +3364,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterLinksChannelIds")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_filterlinkschannelid_guildconfigs_guildconfigid");
                 });
 
@@ -3397,6 +3373,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilterWordsChannelIds")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_filterwordschannelid_guildconfigs_guildconfigid");
                 });
 
@@ -3405,6 +3382,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FilteredWords")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_filteredword_guildconfigs_guildconfigid");
                 });
 
@@ -3413,6 +3391,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("FollowedStreams")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_followedstream_guildconfigs_guildconfigid");
                 });
 
@@ -3421,6 +3400,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", "GuildConfig")
                         .WithMany("GenerateCurrencyChannelIds")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_gcchannelid_guildconfigs_guildconfigid");
 
                     b.Navigation("GuildConfig");
@@ -3460,21 +3440,12 @@ namespace NadekoBot.Migrations.Mysql
                     b.Navigation("LogSetting");
                 });
 
-            modelBuilder.Entity("NadekoBot.Db.Models.IgnoredVoicePresenceChannel", b =>
-                {
-                    b.HasOne("NadekoBot.Db.Models.LogSetting", "LogSetting")
-                        .WithMany()
-                        .HasForeignKey("LogSettingId")
-                        .HasConstraintName("fk_ignoredvoicepresencechannels_logsettings_logsettingid");
-
-                    b.Navigation("LogSetting");
-                });
-
             modelBuilder.Entity("NadekoBot.Db.Models.MutedUserId", b =>
                 {
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("MutedUsers")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_muteduserid_guildconfigs_guildconfigid");
                 });
 
@@ -3483,6 +3454,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("Permissions")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_permissions_guildconfigs_guildconfigid");
                 });
 
@@ -3500,6 +3472,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("ShopEntries")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_shopentry_guildconfigs_guildconfigid");
                 });
 
@@ -3508,6 +3481,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.ShopEntry", null)
                         .WithMany("Items")
                         .HasForeignKey("ShopEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_shopentryitem_shopentry_shopentryid");
                 });
 
@@ -3516,6 +3490,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("SlowmodeIgnoredRoles")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_slowmodeignoredrole_guildconfigs_guildconfigid");
                 });
 
@@ -3524,15 +3499,20 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("SlowmodeIgnoredUsers")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_slowmodeignoreduser_guildconfigs_guildconfigid");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleBlacklistedUser", b =>
                 {
-                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", "StreamRoleSettings")
                         .WithMany("Blacklist")
                         .HasForeignKey("StreamRoleSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_streamroleblacklisteduser_streamrolesettings_streamrolesetti~");
+
+                    b.Navigation("StreamRoleSettings");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleSettings", b =>
@@ -3549,10 +3529,14 @@ namespace NadekoBot.Migrations.Mysql
 
             modelBuilder.Entity("NadekoBot.Db.Models.StreamRoleWhitelistedUser", b =>
                 {
-                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", null)
+                    b.HasOne("NadekoBot.Db.Models.StreamRoleSettings", "StreamRoleSettings")
                         .WithMany("Whitelist")
                         .HasForeignKey("StreamRoleSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_streamrolewhitelisteduser_streamrolesettings_streamrolesetti~");
+
+                    b.Navigation("StreamRoleSettings");
                 });
 
             modelBuilder.Entity("NadekoBot.Db.Models.TodoModel", b =>
@@ -3569,6 +3553,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnbanTimer")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_unbantimer_guildconfigs_guildconfigid");
                 });
 
@@ -3577,6 +3562,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnmuteTimers")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_unmutetimer_guildconfigs_guildconfigid");
                 });
 
@@ -3585,6 +3571,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("UnroleTimer")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_unroletimer_guildconfigs_guildconfigid");
                 });
 
@@ -3593,6 +3580,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("VcRoleInfos")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_vcroleinfo_guildconfigs_guildconfigid");
                 });
 
@@ -3663,6 +3651,7 @@ namespace NadekoBot.Migrations.Mysql
                     b.HasOne("NadekoBot.Db.Models.GuildConfig", null)
                         .WithMany("WarnPunishments")
                         .HasForeignKey("GuildConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_warningpunishment_guildconfigs_guildconfigid");
                 });
 

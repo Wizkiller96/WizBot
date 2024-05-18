@@ -40,6 +40,9 @@ public class StreamRoleSettings : DbEntity
 
 public class StreamRoleBlacklistedUser : DbEntity
 {
+    public int StreamRoleSettingsId { get; set; }
+    public StreamRoleSettings StreamRoleSettings { get; set; }
+    
     public ulong UserId { get; set; }
     public string Username { get; set; }
 
@@ -57,6 +60,9 @@ public class StreamRoleBlacklistedUser : DbEntity
 
 public class StreamRoleWhitelistedUser : DbEntity
 {
+    public int StreamRoleSettingsId { get; set; }
+    public StreamRoleSettings StreamRoleSettings { get; set; }
+     
     public ulong UserId { get; set; }
     public string Username { get; set; }
 

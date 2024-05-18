@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NadekoBot.Db.Models;
 
 namespace NadekoBot.Migrations;
 
@@ -38,5 +39,16 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
         {
             throw new NotSupportedException("This database provider doesn't have an implementation for MigrateRero");
         }
+    }
+
+    public static void GuildConfigCleanup(MigrationBuilder builder)
+    {
+        builder.Sql($"""
+                     DELETE FROM "StreamRoleBlacklistedUser" WHERE "StreamRoleSettingsId" is NULL;
+                     """);
+
+        builder.Sql($"""
+                     DELETE FROM "DelMsgOnCmdChannel" WHERE "GuildConfigId" is NULL;
+                     """);
     }
 }

@@ -28,7 +28,6 @@ public abstract class NadekoContext : DbContext
 
     //logging
     public DbSet<LogSetting> LogSettings { get; set; }
-    public DbSet<IgnoredVoicePresenceChannel> IgnoredVoicePresenceCHannels { get; set; }
     public DbSet<IgnoredLogItem> IgnoredLogChannels { get; set; }
 
     public DbSet<RotatingPlayingStatus> RotatingStatus { get; set; }
@@ -55,14 +54,14 @@ public abstract class NadekoContext : DbContext
     public DbSet<PatronUser> Patrons { get; set; }
 
     public DbSet<PatronQuota> PatronQuotas { get; set; }
-    
+
     public DbSet<StreamOnlineMessage> StreamOnlineMessages { get; set; }
-    
+
     public DbSet<StickyRole> StickyRoles { get; set; }
-    
+
     public DbSet<TodoModel> Todos { get; set; }
     public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
-    
+
     // todo add guild colors
     // public DbSet<GuildColors> GuildColors { get; set; }
 
@@ -86,20 +85,181 @@ public abstract class NadekoContext : DbContext
         #region GuildConfig
 
         var configEntity = modelBuilder.Entity<GuildConfig>();
+
         configEntity.HasIndex(c => c.GuildId)
                     .IsUnique();
 
         configEntity.Property(x => x.VerboseErrors)
                     .HasDefaultValue(true);
 
-        modelBuilder.Entity<AntiSpamSetting>().HasOne(x => x.GuildConfig).WithOne(x => x.AntiSpamSetting);
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.DelMsgOnCmdChannels)
+                    .WithOne()
+                    .HasForeignKey(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<AntiRaidSetting>().HasOne(x => x.GuildConfig).WithOne(x => x.AntiRaidSetting);
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FollowedStreams)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.GenerateCurrencyChannelIds)
+                    .WithOne(x => x.GuildConfig)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.Permissions)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.CommandCooldowns)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FilterInvitesChannelIds)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FilterLinksChannelIds)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FilteredWords)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FilterWordsChannelIds)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.MutedUsers)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasOne(x => x.AntiRaidSetting)
+                    .WithOne()
+                    .HasForeignKey<AntiRaidSetting>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // start antispam 
+        
+        modelBuilder.Entity<GuildConfig>()
+                    .HasOne(x => x.AntiSpamSetting)
+                    .WithOne()
+                    .HasForeignKey<AntiSpamSetting>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AntiSpamSetting>()
+                    .HasMany(x => x.IgnoredChannels)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // end antispam
 
         modelBuilder.Entity<GuildConfig>()
                     .HasOne(x => x.AntiAltSetting)
                     .WithOne()
                     .HasForeignKey<AntiAltSetting>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.UnmuteTimers)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.UnbanTimer)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.UnroleTimer)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.VcRoleInfos)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.CommandAliases)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.WarnPunishments)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.SlowmodeIgnoredRoles)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.SlowmodeIgnoredUsers)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // start shop
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.ShopEntries)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ShopEntry>()
+                    .HasMany(x => x.Items)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // end shop
+
+        // start streamrole
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasOne(x => x.StreamRole)
+                    .WithOne(x => x.GuildConfig)
+                    .HasForeignKey<StreamRoleSettings>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<StreamRoleSettings>()
+                    .HasMany(x => x.Whitelist)
+                    .WithOne(x => x.StreamRoleSettings)
+                    .HasForeignKey(x => x.StreamRoleSettingsId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<StreamRoleSettings>()
+                    .HasMany(x => x.Blacklist)
+                    .WithOne(x => x.StreamRoleSettings)
+                    .HasForeignKey(x => x.StreamRoleSettingsId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // end streamrole
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasOne(x => x.XpSettings)
+                    .WithOne(x => x.GuildConfig)
+                    .HasForeignKey<XpSettings>(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.FeedSubs)
+                    .WithOne(x => x.GuildConfig)
+                    .HasForeignKey(x => x.GuildConfigId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<GuildConfig>()
+                    .HasMany(x => x.SelfAssignableRoleGroupNames)
+                    .WithOne()
                     .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<FeedSub>()
@@ -117,11 +277,6 @@ public abstract class NadekoContext : DbContext
 
         #endregion
 
-        #region streamrole
-
-        modelBuilder.Entity<StreamRoleSettings>().HasOne(x => x.GuildConfig).WithOne(x => x.StreamRole);
-
-        #endregion
 
         #region Self Assignable Roles
 
@@ -217,12 +372,6 @@ public abstract class NadekoContext : DbContext
 
         #endregion
 
-        #region XpSettings
-
-        modelBuilder.Entity<XpSettings>().HasOne(x => x.GuildConfig).WithOne(x => x.XpSettings);
-
-        #endregion
-
         #region XpRoleReward
 
         modelBuilder.Entity<XpRoleReward>()
@@ -232,6 +381,21 @@ public abstract class NadekoContext : DbContext
                         x.Level
                     })
                     .IsUnique();
+
+        modelBuilder.Entity<XpSettings>()
+                    .HasMany(x => x.RoleRewards)
+                    .WithOne(x => x.XpSettings)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<XpSettings>()
+                    .HasMany(x => x.CurrencyRewards)
+                    .WithOne(x => x.XpSettings)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<XpSettings>()
+                    .HasMany(x => x.ExclusionList)
+                    .WithOne(x => x.XpSettings)
+                    .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
 
@@ -331,9 +495,9 @@ public abstract class NadekoContext : DbContext
 
         modelBuilder.Entity<BanTemplate>().HasIndex(x => x.GuildId).IsUnique();
         modelBuilder.Entity<BanTemplate>()
-            .Property(x => x.PruneDays)
-            .HasDefaultValue(null)
-            .IsRequired(false);
+                    .Property(x => x.PruneDays)
+                    .HasDefaultValue(null)
+                    .IsRequired(false);
 
         #endregion
 
@@ -445,7 +609,7 @@ public abstract class NadekoContext : DbContext
         });
 
         #endregion
- 
+
         #region Xp Item Shop
 
         modelBuilder.Entity<XpShopOwnedItem>(
@@ -453,76 +617,77 @@ public abstract class NadekoContext : DbContext
             {
                 // user can own only one of each item
                 x.HasIndex(model => new
-                    {
-                        model.UserId,
-                        model.ItemType,
-                        model.ItemKey
-                    })
-                    .IsUnique();
+                 {
+                     model.UserId,
+                     model.ItemType,
+                     model.ItemKey
+                 })
+                 .IsUnique();
             });
 
         #endregion
-        
+
         #region AutoPublish
 
         modelBuilder.Entity<AutoPublishChannel>(apc => apc
-            .HasIndex(x => x.GuildId)
-            .IsUnique());
+                                                       .HasIndex(x => x.GuildId)
+                                                       .IsUnique());
 
         #endregion
-        
+
         #region GamblingStats
 
         modelBuilder.Entity<GamblingStats>(gs => gs
-            .HasIndex(x => x.Feature)
-            .IsUnique());
+                                                 .HasIndex(x => x.Feature)
+                                                 .IsUnique());
 
         #endregion
-        
+
         #region Sticky Roles
-        
+
         modelBuilder.Entity<StickyRole>(sr => sr.HasIndex(x => new
-        {
-            x.GuildId,
-            x.UserId
-        }).IsUnique());
-        
+                                                {
+                                                    x.GuildId,
+                                                    x.UserId
+                                                })
+                                                .IsUnique());
+
         #endregion
-        
-        
+
+
         #region Giveaway
 
         modelBuilder.Entity<GiveawayModel>()
-            .HasMany(x => x.Participants)
-            .WithOne()
-            .HasForeignKey(x => x.GiveawayId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
+                    .HasMany(x => x.Participants)
+                    .WithOne()
+                    .HasForeignKey(x => x.GiveawayId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<GiveawayUser>(gu => gu
-            .HasIndex(x => new
-            {
-                x.GiveawayId,
-                x.UserId
-            })
-            .IsUnique());
-        
+                                                .HasIndex(x => new
+                                                {
+                                                    x.GiveawayId,
+                                                    x.UserId
+                                                })
+                                                .IsUnique());
+
         #endregion
-        
+
         #region Todo
 
         modelBuilder.Entity<TodoModel>()
                     .HasKey(x => x.Id);
-        
+
         modelBuilder.Entity<TodoModel>()
-            .HasIndex(x => x.UserId)
-            .IsUnique(false);
-        
+                    .HasIndex(x => x.UserId)
+                    .IsUnique(false);
+
         modelBuilder.Entity<ArchivedTodoListModel>()
-            .HasMany(x => x.Items)
-            .WithOne()
-            .HasForeignKey(x => x.ArchiveId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
+                    .HasMany(x => x.Items)
+                    .WithOne()
+                    .HasForeignKey(x => x.ArchiveId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
         #endregion
     }
 

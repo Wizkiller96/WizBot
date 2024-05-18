@@ -51,6 +51,8 @@ public class XpCurrencyReward : DbEntity
 
 public class ExcludedItem : DbEntity
 {
+    public XpSettings XpSettings { get; set; }
+
     public ulong ItemId { get; set; }
     public ExcludedItemType ItemType { get; set; }
 

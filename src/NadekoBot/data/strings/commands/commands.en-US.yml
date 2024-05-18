@@ -4440,3 +4440,11 @@ todoarchivedelete:
   params:
     - todoId:
         desc: "The identifier for the archived todo item to be deleted."
+cleanupguilddata:
+  desc: |- 
+    Deletes data for all servers bot is no longer a member of from the database.
+    This is a highly destructive and irreversible command.
+  ex:
+    - ''
+  params:
+    - {}
