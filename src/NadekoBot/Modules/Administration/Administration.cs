@@ -446,6 +446,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPermission.ManageGuild)]
+    [BotPerm(GuildPermission.ManageGuild)]
     public async Task SetServerBanner([Leftover] string img = null)
     {
         // Tier2 or higher is required to set a banner.
@@ -475,6 +476,7 @@ public partial class Administration : NadekoModule<AdministrationService>
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPermission.ManageGuild)]
+    [BotPerm(GuildPermission.ManageGuild)]
     public async Task SetServerIcon([Leftover] string img = null)
     {
         var result = await _service.SetServerIconAsync(ctx.Guild, img);
