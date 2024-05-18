@@ -71,7 +71,7 @@ public partial class Utility
                       .Confirm(GetText(strs.quotes_page(page + 1)),
                           string.Join("\n",
                               quotes.Select(q
-                                  => $"`#{q.Id}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
+                                  => $"`{new kwum(q.Id)}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
                       .SendAsync();
             }
             else
@@ -107,19 +107,19 @@ public partial class Utility
             text = await repSvc.ReplaceAsync(text, repCtx);
 
             await Response()
-                  .Text($"`#{quote.Id}` 📣 " + text)
+                  .Text($"`{new kwum(quote.Id)}` 📣 " + text)
                   .Sanitize()
                   .SendAsync();
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteShow(int id)
+        public async Task QuoteShow(kwum quoteId)
         {
             Quote? quote;
             await using (var uow = _db.GetDbContext())
             {
-                quote = uow.Set<Quote>().GetById(id);
+                quote = uow.Set<Quote>().GetById(quoteId);
                 if (quote?.GuildId != ctx.Guild.Id)
                     quote = null;
             }
@@ -137,7 +137,7 @@ public partial class Utility
         {
             var eb = _sender.CreateEmbed()
                             .WithOkColor()
-                            .WithTitle($"{GetText(strs.quote_id($"#{data.Id}"))} | {GetText(strs.response)}:")
+                            .WithTitle($"{GetText(strs.quote_id($"`{new kwum(data.Id)}"))}`")
                             .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
                             .AddField(GetText(strs.trigger), data.Keyword)
                             .WithFooter(
@@ -174,7 +174,7 @@ public partial class Utility
                 return;
 
             await Response()
-                  .Confirm($"`#{quote.Id}` 💬 ",
+                  .Confirm($"`{new kwum(quote.Id)}` 💬 ",
                       quote.Keyword.ToLowerInvariant()
                       + ":  "
                       + quote.Text.SanitizeAllMentions())
@@ -195,9 +195,9 @@ public partial class Utility
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteId(int id)
+        public async Task QuoteId(kwum quoteId)
         {
-            if (id < 0)
+            if (quoteId < 0)
                 return;
 
             Quote quote;
@@ -206,7 +206,7 @@ public partial class Utility
 
             await using (var uow = _db.GetDbContext())
             {
-                quote = uow.Set<Quote>().GetById(id);
+                quote = uow.Set<Quote>().GetById(quoteId);
             }
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
@@ -215,7 +215,7 @@ public partial class Utility
                 return;
             }
 
-            var infoText = $"`#{quote.Id} added by {quote.AuthorName.SanitizeAllMentions()}` 🗯️ "
+            var infoText = $"*`{new kwum(quote.Id)}` added by {quote.AuthorName.SanitizeAllMentions()}* 🗯️ "
                            + quote.Keyword.ToLowerInvariant().SanitizeAllMentions()
                            + ":\n";
 
@@ -252,12 +252,12 @@ public partial class Utility
                 await uow.SaveChangesAsync();
             }
 
-            await Response().Confirm(strs.quote_added_new(Format.Code(q.Id.ToString()))).SendAsync();
+            await Response().Confirm(strs.quote_added_new(Format.Code(new kwum(q.Id).ToString()))).SendAsync();
         }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task QuoteDelete(int id)
+        public async Task QuoteDelete(kwum quoteId)
         {
             var hasManageMessages = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
 
@@ -265,7 +265,7 @@ public partial class Utility
             string response;
             await using (var uow = _db.GetDbContext())
             {
-                var q = uow.Set<Quote>().GetById(id);
+                var q = uow.Set<Quote>().GetById(quoteId);
 
                 if (q?.GuildId != ctx.Guild.Id || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
                     response = GetText(strs.quotes_remove_none);
@@ -274,7 +274,7 @@ public partial class Utility
                     uow.Set<Quote>().Remove(q);
                     await uow.SaveChangesAsync();
                     success = true;
-                    response = GetText(strs.quote_deleted(id));
+                    response = GetText(strs.quote_deleted(new kwum(quoteId)));
                 }
             }
 
