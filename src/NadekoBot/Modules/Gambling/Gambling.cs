@@ -74,7 +74,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         var stats = await _gamblingTxTracker.GetAllAsync();
 
         var eb = _sender.CreateEmbed()
-            .WithOkColor();
+                        .WithOkColor();
 
         var str = "` Feature `｜`   Bet  `｜`Paid Out`｜`  RoI  `\n";
         str += "――――――――――――――――――――\n";
@@ -119,15 +119,15 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         // [21:03] Bob Page: Kinda remids me of US economy
         var embed = _sender.CreateEmbed()
-                    .WithTitle(GetText(strs.economy_state))
-                    .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
-                    .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
-                    .AddField(GetText(strs.currency_planted), N(ec.Planted))
-                    .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
-                    .AddField(GetText(strs.bot_currency), N(ec.Bot))
-                    .AddField(GetText(strs.bank_accounts), N(ec.Bank))
-                    .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
-                    .WithOkColor();
+                           .WithTitle(GetText(strs.economy_state))
+                           .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
+                           .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
+                           .AddField(GetText(strs.currency_planted), N(ec.Planted))
+                           .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
+                           .AddField(GetText(strs.bot_currency), N(ec.Bot))
+                           .AddField(GetText(strs.bank_accounts), N(ec.Bank))
+                           .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
+                           .WithOkColor();
 
         // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
         await Response().Embed(embed).SendAsync();
@@ -155,17 +155,14 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     private NadekoInteraction CreateRemindMeInteraction(int period)
-    {
-        return _inter
+        => _inter
             .Create(ctx.User.Id,
-                new SimpleInteraction<DateTime>(
-                    new ButtonBuilder(
-                        label: "Remind me",
-                        emote: Emoji.Parse("⏰"),
-                        customId: "timely:remind_me"),
-                    RemindTimelyAction,
-                    DateTime.UtcNow.Add(TimeSpan.FromHours(period))));
-    }
+                new ButtonBuilder(
+                    label: "Remind me",
+                    emote: Emoji.Parse("⏰"),
+                    customId: "timely:remind_me"),
+                (smc) => RemindTimelyAction(smc, DateTime.UtcNow.Add(TimeSpan.FromHours(period)))
+            );
 
     [Cmd]
     public async Task Timely()
@@ -311,9 +308,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var embed = _sender.CreateEmbed()
-                    .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
-                                                         ?? $"{userId}")))
-                    .WithOkColor();
+                           .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
+                                                                ?? $"{userId}")))
+                           .WithOkColor();
 
         var sb = new StringBuilder();
         foreach (var tr in trs)
@@ -408,7 +405,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         await Response().Confirm(strs.has(Format.Code(userId.ToString()), cur)).SendAsync();
     }
 
-    private async Task BankAction(SocketMessageComponent smc, object _)
+    private async Task BankAction(SocketMessageComponent smc)
     {
         var balance = await _bank.GetBalanceAsync(ctx.User.Id);
 
@@ -419,11 +416,11 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     private NadekoInteraction CreateCashInteraction()
-        => _inter.Create<object>(ctx.User.Id,
-            new(new(
-                    customId: "cash:bank_show_balance",
-                    emote: new Emoji("🏦")),
-                BankAction));
+        => _inter.Create(ctx.User.Id,
+            new ButtonBuilder(
+                customId: "cash:bank_show_balance",
+                emote: new Emoji("🏦")),
+            BankAction);
 
     [Cmd]
     [Priority(1)]
@@ -732,10 +729,10 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var eb = _sender.CreateEmbed()
-                 .WithAuthor(ctx.User)
-                 .WithDescription(Format.Bold(str))
-                 .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
-                 .WithOkColor();
+                        .WithAuthor(ctx.User)
+                        .WithDescription(Format.Bold(str))
+                        .AddField(GetText(strs.roll2), result.Roll.ToString(CultureInfo.InvariantCulture))
+                        .WithOkColor();
 
         await Response().Embed(eb).SendAsync();
     }
@@ -787,7 +784,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 return await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, curPage);
             }
         }
-        
+
         var res = Response()
             .Paginated();
 
@@ -799,8 +796,9 @@ public partial class Gambling : GamblingModule<GamblingService>
               .CurrentPage(page)
               .Page((toSend, curPage) =>
               {
-                  var embed = _sender.CreateEmbed().WithOkColor()
-                                                .WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
+                  var embed = _sender.CreateEmbed()
+                                     .WithOkColor()
+                                     .WithTitle(CurrencySign + " " + GetText(strs.leaderboard));
 
                   if (!toSend.Any())
                   {
@@ -923,11 +921,11 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var eb = _sender.CreateEmbed()
-                 .WithOkColor()
-                 .WithDescription(sb.ToString())
-                 .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)
-                 .AddField(GetText(strs.won), $"{(long)result.Won}", true)
-                 .WithAuthor(ctx.User);
+                        .WithOkColor()
+                        .WithDescription(sb.ToString())
+                        .AddField(GetText(strs.multiplier), $"{result.Multiplier:0.##}x", true)
+                        .AddField(GetText(strs.won), $"{(long)result.Won}", true)
+                        .WithAuthor(ctx.User);
 
 
         await Response().Embed(eb).SendAsync();

@@ -4,6 +4,7 @@ using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
 using Nadeko.Common.Medusa;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
 
 namespace NadekoBot.Modules.Help;
 
@@ -86,11 +87,31 @@ public sealed partial class Help : NadekoModule<HelpService>
                 topLevelModules.Add(m);
         }
 
+        var menu = new SelectMenuBuilder()
+                   .WithPlaceholder("Select a module to see its commands")
+                   .WithCustomId("modules");
+
+        foreach (var m in topLevelModules)
+            menu.AddOption(m.Name, m.Name, GetModuleEmoji(m.Name));
+
+        var inter = _inter.Create(ctx.User.Id,
+            menu,
+            async (smc) =>
+            {
+                await smc.DeferAsync();
+                var val = smc.Data.Values.FirstOrDefault();
+                if (val is null)
+                    return;
+                
+                await Commands(val);
+            });
+
         await Response()
               .Paginated()
               .Items(topLevelModules)
               .PageSize(12)
               .CurrentPage(page)
+              .Interaction(inter)
               .AddFooter(false)
               .Page((items, _) =>
               {
@@ -442,7 +463,7 @@ public sealed partial class Help : NadekoModule<HelpService>
                  .SendAsync();
 
 
-    private Task SelfhostAction(SocketMessageComponent smc, object _)
+    private Task SelfhostAction(SocketMessageComponent smc)
         => smc.RespondConfirmAsync(_sender,
             """
             - In case you don't want or cannot Donate to NadekoBot project, but you
@@ -460,11 +481,11 @@ public sealed partial class Help : NadekoModule<HelpService>
     public async Task Donate()
     {
         var selfhostInter = _inter.Create(ctx.User.Id,
-            new SimpleInteraction<object>(new ButtonBuilder(
-                    emote: new Emoji("🖥️"),
-                    customId: "donate:selfhosting",
-                    label: "Selfhosting"),
-                SelfhostAction));
+            new ButtonBuilder(
+                emote: new Emoji("🖥️"),
+                customId: "donate:selfhosting",
+                label: "Selfhosting"),
+            SelfhostAction);
 
         var eb = _sender.CreateEmbed()
                         .WithOkColor()

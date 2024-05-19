@@ -34,34 +34,79 @@ public partial class ResponseBuilder
             if (_paginationBuilder.AddPaginatedFooter)
                 embed.AddPaginatedFooter(currentPage, lastPage);
 
-            SimpleInteractionBase? maybeInter = null;
+            NadekoInteraction? maybeInter = null;
 
-            async Task<ComponentBuilder> GetComponentBuilder()
+            var model = await _builder.BuildAsync(ephemeral);
+
+            async Task<(NadekoButtonInteraction left, NadekoInteraction? extra, NadekoButtonInteraction right)>
+                GetInteractions()
             {
-                var cb = new ComponentBuilder();
+                var leftButton = new ButtonBuilder()
+                                 .WithStyle(ButtonStyle.Primary)
+                                 .WithCustomId(BUTTON_LEFT)
+                                 .WithDisabled(lastPage == 0)
+                                 .WithEmote(InteractionHelpers.ArrowLeft)
+                                 .WithDisabled(currentPage <= 0);
 
-                cb.WithButton(new ButtonBuilder()
-                              .WithStyle(ButtonStyle.Primary)
-                              .WithCustomId(BUTTON_LEFT)
-                              .WithDisabled(lastPage == 0)
-                              .WithEmote(InteractionHelpers.ArrowLeft)
-                              .WithDisabled(currentPage <= 0));
+                var leftBtnInter = new NadekoButtonInteraction(_client,
+                    model.User?.Id ?? 0,
+                    leftButton,
+                    (smc) =>
+                    {
+                        try
+                        {
+                            if (currentPage > 0)
+                                currentPage--;
+
+                            _ = UpdatePageAsync(smc);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    true,
+                    singleUse: false);
 
                 if (_paginationBuilder.InteractionFunc is not null)
                 {
                     maybeInter = await _paginationBuilder.InteractionFunc(currentPage);
-
-                    if (maybeInter is not null)
-                        cb.WithButton(maybeInter.Button);
                 }
 
-                cb.WithButton(new ButtonBuilder()
-                              .WithStyle(ButtonStyle.Primary)
-                              .WithCustomId(BUTTON_RIGHT)
-                              .WithDisabled(lastPage is not null && (lastPage == 0 || currentPage >= lastPage))
-                              .WithEmote(InteractionHelpers.ArrowRight));
+                var rightButton = new ButtonBuilder()
+                                  .WithStyle(ButtonStyle.Primary)
+                                  .WithCustomId(BUTTON_RIGHT)
+                                  .WithDisabled(lastPage == 0)
+                                  .WithEmote(InteractionHelpers.ArrowRight)
+                                  .WithDisabled(lastPage == 0 || currentPage > lastPage);
 
-                return cb;
+                var rightBtnInter = new NadekoButtonInteraction(_client,
+                    model.User?.Id ?? 0,
+                    rightButton,
+                    (smc) =>
+                    {
+                        try
+                        {
+                            if (currentPage >= lastPage)
+                                return Task.CompletedTask;
+
+                            currentPage++;
+
+                            _ = UpdatePageAsync(smc);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    true,
+                    singleUse: false);
+
+                return (leftBtnInter, maybeInter, rightBtnInter);
             }
 
             async Task UpdatePageAsync(SocketMessageComponent smc)
@@ -71,75 +116,37 @@ public partial class ResponseBuilder
                 if (_paginationBuilder.AddPaginatedFooter)
                     toSend.AddPaginatedFooter(currentPage, lastPage);
 
-                var component = (await GetComponentBuilder()).Build();
+                var (left, extra, right) = (await GetInteractions());
+
+                var cb = new ComponentBuilder();
+                left.AddTo(cb);
+                right.AddTo(cb);
+                extra?.AddTo(cb);
 
                 await smc.ModifyOriginalResponseAsync(x =>
                 {
                     x.Embed = toSend.Build();
-                    x.Components = component;
+                    x.Components = cb.Build();
                 });
             }
 
-            var model = await _builder.BuildAsync(ephemeral);
+            var (left, extra, right) = await GetInteractions();
 
-            var component = (await GetComponentBuilder()).Build();
+            var cb = new ComponentBuilder();
+            left.AddTo(cb);
+            right.AddTo(cb);
+            extra?.AddTo(cb);
+
             var msg = await model.TargetChannel
                                  .SendMessageAsync(model.Text,
                                      embed: embed.Build(),
-                                     components: component,
+                                     components: cb.Build(),
                                      messageReference: model.MessageReference);
-
-            async Task OnInteractionAsync(SocketInteraction si)
-            {
-                try
-                {
-                    if (si is not SocketMessageComponent smc)
-                        return;
-
-                    if (smc.Message.Id != msg.Id)
-                        return;
-
-                    await si.DeferAsync();
-
-                    if (smc.User.Id != model.User?.Id)
-                        return;
-
-                    if (smc.Data.CustomId == BUTTON_LEFT)
-                    {
-                        if (currentPage == 0)
-                            return;
-
-                        --currentPage;
-                        _ = UpdatePageAsync(smc);
-                    }
-                    else if (smc.Data.CustomId == BUTTON_RIGHT)
-                    {
-                        if (currentPage >= lastPage)
-                            return;
-
-                        ++currentPage;
-                        _ = UpdatePageAsync(smc);
-                    }
-                    else if (maybeInter is { } inter && inter.Button.CustomId == smc.Data.CustomId)
-                    {
-                        await inter.TriggerAsync(smc);
-                        _ = UpdatePageAsync(smc);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error in pagination: {ErrorMessage}", ex.Message);
-                }
-            }
 
             if (lastPage == 0 && _paginationBuilder.InteractionFunc is null)
                 return;
 
-            _client.InteractionCreated += OnInteractionAsync;
-
-            await Task.Delay(30_000);
-
-            _client.InteractionCreated -= OnInteractionAsync;
+            await Task.WhenAll(left.RunAsync(msg), extra?.RunAsync(msg) ?? Task.CompletedTask, right.RunAsync(msg));
 
             await msg.ModifyAsync(mp => mp.Components = new ComponentBuilder().Build());
         }

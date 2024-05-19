@@ -211,23 +211,23 @@ repeat:
         desc: "The amount of time between each repetition."
       message:
         desc: "The text to be repeated at the specified intervals or times."
-    - ch:
+    - channel:
         desc: "The channel where the message will be sent."
       interval:
         desc: "The amount of time between each repetition."
       message:
         desc: "The text to be repeated at the specified intervals or times."
-    - dt:
+    - timeOfDay:
         desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
       message:
         desc: "The text to be repeated at the specified intervals or times."
     - channel:
         desc: "The channel where the message will be repeated."
-      dt:
+      timeOfDay:
         desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
       message:
         desc: "The text to be repeated at the specified intervals or times."
-    - dt:
+    - timeOfDay:
         desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
       interval:
         desc: "The amount of time between each repetition."
@@ -235,7 +235,7 @@ repeat:
         desc: "The text to be repeated at the specified intervals or times."
     - channel:
         desc: "The channel where the message will be repeated."
-      dt:
+      timeOfDay:
         desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
       interval:
         desc: "The amount of time between each repetition."
@@ -370,10 +370,10 @@ expradd:
   ex:
     - '"hello" Hi there %user.mention%'
   params:
-    - key:
+    - trigger:
         desc: "The trigger word that sets off the response when typed by a user."
-      message:
-        desc: "The text of the message that triggers the response when typed by a user."
+      response:
+        desc: "The text of the message that shows up when a user types the trigger word."
 expraddserver:
   desc: 'Add an expression with a trigger and a response in this server. Bot will post a response whenever someone types the trigger word. Guide here: <https://nadekobot.readthedocs.io/en/latest/custom-reactions/>'
   ex:
@@ -1257,7 +1257,7 @@ quoteshow:
   ex:
     - 123
   params:
-    - id:
+    - quoteId:
         desc: "The unique identifier for the quote being queried."
 quotesearch:
   desc: 'Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author'
@@ -1278,14 +1278,14 @@ quoteid:
   ex:
     - 123456
   params:
-    - id:
+    - quoteId:
         desc: "The unique identifier for the quote to be displayed."
 quotedelete:
   desc: Deletes a quote with the specified ID. You have to either have the Manage Messages permission or be the creator of the quote to delete it.
   ex:
     - 123456
   params:
-    - id:
+    - quoteId:
         desc: "The unique identifier for the quote being deleted."
 quotedeleteauthor:
   desc: Deletes all quotes by the specified author. If the author is not you, then ManageMessage server permission is required.

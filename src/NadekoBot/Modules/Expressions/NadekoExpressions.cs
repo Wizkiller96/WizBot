@@ -68,9 +68,9 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
 
     [Cmd]
-    public async Task ExprAdd(string key, [Leftover] string message)
+    public async Task ExprAdd(string trigger, [Leftover] string response)
     {
-        if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
+        if (string.IsNullOrWhiteSpace(response) || string.IsNullOrWhiteSpace(trigger))
         {
             return;
         }
@@ -81,7 +81,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             return;
         }
 
-        await ExprAddInternalAsync(key, message);
+        await ExprAddInternalAsync(trigger, response);
     }
 
     [Cmd]

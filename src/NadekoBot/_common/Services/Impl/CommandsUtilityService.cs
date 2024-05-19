@@ -40,18 +40,28 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
         var culture = _loc.GetCultureInfo(guild);
 
         var em = _sender.CreateEmbed()
-                    .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
+                        .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
         var reqs = GetCommandRequirements(com, (GuildPermission?)overrides);
         if (reqs.Any())
             em.AddField(GetText(strs.requires, guild), string.Join("\n", reqs));
 
+        var paramList = _strings.GetCommandStrings(com.Name, culture)?.Params;
         em
             .WithOkColor()
             .AddField(_strings.GetText(strs.usage),
                 string.Join("\n", com.RealRemarksArr(_strings, _medusae, culture, prefix).Map(arg => Format.Code(arg))))
             .WithFooter(GetText(strs.module(com.Module.GetTopLevelModule().Name), guild));
+
+        if (paramList is not null and not [])
+        {
+            var pl = paramList
+                     .Select(x => Format.Code($"{prefix}{com.Name} {x.Keys.Select(y => $"<{y}>").Join(' ')}"))
+                     .Join('\n');
+
+            em.AddField(GetText(strs.overloads, guild), pl);
+        }
 
         var opt = GetNadekoOptionType(com.Attributes);
         if (opt is not null)

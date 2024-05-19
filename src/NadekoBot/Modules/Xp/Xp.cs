@@ -475,7 +475,8 @@ public partial class Xp : NadekoModule<XpService>
                           emote: Emoji.Parse("👐"),
                           isDisabled: ownedItem.IsUsing);
 
-                      var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                      var inter = _inter.Create(
+                          ctx.User.Id,
                           button,
                           OnShopUse,
                           (key, itemType));
@@ -488,7 +489,8 @@ public partial class Xp : NadekoModule<XpService>
                           "xpshop:buy",
                           emote: Emoji.Parse("💰"));
 
-                      var inter = new SimpleInteraction<(string key, XpShopItemType type)?>(
+                      var inter = _inter.Create(
+                          ctx.User.Id,
                           button,
                           OnShopBuy,
                           (key, itemType));
@@ -507,10 +509,10 @@ public partial class Xp : NadekoModule<XpService>
         NadekoInteraction GetUseInteraction()
         {
             return _inter.Create(ctx.User.Id,
-                new SimpleInteraction<object>(
-                    new ButtonBuilder(label: "Use", customId: "xpshop:use_item", emote: Emoji.Parse("👐")),
-                    async (smc, _) => await XpShopUse(type, key)
-                ));
+                new(label: "Use", customId: "xpshop:use_item", emote: Emoji.Parse("👐")),
+                async (_, state) => await XpShopUse(state.type, state.key),
+                (type, key)
+            );
         }
 
         if (result != BuyResult.Success)
@@ -551,11 +553,8 @@ public partial class Xp : NadekoModule<XpService>
         await ctx.OkAsync();
     }
 
-    private async Task OnShopUse(SocketMessageComponent smc, (string? key, XpShopItemType type)? maybeState)
+    private async Task OnShopUse(SocketMessageComponent smc, (string key, XpShopItemType type) state)
     {
-        if (maybeState is not { } state)
-            return;
-
         var (key, type) = state;
 
         var result = await _service.UseShopItemAsync(ctx.User.Id, type, key);
@@ -567,11 +566,8 @@ public partial class Xp : NadekoModule<XpService>
         }
     }
 
-    private async Task OnShopBuy(SocketMessageComponent smc, (string? key, XpShopItemType type)? maybeState)
+    private async Task OnShopBuy(SocketMessageComponent smc, (string key, XpShopItemType type) state)
     {
-        if (maybeState is not { } state)
-            return;
-
         var (key, type) = state;
 
         var result = await _service.BuyShopItemAsync(ctx.User.Id, type, key);

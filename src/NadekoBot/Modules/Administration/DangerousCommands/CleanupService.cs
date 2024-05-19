@@ -12,7 +12,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     private TypedKey<KeepReport> _keepReportKey = new("cleanup:report");
     private TypedKey<bool> _keepTriggerKey = new("cleanup:trigger");
     private readonly DiscordSocketClient _client;
-    private ConcurrentDictionary<int, ulong[]> guildIds;
+    private ConcurrentDictionary<int, ulong[]> guildIds = new();
     private readonly IBotCredsProvider _creds;
     private readonly DbService _db;
 

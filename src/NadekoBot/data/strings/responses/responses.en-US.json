@@ -1099,5 +1099,6 @@
   "todo_archive_not_found": "Archived todo list not found.",
   "todo_archived_list": "Archived Todo List",
   "search_results": "Search results",
-  "queue_search_results": "Type the number of the search result to queue up that track."
+  "queue_search_results": "Type the number of the search result to queue up that track.",
+  "overloads": "Overloads"
 }

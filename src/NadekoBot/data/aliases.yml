@@ -1,6 +1,6 @@
 h:
-  - help
   - h
+  - help
 gencmdlist:
   - gencmdlist
 donate:
@@ -37,7 +37,7 @@ boost:
 boostmsg:
   - boostmsg
 boostdel:
-  - boostde
+  - boostdel
 logserver:
   - logserver
 logignore:

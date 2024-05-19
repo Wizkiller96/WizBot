@@ -9,12 +9,39 @@ public class NadekoInteractionService : INadekoInteractionService, INService
         _client = client;
     }
 
+    public NadekoInteraction Create(
+        ulong userId,
+        ButtonBuilder button,
+        Func<SocketMessageComponent, Task> onTrigger,
+        bool singleUse = true)
+        => new NadekoButtonInteraction(_client,
+            userId,
+            button,
+            onTrigger,
+            onlyAuthor: true,
+            singleUse: singleUse);
+
     public NadekoInteraction Create<T>(
         ulong userId,
-        SimpleInteraction<T> inter)
-        => new NadekoInteraction(_client,
+        ButtonBuilder button,
+        Func<SocketMessageComponent, T, Task> onTrigger,
+        in T state,
+        bool singleUse = true)
+        => Create(userId,
+            button,
+            ((Func<T, Func<SocketMessageComponent, Task>>)((data)
+                => smc => onTrigger(smc, data)))(state),
+            singleUse);
+    
+    public NadekoInteraction Create(
+        ulong userId,
+        SelectMenuBuilder menu,
+        Func<SocketMessageComponent, Task> onTrigger,
+        bool singleUse = true)
+        => new NadekoSelectInteraction(_client,
             userId,
-            inter.Button,
-            inter.TriggerAsync,
-            onlyAuthor: true);
+            menu,
+            onTrigger,
+            onlyAuthor: true,
+            singleUse: singleUse);
 }

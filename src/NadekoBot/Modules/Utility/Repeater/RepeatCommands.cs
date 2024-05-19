@@ -117,35 +117,35 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public Task Repeat(ITextChannel ch, StoopidTime interval, [Leftover] string message)
-            => Repeat(ch, null, interval, message);
+        public Task Repeat(ITextChannel channel, StoopidTime interval, [Leftover] string message)
+            => Repeat(channel, null, interval, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public Task Repeat(GuildDateTime dt, [Leftover] string message)
-            => Repeat(dt, null, message);
+        public Task Repeat(GuildDateTime timeOfDay, [Leftover] string message)
+            => Repeat(timeOfDay, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public Task Repeat(ITextChannel channel, GuildDateTime dt, [Leftover] string message)
-            => Repeat(channel, dt, null, message);
+        public Task Repeat(ITextChannel channel, GuildDateTime timeOfDay, [Leftover] string message)
+            => Repeat(channel, timeOfDay, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(2)]
-        public Task Repeat(GuildDateTime? dt, StoopidTime? interval, [Leftover] string message)
-            => Repeat(ctx.Channel, dt, interval, message);
+        public Task Repeat(GuildDateTime? timeOfDay, StoopidTime? interval, [Leftover] string message)
+            => Repeat(ctx.Channel, timeOfDay, interval, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(3)]
-        public async Task Repeat(IMessageChannel channel, GuildDateTime? dt, StoopidTime? interval,
+        public async Task Repeat(IMessageChannel channel, GuildDateTime? timeOfDay, StoopidTime? interval,
             [Leftover] string message)
         {
             if (channel is not ITextChannel txtCh || txtCh.GuildId != ctx.Guild.Id)
@@ -155,7 +155,7 @@ public partial class Utility
             if (!perms.SendMessages)
                 return;
 
-            var startTimeOfDay = dt?.InputTimeUtc.TimeOfDay;
+            var startTimeOfDay = timeOfDay?.InputTimeUtc.TimeOfDay;
             // if interval not null, that means user specified it (don't change it)
 
             // if interval is null set the default to:

@@ -76,9 +76,12 @@ public partial class Gambling
                 .WithOkColor();
 
             var bb = new ButtonBuilder(emote: Emoji.Parse("🔁"), customId: "slot:again", label: "Pull Again");
-            var si = new SimpleInteraction<long>(bb, (_, amount) => Slot(amount), amount);
+            var inter = _inter.Create(ctx.User.Id, bb, smc =>
+            {
+                smc.DeferAsync();
+                return Slot(amount);
+            });
 
-            var inter = _inter.Create(ctx.User.Id, si);
             var msg = await ctx.Channel.SendFileAsync(imgStream,
                 "result.png",
                 embed: eb.Build(),
