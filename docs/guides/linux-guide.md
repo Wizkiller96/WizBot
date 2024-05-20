@@ -15,8 +15,8 @@
 
 ##### Compatible operating systems:
 
-- Ubuntu: 20.04, 21.04, 21.10, 22.04
-- Mint: 19, 20
+- Ubuntu: 20.04, 22.04, 24.04
+- Mint: 19, 20, 21
 - Debian: 10, 11, 12
 - RockyLinux: 8, 9
 - AlmaLinux: 8, 9
