@@ -2,6 +2,27 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.0]
+
+### Added
+
+- Added `.setserverbanner` and `.setservericon` commands (thx cata)
+- Added overloads section to `.h command` which will show you all versions of command usage with param names
+- You can now check commands for submodules, for example `.cmds SelfAssignedRoles` will show brief help for each of the commands in that submodule
+- Added dropdown menus for .mdls and .cmds (both module and group versions) which will give you the option to see more detailed help for each specific module, group or command respectively
+- Self-Hosters only:
+  - Added a dangerous cleanup command that you don't have to know about
+
+### Changed
+
+- Quotes will now use alphanumerical ids (like expressions)
+
+### Fixed
+
+- `.verbose` will now be respected for expression errors
+- Using `.pick` will now correctly show the name of the user who picked the currency
+- Fixed `.h` not working on some commands
+
 ## [5.0.7] - 15.05.2024
 
 ### Fixed
