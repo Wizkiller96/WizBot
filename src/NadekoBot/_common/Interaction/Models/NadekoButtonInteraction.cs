@@ -6,10 +6,10 @@ public sealed class NadekoButtonInteraction : NadekoInteraction
         DiscordSocketClient client,
         ulong authorId,
         ButtonBuilder button,
-        Func<SocketMessageComponent, Task> onClick,
+        Func<SocketMessageComponent, Task> onAction,
         bool onlyAuthor,
         bool singleUse = true)
-        : base(client, authorId, button.CustomId, onClick, onlyAuthor, singleUse)
+        : base(client, authorId, button.CustomId, onAction, onlyAuthor, singleUse)
     {
         Button = button;
     }

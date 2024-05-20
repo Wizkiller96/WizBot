@@ -3,7 +3,7 @@
 public abstract class NadekoInteraction
 {
     private readonly ulong _authorId;
-    private readonly Func<SocketMessageComponent, Task> _onClick;
+    private readonly Func<SocketMessageComponent, Task> _onAction;
     private readonly bool _onlyAuthor;
     public DiscordSocketClient Client { get; }
 
@@ -17,13 +17,13 @@ public abstract class NadekoInteraction
         DiscordSocketClient client,
         ulong authorId,
         string customId,
-        Func<SocketMessageComponent, Task> onClick,
+        Func<SocketMessageComponent, Task> onAction,
         bool onlyAuthor,
         bool singleUse = true)
     {
         _authorId = authorId;
         _customId = customId;
-        _onClick = onClick;
+        _onAction = onAction;
         _onlyAuthor = onlyAuthor;
         _singleUse = singleUse;
         _interactionCompletedSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -61,12 +61,19 @@ public abstract class NadekoInteraction
 
         _ = Task.Run(async () =>
         {
-            _interactionCompletedSource.TrySetResult(true);
-            await ExecuteOnActionAsync(smc);
-
-            if (!smc.HasResponded)
+            try
             {
-                await smc.DeferAsync();
+                _interactionCompletedSource.TrySetResult(true);
+                await ExecuteOnActionAsync(smc);
+
+                if (!smc.HasResponded)
+                {
+                    await smc.DeferAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "An exception occured while handling an interaction: {Message}", ex.Message);
             }
         });
 
@@ -77,5 +84,5 @@ public abstract class NadekoInteraction
     public abstract void AddTo(ComponentBuilder cb);
 
     public Task ExecuteOnActionAsync(SocketMessageComponent smc)
-        => _onClick(smc);
+        => _onAction(smc);
 }

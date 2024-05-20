@@ -4,7 +4,6 @@ using NadekoBot.Modules.Help.Services;
 using Newtonsoft.Json;
 using System.Text;
 using Nadeko.Common.Medusa;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
 
 namespace NadekoBot.Modules.Help;
 
@@ -89,7 +88,7 @@ public sealed partial class Help : NadekoModule<HelpService>
 
         var menu = new SelectMenuBuilder()
                    .WithPlaceholder("Select a module to see its commands")
-                   .WithCustomId("modules");
+                   .WithCustomId("cmds:modules_select");
 
         foreach (var m in topLevelModules)
             menu.AddOption(m.Name, m.Name, GetModuleEmoji(m.Name));
@@ -102,7 +101,7 @@ public sealed partial class Help : NadekoModule<HelpService>
                 var val = smc.Data.Values.FirstOrDefault();
                 if (val is null)
                     return;
-                
+
                 await Commands(val);
             });
 
@@ -242,10 +241,28 @@ public sealed partial class Help : NadekoModule<HelpService>
         // order by name
         var allowed = new List<CommandInfo>();
 
-        foreach (var cmd in _cmds.Commands
-                                 .Where(c => c.Module.GetTopLevelModule()
-                                              .Name
-                                              .StartsWith(module, StringComparison.InvariantCultureIgnoreCase)))
+        var mdls = _cmds.Commands
+                        .Where(c => c.Module.GetTopLevelModule()
+                                     .Name
+                                     .StartsWith(module, StringComparison.InvariantCultureIgnoreCase))
+                        .ToArray();
+
+        if (mdls.Length == 0)
+        {
+            var group = _cmds.Modules
+                             .Where(x => x.Parent is not null)
+                             .FirstOrDefault(x => string.Equals(x.Name.Replace("Commands", ""),
+                                 module,
+                                 StringComparison.InvariantCultureIgnoreCase));
+
+            if (group is not null)
+            {
+                await Group(group);
+                return;
+            }
+        }
+
+        foreach (var cmd in mdls)
         {
             var result = await _perms.CheckPermsAsync(ctx.Guild,
                 ctx.Channel,
@@ -256,6 +273,7 @@ public sealed partial class Help : NadekoModule<HelpService>
             if (result.IsAllowed)
                 allowed.Add(cmd);
         }
+
 
         var cmds = allowed.OrderBy(c => c.Aliases[0])
                           .DistinctBy(x => x.Aliases[0])
@@ -296,55 +314,97 @@ public sealed partial class Help : NadekoModule<HelpService>
             return;
         }
 
-        var cnt = 0;
-        var groups = cmdsWithGroup.GroupBy(_ => cnt++ / 48).ToArray();
+        var sb = new SelectMenuBuilder()
+                 .WithCustomId("cmds:submodule_select")
+                 .WithPlaceholder("Select a submodule to see detailed commands");
+
+        var groups = cmdsWithGroup.ToArray();
         var embed = _sender.CreateEmbed().WithOkColor();
         foreach (var g in groups)
         {
-            var last = g.Count();
-            for (var i = 0; i < last; i++)
-            {
-                var transformed = g.ElementAt(i)
-                                   .Select(x =>
-                                   {
-                                       //if cross is specified, and the command doesn't satisfy the requirements, cross it out
-                                       if (opts.View == CommandsOptions.ViewType.Cross)
-                                       {
-                                           return $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
-                                       }
+            sb.AddOption(g.Key, g.Key);
+            var transformed = g
+                .Select(x =>
+                {
+                    //if cross is specified, and the command doesn't satisfy the requirements, cross it out
+                    if (opts.View == CommandsOptions.ViewType.Cross)
+                    {
+                        return $"{(succ.Contains(x) ? "✅" : "❌")} {prefix + x.Aliases[0]}";
+                    }
 
-                                       if (x.Aliases.Count == 1)
-                                           return prefix + x.Aliases[0];
 
-                                       return prefix + x.Aliases[0] + " | " + prefix + x.Aliases[1];
-                                   });
+                    if (x.Aliases.Count == 1)
+                        return prefix + x.Aliases[0];
 
-                embed.AddField(g.ElementAt(i).Key, "" + string.Join("\n", transformed) + "", true);
-            }
+                    return prefix + x.Aliases[0] + " | " + prefix + x.Aliases[1];
+                });
+
+            embed.AddField(g.Key, "" + string.Join("\n", transformed) + "", true);
         }
 
         embed.WithFooter(GetText(strs.commands_instr(prefix)));
-        await Response().Embed(embed).SendAsync();
+
+
+        var inter = _inter.Create(ctx.User.Id,
+            sb,
+            async (smc) =>
+            {
+                var groupName = smc.Data.Values.FirstOrDefault();
+                var mdl = _cmds.Modules.FirstOrDefault(x
+                    => string.Equals(x.Name.Replace("Commands", ""), groupName, StringComparison.InvariantCultureIgnoreCase));
+                await smc.DeferAsync();
+                await Group(mdl);
+            }
+        );
+
+        await Response().Embed(embed).Interaction(inter).SendAsync();
     }
 
     private async Task Group(ModuleInfo group)
     {
-        var eb = _sender.CreateEmbed()
-                        .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
-                        .WithOkColor();
+        var menu = new SelectMenuBuilder()
+                   .WithCustomId("cmds:group_select")
+                   .WithPlaceholder("Select a command to see its details");
 
         foreach (var cmd in group.Commands.DistinctBy(x => x.Aliases[0]))
         {
-            string cmdName;
-            if (cmd.Aliases.Count > 1)
-                cmdName = Format.Code(prefix + cmd.Aliases[0]) + " | " + Format.Code(prefix + cmd.Aliases[1]);
-            else
-                cmdName = Format.Code(prefix + cmd.Aliases.First());
-
-            eb.AddField(cmdName, cmd.RealSummary(_strings, _medusae, Culture, prefix));
+            menu.AddOption(prefix + cmd.Aliases[0], cmd.Aliases[0]);
         }
 
-        await Response().Embed(eb).SendAsync();
+        var inter = _inter.Create(ctx.User.Id,
+            menu,
+            async (smc) =>
+            {
+                await smc.DeferAsync();
+
+                await H(smc.Data.Values.FirstOrDefault());
+            });
+
+        await Response()
+              .Paginated()
+              .Items(group.Commands.DistinctBy(x => x.Aliases[0]).ToArray())
+              .PageSize(25)
+              .Interaction(inter)
+              .Page((items, _) =>
+              {
+                  var eb = _sender.CreateEmbed()
+                                  .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
+                                  .WithOkColor();
+
+                  foreach (var cmd in items)
+                  {
+                      string cmdName;
+                      if (cmd.Aliases.Count > 1)
+                          cmdName = Format.Code(prefix + cmd.Aliases[0]) + " | " + Format.Code(prefix + cmd.Aliases[1]);
+                      else
+                          cmdName = Format.Code(prefix + cmd.Aliases.First());
+
+                      eb.AddField(cmdName, cmd.RealSummary(_strings, _medusae, Culture, prefix));
+                  }
+
+                  return eb;
+              })
+              .SendAsync();
     }
 
     [Cmd]
@@ -364,12 +424,9 @@ public sealed partial class Help : NadekoModule<HelpService>
 
         var group = _cmds.Modules
                          .SelectMany(x => x.Submodules)
-                         .FirstOrDefault(x => string.Equals(x.Name?.Replace("Commands", string.Empty),
-                                                  fail,
-                                                  StringComparison.InvariantCultureIgnoreCase)
-                                              || string.Equals(x.Group,
-                                                  fail,
-                                                  StringComparison.InvariantCultureIgnoreCase));
+                         .FirstOrDefault(x => string.Equals(x.Group,
+                             fail,
+                             StringComparison.InvariantCultureIgnoreCase));
 
         if (group is not null)
         {

@@ -44,9 +44,8 @@ public partial class ResponseBuilder
                 var leftButton = new ButtonBuilder()
                                  .WithStyle(ButtonStyle.Primary)
                                  .WithCustomId(BUTTON_LEFT)
-                                 .WithDisabled(lastPage == 0)
                                  .WithEmote(InteractionHelpers.ArrowLeft)
-                                 .WithDisabled(currentPage <= 0);
+                                 .WithDisabled(lastPage == 0 || currentPage <= 0);
 
                 var leftBtnInter = new NadekoButtonInteraction(_client,
                     model.User?.Id ?? 0,
@@ -78,9 +77,8 @@ public partial class ResponseBuilder
                 var rightButton = new ButtonBuilder()
                                   .WithStyle(ButtonStyle.Primary)
                                   .WithCustomId(BUTTON_RIGHT)
-                                  .WithDisabled(lastPage == 0)
                                   .WithEmote(InteractionHelpers.ArrowRight)
-                                  .WithDisabled(lastPage == 0 || currentPage > lastPage);
+                                  .WithDisabled(lastPage == 0 || currentPage >= lastPage);
 
                 var rightBtnInter = new NadekoButtonInteraction(_client,
                     model.User?.Id ?? 0,
@@ -141,6 +139,7 @@ public partial class ResponseBuilder
                                  .SendMessageAsync(model.Text,
                                      embed: embed.Build(),
                                      components: cb.Build(),
+                                     allowedMentions: model.SanitizeMentions,
                                      messageReference: model.MessageReference);
 
             if (lastPage == 0 && _paginationBuilder.InteractionFunc is null)

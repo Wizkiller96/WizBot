@@ -6,10 +6,10 @@ public sealed class NadekoSelectInteraction : NadekoInteraction
         DiscordSocketClient client,
         ulong authorId,
         SelectMenuBuilder menu,
-        Func<SocketMessageComponent, Task> onClick,
+        Func<SocketMessageComponent, Task> onAction,
         bool onlyAuthor,
         bool singleUse = true)
-        : base(client, authorId, menu.CustomId, onClick, onlyAuthor, singleUse)
+        : base(client, authorId, menu.CustomId, onAction, onlyAuthor, singleUse)
     {
         Menu = menu;
     }
