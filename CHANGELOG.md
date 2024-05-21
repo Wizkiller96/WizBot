@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.1.0]
+## [5.0.8] - 21.05.2024
 
 ### Added
 
@@ -22,6 +22,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - `.verbose` will now be respected for expression errors
 - Using `.pick` will now correctly show the name of the user who picked the currency
 - Fixed `.h` not working on some commands
+- `.langset` and `.langsetd` should no longer allow unsupported languages and nonsense to be typed in
 
 ## [5.0.7] - 15.05.2024
 
