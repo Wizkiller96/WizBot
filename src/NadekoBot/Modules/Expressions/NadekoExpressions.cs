@@ -1,5 +1,7 @@
 #nullable disable
 
+using NadekoBot.Db.Models;
+
 namespace NadekoBot.Modules.NadekoExpressions;
 
 [Name("Expressions")]
@@ -34,12 +36,12 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
 
         await Response()
               .Embed(_sender.CreateEmbed()
-                     .WithOkColor()
-                     .WithTitle(GetText(strs.expr_new))
-                     .WithDescription($"#{new kwum(ex.Id)}")
-                     .AddField(GetText(strs.trigger), key)
-                     .AddField(GetText(strs.response),
-                         message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
+                            .WithOkColor()
+                            .WithTitle(GetText(strs.expr_new))
+                            .WithDescription($"#{new kwum(ex.Id)}")
+                            .AddField(GetText(strs.trigger), key)
+                            .AddField(GetText(strs.response),
+                                message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
               .SendAsync();
     }
 
@@ -93,8 +95,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             return;
         }
 
-        if ((channel is null && !_creds.IsOwner(ctx.User))
-            || (channel is not null && !((IGuildUser)ctx.User).GuildPermissions.Administrator))
+        if (!IsValidExprEditor())
         {
             await Response().Error(strs.expr_insuff_perms).SendAsync();
             return;
@@ -105,12 +106,12 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         {
             await Response()
                   .Embed(_sender.CreateEmbed()
-                         .WithOkColor()
-                         .WithTitle(GetText(strs.expr_edited))
-                         .WithDescription($"#{id}")
-                         .AddField(GetText(strs.trigger), ex.Trigger)
-                         .AddField(GetText(strs.response),
-                             message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
+                                .WithOkColor()
+                                .WithTitle(GetText(strs.expr_edited))
+                                .WithDescription($"#{id}")
+                                .AddField(GetText(strs.trigger), ex.Trigger)
+                                .AddField(GetText(strs.response),
+                                    message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
                   .SendAsync();
         }
         else
@@ -118,6 +119,10 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             await Response().Error(strs.expr_no_found_id).SendAsync();
         }
     }
+
+    private bool IsValidExprEditor()
+        => (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator)
+           || (ctx.Guild is null && _creds.IsOwner(ctx.User));
 
     [Cmd]
     [Priority(1)]
@@ -132,7 +137,7 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
                                      .OrderBy(x => x.Trigger)
                                      .ToArray();
 
-        if (allExpressions is null || !allExpressions.Any())
+        if (!allExpressions.Any())
         {
             await Response().Error(strs.expr_no_found).SendAsync();
             return;
@@ -171,14 +176,46 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
             return;
         }
 
+        var inter = CreateEditInteraction(id, found);
+
         await Response()
+              .Interaction(IsValidExprEditor() ? inter : null)
               .Embed(_sender.CreateEmbed()
-                     .WithOkColor()
-                     .WithDescription($"#{id}")
-                     .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
-                     .AddField(GetText(strs.response),
-                         found.Response.TrimTo(1000).Replace("](", "]\\(")))
+                            .WithOkColor()
+                            .WithDescription($"#{id}")
+                            .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
+                            .AddField(GetText(strs.response),
+                                found.Response.TrimTo(1000).Replace("](", "]\\(")))
               .SendAsync();
+    }
+
+    private NadekoInteractionBase CreateEditInteraction(kwum id, NadekoExpression found)
+    {
+        var modal = new ModalBuilder()
+                    .WithCustomId("expr:edit_modal")
+                    .WithTitle($"Edit expression {id}")
+                    .AddTextInput(new TextInputBuilder()
+                                  .WithLabel(GetText(strs.response))
+                                  .WithValue(found.Response)
+                                  .WithMinLength(1)
+                                  .WithCustomId("expr:edit_modal:response")
+                                  .WithStyle(TextInputStyle.Paragraph));
+
+        var inter = _inter.Create(ctx.User.Id,
+            new ButtonBuilder()
+                .WithEmote(Emoji.Parse("📝"))
+                .WithLabel("Edit")
+                .WithStyle(ButtonStyle.Primary)
+                .WithCustomId("test"),
+            modal,
+            async (sm) =>
+            {
+                var msg = sm.Data.Components.FirstOrDefault()?.Value;
+
+                await ExprEdit(id, msg);
+            }
+        );
+        return inter;
     }
 
     public async Task ExprDeleteInternalAsync(kwum id)
@@ -189,11 +226,11 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
         {
             await Response()
                   .Embed(_sender.CreateEmbed()
-                         .WithOkColor()
-                         .WithTitle(GetText(strs.expr_deleted))
-                         .WithDescription($"#{id}")
-                         .AddField(GetText(strs.trigger), ex.Trigger.TrimTo(1024))
-                         .AddField(GetText(strs.response), ex.Response.TrimTo(1024)))
+                                .WithOkColor()
+                                .WithTitle(GetText(strs.expr_deleted))
+                                .WithDescription($"#{id}")
+                                .AddField(GetText(strs.trigger), ex.Trigger.TrimTo(1024))
+                                .AddField(GetText(strs.response), ex.Response.TrimTo(1024)))
                   .SendAsync();
         }
         else
@@ -340,8 +377,8 @@ public partial class NadekoExpressions : NadekoModule<NadekoExpressionsService>
     public async Task ExprClear()
     {
         if (await PromptUserConfirmAsync(_sender.CreateEmbed()
-                                         .WithTitle("Expression clear")
-                                         .WithDescription("This will delete all expressions on this server.")))
+                                                .WithTitle("Expression clear")
+                                                .WithDescription("This will delete all expressions on this server.")))
         {
             var count = _service.DeleteAllExpressions(ctx.Guild.Id);
             await Response().Confirm(strs.exprs_cleared(count)).SendAsync();

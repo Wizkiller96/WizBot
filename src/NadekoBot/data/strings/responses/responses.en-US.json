@@ -617,6 +617,7 @@
   "quotes_remove_none": "No quotes found which you can remove.",
   "quote_added_new": "Quote #{0} added.",
   "quote_deleted": "Quote #{0} deleted.",
+  "quote_edited": "Quote Edited",
   "region": "Region",
   "remind": "I will remind {0} to {1} in {2} `({3:d.M.yyyy.} at {4:HH:mm})`",
   "remind_timely": "I will remind you about your timely reward {0}",

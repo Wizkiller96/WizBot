@@ -1,8 +1,8 @@
 ﻿namespace NadekoBot;
 
-public sealed class NadekoButtonInteraction : NadekoInteraction
+public sealed class NadekoButtonInteractionHandler : NadekoInteractionBase
 {
-    public NadekoButtonInteraction(
+    public NadekoButtonInteractionHandler(
         DiscordSocketClient client,
         ulong authorId,
         ButtonBuilder button,

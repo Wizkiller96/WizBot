@@ -3,12 +3,12 @@
 public static class NadekoInteractionExtensions
 {
     public static MessageComponent CreateComponent(
-        this NadekoInteraction nadekoInteraction
+        this NadekoInteractionBase nadekoInteractionBase
     )
     {
         var cb = new ComponentBuilder();
 
-        nadekoInteraction.AddTo(cb);
+        nadekoInteractionBase.AddTo(cb);
 
         return cb.Build();
     }

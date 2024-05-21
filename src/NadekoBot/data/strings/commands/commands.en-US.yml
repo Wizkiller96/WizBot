@@ -1245,6 +1245,15 @@ quoteadd:
         desc: "The name of the quote used to retrieve the quote."
       text:
         desc: "The message of the quote."
+quoteedit:
+  desc: Edits a quote with the specified ID.
+  ex:
+    - 55 This is the new response.
+  params:
+    - quoteId:
+        desc: "The ID of the quote being edited."
+      text:
+        desc: "The new message of the quote."
 quoteprint:
   desc: Prints a random quote with a specified name.
   ex:

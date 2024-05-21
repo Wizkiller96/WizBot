@@ -2,22 +2,30 @@
 
 public interface INadekoInteractionService
 {
-    public NadekoInteraction Create(
+    public NadekoInteractionBase Create(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, Task> onTrigger,
         bool singleUse = true);
 
-    public NadekoInteraction Create<T>(
+    public NadekoInteractionBase Create<T>(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, T, Task> onTrigger,
         in T state,
         bool singleUse = true);
 
-    NadekoInteraction Create(
+    NadekoInteractionBase Create(
         ulong userId,
         SelectMenuBuilder menu,
         Func<SocketMessageComponent, Task> onTrigger,
         bool singleUse = true);
+    
+    NadekoInteractionBase Create(
+        ulong userId, 
+        ButtonBuilder button,
+        ModalBuilder modal,
+        Func<SocketModal, Task> onTrigger,
+        bool singleUse = true);
+    
 }

@@ -1,4 +1,6 @@
 #nullable disable warnings
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using NadekoBot.Common.Yml;
 using NadekoBot.Db;
 using NadekoBot.Db.Models;
@@ -133,23 +135,54 @@ public partial class Utility
             await ShowQuoteData(quote);
         }
 
-        private async Task ShowQuoteData(Quote data)
+        private NadekoInteractionBase CreateEditInteraction(kwum id, Quote found)
         {
+            var modal = new ModalBuilder()
+                        .WithCustomId("quote:edit_modal")
+                        .WithTitle($"Edit expression {id}")
+                        .AddTextInput(new TextInputBuilder()
+                                      .WithLabel(GetText(strs.response))
+                                      .WithValue(found.Text)
+                                      .WithMinLength(1)
+                                      .WithCustomId("quote:edit_modal:response")
+                                      .WithStyle(TextInputStyle.Paragraph));
+
+            var inter = _inter.Create(ctx.User.Id,
+                new ButtonBuilder()
+                    .WithEmote(Emoji.Parse("📝"))
+                    .WithLabel("Edit")
+                    .WithStyle(ButtonStyle.Primary)
+                    .WithCustomId("test"),
+                modal,
+                async (sm) =>
+                {
+                    var msg = sm.Data.Components.FirstOrDefault()?.Value;
+                    
+                    if(!string.IsNullOrWhiteSpace(msg)) 
+                        await QuoteEdit(id, msg);
+                }
+            );
+            return inter;
+        }
+
+        private async Task ShowQuoteData(Quote quote)
+        {
+            var inter = CreateEditInteraction(quote.Id, quote);
             var eb = _sender.CreateEmbed()
                             .WithOkColor()
-                            .WithTitle($"{GetText(strs.quote_id($"`{new kwum(data.Id)}"))}`")
-                            .WithDescription(Format.Sanitize(data.Text).Replace("](", "]\\(").TrimTo(4096))
-                            .AddField(GetText(strs.trigger), data.Keyword)
+                            .WithTitle($"{GetText(strs.quote_id($"`{new kwum(quote.Id)}"))}`")
+                            .WithDescription(Format.Sanitize(quote.Text).Replace("](", "]\\(").TrimTo(4096))
+                            .AddField(GetText(strs.trigger), quote.Keyword)
                             .WithFooter(
-                                GetText(strs.created_by($"{data.AuthorName} ({data.AuthorId})")));
+                                GetText(strs.created_by($"{quote.AuthorName} ({quote.AuthorId})")));
 
-            if (!(data.Text.Length > 4096))
+            if (!(quote.Text.Length > 4096))
             {
-                await Response().Embed(eb).SendAsync();
+                await Response().Embed(eb).Interaction(quote.AuthorId == ctx.User.Id ? inter : null).SendAsync();
                 return;
             }
 
-            await using var textStream = await data.Text.ToStream();
+            await using var textStream = await quote.Text.ToStream();
 
             await Response()
                   .Embed(eb)
@@ -253,6 +286,47 @@ public partial class Utility
             }
 
             await Response().Confirm(strs.quote_added_new(Format.Code(new kwum(q.Id).ToString()))).SendAsync();
+        }
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public async Task QuoteEdit(kwum quoteId, [Leftover] string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            Quote q;
+            await using (var uow = _db.GetDbContext())
+            {
+                var intId = (int)quoteId;
+                var result = await uow.GetTable<Quote>()
+                                      .Where(x => x.Id == intId && x.AuthorId == ctx.User.Id)
+                                      .Set(x => x.Text, text)
+                                      .UpdateWithOutputAsync((del, ins) => ins);
+
+                q = result.FirstOrDefault();
+                
+                await uow.SaveChangesAsync();
+            }
+
+            if (q is not null)
+            {
+                await Response()
+                      .Embed(_sender.CreateEmbed()
+                                    .WithOkColor()
+                                    .WithTitle(GetText(strs.quote_edited))
+                                    .WithDescription($"#{quoteId}")
+                                    .AddField(GetText(strs.trigger), q.Keyword)
+                                    .AddField(GetText(strs.response),
+                                        text.Length > 1024 ? GetText(strs.redacted_too_long) : text))
+                      .SendAsync();
+            }
+            else
+            {
+                await Response().Error(strs.expr_no_found_id).SendAsync();
+            }
         }
 
         [Cmd]

@@ -506,7 +506,7 @@ public partial class Xp : NadekoModule<XpService>
     {
         var result = await _service.BuyShopItemAsync(ctx.User.Id, (XpShopItemType)type, key);
 
-        NadekoInteraction GetUseInteraction()
+        NadekoInteractionBase GetUseInteraction()
         {
             return _inter.Create(ctx.User.Id,
                 new(label: "Use", customId: "xpshop:use_item", emote: Emoji.Parse("👐")),

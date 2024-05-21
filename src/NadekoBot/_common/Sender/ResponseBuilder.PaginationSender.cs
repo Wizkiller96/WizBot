@@ -34,11 +34,11 @@ public partial class ResponseBuilder
             if (_paginationBuilder.AddPaginatedFooter)
                 embed.AddPaginatedFooter(currentPage, lastPage);
 
-            NadekoInteraction? maybeInter = null;
+            NadekoInteractionBase? maybeInter = null;
 
             var model = await _builder.BuildAsync(ephemeral);
 
-            async Task<(NadekoButtonInteraction left, NadekoInteraction? extra, NadekoButtonInteraction right)>
+            async Task<(NadekoButtonInteractionHandler left, NadekoInteractionBase? extra, NadekoButtonInteractionHandler right)>
                 GetInteractions()
             {
                 var leftButton = new ButtonBuilder()
@@ -47,7 +47,7 @@ public partial class ResponseBuilder
                                  .WithEmote(InteractionHelpers.ArrowLeft)
                                  .WithDisabled(lastPage == 0 || currentPage <= 0);
 
-                var leftBtnInter = new NadekoButtonInteraction(_client,
+                var leftBtnInter = new NadekoButtonInteractionHandler(_client,
                     model.User?.Id ?? 0,
                     leftButton,
                     (smc) =>
@@ -80,7 +80,7 @@ public partial class ResponseBuilder
                                   .WithEmote(InteractionHelpers.ArrowRight)
                                   .WithDisabled(lastPage == 0 || currentPage >= lastPage);
 
-                var rightBtnInter = new NadekoButtonInteraction(_client,
+                var rightBtnInter = new NadekoButtonInteractionHandler(_client,
                     model.User?.Id ?? 0,
                     rightButton,
                     (smc) =>

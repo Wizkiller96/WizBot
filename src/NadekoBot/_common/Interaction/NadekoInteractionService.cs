@@ -9,19 +9,19 @@ public class NadekoInteractionService : INadekoInteractionService, INService
         _client = client;
     }
 
-    public NadekoInteraction Create(
+    public NadekoInteractionBase Create(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, Task> onTrigger,
         bool singleUse = true)
-        => new NadekoButtonInteraction(_client,
+        => new NadekoButtonInteractionHandler(_client,
             userId,
             button,
             onTrigger,
             onlyAuthor: true,
             singleUse: singleUse);
 
-    public NadekoInteraction Create<T>(
+    public NadekoInteractionBase Create<T>(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, T, Task> onTrigger,
@@ -32,16 +32,46 @@ public class NadekoInteractionService : INadekoInteractionService, INService
             ((Func<T, Func<SocketMessageComponent, Task>>)((data)
                 => smc => onTrigger(smc, data)))(state),
             singleUse);
-    
-    public NadekoInteraction Create(
+
+    public NadekoInteractionBase Create(
         ulong userId,
         SelectMenuBuilder menu,
         Func<SocketMessageComponent, Task> onTrigger,
         bool singleUse = true)
-        => new NadekoSelectInteraction(_client,
+        => new NadekoButtonSelectInteractionHandler(_client,
             userId,
             menu,
             onTrigger,
             onlyAuthor: true,
+            singleUse: singleUse);
+
+
+    /// <summary>
+    /// Create an interaction which opens a modal
+    /// </summary>
+    /// <param name="userId">Id of the author</param>
+    /// <param name="button">Button builder for the button that will open the modal</param>
+    /// <param name="modal">Modal</param>
+    /// <param name="onTrigger">The function that will be called when the modal is submitted</param>
+    /// <param name="singleUse">Whether the button is single use</param>
+    /// <returns></returns>
+    public NadekoInteractionBase Create(
+        ulong userId,
+        ButtonBuilder button,
+        ModalBuilder modal,
+        Func<SocketModal, Task> onTrigger,
+        bool singleUse = true)
+        => Create(userId,
+            button,
+            async (smc) =>
+            {
+                await smc.RespondWithModalAsync(modal.Build());
+                var modalHandler = new NadekoModalSubmitHandler(_client,
+                    userId,
+                    modal.CustomId,
+                    onTrigger,
+                    true);
+                await modalHandler.RunAsync(smc.Message);
+            },
             singleUse: singleUse);
 }

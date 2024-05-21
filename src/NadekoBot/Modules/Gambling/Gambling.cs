@@ -154,7 +154,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         await smc.RespondConfirmAsync(_sender, GetText(strs.remind_timely(tt)), ephemeral: true);
     }
 
-    private NadekoInteraction CreateRemindMeInteraction(int period)
+    private NadekoInteractionBase CreateRemindMeInteraction(int period)
         => _inter
             .Create(ctx.User.Id,
                 new ButtonBuilder(
@@ -415,7 +415,7 @@ public partial class Gambling : GamblingModule<GamblingService>
               .Pipe(text => smc.RespondConfirmAsync(_sender, text, ephemeral: true));
     }
 
-    private NadekoInteraction CreateCashInteraction()
+    private NadekoInteractionBase CreateCashInteraction()
         => _inter.Create(ctx.User.Id,
             new ButtonBuilder(
                 customId: "cash:bank_show_balance",

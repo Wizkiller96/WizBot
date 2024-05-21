@@ -341,6 +341,9 @@ allcmdcooldowns:
 quoteadd:
   - quoteadd
   - .
+quoteedit:
+  - quoteedit
+  - qedit
 quoteprint:
   - quoteprint
   - ..

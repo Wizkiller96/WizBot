@@ -19,7 +19,7 @@ public sealed partial class ResponseBuilder
     private readonly IBotStrings _bs;
     private readonly BotConfigService _bcs;
     private EmbedBuilder? embedBuilder;
-    private NadekoInteraction? inter;
+    private NadekoInteractionBase? inter;
     private Stream? fileStream;
     private string? fileName;
     private EmbedColor color = EmbedColor.Ok;
@@ -340,7 +340,7 @@ public sealed partial class ResponseBuilder
         return this;
     }
 
-    public ResponseBuilder Interaction(NadekoInteraction? interaction)
+    public ResponseBuilder Interaction(NadekoInteractionBase? interaction)
     {
         inter = interaction;
         return this;
@@ -395,7 +395,7 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
         return Task.FromResult<IReadOnlyCollection<T>>(ReadOnlyCollection<T>.Empty);
     };
 
-    public Func<int, Task<NadekoInteraction>>? InteractionFunc { get; private set; }
+    public Func<int, Task<NadekoInteractionBase>>? InteractionFunc { get; private set; }
 
     public int? Elems { get; private set; } = 1;
     public int ItemsPerPage { get; private set; } = 9;
@@ -478,13 +478,13 @@ public sealed class SourcedPaginatedResponseBuilder<T> : PaginatedResponseBuilde
         return paginationSender.SendAsync(IsEphemeral);
     }
 
-    public SourcedPaginatedResponseBuilder<T> Interaction(Func<int, Task<NadekoInteraction>> func)
+    public SourcedPaginatedResponseBuilder<T> Interaction(Func<int, Task<NadekoInteractionBase>> func)
     {
         InteractionFunc = func; //async (i) => await func(i);
         return this;
     }
 
-    public SourcedPaginatedResponseBuilder<T> Interaction(NadekoInteraction inter)
+    public SourcedPaginatedResponseBuilder<T> Interaction(NadekoInteractionBase inter)
     {
         InteractionFunc = _ => Task.FromResult(inter);
         return this;
