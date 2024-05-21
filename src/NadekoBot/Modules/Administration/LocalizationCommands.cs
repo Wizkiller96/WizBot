@@ -61,7 +61,13 @@ public partial class Administration
                 }
                 else
                 {
-                    ci = new(name);
+                    ci = new CultureInfo(name);
+                    if (!_supportedLocales.ContainsKey(ci.Name))
+                    {
+                        await LanguagesList();
+                        return;
+                    }
+                    
                     _localization.SetGuildCulture(ctx.Guild, ci);
                 }
 
@@ -97,7 +103,12 @@ public partial class Administration
                 }
                 else
                 {
-                    ci = new(name);
+                    ci = new CultureInfo(name);
+                    if (!_supportedLocales.ContainsKey(ci.Name))
+                    {
+                        await LanguagesList();
+                        return;
+                    }
                     _localization.SetDefaultCulture(ci);
                 }
 
