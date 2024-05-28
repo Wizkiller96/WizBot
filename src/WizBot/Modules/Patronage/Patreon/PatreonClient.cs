@@ -140,7 +140,6 @@ public class PatreonClient : IDisposable
                                        LastChargeDate = m.Attributes.LastChargeDate,
                                        LastChargeStatus = m.Attributes.LastChargeStatus
                                    })
-                               .Where(x => x.UserId == 140788173885276160)
                                .ToArray();
             
             yield return userData;
