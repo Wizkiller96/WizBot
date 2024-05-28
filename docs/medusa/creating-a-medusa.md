@@ -6,9 +6,9 @@
 
 Medusa system allows you to write independent medusae (known as "modules", "cogs" or "plugins" in other software) which you can then load, unload and update at will without restarting the bot.  
   
-The system itself borrows some design from the current way Nadeko's Modules are written but mostly from never-released `Ayu.Commands` system which was designed to be used for a full Nadeko v3 rewrite. 
+The system itself borrows some design from the current way WizBot's Modules are written but mostly from never-released `Ayu.Commands` system which was designed to be used for a full WizBot v3 rewrite. 
 
-The medusa base classes used for development are open source [here](https://gitlab.com/kwoth/nadekobot/-/tree/v5/src/Nadeko.Medusa) in case you need reference, as there is no generated documentation at the moment.
+The medusa base classes used for development are open source [here](https://gitlab.com/WizNet/WizBot/-/tree/v5/src/WizBot.Medusa) in case you need reference, as there is no generated documentation at the moment.
 
 ### Term list
 
@@ -18,7 +18,7 @@ The medusa base classes used for development are open source [here](https://gitl
 
 #### Snek
 
-- A class which will be added as a single Module to NadekoBot on load. It also acts as a [lifecycle handler](snek-lifecycle.md) and as a singleton service with the support for initialize and cleanup.
+- A class which will be added as a single Module to WizBot on load. It also acts as a [lifecycle handler](snek-lifecycle.md) and as a singleton service with the support for initialize and cleanup.
 - It can contain a Snek (called SubSnek) but only 1 level of nesting is supported (you can only have a snek contain a subsnek, but a subsnek can't contain any other sneks)
 - Sneks can have their own prefix
     - For example if you set this to 'test' then a command called 'cmd' will have to be invoked by using `.test cmd` instead of `.cmd` 
@@ -117,7 +117,7 @@ To make sure your medusa can be properly unloaded/reloaded you must:
 
 ## Practice
 
-This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/nadeko/example_medusa)
+This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/WizNet/example_medusa)
 
 #### Prerequisite
 - [.net6 sdk](https://dotnet.microsoft.com/en-us/download) installed
@@ -156,16 +156,16 @@ This section will guide you through how to create a simple custom medusa. You ca
     <ItemGroup>
         <!-- Base medusa package. You MUST reference this in order to have a working medusa -->
         <!-- Also, this package comes from MyGet, which requires you to have a NuGet.Config file next to your .csproj -->
-        <PackageReference Include="Nadeko.Medusa" Version="4.3.9">
+        <PackageReference Include="WizBot.Medusa" Version="4.3.9">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 
-        <!-- Note: If you want to use NadekoBot services etc... You will have to manually clone 
-          the https://gitlab.com/kwoth/nadekobot repo locally and reference the NadekoBot.csproj because there is no NadekoBot package atm.
-          It is strongly recommended that you checkout a specific tag which matches your version of nadeko,
-          as there could be breaking changes even between minor versions of NadekoBot.
-          For example if you're running NadekoBot 4.1.0 locally for which you want to create a medusa for,
-          you should do "git checkout 4.1.0" in your NadekoBot solution and then reference the NadekoBot.csproj
+        <!-- Note: If you want to use WizBot services etc... You will have to manually clone 
+          the https://gitlab.com/WizNet/WizBot repo locally and reference the WizBot.csproj because there is no WizBot package atm.
+          It is strongly recommended that you checkout a specific tag which matches your version of wizbot,
+          as there could be breaking changes even between minor versions of WizBot.
+          For example if you're running WizBot 4.1.0 locally for which you want to create a medusa for,
+          you should do "git checkout 4.1.0" in your WizBot solution and then reference the WizBot.csproj
         -->
     </ItemGroup>
     
@@ -180,8 +180,8 @@ This section will guide you through how to create a simple custom medusa. You ca
 ```
 - Create a `MySnek.cs` file and add the following contents
 ```cs
-using Nadeko.Snake;
-using NadekoBot;
+using WizBot.Snake;
+using WizBot;
 using Discord;
 
 public sealed class MySnek : Snek
@@ -215,27 +215,27 @@ hello:
     - "@Someone"
 ```
 
-- Add `NuGet.Config` file which will let you use the base Nadeko.Medusa package. This file should always look like this and you shouldn't change it
+- Add `NuGet.Config` file which will let you use the base WizBot.Medusa package. This file should always look like this and you shouldn't change it
 
 ```xml
 <configuration>
     <packageSources>
         <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-        <add key="nadeko.bot" value="https://www.myget.org/F/nadeko/api/v3/index.json" protocolVersion="3" />
+        <add key="wizbot.cc" value="https://www.myget.org/F/wizbot/api/v3/index.json" protocolVersion="3" />
     </packageSources>
 </configuration>
 ```
 
 ### Build it
 
-- Build your Medusa into a dll that Nadeko can load. In your terminal, type:
+- Build your Medusa into a dll that WizBot can load. In your terminal, type:
     - `dotnet publish -o bin/medusae/example_medusa /p:DebugType=embedded`
 
 - Done. You can now try it out in action.
 
 ### Try it out
 
-- Copy the `bin/medusae/example_medusa` folder into your NadekoBot's `data/medusae/` folder. (Nadeko version 4.1.0+)
+- Copy the `bin/medusae/example_medusa` folder into your WizBot's `data/medusae/` folder. (WizBot version 4.1.0+)
 
 - Load it with `.meload example_medusa`
 

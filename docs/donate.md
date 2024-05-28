@@ -1,6 +1,6 @@
 # Donate
 
-Nadeko is an [open-source project][gitlab], and we rely on your help to develop the bot, pay hosting fees, maintain our website and more.
+WizBot is an [open-source project][gitlab], and we rely on your help to develop the bot, pay hosting fees, maintain our website and more.
 Donations go a long way in helping us keep the project alive, and we appreciate every single one of them.
 
 ## Perks
@@ -23,16 +23,16 @@ You can set up a monthly pledge on [Patreon][patreon] and support the project's 
 
 ## PayPal
 
-You can also donate to us through [PayPal][paypal] for one-time donations using the button below, or by donating to `nadekodiscordbot@gmail.com`.
+You can also donate to us through [PayPal][paypal] for one-time donations using the button below.
 
 !!! Note
     Mention your Discord tag (Username#1234) in the payment note to receive flower rewards.
 
 [![img][paypal-button]][paypal]
 
-[gitlab]: https://gitlab.com/kwoth/nadekobot
-[discord-server]: https://discord.nadeko.bot/
-[patreon]: https://www.patreon.com/nadekobot
+[gitlab]: https://gitlab.com/WizNet/WizBot
+[discord-server]: https://wizbot.cc/invite
+[patreon]: https://www.patreon.com/WizNet
 [patreon-button]: ./assets/patreon.png
-[paypal]: https://paypal.me/Kwoth
+[paypal]: https://paypal.me/Wizkiller96Network
 [paypal-button]: ./assets/paypal.png

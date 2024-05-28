@@ -1,0 +1,39 @@
+# DO NOT CHANGE
+version: 4
+coins:
+  heads:
+    - https://cdn.wizbot.cc/coins/heads3.png
+  tails:
+    - https://cdn.wizbot.cc/coins/tails3.png
+currency:
+  - https://cdn.wizbot.cc/other/currency/0.jpg
+  - https://cdn.wizbot.cc/other/currency/1.jpg
+  - https://cdn.wizbot.cc/other/currency/2.jpg
+dice:
+  - https://cdn.wizbot.cc/other/dice/0.png
+  - https://cdn.wizbot.cc/other/dice/1.png
+  - https://cdn.wizbot.cc/other/dice/2.png
+  - https://cdn.wizbot.cc/other/dice/3.png
+  - https://cdn.wizbot.cc/other/dice/4.png
+  - https://cdn.wizbot.cc/other/dice/5.png
+  - https://cdn.wizbot.cc/other/dice/6.png
+  - https://cdn.wizbot.cc/other/dice/7.png
+  - https://cdn.wizbot.cc/other/dice/8.png
+  - https://cdn.wizbot.cc/other/dice/9.png
+rategirl:
+  matrix: https://cdn.wizbot.cc/other/rategirl/matrix.png
+  dot: https://cdn.wizbot.cc/other/rategirl/dot.png
+xp:
+  bg: https://cdn.wizbot.cc/other/xp/bg_k.png
+rip:
+  bg: https://cdn.wizbot.cc/other/rip/rip.png
+  overlay: https://cdn.wizbot.cc/other/rip/overlay.png
+slots:
+  emojis:
+    - https://cdn.wizbot.cc/slots/0.png
+    - https://cdn.wizbot.cc/slots/1.png
+    - https://cdn.wizbot.cc/slots/2.png
+    - https://cdn.wizbot.cc/slots/3.png
+    - https://cdn.wizbot.cc/slots/4.png
+    - https://cdn.wizbot.cc/slots/5.png
+  bg: https://cdn.wizbot.cc/slots/slots_bg.png

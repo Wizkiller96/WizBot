@@ -1,94 +1,125 @@
-site_name: 'NadekoBot'
-site_url: 'https://nadeko.bot'
-repo_url: 'https://gitlab.com/nadeko/nadekobot'
-site_author: 'Kwoth'
+site_name: 'WizBot Docs'
+site_url: 'https://wizbot.cc'
+repo_name: 'WizNet/WizBot'
+repo_url: 'https://gitlab.com/WizNet/WizBot'
+site_author: 'Kwoth & Wizkiller96'
+edit_uri: 'edit/v4/docs/'
+
+copyright: © Copyright 2023 WizNet - All Rights Reserved.
 
 theme:
-    name: material
-    custom_dir: docs/overrides
-    palette:
-          - media: "(prefers-color-scheme: light)"
-            scheme: default
-            primary: blue
-            accent: light blue
-            toggle:
-                icon: material/weather-sunny
-                name: Switch to dark mode
-          - media: "(prefers-color-scheme: dark)"
-            scheme: dark
-            primary: blue
-            accent: light blue
-            toggle:
-                icon: material/weather-night
-                name: Switch to light mode
-    features:
-        - navigation.instant
-        - navigation.expand
-        - navigation.top
-    font: 
-        text: Source Sans Pro
-        code: Source Code Pro
-    logo: assets/favicon.png
-    favicon: assets/favicon.png
-    icon: 
-        repo: custom/gitlab
+  name: material
+  palette:
+    scheme: 'wizbot-dark'
+  features:
+    - navigation.instant
+    - navigation.expand
+    - navigation.top
+    # - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    - navigation.footer
+    - navigation.indexes
+    # - navigation.prune
+    - navigation.sections
+    # - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  font:
+    text: Source Sans Pro
+    code: Source Code Pro
+  logo: https://wizbot.cc/img/wizbot-icon-887x889.png
+  favicon: https://wizbot.cc/img/wizbot-icon-887x889.png
 
 extra:
-  homepage: https://nadeko.bot
+  homepage: https://wizbot.cc
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js
+  - javascripts/config.js
 
 extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css
   - stylesheets/styling-overrides.css
   - stylesheets/theme.css
 
 plugins:
-    - git-revision-date-localized:
-        type: date
-    - search
+  - git-revision-date-localized:
+      type: date
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
 
 markdown_extensions:
-    - attr_list
-    - codehilite:
-        guess_lang: false
-    - toc:
-        permalink: true
-    - pymdownx.tasklist:
-        custom_checkbox: true
-    - pymdownx.betterem:
-        smart_enable: all
-    - admonition
-    - meta
-    - footnotes
-    - pymdownx.details
-    - pymdownx.inlinehilite
-    - pymdownx.superfences
-    - pymdownx.tabbed
-    - pymdownx.emoji:
-        emoji_index: !!python/name:materialx.emoji.twemoji
-        emoji_generator: !!python/name:materialx.emoji.to_svg
-        options:
-            custom_icons:
-                - docs/overrides/.icons
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - meta
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - docs/overrides/.icons
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: WizNet
+      repo: WizBot
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - codehilite:
+      guess_lang: false
 
 nav:
-    - Home: index.md
-    - Guides:
-        - Windows Guide: guides/windows-guide.md
-        - Linux Guide: guides/linux-guide.md
-        - OSX Guide: guides/osx-guide.md
-        - Docker Guide (unsupported): guides/docker-guide.md
-    - Commands:
-        - Readme: commands-readme.md
-        - Commands List: https://nadeko.bot/commands
-    - Features Explained:
-        - Basic Creds: creds-guide.md
-        - Advanced Creds: jsons-explained.md
-        - Permissions System: permissions-system.md
-        - Custom Reactions: custom-reactions.md
-        - Placeholders: placeholders.md
-        - Config: config-guide.md
-        - Medusa System:
-            - medusa/getting-started.md
-            - medusa/creating-a-medusa.md
-            - medusa/snek-lifecycle.md
-    - Contribution Guide: contribution-guide.md
-    - Donate: donate.md
+  - Home: index.md
+  - Guides:
+      - Windows Guide: guides/windows-guide.md
+      - Linux Guide: guides/linux-guide.md
+      - OSX Guide: guides/osx-guide.md
+      - Docker Guide (unsupported): guides/docker-guide.md
+  - Commands:
+      - Readme: commands-readme.md
+      - Commands List: https://commands.wizbot.cc
+  - Features Explained:
+      - Basic Creds: creds-guide.md
+      - Advanced Creds: jsons-explained.md
+      - Permissions System: permissions-system.md
+      - Expressions: expressions.md
+      - Placeholders: placeholders.md
+      - Config: config-guide.md
+      - Medusa System:
+          - medusa/getting-started.md
+          - medusa/creating-a-medusa.md
+          - medusa/snek-lifecycle.md
+  - Contribution Guide: contribution-guide.md
+  - Donate: donate.md

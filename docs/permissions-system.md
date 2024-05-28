@@ -1,6 +1,6 @@
 # Permissions Overview
 
-Have you ever felt confused or even overwhelmed when trying to set Nadeko's permissions? In this guide we will be explaining **how to use the permission commands correctly** and even **cover a few common questions**! Every command we discuss here can be found in the [Commands List].
+Have you ever felt confused or even overwhelmed when trying to set WizBot's permissions? In this guide we will be explaining **how to use the permission commands correctly** and even **cover a few common questions**! Every command we discuss here can be found in the [Commands List].
 
 ## Why do we use the Permissions Commands?
 
@@ -29,7 +29,7 @@ To view this permissions chain, do `.lp`. The rule at the top of the chain takes
 
 If you want to remove a permission from the chain of permissions, do `.rp X` to remove rule number X and similarly, do `.mp X Y` to move rule number X to number Y (moving, not swapping!).
 
-If you want the bot to notify users why they can't use a command or module, use `.verbose true` and Nadeko will tell you what rule is preventing the command from being used.
+If you want the bot to notify users why they can't use a command or module, use `.verbose true` and WizBot will tell you what rule is preventing the command from being used.
 
 ## Commonly Asked Questions
 
@@ -82,4 +82,4 @@ Yes, there is a way, in one easy command!
 
 *-- Thanks to @applemac for providing the template for this guide*
 
-[Commands List]: https://nadeko.bot/commands
+[Commands List]: https://wizbot.cc/commands

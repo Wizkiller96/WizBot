@@ -1,15 +1,15 @@
-# Setting up NadekoBot on Linux
+# Setting up WizBot on Linux
 
-| Table of Contents                                   |
-| :-------------------------------------------------- |
-| [Linux From Source]                                 |
-| [Source Update Instructions]                        |
-| [Linux Release]                                     |
-| [Release Update Instructions]                       |
-| [Tmux (Preferred Method)]                           |
-| [Systemd]                                           |
-| [Systemd + Script]                                  |
-| [Setting up Nadeko on a VPS (Digital Ocean)]        |
+| Table of Contents                            |
+|:---------------------------------------------|
+| [Linux From Source]                          |
+| [Source Update Instructions]                 |
+| [Linux Release]                              |
+| [Release Update Instructions]                |
+| [Tmux (Preferred Method)]                    |
+| [Systemd]                                    |
+| [Systemd + Script]                           |
+| [Setting up WizBot on a VPS (Digital Ocean)] |
 
 #### Operating System Compatibility
 
@@ -29,7 +29,7 @@
 
 Follow the following few steps only if you're migrating from v3. If not, skip to installation instructions.
 
-Use the new installer script:  `cd ~ && wget -N https://gitlab.com/kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+Use the new installer script:  `cd ~ && wget -N https://gitlab.com/WizNet/wizbot-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 > - Install prerequisites (type `1` and press `enter`)
 > - Download (type `2` and press `enter`)
 > - Run (type `3` and press `enter`)
@@ -39,25 +39,25 @@ Use the new installer script:  `cd ~ && wget -N https://gitlab.com/kwoth/nadeko-
 
 Open Terminal (if you're on an installation with a window manager) and navigate to the location where you want to install the bot (for example `cd ~`) 
 
-1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+1. Download and run the **new** installer script `cd ~ && wget -N https://gitlab.com/WizNet/wizbot-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 2. Install prerequisites (type `1` and press enter)
 3. Download the bot (type `2` and press enter)
 4. Exit the installer (type `6` and press enter)
-5. Copy the creds.yml template `cp nadekobot/output/creds_example.yml nadekobot/output/creds.yml` 
-6. Open `nadekobot/output/creds.yml` with your favorite text editor. We will use nano here
-    - `nano nadekobot/output/creds.yml`
+5. Copy the creds.yml template `cp wizbot/output/creds_example.yml wizbot/output/creds.yml` 
+6. Open `wizbot/output/creds.yml` with your favorite text editor. We will use nano here
+    - `nano wizbot/output/creds.yml`
 7. [Click here to follow creds guide](../../creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
        - `Y`
        - `Enter`
-8. Run the installer script again `cd ~ && wget -N https://gitlab.com/kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+8. Run the installer script again `cd ~ && wget -N https://gitlab.com/WizNet/wizbot-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 9. Run the bot (type `3` and press enter)
 
 ##### Source Update Instructions
 
 1. ⚠ Stop the bot ⚠
-2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/kwoth/nadeko-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
+2. Update and run the **new** installer script `cd ~ && wget -N https://gitlab.com/WizNet/wizbot-bash-installer/-/raw/v5/linuxAIO.sh && bash linuxAIO.sh`
 3. Update the bot (type `2` and press enter)
 4. Run the bot (type `3` and press enter)
 5. 🎉 
@@ -75,56 +75,56 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
     - yt-dlp installation command: `sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && sudo chmod a+rx /usr/local/bin/yt-dlp` 
 3. Make sure your python is version 3+ with `python --version`
     - if it's not, you can install python 3 and make it the default with: `sudo apt-get install python3.8 python-is-python3`
-*You can use nadeko bash script [prerequisites installer](https://gitlab.com/kwoth/nadeko-bash-installer/-/blob/v5/n-prereq.sh) as a reference*
+*You can use WizBot bash script [prerequisites installer](https://gitlab.com/WizNet/wizbot-bash-installer/-/blob/v5/n-prereq.sh) as a reference*
 
 ##### Installation Instructions
 
-1. Download the latest release from <https://gitlab.com/kwoth/nadekobot/-/releases>
+1. Download the latest release from <https://gitlab.com/WizNet/WizBot/-/releases>
     - Look for the file called "X.XX.X-linux-x64-build.tar" (where X.XX.X is a series of numbers) and download it
 2. Untar it 
     - ⚠ Make sure that you change X.XX.X to the same series of numbers as in step 1!
     - `tar xf X.XX.X-linux-x64-build.tar`
-3. Rename the `nadekobot-linux-x64` to `nadekobot` 
-    - `mv nadekobot-linux-x64 nadekobot`
-4. Move into nadekobot directory and make NadekoBot executable
-    - `cd nadekobot && chmod +x NadekoBot`
+3. Rename the `wizbot-linux-x64` to `wizbot` 
+    - `mv wizbot-linux-x64 wizbot`
+4. Move into wizbot directory and make WizBot executable
+    - `cd wizbot && chmod +x WizBot`
 5. Copy the creds.yml template 
     - `cp creds_example.yml creds.yml` 
 6. Open `creds.yml` with your favorite text editor. We will use nano here
-    - `nano nadekobot/output/creds.yml`
+    - `nano wizbot/output/creds.yml`
 8. [Click here to follow creds guide](../../creds-guide)
     - After you're done, you can close nano (and save the file) by inputting, in order 
        - `CTRL` + `X`
        - `Y`
        - `Enter`
 9. Run the bot
-    - `./NadekoBot`
+    - `./WizBot`
 
 ##### Release Update Instructions
 
 1. Stop the bot
-2. Download the latest release from <https://gitlab.com/kwoth/nadekobot/-/releases>
+2. Download the latest release from <https://gitlab.com/WizNet/WizBot/-/releases>
     - Look for the file called "x.x.x-linux-x64-build.tar" (where `X.X.X` is a version, for example 3.0.4) and download it
 3. Untar it 
     - ⚠ Make sure that you change `X.X.X` to the same series of numbers as in step 2!
     - `tar xf x.x.x-linux-x64-build.tar`
-4. Rename the old nadekobot directory to nadekobot-old (remove your old backup first if you have one, or back it up under a different name)
-    - `rm -rf nadekobot-old 2>/dev/null`
-    - `mv nadekobot nadekobot-old`
-5. Rename the new nadekobot directory to nadekobot
-    - `mv nadekobot-linux-x64 nadekobot`
+4. Rename the old wizbot directory to wizbot-old (remove your old backup first if you have one, or back it up under a different name)
+    - `rm -rf wizbot-old 2>/dev/null`
+    - `mv wizbot wizbot-old`
+5. Rename the new wizbot directory to wizbot
+    - `mv wizbot-linux-x64 wizbot`
 6. Remove old strings and aliases to avoid overwriting the updated versions of those files  
     - ⚠ If you've modified said files, back them up instead
-    - `rm nadekobot-old/data/aliases.yml`
-    - `rm -r nadekobot-old/data/strings`
+    - `rm wizbot-old/data/aliases.yml`
+    - `rm -r wizbot-old/data/strings`
 7. Copy old data
-    - `cp -RT nadekobot-old/data/ nadekobot/data`
+    - `cp -RT wizbot-old/data/ wizbot/data`
 8. Copy creds.yml
-    - `cp nadekobot-old/creds.yml nadekobot/`
-9. Move into nadekobot directory and make the NadekoBot executable
-    - `cd nadekobot && chmod +x NadekoBot`
+    - `cp wizbot-old/creds.yml wizbot/`
+9. Move into wizbot directory and make the WizBot executable
+    - `cd wizbot && chmod +x WizBot`
 10. Run the bot 
-    - `./NadekoBot`
+    - `./WizBot`
 
 🎉 Enjoy
 
@@ -133,19 +133,19 @@ Open Terminal (if you're on an installation with a window manager) and navigate 
 Don't forget to change X.XX.X to match step 2.
 ```sh
 tar xf X.XX.X-linux-x64-build.tar && \
-rm -rf nadekobot-old 2>/dev/null && \
-mv nadekobot nadekobot-old && \
-mv nadekobot-linux-x64 nadekobot && \
-rm nadekobot-old/data/aliases.yml && \
-rm -r nadekobot-old/data/strings && \
-cp -RT nadekobot-old/data/ nadekobot/data && \
-cp nadekobot-old/creds.yml nadekobot/ && \
-cd nadekobot && chmod +x NadekoBot
+rm -rf wizbot-old 2>/dev/null && \
+mv wizbot wizbot-old && \
+mv wizbot-linux-x64 wizbot && \
+rm wizbot-old/data/aliases.yml && \
+rm -r wizbot-old/data/strings && \
+cp -RT wizbot-old/data/ wizbot/data && \
+cp wizbot-old/creds.yml wizbot/ && \
+cd wizbot && chmod +x WizBot
 ```
 
-## Running Nadeko
+## Running WizBot
 
-While there are two run modes built into the installer, these options only run Nadeko within the current session. Below are 3 methods of running Nadeko as a background process.
+While there are two run modes built into the installer, these options only run WizBot within the current session. Below are 3 methods of running WizBot as a background process.
 
 ### Tmux Method (Preferred)
 
@@ -155,25 +155,25 @@ Using `tmux` is the simplest method, and is therefore recommended for most users
 
 If you are presented with the installer main menu, exit it by choosing Option `8`.
 
-1. Create a new session: `tmux new -s nadeko`
+1. Create a new session: `tmux new -s wizbot`
 
-The above command will create a new session named **nadeko** *(you can replace “nadeko” with anything you prefer, it's your session name)*.
+The above command will create a new session named **wizbot** *(you can replace “wizbot” with anything you prefer, it's your session name)*.
 
 2. Run the installer: `bash linuxAIO.sh`
 
-3. There are a few options when it comes to running Nadeko.
+3. There are a few options when it comes to running WizBot.
 
     - Run `3` to *Run the bot normally*
     - Run `4` to *Run the bot with Auto Restart* (This is may or may not work)
 
 4. If option `4` was selected, you have the following options
 ```
-1. Run Auto Restart normally without updating NadekoBot.
-2. Run Auto Restart and update NadekoBot.
+1. Run Auto Restart normally without updating WizBot.
+2. Run Auto Restart and update WizBot.
 3. Exit
 
 Choose:
-[1] to Run NadekoBot with Auto Restart on "die" command without updating.
+[1] to Run WizBot with Auto Restart on "die" command without updating.
 [2] to Run with Auto Updating on restart after using "die" command.
 ```
 - Run `1` to restart the bot without updating. (This is done using the `.die` command)
@@ -183,22 +183,22 @@ Choose:
     - Press `Ctrl` + `B`
     - Then press `D`
 
-Now check your Discord server, the bot should be online. Nadeko should now be running in the background of your system. 
+Now check your Discord server, the bot should be online. WizBot should now be running in the background of your system. 
 
-To re-open the tmux session to either update, restart, or whatever, execute `tmux a -t nadeko`. *(Make sure to replace "nadeko" with your session name. If you didn't change it, leave it as it.)*
+To re-open the tmux session to either update, restart, or whatever, execute `tmux a -t wizbot`. *(Make sure to replace "wizbot" with your session name. If you didn't change it, leave it as it.)*
 
 
 ### Systemd
 
-Compared to using tmux, this method requires a little bit more work to set up, but has the benefit of allowing Nadeko to automatically start back up after a system reboot or the execution of the `.die` command.
+Compared to using tmux, this method requires a little bit more work to set up, but has the benefit of allowing WizBot to automatically start back up after a system reboot or the execution of the `.die` command.
 
 1. Navigate to the project's root directory
-    - Project root directory location example: `/home/user/nadekobot/`
-2. Use the following command to create a service that will be used to start Nadeko:
+    - Project root directory location example: `/home/user/wizbot/`
+2. Use the following command to create a service that will be used to start WizBot:
 
     ```bash
     echo "[Unit]
-    Description=NadekoBot service
+    Description=WizBot service
     After=network.target
     StartLimitIntervalSec=60
     StartLimitBurst=2
@@ -207,39 +207,39 @@ Compared to using tmux, this method requires a little bit more work to set up, b
     Type=simple
     User=$USER
     WorkingDirectory=$PWD/output
-    # If you want Nadeko to be compiled prior to every startup, uncomment the lines
+    # If you want WizBot to be compiled prior to every startup, uncomment the lines
     # below. Note  that it's not neccessary unless you are personally modifying the
     # source code.
-    #ExecStartPre=/usr/bin/dotnet build ../src/NadekoBot/NadekoBot.csproj -c Release -o output/
-    ExecStart=/usr/bin/dotnet NadekoBot.dll
+    #ExecStartPre=/usr/bin/dotnet build ../src/WizBot/WizBot.csproj -c Release -o output/
+    ExecStart=/usr/bin/dotnet WizBot.dll
     Restart=on-failure
     RestartSec=5
     StandardOutput=syslog
     StandardError=syslog
-    SyslogIdentifier=NadekoBot
+    SyslogIdentifier=WizBot
     
     [Install]
-    WantedBy=multi-user.target" | sudo tee /etc/systemd/system/nadeko.service
+    WantedBy=multi-user.target" | sudo tee /etc/systemd/system/wizbot.service
     ```
     
 3. Make the new service available:
     - `sudo systemctl daemon-reload`
-4. Start Nadeko:
-    - `sudo systemctl start nadeko.service && sudo systemctl enable nadeko.service`
+4. Start WizBot:
+    - `sudo systemctl start wizbot.service && sudo systemctl enable wizbot.service`
     
 
 ### Systemd + Script
 
-This method is similar to the one above, but requires one extra step, with the added benefit of better error logging and control over what happens before and after the startup of Nadeko.
+This method is similar to the one above, but requires one extra step, with the added benefit of better error logging and control over what happens before and after the startup of WizBot.
 
 1. Locate the project and move to its parent directory
-    - Project location example: `/home/user/nadekobot/`
+    - Project location example: `/home/user/wizbot/`
     - Parent directory example: `/home/user/`
-2. Use the following command to create a service that will be used to execute `NadekoRun.sh`:
+2. Use the following command to create a service that will be used to execute `WizBotRun.sh`:
 
     ```bash
     echo "[Unit]
-    Description=NadekoBot service
+    Description=WizBot service
     After=network.target
     StartLimitIntervalSec=60
     StartLimitBurst=2
@@ -248,52 +248,52 @@ This method is similar to the one above, but requires one extra step, with the a
     Type=simple
     User=$USER
     WorkingDirectory=$_WORKING_DIR
-    ExecStart=/bin/bash NadekoRun.sh
+    ExecStart=/bin/bash WizBotRun.sh
     Restart=on-failure
     RestartSec=5
     StandardOutput=syslog
     StandardError=syslog
-    SyslogIdentifier=NadekoBot
+    SyslogIdentifier=WizBot
     
     [Install]
-    WantedBy=multi-user.target" | sudo tee /etc/systemd/system/nadeko.service
+    WantedBy=multi-user.target" | sudo tee /etc/systemd/system/wizbot.service
     ```
     
 3. Make the new service available:
     - `sudo systemctl daemon-reload`
-4. Use the following command to create a script that will be used to start Nadeko:
+4. Use the following command to create a script that will be used to start WizBot:
     
     ```bash
     {
     echo '#!/bin/bash'
     echo ""
-    echo "echo \"Running NadekoBot in the background with auto restart\"
+    echo "echo \"Running WizBot in the background with auto restart\"
     yt-dlp -U
     
-    # If you want Nadeko to be compiled prior to every startup, uncomment the lines
+    # If you want WizBot to be compiled prior to every startup, uncomment the lines
     # below. Note  that it's not necessary unless you are personally modifying the
     # source code.
-    #echo \"Compiling NadekoBot...\"
-    #cd \"$PWD\"/nadekobot
-    #dotnet build src/NadekoBot/NadekoBot.csproj -c Release -o output/
+    #echo \"Compiling WizBot...\"
+    #cd \"$PWD\"/wizbot
+    #dotnet build src/WizBot/WizBot.csproj -c Release -o output/
 
-    echo \"Starting NadekoBot...\"
+    echo \"Starting WizBot...\"
     
     while true; do
-        if [[ -d $PWD/nadekobot/output ]]; then
-            cd $PWD/nadekobot/output || {
-                echo \"Failed to change working directory to $PWD/nadekobot/output\" >&2
-                echo \"Ensure that the working directory inside of '/etc/systemd/system/nadeko.service' is correct\"
+        if [[ -d $PWD/wizbot/output ]]; then
+            cd $PWD/wizbot/output || {
+                echo \"Failed to change working directory to $PWD/wizbot/output\" >&2
+                echo \"Ensure that the working directory inside of '/etc/systemd/system/wizbot.service' is correct\"
                 echo \"Exiting...\"
                 exit 1
             }
         else
-            echo \"$PWD/nadekobot/output doesn't exist\"
+            echo \"$PWD/wizbot/output doesn't exist\"
             exit 1
         fi
         
-        dotnet NadekoBot.dll || {
-            echo \"An error occurred when trying to start NadekBot\"
+        dotnet WizBot.dll || {
+            echo \"An error occurred when trying to start WizBot\"
             echo \"Exiting...\"
             exit 1
         }
@@ -301,19 +301,19 @@ This method is similar to the one above, but requires one extra step, with the a
         echo \"Waiting for 5 seconds...\"
         sleep 5
         yt-dlp -U
-        echo \"Restarting NadekoBot...\"
+        echo \"Restarting WizBot...\"
     done
     
-    echo \"Stopping NadekoBot...\""
-    } > NadekoRun.sh
+    echo \"Stopping WizBot...\""
+    } > WizBotRun.sh
     ```
     
-5. Start Nadeko:
-    - `sudo systemctl start nadeko.service && sudo systemctl enable nadeko.service`
+5. Start WizBot:
+    - `sudo systemctl start wizbot.service && sudo systemctl enable wizbot.service`
 
-### Setting up Nadeko on a Linux VPS (Digital Ocean Droplet)
+### Setting up WizBot on a Linux VPS (Digital Ocean Droplet)
 
-If you want Nadeko to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (by using this link, you will get **$10 credit** and also support Nadeko)
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (by using this link, you will get **$10 credit** and also support WizBot)
 
 To set up the VPS, please select the options below
 ```
@@ -335,10 +335,10 @@ Datacenter region: Choose one depending on where you are located.
 Authentication: Password or SSH 
 (Select SSH if you know what you are doing, otherwise choose password)
 ```
-**Setting up NadekoBot**
+**Setting up WizBot**
 Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
 
-**This section is only relevant to those who want to host Nadeko on DigitalOcean. Go through this whole section before setting the bot up.**
+**This section is only relevant to those who want to host WizBot on DigitalOcean. Go through this whole section before setting the bot up.**
 
 #### Prerequisites
 
@@ -360,7 +360,7 @@ If you are running your droplet for the first time, it will most likely ask you 
 
 **Save the new password somewhere safe.**
 
-After that, your droplet should be ready for use. [Follow the guide from the beginning](#linux-from-source) to set Nadeko up on your newly created VPS.
+After that, your droplet should be ready for use. [Follow the guide from the beginning](#linux-from-source) to set WizBot up on your newly created VPS.
 
 [Linux From Source]: #linux-from-source
 [Source Update Instructions]: #source-update-instructions
@@ -369,4 +369,4 @@ After that, your droplet should be ready for use. [Follow the guide from the beg
 [Tmux (Preferred Method)]: #tmux-preferred-method
 [Systemd]: #systemd
 [Systemd + Script]: #systemd-script
-[Setting up Nadeko on a VPS (Digital Ocean)]: #setting-up-nadeko-on-a-linux-vps-digital-ocean-droplet
+[Setting up WizBot on a VPS (Digital Ocean)]: #setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet

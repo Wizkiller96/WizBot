@@ -1,25 +1,25 @@
 #Manually added files
 
-src/NadekoBot/data/last_known_version.txt
+src/WizBot/data/last_known_version.txt
 
 # medusa stuff
-src/NadekoBot/data/medusae/
+src/WizBot/data/medusae/
 
 # other
 
 command_errors*.txt
 output/
-src/NadekoBot/output
-src/NadekoBot/creds.yml
+src/WizBot/output
+src/WizBot/creds.yml
 
-src/NadekoBot/Command Errors*.txt
+src/WizBot/Command Errors*.txt
 
-src/NadekoBot/creds.yml
+src/WizBot/creds.yml
 # credentials file before and after v3
-src/NadekoBot/credentials.json 
-src/NadekoBot/old_credentials.json 
-src/NadekoBot/credentials.json.bak
-src/NadekoBot/data/NadekoBot.db
+src/WizBot/credentials.json 
+src/WizBot/old_credentials.json 
+src/WizBot/credentials.json.bak
+src/WizBot/data/WizBot.db
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,linux,macos
 

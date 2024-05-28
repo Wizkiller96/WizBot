@@ -3,7 +3,7 @@
 This document aims to guide you through the process of creating a Discord account for your bot 
 (the Discord Bot application), and inviting that account into your Discord server.
 
-![Create a bot application and copy token to creds.yml file](https://cdn.nadeko.bot/tutorial/bot-creds-guide.gif)
+![Create a bot application and copy token to creds.yml file](https://cdn.wizbot.cc/tutorial/bot-creds-guide.gif)
 
 - Go to [the Discord developer application page][DiscordApp].
 - Log in with your Discord account.
@@ -49,7 +49,7 @@ OwnerIds:
 
 #### Inviting your bot to your server
 
-![Invite the bot to your server](https://cdn.nadeko.bot/tutorial/bot-invite-guide.gif)
+![Invite the bot to your server](https://cdn.wizbot.cc/tutorial/bot-invite-guide.gif)
 
 - On the **General Information** tab, copy your `Application ID` from your [applications page][DiscordApp].
 - Replace the `YOUR_CLIENT_ID_HERE` in this link:

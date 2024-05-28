@@ -2,9 +2,9 @@
 
 ### What is the Medusa system?
 
-- It is a dynamic module/plugin/cog system for NadekoBot introduced in **NadekoBot 4.1.0**  
+- It is a dynamic module/plugin/cog system for WizBot introduced in **WizBot 4.1.0**  
 
-- Allows developers to add custom functionality to Nadeko without modifying the original code  
+- Allows developers to add custom functionality to WizBot without modifying the original code  
 
 - Allows for those custom features to be updated during bot runtime (if properly written), without the need for bot restart.
 
@@ -26,6 +26,4 @@ Follow the [creating a medusa guide](creating-a-medusa.md)
 ⚠ *It can not only lead to your bot being stolen, but it also puts your entire computer and personal files in jeopardy.* ⚠
 
 **It is strongly recommended to run only the medusae you yourself wrote, and only on a hosted VPS or dedicated server which ONLY hosts your bot, to minimize the potential damage caused by bad actors.**
-
-No easy way at the moment, except asking in the `#dev-and-modding` chat in [#NadekoLog server](https://discord.nadeko.bot)
 

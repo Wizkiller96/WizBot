@@ -3,8 +3,8 @@ if ($args.Length -eq 0) {
 }
 else {
     $migrationName = $args[0]
-    dotnet ef migrations add $migrationName -c SqliteContext -p src/NadekoBot/NadekoBot.csproj
-    dotnet ef migrations add $migrationName -c PostgreSqlContext -p src/NadekoBot/NadekoBot.csproj
-    dotnet ef migrations add $migrationName -c MysqlContext -p src/NadekoBot/NadekoBot.csproj
+    dotnet ef migrations add $migrationName -c SqliteContext -p src/WizBot/WizBot.csproj
+    dotnet ef migrations add $migrationName -c PostgreSqlContext -p src/WizBot/WizBot.csproj
+    dotnet ef migrations add $migrationName -c MysqlContext -p src/WizBot/WizBot.csproj
 }
 

@@ -71,13 +71,13 @@ This part is completely optional, **however it's necessary for music and a few o
     - You can find all available options [here](https://stackexchange.github.io/StackExchange.Redis/Configuration.html).
 - **RestartCommand**
     - Required if you want to be able to use the `.restart` command
-    - If you're using the CLI installer or Linux/OSX, it's easier and more reliable setup Nadeko with auto-restart and just use `.die`
+    - If you're using the CLI installer or Linux/OSX, it's easier and more reliable setup WizBot with auto-restart and just use `.die`
 
 For Windows (Updater), add this to your `creds.yml`
 
 ```yml
 RestartCommand:
-    Cmd: "NadekoBot.exe"
+    Cmd: "WizBot.exe"
     args: "{0}"
 ```
 
@@ -86,7 +86,7 @@ For Windows (Source), Linux or OSX, add this to your `creds.yml`
 ```yml
 RestartCommand:
     Cmd: dotnet
-    Args: "NadekoBot.dll -- {0}"
+    Args: "WizBot.dll -- {0}"
 ```
 
 ---
@@ -113,7 +113,7 @@ totalShards: 1
 # Then, go to APIs and Services -> Credentials and click Create credentials -> API key.
 # Used only for Youtube Data Api (at the moment).
 googleApiKey: 'AIzaSyDScfdfdfi1sdlWQOWxxxxxbk0oWMEzM'
-# Settings for voting system for discordbots. Meant for use on global Nadeko.
+# Settings for voting system for discordbots. Meant for use on global WizBot.
 votes:
   url: ''
   key: ''
@@ -138,8 +138,8 @@ redisOptions: localhost:6379,syncTimeout=30000,responseTimeout=30000,allowAdmin=
 db:
 # Database type. Only sqlite supported atm
   type: sqlite
-  # Connection string. Will default to "Data Source=data/NadekoBot.db"
-  connectionString: Data Source=data/NadekoBot.db
+  # Connection string. Will default to "Data Source=data/WizBot.db"
+  connectionString: Data Source=data/WizBot.db
 # Address and port of the coordinator endpoint. Leave empty for default.
 # Change only if you've changed the coordinator address or port.
 coordinatorUrl: http://localhost:3442
@@ -170,9 +170,9 @@ twitchClientSecret: 16tr61tr1q86tweqwe
 #     {1} -> total shards
 # Linux default
 #     cmd: dotnet
-#     args: "NadekoBot.dll -- {0}"
+#     args: "WizBot.dll -- {0}"
 # Windows default
-#     cmd: "NadekoBot.exe"
+#     cmd: "WizBot.exe"
 #     args: "{0}"
 restartCommand:
   cmd: 
@@ -183,19 +183,19 @@ restartCommand:
 
 ## Database
 
-Nadeko saves all settings and data in the database file `NadekoBot.db`, located in:
+WizBot saves all settings and data in the database file `WizBot.db`, located in:
 
 - Windows (Updater): `system/data` (can be easily accessed through the `Data` button on the updater)
-- Windows (Source), Linux and OSX: `nadekobot/output/data/NadekoBot.db`
+- Windows (Source), Linux and OSX: `wizbot/output/data/WizBot.db`
 
 In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
 
-*NOTE: You don't have to worry if you don't have the `NadekoBot.db` file, it gets automatically created once you successfully run the bot for the first time.*
+*NOTE: You don't have to worry if you don't have the `WizBot.db` file, it gets automatically created once you successfully run the bot for the first time.*
 
 **To make changes to the database on windows:**
 
 - Shut your bot down.
-- Copy the `NadekoBot.db` file to someplace safe. (Back up)
+- Copy the `WizBot.db` file to someplace safe. (Back up)
 - Open it with SQLite Browser.
 - Go to the **Browse Data** tab.
 - Click on the **Table** drop-down list.
@@ -205,15 +205,15 @@ In order to open it you will need [SQLite Browser](http://sqlitebrowser.org/).
 - Click on **Apply**.
 - Click on **Write Changes**.
 
-![nadekodb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/nadekodb.gif)
+![wizbotdb](https://cdn.discordapp.com/attachments/251504306010849280/254067055240806400/nadekodb.gif)
 
 ---
 
 ## Sharding your bot
 
-To run a sharded bot, you will want to run `src/NadekoBot.Coordinator` project.
+To run a sharded bot, you will want to run `src/WizBot.Coordinator` project.
 Shards communicate with the coordinator using gRPC
-To configure your Coordinator, you will need to edit the `src/NadekoBot.Coordinator/coord.yml` file
+To configure your Coordinator, you will need to edit the `src/WizBot.Coordinator/coord.yml` file
 
 ```yml
 # total number of shards
@@ -225,7 +225,7 @@ ShardStartCommand: dotnet
 # Arguments to run the shard
 # {0} = shard id
 # {1} = total number of shards
-ShardStartArgs: ../../output/NadekoBot.dll -- {0} {1}
+ShardStartArgs: ../../output/WizBot.dll -- {0} {1}
 # How long does it take for the shard to be forcefully restarted once it stops reporting its state
 UnresponsiveSec: 30
 ```

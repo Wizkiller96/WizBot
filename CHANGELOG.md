@@ -84,7 +84,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
   - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
-  - You can set whether nadeko ignores other bots in `bot.yml`
+  - You can set whether wizbot ignores other bots in `bot.yml`
   - You can set shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
 - Added seconds/sec/s to `.convert` command
@@ -467,9 +467,9 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
   - Try them out!
 - `.draw`, `.betdraw` and some other card commands (not all) will use the new, rewritten deck system
 - Error will be printed to the console if there's a problem in `.plant`
-- [dev] Split Nadeko.Common into a separate project
-  - [dev] It will contain classes/utilities which can be shared across different nadeko related projects
-- [dev] Split Nadeko.Econ into a separate project
+- [dev] Split WizBot.Common into a separate project
+  - [dev] It will contain classes/utilities which can be shared across different wizbot related projects
+- [dev] Split WizBot.Econ into a separate project
   - [dev] It should be home for the backend any gambling/currency/economy feature
   - [dev] It will contain most gambling games and any shared logic
 - [dev] Compliation should take less time and RAM
@@ -647,7 +647,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - Implemented only for patreon so far
 - Patreon subscription code completely rewritten
 - Users who pledge on patreon get benefits based on the amount they pledged
-- Public nadeko only. But selfhosters can adapt it to their own patreon pages by configuring their patreon credentials in `creds.yml` and enabling the system in `data/patron.yml` file.
+- Public wizbot only. But selfhosters can adapt it to their own patreon pages by configuring their patreon credentials in `creds.yml` and enabling the system in `data/patron.yml` file.
   - Most of the patronage system strings are hardcoded atm, so if you wish to use this system on selfhosts, you will have to modify the source
 - Pledge amounts are split into tiers. This is not configurable atm.
   - Tier I - 1$ - 4.99$ a month
@@ -703,7 +703,7 @@ Added `.patron` and `.patronmessage` commands
 - `.google`, `.youtube` and `.image` moved to the new Search group
 
 Note: Results of each `.youtube` query will be cached for 1 hour to improve perfomance
-- Removed 30 second `.ping` ratelimit on public nadeko
+- Removed 30 second `.ping` ratelimit on public wizbot
 
 - xp image generation changes
   - In case you have default settings, your xp image will look slightly different
@@ -718,7 +718,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - `.feed` urls which error for more than 100 times will be automatically removed.
 - `.ve` is now enabled by default
 
-- [dev] nadeko interaction slightly improved to make it less nonsense (they still don't make sense)
+- [dev] wizbot interaction slightly improved to make it less nonsense (they still don't make sense)
 - [dev] RewardedUsers table slightly changed to make it more general
 - [dev] renamed `// todo`s which aren't planned soon to `// FUTURE`
 - [dev] currency rewards have been reimplemented and moved to a separate service
@@ -766,7 +766,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 ### Added
 
 - Added support for embed arrays in commands such as .say, .greet, .bye, etc...
-  - Website to create them is live at eb.nadeko.bot (old one is moved to oldeb.nadeko.bot)
+  - Website to create them is live at wizbot.cc/embedbuilder (old one is moved to wizbot.cc/old-embedbuilder)
   - Embed arrays don't have a plainText property (it's renamed to 'content')
   - Embed arrays use color hex values instead of an integer
   - Old embed format will still work
@@ -814,8 +814,8 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 
 ### Added
 
-- NadekoBot now supports mysql, postgresql and sqlite
-  - To change the db nadeko will use, simply change the `db type` in `creds.yml`
+- WizBot now supports mysql, postgresql and sqlite
+  - To change the db wizbot will use, simply change the `db type` in `creds.yml`
   - There is no migration code right now, which means that if you want to switch to another system you'll either have to manually export/import your database or start fresh
 - Medusa system
   - A massive new feature which allows developers to create custom modules/plugins/cogs
@@ -828,7 +828,7 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
   - Removed discriminators
     - Current discriminators which are greater than 1 are appended to clubnames to avoid duplicates, you can rename your club with `.clubrename` to remove it
     - Most of the clubs with #1 discriminator no longer have it (For example MyClub#1 will now just be MyClub)
-- [dev] A lot of refactoring and slight functionality changes within Nadeko's behavior system and command handler which were required in order to support the medusa system
+- [dev] A lot of refactoring and slight functionality changes within WizBot's behavior system and command handler which were required in order to support the medusa system
 
 ### Removed
 
@@ -1136,14 +1136,14 @@ Note: Results of each `.youtube` query will be cached for 1 hour to improve perf
 - Code cleanup
   - Command attributes cleaned up
     - Removed dummy Remarks and Usages attributes as hey were unused for a few patches but stayed in the code to avoid big git diffsmigration code has ran and it can be safely removed
-  - There are 2 projects: NadekoBot and NadekoBot.Coordinator
-    - You can directly run NadekoBot as the regular bot with one shard
-    - Run NadekoBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
+  - There are 2 projects: WizBot and WizBot.Coordinator
+    - You can directly run WizBot as the regular bot with one shard
+    - Run WizBot.Coordinator if you want more control over your shards and a grpc api for coordinator with which you can start, restart, kill and see status of shards
   - Small performance improvements
   - Db Migrations squashed
   - A lot of cleanup all around
 - Many guides reworked
-  - Guides now instruct users to set build output to nadekobot/output instead of running from nadekobot/src/NadekoBot
+  - Guides now instruct users to set build output to wizbot/output instead of running from wizbot/src/WizBot
 
 ### Fixed
 
