@@ -11,6 +11,8 @@ namespace WizBot.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            MigrationQueries.GuildConfigCleanup(migrationBuilder);
+            
             migrationBuilder.DropForeignKey(
                 name: "FK_AntiRaidSetting_GuildConfigs_GuildConfigId",
                 table: "AntiRaidSetting");
