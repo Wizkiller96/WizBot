@@ -4493,13 +4493,9 @@ nya:
     Pulls a random neko image unless a category from http://nekos.life is picked.
     ---
     **IMG Categories:**
-    `kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`
-    ---
-    **GIF Categories:**
-    `tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`
+    `smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`
   ex:
-    - "img neko"
-    - "gif baka"
+    - "neko"
   params:
     - {}
 gwaifu:

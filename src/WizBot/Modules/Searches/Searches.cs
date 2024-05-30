@@ -550,7 +550,7 @@ public partial class Searches : WizBotModule<SearchesService>
                                                     .ConfigureAwait(false));
                 nekoimg = JObject.Parse(await http
                                               .GetStringAsync(
-                                                  $"https://nekos.life/api/v2/img/sfw/{category}/")
+                                                  $"https://nekos.life/api/v2/img/{category}")
                                               .ConfigureAwait(false));
             }
 
@@ -559,10 +559,10 @@ public partial class Searches : WizBotModule<SearchesService>
                       .Embed(_sender.CreateEmbed()
                                     .WithOkColor()
                                     .WithAuthor(
-                                        $"Nekos Life - SFW IMG Database {nekotitle["data"]["cat"]}",
+                                        $"Nekos Life - Image Database {nekotitle["cat"]}",
                                         "https://i.imgur.com/a36AMkG.png",
                                         "http://nekos.life/")
-                                    .WithImageUrl($"{nekoimg["data"]["url"]}"))
+                                    .WithImageUrl($"{nekoimg["url"]}"))
                       .SendAsync();
             else
                 await Response()

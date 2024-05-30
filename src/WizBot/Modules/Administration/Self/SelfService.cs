@@ -221,7 +221,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         }
         else
         {
-            Log.Information("Created {AdminChannelCount} out of {TotalAdminChannelCount} owner message channels",
+            Log.Information("Created {AdminChannelCount} out of {TotalAdminChannelCount} admin message channels",
                 adminChannels.Count,
                 _creds.AdminIds.Count);
         }
