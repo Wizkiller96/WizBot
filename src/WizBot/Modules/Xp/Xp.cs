@@ -444,6 +444,9 @@ public partial class Xp : WizBotModule<XpService>
 
                   if (!string.IsNullOrWhiteSpace(item.Desc))
                       eb.AddField(GetText(strs.desc), item.Desc);
+                  
+                  if (!string.IsNullOrWhiteSpace(item.Author))
+                      eb.AddField(GetText(strs.author), item.Author);
 
                   if (key == "default")
                       eb.WithDescription(GetText(strs.xpshop_website));
