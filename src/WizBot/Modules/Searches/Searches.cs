@@ -528,24 +528,16 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async Task Nya(string format = "img", [Remainder] string category = "neko")
+    public async Task Nya([Remainder] string category = "neko")
     {
         // List if category to pull an image from.
-        string[] img_cat =
+        string[] cat =
         {
-            "lizard", "cat", "neko", "no_tag_avatar", "neko_avatars_avatar", "wallpaper", "kitsune", "kiminonawa",
-            "waifu", "keta_avatar", "gecg", "holo_avatar", "smug", "holo"
+            "smug", "woof", "goose", "cuddle", "slap", "pat",
+            "gecg", "feed", "fox_girl", "lizard", "neko", "hug", "meow", "kiss", "tickle", "waifu", "ngif"
         };
 
-        string[] gif_cat = { "baka", "tickle", "feed", "neko", "poke", "pat", "kiss", "hug", "cuddle", "slap", "smug" };
-
-        // Check to see if the command is calling for a normal image or a gif.
-        string[] img_format = { "img", "gif" };
-
         if (string.IsNullOrWhiteSpace(category))
-            return;
-
-        if (string.IsNullOrWhiteSpace(format))
             return;
 
         try
@@ -554,81 +546,41 @@ public partial class Searches : WizBotModule<SearchesService>
             JToken nekoimg;
             using (var http = _httpFactory.CreateClient())
             {
-                nekotitle = JObject.Parse(await http.GetStringAsync($"https://api.nekos.dev/api/v3/text/cat_emote/")
+                nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat")
                                                     .ConfigureAwait(false));
                 nekoimg = JObject.Parse(await http
                                               .GetStringAsync(
-                                                  $"https://api.nekos.dev/api/v3/images/sfw/{format}/{category}/")
+                                                  $"https://nekos.life/api/v2/img/sfw/{category}/")
                                               .ConfigureAwait(false));
             }
 
-            if (img_format.Contains("img") && img_cat.Contains(category))
+            if (cat.Contains(category))
                 await Response()
                       .Embed(_sender.CreateEmbed()
                                     .WithOkColor()
                                     .WithAuthor(
-                                        $"Nekos Life - SFW IMG Database {nekotitle["data"]["response"]["text"]}",
+                                        $"Nekos Life - SFW IMG Database {nekotitle["data"]["cat"]}",
                                         "https://i.imgur.com/a36AMkG.png",
                                         "http://nekos.life/")
-                                    .WithImageUrl($"{nekoimg["data"]["response"]["url"]}"))
-                      .SendAsync();
-            else if (img_format.Contains("gif") && gif_cat.Contains(category))
-                await Response()
-                      .Embed(_sender.CreateEmbed()
-                                    .WithOkColor()
-                                    .WithAuthor(
-                                        $"Nekos Life - SFW GIF Database {nekotitle["data"]["response"]["text"]}",
-                                        "https://i.imgur.com/a36AMkG.png",
-                                        "http://nekos.life/")
-                                    .WithImageUrl($"{nekoimg["data"]["response"]["url"]}"))
-                      .SendAsync();
-            else if (img_format.Contains("img") && gif_cat.Contains(category))
-                await Response()
-                      .Embed(_sender.CreateEmbed()
-                                    .WithErrorColor()
-                                    .WithAuthor("Nekos Life - Invalid SFW IMG Category",
-                                        "https://i.imgur.com/a36AMkG.png",
-                                        "http://nekos.life/")
-                                    .WithDescription(
-                                        "Seems the image category you was looking for could not be found. Please use the categories listed below.")
-                                    .AddField("SFW IMG Categories",
-                                        "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`",
-                                        false))
-                      .SendAsync();
-            else if (img_format.Contains("gif") && img_cat.Contains(category))
-                await Response()
-                      .Embed(_sender.CreateEmbed()
-                                    .WithErrorColor()
-                                    .WithAuthor("Nekos Life - Invalid SFW GIF Category",
-                                        "https://i.imgur.com/a36AMkG.png",
-                                        "http://nekos.life/")
-                                    .WithDescription(
-                                        "Seems the gif category you was looking for could not be found. Please use the categories listed below.")
-                                    .AddField("SFW GIF Categories",
-                                        "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`",
-                                        false))
+                                    .WithImageUrl($"{nekoimg["data"]["url"]}"))
                       .SendAsync();
             else
                 await Response()
                       .Embed(_sender.CreateEmbed()
                                     .WithErrorColor()
-                                    .WithAuthor("Nekos Life - Invalid SFW Image Type or Category",
+                                    .WithAuthor("Nekos Life - Invalid Category",
                                         "https://i.imgur.com/a36AMkG.png",
                                         "http://nekos.life/")
                                     .WithDescription(
-                                        "Seems the image type or category you was looking for could not be found. Please use the image type or categories listed below.")
-                                    .AddField("SFW IMG Types", "`img`, `gif`", false)
-                                    .AddField("SFW IMG Categories",
-                                        "`kitsune`, `keta_avatar`, `no_tag_avatar`, `holo_avatar`, `neko_avatars_avatar`, `lizard`, `cat`, `gecg`, `smug`, `holo`, `wallpaper`, `kiminonawa`, `shinobu`, `neko`, `waifu`",
-                                        false)
-                                    .AddField("SFW GIF Categories",
-                                        "`tickle`, `poke`, `kiss`, `slap`, `cuddle`, `hug`, `pat`, `smug`, `baka`, `feed`, `neko`",
+                                        "Seems the category you was looking for could not be found. Please use the categories listed below.")
+                                    .AddField("Categories",
+                                        "`smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`",
                                         false))
-                      .SendAsync();
+                      .SendAsync(true);
         }
         catch (Exception ex)
         {
-            await Response().Error(ex.Message).SendAsync();
+            await Response().Error(ex.Message).SendAsync(true);
         }
     }
 

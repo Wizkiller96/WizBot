@@ -541,7 +541,7 @@ public sealed partial class Help : WizBotModule<HelpService>
         if (rtypes.Contains(type) && type == "Suggestion")
         {
             var fbmsg = await _client.GetGuild(99273784988557312)
-                                     .GetTextChannel(566998481177280512)
+                                     .GetTextChannel(1245658384452288573)
                                      .EmbedAsync(_sender.CreateEmbed()
                                                     .WithOkColor()
                                                     .WithTitle($"New Suggestion")
