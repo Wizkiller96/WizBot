@@ -203,7 +203,8 @@ public sealed class PatronageService
                         // if his sub would end in teh future, extend it by one month.
                         // if it's not, just add 1 month to the last charge date
                         var count = await ctx.GetTable<PatronUser>()
-                                             .Where(x => x.UniquePlatformUserId == subscriber.UniquePlatformUserId)
+                                             .Where(x => x.UniquePlatformUserId
+                                                         == subscriber.UniquePlatformUserId)
                                              .UpdateAsync(old => new()
                                              {
                                                  UserId = subscriber.UserId,
@@ -215,14 +216,13 @@ public sealed class PatronageService
                                                      : dateInOneMonth,
                                              });
 
-                        // this should never happen
-                        if (count == 0)
-                        {
-                            // await tran.RollbackAsync();
-                            continue;
-                        }
-
-                        // await tran.CommitAsync();
+                        
+                        dbPatron.UserId = subscriber.UserId;
+                        dbPatron.AmountCents = subscriber.Cents;
+                        dbPatron.LastCharge = lastChargeUtc;
+                        dbPatron.ValidThru = dbPatron.ValidThru >= todayDate
+                            ? dbPatron.ValidThru.AddMonths(1)
+                            : dateInOneMonth;
 
                         await OnNewPatronPayment(PatronUserToPatron(dbPatron));
                     }
