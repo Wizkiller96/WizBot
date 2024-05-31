@@ -576,11 +576,11 @@ public partial class Searches : WizBotModule<SearchesService>
                                     .AddField("Categories",
                                         "`smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`",
                                         false))
-                      .SendAsync(true);
+                      .SendAsync();
         }
         catch (Exception ex)
         {
-            await Response().Error(ex.Message).SendAsync(true);
+            await Response().Error(ex.Message).SendAsync();
         }
     }
 
