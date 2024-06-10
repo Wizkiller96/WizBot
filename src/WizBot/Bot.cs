@@ -44,11 +44,7 @@ public sealed class Bot : IBot
         _db = new WizBotDbService(_credsProvider);
 
         var messageCacheSize =
-#if GLOBAL_NADEKO
-            0;
-#else
             50;
-#endif
 
         if (!_creds.UsePrivilegedIntents)
             Log.Warning("You are not using privileged intents. Some features will not work properly");
