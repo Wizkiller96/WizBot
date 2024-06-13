@@ -230,7 +230,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
         {
             try
             {
-#if !GLOBAL_NADEKO
+#if !GLOBAL_WIZBOT
                 // track how many messages each user is sending
                 UserMessagesSent.AddOrUpdate(usrMsg.Author.Id, 1, (_, old) => ++old);
 #endif

@@ -359,7 +359,7 @@ public sealed class Bot : IBot
             return Task.CompletedTask;
         }
 
-#if GLOBAL_NADEKO || DEBUG
+#if GLOBAL_WIZBOT || DEBUG
         if (arg.Exception is not null)
             Log.Warning(arg.Exception, "{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
         else
