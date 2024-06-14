@@ -1,5 +1,4 @@
-﻿#nullable disable
-using CodeHollow.FeedReader;
+﻿using CodeHollow.FeedReader;
 using WizBot.Modules.Searches.Services;
 using System.Text.RegularExpressions;
 
@@ -17,18 +16,20 @@ public partial class Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public Task YtUploadNotif(string url, [Leftover] string message = null)
+        public Task YtUploadNotif(string url, [Leftover] string? message = null)
             => YtUploadNotif(url, null, message);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(2)]
-        public Task YtUploadNotif(string url, ITextChannel channel = null, [Leftover] string message = null)
+        public Task YtUploadNotif(string url, ITextChannel? channel = null, [Leftover] string? message = null)
         {
             var m = _ytChannelRegex.Match(url);
             if (!m.Success)
                 return Response().Error(strs.invalid_input).SendAsync();
+
+            channel ??= ctx.Channel as ITextChannel;
 
             if (!((IGuildUser)ctx.User).GetPermissions(channel).MentionEveryone)
                 message = message?.SanitizeAllMentions();
@@ -42,7 +43,7 @@ public partial class Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(0)]
-        public Task Feed(string url, [Leftover] string message = null)
+        public Task Feed(string url, [Leftover] string? message = null)
             => Feed(url, null, message);
 
 
@@ -50,7 +51,7 @@ public partial class Searches
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
         [Priority(1)]
-        public async Task Feed(string url, ITextChannel channel = null, [Leftover] string message = null)
+        public async Task Feed(string url, ITextChannel? channel = null, [Leftover] string? message = null)
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)
                 || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
@@ -59,10 +60,11 @@ public partial class Searches
                 return;
             }
 
+            channel ??= (ITextChannel)ctx.Channel;
+            
             if (!((IGuildUser)ctx.User).GetPermissions(channel).MentionEveryone)
                 message = message?.SanitizeAllMentions();
 
-            channel ??= (ITextChannel)ctx.Channel;
             try
             {
                 await FeedReader.ReadAsync(url);
