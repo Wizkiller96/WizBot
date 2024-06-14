@@ -71,17 +71,16 @@ public partial class Help
                 return;
             }
 
-            var patron = await _service.GetPatronAsync(user.Id);
-            var quotaStats = await _service.GetUserQuotaStatistic(user.Id);
+            var maybePatron = await _service.GetPatronAsync(user.Id);
+
+            var quotaStats = await _service.LimitStats(user.Id);
 
             var eb = _sender.CreateEmbed()
                             .WithAuthor(user)
                             .WithTitle(GetText(strs.patron_info))
                             .WithOkColor();
 
-            if (quotaStats.Commands.Count == 0
-                && quotaStats.Groups.Count == 0
-                && quotaStats.Modules.Count == 0)
+            if (quotaStats.Count == 0 || maybePatron is not { } patron)
             {
                 eb.WithDescription(GetText(strs.no_quota_found));
             }
@@ -97,26 +96,9 @@ public partial class Help
 
                 eb.AddField(GetText(strs.quotas), "⁣", false);
 
-                if (quotaStats.Commands.Count > 0)
-                {
-                    var text = GetQuotaList(quotaStats.Commands);
-                    if (!string.IsNullOrWhiteSpace(text))
-                        eb.AddField(GetText(strs.commands), text, true);
-                }
-
-                if (quotaStats.Groups.Count > 0)
-                {
-                    var text = GetQuotaList(quotaStats.Groups);
-                    if (!string.IsNullOrWhiteSpace(text))
-                        eb.AddField(GetText(strs.groups), text, true);
-                }
-
-                if (quotaStats.Modules.Count > 0)
-                {
-                    var text = GetQuotaList(quotaStats.Modules);
-                    if (!string.IsNullOrWhiteSpace(text))
-                        eb.AddField(GetText(strs.modules), text, true);
-                }
+                var text = GetQuotaList(quotaStats);
+                if (!string.IsNullOrWhiteSpace(text))
+                    eb.AddField(GetText(strs.modules), text, true);
             }
 
 
@@ -131,26 +113,28 @@ public partial class Help
             }
         }
 
-        private string GetQuotaList(IReadOnlyDictionary<string, FeatureQuotaStats> featureQuotaStats)
+        private string GetQuotaList(
+            IReadOnlyDictionary<LimitedFeatureName, (int Cur, QuotaLimit Quota)> featureQuotaStats)
         {
             var text = string.Empty;
-            foreach (var (key, q) in featureQuotaStats)
+            foreach (var (key, (cur, quota)) in featureQuotaStats)
             {
                 text += $"\n⁣\t`{key}`\n";
-                if (q.Hourly != default)
-                    text += $"⁣ ⁣ {GetEmoji(q.Hourly)} {q.Hourly.Cur}/{q.Hourly.Max} per hour\n";
-                if (q.Daily != default)
-                    text += $"⁣ ⁣ {GetEmoji(q.Daily)} {q.Daily.Cur}/{q.Daily.Max} per day\n";
-                if (q.Monthly != default)
-                    text += $"⁣ ⁣ {GetEmoji(q.Monthly)} {q.Monthly.Cur}/{q.Monthly.Max} per month\n";
+                if (quota.QuotaPeriod == QuotaPer.PerHour)
+                    text += $"⁣ ⁣  {cur}/{(quota.Quota == -1 ? "∞" : quota.Quota)} {QuotaPeriodToString(quota.QuotaPeriod)}\n";
             }
 
             return text;
         }
 
-        private string GetEmoji((uint Cur, uint Max) limit)
-            => limit.Cur < limit.Max
-                ? "✅"
-                : "⚠️";
+        public string QuotaPeriodToString(QuotaPer per)
+            => per switch
+            {
+                QuotaPer.PerHour => "per hour",
+                QuotaPer.PerDay => "per day",
+                QuotaPer.PerMonth => "per month",
+                QuotaPer.Total => "total",
+                _ => throw new ArgumentOutOfRangeException(nameof(per), per, null)
+            };
     }
 }

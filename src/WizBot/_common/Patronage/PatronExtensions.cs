@@ -7,16 +7,7 @@ public static class PatronExtensions
         {
             _ => $"Patron Tier {tier}",
         };
-
-    public static string ToFullName(this QuotaPer per)
-        => per switch
-        {
-            QuotaPer.PerDay => "per day",
-            QuotaPer.PerHour => "per hour",
-            QuotaPer.PerMonth => "per month",
-            _ => "Unknown",
-        };
-
+    
     public static DateTime DayOfNextMonth(this DateTime date, int day)
     {
         var nextMonth = date.AddMonths(1);

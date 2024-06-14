@@ -773,6 +773,7 @@ listservers:
   - listservers
 cleverbot:
   - cleverbot
+  - chatbot
   - chatgpt
 shorten:
   - shorten
@@ -1161,15 +1162,6 @@ massban:
   - massban
 masskill:
   - masskill
-pathofexile:
-  - pathofexile
-  - poe
-pathofexileleagues:
-  - pathofexileleagues
-  - poel
-pathofexilecurrency:
-  - pathofexilecurrency
-  - poec
 rollduel:
   - rollduel
 reroadd:
@@ -1407,6 +1399,8 @@ stickyroles:
   - stickyroles
 cleanupguilddata:
   - cleanupguilddata
+prompt:
+  - prompt
 # WizNet System
 feedback:
   - feedback

@@ -34,6 +34,15 @@ public sealed class Creds : IBotCredentials
               Also, in that case you should be using WizBot.Coordinator to start the bot, and it will correctly override this value.
         """)]
     public int TotalShards { get; set; }
+    
+    [Comment("""
+             Pledge 5$ or more on https://patreon.com/nadekobot and connect your discord account to Patreon.
+             Go to https://dashy.nadeko.bot and login with your discord account
+             Go to the Keys page and click "Generate New Key" and copy it here
+             You and anyone else with the permission to run `.prompt` command will be able to use natural language to run bot's commands.
+             For example '@Bot how's the weather in Paris' will return the current weather in Paris as if you were to run `.weather Paris` command
+             """)]
+    public string NadekoAiToken { get; set; }
 
     [Comment(   
         """
@@ -70,7 +79,7 @@ public sealed class Creds : IBotCredentials
     [Comment("""Official cleverbot api key.""")]
     public string CleverbotApiKey { get; set; }
 
-    [Comment(@"Official GPT-3 api key.")]
+    [Comment(@"OpenAi api key.")]
     public string Gpt3ApiKey { get; set; }
     
     [Comment("""

@@ -21,22 +21,16 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     private readonly SemaphoreSlim _assignementLock = new(1, 1);
     private readonly IPatronageService _ps;
 
-    private static readonly FeatureLimitKey _reroFLKey = new()
-    {
-        Key = "rero:max_count",
-        PrettyName = "Reaction Role"
-    };
-
     public ReactionRolesService(
         DiscordSocketClient client,
+        IPatronageService ps,
         DbService db,
-        IBotCredentials creds,
-        IPatronageService ps)
+        IBotCredentials creds)
     {
         _db = db;
-        _ps = ps;
         _client = client;
         _creds = creds;
+        _ps = ps;
         _cache = new();
     }
 
@@ -242,7 +236,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     /// <param name="group"></param>
     /// <param name="levelReq"></param>
     /// <returns>The result of the operation</returns>
-    public async Task<OneOf<Success, FeatureLimit>> AddReactionRole(
+    public async Task<OneOf<Success, Error>> AddReactionRole(
         IGuild guild,
         IMessage msg,
         string emote,
@@ -261,9 +255,12 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                                            .Where(x => x.GuildId == guild.Id)
                                            .CountAsync();
         
-        var result = await _ps.TryGetFeatureLimitAsync(_reroFLKey, guild.OwnerId, 50);
-        if (result.Quota != -1 && activeReactionRoles >= result.Quota)
-            return result;
+        var limit = await _ps.GetUserLimit(LimitedFeatureName.ReactionRole, guild.OwnerId);
+        
+        if (!_creds.IsOwner(guild.OwnerId) && (activeReactionRoles >= limit.Quota && limit.Quota >= 0))
+        {
+            return new Error();
+        }
 
         await ctx.GetTable<ReactionRoleV2>()
                  .InsertOrUpdateAsync(() => new()

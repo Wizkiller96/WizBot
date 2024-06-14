@@ -1,7 +1,10 @@
 #nullable disable
+using OneOf;
+using OneOf.Types;
+
 namespace WizBot.Modules.Games.Common.ChatterBot;
 
 public interface IChatterBotSession
 {
-    Task<string> Think(string input, string username);
+    Task<OneOf<ThinkResult, Error<string>>> Think(string input, string username);
 }

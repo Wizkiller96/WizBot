@@ -85,6 +85,9 @@ public abstract class WizBotInteractionBase
 
     public Task ExecuteOnActionAsync(SocketMessageComponent smc)
         => _onAction(smc);
+    
+    public void SetCompleted()
+        => _interactionCompletedSource.TrySetResult(true);
 }
 
 public sealed class WizBotModalSubmitHandler

@@ -11,6 +11,10 @@ public partial class ResponseBuilder
         private readonly ResponseBuilder _builder;
         private readonly DiscordSocketClient _client;
         private int currentPage;
+        
+        private WizBotButtonInteractionHandler left;
+        private WizBotButtonInteractionHandler right;
+        private WizBotInteractionBase? extra;
 
         public PaginationSender(
             SourcedPaginatedResponseBuilder<T> paginationBuilder,
@@ -107,6 +111,8 @@ public partial class ResponseBuilder
                 return (leftBtnInter, maybeInter, rightBtnInter);
             }
 
+            (left, extra, right) = await GetInteractions();
+            
             async Task UpdatePageAsync(SocketMessageComponent smc)
             {
                 var pageItems = (await _paginationBuilder.ItemsFunc(currentPage)).ToArray();
@@ -114,7 +120,10 @@ public partial class ResponseBuilder
                 if (_paginationBuilder.AddPaginatedFooter)
                     toSend.AddPaginatedFooter(currentPage, lastPage);
 
-                var (left, extra, right) = (await GetInteractions());
+                left.SetCompleted();
+                right.SetCompleted();
+                extra?.SetCompleted();
+                (left, extra, right) = (await GetInteractions());
 
                 var cb = new ComponentBuilder();
                 left.AddTo(cb);
@@ -126,9 +135,10 @@ public partial class ResponseBuilder
                     x.Embed = toSend.Build();
                     x.Components = cb.Build();
                 });
+                
+                await Task.WhenAll(left.RunAsync(smc.Message), extra?.RunAsync(smc.Message) ?? Task.CompletedTask, right.RunAsync(smc.Message));
             }
-
-            var (left, extra, right) = await GetInteractions();
+            
 
             var cb = new ComponentBuilder();
             left.AddTo(cb);
@@ -147,6 +157,8 @@ public partial class ResponseBuilder
 
             await Task.WhenAll(left.RunAsync(msg), extra?.RunAsync(msg) ?? Task.CompletedTask, right.RunAsync(msg));
 
+            await Task.Delay(30_000);
+            
             await msg.ModifyAsync(mp => mp.Components = new ComponentBuilder().Build());
         }
     }

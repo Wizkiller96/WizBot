@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
+using WizBot.Modules.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
@@ -168,7 +169,7 @@ public partial class Searches : WizBotModule<SearchesService>
                      .AddField("Rating", movie.ImdbRating, true)
                      .AddField("Genre", movie.Genre, true)
                      .AddField("Year", movie.Year, true)
-                     .WithImageUrl(movie.Poster))
+                     .WithImageUrl(Uri.IsWellFormedUriString(movie.Poster, UriKind.Absolute) ? movie.Poster : null))
               .SendAsync();
     }
 

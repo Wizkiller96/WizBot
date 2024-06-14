@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using WizBot.Modules.Patronage;
+
 namespace WizBot.Modules.Administration.Services;
 
 public class PruneService : INService
@@ -7,11 +9,15 @@ public class PruneService : INService
     private readonly ConcurrentDictionary<ulong, CancellationTokenSource> _pruningGuilds = new();
     private readonly TimeSpan _twoWeeks = TimeSpan.FromDays(14);
     private readonly ILogCommandService _logService;
+    private readonly IPatronageService _ps;
 
-    public PruneService(ILogCommandService logService)
-        => _logService = logService;
+    public PruneService(ILogCommandService logService, IPatronageService ps)
+    {
+        _logService = logService;
+        _ps = ps;
+    }
 
-    public async Task PruneWhere(
+    public async Task<PruneResult> PruneWhere(
         ITextChannel channel,
         int amount,
         Func<IMessage, bool> predicate,
@@ -26,7 +32,12 @@ public class PruneService : INService
 
         using var cancelSource = new CancellationTokenSource();
         if (!_pruningGuilds.TryAdd(channel.GuildId, cancelSource))
-            return;
+            return PruneResult.AlreadyRunning;
+        
+        if (!await _ps.LimitHitAsync(LimitedFeatureName.Prune, channel.Guild.OwnerId))
+        {
+            return PruneResult.FeatureLimit;
+        }
 
         try
         {
@@ -47,7 +58,7 @@ public class PruneService : INService
                        .ToArray();
 
                 if (!msgs.Any())
-                    return;
+                    return PruneResult.Success;
 
                 lastMessage = msgs[^1];
 
@@ -88,6 +99,8 @@ public class PruneService : INService
         {
             _pruningGuilds.TryRemove(channel.GuildId, out _);
         }
+        
+        return PruneResult.Success;
     }
 
     public async Task<bool> CancelAsync(ulong guildId)

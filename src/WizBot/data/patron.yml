@@ -1,69 +1,56 @@
 # DO NOT CHANGE
-version: 2
+version: 3
 # Whether the patronage feature is enabled
 isEnabled: false
-# List of patron only features and relevant quota data
-quotas:
-  # Dictionary of feature names with their respective limits. Set to null for unlimited
-  features:
-    timely:extra_percent:
-      V: 10
-      X: 22
-      XX: 50
-      L: 150
-      C: 350
-    rero:max_count:
-      V: 25
-      X: 50
-    cleverbot:response:
-      V: -20
-      X: 5000
-      XX: 12000
-      L: 35000
-      C: 100000
-  # Dictionary of commands with their respective quota data
-  commands:
-    cleverbot:
-      V: 
-    prune:
-      X:
-        PerHour: 1
-      XX:
-        PerHour: 3
-    google:
-      V:
-        PerDay: 15
-      X:
-        PerDay: 30
-      XX:
-        PerDay: 60
-      L:
-        PerDay: 150
-      C:
-        PerDay: 300
-    image:
-      V:
-        PerDay: 15
-      X:
-        PerDay: 30
-      XX:
-        PerDay: 60
-      L:
-        PerDay: 150
-      C:
-        PerDay: 300
-    youtube:
-      V:
-        PerDay: 25
-      X:
-        PerDay: 50
-      XX:
-        PerDay: 100
-      L:
-        PerDay: 250
-      C:
-        PerDay: 500
-  # Dictionary of groups with their respective quota data
-  groups: {}
-  # Dictionary of modules with their respective quota data
-  modules: {}
+# Who can do how much of what
+limits:
+  100:
+    ChatBot:
+      quota: 50000000
+      quotaPeriod: PerMonth
+    ReactionRole:
+      quota: -1
+      quotaPeriod: Total
+    Prune:
+      quota: -1
+      quotaPeriod: PerDay
+  50:
+    ChatBot:
+      quota: 20000000
+      quotaPeriod: PerMonth
+    ReactionRole:
+      quota: -1
+      quotaPeriod: Total
+    Prune:
+      quota: -1
+      quotaPeriod: PerDay
+  20:
+    ChatBot:
+      quota: 6500000
+      quotaPeriod: PerMonth
+    ReactionRole:
+      quota: -1
+      quotaPeriod: Total
+    Prune:
+      quota: 20
+      quotaPeriod: PerDay
+  10:
+    ChatBot:
+      quota: 2500000
+      quotaPeriod: PerMonth
+    ReactionRole:
+      quota: 50
+      quotaPeriod: Total
+    Prune:
+      quota: 5
+      quotaPeriod: PerDay
+  5:
+    ChatBot:
+      quota: 1000000
+      quotaPeriod: PerMonth
+    ReactionRole:
+      quota: 25
+      quotaPeriod: Total
+    Prune:
+      quota: 2
+      quotaPeriod: PerDay

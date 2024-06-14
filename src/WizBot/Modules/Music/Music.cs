@@ -1,6 +1,7 @@
 #nullable disable
 using WizBot.Modules.Music.Services;
 using WizBot.Db.Models;
+using WizBot.Modules.Utility;
 
 namespace WizBot.Modules.Music;
 

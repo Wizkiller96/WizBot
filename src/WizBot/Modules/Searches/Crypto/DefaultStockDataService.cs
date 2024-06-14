@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using CsvHelper;
 using CsvHelper.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 
@@ -22,46 +23,32 @@ public sealed class DefaultStockDataService : IStockDataService, INService
 
             using var http = _httpClientFactory.CreateClient();
 
-
-
             var quoteHtmlPage = $"https://finance.yahoo.com/quote/{query.ToUpperInvariant()}";
 
             var config = Configuration.Default.WithDefaultLoader();
             using var document = await BrowsingContext.New(config).OpenAsync(quoteHtmlPage);
-            var divElem =
-                document.QuerySelector(
-                    "#quote-header-info > div:nth-child(2) > div > div > h1");
-            var tickerName = (divElem)?.TextContent;
 
+            var tickerName = document.QuerySelector("div.top > .left > .container > h1")
+                                     ?.TextContent;
+            
+            if (tickerName is null)
+                return default;
+            
             var marketcap = document
-                            .QuerySelectorAll("table")
-                            .Skip(1)
-                            .First()
-                            .QuerySelector("tbody > tr > td:nth-child(2)")
+                            .QuerySelector("li > span > fin-streamer[data-field='marketCap']")
                             ?.TextContent;
 
 
-            var volume = document.QuerySelector("td[data-test='AVERAGE_VOLUME_3MONTH-value']")
+            var volume = document.QuerySelector("li > span > fin-streamer[data-field='regularMarketVolume']")
                                  ?.TextContent;
-            
-            var close= document.QuerySelector("td[data-test='PREV_CLOSE-value']")
-                                 ?.TextContent ?? "0";
-            
-            var price = document
-                        .QuerySelector("#quote-header-info")
-                        ?.QuerySelector("fin-streamer[data-field='regularMarketPrice']")
-                                 ?.TextContent ?? close;
-            
-            // var data = await http.GetFromJsonAsync<YahooQueryModel>(
-            //     $"https://query1.finance.yahoo.com/v7/finance/quote?symbols={query}");
-            //
-            // if (data is null)
-            //     return default;
 
-            // var symbol = data.QuoteResponse.Result.FirstOrDefault();
+            var close = document.QuerySelector("li > span > fin-streamer[data-field='regularMarketPreviousClose']")
+                                ?.TextContent
+                        ?? "0";
 
-            // if (symbol is null)
-            // return default;
+            var price = document.QuerySelector("fin-streamer.livePrice > span")
+                                ?.TextContent
+                        ?? "0";
 
             return new()
             {

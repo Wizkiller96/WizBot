@@ -61,13 +61,62 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
             }));
         }
 
+        // delete guild configs
         await ctx.GetTable<GuildConfig>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();
 
-
+        // delete guild xp
         await ctx.GetTable<UserXpStats>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+
+        // delete expressions
+        await ctx.GetTable<WizBotExpression>()
+                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId.Value))
+                 .DeleteAsync();
+        
+        // delete quotes
+        await ctx.GetTable<Quote>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete planted currencies
+        await ctx.GetTable<PlantedCurrency>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete image only channels
+        await ctx.GetTable<ImageOnlyChannel>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete reaction roles
+        await ctx.GetTable<ReactionRoleV2>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete ignored users
+        await ctx.GetTable<DiscordPermOverride>()
+                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId.Value))
+                 .DeleteAsync();
+        
+        // delete perm overrides
+        await ctx.GetTable<DiscordPermOverride>()
+                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId.Value))
+                 .DeleteAsync();
+        
+        // delete repeaters
+        await ctx.GetTable<Repeater>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();

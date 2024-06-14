@@ -8,7 +8,7 @@ namespace WizBot.Modules.Games.Common;
 public sealed partial class GamesConfig : ICloneable<GamesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 3;
+    public int Version { get; set; } = 4;
 
     [Comment("Hangman related settings (.hangman command)")]
     public HangmanConfig Hangman { get; set; } = new()
@@ -105,8 +105,8 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
 
     [Comment(@"Which chatbot API should bot use.
 'cleverbot' - bot will use Cleverbot API. 
-'gpt3' - bot will use GPT-3 API")]
-    public ChatBotImplementation ChatBot { get; set; } = ChatBotImplementation.Gpt3;
+'gpt' - bot will use GPT API")]
+    public ChatBotImplementation ChatBot { get; set; } = ChatBotImplementation.Gpt;
 
     public ChatGptConfig ChatGpt { get; set; } = new();
 }
@@ -114,10 +114,10 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
 [Cloneable]
 public sealed partial class ChatGptConfig
 {
-    [Comment(@"Which GPT-3 Model should bot use.
+    [Comment(@"Which GPT Model should bot use.
     gpt35turbo - cheapest
-    gpt4 - 30x more expensive, higher quality
-    gp432k - same model as above, but with a 32k token limit")]
+    gpt4o - more expensive, higher quality
+")]
     public ChatGptModel ModelName { get; set; } = ChatGptModel.Gpt35Turbo;
 
     [Comment(@"How should the chat bot behave, what's its personality? (Usage of this counts towards the max tokens)")]
@@ -126,10 +126,10 @@ public sealed partial class ChatGptConfig
     [Comment(@"The maximum number of messages in a conversation that can be remembered. (This will increase the number of tokens used)")]
     public int ChatHistory { get; set; } = 5;
 
-    [Comment(@"The maximum number of tokens to use per GPT-3 API call")]
+    [Comment(@"The maximum number of tokens to use per GPT API call")]
     public int MaxTokens { get; set; } = 100;
 
-    [Comment(@"The minimum number of tokens to use per GPT-3 API call, such that chat history is removed to make room.")]
+    [Comment(@"The minimum number of tokens to use per GPT API call, such that chat history is removed to make room.")]
     public int MinTokens { get; set; } = 30;
 }
 
@@ -163,12 +163,18 @@ public sealed partial class RaceAnimal
 public enum ChatBotImplementation
 {
     Cleverbot,
-    Gpt3
+    Gpt = 1,
+    [Obsolete]
+    Gpt3 = 1,
 }
 
 public enum ChatGptModel
 {
-    Gpt35Turbo,
+    [Obsolete]
     Gpt4,
-    Gpt432k
+    [Obsolete]
+    Gpt432k,
+    
+    Gpt35Turbo,
+    Gpt4o,
 }

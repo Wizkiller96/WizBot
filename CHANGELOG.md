@@ -2,6 +2,37 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.0] - 02.06.2024
+
+### Added
+
+- Added `.prompt` command, Nadeko Ai Assistant
+  - You can send natural language questions, queries or execute commands. For example "@WizBot how's the weather in paris" and it will return `.we Paris` and run it for you.
+  - In case the bot can't execute a command using your query, It will fall back to your chatter bot, in case you have it enabled in data/games.yml. (Cleverbot or chatgpt)
+  - (It's far from perfect so please don't ask the bot to do dangerous things like banning or pruning)
+  - Requires Patreon subscription, after which you'll be able to run it on global bot. If you're selfhosting, you also will need to acquire the api key from <https://dashy.nadeko.bot/api> (coming soon(ish)...)
+- Added support for `gpt-4o` in `data/games.yml`
+- Added nadekoAiToken to `creds.yml`
+
+
+### Changed
+
+- Remind will now show a timestamp tag for durations
+- Only `Gpt35Turbo` and `Gpt4o` are valid inputs in games.yml now
+- `data/patron.yml` changed. It now has limits. The entire feature limit system has been reworked. Your previous settings will be reset
+- A lot of updates to bot strings (thanks Ene)
+- Improved cleanup command to delete a lot more data once cleanup is ran, not only guild configs (please don't use this command unless you have your database backed up and you know 100% what you're doing)
+
+### Fixed
+
+- Fixed xp bg buy button not working, and possibly some other buttons too
+- Fixed shopbuy %user% placeholders and updated help text
+
+### Removed
+
+- Removed PoE related commands
+- dev: Removed patron quota data from the database, it will now be stored in redis
+
 ## [5.0.8] - 21.05.2024
 
 ### Added

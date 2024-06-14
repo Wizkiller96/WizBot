@@ -1286,11 +1286,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         Image? frame = null;
         if (item is null)
         {
-            if (patron.Tier >= PatronTier.X)
+            if (patron?.Tier >= PatronTier.X)
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
-            else if (patron.Tier == PatronTier.V || _creds.IsAdmin(userId))
+            else if (patron?.Tier == PatronTier.V || _creds.IsAdmin(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
-            else if (patron.Tier >= PatronTier.X || _creds.IsOwner(userId))
+            else if (patron?.Tier >= PatronTier.X || _creds.IsOwner(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
         }
         else
@@ -1467,7 +1467,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         {
             var patron = await _ps.GetPatronAsync(userId);
 
-            if ((int)patron.Tier < (int)req)
+            if (patron is null || (int)patron.Value.Tier < (int)req)
                 return BuyResult.InsufficientPatronTier;
         }
 

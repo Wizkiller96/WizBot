@@ -18,7 +18,7 @@ public interface IReactionRoleService
     /// <param name="group"></param>
     /// <param name="levelReq"></param>
     /// <returns>The result of the operation</returns>
-    Task<OneOf<Success, FeatureLimit>> AddReactionRole(
+    Task<OneOf<Success, Error>> AddReactionRole(
         IGuild guild,
         IMessage msg,
         string emote,

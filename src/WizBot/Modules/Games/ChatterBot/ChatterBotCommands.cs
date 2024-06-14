@@ -18,7 +18,8 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task Cleverbot()
+        [NoPublicBot]
+        public async Task CleverBot()
         {
             var channel = (ITextChannel)ctx.Channel;
 
@@ -30,7 +31,7 @@ public partial class Games
                     await uow.SaveChangesAsync();
                 }
 
-                await Response().Confirm(strs.cleverbot_disabled).SendAsync();
+                await Response().Confirm(strs.chatbot_disabled).SendAsync();
                 return;
             }
 
@@ -42,7 +43,7 @@ public partial class Games
                 await uow.SaveChangesAsync();
             }
 
-            await Response().Confirm(strs.cleverbot_enabled).SendAsync();
+            await Response().Confirm(strs.chatbot_enabled).SendAsync();
         }
     }
 }

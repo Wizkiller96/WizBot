@@ -5,4 +5,5 @@ public enum QuotaPer
     PerHour,
     PerDay,
     PerMonth,
+    Total,
 }

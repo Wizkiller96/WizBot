@@ -18,4 +18,5 @@ public sealed class WizBotButtonInteractionHandler : WizBotInteractionBase
 
     public override void AddTo(ComponentBuilder cb)
         => cb.WithButton(Button);
+    
 }

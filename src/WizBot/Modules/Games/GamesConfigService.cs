@@ -73,21 +73,26 @@ public sealed class GamesConfigService : ConfigServiceBase<GamesConfig>
             });
         }
 
-        if (data.Version < 2)
-        {
-            ModifyConfig(c =>
-            {
-                c.Version = 2;
-                c.ChatBot = ChatBotImplementation.Cleverbot;
-            });
-        }
-
         if (data.Version < 3)
         {
             ModifyConfig(c =>
             {
                 c.Version = 3;
                 c.ChatGpt.ModelName = ChatGptModel.Gpt35Turbo;
+            });
+        }
+
+        if (data.Version < 4)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 4;
+#pragma warning disable CS0612 // Type or member is obsolete
+                c.ChatGpt.ModelName =
+                    c.ChatGpt.ModelName == ChatGptModel.Gpt4 || c.ChatGpt.ModelName == ChatGptModel.Gpt432k
+                        ? ChatGptModel.Gpt4o
+                        : c.ChatGpt.ModelName;
+#pragma warning restore CS0612 // Type or member is obsolete
             });
         }
     }

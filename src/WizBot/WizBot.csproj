@@ -4,7 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-        <Version>5.0.8</Version>
+        <Version>5.1.0</Version>
 
         <!-- Output/build -->
         <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
@@ -75,7 +75,7 @@
         <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />
         <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
         <PackageReference Include="YamlDotNet" Version="15.1.4" />
-        <PackageReference Include="SharpToken" Version="2.0.2" />
+        <PackageReference Include="SharpToken" Version="2.0.3" />
 
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
 

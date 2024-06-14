@@ -9,7 +9,7 @@ namespace WizBot.Services;
 
 public class CommandHandler : INService, IReadyExecutor, ICommandHandler
 {
-    private const int GLOBAL_COMMANDS_COOLDOWN = 750;
+    private const int GLOBAL_COMMANDS_COOLDOWN = 200;
 
     private const float ONE_THOUSANDTH = 1.0f / 1000;
 

@@ -1,5 +1,7 @@
 ﻿#nullable disable
 using Newtonsoft.Json;
+using OneOf;
+using OneOf.Types;
 
 namespace WizBot.Modules.Games.Common.ChatterBot;
 
@@ -18,7 +20,7 @@ public class OfficialCleverbotSession : IChatterBotSession
         _httpFactory = factory;
     }
 
-    public async Task<string> Think(string input, string username)
+    public async Task<OneOf<ThinkResult, Error<string>>> Think(string input, string username)
     {
         using var http = _httpFactory.CreateClient();
         var dataString = await http.GetStringAsync(string.Format(QueryString, input, cs ?? ""));
@@ -27,12 +29,17 @@ public class OfficialCleverbotSession : IChatterBotSession
             var data = JsonConvert.DeserializeObject<CleverbotResponse>(dataString);
 
             cs = data?.Cs;
-            return data?.Output;
+            return new ThinkResult
+            {
+                Text = data?.Output,
+                TokensIn = 2,
+                TokensOut = 1
+            };
         }
         catch
         {
-            Log.Warning("Unexpected cleverbot response received: {ResponseString}", dataString);
-            return null;
+            Log.Warning("Unexpected response from CleverBot: {ResponseString}", dataString);
+            return new Error<string>("Unexpected CleverBot response received");
         }
     }
 }

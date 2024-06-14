@@ -26,8 +26,3 @@ public sealed class PatreonMemberData : ISubscriberData
             _ => SubscriptionChargeStatus.Other,
         };
 }
-
-public sealed class PatreonPledgeData
-{
-    
-}

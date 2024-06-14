@@ -1717,41 +1717,6 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("expressions", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.PatronQuota", b =>
-                {
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("userid");
-
-                    b.Property<int>("FeatureType")
-                        .HasColumnType("integer")
-                        .HasColumnName("featuretype");
-
-                    b.Property<string>("Feature")
-                        .HasColumnType("text")
-                        .HasColumnName("feature");
-
-                    b.Property<long>("DailyCount")
-                        .HasColumnType("bigint")
-                        .HasColumnName("dailycount");
-
-                    b.Property<long>("HourlyCount")
-                        .HasColumnType("bigint")
-                        .HasColumnName("hourlycount");
-
-                    b.Property<long>("MonthlyCount")
-                        .HasColumnType("bigint")
-                        .HasColumnName("monthlycount");
-
-                    b.HasKey("UserId", "FeatureType", "Feature")
-                        .HasName("pk_patronquotas");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_patronquotas_userid");
-
-                    b.ToTable("patronquotas", (string)null);
-                });
-
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
                     b.Property<decimal>("UserId")

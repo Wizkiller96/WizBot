@@ -1,51 +1,59 @@
 h:
-  desc: Either shows a help for a single command, or DMs you help link if no parameters are specified.
+  desc: |-
+    Shows help for a single command.
+    Command help contains instructions on how to use the command with examples and a list of parameters.
+    DMs you helpful links if no parameters are specified.
   ex:
     - '{0}cmds'
     - ''
   params:
+    - com:
+        desc: "The command that help is being requested for."
     - fail:
         desc: "Fallback parameter if the command is not found."
-    - com:
-        desc: "The command information that the help is being requested for."
 gencmdlist:
-  desc: Generates the command list and sends it to the chat. Optionally also uploads it to DO spaces (not supported).
+  desc: Generates a json of the commands list and sends it to the chat.
   ex:
     - ''
   params:
     - {}
 donate:
-  desc: Instructions for helping the project financially.
+  desc: Provides instructions for helping the project financially.
   ex:
     - ''
   params:
     - {}
 modules:
-  desc: Lists all bot modules.
+  desc: |-
+    List all of the bot's modules.
+    Each module contains commands that you can use.
   ex:
     - ''
   params:
     - page:
-        desc: "The number of the page to display in the list of bot modules."
+        desc: "The page number to display in the list of modules."
 commands:
-  desc: List all of the bot's commands from the specified module. You can either specify the full name or only the first few letters of the module name. Specifying no module will show the list of modules instead.
+  desc: |-
+    List all of the bot's commands in the specified module.
+    You can either specify the full name or only the first few letters of the module name.
+    Specifying no module will show the list of modules instead.
   ex:
     - Admin
     - Admin --view 1
     - ''
   params:
     - module:
-        desc: "The name of a module to retrieve command information for."
+        desc: "The name of the module to retrieve commands from."
       params:
-        desc: "The names of one or more modules to retrieve commands from, allowing for partial matching and optional omission."
+        desc: "How to display the list of commands."
 greetdel:
-  desc: Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to 0 to disable automatic deletion.
+  desc: Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to `0` to disable automatic deletion.
   ex:
     - 0
     - 30
   params:
     - timer:
-        desc: "The amount of time before greeting messages are automatically deleted from the chat."
+        desc: "The amount of seconds before greeting messages are automatically deleted."
 greet:
   desc: Toggles announcements on the current channel when someone joins the server.
   ex:
@@ -54,11 +62,11 @@ greet:
     - {}
 greetmsg:
   desc: |-
-    Sets a new join announcement message which will be shown in the server's channel.
-    Type `%user.mention%` if you want to mention the new member.   
+    Sets a new join announcement message which will be shown in the current channel.
+    Write `%user.mention%` if you want to mention the new member.   
     Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>
-    Using it with no message will show the current greet message.  
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of a regular text, if you want the message to be embedded.
+    Using this command with no message will show the current greet message.  
+    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
   ex:
     - Welcome, %user.mention%.
   params:
@@ -72,16 +80,16 @@ bye:
     - {}
 byemsg:
   desc: |-
-    Sets a new leave announcement message. 
-    Type `%user.mention%` if you want to show the name the user who left. 
+    Sets a new leave announcement message which will be shown in the current channel. 
+    Type `%user.name%` to show the name of the user who left. 
     Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>  
     Using this command with no message will show the current bye message. 
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of a regular text, if you want the message to be embedded.
+    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
   ex:
-    - '%user.mention% has left.'
+    - '%user.name% has left.'
   params:
     - text:
-        desc: "The user's farewell message to display when they leave the chat."
+        desc: "The new announcement message to be displayed when a user leaves the server."
 byedel:
   desc: Sets the time it takes (in seconds) for bye messages to be auto-deleted. Set it to `0` to disable automatic deletion.
   ex:
@@ -89,9 +97,9 @@ byedel:
     - 30
   params:
     - timer:
-        desc: "The amount of time before a bye message is automatically deleted."
+        desc: "The amount of seconds before goodbye messages are automatically deleted."
 greetdm:
-  desc: Toggles whether the greet messages will be sent in a DM (This is separate from greet - you can have both, any or neither enabled).
+  desc: Toggles whether greet messages will be sent in a DM (This is separate from `{0}greet` - you can have both, one or neither enabled).
   ex:
     - ''
   params:
@@ -103,7 +111,7 @@ greettest:
     - '@SomeoneElse'
   params:
     - user:
-        desc: "The user to impersonate when sending the greeting, or null for the bot's own account."
+        desc: "The user to impersonate when sending the greeting, defaulting to yourself if not specified."
 greetdmtest:
   desc: Sends the greet direct message to you as if you just joined the server. You can optionally specify a different user.
   ex:
@@ -111,7 +119,7 @@ greetdmtest:
     - '@SomeoneElse'
   params:
     - user:
-        desc: "The recipient of the greeting, which defaults to the caller if not specified."
+        desc: "The recipient of the greeting, defaulting to yourself if not specified."
 byetest:
   desc: Sends the bye message in the current channel as if you just left the server. You can optionally specify a different user.
   ex:
@@ -119,7 +127,7 @@ byetest:
     - '@SomeoneElse'
   params:
     - user:
-        desc: "The user who is leaving the channel, or whose account is being represented as leaving the channel."
+        desc: "The user to impersonate when sending the farewell, defaulting to yourself if not specified."
 boost:
   desc: Toggles announcements on the current channel when someone boosts the server.
   ex:
@@ -128,16 +136,16 @@ boost:
     - {}
 boostmsg:
   desc: |-
-    Sets a new boost announcement message. 
-    Type `%user.mention%` if you want to show the name the user who left. 
+    Sets a new boost announcement message which will be shown in the current channel. 
+    Type `%user.mention%` if you want to mention the booster.
     Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>
     Using this command with no message will show the current boost message. 
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of a regular text, if you want the message to be embedded.
+    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
   ex:
     - '%user.mention% has boosted the server!!!'
   params:
     - text:
-        desc: "The text to set as the new announcement message."
+        desc: "The new announcement message to be displayed when a user boosts the server."
 boostdel:
   desc: Sets the time it takes (in seconds) for boost messages to be auto-deleted. Set it to `0` to disable automatic deletion.
   ex:
@@ -145,7 +153,7 @@ boostdel:
     - 30
   params:
     - timer:
-        desc: "The amount of time before boost messages are automatically deleted."
+        desc: "The amount of seconds before boost messages are automatically deleted."
 logserver:
   desc: Enables or Disables ALL log events. If enabled, all log events will log to this channel.
   ex:
@@ -153,9 +161,9 @@ logserver:
     - disable
   params:
     - action:
-        desc: "The type of action to take on the log event."
+        desc: "The type of action to take."
 logignore:
-  desc: Toggles whether the `{0}logserver` command ignores the specified channel or user. Provide no arguments to see the list of currently ignored users and channels
+  desc: Toggles whether the `{0}log` and `{0}logserver` commands ignore the specified channel or user. Provide no arguments to see the list of currently ignored users and channels.
   ex:
     - ''
     - '@SomeUser'
@@ -167,32 +175,32 @@ logignore:
     - target:
         desc: "The user or channel being targeted for logging ignore or inclusion."
 repeatlist:
-  desc: Shows currently repeating messages and their indexes.
+  desc: Lists currently repeating messages and their indexes.
   ex:
     - ''
   params:
     - {}
 repeatremove:
-  desc: Removes a repeating message on a specified index. Use `{0}repeatlist` to see indexes.
+  desc: Removes a repeating message by index. Use `{0}replst` to see indexes.
   ex:
     - 2
   params:
     - index:
-        desc: "The index at which the repeating message should be removed."
+        desc: "The index of the repeating message to be removed."
 repeatinvoke:
-  desc: Immediately shows the repeat message on a certain index and restarts its timer.
+  desc: Immediately post the repeat message on a certain index and restarts its timer.
   ex:
     - 1
   params:
     - index:
-        desc: "The index at which to display the repeat message."
+        desc: "The index of the repeating message to post."
 repeat:
   desc: |-
-    Repeat a message once every specified amount of time in the current channel. 
-    You can specify a different channel as the first argument.
-    You can instead specify time of day for the message to be repeated daily (make sure you've set your server's timezone). 
-    If you've specified time of day, you can still override the default daily interval with your own interval. 
-    You can have up to 5 repeating messages on the server in total.
+    Repeat a message once per specified time increment in the current channel. 
+    You can specify a different channel as the first argument instead.
+    You can also specify time of day for the message to be repeated daily (make sure you've set your server's `{0}timezone`). 
+    If you specify time of day, you can still override the default daily interval with your own interval. 
+    You can have up to 5 repeating messages on one server in total.
   ex:
     - Hello there
     - '#other-channel hello there'
@@ -202,59 +210,63 @@ repeat:
     - '21:00 30m Starting at 21 and every 30 minutes after that i will send this message!'
   params:
     - message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - channel:
         desc: "The channel where the message will be repeated."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - interval:
         desc: "The amount of time between each repetition."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - channel:
         desc: "The channel where the message will be sent."
       interval:
         desc: "The amount of time between each repetition."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - timeOfDay:
-        desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
+        desc: "The time at which the message should begin being repeated."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - channel:
         desc: "The channel where the message will be repeated."
       timeOfDay:
-        desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
+        desc: "The time at which the message should begin being repeated."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - timeOfDay:
-        desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
+        desc: "The time at which the message should begin being repeated."
       interval:
         desc: "The amount of time between each repetition."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
     - channel:
         desc: "The channel where the message will be repeated."
       timeOfDay:
-        desc: "The time at which the message should be repeated, either once every specified amount of time or at a specific time of day."
+        desc: "The time at which the message should begin being repeated."
       interval:
         desc: "The amount of time between each repetition."
       message:
-        desc: "The text to be repeated at the specified intervals or times."
+        desc: "The text to be repeated."
 repeatredundant:
-  desc: Specify repeater's index (use `{0}repli` to find it) to toggle whether that repeater's message should be reposted if the last message in the channel is the same repeater's message. This is useful if you want to remind everyone to be nice in the channel every so often, but don't want to have the bot spam the channel. This is NOT useful if you want to periodically ping someone.
+  desc: |-
+    Specify repeater's index (Use `{0}replst` to see indexes) to toggle whether the message should be reposted if the last message in the channel is the same repeater's message.
+    This is useful if you want to remind everyone to be nice every so often, but don't want to have the bot spam the channel. This is NOT useful if you want to periodically ping someone.
   ex:
     - 1
   params:
     - index:
-        desc: "The number of times a message should be repeated before reposting."
+        desc: "The index of the repeating message to modify."
 repeatskip:
-  desc: Specify a repeater's ID to toggle whether the next trigger of the repeater will be skipped. This setting is not stored in the database and will get reset if the bot is restarted.
+  desc: |-
+    Specify a repeater's ID to toggle whether the next trigger of the repeater will be skipped.
+    This setting is not stored in the database and will get reset if the bot is restarted.
   ex:
     - 3
   params:
     - index:
-        desc: "The number of times to skip before triggering again."
+        desc: "The index of the repeating message to skip."
 rotateplaying:
   desc: Toggles rotation of playing status of the dynamic strings you previously specified.
   ex:
@@ -262,28 +274,28 @@ rotateplaying:
   params:
     - {}
 addplaying:
-  desc: Adds a specified string to the list of playing strings to rotate. You have to pick either 'Playing', 'Watching' or 'Listening' as the first parameter.
+  desc: Adds a specified string to the list of playing strings to rotate. You have to pick either `Playing`, `Watching` or `Listening` as the first parameter.
   ex:
     - Playing with you
     - Watching you sleep
   params:
     - t:
-        desc: "The type of status, allowed values are 'Playing', 'Watching', or 'Listening'."
+        desc: "The type of status, allowed values are `Playing`, `Watching`, or `Listening`."
       status:
         desc: "The status text."
 listplaying:
-  desc: Lists all playing statuses with their corresponding number.
+  desc: Lists all playing statuses and their indexes.
   ex:
     - ''
   params:
     - {}
 removeplaying:
-  desc: Removes a playing string on a given number.
+  desc: Removes a playing status by index. Use `{0}lipl` to see indexes.
   ex:
     - ''
   params:
     - index:
-        desc: "The position in the list where the playing string should be removed."
+        desc: "The index of the playing string to be removed."
 vcrolelist:
   desc: Shows a list of currently set voice channel roles.
   ex:
@@ -297,16 +309,16 @@ vcrole:
     - ''
   params:
     - role:
-        desc: "The role that is assigned to new members of the voice channel."
+        desc: "The role to assign to users who join the voice channel."
 vcrolerm:
-  desc: Removes vcrole associated with the specified voice channel ID. This is useful if your vcrole has been enabled on a VC which has been deleted.
+  desc: Removes any `{0}vcrole` associated with the specified channel ID. This is useful if your vcrole has been enabled on a VC which has been deleted.
   ex:
     - 123123123123123
   params:
     - vcId:
-        desc: "The unique identifier of the voice channel to remove the vcrole from."
+        desc: "The voice channel ID to remove the vcrole from."
 asar:
-  desc: Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled, users will be able to pick one role per group.
+  desc: Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled (`{0}tesar`), users will be able to pick one role per group.
   ex:
     - Gamer
     - 1 Alliance
@@ -315,7 +327,7 @@ asar:
     - role:
         desc: "The role that can be assigned by the user."
     - group:
-        desc: "The ID of a group that the new role should belong to."
+        desc: "The ID of a group that the designated role should belong to."
       role:
         desc: "The role that can be assigned by the user."
 rsar:
@@ -326,7 +338,7 @@ rsar:
     - Horde
   params:
     - role:
-        desc: "The role being removed from the list of self-assignable roles."
+        desc: "The role to remove from the list of self-assignable roles."
 lsar:
   desc: Lists self-assignable roles. Shows 20 roles per page.
   ex:
@@ -334,7 +346,7 @@ lsar:
     - 2
   params:
     - page:
-        desc: "The current page number for the list of roles."
+        desc: "The page number to show."
 sargn:
   desc: Sets a self assignable role group name. Provide no name to remove.
   ex:
@@ -342,59 +354,58 @@ sargn:
     - 2
   params:
     - group:
-        desc: "The ID of the group to set as self-assignable."
+        desc: "The ID of the group to name."
       name:
-        desc: "The name of the new or existing role group to set."
+        desc: "The name to assign."
 togglexclsar:
-  desc: Toggles whether the self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.
+  desc: Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.
   ex:
     - ''
   params:
     - {}
 iam:
-  desc: Adds a role to you that you choose. Role must be on a list of self-assignable roles.
+  desc: Adds a role to you that you choose. Role must be on the list of self-assignable roles.
   ex:
     - Gamer
   params:
     - role:
-        desc: "The type of access or permission granted to the user."
+        desc: "The role to assign."
 iamnot:
-  desc: Removes a specified role from you. Role must be on a list of self-assignable roles.
+  desc: Removes a specified role from you. Role must be on the list of self-assignable roles.
   ex:
     - Gamer
   params:
     - role:
-        desc: "The role being removed from the user's assignment."
+        desc: "The role to remove."
 expradd:
-  desc: 'Add an expression with a trigger and a response. Bot will post a response whenever someone types the trigger word.  Running this command in server requires the Administration permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide here: <https://wizbot.readthedocs.io/en/latest/custom-reactions/>'
+  desc: 'Add an expression with a trigger and a response. Bot will post a response whenever someone types the trigger word.  Running this command in a server requires the Administrator permission. Running this command in DM is Bot Owner only and adds a new global expression. Guide [here](<https://wizbot.readthedocs.io/en/latest/custom-reactions/>)'
   ex:
     - '"hello" Hi there %user.mention%'
   params:
     - trigger:
-        desc: "The trigger word that sets off the response when typed by a user."
+        desc: "The trigger word or phrase for the bot to respond to users typing."
       response:
         desc: "The text of the message that shows up when a user types the trigger word."
 expraddserver:
-  desc: 'Add an expression with a trigger and a response in this server. Bot will post a response whenever someone types the trigger word. Guide here: <https://wizbot.readthedocs.io/en/latest/custom-reactions/>'
+  desc: 'Add an expression with a trigger and a response in this server. Bot will post a response whenever someone types the trigger word. This command is useful if you want to lower the permission requirement for managing expressions by using `{0}dpo`. Guide [here](<https://wizbot.readthedocs.io/en/latest/custom-reactions/>).'
   ex:
     - '"hello" Hi there %user.mention%'
   params:
     - key:
-        desc: "The unique identifier for the expression to be added in this server."
+        desc: "The trigger word or phrase for the bot to respond to users typing."
       message:
-        desc: "The text of the message that triggers the bot's response."
+        desc: "The text of the message that shows up when a user types the trigger word."
 exprlist:
   desc: |-
-    Lists global or server expressions (20 commands per page).
+    Lists global or server expressions (20 expressions per page).
     Running the command in DM will list global expressions, while running it in a server will list server expressions.
     Shows enabled settings, followed by id, followed by the trigger.
     **Settings:** 
-    • 🗯️ Triggered if trigger matches any word (`{0}h {0}exca`)
-    • ✉️ Response will be DMed (`{0}h {0}exdm`)
-    • ❌ Trigger will be deleted (`{0}h {0}exad`)
+    • 🗯️ Triggered if trigger matches any phrase (`{0}h exca`)
+    • ✉️ Response will be DMed (`{0}h exdm`)
+    • ❌ Trigger message will be deleted (`{0}h exad`)
   ex:
     - 1
-    - all
   params:
     - page:
         desc: "The number of pages to display in the list."
@@ -404,21 +415,21 @@ exprshow:
     - 1
   params:
     - id:
-        desc: "The identifier for the entity whose response is being displayed."
+        desc: "The expression ID to show."
 exprdelete:
-  desc: Deletes an expression on a specific index. If ran in DM, it is bot owner only and deletes a global expression. If ran in a server, it requires Administration privileges and removes server expression.
+  desc: Deletes an expression by index. If ran in DM, it is bot owner only and deletes a global expression. Running this command in a server requires the Administrator permission and deletes a server expression.
   ex:
     - 5
   params:
     - id:
-        desc: "The identifier of the expression to be deleted."
+        desc: "The ID of the expression to delete."
 exprdeleteserver:
-  desc: Deletes an expression on a specific index on this server.
+  desc: Deletes an expression on a specific index on this server. This command is useful if you want to lower the permission requirement for managing expressions by using `{0}dpo`.
   ex:
     - 5c
   params:
     - id:
-        desc: "The identifier of the expression to be deleted."
+        desc: "The ID of the expression to delete."
 exprclear:
   desc: Deletes all expression on this server.
   ex:
@@ -843,7 +854,12 @@ savechat:
     - cnt:
         desc: "The number of messages to be saved."
 remind:
-  desc: "Sends a message to you or a channel after certain amount of time (max 2 months). First parameter is `me`/`here`/'channelname'. Second parameter is time in a descending order (mo>w>d>h>m) example: 1w5d3h10m. Third parameter is a (multiword) message. Requires ManageMessages server permission if you're targeting a different channel."
+  desc: |-
+    Sets a reminder which will be sent to you or to the targeted channel after certain amount of time (max 2 months).
+    First parameter is `me` / `here` / 'channelname'
+    Second parameter is time in a descending order (mo>w>d>h>m) example: 1w5d3h10m.
+    Third parameter is a (multiword) message.
+    Requires ManageMessages server permission if you're targeting a different channel.
   ex:
     - me 1d5h Do something
     - '#general 1m Start now!'
@@ -1336,7 +1352,11 @@ flip:
     - count:
         desc: "The number of times the coin is flipped."
 betflip:
-  desc: Bet to guess will the result be heads or tails. Guessing awards you 1.95x the currency you've bet (rounded up). Multiplier can be changed by the bot owner.
+  desc: |-
+    Bet to guess will the result be heads or tails.
+    Guessing awards you 1.95x the currency you've bet (rounded up).
+    Multiplier can be changed by the bot owner.
+  
   ex:
     - 5 heads
     - 3 t
@@ -1482,38 +1502,52 @@ take:
       usrId:
         desc: "The ID of the user whose funds are being taken."
 betroll:
-  desc: Bets a certain amount of currency and rolls a dice. Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.
+  desc: |-
+    Bets the specified amount of currency and rolls a dice.
+    Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.
+    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
   ex:
     - 5
   params:
     - amount:
         desc: "The amount to be wagered on the roll of the dice."
 luckyladder:
-  desc: Bets a certain amount of currency on the lucky ladder. You can stop on one of many different multipliers. Won amount is rounded down to the nearest whole number.
+  desc:
+    Bets the specified amount of currency on the lucky ladder.
+    You can stop on one of many different multipliers.
+    The won amount is rounded down to the nearest whole number.
+    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
   ex:
     - 10
   params:
     - amount:
         desc: "The total value of the bet being placed."
 leaderboard:
-  desc: Displays the bot's currency leaderboard.
+  desc: |-
+    Displays the bot's currency leaderboard, or in other words, the richest users.
+    Specifying -c flag will show only users who are in this server.
+    Paginated with 10 users per page.
   ex:
     - ''
+    - '-c'
   params:
     - params:
-        desc: "The list of player names or IDs to display in the leaderboard."
+        desc: "Optional -c flag"
     - page:
-        desc: "The number of pages to display in the leaderboard."
+        desc: "The page number to display."
       params:
-        desc: "The list of player names or IDs to display in the leaderboard."
+        desc: "Optional -c flag."
 trivia:
-  desc: Starts a game of trivia. You can add `nohint` to prevent hints. First player to get to 10 points wins by default. You can specify a different number. 30 seconds per question.
+  desc: |-
+    Starts a game of trivia.
+    First player to get to 10 points wins by default.
+    30 seconds per question.
   ex:
     - ''
     - --timeout 5 -p -w 3 -q 10
   params:
     - params:
-        desc: "The list of questions and answers for the trivia game."
+        desc: "Options. --timeout <number>, --pokemon, --win <number> --question <number>"
 tl:
   desc: Shows a current trivia leaderboard.
   ex:
@@ -1585,7 +1619,10 @@ choose:
     - list:
         desc: "The type of items in the collection being searched."
 rps:
-  desc: Play a game of Rocket-Paperclip-Scissors with WizBot. You can bet on it. Multiplier is the same as on betflip.
+  desc: |-
+    Play a game of Rocket-Paperclip-Scissors with WizBot.
+    You can bet on it. Multiplier is the same as on betflip.
+    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
   ex:
     - r 100
     - scissors
@@ -1593,7 +1630,7 @@ rps:
     - pick:
         desc: "The user's chosen move in the game, such as rock, paper or scissors."
       amount:
-        desc: "The stake to be wagered on the outcome of the game."
+        desc: "Optional amount of currency to be wagered on the outcome of the game."
 next:
   desc: Goes to the next song in the queue. You have to be in the same voice channel as the bot
   ex:
@@ -1601,7 +1638,12 @@ next:
   params:
     - {}
 play:
-  desc: If no parameters are specified, acts as `{0}next 1` command. If you specify a song number, it will jump to that song. If you specify a search query, acts as a `{0}q` command
+  desc: |-
+    Queues up and plays a song or video based on a search query, song name, artist name or youtube link.
+    If no parameters are specified, it will skip the current song.
+    If you specify a song number, it will jump to that song.
+    If you specify a search query, acts as a `{0}q` command
+    **You must be in a voice channel**.
   ex:
     - ''
     - 5
@@ -1631,7 +1673,10 @@ pause:
   params:
     - {}
 queue:
-  desc: Queue a song using keywords or a link. Bot will join your voice channel. **You must be in a voice channel**.
+  desc: |-
+    Queues up and plays a song or video based on a search query, song name, artist name, search query or youtube link.
+    Bot will join your voice channel. 
+    **You must be in a voice channel**.
   ex:
     - Dream Of Venice
   params:
@@ -1946,12 +1991,12 @@ memegen:
       memeText:
         desc: "The user-provided text to be displayed on the generated meme."
 weather:
-  desc: Shows weather data for a specified city. You can also specify a country after a comma.
+  desc: Shows current weather data for the specified city.
   ex:
     - Moscow, RU
   params:
     - query:
-        desc: "The location to retrieve weather information for."
+        desc: "The name of the place or city for which to show the weather data."
 youtube:
   desc: Searches youtubes and shows the first result
   ex:
@@ -2142,7 +2187,9 @@ greetdmmsg:
     - text:
         desc: "The new join announcement message that will be sent to the user who joined."
 cash:
-  desc: Check how much currency a person has. If no argument is provided it will check your own balance. 
+  desc: |-
+    Check how much currency a person has.
+    If no argument is provided it will check your own balance.
   ex:
     - ''
     - '@Someone'
@@ -2447,7 +2494,7 @@ autotranslang:
   params:
     - {}
     - fromLang:
-        desc:          
+        desc:
       toLang:
         desc: "The destination language code, such as \"en\" for English or \"fr\" for French."
 autotranslate:
@@ -2493,7 +2540,10 @@ listservers:
     - page:
         desc: "The number of pages to retrieve from the server list."
 cleverbot:
-  desc: Toggles cleverbot/chatgpt session. When enabled, the bot will reply to messages starting with bot mention in the server. Expressions starting with %bot.mention% won't work if cleverbot/chatgpt is enabled.
+  desc:  |-
+    Toggles cleverbot/chatgpt session.
+    When enabled, the bot will reply to messages starting with bot mention in the server.
+    Expressions starting with %bot.mention% won't work if cleverbot/chatgpt is enabled.
   ex:
     - ''
   params:
@@ -2628,7 +2678,9 @@ antispamignore:
   params:
     - {}
 eventstart:
-  desc: 'Starts one of the events seen on public wizbot. Events: `reaction`, `gamestatus`'
+  desc: |-
+    Starts one of the events seen on public WizBot.
+    Events: `reaction`, `gamestatus`
   ex:
     - reaction
     - reaction -d 1 -a 50 --pot-size 1500
@@ -2636,20 +2688,24 @@ eventstart:
     - ev:
         desc: "The type of event being started."
       options:
-        desc: "The types of events that can be started."
+        desc: "The optional option flags for the event."
 betstats:
-  desc: Shows the total stats of several gambling features. Updates once an hour.
+  desc: |-
+    Shows the total stats of several gambling features.
+    Updates once an hour.
   ex:
     - ''
   params:
     - {}
 slot:
-  desc: Play WizBot slots. 1 second cooldown per user.
+  desc: |-
+    Play WizBot slots by placing your bet.
+    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
   ex:
     - 5
   params:
     - amount:
-        desc: "The number of spins to perform in the game."
+        desc: "The amount of currency to bet."
 affinity:
   desc: Sets your affinity towards someone you want to be claimed by. Setting affinity will reduce their `{0}claim` on you by 20%. Provide no parameters to clear your affinity. 30 minutes cooldown.
   ex:
@@ -2687,7 +2743,11 @@ waifutransfer:
       newOwner:
         desc: "The user to whom ownership of the waifu is being transferred."
 waifugift:
-  desc: -| Gift an item to someone. This will increase their waifu value by a percentage of the gift's value. Negative gifts will not show up in waifuinfo. Provide no parameters to see a list of items that you can gift.
+  desc: -|
+    Gift an item to someone.
+    This will increase their waifu value by a percentage of the gift's value.
+    Negative gifts will not show up in waifuinfo.
+    Provide no parameters to see a list of items that you can gift.
   ex:
     - ''
     - Rose @Himesama
@@ -2782,7 +2842,10 @@ restartshard:
     - shardId:
         desc: "The ID of the shard to be restarted or reconnected."
 tictactoe:
-  desc: Starts a game of tic tac toe. Another user must run the command in the same channel in order to accept the challenge. Use numbers 1-9 to play.
+  desc: |-
+    Starts a game of tic tac toe.
+    Another user must run the command in the same channel in order to accept the challenge.
+    Use numbers 1-9 to play.
   ex:
     - ''
   params:
@@ -3146,27 +3209,38 @@ shop:
     - page:
         desc: "The number of the page to retrieve from the list of administrators' shops."
 shopadd:
-  desc: "- Available types are role, list and command.\n- If the item is a role, specify a role id or a role name.\n- If the item is a command, specify the full command, replacing the user with %user% (for a mention) or %user.id% for user id.\n90% of currency from each purchase will be received by the user who added the item to the shop. "
+  desc: |-
+    Adds an item to the shop.
+    First you begin by specifying the type of the item you wish to add.
+    Available types are role, list and command.
+    If the item is a role, specify a role id or a role name.
+    In case you're selling a command, and you need user's name, id etc, you can use the following placeholders:
+    -     `%you%` - Buyer mention
+    -     `%you.id%` - Buyer's user ID
+    -     `%you.username%` - Buyer's username
+    -     `%you.name%` - Buyer's global name
+    -     `%you.nick%` - Buyer's display name
+    90% of currency from each purchase will be received by the user who added the item to the shop. This is configurable by the bot owner
   ex:
     - role 1000 Rich
     - cmd 1000 .setrole %user% Rich
   params:
     - _:
-        desc: "The command to be executed when an item is purchased."
+        desc: "This value has to be 'cmd'"
       price:
-        desc: "The cost at which the item is available for purchase."
+        desc: "The cost at which the command is available for purchase."
       command:
-        desc: "The full command, replacing the user with %user% (for a mention) or %user.id% for user id. This allows users to specify custom"
+        desc: "The full command, replacing the buyer info (if required) with some of the special %you% placeholders."
     - _:
-        desc: "The role that should be granted to users when they purchase this item."
+        desc: "This value has to be 'list'"
       price:
         desc: "The cost at which the item is available for purchase."
       role:
-        desc: "The ID or name of a predefined role in the system, used to specify the type of item being added to the shop."
+        desc: "The item (text) that is being sold."
     - _:
-        desc: "The list of items to be added to the shop."
+        desc: "This value has to be 'role'"
       price:
-        desc: "The cost at which the item is available for purchase."
+        desc: "The cost at which the role is available for purchase."
       name:
         desc: "The name of the role, command, or list being added to the shop."
 shopremove:
@@ -3359,7 +3433,7 @@ experience:
     - '@someguy'
   params:
     - user:
-        desc: "The ID or handle of a player whose XP statistics are being displayed."
+        desc: "Optional name, mention or ID of the user"
 xptemplatereload:
   desc: Reloads the xp template file. Xp template file allows you to customize the position and color of elements on the `{0}xp` card.
   ex:
@@ -3803,7 +3877,10 @@ timelyset:
       period:
         desc: "The time period within which a user's timely currency allowance can be used."
 timely:
-  desc: Use to claim your 'timely' currency. Bot owner has to specify the amount and the period on how often you can claim your currency.
+  desc: |-
+    Use to claim your timely currency.
+    This is usually set by the bot owners to be daily, hourly or once every 12 hours.
+    Bot owner has to specify the amount and the period on how often you can claim your currency.
   ex:
     - ''
   params:
@@ -3848,40 +3925,12 @@ massban:
     - userStrings:
         desc: "The list of user IDs to ban, provided as a comma-separated string."
 masskill:
-  desc: Specify a new-line separated list of `userid reason`. You can use Username#discrim instead of UserId. Specified users will be banned from the current server, blacklisted from the bot, and have all of their flowers taken away.
+  desc: Specify a new-line separated list of `userid reason`. You can use Username#discrim instead of UserId. Specified users will be banned from the current server, blacklisted from the bot, and have all of their currency taken away.
   ex:
     - BadPerson#1234 Toxic person
   params:
     - people:
         desc: "The list of user IDs or usernames to ban from the server and blacklist from the bot."
-pathofexile:
-  desc: Searches characters for a given Path of Exile account. May specify league name to filter results.
-  ex:
-    - '"Zizaran"'
-  params:
-    - usr:
-        desc: "The username or email address associated with the Path of Exile account being searched."
-      league:
-        desc: "The league in which the character is playing, allowing users to focus on a specific game mode or event."
-      page:
-        desc: "The number of pages to retrieve from the API."
-pathofexileleagues:
-  desc: Returns a list of the main Path of Exile leagues.
-  ex:
-    - ''
-  params:
-    - {}
-pathofexilecurrency:
-  desc: Returns the chaos equivalent of a given currency or exchange rate between two currencies.
-  ex:
-    - Standard "Mirror of Kalandra"
-  params:
-    - leagueName:
-        desc: "The name of the league in which the currency is used, such as \"Harbinger\" or \"Delve\"."
-      currencyName:
-        desc: "The type of currency being converted."
-      convertName:
-        desc: "The type of currency being converted from or to."
 rollduel:
   desc: Challenge someone to a roll duel by specifying the amount and the user you wish to challenge as the parameters. To accept the challenge, just specify the name of the user who challenged you, without the amount.
   ex:
@@ -3946,12 +3995,17 @@ rerotransfer:
       toMessageId:
         desc: "The ID of the target message where the reaction roles should be transferred."
 blackjack:
-  desc: Start or join a blackjack game. You must specify the amount you're betting. Use `{0}hit`, `{0}stand` and `{0}double` commands to play. Game is played with 4 decks. Dealer hits on soft 17 and wins draws.
+  desc: |-
+    Start or join a blackjack game by specifying the amount you're betting. 
+    You must specify the amount you're betting. 
+    Use `{0}hit`, `{0}stand` and `{0}double` commands to play. 
+    Game is played with 4 decks. 
+    Dealer hits on soft 17 and wins draws.
   ex:
     - 50
   params:
     - amount:
-        desc: "The minimum bet required to participate in the game."
+        desc: "The amount you want to bet in the blackjack game."
 hit:
   desc: In the blackjack game, ask the dealer for an extra card.
   ex:
@@ -4184,7 +4238,10 @@ bankwithdraw:
     - amount:
         desc: "The amount of money to be withdrawn."
 bankbalance:
-  desc: Shows your current bank balance available for withdrawal.
+  desc: |-
+    Shows how much currency is in your bank account.
+    This differs from your cash amount, as the cash amount is publicly available, but only you have access to your bank balance.
+    However, you have to withdraw it first in order to use it.
   ex:
     - ''
   params:
@@ -4450,13 +4507,22 @@ todoarchivedelete:
     - todoId:
         desc: "The identifier for the archived todo item to be deleted."
 cleanupguilddata:
-  desc: |- 
+  desc: |-
     Deletes data for all servers bot is no longer a member of from the database.
     This is a highly destructive and irreversible command.
   ex:
     - ''
   params:
     - {}
+prompt:
+  desc: |-
+    Ask the bot to do something for you.
+    This will fall back to the chatbot service in case of an error.
+  ex:
+    - What's the weather like today?
+  params:
+    - query:
+        desc: "The message to send to the bot."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

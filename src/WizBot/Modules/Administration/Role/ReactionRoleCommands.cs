@@ -55,12 +55,10 @@ public partial class Administration
 
             await res.Match(
                 _ => ctx.OkAsync(),
-                fl =>
+                async fl =>
                 {
                     _ = msg.RemoveReactionAsync(emote, ctx.Client.CurrentUser);
-                    return !fl.IsPatronLimit
-                        ? Response().Error(strs.limit_reached(fl.Quota)).SendAsync()
-                        : Response().Pending(strs.feature_limit_reached_owner(fl.Quota, fl.Name)).SendAsync();
+                    await Response().Pending(strs.feature_limit_reached_owner).SendAsync();
                 });
         }
 

@@ -144,9 +144,9 @@ public partial class Utility
                      true)
                  .WithOkColor();
 
-            var patron = await _ps.GetPatronAsync(user.Id);
+            var mPatron = await _ps.GetPatronAsync(user.Id);
 
-            if (patron.Tier != PatronTier.None)
+            if (mPatron is {} patron && patron.Tier != PatronTier.None)
             {
                 embed.WithFooter(patron.Tier switch
                 {

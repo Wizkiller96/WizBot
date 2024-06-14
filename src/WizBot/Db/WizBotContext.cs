@@ -53,8 +53,6 @@ public abstract class WizBotContext : DbContext
 
     public DbSet<PatronUser> Patrons { get; set; }
 
-    public DbSet<PatronQuota> PatronQuotas { get; set; }
-
     public DbSet<StreamOnlineMessage> StreamOnlineMessages { get; set; }
 
     public DbSet<StickyRole> StickyRoles { get; set; }
@@ -597,16 +595,6 @@ public abstract class WizBotContext : DbContext
         });
 
         // quotes are per user id
-        modelBuilder.Entity<PatronQuota>(pq =>
-        {
-            pq.HasIndex(x => x.UserId).IsUnique(false);
-            pq.HasKey(x => new
-            {
-                x.UserId,
-                x.FeatureType,
-                x.Feature
-            });
-        });
 
         #endregion
 

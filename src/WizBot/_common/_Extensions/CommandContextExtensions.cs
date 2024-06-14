@@ -27,4 +27,14 @@ public static class CommandContextExtensions
 
     public static Task WarningAsync(this ICommandContext ctx)
         => ctx.ReactAsync(MsgType.Pending);
+    
+    
+    public static Task OkAsync(this IUserMessage msg)
+        => msg.AddReactionAsync(_okEmoji);
+    
+    public static Task ErrorAsync(this IUserMessage msg)
+        => msg.AddReactionAsync(_errorEmoji);
+    
+    public static Task WarningAsync(this IUserMessage msg)
+        => msg.AddReactionAsync(_warnEmoji);
 }

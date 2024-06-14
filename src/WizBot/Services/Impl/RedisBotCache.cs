@@ -3,6 +3,7 @@ using OneOf.Types;
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using YamlDotNet.Core.Tokens;
 
 namespace Wiz.Common;
 
@@ -47,6 +48,7 @@ public sealed class RedisBotCache : IBotCache
         var success = await db.StringSetAsync(key.Key,
             val,
             expiry: expiry,
+            keepTtl: true,
             when: overwrite ? When.Always : When.NotExists);
 
         return success;

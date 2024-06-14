@@ -13,7 +13,7 @@ public readonly struct Patron
     public ulong UserId { get; init; }
 
     /// <summary>
-    /// Amount the Patron is currently pledging or paid
+    /// Amount the Patron is currently pledging or paid in cents
     /// </summary>
     public int Amount { get; init; }
 

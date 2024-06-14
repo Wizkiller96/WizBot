@@ -15,43 +15,32 @@ public class ChatterBotService : IExecOnMessage
     public int Priority
         => 1;
 
-    private readonly FeatureLimitKey _flKey;
-
     private readonly DiscordSocketClient _client;
     private readonly IPermissionChecker _perms;
-    private readonly CommandHandler _cmd;
     private readonly IBotCredentials _creds;
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IPatronageService _ps;
     private readonly GamesConfigService _gcs;
     private readonly IMessageSenderService _sender;
+    public readonly IPatronageService _ps;
 
     public ChatterBotService(
         DiscordSocketClient client,
         IPermissionChecker perms,
         IBot bot,
-        CommandHandler cmd,
+        IPatronageService ps,
         IHttpClientFactory factory,
         IBotCredentials creds,
-        IPatronageService ps,
         GamesConfigService gcs,
         IMessageSenderService sender)
     {
         _client = client;
         _perms = perms;
-        _cmd = cmd;
         _creds = creds;
         _sender = sender;
         _httpFactory = factory;
-        _ps = ps;
         _perms = perms;
         _gcs = gcs;
-
-        _flKey = new FeatureLimitKey()
-        {
-            Key = CleverBotResponseStr.CLEVERBOT_RESPONSE,
-            PrettyName = "Cleverbot Replies"
-        };
+        _ps = ps;
 
         ChatterBotGuilds = new(bot.AllGuildConfigs
                                   .Where(gc => gc.CleverbotEnabled)
@@ -69,9 +58,9 @@ public class ChatterBotService : IExecOnMessage
 
                 Log.Information("Cleverbot will not work as the api key is missing");
                 return null;
-            case ChatBotImplementation.Gpt3:
+            case ChatBotImplementation.Gpt:
                 if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
-                    return new OfficialGpt3Session(_creds.Gpt3ApiKey,
+                    return new OfficialGptSession(_creds.Gpt3ApiKey,
                         _gcs.Data.ChatGpt.ModelName,
                         _gcs.Data.ChatGpt.ChatHistory,
                         _gcs.Data.ChatGpt.MaxTokens,
@@ -87,19 +76,18 @@ public class ChatterBotService : IExecOnMessage
         }
     }
 
-    public string PrepareMessage(IUserMessage msg, out IChatterBotSession cleverbot)
+    public IChatterBotSession GetOrCreateSession(ulong guildId)
     {
-        var channel = msg.Channel as ITextChannel;
-        cleverbot = null;
+        if (ChatterBotGuilds.TryGetValue(guildId, out var lazyChatBot))
+            return lazyChatBot.Value;
 
-        if (channel is null)
-            return null;
+        lazyChatBot = new(() => CreateSession(), true);
+        ChatterBotGuilds.TryAdd(guildId, lazyChatBot);
+        return lazyChatBot.Value;
+    }
 
-        if (!ChatterBotGuilds.TryGetValue(channel.Guild.Id, out var lazyCleverbot))
-            return null;
-
-        cleverbot = lazyCleverbot.Value;
-
+    public string PrepareMessage(IUserMessage msg)
+    {
         var wizbotId = _client.CurrentUser.Id;
         var normalMention = $"<@{wizbotId}> ";
         var nickMention = $"<@!{wizbotId}> ";
@@ -119,13 +107,31 @@ public class ChatterBotService : IExecOnMessage
         if (guild is not SocketGuild sg)
             return false;
 
+        var channel = usrMsg.Channel as ITextChannel;
+        if (channel is null)
+            return false;
+
+        if (!ChatterBotGuilds.TryGetValue(channel.Guild.Id, out var lazyChatBot))
+            return false;
+
+        var chatBot = lazyChatBot.Value;
+        var message = PrepareMessage(usrMsg);
+        if (message is null)
+            return false;
+
+        return await RunChatterBot(sg, usrMsg, channel, chatBot, message);
+    }
+
+    public async Task<bool> RunChatterBot(
+        SocketGuild guild,
+        IUserMessage usrMsg,
+        ITextChannel channel,
+        IChatterBotSession chatBot,
+        string message)
+    {
         try
         {
-            var message = PrepareMessage(usrMsg, out var cbs);
-            if (message is null || cbs is null)
-                return false;
-
-            var res = await _perms.CheckPermsAsync(sg,
+            var res = await _perms.CheckPermsAsync(guild,
                 usrMsg.Channel,
                 usrMsg.Author,
                 CleverBotResponseStr.CLEVERBOT_RESPONSE,
@@ -134,59 +140,33 @@ public class ChatterBotService : IExecOnMessage
             if (!res.IsAllowed)
                 return false;
 
-            var channel = (ITextChannel)usrMsg.Channel;
-            var conf = _ps.GetConfig();
-            if (!_creds.IsOwner(sg.OwnerId) && conf.IsEnabled)
+            if (!await _ps.LimitHitAsync(LimitedFeatureName.ChatBot, usrMsg.Author.Id, 2048 / 2))
             {
-                var quota = await _ps.TryGetFeatureLimitAsync(_flKey, sg.OwnerId, 0);
-
-                uint? daily = quota.Quota is int dVal and < 0
-                    ? (uint)-dVal
-                    : null;
-
-                uint? monthly = quota.Quota is int mVal and >= 0
-                    ? (uint)mVal
-                    : null;
-
-                var maybeLimit = await _ps.TryIncrementQuotaCounterAsync(sg.OwnerId,
-                    sg.OwnerId == usrMsg.Author.Id,
-                    FeatureType.Limit,
-                    _flKey.Key,
-                    null,
-                    daily,
-                    monthly);
-
-                if (maybeLimit.TryPickT1(out var ql, out var counters))
-                {
-                    if (ql.Quota == 0)
-                    {
-                        await _sender.Response(channel)
-                              .Error(null,
-                                  text:
-                                  "In order to use the cleverbot feature, the owner of this server should be [Patron Tier X](https://patreon.com/join/WizNet) on patreon.",
-                                  footer:
-                                  "You may disable the cleverbot feature, and this message via '.cleverbot' command")
-                              .SendAsync();
-
-                        return true;
-                    }
-
-                    await _sender.Response(channel)
-                                 .Error(
-                                     null!,
-                                     $"You've reached your quota limit of **{ql.Quota}** responses {ql.QuotaPeriod.ToFullName()} for the cleverbot feature.",
-                                     footer: "You may wait for the quota reset or .")
-                                 .SendAsync();
-
-                    return true;
-                }
+                // limit exceeded
+                return false;
             }
 
             _ = channel.TriggerTypingAsync();
-            var response = await cbs.Think(message, usrMsg.Author.ToString());
-            await _sender.Response(channel)
-                         .Confirm(response)
-                         .SendAsync();
+            var response = await chatBot.Think(message, usrMsg.Author.ToString());
+
+            if (response.TryPickT0(out var result, out var error))
+            {
+                // calculate the diff in case we overestimated user's usage
+                var inTokens = (result.TokensIn - 2048) / 2;
+
+                // add the output tokens to the limit
+                await _ps.LimitForceHit(LimitedFeatureName.ChatBot,
+                    usrMsg.Author.Id,
+                    (inTokens) + (result.TokensOut / 2 * 3));
+
+                await _sender.Response(channel)
+                             .Confirm(result.Text)
+                             .SendAsync();
+            }
+            else
+            {
+                Log.Warning("Error in chatterbot: {Error}", error);
+            }
 
             Log.Information("""
                             CleverBot Executed

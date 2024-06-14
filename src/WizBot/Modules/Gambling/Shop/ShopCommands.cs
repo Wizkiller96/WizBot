@@ -247,7 +247,14 @@ public partial class Gambling
                 }
                 else
                 {
-                    var cmd = entry.Command.Replace("%you%", ctx.User.Id.ToString());
+                    var buyer = (IGuildUser)ctx.User;
+                    var cmd = entry.Command
+                                   .Replace("%you%", buyer.Mention)
+                                   .Replace("%you.mention%", buyer.Mention)
+                                   .Replace("%you.username%", buyer.Username)
+                                   .Replace("%you.name%", buyer.GlobalName ?? buyer.Username)
+                                   .Replace("%you.nick%", buyer.DisplayName);
+
                     var eb = _sender.CreateEmbed()
                              .WithPendingColor()
                              .WithTitle("Executing shop command")
@@ -259,6 +266,7 @@ public partial class Gambling
                         GetProfitAmount(entry.Price),
                         new("shop", "sell", entry.Name));
 
+                    await Task.Delay(250);
                     await _cmdHandler.TryRunCommand(guild,
                         channel,
                         new DoAsUserMessage(

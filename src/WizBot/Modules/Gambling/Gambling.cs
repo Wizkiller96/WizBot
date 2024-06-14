@@ -14,6 +14,7 @@ using System.Text;
 using WizBot.Modules.Gambling.Rps;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Patronage;
+using WizBot.Modules.Utility;
 
 namespace WizBot.Modules.Gambling;
 
@@ -27,9 +28,9 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly DownloadTracker _tracker;
     private readonly GamblingConfigService _configService;
     private readonly IBankService _bank;
-    private readonly IPatronageService _ps;
     private readonly IRemindService _remind;
     private readonly GamblingTxTracker _gamblingTxTracker;
+    private readonly IPatronageService _ps;
 
     private IUserMessage rdMsg;
 
@@ -41,8 +42,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         DownloadTracker tracker,
         GamblingConfigService configService,
         IBankService bank,
-        IPatronageService ps,
         IRemindService remind,
+        IPatronageService patronage,
         GamblingTxTracker gamblingTxTracker)
         : base(configService)
     {
@@ -51,9 +52,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         _cs = currency;
         _client = client;
         _bank = bank;
-        _ps = ps;
         _remind = remind;
         _gamblingTxTracker = gamblingTxTracker;
+        _ps = patronage;
 
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
@@ -133,12 +134,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         await Response().Embed(embed).SendAsync();
     }
 
-    private static readonly FeatureLimitKey _timelyKey = new FeatureLimitKey()
-    {
-        Key = "timely:extra_percent",
-        PrettyName = "Timely"
-    };
-
     private async Task RemindTimelyAction(SocketMessageComponent smc, DateTime when)
     {
         var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
@@ -190,10 +185,13 @@ public partial class Gambling : GamblingModule<GamblingService>
             await Response().Pending(strs.timely_already_claimed(relativeTag)).Interaction(inter).SendAsync();
             return;
         }
+        
 
-        var result = await _ps.TryGetFeatureLimitAsync(_timelyKey, ctx.User.Id, 0);
+        var patron = await _ps.GetPatronAsync(ctx.User.Id);
 
-        val = (int)(val * (1 + (result.Quota! * 0.01f)));
+        var percentBonus = (_ps.PercentBonus(patron) / 100f);
+
+        val += (int)(val * percentBonus);
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
@@ -892,6 +890,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private static readonly ImmutableArray<string> _emojis =
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
+    
     [Cmd]
     public async Task LuckyLadder([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
     {

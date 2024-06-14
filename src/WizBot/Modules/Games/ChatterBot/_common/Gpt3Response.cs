@@ -3,10 +3,25 @@ using System.Text.Json.Serialization;
 
 namespace WizBot.Modules.Games.Common.ChatterBot;
 
-public class Gpt3Response
+public class OpenAiCompletionResponse
 {
     [JsonPropertyName("choices")]
     public Choice[] Choices { get; set; }
+    
+    [JsonPropertyName("usage")]
+    public OpenAiUsageData Usage { get; set; }
+}
+
+public class OpenAiUsageData
+{
+    [JsonPropertyName("prompt_tokens")]
+    public int PromptTokens { get; set; }
+    
+    [JsonPropertyName("completion_tokens")]
+    public int CompletionTokens { get; set; }
+    
+    [JsonPropertyName("total_tokens")]
+    public int TotalTokens { get; set; }
 }
 
 public class Choice

@@ -113,10 +113,9 @@ public partial class Utility
                 foreach (var rem in rems)
                 {
                     var when = rem.When;
-                    var diff = when - DateTime.UtcNow;
                     embed.AddField(
                         $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC "
-                        + $"(in {diff.ToPrettyStringHm()})",
+                        + $"{TimestampTag.FromDateTime(when)}",
                         $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
 `TargetId:` {rem.ChannelId}
 `Message:` {rem.Message?.TrimTo(50)}");
@@ -203,16 +202,15 @@ public partial class Utility
                 await uow.SaveChangesAsync();
             }
 
-            var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
+            // var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
             try
             {
                 await Response()
-                      .Confirm($"\u23f0 {GetText(strs.remind(
+                      .Confirm($"\u23f0 {GetText(strs.remind2(
                           Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
                           Format.Bold(message),
-                          ts.ToPrettyStringHm(),
-                          gTime,
-                          gTime))}")
+                          TimestampTag.FromDateTime(DateTime.UtcNow.Add(ts), TimestampTagStyles.Relative),
+                          TimestampTag.FormatFromDateTime(time, TimestampTagStyles.ShortDateTime)))}")
                       .SendAsync();
             }
             catch

@@ -31,26 +31,15 @@ public interface IPatronageService
     /// </summary>
     /// <param name="userId">UserId for which to get the patron data for.</param>
     /// <returns>A patron with the specifeid userId</returns>
-    public Task<Patron> GetPatronAsync(ulong userId);
+    public Task<Patron?> GetPatronAsync(ulong userId);
     
-    /// <summary>
-    /// Gets the quota statistic for the user/patron specified by the userId
-    /// </summary>
-    /// <param name="userId">UserId of the user for which to get the quota statistic for</param>
-    /// <returns>Quota stats for the specified user</returns>
-    Task<UserQuotaStats> GetUserQuotaStatistic(ulong userId);
+    Task<bool> LimitHitAsync(LimitedFeatureName key, ulong userId, int amount = 1);
+    Task<bool> LimitForceHit(LimitedFeatureName key, ulong userId, int amount);
+    Task<QuotaLimit> GetUserLimit(LimitedFeatureName name, ulong userId);
 
-    
-    Task<FeatureLimit> TryGetFeatureLimitAsync(FeatureLimitKey key, ulong userId, int? defaultValue);
-
-    ValueTask<OneOf<(uint Hourly, uint Daily, uint Monthly), QuotaLimit>> TryIncrementQuotaCounterAsync(
-        ulong userId,
-        bool isSelf,
-        FeatureType featureType,
-        string featureName,
-        uint? maybeHourly,
-        uint? maybeDaily,
-        uint? maybeMonthly);
+    Task<Dictionary<LimitedFeatureName, (int, QuotaLimit)>> LimitStats(ulong userId);
 
     PatronConfigData GetConfig();
+    int PercentBonus(Patron? user);
+    int PercentBonus(long amount);
 }

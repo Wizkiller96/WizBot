@@ -45,21 +45,41 @@ public partial class Administration
             var progressMsg = await Response().Pending(strs.prune_progress(0, 100)).SendAsync();
             var progress = GetProgressTracker(progressMsg);
 
+            PruneResult result;
             if (opts.Safe)
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     100,
                     x => x.Author.Id == user.Id && !x.IsPinned,
                     progress,
                     opts.After);
             else
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     100,
                     x => x.Author.Id == user.Id,
                     progress,
                     opts.After);
 
             ctx.Message.DeleteAfter(3);
+            
+            await SendResult(result);
             await progressMsg.DeleteAsync();
+        }
+        
+        private async Task SendResult(PruneResult result)
+        {
+            switch (result)
+            {
+                case PruneResult.Success:
+                    break;
+                case PruneResult.AlreadyRunning:
+                    break;
+                case PruneResult.FeatureLimit:
+                    await Response().Pending(strs.feature_limit_reached_owner).SendAsync();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(result), result, null);
+            }
         }
 
         // prune x
@@ -83,19 +103,21 @@ public partial class Administration
             var progressMsg = await Response().Pending(strs.prune_progress(0, count)).SendAsync();
             var progress = GetProgressTracker(progressMsg);
 
+            PruneResult result;
             if (opts.Safe)
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     x => !x.IsPinned && x.Id != progressMsg.Id,
                     progress,
                     opts.After);
             else
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     x => x.Id != progressMsg.Id,
                     progress,
                     opts.After);
 
+            await SendResult(result);
             await progressMsg.DeleteAsync();
         }
 
@@ -155,9 +177,10 @@ public partial class Administration
             var progressMsg = await Response().Pending(strs.prune_progress(0, count)).SendAsync();
             var progress = GetProgressTracker(progressMsg);
 
+            PruneResult result;
             if (opts.Safe)
             {
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks && !m.IsPinned,
                     progress,
@@ -166,7 +189,7 @@ public partial class Administration
             }
             else
             {
-                await _service.PruneWhere((ITextChannel)ctx.Channel,
+                result = await _service.PruneWhere((ITextChannel)ctx.Channel,
                     count,
                     m => m.Author.Id == userId && DateTime.UtcNow - m.CreatedAt < _twoWeeks,
                     progress,
@@ -174,6 +197,7 @@ public partial class Administration
                 );
             }
 
+            await SendResult(result);
             await progressMsg.DeleteAsync();
         }
 

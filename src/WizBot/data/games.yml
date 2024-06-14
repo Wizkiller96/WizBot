@@ -1,12 +1,12 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 # Hangman related settings (.hangman command)
 hangman:
-# The amount of currency awarded to the winner of a hangman game
+  # The amount of currency awarded to the winner of a hangman game
   currencyReward: 0
 # Trivia related settings (.t command)
 trivia:
-# The amount of currency awarded to the winner of the trivia game.
+  # The amount of currency awarded to the winner of the trivia game.
   currencyReward: 0
   # Users won't be able to start trivia games which have
   # a smaller win requirement than the one specified by this setting.
@@ -56,20 +56,19 @@ raceAnimals:
     name: Unicorn
 # Which chatbot API should bot use.
 # 'cleverbot' - bot will use Cleverbot API.
-# 'gpt3' - bot will use GPT-3 API
-chatBot: Gpt3
-
+# 'gpt' - bot will use GPT API
+chatBot: Gpt
 chatGpt:
-# Which GPT-3 Model should bot use.
+  # Which GPT-3 Model should bot use.
   # gpt35turbo - cheapest
-  # gpt4 - 30x more expensive, higher quality
-  # gp432k - same model as above, but with a 32k token limit
+  # gpt4o - more expensive, higher quality
+  # 
   modelName: Gpt35Turbo
-  # How should the chat bot behave, whats its personality? (Usage of this counts towards the max tokens)
+  # How should the chat bot behave, what's its personality? (Usage of this counts towards the max tokens)
   personalityPrompt: You are a chat bot willing to have a conversation with anyone about anything.
   # The maximum number of messages in a conversation that can be remembered. (This will increase the number of tokens used)
   chatHistory: 5
-  # The maximum number of tokens to use per GPT-3 API call
+  # The maximum number of tokens to use per GPT API call
   maxTokens: 100
-  # The minimum number of tokens to use per GPT-3 API call, such that chat history is removed to make room.
+  # The minimum number of tokens to use per GPT API call, such that chat history is removed to make room.
   minTokens: 30
