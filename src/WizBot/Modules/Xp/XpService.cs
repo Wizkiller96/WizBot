@@ -668,7 +668,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     /// <param name="channel"></param>
     private async Task ScanUserForVoiceXp(SocketGuildUser user, SocketVoiceChannel channel)
     {
-        if (UserParticipatingInVoiceChannel(user) && ShouldTrackXp(user, channel.Id))
+        if (UserParticipatingInVoiceChannel(user) && ShouldTrackXp(user, channel))
             await UserJoinedVoiceChannel(user);
         else
             await UserLeftVoiceChannel(user, channel);
@@ -767,9 +767,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     }
      */
 
-    private bool ShouldTrackXp(SocketGuildUser user, ulong channelId)
+    private bool ShouldTrackXp(SocketGuildUser user, IMessageChannel channel)
     {
-        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) && chans.Contains(channelId))
+        var channelId = channel.Id;
+        
+        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) && (chans.Contains(channelId) 
+                                                                            || (channel is SocketThreadChannel tc && chans.Contains(tc.ParentChannel.Id))))
+
             return false;
 
         if (_excludedServers.Contains(user.Guild.Id))
@@ -788,7 +792,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
         _ = Task.Run(async () =>
         {
-            if (!ShouldTrackXp(user, arg.Channel.Id))
+            if (!ShouldTrackXp(user, arg.Channel))
                 return;
 
             var xpConf = _xpConfig.Data;

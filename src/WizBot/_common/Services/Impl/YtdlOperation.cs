@@ -53,7 +53,7 @@ public class YtdlOperation
         }
         catch (Win32Exception)
         {
-            Log.Error("youtube-dl is likely not installed. " + "Please install it before running the command again");
+            Log.Error("youtube-dl is likely not installed. Please install it before running the command again");
             return default;
         }
         catch (Exception ex)

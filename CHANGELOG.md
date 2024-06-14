@@ -27,6 +27,8 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 
 - Fixed xp bg buy button not working, and possibly some other buttons too
 - Fixed shopbuy %user% placeholders and updated help text
+- All .feed overloads should now work"
+- `.xpexclude` should will now work with forums too. If you exclude a forum you won't be able to gain xp in any of the threads.
 
 ### Removed
 
