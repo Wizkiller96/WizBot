@@ -1,7 +1,6 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using WizBot.Db;
 using WizBot.Db.Models;
 using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
@@ -149,6 +148,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         await smc.RespondConfirmAsync(_sender, GetText(strs.remind_timely(tt)), ephemeral: true);
     }
 
+    // Creates timely reminder button, parameter in hours.
     private WizBotInteractionBase CreateRemindMeInteraction(int period)
         => _inter
             .Create(ctx.User.Id,
@@ -157,6 +157,17 @@ public partial class Gambling : GamblingModule<GamblingService>
                     emote: Emoji.Parse("⏰"),
                     customId: "timely:remind_me"),
                 (smc) => RemindTimelyAction(smc, DateTime.UtcNow.Add(TimeSpan.FromHours(period)))
+            );
+
+    // Creates timely reminder button, parameter in milliseconds.
+    private WizBotInteractionBase CreateRemindMeInteraction(double ms)
+        => _inter
+            .Create(ctx.User.Id,
+                new ButtonBuilder(
+                    label: "Remind me",
+                    emote: Emoji.Parse("⏰"),
+                    customId: "timely:remind_me"),
+                (smc) => RemindTimelyAction(smc, DateTime.UtcNow.Add(TimeSpan.FromMilliseconds(ms)))
             );
 
     [Cmd]
@@ -170,22 +181,26 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
 
-        var inter = CreateRemindMeInteraction(period);
-
-        if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } rem)
+        if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } remainder)
         {
+            // Get correct time form remainder
+            var interaction = CreateRemindMeInteraction(remainder.TotalMilliseconds);
+
             // Removes timely button if there is a timely reminder in DB
             if (_service.UserHasTimelyReminder(ctx.User.Id))
             {
-                inter = null;
+                interaction = null;
             }
 
             var now = DateTime.UtcNow;
-            var relativeTag = TimestampTag.FromDateTime(now.Add(rem), TimestampTagStyles.Relative);
-            await Response().Pending(strs.timely_already_claimed(relativeTag)).Interaction(inter).SendAsync();
+            var relativeTag = TimestampTag.FromDateTime(now.Add(remainder), TimestampTagStyles.Relative);
+            await Response().Pending(strs.timely_already_claimed(relativeTag)).Interaction(interaction).SendAsync();
             return;
         }
         
+        var inter = CreateRemindMeInteraction(period);
+
+        var result = await _ps.TryGetFeatureLimitAsync(_timelyKey, ctx.User.Id, 0);
 
         var patron = await _ps.GetPatronAsync(ctx.User.Id);
 
