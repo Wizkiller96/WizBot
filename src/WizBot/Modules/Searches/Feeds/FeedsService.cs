@@ -79,6 +79,15 @@ public class FeedsService : INService
         }
     }
 
+    private DateTime? GetPubDate(FeedItem item)
+    {
+        if (item.PublishingDate is not null)
+            return item.PublishingDate;
+        if (item.SpecificItem is AtomFeedItem atomItem)
+            return atomItem.UpdatedDate;
+        return null;
+    }
+
     public async Task<EmbedBuilder> TrackFeeds()
     {
         while (true)
@@ -94,24 +103,32 @@ public class FeedsService : INService
                 {
                     var feed = await FeedReader.ReadAsync(rssUrl);
 
-                    var items = feed
-                                .Items.Select(item => (Item: item,
-                                    LastUpdate: item.PublishingDate?.ToUniversalTime()
-                                                ?? (item.SpecificItem as AtomFeedItem)?.UpdatedDate?.ToUniversalTime()))
-                                .Where(data => data.LastUpdate is not null)
-                                .Select(data => (data.Item, LastUpdate: (DateTime)data.LastUpdate))
-                                .OrderByDescending(data => data.LastUpdate)
-                                .Reverse() // start from the oldest
-                                .ToList();
+                    var items = new List<(FeedItem Item, DateTime LastUpdate)>();
+                    foreach (var item in feed.Items)
+                    {
+                        var pubDate = GetPubDate(item);
+
+                        if (pubDate is null)
+                            continue;
+
+                        items.Add((item, pubDate.Value.ToUniversalTime()));
+
+                        // show at most 3 items if you're behind
+                        if (items.Count > 2)
+                            break;
+                    }
+                    
+                    if (items.Count == 0)
+                        continue;
 
                     if (!_lastPosts.TryGetValue(kvp.Key, out var lastFeedUpdate))
                     {
-                        lastFeedUpdate = _lastPosts[kvp.Key] =
-                            items.Any() ? items[items.Count - 1].LastUpdate : DateTime.UtcNow;
+                        lastFeedUpdate = _lastPosts[kvp.Key] = items[0].LastUpdate;
                     }
 
-                    foreach (var (feedItem, itemUpdateDate) in items)
+                    for (var index = 1; index <= items.Count; index++)
                     {
+                        var (feedItem, itemUpdateDate) = items[^index];
                         if (itemUpdateDate <= lastFeedUpdate)
                             continue;
 
@@ -168,27 +185,25 @@ public class FeedsService : INService
                         if (!string.IsNullOrWhiteSpace(feedItem.Description))
                             embed.WithDescription(desc.TrimTo(2048));
 
-                        //send the created embed to all subscribed channels
-                        var feedSendTasks = kvp.Value
-                                               .Where(x => x.GuildConfig is not null)
-                                               .Select(x =>
-                                               {
-                                                   var ch = _client.GetGuild(x.GuildConfig.GuildId)
-                                                                   ?.GetTextChannel(x.ChannelId);
+                        var tasks = new List<Task>();
 
-                                                   if (ch is null)
-                                                       return null;
+                        foreach (var val in kvp.Value)
+                        {
+                            var ch = _client.GetGuild(val.GuildConfig.GuildId).GetTextChannel(val.ChannelId);
 
-                                                   return _sender.Response(ch)
-                                                                 .Embed(embed)
-                                                                 .Text(string.IsNullOrWhiteSpace(x.Message)
-                                                                     ? string.Empty
-                                                                     : x.Message)
-                                                                 .SendAsync();
-                                               })
-                                               .Where(x => x is not null);
+                            if (ch is null)
+                                continue;
 
-                        allSendTasks.Add(feedSendTasks.WhenAll());
+                            var sendTask = _sender.Response(ch)
+                                                  .Embed(embed)
+                                                  .Text(string.IsNullOrWhiteSpace(val.Message)
+                                                      ? string.Empty
+                                                      : val.Message)
+                                                  .SendAsync();
+                            tasks.Add(sendTask);
+                        }
+
+                        allSendTasks.Add(tasks.WhenAll());
 
                         // as data retrieval was successful, reset error counter
                         ClearErrors(rssUrl);
