@@ -127,7 +127,7 @@ public class GamblingService : INService, IReadyExecutor
         }
     }
 
-    private static readonly TypedKey<EconomyResult> _ecoKey = new("nadeko:economy");
+    private static readonly TypedKey<EconomyResult> _ecoKey = new("wizbot:economy");
 
     public async Task<EconomyResult> GetEconomyAsync()
     {

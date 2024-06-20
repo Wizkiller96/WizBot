@@ -158,7 +158,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                     customId: "timely:remind_me"),
                 (smc) => RemindTimelyAction(smc, DateTime.UtcNow.Add(TimeSpan.FromHours(period)))
             );
-
+            
     // Creates timely reminder button, parameter in milliseconds.
     private WizBotInteractionBase CreateRemindMeInteraction(double ms)
         => _inter
@@ -204,7 +204,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         var percentBonus = (_ps.PercentBonus(patron) / 100f);
 
         val += (int)(val * percentBonus);
-        
+
         var inter = CreateRemindMeInteraction(period);
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
@@ -582,7 +582,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    [AdminOnly]
+    [OwnerOnly]
     public async Task Take(long amount, [Leftover] ulong usrId)
     {
         if (amount <= 0)
@@ -904,7 +904,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private static readonly ImmutableArray<string> _emojis =
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
-    
+
     [Cmd]
     public async Task LuckyLadder([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
     {

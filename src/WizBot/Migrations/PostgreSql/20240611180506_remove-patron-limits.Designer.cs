@@ -1669,7 +1669,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("muteduserid", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.NadekoExpression", b =>
+            modelBuilder.Entity("WizBot.Db.Models.WizBotExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

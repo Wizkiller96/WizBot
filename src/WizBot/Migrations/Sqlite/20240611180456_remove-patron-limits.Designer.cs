@@ -1244,7 +1244,7 @@ namespace WizBot.Migrations
                     b.ToTable("MutedUserId");
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.NadekoExpression", b =>
+            modelBuilder.Entity("WizBot.Db.Models.WizBotExpression", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
