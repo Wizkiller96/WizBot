@@ -12,8 +12,8 @@ public partial class ResponseBuilder
         private readonly DiscordSocketClient _client;
         private int currentPage;
         
-        private WizBotButtonInteractionHandler left;
-        private WizBotButtonInteractionHandler right;
+        private WizBotButtonInteractionHandler? left;
+        private WizBotButtonInteractionHandler? right;
         private WizBotInteractionBase? extra;
 
         public PaginationSender(
@@ -120,8 +120,8 @@ public partial class ResponseBuilder
                 if (_paginationBuilder.AddPaginatedFooter)
                     toSend.AddPaginatedFooter(currentPage, lastPage);
 
-                left.SetCompleted();
-                right.SetCompleted();
+                left?.SetCompleted();
+                right?.SetCompleted();
                 extra?.SetCompleted();
                 (left, extra, right) = (await GetInteractions());
 

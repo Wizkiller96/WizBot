@@ -2,6 +2,19 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.1]
+
+### Added
+
+- Added `.honeypot` command, which automatically softbans (ban and immediate unban) any user who posts in that channel.
+  - Useful to auto softban bots who spam every channel upon joining
+  - Users who run commands or expressions won't be softbanned.
+  - Users who have ban member permissions are also excluded.
+
+### Fixed
+
+- Fixed `.betdraw` not respecting maxbet
+
 ## [5.1.0] - 25.06.2024
 
 ### Added
@@ -10,9 +23,9 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
   - You can send natural language questions, queries or execute commands. For example "@WizBot how's the weather in paris" and it will return `.we Paris` and run it for you.
   - In case the bot can't execute a command using your query, It will fall back to your chatter bot, in case you have it enabled in data/games.yml. (Cleverbot or chatgpt)
   - (It's far from perfect so please don't ask the bot to do dangerous things like banning or pruning)
-  - Requires Patreon subscription, after which you'll be able to run it on global bot. If you're selfhosting, you also will need to acquire the api key from <https://dashy.nadeko.bot/api> (coming soon(ish)...)
+  - Requires Patreon subscription, after which you'll be able to run it on global @Nadeko bot.
+    - Selfhosters: If you're selfhosting, you also will need to acquire the api key from <https://dashy.nadeko.bot/me> after pledging on patreon and put it in nadekoAiToken in creds.yml
 - Added support for `gpt-4o` in `data/games.yml`
-- Added nadekoAiToken to `creds.yml`
 
 
 ### Changed

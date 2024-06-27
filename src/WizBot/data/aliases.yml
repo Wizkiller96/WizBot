@@ -1401,6 +1401,8 @@ cleanupguilddata:
   - cleanupguilddata
 prompt:
   - prompt
+honeypot:
+  - honeypot
 # WizNet System
 feedback:
   - feedback

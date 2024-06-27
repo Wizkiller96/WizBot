@@ -1386,6 +1386,23 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("guildconfigs", (string)null);
                 });
+            
+            modelBuilder.Entity("WizBot.Db.Models.HoneypotChannel", b =>
+            {
+                b.Property<decimal>("GuildId")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("numeric(20,0)")
+                 .HasColumnName("guildid");
+
+                b.Property<decimal>("ChannelId")
+                 .HasColumnType("numeric(20,0)")
+                 .HasColumnName("channelid");
+
+                b.HasKey("GuildId")
+                 .HasName("pk_honeypotchannels");
+
+                b.ToTable("honeypotchannels", (string)null);
+            });
 
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {

@@ -4523,6 +4523,15 @@ prompt:
   params:
     - query:
         desc: "The message to send to the bot."
+honeypot:
+  desc: |-
+    Toggles honeypot on the current channel.
+    Anyone sending a message in this channel will be soft banned. (Banned and then unbanned)
+    This is useful for automatically getting rid of spam bots.
+  ex:
+    - ''
+  params:
+    - {}
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

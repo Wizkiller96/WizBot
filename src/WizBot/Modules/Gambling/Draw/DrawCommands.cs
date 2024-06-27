@@ -17,7 +17,8 @@ public partial class Gambling
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;
 
-        public DrawCommands(IImageCache images, GamblingConfigService gcs) : base(gcs)
+        public DrawCommands(IImageCache images, GamblingConfigService gcs)
+            : base(gcs)
             => _images = images;
 
         private async Task InternalDraw(int count, ulong? guildId = null)
@@ -56,8 +57,8 @@ public partial class Gambling
                 i.Dispose();
 
             var eb = _sender.CreateEmbed()
-                .WithOkColor();
-            
+                            .WithOkColor();
+
             var toSend = string.Empty;
             if (cardObjects.Count == 5)
                 eb.AddField(GetText(strs.hand_value), Deck.GetHandValue(cardObjects), true);
@@ -71,7 +72,7 @@ public partial class Gambling
 
             if (count > 1)
                 eb.AddField(GetText(strs.cards), count.ToString(), true);
-                
+
             await using var imageStream = await img.ToStreamAsync();
             await ctx.Channel.SendFileAsync(imageStream,
                 imgName,
@@ -84,7 +85,7 @@ public partial class Gambling
             var cardBytes = await File.ReadAllBytesAsync($"data/images/cards/{cardName}.jpg");
             return Image.Load<Rgba32>(cardBytes);
         }
-        
+
         private async Task<Image<Rgba32>> GetCardImageAsync(Deck.Card currentCard)
         {
             var cardName = currentCard.ToString().ToLowerInvariant().Replace(' ', '_');
@@ -98,7 +99,7 @@ public partial class Gambling
         {
             if (num < 1)
                 return;
-            
+
             if (num > 10)
                 num = 10;
 
@@ -110,7 +111,7 @@ public partial class Gambling
         {
             if (num < 1)
                 return;
-            
+
             if (num > 10)
                 num = 10;
 
@@ -136,19 +137,29 @@ public partial class Gambling
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task BetDraw([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, InputValueGuess val, InputColorGuess? col = null)
+        public Task BetDraw(
+            [OverrideTypeReader(typeof(BalanceTypeReader))]
+            long amount,
+            InputValueGuess val,
+            InputColorGuess? col = null)
             => BetDrawInternal(amount, val, col);
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public Task BetDraw([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, InputColorGuess col, InputValueGuess? val = null)
+        public Task BetDraw(
+            [OverrideTypeReader(typeof(BalanceTypeReader))]
+            long amount,
+            InputColorGuess col,
+            InputValueGuess? val = null)
             => BetDrawInternal(amount, val, col);
-        
+
         public async Task BetDrawInternal(long amount, InputValueGuess? val, InputColorGuess? col)
         {
-            if (amount <= 0)
+            if (!await CheckBetMandatory(amount))
+            {
                 return;
-            
+            }
+
             var res = await _service.BetDrawAsync(ctx.User.Id,
                 amount,
                 (byte?)val,
@@ -161,13 +172,13 @@ public partial class Gambling
             }
 
             var eb = _sender.CreateEmbed()
-                .WithOkColor()
-                .WithAuthor(ctx.User)
-                .WithDescription(result.Card.GetEmoji())
-                .AddField(GetText(strs.guess), GetGuessInfo(val, col), true)
-                .AddField(GetText(strs.card), GetCardInfo(result.Card), true)
-                .AddField(GetText(strs.won), N((long)result.Won), false)
-                .WithImageUrl("attachment://card.png");
+                            .WithOkColor()
+                            .WithAuthor(ctx.User)
+                            .WithDescription(result.Card.GetEmoji())
+                            .AddField(GetText(strs.guess), GetGuessInfo(val, col), true)
+                            .AddField(GetText(strs.card), GetCardInfo(result.Card), true)
+                            .AddField(GetText(strs.won), N((long)result.Won), false)
+                            .WithImageUrl("attachment://card.png");
 
             using var img = await GetCardImageAsync(result.Card);
             await using var imgStream = await img.ToStreamAsync();
@@ -189,9 +200,10 @@ public partial class Gambling
                 InputColorGuess.Black => "B ⚫",
                 _ => "❓"
             };
-            
+
             return $"{val} / {col}";
         }
+
         private string GetCardInfo(RegularCard card)
         {
             var val = (int)card.Value switch
@@ -208,7 +220,7 @@ public partial class Gambling
                     RegularSuit.Diamonds or RegularSuit.Hearts => "R 🔴",
                     _ => "B ⚫"
                 };
-            
+
             return $"{val} / {col}";
         }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Db;
 
@@ -11,9 +12,11 @@ using WizBot.Db;
 namespace WizBot.Migrations.Mysql
 {
     [DbContext(typeof(MysqlContext))]
-    partial class MysqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240627033532_honeypot")]
+    partial class honeypot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1387,25 +1390,25 @@ namespace WizBot.Migrations.Mysql
 
                     b.ToTable("guildconfigs", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.HoneypotChannel", b =>
-            {
-                b.Property<ulong>("GuildId")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("guildid");
+                {
+                    b.Property<ulong>("GuildId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("guildid");
 
-                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("GuildId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<ulong>("GuildId"));
 
-                b.Property<ulong>("ChannelId")
-                 .HasColumnType("bigint unsigned")
-                 .HasColumnName("channelid");
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("bigint unsigned")
+                        .HasColumnName("channelid");
 
-                b.HasKey("GuildId")
-                 .HasName("pk_honeypotchannels");
+                    b.HasKey("GuildId")
+                        .HasName("pk_honeypotchannels");
 
-                b.ToTable("honeypotchannels", (string)null);
-            });
+                    b.ToTable("honeypotchannels", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {

@@ -1103,5 +1103,7 @@
   "todo_archived_list": "Archived Todo List",
   "search_results": "Search results",
   "queue_search_results": "Type the number of the search result to queue up that track.",
-  "overloads": "Overloads"
+  "overloads": "Overloads",
+  "honeypot_on": "Honeypot enabled on this channel." ,
+  "honeypot_off": "Honeypot disabled."
 }

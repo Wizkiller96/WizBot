@@ -59,6 +59,7 @@ public abstract class WizBotContext : DbContext
 
     public DbSet<TodoModel> Todos { get; set; }
     public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
+    public DbSet<HoneypotChannel> HoneyPotChannels { get; set; }
 
     // todo add guild colors
     // public DbSet<GuildColors> GuildColors { get; set; }

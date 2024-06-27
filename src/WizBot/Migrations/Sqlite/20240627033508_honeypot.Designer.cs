@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Db;
 
@@ -10,9 +11,11 @@ using WizBot.Db;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20240627033508_honeypot")]
+    partial class honeypot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -1032,20 +1035,20 @@ namespace WizBot.Migrations
 
                     b.ToTable("GuildConfigs");
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.HoneypotChannel", b =>
-            {
-                b.Property<ulong>("GuildId")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("INTEGER");
+                {
+                    b.Property<ulong>("GuildId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                b.Property<ulong>("ChannelId")
-                 .HasColumnType("INTEGER");
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
 
-                b.HasKey("GuildId");
+                    b.HasKey("GuildId");
 
-                b.ToTable("HoneyPotChannels");
-            });
+                    b.ToTable("HoneyPotChannels");
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {
