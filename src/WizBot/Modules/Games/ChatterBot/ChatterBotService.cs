@@ -165,7 +165,7 @@ public class ChatterBotService : IExecOnMessage
             }
             else
             {
-                Log.Warning("Error in chatterbot: {Error}", error);
+                Log.Warning("Error in chatterbot: {Error}", error.Value);
             }
 
             Log.Information("""

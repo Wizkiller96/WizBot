@@ -32,20 +32,21 @@ public sealed class SearxSearchService : SearchServiceBase, INService
         var instanceUrl = GetRandomInstance();
         
         Log.Information("Using {Instance} instance for web search...", instanceUrl);
-        var sw = Stopwatch.StartNew();
+        var startTime = Stopwatch.GetTimestamp();
+        
         using var http = _http.CreateClient();
         await using var res = await http.GetStreamAsync($"{instanceUrl}"
                                                         + $"?q={Uri.EscapeDataString(query)}"
                                                         + $"&format=json"
                                                         + $"&strict=2");
 
-        sw.Stop();
+        var elapsed = Stopwatch.GetElapsedTime(startTime);
         var dat = await JsonSerializer.DeserializeAsync<SearxSearchResult>(res);
 
         if (dat is null)
             return new SearxSearchResult();
         
-        dat.SearchTime = sw.Elapsed.TotalSeconds.ToString("N2", CultureInfo.InvariantCulture); 
+        dat.SearchTime = elapsed.TotalSeconds.ToString("N2", CultureInfo.InvariantCulture); 
         return dat;
     }
 
@@ -56,7 +57,7 @@ public sealed class SearxSearchService : SearchServiceBase, INService
         var instanceUrl = GetRandomInstance();
         
         Log.Information("Using {Instance} instance for img search...", instanceUrl);
-        var sw = Stopwatch.StartNew();
+        var startTime = Stopwatch.GetTimestamp();
         using var http = _http.CreateClient();
         await using var res = await http.GetStreamAsync($"{instanceUrl}"
                                                         + $"?q={Uri.EscapeDataString(query)}"
@@ -64,13 +65,13 @@ public sealed class SearxSearchService : SearchServiceBase, INService
                                                         + $"&category_images=on"
                                                         + $"&strict=2");
 
-        sw.Stop();
+        var elapsed = Stopwatch.GetElapsedTime(startTime);
         var dat = await JsonSerializer.DeserializeAsync<SearxImageSearchResult>(res);
 
         if (dat is null)
             return new SearxImageSearchResult();
         
-        dat.SearchTime = sw.Elapsed.TotalSeconds.ToString("N2", CultureInfo.InvariantCulture); 
+        dat.SearchTime = elapsed.TotalSeconds.ToString("N2", CultureInfo.InvariantCulture); 
         return dat;
     }
 }

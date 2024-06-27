@@ -8,9 +8,9 @@ public sealed class CommandPromptResultModel
     public required string Name { get; set; }
 
     [JsonPropertyName("arguments")]
-    public required Dictionary<string, string> Arguments { get; set; }
+    public Dictionary<string, string> Arguments { get; set; } = new();
     
     [JsonPropertyName("remaining")]
     [JsonConverter(typeof(NumberToStringConverter))]
-    public required string Remaining { get; set; }
+    public string Remaining { get; set; } = string.Empty;
 }

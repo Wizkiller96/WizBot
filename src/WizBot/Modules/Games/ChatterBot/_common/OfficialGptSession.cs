@@ -103,6 +103,8 @@ public class OfficialGptSession : IChatterBotSession
         try
         {
             var response = JsonConvert.DeserializeObject<OpenAiCompletionResponse>(dataString);
+            
+            Log.Information("Received response: {response} ", dataString);
             var res = response?.Choices?[0];
             var message = res?.Message?.Content;
 

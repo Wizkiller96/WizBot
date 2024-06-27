@@ -89,7 +89,7 @@ public sealed class Bot : IBot
     private void AddServices()
     {
         var startingGuildIdList = GetCurrentGuildIds();
-        var sw = Stopwatch.StartNew();
+        var startTime = Stopwatch.GetTimestamp();
         var bot = Client.CurrentUser;
 
         using (var uow = _db.GetDbContext())
@@ -157,8 +157,7 @@ public sealed class Bot : IBot
             LoadTypeReaders(a);
         }
 
-        sw.Stop();
-        Log.Information("All services loaded in {ServiceLoadTime:F2}s", sw.Elapsed.TotalSeconds);
+        Log.Information("All services loaded in {ServiceLoadTime:F2}s", Stopwatch.GetElapsedTime(startTime) .TotalSeconds);
     }
 
     private void LoadTypeReaders(Assembly assembly)
@@ -255,7 +254,7 @@ public sealed class Bot : IBot
         if (ShardId == 0)
             await _db.SetupAsync();
 
-        var sw = Stopwatch.StartNew();
+        var startTime = Stopwatch.GetTimestamp();
 
         await LoginAsync(_creds.Token);
         
@@ -270,8 +269,7 @@ public sealed class Bot : IBot
             Helpers.ReadErrorAndExit(9);
         }
 
-        sw.Stop();
-        Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, sw.Elapsed.TotalSeconds);
+        Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, Stopwatch.GetElapsedTime(startTime).TotalSeconds);
         var commandHandler = Services.GetRequiredService<CommandHandler>();
 
         // start handling messages received in commandhandler
