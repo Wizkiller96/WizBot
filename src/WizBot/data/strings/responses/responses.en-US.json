@@ -620,7 +620,7 @@
   "quote_deleted": "Quote #{0} deleted.",
   "quote_edited": "Quote Edited",
   "region": "Region",
-  "remind2": "I will remind {0} to {1} {2} ({3})`",
+  "remind2": "I will remind {0} to {1} {2} ({3})",
   "remind_timely": "I will remind you about your timely reward {0}",
   "remind_invalid": "Not a valid remind format. Remind must have a target, timer and a reason. Check the command list.",
   "remind_too_long": "Remind time has exceeded maximum.",
