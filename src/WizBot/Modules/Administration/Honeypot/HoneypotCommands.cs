@@ -5,7 +5,7 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class HoneypotCommands : NadekoModule
+    public partial class HoneypotCommands : WizBotModule
     {
         private readonly IHoneyPotService _service;
 
