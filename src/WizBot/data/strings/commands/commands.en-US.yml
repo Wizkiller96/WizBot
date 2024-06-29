@@ -2289,7 +2289,11 @@ emojiremove:
     - emotes:
         desc: "The list of emojis to be removed from the server."
 stickeradd:
-  desc: Adds the sticker from your message to this server. Send the sticker along with this command (in the same message).
+  desc: |-
+    Adds the sticker from your message to this server.
+    Send the sticker along with this command (in the same message).
+    Alternatively you can upload an image along with this command but you have to specify the name.
+    The image must be 300x300 in .png or .apng format and up to 512KB in size.
   ex:
     - ''
     - name "description" tag1 tag2 tagN

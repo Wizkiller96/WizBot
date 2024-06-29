@@ -464,47 +464,82 @@ public partial class Utility : WizBotModule
     public async Task StickerAdd(string name = null, string description = null, params string[] tags)
     {
         string format;
-        Stream stream;
-
-        if (ctx.Message.Stickers.Count is 1 && ctx.Message.Stickers.First() is SocketSticker ss)
-        {
-            name ??= ss.Name;
-            description = ss.Description;
-            tags = tags is null or { Length: 0 } ? ss.Tags.ToArray() : tags;
-            format = FormatToExtension(ss.Format);
-
-            using var http = _httpFactory.CreateClient();
-            stream = await http.GetStreamAsync(ss.GetStickerUrl());
-        }
-        else
-        {
-            await Response().Error(strs.sticker_error).SendAsync();
-            return;
-        }
+        Stream stream = null;
 
         try
         {
-            if (tags.Length == 0)
-                tags = [name];
+            if (ctx.Message.Stickers.Count is 1 && ctx.Message.Stickers.First() is SocketSticker ss)
+            {
+                name ??= ss.Name;
+                description = ss.Description;
+                tags = tags is null or { Length: 0 } ? ss.Tags.ToArray() : tags;
+                format = FormatToExtension(ss.Format);
 
-            await ctx.Guild.CreateStickerAsync(
-                name,
-                stream,
-                $"{name}.{format}",
-                tags,
-                string.IsNullOrWhiteSpace(description) ? "Missing description" : description
-            );
+                using var http = _httpFactory.CreateClient();
+                stream = await http.GetStreamAsync(ss.GetStickerUrl());
+            }
+            else if (ctx.Message.Attachments.Count is 1 && name is not null)
+            {
+                if (tags.Length == 0)
+                    tags = [name];
 
-            await ctx.OkAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Warning(ex, "Error occurred while adding a sticker: {Message}", ex.Message);
-            await Response().Error(strs.error_occured).SendAsync();
+                if (ctx.Message.Attachments.Count != 1)
+                {
+                    await Response().Error(strs.sticker_error).SendAsync();
+                    return;
+                }
+
+                var attach = ctx.Message.Attachments.First();
+
+
+                if (attach.Size > 512_000 || attach.Width != 300 || attach.Height != 300)
+                {
+                    await Response().Error(strs.sticker_error).SendAsync();
+                    return;
+                }
+
+                format = attach.Filename
+                               .Split('.')
+                               .Last()
+                               .ToLowerInvariant();
+
+                if (string.IsNullOrWhiteSpace(format) || (format != "png" && format != "apng"))
+                {
+                    await Response().Error(strs.sticker_error).SendAsync();
+                    return;
+                }
+
+                using var http = _httpFactory.CreateClient();
+                stream = await http.GetStreamAsync(attach.Url);
+            }
+            else
+            {
+                await Response().Error(strs.sticker_error).SendAsync();
+                return;
+            }
+
+            try
+            {
+                await ctx.Guild.CreateStickerAsync(
+                    name,
+                    stream,
+                    $"{name}.{format}",
+                    tags,
+                    string.IsNullOrWhiteSpace(description) ? "Missing description" : description
+                );
+
+                await ctx.OkAsync();
+            }
+            catch
+                (Exception ex)
+            {
+                Log.Warning(ex, "Error occurred while adding a sticker: {Message}", ex.Message);
+                await Response().Error(strs.error_occured).SendAsync();
+            }
         }
         finally
         {
-            await stream.DisposeAsync();
+            await (stream?.DisposeAsync() ?? ValueTask.CompletedTask);
         }
     }
 
