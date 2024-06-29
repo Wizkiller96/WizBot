@@ -162,7 +162,7 @@ public sealed class Creds : IBotCredentials
 
     public Creds()
     {
-        Version = 8;
+        Version = 9;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();

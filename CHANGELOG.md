@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.1.1]
+## [5.1.1] - 27.06.2024
 
 ### Added
 
@@ -14,6 +14,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 ### Fixed
 
 - Fixed `.betdraw` not respecting maxbet
+- Fixed `.xpshop` pagination for real this time?
 
 ## [5.1.0] - 25.06.2024
 
