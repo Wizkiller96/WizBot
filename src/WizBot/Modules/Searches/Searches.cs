@@ -614,34 +614,6 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task Bible(string book, string chapterAndVerse)
-    {
-        var obj = new BibleVerses();
-        try
-        {
-            using var http = _httpFactory.CreateClient();
-            obj = await http.GetFromJsonAsync<BibleVerses>($"https://bible-api.com/{book} {chapterAndVerse}");
-        }
-        catch
-        {
-        }
-
-        if (obj.Error is not null || obj.Verses is null || obj.Verses.Length == 0)
-            await Response().Error(obj.Error ?? "No verse found.").SendAsync();
-        else
-        {
-            var v = obj.Verses[0];
-            await Response()
-                  .Embed(_sender.CreateEmbed()
-                         .WithOkColor()
-                         .WithTitle($"{v.BookName} {v.Chapter}:{v.Verse}")
-                         .WithDescription(v.Text))
-                  .SendAsync();
-        }
-    }
-
-    [Cmd]
     public async Task Steam([Leftover] string query)
     {
         if (string.IsNullOrWhiteSpace(query))

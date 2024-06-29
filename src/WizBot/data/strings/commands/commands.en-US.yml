@@ -4076,6 +4076,16 @@ bible:
         desc: "The name of the biblical book being referenced."
       chapterAndVerse:
         desc: "The reference to a specific passage in the Bible, such as 'Genesis 3:15'"
+quran:
+  desc: |-
+    Shows the text of an ayah of the Quran, as well as the recitation by Alafasy.
+    Supply surah:ayah, or ayah number. For instance, 262 or 2:255 will both get you Ayat Al Kursi
+  ex:
+    - 2:255
+    - 262
+  params:
+    - ayah:
+        desc: "The number of the ayah in the Quran, for example 2:255."
 edit:
   desc: Edits bot's message, you have to specify message ID and new text. You can optionally specify target channel. Supports embeds.
   ex:
