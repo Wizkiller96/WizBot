@@ -37,10 +37,10 @@ public sealed class Creds : IBotCredentials
     
     [Comment("""
              Pledge 5$ or more on https://patreon.com/nadekobot and connect your discord account to Patreon.
-             Go to https://dashy.nadeko.bot and login with your discord account
+             Go to https://dashy.nadeko.bot/me and login with your discord account
              Go to the Keys page and click "Generate New Key" and copy it here
              You and anyone else with the permission to run `.prompt` command will be able to use natural language to run bot's commands.
-             For example '@Bot how's the weather in Paris' will return the current weather in Paris as if you were to run `.weather Paris` command
+             For example '@Bot how's the weather in Paris' will return the current weather in Paris as if you were to run `.weather Paris` command.
              """)]
     public string NadekoAiToken { get; set; }
 
@@ -162,7 +162,7 @@ public sealed class Creds : IBotCredentials
 
     public Creds()
     {
-        Version = 7;
+        Version = 8;
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
@@ -201,8 +201,8 @@ public sealed class Creds : IBotCredentials
             Database connection string.
             You MUST change this if you're not using "sqlite" type.
             Default is "Data Source=data/WizBot.db"
-            Example for mysql: "Server=localhost;Port=3306;Uid=root;Pwd=my_super_secret_mysql_password;Database=nadeko"
-            Example for postgresql: "Server=localhost;Port=5432;User Id=postgres;Password=my_super_secret_postgres_password;Database=nadeko;"
+            Example for mysql: "Server=localhost;Port=3306;Uid=root;Pwd=my_super_secret_mysql_password;Database=wizbot"
+            Example for postgresql: "Server=localhost;Port=5432;User Id=postgres;Password=my_super_secret_postgres_password;Database=wizbot;"
             """)]
         public string ConnectionString { get; set; }
     }

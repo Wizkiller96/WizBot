@@ -13,25 +13,30 @@ public class WizBotInteractionService : IWizBotInteractionService, INService
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, Task> onTrigger,
-        bool singleUse = true)
+        bool singleUse = true,
+        bool clearAfter = true)
         => new WizBotButtonInteractionHandler(_client,
             userId,
             button,
             onTrigger,
             onlyAuthor: true,
-            singleUse: singleUse);
+            singleUse: singleUse,
+            clearAfter: clearAfter);
 
     public WizBotInteractionBase Create<T>(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, T, Task> onTrigger,
         in T state,
-        bool singleUse = true)
+        bool singleUse = true,
+        bool clearAfter = true
+    )
         => Create(userId,
             button,
             ((Func<T, Func<SocketMessageComponent, Task>>)((data)
                 => smc => onTrigger(smc, data)))(state),
-            singleUse);
+            singleUse,
+            clearAfter);
 
     public WizBotInteractionBase Create(
         ulong userId,

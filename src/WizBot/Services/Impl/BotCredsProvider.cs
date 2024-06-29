@@ -134,53 +134,8 @@ public sealed class BotCredsProvider : IBotCredsProvider
         File.WriteAllText(CREDS_FILE_NAME, ymlData);
     }
 
-    private string OldCredsJsonPath
-        => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json");
-
-    private string OldCredsJsonBackupPath
-        => Path.Combine(Directory.GetCurrentDirectory(), "credentials.json.bak");
-
     private void MigrateCredentials()
     {
-        if (File.Exists(OldCredsJsonPath))
-        {
-            Log.Information("Migrating old creds...");
-            var jsonCredentialsFileText = File.ReadAllText(OldCredsJsonPath);
-            var oldCreds = JsonConvert.DeserializeObject<OldCreds>(jsonCredentialsFileText);
-
-            if (oldCreds is null)
-            {
-                Log.Error("Error while reading old credentials file. Make sure that the file is formatted correctly");
-                return;
-            }
-
-            var creds = new Creds
-            {
-                Version = 1,
-                Token = oldCreds.Token,
-                OwnerIds = oldCreds.OwnerIds.Distinct().ToHashSet(),
-                AdminIds = oldCreds.AdminIds.Distinct().ToHashSet(),
-                GoogleApiKey = oldCreds.GoogleApiKey,
-                RapidApiKey = oldCreds.MashapeKey,
-                OsuApiKey = oldCreds.OsuApiKey,
-                CleverbotApiKey = oldCreds.CleverbotApiKey,
-                TotalShards = oldCreds.TotalShards <= 1 ? 1 : oldCreds.TotalShards,
-                Patreon = new Creds.PatreonSettings(oldCreds.PatreonAccessToken, null, null, oldCreds.PatreonCampaignId),
-                Votes = new Creds.VotesSettings(oldCreds.VotesUrl, oldCreds.VotesToken, string.Empty, string.Empty),
-                BotListToken = oldCreds.BotListToken,
-                RedisOptions = oldCreds.RedisOptions,
-                LocationIqApiKey = oldCreds.LocationIqApiKey,
-                TimezoneDbApiKey = oldCreds.TimezoneDbApiKey,
-                CoinmarketcapApiKey = oldCreds.CoinmarketcapApiKey
-            };
-
-            File.Move(OldCredsJsonPath, OldCredsJsonBackupPath, true);
-            File.WriteAllText(CredsPath, Yaml.Serializer.Serialize(creds));
-
-            Log.Warning(
-                "Data from credentials.json has been moved to creds.yml\nPlease inspect your creds.yml for correctness");
-        }
-
         if (File.Exists(CREDS_FILE_NAME))
         {
             var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));
@@ -194,9 +149,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
             
-            if (creds.Version <= 7)
+            if (creds.Version <= 8)
             {
-                creds.Version = 8;
+                creds.Version = 9;
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }

@@ -71,7 +71,8 @@ public partial class ResponseBuilder
                         return Task.CompletedTask;
                     },
                     true,
-                    singleUse: false);
+                    singleUse: false,
+                    clearAfter: false);
 
                 if (_paginationBuilder.InteractionFunc is not null)
                 {
@@ -106,7 +107,8 @@ public partial class ResponseBuilder
                         return Task.CompletedTask;
                     },
                     true,
-                    singleUse: false);
+                    singleUse: false,
+                    clearAfter: false);
 
                 return (leftBtnInter, maybeInter, rightBtnInter);
             }

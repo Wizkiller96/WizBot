@@ -12,6 +12,7 @@ public abstract class WizBotInteractionBase
     private IUserMessage message = null!;
     private readonly string _customId;
     private readonly bool _singleUse;
+    private readonly bool _clearAfter;
 
     public WizBotInteractionBase(
         DiscordSocketClient client,
@@ -19,13 +20,16 @@ public abstract class WizBotInteractionBase
         string customId,
         Func<SocketMessageComponent, Task> onAction,
         bool onlyAuthor,
-        bool singleUse = true)
+        bool singleUse = true,
+        bool clearAfter = true)
     {
         _authorId = authorId;
         _customId = customId;
         _onAction = onAction;
         _onlyAuthor = onlyAuthor;
         _singleUse = singleUse;
+        _clearAfter = clearAfter;
+        
         _interactionCompletedSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         Client = client;
@@ -36,13 +40,11 @@ public abstract class WizBotInteractionBase
         message = msg;
 
         Client.InteractionCreated += OnInteraction;
-        if (_singleUse)
-            await Task.WhenAny(Task.Delay(30_000), _interactionCompletedSource.Task);
-        else
-            await Task.Delay(30_000);
+        await Task.WhenAny(Task.Delay(30_000), _interactionCompletedSource.Task);
         Client.InteractionCreated -= OnInteraction;
 
-        await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
+        if (_clearAfter)
+            await msg.ModifyAsync(m => m.Components = new ComponentBuilder().Build());
     }
 
     private Task OnInteraction(SocketInteraction arg)
@@ -58,12 +60,16 @@ public abstract class WizBotInteractionBase
 
         if (smc.Data.CustomId != _customId)
             return Task.CompletedTask;
+        
+        if (_interactionCompletedSource.Task.IsCompleted)
+            return Task.CompletedTask;
 
         _ = Task.Run(async () =>
         {
             try
             {
-                _interactionCompletedSource.TrySetResult(true);
+                if (_singleUse)
+                    _interactionCompletedSource.TrySetResult(true);
                 await ExecuteOnActionAsync(smc);
 
                 if (!smc.HasResponded)

@@ -483,7 +483,8 @@ public partial class Xp : WizBotModule<XpService>
                           ctx.User.Id,
                           button,
                           OnShopUse,
-                          (key, itemType));
+                          (key, itemType),
+                          clearAfter: false);
 
                       return inter;
                   }
@@ -497,7 +498,9 @@ public partial class Xp : WizBotModule<XpService>
                           ctx.User.Id,
                           button,
                           OnShopBuy,
-                          (key, itemType));
+                          (key, itemType),
+                          singleUse: true,
+                          clearAfter: false);
 
                       return inter;
                   }
@@ -579,6 +582,10 @@ public partial class Xp : WizBotModule<XpService>
         if (result == BuyResult.InsufficientFunds)
         {
             await Response().Error(strs.not_enough(_gss.GetCurrencySign())).SendAsync();
+        }
+        else if (result == BuyResult.Success)
+        {
+            await _service.UseShopItemAsync(ctx.User.Id, type, key);
         }
     }
 

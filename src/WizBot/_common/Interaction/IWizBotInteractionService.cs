@@ -6,14 +6,16 @@ public interface IWizBotInteractionService
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, Task> onTrigger,
-        bool singleUse = true);
+        bool singleUse = true,
+        bool clearAfter = true);
 
     public WizBotInteractionBase Create<T>(
         ulong userId,
         ButtonBuilder button,
         Func<SocketMessageComponent, T, Task> onTrigger,
         in T state,
-        bool singleUse = true);
+        bool singleUse = true,
+        bool clearAfter = true);
 
     WizBotInteractionBase Create(
         ulong userId,
