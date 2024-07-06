@@ -2,6 +2,22 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.3] - 06.07.2024
+
+### Added
+
+- Added `.quran` command, which will show the provided ayah in english and arabic, including recitation by Alafasy
+
+### Changed
+
+- Replying to the bot's message in the channel where chatterbot is enabled will also trigger the ai response, as if you pinged the bot. This only works for chatterbot, but not for nadeko ai command prompts
+
+### Fixed
+
+- Fixed `.stickeradd` it now properly supports 300x300 image uploads.
+- Bot should now trim the invalid characters from chatterbot usernames to avoid openai errors
+- Fixed prompt triggering chatterbot responses twice
+
 ## [5.1.2] - 29.06.2024
 
 ### Fixed
