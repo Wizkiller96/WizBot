@@ -47,7 +47,7 @@ public partial class OfficialGptSession : IChatterBotSession
         _maxHistory = chatHistory;
         _maxTokens = maxTokens;
         _minTokens = minTokens;
-        _wizbotUsername = wizbotUsername;
+        _wizbotUsername = UsernameCleaner().Replace(wizbotUsername, "");
         _encoding = GptEncoding.GetEncodingForModel(_model);
         messages.Add(new()
         {
