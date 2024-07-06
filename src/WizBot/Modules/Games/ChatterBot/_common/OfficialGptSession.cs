@@ -3,10 +3,12 @@ using Newtonsoft.Json;
 using OneOf.Types;
 using System.Net.Http.Json;
 using SharpToken;
+using System.CodeDom;
+using System.Text.RegularExpressions;
 
 namespace WizBot.Modules.Games.Common.ChatterBot;
 
-public class OfficialGptSession : IChatterBotSession
+public partial class OfficialGptSession : IChatterBotSession
 {
     private string Uri
         => $"https://api.openai.com/v1/chat/completions";
@@ -55,14 +57,20 @@ public class OfficialGptSession : IChatterBotSession
         });
     }
 
+    [GeneratedRegex("[^a-zA-Z0-9_-]")]
+    private static partial Regex UsernameCleaner();
+
     public async Task<OneOf.OneOf<ThinkResult, Error<string>>> Think(string input, string username)
     {
+        username = UsernameCleaner().Replace(username, "");
+        
         messages.Add(new()
         {
             Role = "user",
             Content = input,
             Name = username
         });
+        
         while (messages.Count > _maxHistory + 2)
         {
             messages.RemoveAt(1);
