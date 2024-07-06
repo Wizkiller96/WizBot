@@ -96,6 +96,8 @@ public class ChatterBotService : IExecOnMessage
             message = msg.Content[normalMention.Length..].Trim();
         else if (msg.Content.StartsWith(nickMention, StringComparison.InvariantCulture))
             message = msg.Content[nickMention.Length..].Trim();
+        else if (msg.ReferencedMessage?.Author.Id == wizbotId)
+            message = msg.Content;
         else
             return null;
 
