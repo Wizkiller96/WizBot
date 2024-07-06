@@ -251,7 +251,7 @@ public sealed class AiAssistantService
                     return false;
 
                 await _cbs.RunChatterBot(sg, msg, channel, sess, query);
-                return false;
+                return true;
             }
 
             var commandString = GetCommandString(model);
