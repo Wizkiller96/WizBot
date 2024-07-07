@@ -197,6 +197,9 @@ public partial class Searches
             if (--page < 0)
                 return;
 
+            if (page > 25)
+                page = 25;
+
             await Response()
                   .Paginated()
                   .PageItems(async (page) =>
@@ -226,6 +229,7 @@ public partial class Searches
 
                       return embed;
                   })
+                  .CurrentPage(page)
                   .AddFooter(false)
                   .SendAsync();
         }
