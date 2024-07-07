@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Globalization;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 using Color = SixLabors.ImageSharp.Color;
 using StringExtensions = WizBot.Extensions.StringExtensions;
@@ -130,7 +131,7 @@ public class CryptoService : INService
         await _getCryptoLock.WaitAsync();
         try
         {
-            var data = await _cache.GetOrAddAsync(new("nadeko:crypto_data"),
+            var data = await _cache.GetOrAddAsync(new("wizbot:crypto_data"),
                 async () =>
                 {
                     try
@@ -212,4 +213,46 @@ public class CryptoService : INService
         var points = GetSparklinePointsFromSvgText(str);
         return points;
     }
+
+    public async Task<IReadOnlyCollection<GeckoCoinsResult>?> GetTopCoins(int page)
+    {
+        using var http = _httpFactory.CreateClient();
+
+        http.AddFakeHeaders();
+        
+        var result = await http.GetFromJsonAsync<List<GeckoCoinsResult>>(
+            $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&page={page}&per_page=10");
+
+        return result;
+    }
+}
+
+public sealed class GeckoCoinsResult
+{
+    [JsonPropertyName("id")]
+    public required string Id { get; init; }
+    
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+    
+    [JsonPropertyName("symbol")]
+    public required string Symbol { get; init; }
+    
+    [JsonPropertyName("current_price")]
+    public required decimal CurrentPrice { get; init; }
+    
+    [JsonPropertyName("price_change_percentage_24h")]
+    public required decimal PercentChange24h { get; init; }
+    
+    [JsonPropertyName("market_cap")]
+    public required decimal MarketCap { get; init; }
+    
+    [JsonPropertyName("circulating_supply")]
+    public required decimal? CirculatingSupply { get; init; }
+    
+    [JsonPropertyName("total_supply")]
+    public required decimal? TotalSupply { get; init; }
+    
+    [JsonPropertyName("market_cap_rank")]
+    public required int MarketCapRank { get; init; }
 }

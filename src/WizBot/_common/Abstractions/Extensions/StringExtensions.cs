@@ -147,4 +147,5 @@ public static class StringExtensions
                 var newString = str.UnescapeUnicodeCodePoint();
                 return newString;
             });
+    
 }

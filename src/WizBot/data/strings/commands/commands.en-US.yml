@@ -4545,7 +4545,18 @@ honeypot:
   ex:
     - ''
   params:
-    - {}
+    - { }
+coins:
+  desc: |-
+    Shows a list of 10 crypto currencies ordered by market cap.
+    Shows their price, change in the last24h, market cap and circulating and total supply.
+    Paginated with 10 per page.
+  ex:
+    - ''
+    - '2'
+  params:
+    - page:
+        desc: "Page number to show. Starts at 1."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

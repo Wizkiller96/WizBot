@@ -16,12 +16,12 @@ public partial class Searches
             _stocksService = stocksService;
             _stockDrawingService = stockDrawingService;
         }
-        
+
         [Cmd]
-        public async Task Stock([Leftover]string query)
+        public async Task Stock([Leftover] string query)
         {
             using var typing = ctx.Channel.EnterTypingState();
-            
+
             var stock = await _stocksService.GetStockDataAsync(query);
 
             if (stock is null)
@@ -36,9 +36,9 @@ public partial class Searches
 
                 var symbol = symbols.First();
                 var promptEmbed = _sender.CreateEmbed()
-                                     .WithDescription(symbol.Description)
-                                     .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
-                
+                                         .WithDescription(symbol.Description)
+                                         .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
+
                 if (!await PromptUserConfirmAsync(promptEmbed))
                     return;
 
@@ -54,7 +54,7 @@ public partial class Searches
 
             var candles = await _stocksService.GetCandleDataAsync(query);
             var stockImageTask = _stockDrawingService.GenerateCombinedChartAsync(candles);
-            
+
             var localCulture = (CultureInfo)Culture.Clone();
             localCulture.NumberFormat.CurrencySymbol = "$";
 
@@ -64,34 +64,34 @@ public partial class Searches
 
             var change = (stock.Price - stock.Close).ToString("N2", Culture);
             var changePercent = (1 - (stock.Close / stock.Price)).ToString("P1", Culture);
-            
+
             var sign50 = stock.Change50d >= 0
                 ? "\\🔼"
                 : "\\🔻";
 
             var change50 = (stock.Change50d).ToString("P1", Culture);
-            
+
             var sign200 = stock.Change200d >= 0
                 ? "\\🔼"
                 : "\\🔻";
-            
+
             var change200 = (stock.Change200d).ToString("P1", Culture);
-            
+
             var price = stock.Price.ToString("C2", localCulture);
 
             var eb = _sender.CreateEmbed()
-                        .WithOkColor()
-                        .WithAuthor(stock.Symbol)
-                        .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
-                        .WithTitle(stock.Name)
-                        .AddField(GetText(strs.price), $"{sign} **{price}**", true)
-                        .AddField(GetText(strs.market_cap), stock.MarketCap, true)
-                        .AddField(GetText(strs.volume_24h), stock.DailyVolume.ToString("C0", localCulture), true)
-                        .AddField("Change", $"{change} ({changePercent})", true)
-                        // .AddField("Change 50d", $"{sign50}{change50}", true)
-                        // .AddField("Change 200d", $"{sign200}{change200}", true)
-                        .WithFooter(stock.Exchange);
-            
+                            .WithOkColor()
+                            .WithAuthor(stock.Symbol)
+                            .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
+                            .WithTitle(stock.Name)
+                            .AddField(GetText(strs.price), $"{sign} **{price}**", true)
+                            .AddField(GetText(strs.market_cap), stock.MarketCap, true)
+                            .AddField(GetText(strs.volume_24h), stock.DailyVolume.ToString("C0", localCulture), true)
+                            .AddField("Change", $"{change} ({changePercent})", true)
+                            // .AddField("Change 50d", $"{sign50}{change50}", true)
+                            // .AddField("Change 200d", $"{sign200}{change200}", true)
+                            .WithFooter(stock.Exchange);
+
             var message = await Response().Embed(eb).SendAsync();
             await using var imageData = await stockImageTask;
             if (imageData is null)
@@ -105,15 +105,12 @@ public partial class Searches
             await message.ModifyAsync(mp =>
             {
                 mp.Attachments =
-                    new(new[]
-                    {
-                        attachment
-                    });
+                    new(new[] { attachment });
 
                 mp.Embed = eb.WithImageUrl($"attachment://{fileName}").Build();
             });
         }
-        
+
 
         [Cmd]
         public async Task Crypto(string name)
@@ -128,9 +125,9 @@ public partial class Searches
             if (nearest is not null)
             {
                 var embed = _sender.CreateEmbed()
-                               .WithTitle(GetText(strs.crypto_not_found))
-                               .WithDescription(
-                                   GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
+                                   .WithTitle(GetText(strs.crypto_not_found))
+                                   .WithDescription(
+                                       GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
 
                 if (await PromptUserConfirmAsync(embed))
                     crypto = nearest;
@@ -146,7 +143,7 @@ public partial class Searches
 
             var localCulture = (CultureInfo)Culture.Clone();
             localCulture.NumberFormat.CurrencySymbol = "$";
-            
+
             var sevenDay = (usd.PercentChange7d / 100).ToString("P2", localCulture);
             var lastDay = (usd.PercentChange24h / 100).ToString("P2", localCulture);
             var price = usd.Price < 0.01
@@ -159,28 +156,29 @@ public partial class Searches
 
             await using var sparkline = await _service.GetSparklineAsync(crypto.Id, usd.PercentChange7d >= 0);
             var fileName = $"{crypto.Slug}_7d.png";
-            
+
             var toSend = _sender.CreateEmbed()
-                            .WithOkColor()
-                            .WithAuthor($"#{crypto.CmcRank}")
-                            .WithTitle($"{crypto.Name} ({crypto.Symbol})")
-                            .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
-                            .WithThumbnailUrl($"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
-                            .AddField(GetText(strs.market_cap), marketCap, true)
-                            .AddField(GetText(strs.price), price, true)
-                            .AddField(GetText(strs.volume_24h), volume, true)
-                            .AddField(GetText(strs.change_7d_24h), $"{sevenDay} / {lastDay}", true)
-                            .AddField(GetText(strs.market_cap_dominance), dominance, true)
-                            .WithImageUrl($"attachment://{fileName}");
+                                .WithOkColor()
+                                .WithAuthor($"#{crypto.CmcRank}")
+                                .WithTitle($"{crypto.Name} ({crypto.Symbol})")
+                                .WithUrl($"https://coinmarketcap.com/currencies/{crypto.Slug}/")
+                                .WithThumbnailUrl(
+                                    $"https://s3.coinmarketcap.com/static/img/coins/128x128/{crypto.Id}.png")
+                                .AddField(GetText(strs.market_cap), marketCap, true)
+                                .AddField(GetText(strs.price), price, true)
+                                .AddField(GetText(strs.volume_24h), volume, true)
+                                .AddField(GetText(strs.change_7d_24h), $"{sevenDay} / {lastDay}", true)
+                                .AddField(GetText(strs.market_cap_dominance), dominance, true)
+                                .WithImageUrl($"attachment://{fileName}");
 
             if (crypto.CirculatingSupply is double cs)
             {
                 var csStr = cs.ToString("N0", localCulture);
-                
+
                 if (crypto.MaxSupply is double ms)
                 {
                     var perc = (cs / ms).ToString("P1", localCulture);
-                    
+
                     toSend.AddField(GetText(strs.circulating_supply), $"{csStr} ({perc})", true);
                 }
                 else
@@ -192,5 +190,51 @@ public partial class Searches
 
             await ctx.Channel.SendFileAsync(sparkline, fileName, embed: toSend.Build());
         }
+
+        [Cmd]
+        public async Task Coins(int page = 1)
+        {
+            if (--page < 0)
+                return;
+
+            await Response()
+                  .Paginated()
+                  .PageItems(async (page) =>
+                  {
+                      var coins = await _service.GetTopCoins(page + 1);
+
+                      return coins;
+                  })
+                  .PageSize(1)
+                  .Page((items, _) =>
+                  {
+                      var embed = _sender.CreateEmbed()
+                                         .WithOkColor();
+
+                      if (items.Count > 0)
+                      {
+                          foreach (var coin in items)
+                          {
+                              embed.AddField($"#{coin.MarketCapRank} {coin.Symbol} - {coin.Name}",
+                                  $"""
+                                   `Price:` {GetArrowEmoji(coin.PercentChange24h)} {coin.CurrentPrice.ToShortString()}$ ({GetSign(coin.PercentChange24h)}{Math.Round(coin.PercentChange24h, 2)}%)
+                                   `MarketCap:` {coin.MarketCap.ToShortString()}$
+                                   `Supply:` {(coin.CirculatingSupply?.ToShortString() ?? "?")} / {(coin.TotalSupply?.ToShortString() ?? "?")}
+                                   """,
+                                  inline: false);
+                          }
+                      }
+
+                      return embed;
+                  })
+                  .AddFooter(false)
+                  .SendAsync();
+        }
+        
+        private static string GetArrowEmoji(decimal value)
+            => value > 0 ? "▲" : "▼";
+
+        private static string GetSign(decimal value)
+            => value >= 0 ? "+" : "-";
     }
 }

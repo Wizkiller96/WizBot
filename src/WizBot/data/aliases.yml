@@ -1405,6 +1405,10 @@ prompt:
   - prompt
 honeypot:
   - honeypot
+coins:
+  - coins
+  - crypto
+  - cryptos
 # WizNet System
 feedback:
   - feedback
