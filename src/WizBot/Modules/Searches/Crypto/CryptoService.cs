@@ -230,7 +230,8 @@ public class CryptoService : INService
         var result = await _cache.GetOrAddAsync<IReadOnlyCollection<GeckoCoinsResult>>(GetTopCoinsKey(),
             async () => await http.GetFromJsonAsync<List<GeckoCoinsResult>>(
                             "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250")
-                        ?? []);
+                        ?? [],
+            expiry: TimeSpan.FromHours(1));
 
         return result!.Skip(page * 10).Take(10).ToList();
     }
