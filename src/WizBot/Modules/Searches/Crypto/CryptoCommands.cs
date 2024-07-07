@@ -201,11 +201,10 @@ public partial class Searches
                   .Paginated()
                   .PageItems(async (page) =>
                   {
-                      var coins = await _service.GetTopCoins(page + 1);
-
+                      var coins = await _service.GetTopCoins(page);
                       return coins;
                   })
-                  .PageSize(1)
+                  .PageSize(10)
                   .Page((items, _) =>
                   {
                       var embed = _sender.CreateEmbed()

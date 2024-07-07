@@ -4,6 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
@@ -214,16 +215,24 @@ public class CryptoService : INService
         return points;
     }
 
+    private static TypedKey<IReadOnlyCollection<GeckoCoinsResult>> GetTopCoinsKey()
+        => new($"crypto:top_coins");
+
     public async Task<IReadOnlyCollection<GeckoCoinsResult>?> GetTopCoins(int page)
     {
+        if (page >= 25)
+            page = 24;
+        
         using var http = _httpFactory.CreateClient();
 
         http.AddFakeHeaders();
-        
-        var result = await http.GetFromJsonAsync<List<GeckoCoinsResult>>(
-            $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&page={page}&per_page=10");
 
-        return result;
+        var result = await _cache.GetOrAddAsync<IReadOnlyCollection<GeckoCoinsResult>>(GetTopCoinsKey(),
+            async () => await http.GetFromJsonAsync<List<GeckoCoinsResult>>(
+                            "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250")
+                        ?? []);
+
+        return result!.Skip(page * 10).Take(10).ToList();
     }
 }
 
@@ -231,28 +240,28 @@ public sealed class GeckoCoinsResult
 {
     [JsonPropertyName("id")]
     public required string Id { get; init; }
-    
+
     [JsonPropertyName("name")]
     public required string Name { get; init; }
-    
+
     [JsonPropertyName("symbol")]
     public required string Symbol { get; init; }
-    
+
     [JsonPropertyName("current_price")]
     public required decimal CurrentPrice { get; init; }
-    
+
     [JsonPropertyName("price_change_percentage_24h")]
     public required decimal PercentChange24h { get; init; }
-    
+
     [JsonPropertyName("market_cap")]
     public required decimal MarketCap { get; init; }
-    
+
     [JsonPropertyName("circulating_supply")]
     public required decimal? CirculatingSupply { get; init; }
-    
+
     [JsonPropertyName("total_supply")]
     public required decimal? TotalSupply { get; init; }
-    
+
     [JsonPropertyName("market_cap_rank")]
     public required int MarketCapRank { get; init; }
 }
