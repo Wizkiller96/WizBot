@@ -835,7 +835,12 @@ setservericon:
     - img:
         desc: "The URL of the image file to be displayed as the bot's banner."
 send:
-  desc: 'Sends a message to a channel or user. Channel or user can be '
+  desc: |-
+    Sends a message to a channel or user.
+    You can write "channel" (literally word 'channel') first followed by the channel id or channel mention, or
+    You can write "user" (literally word 'user') first followed by the user id or user mention.
+    After either one of those, specify the message to be sent.
+    This command can only be used by the Bot Owner.
   ex:
     - channel 123123123132312 Stop spamming commands plz
     - user 1231231232132 I can see in the console what you're doing.
@@ -3755,7 +3760,11 @@ expredit:
       message:
         desc: "The text that will replace the original response in the expression's output."
 say:
-  desc: Bot will send the message you typed in the specified channel. If you omit the channel name, it will send the message in the current channel. Supports embeds.
+  desc: |-
+    Make the bot say something, or in other words, make the bot send the message.
+    You can optionally specify the channel where the bot will send the message.
+    If you omit the channel name, it will send the message in the current channel.
+    Supports embeds.
   ex:
     - hi
     - '#chat hi'
