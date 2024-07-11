@@ -123,6 +123,8 @@ public partial class Xp
                                })
                                .ToList();
 
+            var rank = _service.GetClubRank(club.Id);
+            
             await Response()
                   .Paginated()
                   .Items(allUsers)
@@ -135,6 +137,7 @@ public partial class Xp
                                   .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
                                   .AddField(GetText(strs.desc),
                                       string.IsNullOrWhiteSpace(club.Description) ? "-" : club.Description)
+                                  .AddField(GetText(strs.rank), $"#{rank}", true)
                                   .AddField(GetText(strs.owner), club.Owner.ToString(), true)
                                   // .AddField(GetText(strs.level_req), club.MinimumLevelReq.ToString(), true)
                                   .AddField(GetText(strs.members),

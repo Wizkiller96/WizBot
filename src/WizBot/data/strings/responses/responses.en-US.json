@@ -890,6 +890,7 @@
   "club_kick_hierarchy": "Only club owner can kick club admins. Owner can't be kicked.",
   "club_renamed": "Club has been renamed to {0}",
   "club_name_taken": "A club with that name already exists.",
+  "rank": "Rank",
   "template_reloaded": "Xp template has been reloaded.",
   "expr_edited": "Expression Edited",
   "self_assign_are_exclusive": "You can only choose 1 role from each group.",
