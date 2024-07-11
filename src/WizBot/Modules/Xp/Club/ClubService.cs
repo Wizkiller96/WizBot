@@ -134,7 +134,7 @@ public class ClubService : INService, IClubService
         return club is not null;
     }
 
-    public async Task<int> GetClubRank(int clubId)
+    public async Task<int> GetClubRankAsync(int clubId)
     {
         await using var uow = _db.GetDbContext();
 

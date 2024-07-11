@@ -123,7 +123,7 @@ public partial class Xp
                                })
                                .ToList();
 
-            var rank = _service.GetClubRank(club.Id);
+            var rank = await _service.GetClubRankAsync(club.Id);
             
             await Response()
                   .Paginated()
