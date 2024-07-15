@@ -2,6 +2,29 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.4] - 13.07.2024
+
+### Added
+
+- Added `.coins` command which lists top 10 cryptos ordered by marketcap
+- Added Clubs rank in the leaderboard to `.clubinfo`
+- Bot owners can now check other people's bank balance (Not server owners, only bot owner, the person who is hosting the bot)
+- You can now send multiple waifu gifts at once to waifus. For example `.waifugift 3xRose @user` will give that user 3 roses
+  - The format is `<NUMBER>x<ITEM>`, no spaces
+- Added `.boosttest` command
+
+### Changed
+
+- Updated command strings to clarify `.say` and `.send` usages
+
+### Fixed
+
+- Fixed `.waifugift` help string
+
+### Removed
+
+- Removed selfhost button from `.donate` command, no idea why it was there in the first place
+
 ## [5.1.3] - 06.07.2024
 
 ### Added

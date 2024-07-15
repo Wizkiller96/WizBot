@@ -112,6 +112,14 @@ greettest:
   params:
     - user:
         desc: "The user to impersonate when sending the greeting, defaulting to yourself if not specified."
+boosttest:
+  desc: Sends the boost message in the current channel as if you just boosted the server. You can optionally specify a different user.
+  ex:
+    - ''
+    - '@SomeoneElse'
+  params:
+    - user:
+        desc: "The user to impersonate when sending the boost message, defaulting to yourself if not specified."
 greetdmtest:
   desc: Sends the greet direct message to you as if you just joined the server. You can optionally specify a different user.
   ex:

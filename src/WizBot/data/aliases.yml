@@ -30,6 +30,8 @@ greettest:
   - greettest
 greetdmtest:
   - greetdmtest
+boosttest:
+  - boosttest
 byetest:
   - byetest
 boost:
