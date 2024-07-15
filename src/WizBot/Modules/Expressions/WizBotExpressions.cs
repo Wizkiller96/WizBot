@@ -398,7 +398,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
 
         var serialized = _service.ExportExpressions(ctx.Guild?.Id);
         await using var stream = await serialized.ToStream();
-        await ctx.Channel.SendFileAsync(stream, "exprs-export.yml");
+        await ctx.User.SendFileAsync(stream, $"exprs-export_{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}_{(ctx.Guild?.Id.ToString() ?? "global")}.yml");
     }
 
     [Cmd]
