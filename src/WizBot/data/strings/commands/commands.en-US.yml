@@ -2752,7 +2752,7 @@ waifutransfer:
       newOwner:
         desc: "The user to whom ownership of the waifu is being transferred."
 waifugift:
-  desc: -|
+  desc: |-
     Gift an item to a waifu user.
     The waifu's value will be increased by the percentage of the gift's value.
     You can optionally prefix the gift with a multiplier to gift the item that many times.
