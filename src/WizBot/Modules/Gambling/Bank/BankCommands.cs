@@ -73,6 +73,27 @@ public partial class Gambling
                 await Response().Error(strs.cant_dm).SendAsync();
             }
         }
+        
+        [Cmd]
+        [OwnerOnly]
+        public async Task BankBalance([Leftover] IUser user)
+        {
+            var bal = await _bank.GetBalanceAsync(user.Id);
+
+            var eb = _sender.CreateEmbed()
+                            .WithOkColor()
+                            .WithDescription(GetText(strs.bank_balance_other(user.ToString(), N(bal))));
+
+            try
+            {
+                await Response().User(ctx.User).Embed(eb).SendAsync();
+                await ctx.OkAsync();
+            }
+            catch
+            {
+                await Response().Error(strs.cant_dm).SendAsync();
+            }
+        }
 
         private async Task BankTakeInternalAsync(long amount, ulong userId)
         {
