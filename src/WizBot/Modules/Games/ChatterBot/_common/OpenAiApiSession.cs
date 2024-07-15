@@ -1,18 +1,15 @@
 ﻿#nullable disable
 using Newtonsoft.Json;
 using OneOf.Types;
-using System.Net.Http.Json;
 using SharpToken;
-using System.CodeDom;
+using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 
 namespace WizBot.Modules.Games.Common.ChatterBot;
 
-public partial class OfficialGptSession : IChatterBotSession
+public partial class OpenAiApiSession : IChatterBotSession
 {
-    private string Uri
-        => $"https://api.openai.com/v1/chat/completions";
-
+    private readonly string _baseUrl;
     private readonly string _apiKey;
     private readonly string _model;
     private readonly int _maxHistory;
@@ -20,13 +17,14 @@ public partial class OfficialGptSession : IChatterBotSession
     private readonly int _minTokens;
     private readonly string _wizbotUsername;
     private readonly GptEncoding _encoding;
-    private List<GPTMessage> messages = new();
+    private List<OpenAiApiMessage> messages = new();
     private readonly IHttpClientFactory _httpFactory;
 
 
-    public OfficialGptSession(
+    public OpenAiApiSession(
+        string url,
         string apiKey,
-        ChatGptModel model,
+        string model,
         int chatHistory,
         int maxTokens,
         int minTokens,
@@ -34,28 +32,32 @@ public partial class OfficialGptSession : IChatterBotSession
         string wizbotUsername,
         IHttpClientFactory factory)
     {
-        _apiKey = apiKey;
-        _httpFactory = factory;
-
-        _model = model switch
+        if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.Absolute, out _))
         {
-            ChatGptModel.Gpt35Turbo => "gpt-3.5-turbo",
-            ChatGptModel.Gpt4o => "gpt-4o",
-            _ => throw new ArgumentException("Unknown, unsupported or obsolete model", nameof(model))
-        };
+            throw new ArgumentException("Invalid OpenAi api url provided", nameof(url));
+        }
 
+        _baseUrl = url.TrimEnd('/');
+
+        _apiKey = apiKey;
+        _model = model;
+        _httpFactory = factory;
         _maxHistory = chatHistory;
         _maxTokens = maxTokens;
         _minTokens = minTokens;
         _wizbotUsername = UsernameCleaner().Replace(wizbotUsername, "");
-        _encoding = GptEncoding.GetEncodingForModel(_model);
-        messages.Add(new()
+        _encoding = GptEncoding.GetEncodingForModel("gpt-4o");
+        if (!string.IsNullOrWhiteSpace(personality))
         {
-            Role = "system",
-            Content = personality,
-            Name = _wizbotUsername
-        });
+            messages.Add(new()
+            {
+                Role = "system",
+                Content = personality,
+                Name = _wizbotUsername
+            });
+        }
     }
+
 
     [GeneratedRegex("[^a-zA-Z0-9_-]")]
     private static partial Regex UsernameCleaner();
@@ -63,14 +65,14 @@ public partial class OfficialGptSession : IChatterBotSession
     public async Task<OneOf.OneOf<ThinkResult, Error<string>>> Think(string input, string username)
     {
         username = UsernameCleaner().Replace(username, "");
-        
+
         messages.Add(new()
         {
             Role = "user",
             Content = input,
             Name = username
         });
-        
+
         while (messages.Count > _maxHistory + 2)
         {
             messages.RemoveAt(1);
@@ -91,28 +93,29 @@ public partial class OfficialGptSession : IChatterBotSession
             }
             else
             {
-                return new Error<string>("Token count exceeded, please increase the number of tokens in the bot config and restart.");
+                return new Error<string>(
+                    "Token count exceeded, please increase the number of tokens in the bot config and restart.");
             }
         }
 
         using var http = _httpFactory.CreateClient();
         http.DefaultRequestHeaders.Authorization = new("Bearer", _apiKey);
-        
-        var data = await http.PostAsJsonAsync(Uri,
-            new Gpt3ApiRequest()
+
+        var data = await http.PostAsJsonAsync($"{_baseUrl}/v1/chat/completions",
+            new OpenAiApiRequest()
             {
                 Model = _model,
                 Messages = messages,
                 MaxTokens = _maxTokens - tokensUsed,
                 Temperature = 1,
             });
-        
+
         var dataString = await data.Content.ReadAsStringAsync();
         try
         {
             var response = JsonConvert.DeserializeObject<OpenAiCompletionResponse>(dataString);
-            
-            Log.Information("Received response: {response} ", dataString);
+
+            // Log.Information("Received response: {Response} ", dataString);
             var res = response?.Choices?[0];
             var message = res?.Message?.Content;
 
@@ -120,14 +123,14 @@ public partial class OfficialGptSession : IChatterBotSession
             {
                 return new Error<string>("ChatGpt: Received no response.");
             }
-            
+
             messages.Add(new()
             {
                 Role = "assistant",
                 Content = message,
                 Name = _wizbotUsername
             });
-            
+
             return new ThinkResult()
             {
                 Text = message,
@@ -141,11 +144,4 @@ public partial class OfficialGptSession : IChatterBotSession
             return new Error<string>("Unexpected response received");
         }
     }
-}
-
-public sealed class ThinkResult
-{
-    public string Text { get; set; }
-    public int TokensIn { get; set; }
-    public int TokensOut { get; set; }
 }

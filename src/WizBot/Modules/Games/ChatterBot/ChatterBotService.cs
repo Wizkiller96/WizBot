@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db.Models;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.ChatterBot;
 using WizBot.Modules.Patronage;
@@ -58,18 +57,21 @@ public class ChatterBotService : IExecOnMessage
 
                 Log.Information("Cleverbot will not work as the api key is missing");
                 return null;
-            case ChatBotImplementation.Gpt:
+            case ChatBotImplementation.OpenAi:
+                var data = _gcs.Data;
                 if (!string.IsNullOrWhiteSpace(_creds.Gpt3ApiKey))
-                    return new OfficialGptSession(_creds.Gpt3ApiKey,
-                        _gcs.Data.ChatGpt.ModelName,
-                        _gcs.Data.ChatGpt.ChatHistory,
-                        _gcs.Data.ChatGpt.MaxTokens,
-                        _gcs.Data.ChatGpt.MinTokens,
-                        _gcs.Data.ChatGpt.PersonalityPrompt,
+                    return new OpenAiApiSession(
+                        data.ChatGpt.ApiUrl,
+                        _creds.Gpt3ApiKey,
+                        data.ChatGpt.ModelName,
+                        data.ChatGpt.ChatHistory,
+                        data.ChatGpt.MaxTokens,
+                        data.ChatGpt.MinTokens,
+                        data.ChatGpt.PersonalityPrompt,
                         _client.CurrentUser.Username,
                         _httpFactory);
 
-                Log.Information("Gpt3 will not work as the api key is missing");
+                Log.Information("Openai Api will likely not work as the api key is missing");
                 return null;
             default:
                 return null;

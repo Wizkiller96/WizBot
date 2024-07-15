@@ -8,7 +8,7 @@ namespace WizBot.Modules.Games.Common;
 public sealed partial class GamesConfig : ICloneable<GamesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 4;
+    public int Version { get; set; } = 5;
 
     [Comment("Hangman related settings (.hangman command)")]
     public HangmanConfig Hangman { get; set; } = new()
@@ -103,10 +103,13 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
         }
     ];
 
-    [Comment(@"Which chatbot API should bot use.
-'cleverbot' - bot will use Cleverbot API. 
-'gpt' - bot will use GPT API")]
-    public ChatBotImplementation ChatBot { get; set; } = ChatBotImplementation.Gpt;
+    [Comment(
+        """
+         Which chatbot API should bot use.
+        'cleverbot' - bot will use Cleverbot API. 
+        'openai' - bot will use OpenAi API
+        """)]
+    public ChatBotImplementation ChatBot { get; set; } = ChatBotImplementation.OpenAi;
 
     public ChatGptConfig ChatGpt { get; set; } = new();
 }
@@ -114,19 +117,38 @@ public sealed partial class GamesConfig : ICloneable<GamesConfig>
 [Cloneable]
 public sealed partial class ChatGptConfig
 {
-    [Comment(@"Which GPT Model should bot use.
-    gpt35turbo - cheapest
-    gpt4o - more expensive, higher quality
-")]
-    public ChatGptModel ModelName { get; set; } = ChatGptModel.Gpt35Turbo;
+    [Comment("""
+             Url to any openai api compatible url.
+             Make sure to modify the modelName appropriately
+             DO NOT add /v1/chat/completions suffix to the url
+             """)]
+    public string ApiUrl { get; set; } = "https://api.openai.com";
 
-    [Comment(@"How should the chat bot behave, what's its personality? (Usage of this counts towards the max tokens)")]
-    public string PersonalityPrompt { get; set; } = "You are a chat bot willing to have a conversation with anyone about anything.";
+    [Comment("""
+             Which GPT Model should bot use.
+             gpt-3.5-turbo - cheapest
+             gpt-4o - more expensive, higher quality
 
-    [Comment(@"The maximum number of messages in a conversation that can be remembered. (This will increase the number of tokens used)")]
+             If you are using another openai compatible api, you may use any of the models supported by that api
+             """)]
+    public string ModelName { get; set; } = "gpt-3.5-turbo";
+
+    [Comment("""
+             How should the chatbot behave, what's its personality?
+             This will be sent as a system message.
+             Usage of this counts towards the max tokens.
+             """)]
+    public string PersonalityPrompt { get; set; } =
+        "You are a chat bot willing to have a conversation with anyone about anything.";
+
+    [Comment(
+        """
+        The maximum number of messages in a conversation that can be remembered. 
+        This will increase the number of tokens used.
+        """)]
     public int ChatHistory { get; set; } = 5;
 
-    [Comment(@"The maximum number of tokens to use per GPT API call")]
+    [Comment(@"The maximum number of tokens to use per OpenAi API call")]
     public int MaxTokens { get; set; } = 100;
 
     [Comment(@"The minimum number of tokens to use per GPT API call, such that chat history is removed to make room.")]
@@ -147,9 +169,9 @@ public sealed partial class TriviaConfig
     public long CurrencyReward { get; set; }
 
     [Comment("""
-        Users won't be able to start trivia games which have 
-        a smaller win requirement than the one specified by this setting.
-        """)]
+             Users won't be able to start trivia games which have 
+             a smaller win requirement than the one specified by this setting.
+             """)]
     public int MinimumWinReq { get; set; } = 1;
 }
 
@@ -163,18 +185,11 @@ public sealed partial class RaceAnimal
 public enum ChatBotImplementation
 {
     Cleverbot,
+    OpenAi = 1,
+
+    [Obsolete]
     Gpt = 1,
+
     [Obsolete]
     Gpt3 = 1,
-}
-
-public enum ChatGptModel
-{
-    [Obsolete]
-    Gpt4,
-    [Obsolete]
-    Gpt432k,
-    
-    Gpt35Turbo,
-    Gpt4o,
 }

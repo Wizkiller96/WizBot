@@ -629,6 +629,13 @@ public class GreetService : INService, IReadyExecutor
         var conf = uow.GuildConfigsForId(guildId, set => set);
         return conf.SendChannelByeMessage;
     }
+    
+    public bool GetBoostEnabled(ulong guildId)
+    {
+        using var uow = _db.GetDbContext();
+        var conf = uow.GuildConfigsForId(guildId, set => set);
+        return conf.SendBoostMessage;
+    }
 
     #endregion
 

@@ -225,5 +225,19 @@ public partial class Administration
             if (!enabled)
                 await Response().Pending(strs.greetdmmsg_enable($"`{prefix}greetdm`")).SendAsync();
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        [Ratelimit(5)]
+        public async Task BoostTest([Leftover] IGuildUser? user = null)
+        {
+            user ??= (IGuildUser)ctx.User;
+
+            await _service.BoostTest((ITextChannel)ctx.Channel, user);
+            var enabled = _service.GetBoostEnabled(ctx.Guild.Id);
+            if (!enabled)
+                await Response().Pending(strs.boostmsg_enable($"`{prefix}boost`")).SendAsync();
+        }
     }
 }
