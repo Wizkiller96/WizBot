@@ -2753,8 +2753,10 @@ waifutransfer:
         desc: "The user to whom ownership of the waifu is being transferred."
 waifugift:
   desc: -|
-    Gift an item to someone.
-    This will increase their waifu value by a percentage of the gift's value.
+    Gift an item to a waifu user.
+    The waifu's value will be increased by the percentage of the gift's value.
+    You can optionally prefix the gift with a multiplier to gift the item that many times.
+    For example, 3xRose will give the waifu 3 roses, 10xBread will give the waifu 10 breads. Do not use plural forms.
     Negative gifts will not show up in waifuinfo.
     Provide no parameters to see a list of items that you can gift.
   ex:
@@ -2762,9 +2764,9 @@ waifugift:
     - Rose @Himesama
   params:
     - page:
-        desc: "The number of pages to display when listing available gifting options."
-    - itemName:
-        desc: "The name of an item to be gifted, which is used to determine the percentage increase in waifu value."
+        desc: "The number of the page to display."
+    - items:
+        desc: "The name of an item to be gifted. With an optional multiplier prefix."
       waifu:
         desc: "The user who is receiving the gift."
 waifulb:

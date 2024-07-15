@@ -181,9 +181,9 @@ dotnet_naming_rule.private_readonly_field.symbols = private_readonly_field
 dotnet_naming_rule.private_readonly_field.style = begins_with_underscore
 dotnet_naming_rule.private_readonly_field.severity = warning
 
-dotnet_naming_rule.private_field.symbols = private_field
-dotnet_naming_rule.private_field.style = camel_case
-dotnet_naming_rule.private_field.severity = warning
+# dotnet_naming_rule.private_field.symbols = private_field
+# dotnet_naming_rule.private_field.style = camel_case
+# dotnet_naming_rule.private_field.severity = warning
 
 dotnet_naming_rule.const_fields.symbols = const_fields
 dotnet_naming_rule.const_fields.style = all_upper

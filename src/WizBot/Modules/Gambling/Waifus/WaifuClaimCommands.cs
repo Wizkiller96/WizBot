@@ -3,6 +3,7 @@ using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Waifu;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Db.Models;
+using TwitchLib.Api.Helix.Models.Teams;
 
 namespace WizBot.Modules.Gambling;
 
@@ -21,8 +22,8 @@ public partial class Gambling
         {
             var price = _service.GetResetPrice(ctx.User);
             var embed = _sender.CreateEmbed()
-                        .WithTitle(GetText(strs.waifu_reset_confirm))
-                        .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
+                            .WithTitle(GetText(strs.waifu_reset_confirm))
+                            .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
 
             if (!await PromptUserConfirmAsync(embed))
                 return;
@@ -307,24 +308,26 @@ public partial class Gambling
                 fansStr = "-";
 
             var embed = _sender.CreateEmbed()
-                        .WithOkColor()
-                        .WithTitle(GetText(strs.waifu)
-                                   + " "
-                                   + (wi.FullName ?? name ?? targetId.ToString())
-                                   + " - \"the "
-                                   + _service.GetClaimTitle(wi.ClaimCount)
-                                   + "\"")
-                        .AddField(GetText(strs.price), N(wi.Price), true)
-                        .AddField(GetText(strs.claimed_by), wi.ClaimerName ?? nobody, true)
-                        .AddField(GetText(strs.likes), wi.AffinityName ?? nobody, true)
-                        .AddField(GetText(strs.changes_of_heart), $"{wi.AffinityCount} - \"the {affInfo}\"", true)
-                        .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
-                        .AddField("\u200B", "\u200B", true)
-                        .AddField(GetText(strs.fans(fansList.Count)), fansStr, true)
-                        .AddField($"Waifus ({wi.ClaimCount})",
-                            wi.ClaimCount == 0 ? nobody : claimsStr,
-                            true)
-                        .AddField(GetText(strs.gifts), itemsStr, true);
+                               .WithOkColor()
+                               .WithTitle(GetText(strs.waifu)
+                                          + " "
+                                          + (wi.FullName ?? name ?? targetId.ToString())
+                                          + " - \"the "
+                                          + _service.GetClaimTitle(wi.ClaimCount)
+                                          + "\"")
+                               .AddField(GetText(strs.price), N(wi.Price), true)
+                               .AddField(GetText(strs.claimed_by), wi.ClaimerName ?? nobody, true)
+                               .AddField(GetText(strs.likes), wi.AffinityName ?? nobody, true)
+                               .AddField(GetText(strs.changes_of_heart),
+                                   $"{wi.AffinityCount} - \"the {affInfo}\"",
+                                   true)
+                               .AddField(GetText(strs.divorces), wi.DivorceCount.ToString(), true)
+                               .AddField("\u200B", "\u200B", true)
+                               .AddField(GetText(strs.fans(fansList.Count)), fansStr, true)
+                               .AddField($"Waifus ({wi.ClaimCount})",
+                                   wi.ClaimCount == 0 ? nobody : claimsStr,
+                                   true)
+                               .AddField(GetText(strs.gifts), itemsStr, true);
 
             await Response().Embed(embed).SendAsync();
         }
@@ -364,30 +367,27 @@ public partial class Gambling
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task WaifuGift(string itemName, [Leftover] IUser waifu)
+        public async Task WaifuGift(MultipleWaifuItems items, [Leftover] IUser waifu)
         {
             if (waifu.Id == ctx.User.Id)
                 return;
 
-            var allItems = _service.GetWaifuItems();
-            var item = allItems.FirstOrDefault(x => x.Name.ToLowerInvariant() == itemName.ToLowerInvariant());
-            if (item is null)
-            {
-                await Response().Error(strs.waifu_gift_not_exist).SendAsync();
-                return;
-            }
-
-            var sucess = await _service.GiftWaifuAsync(ctx.User, waifu, item);
+            var sucess = await _service.GiftWaifuAsync(ctx.User, waifu, items.Item, items.Count);
 
             if (sucess)
             {
                 await Response()
-                      .Confirm(strs.waifu_gift(Format.Bold(item + " " + item.ItemEmoji),
+                      .Confirm(strs.waifu_gift(Format.Bold($"{GetCountString(items)}{items.Item} {items.Item.ItemEmoji}"),
                           Format.Bold(waifu.ToString())))
                       .SendAsync();
             }
             else
                 await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
         }
+        
+        private static string GetCountString(MultipleWaifuItems items)
+            => items.Count > 1
+                ? $"{items.Count}x "
+                : string.Empty;
     }
 }
