@@ -238,6 +238,6 @@ public partial class Searches
             => value > 0 ? "▲" : "▼";
 
         private static string GetSign(decimal value)
-            => value >= 0 ? "+" : "-";
+            => value >= 0 ? "+" : "";
     }
 }
