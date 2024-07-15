@@ -657,32 +657,11 @@ public sealed partial class Help : WizBotModule<HelpService>
                  .Confirm(strs.guide("https://wizbot.cc/commands",
                      "https://wizbot.readthedocs.io/en/latest/"))
                  .SendAsync();
-
-
-    private Task SelfhostAction(SocketMessageComponent smc)
-        => smc.RespondConfirmAsync(_sender,
-            """
-            - In case you don't want or cannot Donate to WizBot project, but you
-            - WizBot is a free and [open source](https://gitlab.com/WizNet/WizBot) project which means you can run your own "selfhosted" instance on your computer.
-
-            *Keep in mind that running the bot on your computer means that the bot will be offline when you turn off your computer*
-
-            - You can find the selfhosting guides by using the `.guide` command and clicking on the second link that pops up.
-            - If you decide to selfhost the bot, still consider [supporting the project](https://patreon.com/join/WizNet) to keep the development going :)
-            """,
-            true);
-
+    
     [Cmd]
     [OnlyPublicBot]
     public async Task Donate()
     {
-        var selfhostInter = _inter.Create(ctx.User.Id,
-            new ButtonBuilder(
-                emote: new Emoji("🖥️"),
-                customId: "donate:selfhosting",
-                label: "Selfhosting"),
-            SelfhostAction);
-
         var eb = _sender.CreateEmbed()
                         .WithOkColor()
                         .WithTitle("Thank you for considering to donate to the WizBot project!");
@@ -719,7 +698,6 @@ public sealed partial class Help : WizBotModule<HelpService>
             await Response()
                   .Channel(await ctx.User.CreateDMChannelAsync())
                   .Embed(eb)
-                  .Interaction(selfhostInter)
                   .SendAsync();
 
             _ = ctx.OkAsync();
