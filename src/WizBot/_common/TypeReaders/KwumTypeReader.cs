@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class KwumTypeReader : WizBotTyperReader<kwum>
+public sealed class KwumTypeReader : WizBotTypeReader<kwum>
 {
     public override ValueTask<TypeReaderResult<kwum>> ReadAsync(ICommandContext context, string input)
     {
@@ -12,7 +12,7 @@ public sealed class KwumTypeReader : WizBotTyperReader<kwum>
     }
 }
 
-public sealed class SmartTextTypeReader : WizBotTyperReader<SmartText>
+public sealed class SmartTextTypeReader : WizBotTypeReader<SmartText>
 {
     public override ValueTask<TypeReaderResult<SmartText>> ReadAsync(ICommandContext ctx, string input)
         => new(TypeReaderResult.FromSuccess(SmartText.CreateFrom(input)));

@@ -1,6 +1,6 @@
 namespace WizBot.Common.TypeReaders;
 
-public sealed class GuildUserTypeReader : WizBotTyperReader<IGuildUser>
+public sealed class GuildUserTypeReader : WizBotTypeReader<IGuildUser>
 {
     public override async ValueTask<TypeReaderResult<IGuildUser>> ReadAsync(ICommandContext ctx, string input)
     {

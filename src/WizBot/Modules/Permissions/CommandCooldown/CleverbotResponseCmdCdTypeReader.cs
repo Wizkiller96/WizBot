@@ -4,7 +4,7 @@ using static WizBot.Common.TypeReaders.TypeReaderResult;
 
 namespace WizBot.Modules.Permissions;
 
-public class CleverbotResponseCmdCdTypeReader : WizBotTyperReader<CleverBotResponseStr>
+public class CleverbotResponseCmdCdTypeReader : WizBotTypeReader<CleverBotResponseStr>
 {
     public override ValueTask<TypeReaderResult<CleverBotResponseStr>> ReadAsync(
         ICommandContext ctx,

@@ -3,7 +3,7 @@
 #nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class Rgba32TypeReader : WizBotTyperReader<Color>
+public sealed class Rgba32TypeReader : WizBotTypeReader<Color>
 {
     public override ValueTask<TypeReaderResult<Color>> ReadAsync(ICommandContext context, string input)
     {

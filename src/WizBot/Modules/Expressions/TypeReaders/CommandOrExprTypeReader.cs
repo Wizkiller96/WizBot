@@ -3,7 +3,7 @@ using WizBot.Modules.WizBotExpressions;
 
 namespace WizBot.Common.TypeReaders;
 
-public sealed class CommandOrExprTypeReader : WizBotTyperReader<CommandOrExprInfo>
+public sealed class CommandOrExprTypeReader : WizBotTypeReader<CommandOrExprInfo>
 {
     private readonly CommandService _cmds;
     private readonly ICommandHandler _commandHandler;

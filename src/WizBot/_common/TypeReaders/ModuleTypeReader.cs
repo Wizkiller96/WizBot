@@ -3,7 +3,7 @@ using WizBot.Modules.Permissions;
 
 namespace WizBot.Common.TypeReaders;
 
-public sealed class ModuleTypeReader : WizBotTyperReader<ModuleInfo>
+public sealed class ModuleTypeReader : WizBotTypeReader<ModuleInfo>
 {
     private readonly CommandService _cmds;
 
@@ -23,7 +23,7 @@ public sealed class ModuleTypeReader : WizBotTyperReader<ModuleInfo>
     }
 }
 
-public sealed class ModuleOrExprTypeReader : WizBotTyperReader<ModuleOrExpr>
+public sealed class ModuleOrExprTypeReader : WizBotTypeReader<ModuleOrExpr>
 {
     private readonly CommandService _cmds;
 

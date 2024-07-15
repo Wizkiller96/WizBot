@@ -3,7 +3,7 @@ using WizBot.Common.TypeReaders.Models;
 
 namespace WizBot.Common.TypeReaders;
 
-public sealed class StoopidTimeTypeReader : WizBotTyperReader<StoopidTime>
+public sealed class StoopidTimeTypeReader : WizBotTypeReader<StoopidTime>
 {
     public override ValueTask<TypeReaderResult<StoopidTime>> ReadAsync(ICommandContext context, string input)
     {

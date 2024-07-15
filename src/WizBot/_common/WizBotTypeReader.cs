@@ -3,7 +3,7 @@
 namespace WizBot.Common.TypeReaders;
 
 [MeansImplicitUse(ImplicitUseTargetFlags.Default | ImplicitUseTargetFlags.WithInheritors)]
-public abstract class WizBotTyperReader<T> : TypeReader
+public abstract class WizBotTypeReader<T> : TypeReader
 {
     public abstract ValueTask<TypeReaderResult<T>> ReadAsync(ICommandContext ctx, string input);
 

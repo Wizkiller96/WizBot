@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class EmoteTypeReader : WizBotTyperReader<Emote>
+public sealed class EmoteTypeReader : WizBotTypeReader<Emote>
 {
     public override ValueTask<TypeReaderResult<Emote>> ReadAsync(ICommandContext ctx, string input)
     {

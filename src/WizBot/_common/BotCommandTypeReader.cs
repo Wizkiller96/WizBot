@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class CommandTypeReader : WizBotTyperReader<CommandInfo>
+public sealed class CommandTypeReader : WizBotTypeReader<CommandInfo>
 {
     private readonly CommandService _cmds;
     private readonly ICommandHandler _handler;

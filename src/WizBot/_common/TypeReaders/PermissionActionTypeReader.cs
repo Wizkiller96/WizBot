@@ -6,7 +6,7 @@ namespace WizBot.Common.TypeReaders;
 /// <summary>
 ///     Used instead of bool for more flexible keywords for true/false only in the permission module
 /// </summary>
-public sealed class PermissionActionTypeReader : WizBotTyperReader<PermissionAction>
+public sealed class PermissionActionTypeReader : WizBotTypeReader<PermissionAction>
 {
     public override ValueTask<TypeReaderResult<PermissionAction>> ReadAsync(ICommandContext context, string input)
     {

@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class GuildTypeReader : WizBotTyperReader<IGuild>
+public sealed class GuildTypeReader : WizBotTypeReader<IGuild>
 {
     private readonly DiscordSocketClient _client;
 

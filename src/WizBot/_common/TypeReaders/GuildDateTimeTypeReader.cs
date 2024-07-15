@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot.Common.TypeReaders;
 
-public sealed class GuildDateTimeTypeReader : WizBotTyperReader<GuildDateTime>
+public sealed class GuildDateTimeTypeReader : WizBotTypeReader<GuildDateTime>
 {
     private readonly ITimezoneService _gts;
 
