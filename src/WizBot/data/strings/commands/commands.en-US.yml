@@ -4578,6 +4578,17 @@ coins:
   params:
     - page:
         desc: "Page number to show. Starts at 1."
+afk:
+  desc: |-
+    Toggles AFK status for yourself with the specified message. 
+    If you don't provide a message it default to a generic one.
+    Anyone @ mentioning you in any server will receive the afk message.
+    This will only work if the other user's message starts with the mention.
+  ex:
+    - ''
+  params:
+    - msg:
+        desc: "The message to send when someone pings you."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

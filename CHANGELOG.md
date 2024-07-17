@@ -2,6 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+### Added
+
+- Added: Added a `.afk <msg>?` command which sets an afk message which will trigger whenever someone pings you
+  - Message will when you type a message in any channel that the bot sees, or after 8 hours, whichever comes first
+  - The specified message will be prefixed with "The user is afk: "
+  - The afk message will disappear 30 seconds after being triggered
+
 ## [5.1.4] - 13.07.2024
 
 ### Added

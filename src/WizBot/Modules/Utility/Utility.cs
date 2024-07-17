@@ -1,4 +1,4 @@
-#nullable disable
+using LinqToDB.Reflection;
 using WizBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using WizBot.Modules.Games.Hangman;
 using WizBot.Modules.Searches.Common;
 
 namespace WizBot.Modules.Utility;
@@ -41,6 +42,7 @@ public partial class Utility : WizBotModule
     private readonly IHttpClientFactory _httpFactory;
     private readonly VerboseErrorsService _veService;
     private readonly IServiceProvider _services;
+    private readonly AfkService _afkService;
 
     public Utility(
         DiscordSocketClient client,
@@ -50,7 +52,8 @@ public partial class Utility : WizBotModule
         DownloadTracker tracker,
         IHttpClientFactory httpFactory,
         VerboseErrorsService veService,
-        IServiceProvider services)
+        IServiceProvider services,
+        AfkService afkService)
     {
         _client = client;
         _coord = coord;
@@ -60,6 +63,7 @@ public partial class Utility : WizBotModule
         _httpFactory = httpFactory;
         _veService = veService;
         _services = services;
+        _afkService = afkService;
     }
 
     [Cmd]
@@ -99,7 +103,7 @@ public partial class Utility : WizBotModule
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task WhosPlaying([Leftover] string game)
+    public async Task WhosPlaying([Leftover] string? game)
     {
         game = game?.Trim().ToUpperInvariant();
         if (string.IsNullOrWhiteSpace(game))
@@ -140,7 +144,7 @@ public partial class Utility : WizBotModule
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(0)]
-    public async Task InRole(int page, [Leftover] IRole role = null)
+    public async Task InRole(int page, [Leftover] IRole? role = null)
     {
         if (--page < 0)
             return;
@@ -178,7 +182,7 @@ public partial class Utility : WizBotModule
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [Priority(1)]
-    public Task InRole([Leftover] IRole role = null)
+    public Task InRole([Leftover] IRole? role = null)
         => InRole(1, role);
 
     [Cmd]
@@ -218,7 +222,7 @@ public partial class Utility : WizBotModule
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task UserId([Leftover] IGuildUser target = null)
+    public async Task UserId([Leftover] IGuildUser? target = null)
     {
         var usr = target ?? ctx.User;
         await Response()
@@ -248,7 +252,7 @@ public partial class Utility : WizBotModule
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Roles(IGuildUser target, int page = 1)
+    public async Task Roles(IGuildUser? target, int page = 1)
     {
         var guild = ctx.Guild;
 
@@ -301,7 +305,7 @@ public partial class Utility : WizBotModule
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task ChannelTopic([Leftover] ITextChannel channel = null)
+    public async Task ChannelTopic([Leftover] ITextChannel? channel = null)
     {
         if (channel is null)
             channel = (ITextChannel)ctx.Channel;
@@ -387,7 +391,7 @@ public partial class Utility : WizBotModule
     [BotPerm(GuildPerm.ManageEmojisAndStickers)]
     [UserPerm(GuildPerm.ManageEmojisAndStickers)]
     [Priority(0)]
-    public async Task EmojiAdd(string name, string url = null)
+    public async Task EmojiAdd(string name, string? url = null)
     {
         name = name.Trim(':');
 
@@ -461,10 +465,10 @@ public partial class Utility : WizBotModule
     [RequireContext(ContextType.Guild)]
     [BotPerm(GuildPerm.ManageEmojisAndStickers)]
     [UserPerm(GuildPerm.ManageEmojisAndStickers)]
-    public async Task StickerAdd(string name = null, string description = null, params string[] tags)
+    public async Task StickerAdd(string? name = null, string? description = null, params string[] tags)
     {
         string format;
-        Stream stream = null;
+        Stream? stream = null;
 
         try
         {
@@ -699,6 +703,19 @@ public partial class Utility : WizBotModule
             await Response().Confirm(strs.verbose_errors_enabled).SendAsync();
         else
             await Response().Confirm(strs.verbose_errors_disabled).SendAsync();
+    }
+    
+    [Cmd]
+    public async Task Afk([Leftover] string text = "No reason specified.")
+    {
+        var succ = await _afkService.SetAfkAsync(ctx.User.Id, text);
+
+        if (succ)
+        {
+            await Response()
+                  .Confirm(strs.afk_set)
+                  .SendAsync();
+        }
     }
 
     [Cmd]

@@ -1106,5 +1106,6 @@
   "queue_search_results": "Type the number of the search result to queue up that track.",
   "overloads": "Overloads",
   "honeypot_on": "Honeypot enabled on this channel." ,
-  "honeypot_off": "Honeypot disabled."
+  "honeypot_off": "Honeypot disabled.",
+  "afk_set": "AFK message set. Type a message in any channel to clear."
 }
