@@ -1110,5 +1110,6 @@
   "overloads": "Overloads",
   "honeypot_on": "Honeypot enabled on this channel." ,
   "honeypot_off": "Honeypot disabled.",
-  "afk_set": "AFK message set. Type a message in any channel to clear."
+  "afk_set": "AFK message set. Type a message in any channel to clear.",
+  "rero_message_not_found": "The specified message wasn't found. Make sure you've specified the message from this channel."
 }

@@ -33,7 +33,7 @@ public partial class Administration
             var msg = await ctx.Channel.GetMessageAsync(messageId);
             if (msg is null)
             {
-                await Response().Error(strs.not_found).SendAsync();
+                await Response().Error(strs.rero_message_not_found).SendAsync();
                 return;
             }
 
