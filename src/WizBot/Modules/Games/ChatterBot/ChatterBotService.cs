@@ -1,5 +1,8 @@
 ﻿#nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
+using WizBot.Db.Models;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.ChatterBot;
 using WizBot.Modules.Patronage;
@@ -9,7 +12,7 @@ namespace WizBot.Modules.Games.Services;
 
 public class ChatterBotService : IExecOnMessage
 {
-    public ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
+    private ConcurrentDictionary<ulong, Lazy<IChatterBotSession>> ChatterBotGuilds { get; }
 
     public int Priority
         => 1;
@@ -20,6 +23,7 @@ public class ChatterBotService : IExecOnMessage
     private readonly IHttpClientFactory _httpFactory;
     private readonly GamesConfigService _gcs;
     private readonly IMessageSenderService _sender;
+    private readonly DbService _db;
     public readonly IPatronageService _ps;
 
     public ChatterBotService(
@@ -30,12 +34,14 @@ public class ChatterBotService : IExecOnMessage
         IHttpClientFactory factory,
         IBotCredentials creds,
         GamesConfigService gcs,
-        IMessageSenderService sender)
+        IMessageSenderService sender,
+        DbService db)
     {
         _client = client;
         _perms = perms;
         _creds = creds;
         _sender = sender;
+        _db = db;
         _httpFactory = factory;
         _perms = perms;
         _gcs = gcs;
@@ -195,5 +201,39 @@ public class ChatterBotService : IExecOnMessage
         }
 
         return false;
+    }
+    
+    public async Task<bool> ToggleChatterBotAsync(ulong guildId)
+    {
+        if (ChatterBotGuilds.TryRemove(guildId, out _))
+        {
+            await using var uow = _db.GetDbContext();
+            await uow.Set<GuildConfig>()
+                     .ToLinqToDBTable()
+                     .Where(x => x.GuildId == guildId)
+                     .UpdateAsync((gc) => new GuildConfig()
+                     {
+                         CleverbotEnabled = false
+                     });
+            await uow.SaveChangesAsync();
+            return false;
+        }
+
+        ChatterBotGuilds.TryAdd(guildId, new(() => CreateSession(), true));
+
+        await using (var uow = _db.GetDbContext())
+        {
+            await uow.Set<GuildConfig>()
+                     .ToLinqToDBTable()
+                     .Where(x => x.GuildId == guildId)
+                     .UpdateAsync((gc) => new GuildConfig()
+                     {
+                         CleverbotEnabled = true
+                     });
+
+            await uow.SaveChangesAsync();
+        }
+
+        return true;
     }
 }

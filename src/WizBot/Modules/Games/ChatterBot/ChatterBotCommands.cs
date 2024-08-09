@@ -18,32 +18,20 @@ public partial class Games
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        [NoPublicBot]
         public async Task CleverBot()
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            if (_service.ChatterBotGuilds.TryRemove(channel.Guild.Id, out _))
-            {
-                await using (var uow = _db.GetDbContext())
-                {
-                    uow.Set<GuildConfig>().SetCleverbotEnabled(ctx.Guild.Id, false);
-                    await uow.SaveChangesAsync();
-                }
+            var newState = await _service.ToggleChatterBotAsync(ctx.Guild.Id);
 
+            if (!newState)
+            {
                 await Response().Confirm(strs.chatbot_disabled).SendAsync();
                 return;
             }
 
-            _service.ChatterBotGuilds.TryAdd(channel.Guild.Id, new(() => _service.CreateSession(), true));
-
-            await using (var uow = _db.GetDbContext())
-            {
-                uow.Set<GuildConfig>().SetCleverbotEnabled(ctx.Guild.Id, true);
-                await uow.SaveChangesAsync();
-            }
-
             await Response().Confirm(strs.chatbot_enabled).SendAsync();
+            
         }
     }
 }

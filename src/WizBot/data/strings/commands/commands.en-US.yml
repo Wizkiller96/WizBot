@@ -1366,10 +1366,10 @@ flip:
         desc: "The number of times the coin is flipped."
 betflip:
   desc: |-
-    Bet to guess will the result be heads or tails.
-    Guessing awards you 1.95x the currency you've bet (rounded up).
+    Bet on the coin flip.
+    The result can be heads or tails.
+    Guessing correctly rewards you with 1.95x of the currency you've bet (rounded up).
     Multiplier can be changed by the bot owner.
-  
   ex:
     - 5 heads
     - 3 t
