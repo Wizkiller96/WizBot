@@ -947,6 +947,10 @@ warnexpire:
 warnclear:
   - warnclear
   - warnc
+warndelete:
+  - warndelete
+  - warnrm
+  - warnd
 warnpunishlist:
   - warnpunishlist
   - warnpl

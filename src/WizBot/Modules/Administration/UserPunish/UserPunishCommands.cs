@@ -272,6 +272,31 @@ public partial class Administration
                   })
                   .SendAsync();
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public Task WarnDelete(IGuildUser user, int index)
+            => WarnDelete(user.Id, index);
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public async Task WarnDelete(ulong userId, int index)
+        {
+            if (--index < 0)
+                return;
+            
+            var warn = await _service.WarnDelete(userId, index);
+
+            if (warn is null)
+            {
+                await Response().Error(strs.warning_not_found).SendAsync();
+                return;
+            }
+            
+            await Response().Confirm(strs.warning_deleted(Format.Bold(index.ToString()))).SendAsync();
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -286,6 +311,7 @@ public partial class Administration
         {
             if (index < 0)
                 return;
+            
             var success = await _service.WarnClearAsync(ctx.Guild.Id, userId, index, ctx.User.ToString());
             var userStr = Format.Bold((ctx.Guild as SocketGuild)?.GetUser(userId)?.ToString() ?? userId.ToString());
             if (index == 0)

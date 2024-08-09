@@ -3177,6 +3177,13 @@ warnclear:
         desc: "The ID of the user whose warnings are being cleared."
       index:
         desc: "The index of the warning to be cleared, or 0 to clear all warnings."
+warndelete:
+  desc: Deletes a warning from a user by its index.
+  ex:
+    - 3
+  params:
+    - index:
+        desc: "The index of the warning to be deleted."
 warnpunishlist:
   desc: Lists punishments for warnings.
   ex:
