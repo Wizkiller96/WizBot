@@ -576,7 +576,7 @@ deleterole:
     - Awesome Role
   params:
     - role:
-        desc: "The role being deleted, as identified by its unique identifier."
+        desc: "The role being deleted, as identified by its id."
 rolecolor:
   desc: Set a role's color using its hex value. Provide no color in order to see the hex value of the color of the specified role. The role you specify has to be lower in the role hierarchy than your highest role.
   ex:
@@ -605,11 +605,11 @@ ban:
     - time:
         desc: "The duration of the temporary ban."
       userId:
-        desc: "The unique identifier of the user being banned."
+        desc: "The id of the user being banned."
       msg:
         desc: "The reason for the ban is provided in this message."
     - userId:
-        desc: "The unique identifier of the user being banned."
+        desc: "The id of the user being banned."
       msg:
         desc: "The reason for the ban is provided in this message."
     - user:
@@ -627,7 +627,7 @@ softban:
       msg:
         desc: "The reason for the ban is described in this string."
     - userId:
-        desc: "The unique identifier for the user being banned and then unbanned."
+        desc: "The id of the user being banned and then unbanned."
       msg:
         desc: "The reason for the ban is described in this string."
 kick:
@@ -1203,7 +1203,7 @@ userblacklist:
     - action:
         desc: "The type of operation to perform on the user, either adding or removing them from the blacklist."
       id:
-        desc: "The unique identifier of the user to be added, removed, or listed."
+        desc: "The id of the user to be added, removed, or listed."
     - action:
         desc: "The type of operation to perform on the user, either adding or removing them from the blacklist."
       usr:
@@ -1223,7 +1223,7 @@ channelblacklist:
     - action:
         desc: "The type of operation to perform on the channel, either adding it to the blacklist or removing it from it."
       id:
-        desc: "The unique identifier of the channel being added, removed, or listed."
+        desc: "The id of the channel being added, removed, or listed."
 serverblacklist:
   desc: |-
     Either [add]s or [rem]oves a server, or servers specified by an ID from a blacklist.
@@ -1239,7 +1239,7 @@ serverblacklist:
     - action:
         desc: "The type of operation to perform on the server(s). It can be either adding or removing them from the blacklist."
       id:
-        desc: "The unique identifier of the server being added, removed, or listed."
+        desc: "The id of the server being added, removed, or listed."
     - action:
         desc: "The type of operation to perform on the server(s). It can be either adding or removing them from the blacklist."
       guild:
@@ -1296,7 +1296,7 @@ quoteshow:
     - 123
   params:
     - quoteId:
-        desc: "The unique identifier for the quote being queried."
+        desc: "The id of the quote being queried."
 quotesearch:
   desc: 'Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author'
   ex:
@@ -1317,14 +1317,14 @@ quoteid:
     - 123456
   params:
     - quoteId:
-        desc: "The unique identifier for the quote to be displayed."
+        desc: "The id of the quote to be displayed."
 quotedelete:
   desc: Deletes a quote with the specified ID. You have to either have the Manage Messages permission or be the creator of the quote to delete it.
   ex:
     - 123456
   params:
     - quoteId:
-        desc: "The unique identifier for the quote being deleted."
+        desc: "The id of the quote being deleted."
 quotedeleteauthor:
   desc: Deletes all quotes by the specified author. If the author is not you, then ManageMessage server permission is required.
   ex:
@@ -1822,7 +1822,7 @@ load:
     - 5
   params:
     - id:
-        desc: "The unique identifier of the playlist to be loaded."
+        desc: "The id of the playlist to be loaded."
 playlists:
   desc: Lists all playlists. Paginated, 20 per page.
   ex:
@@ -1836,7 +1836,7 @@ playlistshow:
     - 1
   params:
     - id:
-        desc: "The unique identifier for the playlist to retrieve songs from."
+        desc: "The id of the playlist to retrieve songs from."
       page:
         desc: "The current page number for the pagination."
 deleteplaylist:
@@ -2232,7 +2232,7 @@ currencytransaction:
     - 3yvd
   params:
     - id:
-        desc: "The unique identifier for the transaction being queried."
+        desc: "The id of the transaction being queried."
 listperms:
   desc: Lists whole permission chain with their indexes. You can specify an optional page number if there are a lot of permissions.
   ex:
@@ -3767,7 +3767,7 @@ expredit:
     - 123 I'm a magical girl
   params:
     - id:
-        desc: "The unique identifier for the expression being edited."
+        desc: "The id of the expression being edited."
       message:
         desc: "The text that will replace the original response in the expression's output."
 say:
@@ -4080,7 +4080,7 @@ xpshopbuy:
     - type:
         desc: "The type of item to purchase, such as a skill or a cosmetic."
       key:
-        desc: "The unique identifier for the item being purchased."
+        desc: "The id of the item being purchased."
 xpshopuse:
   desc: Use a previously purchased item from the xp shop by specifying the type and the key of the item.
   ex:
@@ -4090,7 +4090,7 @@ xpshopuse:
     - type:
         desc: "The type of item to be used, such as an experience point or a skill upgrade."
       key:
-        desc: "The unique identifier for the item in the XP shop that you want to use."
+        desc: "The id of the item in the XP shop that you want to use."
 bible:
   desc: Shows bible verse. You need to supply book name and chapter:verse
   ex:
@@ -4118,13 +4118,13 @@ edit:
     - '#other-channel 771562360594628608 {{"description":"hello"}}'
   params:
     - messageId:
-        desc: "The unique identifier of the message being edited."
+        desc: "The id of the message being edited."
       text:
         desc: "The new text content of the edited message."
     - channel:
         desc: "The target channel where the edited message will be sent or updated in."
       messageId:
-        desc: "The unique identifier of the message being edited."
+        desc: "The id of the message being edited."
       text:
         desc: "The new text content of the edited message."
 delete:
@@ -4135,13 +4135,13 @@ delete:
     - 771562360594628608 5m
   params:
     - messageId:
-        desc: "The unique identifier of a specific message within a channel, used to target the deletion operation."
+        desc: "The id of a specific message within a channel, used to target the deletion operation."
       time:
         desc: "The duration after which the message should be automatically deleted."
     - channel:
         desc: "The channel where the message is located or should be searched for."
       messageId:
-        desc: "The unique identifier of a specific message within a channel, used to target the deletion operation."
+        desc: "The id of a specific message within a channel, used to target the deletion operation."
       time:
         desc: "The duration after which the message should be automatically deleted."
 roleid:
@@ -4294,7 +4294,7 @@ banktake:
     - amount:
         desc: "The total value of funds being withdrawn."
       userId:
-        desc: "The unique identifier for the user whose account is being accessed."
+        desc: "The id of the user whose account is being accessed."
 bankaward:
   desc: Award the specified amount of currency to a user's bank
   ex:
@@ -4485,7 +4485,7 @@ todoedit:
     - abc This is an updated entry
   params:
     - todoId:
-        desc: "The unique identifier for the todo item being edited."
+        desc: "The id of the todo item being edited."
       newMessage:
         desc: "The text of a new task description or update to an existing one."
 todocomplete:
@@ -4494,14 +4494,14 @@ todocomplete:
     - 4a
   params:
     - todoId:
-        desc: "The unique identifier for the todo item being marked as completed."
+        desc: "The id of the todo item being marked as completed."
 tododelete:
   desc: Deletes a todo with the specified ID.
   ex:
     - abc
   params:
     - todoId:
-        desc: "The unique identifier for the todo item being deleted."
+        desc: "The id of the todo item being deleted."
 todoclear:
   desc: Deletes all unarchived todos.
   ex:
@@ -4535,7 +4535,7 @@ todoshow:
     - 4a
   params:
     - todoId:
-        desc: "The unique identifier for the todo item being displayed."
+        desc: "The id of the todo item being displayed."
 todoarchivedelete:
   desc: Deletes the archived todo list with the specified ID.
   ex:
@@ -4597,19 +4597,26 @@ feedback:
     - "Bug I found a bug"
     - "Suggestion I have a suggestion for the bot."
   params:
-    - {}
+    - category:
+        desc: "The category your report feedback falls under."
+    - msg:
+        desc: "The message of your feedback report that will be sent."
 report:
   desc: "Allows you to report a user who abuse the bot to Bot Staff."
   ex:
     - "@User Abused bet flip command."
   params:
-    - {}
+    - user:
+        desc: "The user being reported for abuse."
+    - msg:
+        desc: "The report message explaining what user did that was consider abuse."
 rbxinfo:
   desc: "Display a Roblox User profile information from the Roblox API."
   ex:
     - "Roblox"
   params:
-    - {}
+    - user:
+        desc: "The Roblox username of the user you want to look up."
 wiznet:
   desc: "List information about WizNet and provides a list of current active WizNet Staff."
   ex:
@@ -4631,7 +4638,8 @@ nya:
   ex:
     - "neko"
   params:
-    - {}
+    - category:
+        desc: "The image category you want to pull a random image from."
 gwaifu:
   desc: "Responds with a randomly generated waifu."
   ex:
