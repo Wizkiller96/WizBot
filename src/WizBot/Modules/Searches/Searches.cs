@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
-using WizBot.Modules.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
@@ -11,7 +10,6 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Http.Json;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Searches;
@@ -171,12 +169,12 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async Task Lmgtfy([Leftover] string ffs = null)
+    public async Task Lmgtfy([Leftover] string smh = null)
     {
-        if (!await ValidateQuery(ffs))
+        if (!await ValidateQuery(smh))
             return;
 
-        var shortenedUrl = await _google.ShortenUrl($"https://letmegooglethat.com/?q={Uri.EscapeDataString(ffs)}");
+        var shortenedUrl = await _google.ShortenUrl($"https://letmegooglethat.com/?q={Uri.EscapeDataString(smh)}");
         await Response().Confirm($"<{shortenedUrl}>").SendAsync();
     }
 

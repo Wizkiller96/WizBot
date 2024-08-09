@@ -2078,11 +2078,11 @@ image:
     - query:
         desc: "The search term used to retrieve the desired image."
 lmgtfy:
-  desc: Google something for an idiot.
+  desc: Google something for a baka.
   ex:
-    - query
+    - How to eat a banana
   params:
-    - ffs:
+    - smh:
         desc: "The search query to be entered into the search engine."
 google:
   desc: Get a Google search link for some terms.
