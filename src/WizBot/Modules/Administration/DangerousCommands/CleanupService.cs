@@ -159,10 +159,17 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     {
         await _pubSub.Sub(_keepTriggerKey, OnKeepTrigger);
 
+        _client.JoinedGuild += ClientOnJoinedGuild;
+        
         if (_client.ShardId == 0)
             await _pubSub.Sub(_keepReportKey, OnKeepReport);
     }
 
+    private async Task ClientOnJoinedGuild(SocketGuild arg)
+    {
+        await KeepGuild(arg.Id);
+    }
+    
     private ValueTask OnKeepTrigger(bool arg)
     {
         _pubSub.Pub(_keepReportKey,
