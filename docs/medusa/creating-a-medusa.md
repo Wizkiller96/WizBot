@@ -156,7 +156,7 @@ This section will guide you through how to create a simple custom medusa. You ca
     <ItemGroup>
         <!-- Base medusa package. You MUST reference this in order to have a working medusa -->
         <!-- Also, this package comes from MyGet, which requires you to have a NuGet.Config file next to your .csproj -->
-        <PackageReference Include="WizBot.Medusa" Version="4.3.9">
+        <PackageReference Include="WizBot.Medusa" Version="5.*">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 
@@ -180,8 +180,7 @@ This section will guide you through how to create a simple custom medusa. You ca
 ```
 - Create a `MySnek.cs` file and add the following contents
 ```cs
-using WizBot.Snake;
-using WizBot;
+using WizBot.Medusa;
 using Discord;
 
 public sealed class MySnek : Snek
@@ -200,13 +199,14 @@ public sealed class MySnek : Snek
 }
 ```
 - Create `res.yml` and `cmds.yml` files with the following contents
+
 `res.yml`
 ```yml
 medusa.description: "This is my medusa's description"
 hello: "Hello {0}, from res.yml!"
 ```
 
-`cmds.yml`
+`cmds.yml`  
 ```yml
 hello: 
   desc: "This is a basic hello command"
