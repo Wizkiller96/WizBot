@@ -64,23 +64,6 @@ public partial class Administration
             await SendResult(result);
             await progressMsg.DeleteAsync();
         }
-        
-        private async Task SendResult(PruneResult result)
-        {
-            switch (result)
-            {
-                case PruneResult.Success:
-                    break;
-                case PruneResult.AlreadyRunning:
-                    break;
-                case PruneResult.FeatureLimit:
-                    await Response().Pending(strs.feature_limit_reached_owner).SendAsync();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(result), result, null);
-            }
-        }
 
         // prune x
         [Cmd]
@@ -217,6 +200,28 @@ public partial class Administration
 
 
             await Response().Confirm(strs.prune_cancelled).SendAsync();
+        }
+        
+        
+        private async Task SendResult(PruneResult result)
+        {
+            switch (result)
+            {
+                case PruneResult.Success:
+                    break;
+                case PruneResult.AlreadyRunning:
+                    var msg = await Response().Pending(strs.prune_already_running).SendAsync();
+                    msg.DeleteAfter(5);
+                    break;
+                case PruneResult.FeatureLimit:
+                    var msg2 = await Response().Pending(strs.feature_limit_reached_owner).SendAsync();
+                    msg2.DeleteAfter(10);
+                    break;
+                default:
+                    Log.Error("Unhandled result received in prune: {Result}", result);
+                    await Response().Error(strs.error_occured).SendAsync();
+                    break;
+            }
         }
     }
 }

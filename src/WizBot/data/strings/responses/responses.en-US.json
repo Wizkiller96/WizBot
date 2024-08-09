@@ -38,6 +38,7 @@
   "prune_cancelled": "Pruning was cancelled.",
   "prune_not_found": "No active prune was found on this server.",
   "prune_progress": "Pruning... {0}/{1} messages deleted.",
+  "prune_already_running": "A prune is already running on this server.",
   "timeoutdm": "You have been timed out in {0} server.\nReason: {1}",
   "timedout_user": "User Timed Out",
   "remove_roles_pl": "have had their roles removed",
