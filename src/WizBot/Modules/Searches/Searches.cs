@@ -98,24 +98,7 @@ public partial class Searches : WizBotModule<SearchesService>
         var (data, err) = await _service.GetTimeDataAsync(query);
         if (err is not null)
         {
-            LocStr errorKey;
-            switch (err)
-            {
-                case TimeErrors.ApiKeyMissing:
-                    errorKey = strs.api_key_missing;
-                    break;
-                case TimeErrors.InvalidInput:
-                    errorKey = strs.invalid_input;
-                    break;
-                case TimeErrors.NotFound:
-                    errorKey = strs.not_found;
-                    break;
-                default:
-                    errorKey = strs.error_occured;
-                    break;
-            }
-
-            await Response().Error(errorKey).SendAsync();
+            await HandleErrorAsync(err.Value);
             return;
         }
 
@@ -479,8 +462,7 @@ public partial class Searches : WizBotModule<SearchesService>
     [RequireContext(ContextType.Guild)]
     public async Task Avatar([Leftover] IGuildUser usr = null)
     {
-        if (usr is null)
-            usr = (IGuildUser)ctx.User;
+        usr ??= (IGuildUser)ctx.User;
 
         var avatarUrl = usr.RealAvatarUrl(2048);
 

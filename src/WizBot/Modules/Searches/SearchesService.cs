@@ -104,26 +104,26 @@ public class SearchesService : INService
         }
     }
 
-    public Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataAsync(string arg)
+    public Task<((string Address, DateTime Time, string TimeZoneName), ErrorType?)> GetTimeDataAsync(string arg)
         => GetTimeDataFactory(arg);
 
     //return _cache.GetOrAddCachedDataAsync($"nadeko_time_{arg}",
     //    GetTimeDataFactory,
     //    arg,
     //    TimeSpan.FromMinutes(1));
-    private async Task<((string Address, DateTime Time, string TimeZoneName), TimeErrors?)> GetTimeDataFactory(
+    private async Task<((string Address, DateTime Time, string TimeZoneName), ErrorType?)> GetTimeDataFactory(
         string query)
     {
         query = query.Trim();
 
         if (string.IsNullOrEmpty(query))
-            return (default, TimeErrors.InvalidInput);
+            return (default, ErrorType.InvalidInput);
 
 
         var locIqKey = _creds.GetCreds().LocationIqApiKey;
         var tzDbKey = _creds.GetCreds().TimezoneDbApiKey;
         if (string.IsNullOrWhiteSpace(locIqKey) || string.IsNullOrWhiteSpace(tzDbKey))
-            return (default, TimeErrors.ApiKeyMissing);
+            return (default, ErrorType.ApiKeyMissing);
 
         try
         {
@@ -147,7 +147,7 @@ public class SearchesService : INService
             if (responses is null || responses.Length == 0)
             {
                 Log.Warning("Geocode lookup failed for: {Query}", query);
-                return (default, TimeErrors.NotFound);
+                return (default, ErrorType.NotFound);
             }
 
             var geoData = responses[0];
@@ -171,7 +171,7 @@ public class SearchesService : INService
         catch (Exception ex)
         {
             Log.Error(ex, "Weather error: {Message}", ex.Message);
-            return (default, TimeErrors.NotFound);
+            return (default, ErrorType.NotFound);
         }
     }
 
