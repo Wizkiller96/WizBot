@@ -27,5 +27,15 @@ public partial class Administration
                   .Confirm($"{result.GuildCount} guilds' data remain in the database.")
                   .SendAsync();
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        public async Task Keep()
+        {
+            var result = await _svc.KeepGuild(Context.Guild.Id);
+
+            await Response().Text("This guild's bot data will be saved.").SendAsync();
+        }
     }
 }

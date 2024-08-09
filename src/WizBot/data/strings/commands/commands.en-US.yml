@@ -4598,6 +4598,13 @@ afk:
   params:
     - msg:
         desc: "The message to send when someone pings you."
+keep:
+  desc: |-
+    The current serve, won't be deleted from WizBot's database during the purge.
+  ex:
+    - ''
+  params:
+    - {}
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

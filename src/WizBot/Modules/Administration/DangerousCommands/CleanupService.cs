@@ -1,6 +1,7 @@
 ﻿using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
+using LinqToDB.Mapping;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
 
@@ -75,46 +76,49 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
         // delete expressions
         await ctx.GetTable<WizBotExpression>()
-                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
-                                       .Contains(x.GuildId.Value))
+                 .Where(x => x.GuildId != null
+                             && !tempTable.Select(x => x.GuildId)
+                                          .Contains(x.GuildId.Value))
                  .DeleteAsync();
-        
+
         // delete quotes
         await ctx.GetTable<Quote>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();
-        
+
         // delete planted currencies
         await ctx.GetTable<PlantedCurrency>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();
-        
+
         // delete image only channels
         await ctx.GetTable<ImageOnlyChannel>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();
-        
+
         // delete reaction roles
         await ctx.GetTable<ReactionRoleV2>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();
-        
+
         // delete ignored users
         await ctx.GetTable<DiscordPermOverride>()
-                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
-                                       .Contains(x.GuildId.Value))
+                 .Where(x => x.GuildId != null
+                             && !tempTable.Select(x => x.GuildId)
+                                          .Contains(x.GuildId.Value))
                  .DeleteAsync();
-        
+
         // delete perm overrides
         await ctx.GetTable<DiscordPermOverride>()
-                 .Where(x => x.GuildId != null && !tempTable.Select(x => x.GuildId)
-                                       .Contains(x.GuildId.Value))
+                 .Where(x => x.GuildId != null
+                             && !tempTable.Select(x => x.GuildId)
+                                          .Contains(x.GuildId.Value))
                  .DeleteAsync();
-        
+
         // delete repeaters
         await ctx.GetTable<Repeater>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
@@ -126,7 +130,25 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
             GuildCount = guildIds.Keys.Count,
         };
     }
-    
+
+    public async Task<bool> KeepGuild(ulong guildId)
+    {
+        await using var db = _db.GetDbContext();
+        await using var ctx = db.CreateLinqToDBContext();
+
+        var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
+        
+        if (await table.AnyAsyncLinqToDB(x => x.GuildId == guildId))
+            return false;
+
+        await table.InsertAsync(() => new()
+        {
+            GuildId = guildId
+        });
+
+        return true;
+    }
+
     private ValueTask OnKeepReport(KeepReport report)
     {
         guildIds[report.ShardId] = report.GuildIds;
@@ -152,4 +174,10 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
         return default;
     }
+}
+
+public class KeptGuilds
+{
+    [PrimaryKey]
+    public ulong GuildId { get; set; }
 }

@@ -1417,6 +1417,8 @@ coins:
   - cryptos
 afk:
   - afk
+keep:
+  - keep
 # WizNet System
 feedback:
   - feedback
