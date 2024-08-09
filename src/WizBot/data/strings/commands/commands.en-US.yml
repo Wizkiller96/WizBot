@@ -1370,7 +1370,7 @@ betflip:
     The result can be heads or tails.
     Guessing correctly rewards you with 1.95x of the currency you've bet (rounded up).
     Multiplier can be changed by the bot owner.
-    You can type 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 5 heads
     - 3 t
@@ -1519,7 +1519,7 @@ betroll:
   desc: |-
     Bets the specified amount of currency and rolls a dice.
     Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.
-    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 5
   params:
@@ -1530,7 +1530,7 @@ luckyladder:
     Bets the specified amount of currency on the lucky ladder.
     You can stop on one of many different multipliers.
     The won amount is rounded down to the nearest whole number.
-    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 10
   params:
@@ -1635,8 +1635,8 @@ choose:
 rps:
   desc: |-
     Play a game of Rocket-Paperclip-Scissors with WizBot.
-    You can bet on it. Multiplier is the same as on betflip.
-    You can type 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
+    You can bet on it. Winning awards you 1.95x of the bet.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - r 100
     - scissors
@@ -2718,7 +2718,7 @@ betstats:
 slot:
   desc: |-
     Play WizBot slots by placing your bet.
-    You can type 'all', 'half' or 'X%' to bet that part of your current balance.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 5
   params:
@@ -4344,7 +4344,7 @@ betdraw:
     You can specify `r` or `b` for red or black, and `h` or `l` for high or low.
     You can specify only h/l or only r/b or both.
     Returns are high but **7 always loses**.
-    You can type 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
+    You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 50 r
     - 200 b l
