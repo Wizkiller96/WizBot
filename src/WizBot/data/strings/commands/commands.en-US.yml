@@ -3884,13 +3884,6 @@ rafflecur:
         desc: "The minimum or maximum amount of currency that can be used for betting."
       mixed:
         desc: "The parameter determines whether the raffle operates in \"fixed\" or \"proportional\" mode."
-rip:
-  desc: Shows the inevitable fate of someone.
-  ex:
-    - '@Someone'
-  params:
-    - usr:
-        desc: "The user whose fate is being revealed."
 autodisconnect:
   desc: Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs and queue repeat option is set to `none`.
   ex:

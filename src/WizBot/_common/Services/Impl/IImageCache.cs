@@ -11,7 +11,5 @@ public interface IImageCache
     Task<byte[]?> GetDiceAsync(int num);
     Task<byte[]?> GetSlotEmojiAsync(int number);
     Task<byte[]?> GetSlotBgAsync();
-    Task<byte[]?> GetRipBgAsync();
-    Task<byte[]?> GetRipOverlayAsync();
     Task<byte[]?> GetImageDataAsync(Uri url);
 }

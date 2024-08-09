@@ -12,11 +12,6 @@ public class FontProvider : INService
     public FontFamily NotoSans { get; }
     //public FontFamily Emojis { get; }
 
-    /// <summary>
-    ///     Font used for .rip command
-    /// </summary>
-    public Font RipFont { get; }
-
     public List<FontFamily> FallBackFonts { get; }
     private readonly FontCollection _fonts;
 
@@ -53,8 +48,7 @@ public class FontProvider : INService
             else if (font.EndsWith(".ttc"))
                 FallBackFonts.AddRange(_fonts.AddCollection(font));
         }
-
-        RipFont = NotoSans.CreateFont(20, FontStyle.Bold);
+        
         DottyFont = FallBackFonts.First(x => x.Name == "dotty");
     }
 }

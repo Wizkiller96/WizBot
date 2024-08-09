@@ -40,16 +40,6 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async Task Rip([Leftover] IGuildUser usr)
-    {
-        var av = usr.RealAvatarUrl();
-        await using var picStream = await _service.GetRipPictureAsync(usr.Nickname ?? usr.Username, av);
-        await ctx.Channel.SendFileAsync(picStream,
-            "rip.png",
-            $"Rip {Format.Bold(usr.ToString())} \n\t- " + Format.Italics(ctx.User.ToString()));
-    }
-
-    [Cmd]
     public async Task Weather([Leftover] string query)
     {
         if (!await ValidateQuery(query))

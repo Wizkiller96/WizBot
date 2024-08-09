@@ -74,10 +74,4 @@ public sealed class ImageCache : IImageCache, INService
 
     public Task<byte[]?> GetSlotBgAsync()
         => GetImageDataAsync(_ic.Data.Slots.Bg);
-
-    public Task<byte[]?> GetRipBgAsync()
-        => GetImageDataAsync(_ic.Data.Rip.Bg);
-
-    public Task<byte[]?> GetRipOverlayAsync()
-        => GetImageDataAsync(_ic.Data.Rip.Overlay);
 }

@@ -73,56 +73,6 @@ public class SearchesService : INService
         }
     }
 
-    public async Task<Stream> GetRipPictureAsync(string text, Uri imgUrl)
-        => (await GetRipPictureFactory(text, imgUrl)).ToStream();
-
-    private void DrawAvatar(Image bg, Image avatarImage)
-        => bg.Mutate(x => x.Grayscale().DrawImage(avatarImage, new(83, 139), new GraphicsOptions()));
-
-    public async Task<byte[]> GetRipPictureFactory(string text, Uri avatarUrl)
-    {
-        using var bg = Image.Load<Rgba32>(await _imgs.GetRipBgAsync());
-        var result = await _c.GetImageDataAsync(avatarUrl);
-        if (!result.TryPickT0(out var data, out _))
-        {
-            using var http = _httpFactory.CreateClient();
-            data = await http.GetByteArrayAsync(avatarUrl);
-            using (var avatarImg = Image.Load<Rgba32>(data))
-            {
-                avatarImg.Mutate(x => x.Resize(85, 85).ApplyRoundedCorners(42));
-                await using var avStream = await avatarImg.ToStreamAsync();
-                data = avStream.ToArray();
-                DrawAvatar(bg, avatarImg);
-            }
-
-            await _c.SetImageDataAsync(avatarUrl, data);
-        }
-        else
-        {
-            using var avatarImg = Image.Load<Rgba32>(data);
-            DrawAvatar(bg, avatarImg);
-        }
-
-        bg.Mutate(x => x.DrawText(
-            new TextOptions(_fonts.RipFont)
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                FallbackFontFamilies = _fonts.FallBackFonts,
-                Origin = new(bg.Width / 2, 225),
-            },
-            text,
-            Color.Black));
-
-        //flowa
-        using (var flowers = Image.Load(await _imgs.GetRipOverlayAsync()))
-        {
-            bg.Mutate(x => x.DrawImage(flowers, new(0, 0), new GraphicsOptions()));
-        }
-
-        await using var stream = bg.ToStream();
-        return stream.ToArray();
-    }
-
     public async Task<WeatherData> GetWeatherDataAsync(string query)
     {
         query = query.Trim().ToLowerInvariant();
@@ -396,12 +346,11 @@ public class SearchesService : INService
     private async Task<OmdbMovie> GetMovieDataFactory(string name)
     {
         using var http = _httpFactory.CreateClient();
-        var res = await http.GetStringAsync(string.Format("https://omdbapi.nadeko.bot/"
-                                                          + "?t={0}"
-                                                          + "&y="
-                                                          + "&plot=full"
-                                                          + "&r=json",
-            name.Trim().Replace(' ', '+')));
+        var res = await http.GetStringAsync("https://omdbapi.nadeko.bot/"
+                                            + $"?t={name.Trim().Replace(' ', '+')}"
+                                            + "&y="
+                                            + "&plot=full"
+                                            + "&r=json");
         var movie = JsonConvert.DeserializeObject<OmdbMovie>(res);
         if (movie?.Title is null)
             return null;
@@ -467,11 +416,11 @@ public class SearchesService : INService
         try
         {
             var result = await _c.GetOrAddAsync($"wikipedia_{query}",
-                                     async _ =>
+                                     async () =>
                                      {
                                          using var http = _httpFactory.CreateClient();
                                          http.DefaultRequestHeaders.Clear();
-                                         
+
                                          return await http.GetStringAsync(
                                              "https://en.wikipedia.org/w/api.php?action=query"
                                              + "&format=json"
