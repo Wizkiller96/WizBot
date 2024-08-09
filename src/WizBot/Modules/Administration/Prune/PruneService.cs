@@ -26,21 +26,21 @@ public class PruneService : INService
     )
     {
         ArgumentNullException.ThrowIfNull(channel, nameof(channel));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
         var originalAmount = amount;
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
         using var cancelSource = new CancellationTokenSource();
         if (!_pruningGuilds.TryAdd(channel.GuildId, cancelSource))
             return PruneResult.AlreadyRunning;
         
-        if (!await _ps.LimitHitAsync(LimitedFeatureName.Prune, channel.Guild.OwnerId))
-        {
-            return PruneResult.FeatureLimit;
-        }
-
         try
         {
+            if (!await _ps.LimitHitAsync(LimitedFeatureName.Prune, channel.Guild.OwnerId))
+            {
+                return PruneResult.FeatureLimit;
+            }
+
             var now = DateTime.UtcNow;
             IMessage[] msgs;
             IMessage lastMessage = null;
