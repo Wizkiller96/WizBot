@@ -399,10 +399,14 @@ public partial class Searches : WizBotModule<SearchesService>
     [Cmd]
     public async Task Catfact()
     {
-        using var http = _httpFactory.CreateClient();
-        var response = await http.GetStringAsync("https://catfact.ninja/fact");
+        var maybeFact = await _service.GetCatFactAsync();
 
-        var fact = JObject.Parse(response)["fact"].ToString();
+        if (!maybeFact.TryPickT0(out var fact, out var error))
+        {
+            await HandleErrorAsync(error);
+            return;
+        }
+
         await Response().Confirm("🐈" + GetText(strs.catfact), fact).SendAsync();
     }
 

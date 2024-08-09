@@ -2,14 +2,8 @@
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OneOf.Types;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using Color = SixLabors.ImageSharp.Color;
-using Image = SixLabors.ImageSharp.Image;
+using System.Text.Json;
+using OneOf;
 
 namespace WizBot.Modules.Searches.Services;
 
@@ -457,6 +451,22 @@ public class SearchesService : INService
 
             return ErrorType.Unknown;
         }
+    }
+    
+    public async Task<OneOf<string, ErrorType>> GetCatFactAsync()
+    {
+        using var http = _httpFactory.CreateClient();
+        var response = await http.GetStringAsync("https://catfact.ninja/fact").ConfigureAwait(false);
+
+        var doc = JsonDocument.Parse(response);
+
+
+        if (!doc.RootElement.TryGetProperty("fact", out var factElement))
+        {
+            return ErrorType.Unknown;
+        }
+
+        return factElement.ToString();
     }
 }
 
