@@ -2,7 +2,7 @@
 
 ## Getting started
 
-This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/WizBet/example_medusa)
+This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/WizNet/example_medusa)
 
 #### Prerequisite
 - [.net8 sdk](https://dotnet.microsoft.com/en-us/download) installed
