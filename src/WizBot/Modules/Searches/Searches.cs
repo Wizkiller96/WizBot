@@ -136,11 +136,11 @@ public partial class Searches : WizBotModule<SearchesService>
         }
 
         var eb = _sender.CreateEmbed()
-                 .WithOkColor()
-                 .WithTitle(GetText(strs.time_new))
-                 .WithDescription(Format.Code(data.Time.ToString(Culture)))
-                 .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
-                 .AddField(GetText(strs.timezone), data.TimeZoneName, true);
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.time_new))
+                    .WithDescription(Format.Code(data.Time.ToString(Culture)))
+                    .AddField(GetText(strs.location), string.Join('\n', data.Address.Split(", ")), true)
+                    .AddField(GetText(strs.timezone), data.TimeZoneName, true);
 
         await Response().Embed(eb).SendAsync();
     }
@@ -162,14 +162,16 @@ public partial class Searches : WizBotModule<SearchesService>
 
         await Response()
               .Embed(_sender.CreateEmbed()
-                     .WithOkColor()
-                     .WithTitle(movie.Title)
-                     .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
-                     .WithDescription(movie.Plot.TrimTo(1000))
-                     .AddField("Rating", movie.ImdbRating, true)
-                     .AddField("Genre", movie.Genre, true)
-                     .AddField("Year", movie.Year, true)
-                     .WithImageUrl(Uri.IsWellFormedUriString(movie.Poster, UriKind.Absolute) ? movie.Poster : null))
+                            .WithOkColor()
+                            .WithTitle(movie.Title)
+                            .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
+                            .WithDescription(movie.Plot.TrimTo(1000))
+                            .AddField("Rating", movie.ImdbRating, true)
+                            .AddField("Genre", movie.Genre, true)
+                            .AddField("Year", movie.Year, true)
+                            .WithImageUrl(Uri.IsWellFormedUriString(movie.Poster, UriKind.Absolute)
+                                ? movie.Poster
+                                : null))
               .SendAsync();
     }
 
@@ -244,9 +246,9 @@ public partial class Searches : WizBotModule<SearchesService>
 
         await Response()
               .Embed(_sender.CreateEmbed()
-                     .WithOkColor()
-                     .AddField(GetText(strs.original_url), $"<{query}>")
-                     .AddField(GetText(strs.short_url), $"<{shortLink}>"))
+                        .WithOkColor()
+                        .AddField(GetText(strs.original_url), $"<{query}>")
+                        .AddField(GetText(strs.short_url), $"<{shortLink}>"))
               .SendAsync();
     }
 
@@ -266,13 +268,13 @@ public partial class Searches : WizBotModule<SearchesService>
         }
 
         var embed = _sender.CreateEmbed()
-                    .WithOkColor()
-                    .WithTitle(card.Name)
-                    .WithDescription(card.Description)
-                    .WithImageUrl(card.ImageUrl)
-                    .AddField(GetText(strs.store_url), card.StoreUrl, true)
-                    .AddField(GetText(strs.cost), card.ManaCost, true)
-                    .AddField(GetText(strs.types), card.Types, true);
+                        .WithOkColor()
+                        .WithTitle(card.Name)
+                        .WithDescription(card.Description)
+                        .WithImageUrl(card.ImageUrl)
+                        .AddField(GetText(strs.store_url), card.StoreUrl, true)
+                        .AddField(GetText(strs.cost), card.ManaCost, true)
+                        .AddField(GetText(strs.types), card.Types, true);
 
         await Response().Embed(embed).SendAsync();
     }
@@ -331,10 +333,10 @@ public partial class Searches : WizBotModule<SearchesService>
                           {
                               var item = items[0];
                               return _sender.CreateEmbed()
-                                     .WithOkColor()
-                                     .WithUrl(item.Permalink)
-                                     .WithTitle(item.Word)
-                                     .WithDescription(item.Definition);
+                                        .WithOkColor()
+                                        .WithUrl(item.Permalink)
+                                        .WithTitle(item.Word)
+                                        .WithDescription(item.Definition);
                           })
                           .SendAsync();
                     return;
@@ -402,11 +404,11 @@ public partial class Searches : WizBotModule<SearchesService>
                   {
                       var model = items.First();
                       var embed = _sender.CreateEmbed()
-                                  .WithDescription(ctx.User.Mention)
-                                  .AddField(GetText(strs.word), model.Word, true)
-                                  .AddField(GetText(strs._class), model.WordType, true)
-                                  .AddField(GetText(strs.definition), model.Definition)
-                                  .WithOkColor();
+                                    .WithDescription(ctx.User.Mention)
+                                    .AddField(GetText(strs.word), model.Word, true)
+                                    .AddField(GetText(strs._class), model.WordType, true)
+                                    .AddField(GetText(strs.definition), model.Definition)
+                                    .WithOkColor();
 
                       if (!string.IsNullOrWhiteSpace(model.Example))
                           embed.AddField(GetText(strs.example), model.Example);
@@ -432,22 +434,36 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async Task Wiki([Leftover] string query = null)
+    public async Task Wiki([Leftover] string query)
     {
         query = query?.Trim();
 
         if (!await ValidateQuery(query))
             return;
 
-        using var http = _httpFactory.CreateClient();
-        var result = await http.GetStringAsync(
-            "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=info&redirects=1&formatversion=2&inprop=url&titles="
-            + Uri.EscapeDataString(query));
-        var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
-        if (data.Query.Pages[0].Missing || string.IsNullOrWhiteSpace(data.Query.Pages[0].FullUrl))
-            await Response().Error(strs.wiki_page_not_found).SendAsync();
-        else
-            await Response().Text(data.Query.Pages[0].FullUrl).SendAsync();
+        var maybeRes = await _service.GetWikipediaPageAsync(query);
+        if (!maybeRes.TryPickT0(out var res, out var error))
+        {
+            await HandleErrorAsync(error);
+            return;
+        }
+
+        var data = res.Data;
+        await Response().Text(data.Url).SendAsync();
+    }
+
+    public Task<IUserMessage> HandleErrorAsync(ErrorType error)
+    {
+        var errorKey = error switch
+        {
+            ErrorType.ApiKeyMissing => strs.api_key_missing,
+            ErrorType.InvalidInput => strs.invalid_input,
+            ErrorType.NotFound => strs.not_found,
+            ErrorType.Unknown => strs.error_occured,
+            _ => strs.error_occured,
+        };
+
+        return Response().Error(errorKey).SendAsync();
     }
 
     [Cmd]
@@ -481,10 +497,10 @@ public partial class Searches : WizBotModule<SearchesService>
         await Response()
               .Embed(
                   _sender.CreateEmbed()
-                      .WithOkColor()
-                      .AddField("Username", usr.ToString())
-                      .AddField("Avatar Url", avatarUrl)
-                      .WithThumbnailUrl(avatarUrl.ToString()))
+                        .WithOkColor()
+                        .AddField("Username", usr.ToString())
+                        .AddField("Avatar Url", avatarUrl)
+                        .WithThumbnailUrl(avatarUrl.ToString()))
               .SendAsync();
     }
 

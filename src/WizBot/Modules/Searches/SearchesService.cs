@@ -2,6 +2,7 @@
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OneOf.Types;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -454,4 +455,76 @@ public class SearchesService : INService
 
         return gamesMap[key];
     }
+    
+    public async Task<OneOf.OneOf<WikipediaReply, ErrorType>> GetWikipediaPageAsync(string query)
+    {
+        query = query.Trim();
+        if (string.IsNullOrEmpty(query))
+        {
+            return ErrorType.InvalidInput;
+        }
+
+        try
+        {
+            var result = await _c.GetOrAddAsync($"wikipedia_{query}",
+                                     async _ =>
+                                     {
+                                         using var http = _httpFactory.CreateClient();
+                                         http.DefaultRequestHeaders.Clear();
+                                         
+                                         return await http.GetStringAsync(
+                                             "https://en.wikipedia.org/w/api.php?action=query"
+                                             + "&format=json"
+                                             + "&prop=info"
+                                             + "&redirects=1"
+                                             + "&formatversion=2"
+                                             + "&inprop=url"
+                                             + "&titles="
+                                             + Uri.EscapeDataString(query));
+                                     },
+                                     TimeSpan.FromHours(1))
+                                 .ConfigureAwait(false);
+
+            var data = JsonConvert.DeserializeObject<WikipediaApiModel>(result);
+
+            if (data.Query.Pages is null || !data.Query.Pages.Any() || data.Query.Pages.First().Missing)
+            {
+                return ErrorType.NotFound;
+            }
+
+            Log.Information("Sending wikipedia url for: {Query}", query);
+
+            return new WikipediaReply
+            {
+                Data = new()
+                {
+                    Url = data.Query.Pages[0].FullUrl,
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error retrieving wikipedia data for: '{Query}'", query);
+
+            return ErrorType.Unknown;
+        }
+    }
+}
+
+public enum ErrorType
+{
+    InvalidInput,
+    NotFound,
+    Unknown,
+    ApiKeyMissing
+}
+
+public class WikipediaReply
+{
+    public class Info
+    {
+        public required string Url { get; init; }
+    }
+
+    public required Info Data { get; init; }
 }
