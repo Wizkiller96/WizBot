@@ -70,6 +70,7 @@ public abstract class WizBotInteractionBase
             {
                 if (_singleUse)
                     _interactionCompletedSource.TrySetResult(true);
+                
                 await ExecuteOnActionAsync(smc);
 
                 if (!smc.HasResponded)

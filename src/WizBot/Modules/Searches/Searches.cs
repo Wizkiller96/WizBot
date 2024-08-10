@@ -3,13 +3,11 @@ using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Searches;
@@ -562,17 +560,7 @@ public partial class Searches : WizBotModule<SearchesService>
             await Response().Error(strs.not_found).SendAsync();
             return;
         }
-
-        //var embed = _sender.CreateEmbed()
-        //    .WithOkColor()
-        //    .WithDescription(gameData.ShortDescription)
-        //    .WithTitle(gameData.Name)
-        //    .WithUrl(gameData.Link)
-        //    .WithImageUrl(gameData.HeaderImage)
-        //    .AddField(GetText(strs.genres), gameData.TotalEpisodes.ToString(), true)
-        //    .AddField(GetText(strs.price), gameData.IsFree ? GetText(strs.FREE) : game, true)
-        //    .AddField(GetText(strs.links), gameData.GetGenresString(), true)
-        //    .WithFooter(GetText(strs.recommendations(gameData.TotalRecommendations)));
+        
         await Response().Text($"https://store.steampowered.com/app/{appId}").SendAsync();
     }
 
