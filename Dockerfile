@@ -8,7 +8,6 @@ COPY src/WizBot/*.csproj src/WizBot/
 COPY src/WizBot.Coordinator/*.csproj src/WizBot.Coordinator/
 COPY src/WizBot.Generators/*.csproj src/WizBot.Generators/
 COPY src/WizBot.Voice/*.csproj src/WizBot.Voice/
-COPY NuGet.Config ./
 
 # Restore the dependencies for the WizBot project
 RUN dotnet restore src/WizBot/
