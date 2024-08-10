@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
