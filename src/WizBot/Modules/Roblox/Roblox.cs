@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Net;
 using WizBot.Modules.Searches.Services;
 
 namespace WizBot.Modules.Roblox;

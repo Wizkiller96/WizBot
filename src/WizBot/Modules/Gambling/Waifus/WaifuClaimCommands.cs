@@ -3,7 +3,6 @@ using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Waifu;
 using WizBot.Modules.Gambling.Services;
 using WizBot.Db.Models;
-using TwitchLib.Api.Helix.Models.Teams;
 
 namespace WizBot.Modules.Gambling;
 

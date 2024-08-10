@@ -1,5 +1,4 @@
 #nullable disable
-using WizBot.Db;
 using Newtonsoft.Json;
 using System.Globalization;
 

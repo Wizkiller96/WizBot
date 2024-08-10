@@ -2,7 +2,6 @@
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 using WizBot.Db.Models;
 using Newtonsoft.Json;
 using SixLabors.Fonts;

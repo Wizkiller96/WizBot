@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WizBot.Db;
 using WizBot.Db.Models;
 
 namespace WizBot.Extensions;

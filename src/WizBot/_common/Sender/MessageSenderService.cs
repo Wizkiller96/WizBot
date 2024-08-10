@@ -1,5 +1,4 @@
 using WizBot.Common.Configs;
-using System.Diagnostics.CodeAnalysis;
 
 namespace WizBot.Extensions;
 

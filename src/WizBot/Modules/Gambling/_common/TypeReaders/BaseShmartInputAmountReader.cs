@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using WizBot.Db;
 using WizBot.Db.Models;
 using WizBot.Modules.Gambling.Services;
 using NCalc;

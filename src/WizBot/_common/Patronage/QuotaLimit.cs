@@ -1,6 +1,4 @@
-﻿using WizBot.Db.Models;
-
-namespace WizBot.Modules.Patronage;
+﻿namespace WizBot.Modules.Patronage;
 
 /// <summary>
 /// Represents information about why the user has triggered a quota limit

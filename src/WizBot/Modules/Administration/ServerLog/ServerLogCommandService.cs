@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 using WizBot.Modules.Administration.Services;
 using WizBot.Db.Models;
 

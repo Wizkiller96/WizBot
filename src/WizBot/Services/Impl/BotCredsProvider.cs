@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using WizBot.Common.Yml;
-using Newtonsoft.Json;
 
 namespace WizBot.Services;
 

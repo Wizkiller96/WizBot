@@ -1,5 +1,4 @@
 ﻿using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 using WizBot.Modules.Utility.Common;
 using WizBot.Modules.Utility.Common.Exceptions;
 using WizBot.Db.Models;

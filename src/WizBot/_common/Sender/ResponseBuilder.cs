@@ -1,6 +1,4 @@
-﻿using WizBot.Common.Configs;
-using WizBot.Db.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace WizBot.Extensions;
 

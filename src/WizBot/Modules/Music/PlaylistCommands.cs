@@ -1,6 +1,5 @@
 ﻿#nullable disable
 using LinqToDB;
-using WizBot.Db;
 using WizBot.Modules.Music.Services;
 using WizBot.Db.Models;
 

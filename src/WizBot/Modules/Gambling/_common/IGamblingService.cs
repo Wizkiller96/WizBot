@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using WizBot.Modules.Gambling;
 using WizBot.Modules.Gambling.Betdraw;
 using WizBot.Modules.Gambling.Rps;
 using OneOf;

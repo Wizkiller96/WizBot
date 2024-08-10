@@ -3,7 +3,6 @@ using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Db.Models;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 
 namespace WizBot.Modules.Administration;
 

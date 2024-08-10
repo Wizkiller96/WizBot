@@ -1,6 +1,4 @@
-﻿using WizBot.Modules.Administration;
-
-namespace WizBot.Modules.Utility;
+﻿namespace WizBot.Modules.Utility;
 
 public partial class UtilityCommands
 {

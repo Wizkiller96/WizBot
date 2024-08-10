@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 
 namespace WizBot.Modules.Permissions.Services;
 

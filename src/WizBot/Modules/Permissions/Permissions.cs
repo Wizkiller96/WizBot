@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using WizBot.Common.TypeReaders;
 using WizBot.Common.TypeReaders.Models;
-using WizBot.Db;
 using WizBot.Modules.Permissions.Common;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Db.Models;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
-using WizBot.Db.Models;
 
 namespace WizBot.Migrations;
 

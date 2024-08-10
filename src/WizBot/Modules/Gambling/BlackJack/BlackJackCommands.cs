@@ -3,7 +3,6 @@ using WizBot.Common.TypeReaders;
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Common.Blackjack;
 using WizBot.Modules.Gambling.Services;
-using WizBot.Modules.Utility;
 
 namespace WizBot.Modules.Gambling;
 

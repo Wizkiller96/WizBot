@@ -1,7 +1,6 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using WizBot.Db;
 using WizBot.Db.Models;
 using WizBot.Services.Currency;
 

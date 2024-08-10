@@ -1,6 +1,4 @@
 #nullable disable
-using WizBot.Db;
-
 namespace WizBot.Modules.Administration.Services;
 
 public class GameVoiceChannelService : INService

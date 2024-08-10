@@ -1,7 +1,5 @@
 ﻿#nullable disable
-using WizBot.Db;
 using WizBot.Modules.Games.Services;
-using WizBot.Db.Models;
 
 namespace WizBot.Modules.Games;
 

@@ -13,7 +13,6 @@ using System.Text;
 using WizBot.Modules.Gambling.Rps;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Patronage;
-using WizBot.Modules.Utility;
 
 namespace WizBot.Modules.Gambling;
 

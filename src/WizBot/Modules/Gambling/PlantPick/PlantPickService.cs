@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 using WizBot.Db.Models;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

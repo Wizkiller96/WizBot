@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Common.Yml;
-using WizBot.Db;
 using WizBot.Db.Models;
 using System.Runtime.CompilerServices;
 using LinqToDB.EntityFrameworkCore;

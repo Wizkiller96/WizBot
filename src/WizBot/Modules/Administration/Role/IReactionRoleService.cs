@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using WizBot.Modules.Patronage;
 using WizBot.Db.Models;
 using OneOf;
 using OneOf.Types;

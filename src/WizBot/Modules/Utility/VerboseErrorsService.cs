@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using WizBot.Db;
-
 namespace WizBot.Modules.Utility.Services;
 
 public class VerboseErrorsService : INService

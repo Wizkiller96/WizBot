@@ -2,7 +2,6 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WizBot.Db;
 using WizBot.Db.Models;
 using OneOf;
 

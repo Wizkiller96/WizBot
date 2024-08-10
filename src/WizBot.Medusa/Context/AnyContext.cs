@@ -1,5 +1,4 @@
 ﻿using Discord;
-using WizBot;
 
 namespace WizBot.Medusa;
 

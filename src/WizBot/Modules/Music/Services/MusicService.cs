@@ -1,5 +1,4 @@
-﻿using WizBot.Db;
-using WizBot.Db.Models;
+﻿using WizBot.Db.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace WizBot.Modules.Music.Services;

@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using WizBot.Db;
 using WizBot.Modules.Utility.Services;
 using WizBot.Db.Models;
 

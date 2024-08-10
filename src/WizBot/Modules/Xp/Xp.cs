@@ -2,7 +2,6 @@
 using WizBot.Modules.Xp.Services;
 using WizBot.Db.Models;
 using WizBot.Modules.Patronage;
-using WizBot.Modules.Utility;
 
 namespace WizBot.Modules.Xp;
 

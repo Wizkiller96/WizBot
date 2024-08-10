@@ -2,7 +2,6 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.Yml;
-using WizBot.Db;
 using WizBot.Db.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;

@@ -1,5 +1,4 @@
-﻿using WizBot.Medusa;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace WizBot.Medusa;
 

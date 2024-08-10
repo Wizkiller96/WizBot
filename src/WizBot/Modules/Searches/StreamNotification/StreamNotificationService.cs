@@ -1,7 +1,6 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Db;
 using WizBot.Db.Models;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Common.StreamNotifications;

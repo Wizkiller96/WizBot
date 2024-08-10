@@ -2,8 +2,6 @@
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
-using StackExchange.Redis;
-using System.Diagnostics;
 
 namespace WizBot.Modules.Patronage;
 

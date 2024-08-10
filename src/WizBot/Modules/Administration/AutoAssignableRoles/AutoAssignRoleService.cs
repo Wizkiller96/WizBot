@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Channels;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
-using WizBot.Db;
 
 namespace WizBot.Modules.Administration.Services;
 

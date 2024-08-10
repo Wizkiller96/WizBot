@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using System.Diagnostics.CodeAnalysis;
-
 namespace Wiz.Common;
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]

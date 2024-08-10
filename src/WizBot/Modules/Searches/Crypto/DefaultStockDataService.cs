@@ -1,7 +1,6 @@
 ﻿using AngleSharp;
 using CsvHelper;
 using CsvHelper.Configuration;
-using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 

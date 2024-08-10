@@ -4,13 +4,11 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using Color = SixLabors.ImageSharp.Color;
-using StringExtensions = WizBot.Extensions.StringExtensions;
 
 namespace WizBot.Modules.Searches.Services;
 

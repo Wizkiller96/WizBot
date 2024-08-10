@@ -3,7 +3,6 @@ using OneOf.Types;
 using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using YamlDotNet.Core.Tokens;
 
 namespace Wiz.Common;
 

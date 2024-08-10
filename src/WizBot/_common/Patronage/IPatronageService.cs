@@ -1,7 +1,4 @@
-﻿using WizBot.Db.Models;
-using OneOf;
-
-namespace WizBot.Modules.Patronage;
+﻿namespace WizBot.Modules.Patronage;
 
 /// <summary>
 /// Manages patrons and provides access to their data  

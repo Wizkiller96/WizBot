@@ -1,4 +1,3 @@
-using LinqToDB.Reflection;
 using WizBot.Modules.Utility.Services;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -7,7 +6,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using WizBot.Modules.Games.Hangman;
 using WizBot.Modules.Searches.Common;
 
 namespace WizBot.Modules.Utility;
