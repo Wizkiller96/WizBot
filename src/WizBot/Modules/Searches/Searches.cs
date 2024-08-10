@@ -14,7 +14,6 @@ namespace WizBot.Modules.Searches;
 
 public partial class Searches : WizBotModule<SearchesService>
 {
-    private static readonly ConcurrentDictionary<string, string> _cachedShortenedLinks = new();
     private readonly IBotCredentials _creds;
     private readonly IGoogleApiService _google;
     private readonly IHttpClientFactory _httpFactory;
@@ -172,7 +171,8 @@ public partial class Searches : WizBotModule<SearchesService>
         if (!await ValidateQuery(smh))
             return;
 
-        var shortenedUrl = await _google.ShortenUrl($"https://letmegooglethat.com/?q={Uri.EscapeDataString(smh)}");
+        var link = $"https://letmegooglethat.com/?q={Uri.EscapeDataString(smh)}";
+        var shortenedUrl = await _service.ShortenLink(link) ?? link;
         await Response().Confirm($"<{shortenedUrl}>").SendAsync();
     }
 
@@ -182,35 +182,12 @@ public partial class Searches : WizBotModule<SearchesService>
         if (!await ValidateQuery(query))
             return;
 
-        query = query.Trim();
-        if (!_cachedShortenedLinks.TryGetValue(query, out var shortLink))
+        var shortLink = await _service.ShortenLink(query);
+
+        if (shortLink is null)
         {
-            try
-            {
-                using var http = _httpFactory.CreateClient();
-                using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
-                var formData = new MultipartFormDataContent
-                {
-                    { new StringContent(query), "url" }
-                };
-                req.Content = formData;
-
-                using var res = await http.SendAsync(req);
-                var content = await res.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<ShortenData>(content);
-
-                if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
-                    _cachedShortenedLinks.TryAdd(query, data.ResultUrl);
-                else
-                    return;
-
-                shortLink = data.ResultUrl;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Error shortening a link: {Message}", ex.Message);
-                return;
-            }
+            await Response().Error(strs.error_occured).SendAsync();
+            return;
         }
 
         await Response()
@@ -221,6 +198,7 @@ public partial class Searches : WizBotModule<SearchesService>
               .SendAsync();
     }
 
+    
     [Cmd]
     public async Task MagicTheGathering([Leftover] string search)
     {
@@ -325,15 +303,15 @@ public partial class Searches : WizBotModule<SearchesService>
         if (!await ValidateQuery(word))
             return;
 
-        
+
         var maybeItems = await _service.GetDefinitionsAsync(word);
-        
-        if(!maybeItems.TryPickT0(out var defs, out var error))
+
+        if (!maybeItems.TryPickT0(out var defs, out var error))
         {
             await HandleErrorAsync(error);
             return;
         }
-        
+
         await Response()
               .Paginated()
               .Items(defs)
@@ -571,11 +549,5 @@ public partial class Searches : WizBotModule<SearchesService>
 
         await Response().Error(strs.specify_search_params).SendAsync();
         return false;
-    }
-
-    public class ShortenData
-    {
-        [JsonProperty("result_url")]
-        public string ResultUrl { get; set; }
     }
 }

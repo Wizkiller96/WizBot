@@ -2,8 +2,8 @@
 using WizBot.Modules.Searches.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text.Json;
 using OneOf;
+using System.Text.Json;
 
 namespace WizBot.Modules.Searches.Services;
 
@@ -30,6 +30,7 @@ public class SearchesService : INService
 
     private readonly object _yomamaLock = new();
     private int yomamaJokeIndex;
+    private readonly ConcurrentDictionary<string, string> _cachedShortenedLinks = new();
 
     public SearchesService(
         IGoogleApiService google,
@@ -578,5 +579,43 @@ public async Task<OneOf<WikiaResponse, ErrorType>> GetWikiaPageAsync(string targ
             Log.Error(ex, "Error retrieving definition data for: {Word}", query);
             return ErrorType.Unknown;
         }
+    }
+    
+    public async Task<string> ShortenLink(string query)
+    {
+        query = query.Trim();
+
+        if (_cachedShortenedLinks.TryGetValue(query, out var shortLink))
+            return shortLink;
+
+        try
+        {
+            using var http = _httpFactory.CreateClient();
+            using var req = new HttpRequestMessage(HttpMethod.Post, "https://goolnk.com/api/v1/shorten");
+            var formData = new MultipartFormDataContent
+            {
+                { new StringContent(query), "url" }
+            };
+            req.Content = formData;
+
+            using var res = await http.SendAsync(req);
+            var content = await res.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<ShortenData>(content);
+
+            if (!string.IsNullOrWhiteSpace(data?.ResultUrl))
+                _cachedShortenedLinks.TryAdd(query, data.ResultUrl);
+            else
+                return query;
+
+            shortLink = data.ResultUrl;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error shortening a link: {Message}", ex.Message);
+            return null;
+        }
+
+        return shortLink;
+        throw new NotImplementedException();
     }
 }
