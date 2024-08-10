@@ -34,7 +34,7 @@ public sealed class MedusaNinjectIocModule : IIocModule, IDisposable
         if (isLoaded)
             return;
 
-        foreach (var (type, data) in _types)
+        foreach (var (type, _) in _types)
         {
             var attribute = type.GetCustomAttribute<svcAttribute>()!;
 

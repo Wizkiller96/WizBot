@@ -31,7 +31,6 @@ public class PlantPickService : INService, IExecNoCommand
 
     public PlantPickService(
         DbService db,
-        CommandHandler cmd,
         IBotStrings strings,
         IImageCache images,
         FontProvider fonts,
@@ -107,7 +106,6 @@ public class PlantPickService : INService, IExecNoCommand
     ///     Get a random currency image stream, with an optional password sticked onto it.
     /// </summary>
     /// <param name="pass">Optional password to add to top left corner.</param>
-    /// <param name="extension">Extension of the file, defaults to png</param>
     /// <returns>Stream of the currency image</returns>
     public async Task<(Stream, string)> GetRandomCurrencyImageAsync(string pass)
     {

@@ -19,7 +19,6 @@ public sealed class GiveawayService : INService, IReadyExecutor
     private readonly IMemoryCache _cache;
     private SortedSet<GiveawayModel> _giveawayCache = new SortedSet<GiveawayModel>();
     private readonly WizBotRandom _rng;
-    private readonly ConcurrentDictionary<int, GiveawayRerollData> _rerolls = new();
 
     public GiveawayService(DbService db, IBotCredentials creds, DiscordSocketClient client,
         IMessageSenderService sender, IBotStrings strings, ILocalization localization, IMemoryCache cache)

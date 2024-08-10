@@ -546,7 +546,7 @@ public partial class Administration
             text = await repSvc.ReplaceAsync(text, repCtx);
             await Response().Channel(ch).Text(text).SendAsync();
          
-            await ctx.OkAsync();;
+            await ctx.OkAsync();
         }
 
         [Cmd]

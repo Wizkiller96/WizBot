@@ -18,16 +18,11 @@ public sealed class PatronageService
     // this has to run right before the command
     public int Priority
         => int.MinValue;
-
-    private static readonly PatronTier[] _tiers = Enum.GetValues<PatronTier>();
-
+    
     private readonly PatronageConfig _pConf;
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
     private readonly ISubscriptionHandler _subsHandler;
-
-    private static readonly TypedKey<long> _quotaKey
-        = new($"quota:last_hourly_reset");
 
     private readonly IBotCache _cache;
     private readonly IBotCredsProvider _creds;
@@ -133,19 +128,19 @@ public sealed class PatronageService
                         // user is charged again for this month
                         // if his sub would end in teh future, extend it by one month.
                         // if it's not, just add 1 month to the last charge date
-                        var count = await ctx.GetTable<PatronUser>()
-                                             .Where(x => x.UniquePlatformUserId
-                                                         == subscriber.UniquePlatformUserId)
-                                             .UpdateAsync(old => new()
-                                             {
-                                                 UserId = subscriber.UserId,
-                                                 AmountCents = subscriber.Cents,
-                                                 LastCharge = lastChargeUtc,
-                                                 ValidThru = old.ValidThru >= todayDate
-                                                     // ? Sql.DateAdd(Sql.DateParts.Month, 1, old.ValidThru).Value
-                                                     ? old.ValidThru.AddMonths(1)
-                                                     : dateInOneMonth,
-                                             });
+                        await ctx.GetTable<PatronUser>()
+                                 .Where(x => x.UniquePlatformUserId
+                                             == subscriber.UniquePlatformUserId)
+                                 .UpdateAsync(old => new()
+                                 {
+                                     UserId = subscriber.UserId,
+                                     AmountCents = subscriber.Cents,
+                                     LastCharge = lastChargeUtc,
+                                     ValidThru = old.ValidThru >= todayDate
+                                         // ? Sql.DateAdd(Sql.DateParts.Month, 1, old.ValidThru).Value
+                                         ? old.ValidThru.AddMonths(1)
+                                         : dateInOneMonth,
+                                 });
 
 
                         dbPatron.UserId = subscriber.UserId;

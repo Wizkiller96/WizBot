@@ -11,12 +11,19 @@ public sealed class TriviaGame
     private readonly IQuestionPool _questionPool;
 
     #region Events
+
     public event Func<TriviaGame, TriviaQuestion, Task> OnQuestion = static delegate { return Task.CompletedTask; };
     public event Func<TriviaGame, TriviaQuestion, Task> OnHint = static delegate { return Task.CompletedTask; };
     public event Func<TriviaGame, Task> OnStats = static delegate { return Task.CompletedTask; };
-    public event Func<TriviaGame, TriviaUser, TriviaQuestion, bool, Task> OnGuess = static delegate { return Task.CompletedTask; };
+
+    public event Func<TriviaGame, TriviaUser, TriviaQuestion, bool, Task> OnGuess = static delegate
+    {
+        return Task.CompletedTask;
+    };
+
     public event Func<TriviaGame, TriviaQuestion, Task> OnTimeout = static delegate { return Task.CompletedTask; };
     public event Func<TriviaGame, Task> OnEnded = static delegate { return Task.CompletedTask; };
+
     #endregion
 
     private bool _isStopped;
@@ -24,7 +31,7 @@ public sealed class TriviaGame
     public TriviaQuestion? CurrentQuestion { get; set; }
 
 
-    private readonly ConcurrentDictionary<ulong, int> _users = new ();
+    private readonly ConcurrentDictionary<ulong, int> _users = new();
 
     private readonly Channel<(TriviaUser User, string Input)> _inputs
         = Channel.CreateUnbounded<(TriviaUser, string)>(new UnboundedChannelOptions
@@ -41,8 +48,8 @@ public sealed class TriviaGame
         _questionPool = _opts.IsPokemon
             ? new PokemonQuestionPool(cache)
             : new DefaultQuestionPool(cache);
-
     }
+
     public async Task RunAsync()
     {
         await GameLoop();
@@ -50,7 +57,8 @@ public sealed class TriviaGame
 
     private async Task GameLoop()
     {
-        Task TimeOutFactory() => Task.Delay(_opts.QuestionTimer * 1000 / 2);
+        Task TimeOutFactory()
+            => Task.Delay(_opts.QuestionTimer * 1000 / 2);
 
         var errorCount = 0;
         var inactivity = 0;
@@ -91,7 +99,8 @@ public sealed class TriviaGame
                 {
                     // clear out all of the past guesses
                     while (_inputs.Reader.TryRead(out _))
-                        ;
+                    {
+                    }
 
                     await OnQuestion(this, question);
                 }
@@ -121,7 +130,7 @@ public sealed class TriviaGame
                     if (task == halfGuessTimerTask)
                     {
                         readCancel.Cancel();
-                        
+
                         // if hint is already sent, means time expired
                         // break (end the round)
                         if (hintSent)
@@ -213,7 +222,7 @@ public sealed class TriviaGame
 
     public async Task TriggerQuestionAsync()
     {
-        if(CurrentQuestion is TriviaQuestion q)
+        if (CurrentQuestion is TriviaQuestion q)
             await OnQuestion(this, q);
     }
 }

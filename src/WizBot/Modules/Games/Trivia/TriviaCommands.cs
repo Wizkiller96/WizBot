@@ -107,9 +107,9 @@ public partial class Games
             return sb.ToString();
         }
 
-        private EmbedBuilder? questionEmbed = null;
-        private IUserMessage? questionMessage = null;
-        private bool showHowToQuit = false;
+        private EmbedBuilder? questionEmbed;
+        private IUserMessage? questionMessage;
+        private bool showHowToQuit;
 
         private void RegisterEvents(TriviaGame trivia)
         {

@@ -61,8 +61,8 @@ public class RadioResolver : IRadioResolver
             try
             {
                 var m = _m3URegex.Match(file);
-                var res = m.Groups["url"]?.ToString();
-                return res?.Trim();
+                var res = m.Groups["url"].ToString();
+                return res.Trim();
             }
             catch
             {
@@ -76,8 +76,8 @@ public class RadioResolver : IRadioResolver
             try
             {
                 var m = _asxRegex.Match(file);
-                var res = m.Groups["url"]?.ToString();
-                return res?.Trim();
+                var res = m.Groups["url"].ToString();
+                return res.Trim();
             }
             catch
             {
@@ -91,8 +91,8 @@ public class RadioResolver : IRadioResolver
             try
             {
                 var m = _xspfRegex.Match(file);
-                var res = m.Groups["url"]?.ToString();
-                return res?.Trim();
+                var res = m.Groups["url"].ToString();
+                return res.Trim();
             }
             catch
             {

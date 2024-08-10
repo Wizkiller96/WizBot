@@ -20,14 +20,6 @@ public static class DryIocExtensions
         return container;
     }
 
-    public static IContainer AddSingleton<TSvc, TImpl>(this IContainer container, Func<IResolverContext, TSvc> factory)
-        where TImpl : TSvc
-    {
-        container.RegisterDelegate(factory, Reuse.Singleton);
-
-        return container;
-    }
-
     public static IContainer AddSingleton<TImpl>(this IContainer container)
     {
         container.Register<TImpl>(Reuse.Singleton);

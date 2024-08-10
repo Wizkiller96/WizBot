@@ -110,7 +110,7 @@ public sealed class Bot : IBot
         // svcs.Components.Remove<IPlanner, Planner>();
         // svcs.Components.Add<IPlanner, RemovablePlanner>();
 
-        svcs.AddSingleton<IBotCredentials, IBotCredentials>(_ => _credsProvider.GetCreds());
+        svcs.AddSingleton<IBotCredentials>(_ => _credsProvider.GetCreds());
         svcs.AddSingleton<DbService, DbService>(_db);
         svcs.AddSingleton<IBotCredsProvider>(_credsProvider);
         svcs.AddSingleton<DiscordSocketClient>(Client);

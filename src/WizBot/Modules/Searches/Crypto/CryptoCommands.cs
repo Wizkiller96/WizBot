@@ -65,18 +65,6 @@ public partial class Searches
             var change = (stock.Price - stock.Close).ToString("N2", Culture);
             var changePercent = (1 - (stock.Close / stock.Price)).ToString("P1", Culture);
 
-            var sign50 = stock.Change50d >= 0
-                ? "\\🔼"
-                : "\\🔻";
-
-            var change50 = (stock.Change50d).ToString("P1", Culture);
-
-            var sign200 = stock.Change200d >= 0
-                ? "\\🔼"
-                : "\\🔻";
-
-            var change200 = (stock.Change200d).ToString("P1", Culture);
-
             var price = stock.Price.ToString("C2", localCulture);
 
             var eb = _sender.CreateEmbed()
