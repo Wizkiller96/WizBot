@@ -2,12 +2,30 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.5] - 01.08.2024
+
 ### Added
 
 - Added: Added a `.afk <msg>?` command which sets an afk message which will trigger whenever someone pings you
   - Message will when you type a message in any channel that the bot sees, or after 8 hours, whichever comes first
   - The specified message will be prefixed with "The user is afk: "
   - The afk message will disappear 30 seconds after being triggered
+
+### Changed
+
+- Bot now shows a message when .prune fails due to already running error
+- Updated some bet descriptions to include 'all' 'half' usage instructions
+- Updated some command strings
+- dev: Vastly simplified medusa creation using dotnet templates, docs updated
+- Slight refactor of .wiki, time, .catfact, .wikia, .define, .bible and .quran commands, no significant change in functionality
+
+### Fixed
+
+-  .coins will no longer show double minus sign for negative changes
+- You can once again disable cleverbot responses using fake 'cleverbot:response' module name in permission commands
+
+### Removed
+- Removed .rip command
 
 ## [5.1.4] - 13.07.2024
 
