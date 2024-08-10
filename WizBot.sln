@@ -12,7 +12,6 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 	.gitlab-ci.yml = .gitlab-ci.yml
 	Dockerfile = Dockerfile
-	NuGet.Config = NuGet.Config
 	migrate.ps1 = migrate.ps1
 	remove-migration.ps1 = remove-migration.ps1
 EndProjectSection

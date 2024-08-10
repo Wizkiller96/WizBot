@@ -5,5 +5,5 @@ namespace WizBot.Modules.Games.Common.ChatterBot;
 public class Choice
 {
     [JsonPropertyName("message")]
-    public Message Message { get; init; }
+    public required Message Message { get; init; }
 }
