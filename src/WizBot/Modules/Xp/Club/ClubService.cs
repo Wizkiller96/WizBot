@@ -1,4 +1,3 @@
-#nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -99,9 +98,9 @@ public class ClubService : INService, IClubService
         return member;
     }
 
-    public async Task<SetClubIconResult> SetClubIconAsync(ulong ownerUserId, string url)
+    public async Task<SetClubIconResult> SetClubIconAsync(ulong ownerUserId, string? url)
     {
-        if (url is not null)
+        if (!string.IsNullOrWhiteSpace(url))
         {
             using var http = _httpFactory.CreateClient();
             using var temp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
@@ -174,7 +173,7 @@ public class ClubService : INService, IClubService
     }
 
 
-    public ClubAcceptResult AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)
+    public ClubAcceptResult AcceptApplication(ulong clubOwnerUserId, string userName, out DiscordUser? discordUser )
     {
         discordUser = null;
         using var uow = _db.GetDbContext();
@@ -200,7 +199,7 @@ public class ClubService : INService, IClubService
         return ClubAcceptResult.Accepted;
     }
 
-    public ClubDenyResult RejectApplication(ulong clubOwnerUserId, string userName, out DiscordUser discordUser)
+    public ClubDenyResult RejectApplication(ulong clubOwnerUserId, string userName, out DiscordUser? discordUser)
     {
         discordUser = null;
         using var uow = _db.GetDbContext();
@@ -241,7 +240,7 @@ public class ClubService : INService, IClubService
         return ClubLeaveResult.Success;
     }
 
-    public bool SetDescription(ulong userId, string desc)
+    public bool SetDescription(ulong userId, string? desc)
     {
         using var uow = _db.GetDbContext();
         var club = uow.Set<ClubInfo>().GetByOwner(userId);
