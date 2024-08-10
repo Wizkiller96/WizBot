@@ -95,8 +95,8 @@ public partial class Utility
                 return;
 
             var embed = _sender.CreateEmbed()
-                           .WithOkColor()
-                           .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
+                                .WithOkColor()
+                                .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
 
             List<Reminder> rems;
             await using (var uow = _db.GetDbContext())
@@ -114,10 +114,9 @@ public partial class Utility
                 {
                     var when = rem.When;
                     embed.AddField(
-                        $"#{++i + (page * 10)} {rem.When:HH:mm yyyy-MM-dd} UTC "
-                        + $"{TimestampTag.FromDateTime(when)}",
-                        $@"`Target:` {(rem.IsPrivate ? "DM" : "Channel")}
-`TargetId:` {rem.ChannelId}
+                        $"#{++i + (page * 10)}",
+                        $@"`When:` {TimestampTag.FromDateTime(when, TimestampTagStyles.ShortDateTime)}
+`Target:` {(rem.IsPrivate ? "DM" : "Channel")} [`{rem.ChannelId}`]
 `Message:` {rem.Message?.TrimTo(50)}");
                 }
             }
