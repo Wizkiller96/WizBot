@@ -468,22 +468,52 @@ public class SearchesService : INService
 
         return factElement.ToString();
     }
-}
 
-public enum ErrorType
-{
-    InvalidInput,
-    NotFound,
-    Unknown,
-    ApiKeyMissing
-}
-
-public class WikipediaReply
-{
-    public class Info
+public async Task<OneOf<WikiaResponse, ErrorType>> GetWikiaPageAsync(string target, string query)
     {
-        public required string Url { get; init; }
-    }
+        if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(query))
+        {
+            return ErrorType.InvalidInput;
+        }
 
-    public required Info Data { get; init; }
+        query = Uri.EscapeDataString(query.Trim());
+        target = Uri.EscapeDataString(target.Trim());
+
+        if (string.IsNullOrEmpty(query))
+        {
+            return ErrorType.InvalidInput;
+        }
+
+        using var http = _httpFactory.CreateClient();
+        http.DefaultRequestHeaders.Clear();
+        try
+        {
+            var res = await http.GetStringAsync($"https://{Uri.EscapeDataString(target)}.fandom.com/api.php"
+                                                + "?action=query"
+                                                + "&format=json"
+                                                + "&list=search"
+                                                + $"&srsearch={Uri.EscapeDataString(query)}"
+                                                + "&srlimit=1");
+            var items = JObject.Parse(res);
+            var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return ErrorType.NotFound;
+            }
+
+            var url = $"https://{target}.fandom.com/wiki/{title}";
+
+            return new WikiaResponse()
+            {
+                Url = url,
+                Title = title,
+            };
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error getting wikia page: {Message}", ex.Message);
+            return ErrorType.Unknown;
+        }
+    }
 }

@@ -487,35 +487,16 @@ public partial class Searches : WizBotModule<SearchesService>
             return;
         }
 
-        await ctx.Channel.TriggerTypingAsync();
-        using var http = _httpFactory.CreateClient();
-        http.DefaultRequestHeaders.Clear();
-        try
-        {
-            var res = await http.GetStringAsync($"https://{Uri.EscapeDataString(target)}.fandom.com/api.php"
-                                                + "?action=query"
-                                                + "&format=json"
-                                                + "&list=search"
-                                                + $"&srsearch={Uri.EscapeDataString(query)}"
-                                                + "&srlimit=1");
-            var items = JObject.Parse(res);
-            var title = items["query"]?["search"]?.FirstOrDefault()?["title"]?.ToString();
+        var maybeRes = await _service.GetWikiaPageAsync(target, query);
 
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                await Response().Error(strs.wikia_error).SendAsync();
-                return;
-            }
-
-            var url = Uri.EscapeDataString($"https://{target}.fandom.com/wiki/{title}");
-            var response = $@"`{GetText(strs.title)}` {title.SanitizeMentions()}
-`{GetText(strs.url)}:` {url}";
-            await Response().Text(response).SendAsync();
-        }
-        catch
+        if (!maybeRes.TryPickT0(out var res, out var error))
         {
-            await Response().Error(strs.wikia_error).SendAsync();
+            await HandleErrorAsync(error);
+            return;
         }
+        
+        var response = $"### {res.Title}\n{res.Url}";
+        await Response().Text(response).Sanitize().SendAsync();
     }
 
     [Cmd]
