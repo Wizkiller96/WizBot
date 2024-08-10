@@ -327,71 +327,35 @@ public partial class Searches : WizBotModule<SearchesService>
         if (!await ValidateQuery(word))
             return;
 
-        using var http = _httpFactory.CreateClient();
-        string res;
-        try
+        
+        var maybeItems = await _service.GetDefinitionsAsync(word);
+        
+        if(!maybeItems.TryPickT0(out var defs, out var error))
         {
-            res = await _cache.GetOrCreateAsync($"define_{word}",
-                e =>
-                {
-                    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
-                    return http.GetStringAsync("https://api.pearson.com/v2/dictionaries/entries?headword="
-                                               + WebUtility.UrlEncode(word));
-                });
-
-            var responseModel = JsonConvert.DeserializeObject<DefineModel>(res);
-
-            var data = responseModel.Results
-                                    .Where(x => x.Senses is not null
-                                                && x.Senses.Count > 0
-                                                && x.Senses[0].Definition is not null)
-                                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
-                                    .ToList();
-
-            if (!data.Any())
-            {
-                Log.Warning("Definition not found: {Word}", word);
-                await Response().Error(strs.define_unknown).SendAsync();
-            }
-
-
-            var col = data.Select(x => (
-                              Definition: x.Sense.Definition is string
-                                  ? x.Sense.Definition.ToString()
-                                  : ((JArray)JToken.Parse(x.Sense.Definition.ToString())).First.ToString(),
-                              Example: x.Sense.Examples is null || x.Sense.Examples.Count == 0
-                                  ? string.Empty
-                                  : x.Sense.Examples[0].Text, Word: word,
-                              WordType: string.IsNullOrWhiteSpace(x.PartOfSpeech) ? "-" : x.PartOfSpeech))
-                          .ToList();
-
-            Log.Information("Sending {Count} definition for: {Word}", col.Count, word);
-
-            await Response()
-                  .Paginated()
-                  .Items(col)
-                  .PageSize(1)
-                  .Page((items, _) =>
-                  {
-                      var model = items.First();
-                      var embed = _sender.CreateEmbed()
-                                    .WithDescription(ctx.User.Mention)
-                                    .AddField(GetText(strs.word), model.Word, true)
-                                    .AddField(GetText(strs._class), model.WordType, true)
-                                    .AddField(GetText(strs.definition), model.Definition)
-                                    .WithOkColor();
-
-                      if (!string.IsNullOrWhiteSpace(model.Example))
-                          embed.AddField(GetText(strs.example), model.Example);
-
-                      return embed;
-                  })
-                  .SendAsync();
+            await HandleErrorAsync(error);
+            return;
         }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error retrieving definition data for: {Word}", word);
-        }
+        
+        await Response()
+              .Paginated()
+              .Items(defs)
+              .PageSize(1)
+              .Page((items, _) =>
+              {
+                  var model = items.First();
+                  var embed = _sender.CreateEmbed()
+                                     .WithDescription(ctx.User.Mention)
+                                     .AddField(GetText(strs.word), model.Word, true)
+                                     .AddField(GetText(strs._class), model.WordType, true)
+                                     .AddField(GetText(strs.definition), model.Definition)
+                                     .WithOkColor();
+
+                  if (!string.IsNullOrWhiteSpace(model.Example))
+                      embed.AddField(GetText(strs.example), model.Example);
+
+                  return embed;
+              })
+              .SendAsync();
     }
 
     [Cmd]

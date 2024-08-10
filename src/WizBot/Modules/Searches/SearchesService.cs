@@ -399,7 +399,7 @@ public class SearchesService : INService
         return gamesMap[key];
     }
     
-    public async Task<OneOf.OneOf<WikipediaReply, ErrorType>> GetWikipediaPageAsync(string query)
+    public async Task<OneOf<WikipediaReply, ErrorType>> GetWikipediaPageAsync(string query)
     {
         query = query.Trim();
         if (string.IsNullOrEmpty(query))
@@ -513,6 +513,69 @@ public async Task<OneOf<WikiaResponse, ErrorType>> GetWikiaPageAsync(string targ
         catch (Exception ex)
         {
             Log.Warning(ex, "Error getting wikia page: {Message}", ex.Message);
+            return ErrorType.Unknown;
+        }
+    }
+
+    private static TypedKey<string> GetDefineKey(string query)
+        => new TypedKey<string>($"define_{query}");
+
+    public async Task<OneOf<List<DefineData>, ErrorType>> GetDefinitionsAsync(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return ErrorType.InvalidInput;
+        }
+
+        query = Uri.EscapeDataString(query);
+
+        using var http = _httpFactory.CreateClient();
+        string res;
+        try
+        {
+            res = await _c.GetOrAddAsync(GetDefineKey(query),
+                async () => await http.GetStringAsync(
+                    $"https://api.pearson.com/v2/dictionaries/entries?headword={query}"),
+                TimeSpan.FromHours(12));
+
+            var responseModel = JsonConvert.DeserializeObject<DefineModel>(res);
+
+            var data = responseModel.Results
+                                    .Where(x => x.Senses is not null
+                                                && x.Senses.Count > 0
+                                                && x.Senses[0].Definition is not null)
+                                    .Select(x => (Sense: x.Senses[0], x.PartOfSpeech))
+                                    .ToList();
+
+            if (!data.Any())
+            {
+                Log.Warning("Definition not found: {Word}", query);
+                return ErrorType.NotFound;
+            }
+
+
+            var items = new List<DefineData>();
+
+            foreach (var d in data)
+            {
+                items.Add(new DefineData
+                {
+                    Definition = d.Sense.Definition is JArray { Count: > 0 } defs
+                        ? defs[0].ToString()
+                        : d.Sense.Definition.ToString(),
+                    Example = d.Sense.Examples is null || d.Sense.Examples.Count == 0
+                        ? string.Empty
+                        : d.Sense.Examples[0].Text,
+                    WordType = string.IsNullOrWhiteSpace(d.PartOfSpeech) ? "-" : d.PartOfSpeech,
+                    Word = query,
+                });
+            }
+
+            return items.OrderByDescending(x => !string.IsNullOrWhiteSpace(x.Example)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error retrieving definition data for: {Word}", query);
             return ErrorType.Unknown;
         }
     }
