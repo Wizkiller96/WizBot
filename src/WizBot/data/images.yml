@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 4
+version: 5
 coins:
   heads:
     - https://cdn.wizbot.cc/coins/heads3.png
@@ -20,9 +20,6 @@ dice:
   - https://cdn.wizbot.cc/other/dice/7.png
   - https://cdn.wizbot.cc/other/dice/8.png
   - https://cdn.wizbot.cc/other/dice/9.png
-rategirl:
-  matrix: https://cdn.wizbot.cc/other/rategirl/matrix.png
-  dot: https://cdn.wizbot.cc/other/rategirl/dot.png
 xp:
   bg: https://cdn.wizbot.cc/other/xp/bg_k.png
 rip:

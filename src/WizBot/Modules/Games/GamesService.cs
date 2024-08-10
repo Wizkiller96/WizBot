@@ -1,6 +1,5 @@
 #nullable disable
 using Microsoft.Extensions.Caching.Memory;
-using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.Acrophobia;
 using WizBot.Modules.Games.Common.Nunchi;
@@ -8,11 +7,10 @@ using Newtonsoft.Json;
 
 namespace WizBot.Modules.Games.Services;
 
-public class GamesService : INService, IReadyExecutor
+public class GamesService : INService
 {
     private const string TYPING_ARTICLES_PATH = "data/typing_articles3.json";
-
-    public ConcurrentDictionary<ulong, GirlRating> GirlRatings { get; } = new();
+    
 
     public IReadOnlyList<string> EightBallResponses
         => _gamesConfig.Data.EightBallResponses;
@@ -24,8 +22,7 @@ public class GamesService : INService, IReadyExecutor
     public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new();
     public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new();
     public ConcurrentDictionary<ulong, NunchiGame> NunchiGames { get; } = new();
-
-    public AsyncLazy<RatingTexts> Ratings { get; }
+    
     private readonly GamesConfigService _gamesConfig;
 
     private readonly IHttpClientFactory _httpFactory;
@@ -40,8 +37,7 @@ public class GamesService : INService, IReadyExecutor
         {
             SizeLimit = 500_000
         });
-
-        Ratings = new(GetRatingTexts);
+        
         _rng = new WizBotRandom();
 
         try
@@ -53,22 +49,6 @@ public class GamesService : INService, IReadyExecutor
             Log.Warning(ex, "Error while loading typing articles: {ErrorMessage}", ex.Message);
             TypingArticles = new();
         }
-    }
-
-    public async Task OnReadyAsync()
-    {
-        // reset rating once a day
-        using var timer = new PeriodicTimer(TimeSpan.FromDays(1));
-        while (await timer.WaitForNextTickAsync())
-            GirlRatings.Clear();
-    }
-
-    private async Task<RatingTexts> GetRatingTexts()
-    {
-        using var http = _httpFactory.CreateClient();
-        var text = await http.GetStringAsync(
-            "https://nadeko-pictures.nyc3.digitaloceanspaces.com/other/rategirl/rates.json");
-        return JsonConvert.DeserializeObject<RatingTexts>(text);
     }
 
     public void AddTypingArticle(IUser user, string text)
@@ -103,16 +83,5 @@ public class GamesService : INService, IReadyExecutor
 
         File.WriteAllText(TYPING_ARTICLES_PATH, JsonConvert.SerializeObject(articles));
         return removed;
-    }
-
-    public class RatingTexts
-    {
-        public string Nog { get; set; }
-        public string Tra { get; set; }
-        public string Fun { get; set; }
-        public string Uni { get; set; }
-        public string Wif { get; set; }
-        public string Dat { get; set; }
-        public string Dan { get; set; }
     }
 }

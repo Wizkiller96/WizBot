@@ -15,5 +15,17 @@ public sealed class ImagesConfig : ConfigServiceBase<ImageUrls>
     public ImagesConfig(IConfigSeria serializer, IPubSub pubSub)
         : base(PATH, serializer, pubSub, _changeKey)
     {
+        Migrate();
+    }
+
+    private void Migrate()
+    {
+        if (data.Version < 5)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 5;
+            });
+        }
     }
 }

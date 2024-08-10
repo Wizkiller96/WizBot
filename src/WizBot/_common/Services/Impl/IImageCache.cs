@@ -6,8 +6,6 @@ public interface IImageCache
     Task<byte[]?> GetTailsImageAsync();
     Task<byte[]?> GetCurrencyImageAsync();
     Task<byte[]?> GetXpBackgroundImageAsync();
-    Task<byte[]?> GetRategirlBgAsync();
-    Task<byte[]?> GetRategirlDotAsync();
     Task<byte[]?> GetDiceAsync(int num);
     Task<byte[]?> GetSlotEmojiAsync(int number);
     Task<byte[]?> GetSlotBgAsync();
