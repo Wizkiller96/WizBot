@@ -3745,7 +3745,7 @@ say:
     Make the bot say something, or in other words, make the bot send the message.
     You can optionally specify the channel where the bot will send the message.
     If you omit the channel name, it will send the message in the current channel.
-    Supports embeds.
+    Supports [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - hi
     - '#chat hi'
@@ -4048,7 +4048,9 @@ quran:
     - ayah:
         desc: "The number of the ayah in the Quran, for example 2:255."
 edit:
-  desc: Edits bot's message, you have to specify message ID and new text. You can optionally specify target channel. Supports embeds.
+  desc: |-
+    Edits bot's message, you have to specify message ID and new text. You can optionally specify target channel.
+    Supports [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - 7479498384 Hi :^)
     - '#other-channel 771562360594628608 New message!'
@@ -4244,7 +4246,9 @@ patron:
     - user:
         desc: "The ID or handle of the user whose patronage status is being checked."
 patronmessage:
-  desc: Sends a message to all patrons of the specified tier and higher. Supports embeds.
+  desc: |-
+    Sends a message to all patrons of the specified tier and higher.
+    Supports [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - x hello
   params:
