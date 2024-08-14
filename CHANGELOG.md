@@ -2,7 +2,7 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## Unreleased
+## [5.1.6] - 07.08.2024
 
 ### Added
 
@@ -11,6 +11,11 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 ### Changed
 
 - `.listservers` renamed to `.serverlist`
+
+### Fixed
+
+- `.afk` messages can no longer ping, and the response is moved to DMs to avoid
+- Possible fix for `.remind` timestamp
 
 ### Removed
 - Removed old bloat / semi broken / dumb commands
