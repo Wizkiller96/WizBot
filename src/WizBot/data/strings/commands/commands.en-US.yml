@@ -2085,13 +2085,13 @@ urbandict:
     - query:
         desc: "The term being searched for in the dictionary."
 catfact:
-  desc: Shows a random catfact from <https://catfacts-api.appspot.com/api/facts>
+  desc: Shows a random fact about cats.
   ex:
     - ''
   params:
     - {}
 yomama:
-  desc: Shows a random joke from <https://api.yomomma.info/>
+  desc: Shows a random yomama joke.
   ex:
     - ''
   params:
@@ -2109,7 +2109,7 @@ chucknorris:
   params:
     - {}
 magicitem:
-  desc: Shows a random magic item from <https://1d4chan.org/wiki/List_of_/tg/%27s_magic_items>
+  desc: Shows a random magic item with its description.
   ex:
     - ''
   params:
@@ -3678,8 +3678,8 @@ eightball:
 ytuploadnotif:
   desc: |-
     Subscribe to a youtube channel's upload rss feed.
-    Shortcut for `.feed https://www.youtube.com/feeds/videos.xml?channel_id=%3Cyoutube_channel_id`
     You can optionally specify a message which will be posted with an update.
+    This is just a shortcut for `.feed` with a url of the youtube channel's rss feed.
   ex:
     - https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow
     - https://www.youtube.com/channel/UCSJ4gkVC6NrvII8umztf0Ow New video is posted
