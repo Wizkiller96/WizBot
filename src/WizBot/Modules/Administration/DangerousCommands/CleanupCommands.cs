@@ -1,9 +1,11 @@
-﻿namespace WizBot.Modules.Administration.DangerousCommands;
+﻿using WizBot.Modules.Administration.DangerousCommands;
+
+namespace WizBot.Modules.Administration;
 
 public partial class Administration 
 {
     [Group]
-    public class CleanupCommands : CleanupModuleBase
+    public partial class CleanupCommands : CleanupModuleBase
     {
         private readonly ICleanupService _svc;
 

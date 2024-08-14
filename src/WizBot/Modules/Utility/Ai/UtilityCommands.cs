@@ -1,8 +1,9 @@
 ﻿namespace WizBot.Modules.Utility;
 
-public partial class UtilityCommands
+public partial class Utility
 {
-    public class PromptCommands : WizBotModule<IAiAssistantService>
+    [Group]
+    public partial class PromptCommands : WizBotModule<IAiAssistantService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]

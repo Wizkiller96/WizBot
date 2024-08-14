@@ -2,6 +2,12 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.7] - 08.08.2024
+
+### Fixed
+
+- Fixed some command groups incorrectly showing up as modules
+
 ## [5.1.6] - 07.08.2024
 
 ### Added
