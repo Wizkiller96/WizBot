@@ -74,7 +74,7 @@ public sealed class AfkService : INService, IReadyExecutor
 
     private Task TryTriggerAfkMessage(SocketMessage arg)
     {
-        if (arg.Author.IsBot)
+        if (arg.Author.IsBot || arg.Author.IsWebhook)
             return Task.CompletedTask;
 
         if (arg is not IUserMessage uMsg || uMsg.Channel is not ITextChannel tc)
@@ -126,9 +126,10 @@ public sealed class AfkService : INService, IReadyExecutor
                 {
                     var st = SmartText.CreateFrom(msg);
                     
-                    st = "The user is AFK: " + st;
+                    st = $"The user you've pinged ({arg.Author}) is AFK: " + st;
                     
                     var toDelete = await _mss.Response(arg.Channel)
+                                             .User(arg.Author)
                                              .Message(uMsg)
                                              .Text(st)
                                              .Sanitize(false)
