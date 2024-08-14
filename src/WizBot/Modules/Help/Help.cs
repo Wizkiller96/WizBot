@@ -514,6 +514,7 @@ public sealed partial class Help : WizBotModule<HelpService>
 
         // send the indented file to chat
         await using var rDataStream = new MemoryStream(Encoding.ASCII.GetBytes(readableData));
+        await File.WriteAllTextAsync("data/commandlist.json", readableData);
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
     }
     
