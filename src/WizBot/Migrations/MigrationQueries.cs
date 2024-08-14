@@ -49,5 +49,9 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
         builder.Sql($"""
                      DELETE FROM "DelMsgOnCmdChannel" WHERE "GuildConfigId" is NULL;
                      """);
+        
+        builder.Sql("""
+                    DELETE FROM "WarningPunishment" WHERE "GuildConfigId" NOT IN (SELECT "Id" from "GuildConfigs");
+                    """);
     }
 }
