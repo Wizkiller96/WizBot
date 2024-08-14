@@ -14,7 +14,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 
 ### Fixed
 
-- `.afk` messages can no longer ping, and the response is moved to DMs to avoid
+- `.afk` messages can no longer ping, and the response is moved to DMs to avoid abuse
 - Possible fix for `.remind` timestamp
 
 ### Removed
