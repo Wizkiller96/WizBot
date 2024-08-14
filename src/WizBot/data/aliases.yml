@@ -587,10 +587,6 @@ pokemon:
 pokemonability:
   - pokemonability
   - pokeab
-memelist:
-  - memelist
-memegen:
-  - memegen
 weather:
   - weather
   - we
@@ -771,7 +767,7 @@ typedel:
   - typedel
 typelist:
   - typelist
-listservers:
+serverlist:
   - listservers
 cleverbot:
   - cleverbot
@@ -804,8 +800,6 @@ autodisconnect:
 define:
   - define
   - def
-activity:
-  - activity
 setstatus:
   - setstatus
 invitecreate:
@@ -855,8 +849,6 @@ divorce:
 waifuinfo:
   - waifuinfo
   - waifustats
-mal:
-  - mal
 setmusicchannel:
   - setmusicchannel
   - smch
@@ -1148,8 +1140,6 @@ discordpermoverridelist:
   - dpoli
 discordpermoverridereset:
   - dpor
-rafflecur:
-  - rafflecur
 timelyset:
   - timelyset
 timely:
@@ -1166,8 +1156,6 @@ massban:
   - massban
 masskill:
   - masskill
-rollduel:
-  - rollduel
 reroadd:
   - reroadd
   - reroa
@@ -1209,8 +1197,6 @@ roleid:
 agerestricttoggle:
   - nsfwtoggle
   - artoggle
-economy:
-  - economy
 purgeuser:
   - purgeuser
 imageonlychannel:

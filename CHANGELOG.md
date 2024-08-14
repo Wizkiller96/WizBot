@@ -2,6 +2,28 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## Unreleased
+
+### Added
+
+- `.serverlist` is now paginated
+
+### Changed
+
+- `.listservers` renamed to `.serverlist`
+
+### Removed
+- Removed old bloat / semi broken / dumb commands
+  - `.memelist` / `.memegen` (too inconvenient to use)
+  - `.activity` (useless owner-only command)
+  - `.rafflecur` (Just use raffle and then award manually instead)
+  - `.rollduel` (we had this command?)
+- You can no longer bet on `.connect4`
+- `.economy` Removed.
+  - Was buggy and didn't really show the real state of the economy.
+  - It might come back improved in the future
+- `.mal` Removed. Useless information / semi broken
+
 ## [5.1.5] - 01.08.2024
 
 ### Added

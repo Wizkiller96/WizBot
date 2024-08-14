@@ -128,38 +128,6 @@ public class GamblingService : INService, IReadyExecutor
 
     private static readonly TypedKey<EconomyResult> _ecoKey = new("wizbot:economy");
 
-    public async Task<EconomyResult> GetEconomyAsync()
-    {
-        var data = await _cache.GetOrAddAsync(_ecoKey,
-            async () =>
-            {
-                await using var uow = _db.GetDbContext();
-                var cash = uow.Set<DiscordUser>().GetTotalCurrency();
-                var onePercent = uow.Set<DiscordUser>().GetTopOnePercentCurrency(_client.CurrentUser.Id);
-                decimal planted = uow.Set<PlantedCurrency>().AsQueryable().Sum(x => x.Amount);
-                var waifus = uow.Set<WaifuInfo>().GetTotalValue();
-                var bot = await uow.Set<DiscordUser>().GetUserCurrencyAsync(_client.CurrentUser.Id);
-                decimal bank = await uow.GetTable<BankUser>()
-                    .SumAsyncLinqToDB(x => x.Balance);
-
-                var result = new EconomyResult
-                {
-                    Cash = cash,
-                    Planted = planted,
-                    Bot = bot,
-                    Waifus = waifus,
-                    OnePercent = onePercent,
-                    Bank = bank
-                };
-
-                return result;
-            },
-            TimeSpan.FromMinutes(3));
-
-        return data;
-    }
-
-
     private static readonly SemaphoreSlim _timelyLock = new(1, 1);
 
     private static TypedKey<Dictionary<ulong, long>> _timelyKey

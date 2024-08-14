@@ -562,29 +562,38 @@ public partial class Utility : WizBotModule
 
     [Cmd]
     [OwnerOnly]
-    public async Task ListServers(int page = 1)
+    public async Task ServerList(int page = 1)
     {
         page -= 1;
 
         if (page < 0)
             return;
 
-        var guilds = _client.Guilds.OrderBy(g => g.Name)
-                            .Skip(page * 15)
-                            .Take(15)
-                            .ToList();
+        var allGuilds = _client.Guilds
+                               .OrderBy(g => g.Name)
+                               .ToList();
 
-        if (!guilds.Any())
-        {
-            await Response().Error(strs.listservers_none).SendAsync();
-            return;
-        }
+        await Response()
+              .Paginated()
+              .Items(allGuilds)
+              .PageSize(9)
+              .Page((guilds, _) =>
+              {
+                  if (!guilds.Any())
+                  {
+                      return _sender.CreateEmbed()
+                                    .WithDescription(GetText(strs.listservers_none))
+                                    .WithErrorColor();
+                  }
 
-        var embed = _sender.CreateEmbed().WithOkColor();
-        foreach (var guild in guilds)
-            embed.AddField(guild.Name, GetText(strs.listservers(guild.Id, guild.MemberCount, guild.OwnerId)));
+                  var embed = _sender.CreateEmbed()
+                                     .WithOkColor();
+                  foreach (var guild in guilds)
+                      embed.AddField(guild.Name, GetText(strs.listservers(guild.Id, guild.MemberCount, guild.OwnerId)));
 
-        await Response().Embed(embed).SendAsync();
+                  return embed;
+              })
+              .SendAsync();
     }
 
     [Cmd]

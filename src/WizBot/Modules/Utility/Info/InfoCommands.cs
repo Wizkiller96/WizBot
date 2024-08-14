@@ -176,39 +176,5 @@ public partial class Utility
 
             return joinedAt;
         }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [OwnerOnly]
-        public async Task Activity(int page = 1)
-        {
-            const int activityPerPage = 10;
-            page -= 1;
-
-            if (page < 0)
-                return;
-
-            var startCount = page * activityPerPage;
-
-            var str = new StringBuilder();
-            foreach (var kvp in _cmdHandler.UserMessagesSent.OrderByDescending(kvp => kvp.Value)
-                                           .Skip(page * activityPerPage)
-                                           .Take(activityPerPage))
-            {
-                str.AppendLine(GetText(strs.activity_line(++startCount,
-                    Format.Bold(kvp.Key.ToString()),
-                    kvp.Value / _stats.GetUptime().TotalSeconds,
-                    kvp.Value)));
-            }
-
-            await Response()
-                  .Embed(_sender.CreateEmbed()
-                                .WithTitle(GetText(strs.activity_page(page + 1)))
-                                .WithOkColor()
-                                .WithFooter(GetText(
-                                    strs.activity_users_total(_cmdHandler.UserMessagesSent.Count)))
-                                .WithDescription(str.ToString()))
-                  .SendAsync();
-        }
     }
 }

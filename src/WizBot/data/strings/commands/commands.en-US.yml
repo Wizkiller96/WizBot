@@ -1987,23 +1987,6 @@ pokemonability:
   params:
     - ability:
         desc: "The type of the Pokémon's special power or trait that can be used in battle."
-memelist:
-  desc: Shows a list of template keys (and their respective names) used for `{0}memegen`.
-  ex:
-    - ''
-  params:
-    - page:
-        desc: "The number of pages in the list to be displayed."
-memegen:
-  desc: Generates a meme from memelist with specified text. Separate multiple text values with semicolons. Provide no meme text to see an example meme with that template.
-  ex:
-    - biw gets iced coffee;in the winter
-    - ntot
-  params:
-    - meme:
-        desc: "The caption or punchline of the meme, which can be a single sentence or multiple sentences separated by semicolons."
-      memeText:
-        desc: "The user-provided text to be displayed on the generated meme."
 weather:
   desc: Shows current weather data for the specified city.
   ex:
@@ -2550,7 +2533,7 @@ typelist:
   params:
     - page:
         desc: "The current page number for the list of typing articles."
-listservers:
+serverlist:
   desc: Lists servers the bot is on with some basic info. 15 per page.
   ex:
     - 3
@@ -2645,13 +2628,6 @@ define:
   params:
     - word:
         desc: "The word being searched for."
-activity:
-  desc: Checks for spammers.
-  ex:
-    - ''
-  params:
-    - page:
-        desc: "The number of pages to scan for spam."
 setstatus:
   desc: Sets the bot's status. (Online/Idle/Dnd/Invisible)
   ex:
@@ -2807,15 +2783,6 @@ waifuinfo:
         desc: "The user being targeted, whose waifu information will be displayed."
     - targetId:
         desc: "The ID of the person whose waifu stats are being displayed."
-mal:
-  desc: Shows basic info from a MyAnimeList profile.
-  ex:
-    - straysocks
-  params:
-    - name:
-        desc: "The username or identifier for the MyAnimeList account being queried."
-    - usr:
-        desc: "The user's guild membership information is used to fetch their anime list and other relevant data."
 setmusicchannel:
   desc: Sets the current channel as the default music output channel. This will output playing, finished, paused and removed songs to that channel instead of the channel where the first song was queued in. Persistent server setting.
   ex:
@@ -3870,20 +3837,6 @@ discordpermoverridereset:
     - ''
   params:
     - {}
-rafflecur:
-  desc: Starts or joins a currency raffle with a specified amount. Users who join the raffle will lose the amount of currency specified and add it to the pot. After 30 seconds, random winner will be selected who will receive the whole pot. There is also a `mixed` mode in which the users will be able to join the game with any amount of currency, and have their chances be proportional to the amount they've bet.
-  ex:
-    - 20
-    - mixed 15
-  params:
-    - _:
-        desc: "The type of game mode to use, either \"fixed\" or \"mixed\"."
-      amount:
-        desc: "The minimum or maximum amount of currency that can be used for betting."
-    - amount:
-        desc: "The minimum or maximum amount of currency that can be used for betting."
-      mixed:
-        desc: "The parameter determines whether the raffle operates in \"fixed\" or \"proportional\" mode."
 autodisconnect:
   desc: Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs and queue repeat option is set to `none`.
   ex:
@@ -3955,18 +3908,6 @@ masskill:
   params:
     - people:
         desc: "The list of user IDs or usernames to ban from the server and blacklist from the bot."
-rollduel:
-  desc: Challenge someone to a roll duel by specifying the amount and the user you wish to challenge as the parameters. To accept the challenge, just specify the name of the user who challenged you, without the amount.
-  ex:
-    - 50 @Someone
-    - '@Challenger'
-  params:
-    - u:
-        desc: "The user being challenged or accepting the challenge."
-    - amount:
-        desc: "The stakes for the roll duel."
-      u:
-        desc: "The user being challenged or accepting the challenge."
 reroadd:
   desc: |-
     Specify a message id, emote and a role name to have the bot assign the specified role to the user who reacts to the specified message (in this channel) with the specified emoji.
@@ -4153,12 +4094,6 @@ roleid:
         desc: "The role that is being referenced."
 agerestricttoggle:
   desc: Toggles whether the current channel is age-restricted.
-  ex:
-    - ''
-  params:
-    - {}
-economy:
-  desc: Breakdown of the current state of the bot's economy. Updates every 3 minutes.
   ex:
     - ''
   params:

@@ -29,17 +29,15 @@ public partial class Gambling
         }
 
         private readonly DiscordSocketClient _client;
-        private readonly ICurrencyService _cs;
 
         private IUserMessage msg;
 
         private int repostCounter;
 
-        public Connect4Commands(DiscordSocketClient client, ICurrencyService cs, GamblingConfigService gamb)
+        public Connect4Commands(DiscordSocketClient client, GamblingConfigService gamb)
             : base(gamb)
         {
             _client = client;
-            _cs = cs;
         }
 
         [Cmd]
@@ -48,10 +46,8 @@ public partial class Gambling
         public async Task Connect4(params string[] args)
         {
             var (options, _) = OptionsParser.ParseFrom(new Connect4Game.Options(), args);
-            if (!await CheckBetOptional(options.Bet))
-                return;
 
-            var newGame = new Connect4Game(ctx.User.Id, ctx.User.ToString(), options, _cs);
+            var newGame = new Connect4Game(ctx.User.Id, ctx.User.ToString(), options);
             Connect4Game game;
             if ((game = _service.Connect4Games.GetOrAdd(ctx.Channel.Id, newGame)) != newGame)
             {
@@ -60,19 +56,8 @@ public partial class Gambling
 
                 newGame.Dispose();
                 //means game already exists, try to join
-                await game.Join(ctx.User.Id, ctx.User.ToString(), options.Bet);
+                await game.Join(ctx.User.Id, ctx.User.ToString());
                 return;
-            }
-
-            if (options.Bet > 0)
-            {
-                if (!await _cs.RemoveAsync(ctx.User.Id, options.Bet, new("connect4", "bet")))
-                {
-                    await Response().Error(strs.not_enough(CurrencySign)).SendAsync();
-                    _service.Connect4Games.TryRemove(ctx.Channel.Id, out _);
-                    game.Dispose();
-                    return;
-                }
             }
 
             game.OnGameStateUpdated += Game_OnGameStateUpdated;
@@ -81,10 +66,7 @@ public partial class Gambling
             _client.MessageReceived += ClientMessageReceived;
 
             game.Initialize();
-            if (options.Bet == 0)
-                await Response().Confirm(strs.connect4_created).SendAsync();
-            else
-                await Response().Error(strs.connect4_created_bet(N(options.Bet))).SendAsync();
+            await Response().Confirm(strs.connect4_created).SendAsync();
 
             Task ClientMessageReceived(SocketMessage arg)
             {
@@ -151,19 +133,19 @@ public partial class Gambling
                     title = GetText(strs.connect4_draw);
 
                 return msg.ModifyAsync(x => x.Embed = _sender.CreateEmbed()
-                                                         .WithTitle(title)
-                                                         .WithDescription(GetGameStateText(game))
-                                                         .WithOkColor()
-                                                         .Build());
+                                                             .WithTitle(title)
+                                                             .WithDescription(GetGameStateText(game))
+                                                             .WithOkColor()
+                                                             .Build());
             }
         }
 
         private async Task Game_OnGameStateUpdated(Connect4Game game)
         {
             var embed = _sender.CreateEmbed()
-                           .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
-                           .WithDescription(GetGameStateText(game))
-                           .WithOkColor();
+                               .WithTitle($"{game.CurrentPlayer.Username} vs {game.OtherPlayer.Username}")
+                               .WithDescription(GetGameStateText(game))
+                               .WithOkColor();
 
 
             if (msg is null)
@@ -198,7 +180,7 @@ public partial class Gambling
 
             for (var i = 0; i < Connect4Game.NUMBER_OF_COLUMNS; i++)
                 sb.Append(_numbers[i]);
-            
+
             return sb.ToString();
         }
     }

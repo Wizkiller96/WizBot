@@ -38,11 +38,11 @@ public sealed class Connect4Game : IDisposable
 
     public Phase CurrentPhase { get; private set; } = Phase.Joining;
 
-    public ImmutableArray<Field> GameState
-        => _gameState.ToImmutableArray();
+    public IReadOnlyList<Field> GameState
+        => _gameState.AsReadOnly();
 
-    public ImmutableArray<(ulong UserId, string Username)?> Players
-        => _players.ToImmutableArray();
+    public IReadOnlyCollection<(ulong UserId, string Username)?> Players
+        => _players.AsReadOnly();
 
     public (ulong UserId, string Username) CurrentPlayer
         => CurrentPhase == Phase.P1Move ? _players[0].Value : _players[1].Value;
@@ -56,7 +56,6 @@ public sealed class Connect4Game : IDisposable
 
     private readonly SemaphoreSlim _locker = new(1, 1);
     private readonly Options _options;
-    private readonly ICurrencyService _cs;
     private readonly WizBotRandom _rng;
 
     private Timer playerTimeoutTimer;
@@ -73,12 +72,11 @@ public sealed class Connect4Game : IDisposable
     public Connect4Game(
         ulong userId,
         string userName,
-        Options options,
-        ICurrencyService cs)
+        Options options
+    )
     {
         _players[0] = (userId, userName);
         _options = options;
-        _cs = cs;
 
         _rng = new();
         for (var i = 0; i < NUMBER_OF_COLUMNS * NUMBER_OF_ROWS; i++)
@@ -99,14 +97,13 @@ public sealed class Connect4Game : IDisposable
                 {
                     _ = OnGameFailedToStart?.Invoke(this);
                     CurrentPhase = Phase.Ended;
-                    await _cs.AddAsync(_players[0].Value.UserId, _options.Bet, new("connect4", "refund"));
                 }
             }
             finally { _locker.Release(); }
         });
     }
 
-    public async Task<bool> Join(ulong userId, string userName, int bet)
+    public async Task<bool> Join(ulong userId, string userName)
     {
         await _locker.WaitAsync();
         try
@@ -117,11 +114,6 @@ public sealed class Connect4Game : IDisposable
             if (_players[0].Value.UserId == userId) // same user can't join own game
                 return false;
 
-            if (bet != _options.Bet) // can't join if bet amount is not the same
-                return false;
-
-            if (!await _cs.RemoveAsync(userId, bet, new("connect4", "bet"))) // user doesn't have enough money to gamble
-                return false;
 
             if (_rng.Next(0, 2) == 0) //rolling from 0-1, if number is 0, join as first player
             {
@@ -351,13 +343,8 @@ public sealed class Connect4Game : IDisposable
 
         if (result == Result.Draw)
         {
-            _cs.AddAsync(CurrentPlayer.UserId, _options.Bet, new("connect4", "draw"));
-            _cs.AddAsync(OtherPlayer.UserId, _options.Bet, new("connect4", "draw"));
             return;
         }
-
-        if (winId is not null)
-            _cs.AddAsync(winId.Value, (long)(_options.Bet * 1.98), new("connect4", "win"));
     }
 
     private Field GetPlayerPiece(ulong userId)
@@ -394,16 +381,10 @@ public sealed class Connect4Game : IDisposable
             HelpText = "Turn time in seconds. It has to be between 5 and 60. Default 15.")]
         public int TurnTimer { get; set; } = 15;
 
-        [Option('b', "bet", Required = false, Default = 0, HelpText = "Amount you bet. Default 0.")]
-        public int Bet { get; set; }
-
         public void NormalizeOptions()
         {
             if (TurnTimer is < 5 or > 60)
                 TurnTimer = 15;
-
-            if (Bet < 0)
-                Bet = 0;
         }
     }
 }

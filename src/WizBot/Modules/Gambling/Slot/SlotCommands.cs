@@ -23,9 +23,6 @@ public partial class Gambling
     [Group]
     public partial class SlotCommands : GamblingSubmodule<IGamblingService>
     {
-        private static decimal totalBet;
-        private static decimal totalPaidOut;
-
         private readonly IImageCache _images;
         private readonly FontProvider _fonts;
         private readonly DbService _db;
@@ -69,17 +66,19 @@ public partial class Gambling
 
 
             var eb = _sender.CreateEmbed()
-                .WithAuthor(ctx.User)
-                .WithDescription(Format.Bold(text))
-                .WithImageUrl($"attachment://result.png")
-                .WithOkColor();
+                            .WithAuthor(ctx.User)
+                            .WithDescription(Format.Bold(text))
+                            .WithImageUrl($"attachment://result.png")
+                            .WithOkColor();
 
             var bb = new ButtonBuilder(emote: Emoji.Parse("🔁"), customId: "slot:again", label: "Pull Again");
-            var inter = _inter.Create(ctx.User.Id, bb, smc =>
-            {
-                smc.DeferAsync();
-                return Slot(amount);
-            });
+            var inter = _inter.Create(ctx.User.Id,
+                bb,
+                smc =>
+                {
+                    smc.DeferAsync();
+                    return Slot(amount);
+                });
 
             var msg = await ctx.Channel.SendFileAsync(imgStream,
                 "result.png",
@@ -159,12 +158,6 @@ public partial class Gambling
             {
                 return null;
             }
-            
-            lock (_slotStatsLock)
-            {
-                totalBet += amount;
-                totalPaidOut += result.Won;
-            }
 
             return result;
         }
@@ -211,7 +204,7 @@ public partial class Gambling
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Origin = new(393, 480) 
+                    Origin = new(393, 480)
                 },
                 ownedAmount.ToString(),
                 fontColor));

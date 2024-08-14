@@ -30,8 +30,6 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly GamblingTxTracker _gamblingTxTracker;
     private readonly IPatronageService _ps;
 
-    private IUserMessage rdMsg;
-
     public Gambling(
         IGamblingService gs,
         DbService db,
@@ -103,35 +101,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await Response().Embed(eb).SendAsync();
     }
-
-    [Cmd]
-    public async Task Economy()
-    {
-        var ec = await _service.GetEconomyAsync();
-        decimal onePercent = 0;
-
-        // This stops the top 1% from owning more than 100% of the money
-        if (ec.Cash > 0)
-        {
-            onePercent = ec.OnePercent / (ec.Cash - ec.Bot);
-        }
-
-        // [21:03] Bob Page: Kinda remids me of US economy
-        var embed = _sender.CreateEmbed()
-                           .WithTitle(GetText(strs.economy_state))
-                           .AddField(GetText(strs.currency_owned), N(ec.Cash - ec.Bot))
-                           .AddField(GetText(strs.currency_one_percent), (onePercent * 100).ToString("F2") + "%")
-                           .AddField(GetText(strs.currency_planted), N(ec.Planted))
-                           .AddField(GetText(strs.owned_waifus_total), N(ec.Waifus))
-                           .AddField(GetText(strs.bot_currency), N(ec.Bot))
-                           .AddField(GetText(strs.bank_accounts), N(ec.Bank))
-                           .AddField(GetText(strs.total), N(ec.Cash + ec.Planted + ec.Waifus + ec.Bank))
-                           .WithOkColor();
-
-        // ec.Cash already contains ec.Bot as it's the total of all values in the CurrencyAmount column of the DiscordUser table
-        await Response().Embed(embed).SendAsync();
-    }
-
+    
     private async Task RemindTimelyAction(SocketMessageComponent smc, DateTime when)
     {
         var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
@@ -598,117 +568,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         else
         {
             await Response().Error(strs.take_fail(N(amount), Format.Code(usrId.ToString()), CurrencySign)).SendAsync();
-        }
-    }
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task RollDuel(IUser u)
-    {
-        if (ctx.User.Id == u.Id)
-        {
-            return;
-        }
-
-        //since the challenge is created by another user, we need to reverse the ids
-        //if it gets removed, means challenge is accepted
-        if (_service.Duels.TryRemove((ctx.User.Id, u.Id), out var game))
-        {
-            await game.StartGame();
-        }
-    }
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task RollDuel([OverrideTypeReader(typeof(BalanceTypeReader))] long amount, IUser u)
-    {
-        if (ctx.User.Id == u.Id)
-        {
-            return;
-        }
-
-        if (amount <= 0)
-        {
-            return;
-        }
-
-        var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.roll_duel));
-
-        var description = string.Empty;
-
-        var game = new RollDuelGame(_cs, _client.CurrentUser.Id, ctx.User.Id, u.Id, amount);
-        //means challenge is just created
-        if (_service.Duels.TryGetValue((ctx.User.Id, u.Id), out var other))
-        {
-            if (other.Amount != amount)
-            {
-                await Response().Error(strs.roll_duel_already_challenged).SendAsync();
-            }
-            else
-            {
-                await RollDuel(u);
-            }
-
-            return;
-        }
-
-        if (_service.Duels.TryAdd((u.Id, ctx.User.Id), game))
-        {
-            game.OnGameTick += GameOnGameTick;
-            game.OnEnded += GameOnEnded;
-
-            await Response()
-                  .Confirm(strs.roll_duel_challenge(Format.Bold(ctx.User.ToString()),
-                      Format.Bold(u.ToString()),
-                      Format.Bold(N(amount))))
-                  .SendAsync();
-        }
-
-        async Task GameOnGameTick(RollDuelGame arg)
-        {
-            var rolls = arg.Rolls.Last();
-            description += $@"{Format.Bold(ctx.User.ToString())} rolled **{rolls.Item1}**
-{Format.Bold(u.ToString())} rolled **{rolls.Item2}**
---
-";
-            embed = embed.WithDescription(description);
-
-            if (rdMsg is null)
-            {
-                rdMsg = await Response().Embed(embed).SendAsync();
-            }
-            else
-            {
-                await rdMsg.ModifyAsync(x => { x.Embed = embed.Build(); });
-            }
-        }
-
-        async Task GameOnEnded(RollDuelGame rdGame, RollDuelGame.Reason reason)
-        {
-            try
-            {
-                if (reason == RollDuelGame.Reason.Normal)
-                {
-                    var winner = rdGame.Winner == rdGame.P1 ? ctx.User : u;
-                    description += $"\n**{winner}** Won {N((long)(rdGame.Amount * 2 * 0.98))}";
-
-                    embed = embed.WithDescription(description);
-
-                    await rdMsg.ModifyAsync(x => x.Embed = embed.Build());
-                }
-                else if (reason == RollDuelGame.Reason.Timeout)
-                {
-                    await Response().Error(strs.roll_duel_timeout).SendAsync();
-                }
-                else if (reason == RollDuelGame.Reason.NoFunds)
-                {
-                    await Response().Error(strs.roll_duel_no_funds).SendAsync();
-                }
-            }
-            finally
-            {
-                _service.Duels.TryRemove((u.Id, ctx.User.Id), out _);
-            }
         }
     }
 
