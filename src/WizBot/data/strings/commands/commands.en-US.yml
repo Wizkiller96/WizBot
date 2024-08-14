@@ -63,10 +63,8 @@ greet:
 greetmsg:
   desc: |-
     Sets a new join announcement message which will be shown in the current channel.
-    Write `%user.mention%` if you want to mention the new member.   
-    Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>
     Using this command with no message will show the current greet message.  
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
+    Supports [placeholders](https://docs.wizbot.cc/en/latest/placeholders/) and [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - Welcome, %user.mention%.
   params:
@@ -81,10 +79,8 @@ bye:
 byemsg:
   desc: |-
     Sets a new leave announcement message which will be shown in the current channel. 
-    Type `%user.name%` to show the name of the user who left. 
-    Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>  
     Using this command with no message will show the current bye message. 
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
+    Supports [placeholders](https://docs.wizbot.cc/en/latest/placeholders/) and [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - '%user.name% has left.'
   params:
@@ -113,7 +109,9 @@ greettest:
     - user:
         desc: "The user to impersonate when sending the greeting, defaulting to yourself if not specified."
 boosttest:
-  desc: Sends the boost message in the current channel as if you just boosted the server. You can optionally specify a different user.
+  desc: |-
+    Sends the boost message in the current channel as if you just boosted the server.
+    You can optionally specify a different user.
   ex:
     - ''
     - '@SomeoneElse'
@@ -145,10 +143,8 @@ boost:
 boostmsg:
   desc: |-
     Sets a new boost announcement message which will be shown in the current channel. 
-    Type `%user.mention%` if you want to mention the booster.
-    Full list of placeholders can be found here <https://wizbot.readthedocs.io/en/latest/placeholders/>
     Using this command with no message will show the current boost message. 
-    You can use embed json from <https://wizbot.cc/embedbuilder> instead of regular text, if you want the message to be embedded.
+    Supports [placeholders](https://docs.wizbot.cc/en/latest/placeholders/) and [embeds](https://wizbot.cc/embedbuilder/)
   ex:
     - '%user.mention% has boosted the server!!!'
   params:
@@ -3082,7 +3078,7 @@ banmessage:
     - '{{ "description": "%ban.user% you have been banned from %server.name% by %ban.mod%" }}'
   params:
     - message:
-        desc: "The custom message to be displayed when a user is banned from the server, allowing for placeholders to be replaced with relevant information."
+        desc: "The custom message to be displayed when a user is banned."
 banmessagetest:
   desc: If ban message is not disabled, bot will send you the message as if you were banned by yourself. Used for testing the ban message.
   ex:
