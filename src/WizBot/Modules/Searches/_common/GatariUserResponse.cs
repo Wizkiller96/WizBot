@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace WizBot.Modules.Searches.Common;
 
-public class UserData
+public class GatariUserData
 {
     [JsonProperty("abbr")]
     public object Abbr { get; set; }
@@ -48,5 +48,5 @@ public class GatariUserResponse
     public int Code { get; set; }
 
     [JsonProperty("users")]
-    public List<UserData> Users { get; set; }
+    public List<GatariUserData> Users { get; set; }
 }

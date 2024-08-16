@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace WizBot.Modules.Searches.Common;
 
-public class UserStats
+public class GatariUserStats
 {
     [JsonProperty("a_count")]
     public int ACount { get; set; }
@@ -72,5 +72,5 @@ public class GatariUserStatsResponse
     public int Code { get; set; }
 
     [JsonProperty("stats")]
-    public UserStats Stats { get; set; }
+    public GatariUserStats Stats { get; set; }
 }

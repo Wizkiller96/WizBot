@@ -40,7 +40,7 @@ public partial class Searches
                 }
 
                 var userId = obj.UserId;
-                var smode = ResolveGameMode(obj.ModeNumber);
+                var smode = OsuService.ResolveGameMode(obj.ModeNumber);
 
 
                 await Response()
@@ -69,23 +69,14 @@ public partial class Searches
         [Cmd]
         public async Task Gatari(string user, [Leftover] string mode = null)
         {
-            using var http = _httpFactory.CreateClient();
-            var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
-
-            var modeStr = ResolveGameMode(modeNumber);
-            var resString = await http.GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}");
-
-            var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
-            if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
+            var modeNumber = OsuService.ResolveGameMode(mode);
+            var modeStr = OsuService.ResolveGameMode(modeNumber);
+            var (userData, userStats) = await _service.GetGatariDataAsync(user, mode);
+            if (userStats is null)
             {
                 await Response().Error(strs.osu_user_not_found).SendAsync();
                 return;
             }
-
-            var usrResString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}");
-
-            var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
-            var userStats = statsResponse.Stats;
 
             var embed = _sender.CreateEmbed()
                                .WithOkColor()
@@ -122,7 +113,7 @@ public partial class Searches
             using var http = _httpFactory.CreateClient();
             var m = 0;
             if (!string.IsNullOrWhiteSpace(mode))
-                m = ResolveGameMode(mode);
+                m = OsuService.ResolveGameMode(mode);
 
             var reqString = "https://osu.ppy.sh/api/get_user_best"
                             + $"?k={_creds.OsuApiKey}"
@@ -209,42 +200,6 @@ public partial class Searches
             return Math.Round(hitPoints / totalHits * 100, 2);
         }
 
-        private static int ResolveGameMode(string mode)
-        {
-            switch (mode.ToUpperInvariant())
-            {
-                case "STD":
-                case "STANDARD":
-                    return 0;
-                case "TAIKO":
-                    return 1;
-                case "CTB":
-                case "CATCHTHEBEAT":
-                    return 2;
-                case "MANIA":
-                case "OSU!MANIA":
-                    return 3;
-                default:
-                    return 0;
-            }
-        }
-
-        private static string ResolveGameMode(int mode)
-        {
-            switch (mode)
-            {
-                case 0:
-                    return "Standard";
-                case 1:
-                    return "Taiko";
-                case 2:
-                    return "Catch";
-                case 3:
-                    return "Mania";
-                default:
-                    return "Standard";
-            }
-        }
 
         //https://github.com/ppy/osu-api/wiki#mods
         private static string ResolveMods(int mods)

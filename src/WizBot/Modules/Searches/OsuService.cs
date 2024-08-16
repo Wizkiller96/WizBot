@@ -38,7 +38,7 @@ public sealed class OsuService : INService
         return obj;
     }
 
-    private static int ResolveGameMode(string mode)
+    public static int ResolveGameMode(string mode)
     {
         switch (mode.ToUpperInvariant())
         {
@@ -56,5 +56,45 @@ public sealed class OsuService : INService
             default:
                 return 0;
         }
+    }
+
+    public static string ResolveGameMode(int mode)
+    {
+        switch (mode)
+        {
+            case 0:
+                return "Standard";
+            case 1:
+                return "Taiko";
+            case 2:
+                return "Catch";
+            case 3:
+                return "Mania";
+            default:
+                return "Standard";
+        }
+    }
+
+    public async Task<(GatariUserData userData, GatariUserStats userStats)> GetGatariDataAsync(
+        string user,
+        string mode)
+    {
+        using var http = _httpFactory.CreateClient();
+        var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
+
+        var resString = await http.GetStringAsync($"https://api.gatari.pw/user/stats?u={user}&mode={modeNumber}");
+
+        var statsResponse = JsonConvert.DeserializeObject<GatariUserStatsResponse>(resString);
+        if (statsResponse.Code != 200 || statsResponse.Stats.Id == 0)
+        {
+            return default;
+        }
+
+        var usrResString = await http.GetStringAsync($"https://api.gatari.pw/users/get?u={user}");
+
+        var userData = JsonConvert.DeserializeObject<GatariUserResponse>(usrResString).Users[0];
+        var userStats = statsResponse.Stats;
+
+        return (userData, userStats);
     }
 }
