@@ -69,22 +69,7 @@ public partial class Searches
             if (page-- < 1)
                 return;
 
-            var allStreams = new List<FollowedStream>();
-            await using (var uow = _db.GetDbContext())
-            {
-                var all = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(gc => gc.FollowedStreams))
-                             .FollowedStreams.OrderBy(x => x.Id)
-                             .ToList();
-
-                for (var index = all.Count - 1; index >= 0; index--)
-                {
-                    var fs = all[index];
-                    if (((SocketGuild)ctx.Guild).GetTextChannel(fs.ChannelId) is null)
-                        await _service.UnfollowStreamAsync(fs.GuildId, index);
-                    else
-                        allStreams.Insert(0, fs);
-                }
-            }
+            var allStreams = await _service.GetAllStreamsAsync((SocketGuild)ctx.Guild);
 
             await Response()
                   .Paginated()

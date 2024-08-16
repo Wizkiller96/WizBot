@@ -253,7 +253,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
                       {
                           var ch = _client.GetGuild(fs.GuildId)
                                           ?.GetTextChannel(fs.ChannelId);
-                          
+
                           if (ch is null)
                               return Task.CompletedTask;
 
@@ -492,10 +492,10 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     public EmbedBuilder GetEmbed(ulong guildId, StreamData status, bool showViewers = true)
     {
         var embed = _sender.CreateEmbed()
-                    .WithTitle(status.Name)
-                    .WithUrl(status.StreamUrl)
-                    .WithDescription(status.StreamUrl)
-                    .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
+                        .WithTitle(status.Name)
+                        .WithUrl(status.StreamUrl)
+                        .WithDescription(status.StreamUrl)
+                        .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
 
         if (showViewers)
         {
@@ -625,7 +625,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         all.ForEach(x => x.Message = message);
 
         uow.SaveChanges();
-        
+
         lock (_shardLock)
         {
             foreach (var fs in all)
@@ -646,5 +646,26 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
     {
         public StreamDataKey Key { get; init; }
         public ulong GuildId { get; init; }
+    }
+    
+    public async Task<List<FollowedStream>> GetAllStreamsAsync(SocketGuild guild)
+    {
+        var allStreams = new List<FollowedStream>();
+        await using var uow = _db.GetDbContext();
+        var all = uow.GuildConfigsForId(guild.Id, set => set.Include(gc => gc.FollowedStreams))
+                     .FollowedStreams
+                     .OrderBy(x => x.Id)
+                     .ToList();
+
+        for (var index = all.Count - 1; index >= 0; index--)
+        {
+            var fs = all[index];
+            if (guild.GetTextChannel(fs.ChannelId) is null)
+                await UnfollowStreamAsync(fs.GuildId, index);
+            else
+                allStreams.Insert(0, fs);
+        }
+
+        return allStreams;
     }
 }
