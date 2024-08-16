@@ -178,8 +178,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 {
                     foreach (var user in globalToAdd)
                     {
-                        var amount = user.Value.XpAmount * conf.CurrencyPerXp;
-                        await _cs.AddAsync(user.Key, (long)(amount), null);
+                        var amount = (long)(user.Value.XpAmount * conf.CurrencyPerXp);
+                        if (amount > 0)
+                            await _cs.AddAsync(user.Key, amount, null);
                     }
                 }
 
@@ -422,8 +423,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             await _sender.Response(chan)
                          .Confirm(_strings.GetText(strs.level_up_global(user.Mention,
-                                     Format.Bold(newLevel.ToString())),
-                                 guild.Id))
+                                 Format.Bold(newLevel.ToString())),
+                             guild.Id))
                          .SendAsync();
         }
     }
@@ -770,9 +771,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     {
         var channelId = channel.Id;
         
-        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans) && (chans.Contains(channelId) 
-                                                                            || (channel is SocketThreadChannel tc && chans.Contains(tc.ParentChannel.Id))))
-
+        if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans)
+            && (chans.Contains(channelId)
+                || (channel is SocketThreadChannel tc && chans.Contains(tc.ParentChannel.Id))))
             return false;
 
         if (_excludedServers.Contains(user.Guild.Id))
