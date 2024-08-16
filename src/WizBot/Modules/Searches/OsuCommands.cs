@@ -7,7 +7,7 @@ namespace WizBot.Modules.Searches;
 public partial class Searches
 {
     [Group]
-    public partial class OsuCommands : WizBotModule
+    public partial class OsuCommands : WizBotModule<OsuService>
     {
         private readonly IBotCredentials _creds;
         private readonly IHttpClientFactory _httpFactory;
@@ -24,9 +24,6 @@ public partial class Searches
             if (string.IsNullOrWhiteSpace(user))
                 return;
 
-            using var http = _httpFactory.CreateClient();
-            var modeNumber = string.IsNullOrWhiteSpace(mode) ? 0 : ResolveGameMode(mode);
-
             try
             {
                 if (string.IsNullOrWhiteSpace(_creds.OsuApiKey))
@@ -35,37 +32,32 @@ public partial class Searches
                     return;
                 }
 
-                var smode = ResolveGameMode(modeNumber);
-                var userReq = $"https://osu.ppy.sh/api/get_user?k={_creds.OsuApiKey}&u={user}&m={modeNumber}";
-                var userResString = await http.GetStringAsync(userReq);
-                var objs = JsonConvert.DeserializeObject<List<OsuUserData>>(userResString);
-
-                if (objs.Count == 0)
+                var obj = await _service.GetOsuData(user, mode);
+                if (obj is null)
                 {
                     await Response().Error(strs.osu_user_not_found).SendAsync();
                     return;
                 }
 
-                var obj = objs[0];
                 var userId = obj.UserId;
+                var smode = ResolveGameMode(obj.ModeNumber);
 
-                await Response().Embed(_sender.CreateEmbed()
-                                                .WithOkColor()
-                                                .WithTitle($"osu! {smode} profile for {user}")
-                                                .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
-                                                .WithDescription($"https://osu.ppy.sh/u/{userId}")
-                                                .AddField("Official Rank", $"#{obj.PpRank}", true)
-                                                .AddField("Country Rank",
-                                                    $"#{obj.PpCountryRank} :flag_{obj.Country.ToLower()}:",
-                                                    true)
-                                                .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
-                                                .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
-                                                .AddField("Playcount", obj.Playcount, true)
-                                                .AddField("Level", Math.Round(obj.Level), true)).SendAsync();
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                await Response().Error(strs.osu_user_not_found).SendAsync();
+
+                await Response()
+                      .Embed(_sender.CreateEmbed()
+                                    .WithOkColor()
+                                    .WithTitle($"osu! {smode} profile for {user}")
+                                    .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
+                                    .WithDescription($"https://osu.ppy.sh/u/{userId}")
+                                    .AddField("Official Rank", $"#{obj.PpRank}", true)
+                                    .AddField("Country Rank",
+                                        $"#{obj.PpCountryRank} :flag_{obj.Country.ToLower()}:",
+                                        true)
+                                    .AddField("Total PP", Math.Round(obj.PpRaw, 2), true)
+                                    .AddField("Accuracy", Math.Round(obj.Accuracy, 2) + "%", true)
+                                    .AddField("Playcount", obj.Playcount, true)
+                                    .AddField("Level", Math.Round(obj.Level), true))
+                      .SendAsync();
             }
             catch (Exception ex)
             {
@@ -96,18 +88,18 @@ public partial class Searches
             var userStats = statsResponse.Stats;
 
             var embed = _sender.CreateEmbed()
-                           .WithOkColor()
-                           .WithTitle($"osu!Gatari {modeStr} profile for {user}")
-                           .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
-                           .WithDescription($"https://osu.gatari.pw/u/{userStats.Id}")
-                           .AddField("Official Rank", $"#{userStats.Rank}", true)
-                           .AddField("Country Rank",
-                               $"#{userStats.CountryRank} :flag_{userData.Country.ToLower()}:",
-                               true)
-                           .AddField("Total PP", userStats.Pp, true)
-                           .AddField("Accuracy", $"{Math.Round(userStats.AvgAccuracy, 2)}%", true)
-                           .AddField("Playcount", userStats.Playcount, true)
-                           .AddField("Level", userStats.Level, true);
+                               .WithOkColor()
+                               .WithTitle($"osu!Gatari {modeStr} profile for {user}")
+                               .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
+                               .WithDescription($"https://osu.gatari.pw/u/{userStats.Id}")
+                               .AddField("Official Rank", $"#{userStats.Rank}", true)
+                               .AddField("Country Rank",
+                                   $"#{userStats.CountryRank} :flag_{userData.Country.ToLower()}:",
+                                   true)
+                               .AddField("Total PP", userStats.Pp, true)
+                               .AddField("Accuracy", $"{Math.Round(userStats.AvgAccuracy, 2)}%", true)
+                               .AddField("Playcount", userStats.Playcount, true)
+                               .AddField("Level", userStats.Level, true);
 
             await Response().Embed(embed).SendAsync();
         }

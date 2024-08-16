@@ -67,4 +67,7 @@ public class OsuUserData
 
     [JsonProperty("pp_country_rank")]
     public string PpCountryRank { get; set; }
+    
+    [JsonIgnore]
+    public int ModeNumber { get; set; }
 }
