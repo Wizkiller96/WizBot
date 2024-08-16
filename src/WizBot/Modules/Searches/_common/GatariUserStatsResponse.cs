@@ -39,7 +39,7 @@ public class GatariUserStats
     public int Pp { get; set; }
 
     [JsonProperty("rank")]
-    public int Rank { get; set; }
+    public int? Rank { get; set; }
 
     [JsonProperty("ranked_score")]
     public int RankedScore { get; set; }
