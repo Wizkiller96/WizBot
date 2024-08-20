@@ -21,9 +21,7 @@ public class SearchesService : INService
     public List<MagicItem> MagicItems { get; } = [];
     private readonly IHttpClientFactory _httpFactory;
     private readonly IGoogleApiService _google;
-    private readonly IImageCache _imgs;
     private readonly IBotCache _c;
-    private readonly FontProvider _fonts;
     private readonly IBotCredsProvider _creds;
     private readonly WizBotRandom _rng;
     private readonly List<string> _yomamaJokes;
@@ -34,7 +32,6 @@ public class SearchesService : INService
 
     public SearchesService(
         IGoogleApiService google,
-        IImageCache images,
         IBotCache c,
         IHttpClientFactory factory,
         FontProvider fonts,
@@ -42,9 +39,7 @@ public class SearchesService : INService
     {
         _httpFactory = factory;
         _google = google;
-        _imgs = images;
         _c = c;
-        _fonts = fonts;
         _creds = creds;
         _rng = new();
 

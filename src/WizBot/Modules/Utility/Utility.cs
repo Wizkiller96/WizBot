@@ -30,8 +30,7 @@ public partial class Utility : WizBotModule
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = LowerCaseNamingPolicy.Default
     };
-
-    private static SemaphoreSlim sem = new(1, 1);
+    
     private readonly DiscordSocketClient _client;
     private readonly ICoordinator _coord;
     private readonly IStatsService _stats;
@@ -115,10 +114,8 @@ public partial class Utility : WizBotModule
 
         var rng = new WizBotRandom();
         var arr = await Task.Run(() => socketGuild.Users
-                                                  .Where(u => u.Activities.FirstOrDefault()
-                                                               ?.Name?.Trim()
-                                                               .ToUpperInvariant()
-                                                              == game)
+                                                  .Where(u => u.Activities.Any(x
+                                                      => x.Name is not null && x.Name.ToUpperInvariant() == game))
                                                   .Select(u => u.Username)
                                                   .OrderBy(_ => rng.Next())
                                                   .Take(60)
@@ -154,9 +151,16 @@ public partial class Utility : WizBotModule
             CacheMode.CacheOnly
         );
 
-        var roleUsers = users.Where(u => role is null ? u.RoleIds.Count == 1 : u.RoleIds.Contains(role.Id))
-                             .Select(u => $"{u.Mention} {Format.Spoiler(Format.Code(u.Username))}")
-                             .ToArray();
+        users = role is null
+            ? users
+            : users.Where(u => u.RoleIds.Contains(role.Id)).ToList();
+
+
+        var roleUsers = new List<string>(users.Count);
+        foreach (var u in users)
+        {
+            roleUsers.Add($"{u.Mention} {Format.Spoiler(Format.Code(u.Username))}");
+        }
 
         await Response()
               .Paginated()
@@ -168,10 +172,11 @@ public partial class Utility : WizBotModule
                   if (pageUsers.Count == 0)
                       return _sender.CreateEmbed().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
 
+                  var roleName = Format.Bold(role?.Name ?? "No Role");
+                  
                   return _sender.CreateEmbed()
                                 .WithOkColor()
-                                .WithTitle(GetText(strs.inrole_list(Format.Bold(role?.Name ?? "No Role"),
-                                    roleUsers.Length)))
+                                .WithTitle(GetText(strs.inrole_list(roleName, roleUsers.Count)))
                                 .WithDescription(string.Join("\n", pageUsers));
               })
               .SendAsync();
@@ -679,24 +684,17 @@ public partial class Utility : WizBotModule
     }
 
     [Cmd]
+    [Ratelimit(3)]
     public async Task Ping()
     {
-        await sem.WaitAsync(5000);
-        try
-        {
-            var sw = Stopwatch.StartNew();
-            var msg = await Response().Text("🏓").SendAsync();
-            sw.Stop();
-            msg.DeleteAfter(0);
+        var sw = Stopwatch.StartNew();
+        var msg = await Response().Text("🏓").SendAsync();
+        sw.Stop();
+        msg.DeleteAfter(0);
 
-            await Response()
-                  .Confirm($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms")
-                  .SendAsync();
-        }
-        finally
-        {
-            sem.Release();
-        }
+        await Response()
+              .Confirm($"{Format.Bold(ctx.User.ToString())} 🏓 {(int)sw.Elapsed.TotalMilliseconds}ms")
+              .SendAsync();
     }
 
     [Cmd]
