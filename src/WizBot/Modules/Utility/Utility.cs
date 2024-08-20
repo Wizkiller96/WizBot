@@ -122,21 +122,27 @@ public partial class Utility : WizBotModule
             }
         }
 
-        userNames.Shuffle();
-
-        var i = 0;
-        if (userNames.Count == 0)
-        {
-            await Response().Error(strs.nobody_playing_game).SendAsync();
-            return;
-        }
-        
-        var users = userNames.GroupBy(_ => i++ / 2)
-                             .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))
-                             .Join('\n');
-
         await Response()
-              .Confirm(Format.Code(users))
+              .Sanitize()
+              .Paginated()
+              .Items(userNames)
+              .PageSize(20)
+              .Page((names, _) =>
+                  {
+                      if (names.Count == 0)
+                      {
+                          return _sender.CreateEmbed()
+                                        .WithErrorColor()
+                                        .WithDescription(GetText(strs.nobody_playing_game));
+                      }
+
+                      var eb = _sender.CreateEmbed()
+                                      .WithOkColor();
+
+                      var users = names.Join('\n');
+
+                      return eb.WithDescription(users);
+                  })
               .SendAsync();
     }
 
