@@ -106,13 +106,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async Task QuoteShow(kwum quoteId)
         {
-            Quote? quote;
-            await using (var uow = _db.GetDbContext())
-            {
-                quote = uow.Set<Quote>().GetById(quoteId);
-                if (quote?.GuildId != ctx.Guild.Id)
-                    quote = null;
-            }
+            var quote = await _service.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
 
             if (quote is null)
             {
@@ -224,9 +218,9 @@ public partial class Utility
             if (quoteId < 0)
                 return;
 
-            var quote = await _service.GetQuoteByIdAsync(quoteId);
+            var quote = await _service.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
 
-            if (quote is null || quote.GuildId != ctx.Guild.Id)
+            if (quote is null)
             {
                 await Response().Error(strs.quotes_notfound).SendAsync();
                 return;

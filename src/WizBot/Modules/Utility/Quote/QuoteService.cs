@@ -118,9 +118,14 @@ public sealed class QuoteService : IQuoteService, INService
         return count;
     }
 
-    public async Task<Quote> GetQuoteByIdAsync(kwum quoteId)
+    public async Task<Quote?> GetQuoteByIdAsync(ulong guildId, kwum quoteId)
     {
         await using var uow = _db.GetDbContext();
-        return uow.Set<Quote>().GetById(quoteId);
+        
+        var quote = await uow.GetTable<Quote>()
+                             .Where(x => x.Id == quoteId && x.GuildId == guildId)
+                             .FirstOrDefaultAsyncLinqToDB();
+
+        return quote;
     }
 }
