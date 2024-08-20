@@ -27,17 +27,13 @@ public class GameStatusEvent : ICurrencyEvent
 
     private readonly string _code;
 
-    private readonly char[] _sneakyGameStatusChars = Enumerable.Range(48, 10)
-                                                               .Concat(Enumerable.Range(65, 26))
-                                                               .Concat(Enumerable.Range(97, 26))
-                                                               .Select(x => (char)x)
-                                                               .ToArray();
-
     private readonly object _stopLock = new();
 
     private readonly object _potLock = new();
     private readonly IMessageSenderService _sender;
 
+    private static readonly WizBotRandom _rng = new WizBotRandom();
+    
     public GameStatusEvent(
         DiscordSocketClient client,
         ICurrencyService cs,
@@ -58,7 +54,8 @@ public class GameStatusEvent : ICurrencyEvent
         _opts = opt;
         _sender = sender;
         // generate code
-        _code = new(_sneakyGameStatusChars.Shuffle().Take(5).ToArray());
+        
+        _code = new kwum(_rng.Next(1_000_000, 10_000_000)).ToString();
 
         _t = new(OnTimerTick, null, Timeout.InfiniteTimeSpan, TimeSpan.FromSeconds(2));
         if (_opts.Hours > 0)
@@ -88,9 +85,9 @@ public class GameStatusEvent : ICurrencyEvent
             if (_isPotLimited)
             {
                 await msg.ModifyAsync(m =>
-                    {
-                        m.Embed = GetEmbed(PotSize).Build();
-                    });
+                {
+                    m.Embed = GetEmbed(PotSize).Build();
+                });
             }
 
             Log.Information("Game status event awarded {Count} users {Amount} currency.{Remaining}",
