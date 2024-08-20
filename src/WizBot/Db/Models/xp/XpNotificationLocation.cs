@@ -4,4 +4,5 @@ public enum XpNotificationLocation
 {
     None,
     Dm,
+    Channel
 }
