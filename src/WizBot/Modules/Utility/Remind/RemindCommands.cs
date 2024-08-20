@@ -44,11 +44,14 @@ public partial class Utility
 
             ulong target;
             target = meorhere == MeOrHere.Me ? ctx.User.Id : ctx.Channel.Id;
-            if (!await RemindInternal(target,
-                    meorhere == MeOrHere.Me || ctx.Guild is null,
-                    remindData.Time,
-                    remindData.What,
-                    ReminderType.User))
+
+            var success = await RemindInternal(target,
+                meorhere == MeOrHere.Me || ctx.Guild is null,
+                remindData.Time,
+                remindData.What,
+                ReminderType.User);
+
+            if (!success)
                 await Response().Error(strs.remind_too_long).SendAsync();
         }
 
@@ -72,7 +75,8 @@ public partial class Utility
             }
 
 
-            if (!await RemindInternal(channel.Id, false, remindData.Time, remindData.What, ReminderType.User))
+            var success = await RemindInternal(channel.Id, false, remindData.Time, remindData.What, ReminderType.User);
+            if (!success)
                 await Response().Error(strs.remind_too_long).SendAsync();
         }
 
@@ -81,32 +85,32 @@ public partial class Utility
         [UserPerm(GuildPerm.Administrator)]
         [Priority(0)]
         public Task RemindList(Server _, int page = 1)
-            => RemindListInternal(page, true);
+            => RemindListInternal(page, ctx.Guild.Id);
 
         [Cmd]
         [Priority(1)]
         public Task RemindList(int page = 1)
-            => RemindListInternal(page, false);
+            => RemindListInternal(page, null);
 
-        private async Task RemindListInternal(int page, bool isServer)
+        private async Task RemindListInternal(int page, ulong? guildId)
         {
             if (--page < 0)
                 return;
 
             var embed = _sender.CreateEmbed()
-                                .WithOkColor()
-                                .WithTitle(GetText(isServer ? strs.reminder_server_list : strs.reminder_list));
+                               .WithOkColor()
+                               .WithTitle(GetText(guildId is not null
+                                   ? strs.reminder_server_list
+                                   : strs.reminder_list));
 
             List<Reminder> rems;
-            await using (var uow = _db.GetDbContext())
-            {
-                if (isServer)
-                    rems = uow.Set<Reminder>().RemindersForServer(ctx.Guild.Id, page).ToList();
-                else
-                    rems = uow.Set<Reminder>().RemindersFor(ctx.User.Id, page).ToList();
-            }
+            if (guildId is { } gid)
+                rems = await _service.GetServerReminders(page, gid);
+            else
+                rems = await _service.GetUserReminders(page, ctx.User.Id);
 
-            if (rems.Any())
+
+            if (rems.Count > 0)
             {
                 var i = 0;
                 foreach (var rem in rems)
@@ -114,17 +118,22 @@ public partial class Utility
                     var when = rem.When;
                     embed.AddField(
                         $"#{++i + (page * 10)}",
-                        $@"`When:` {TimestampTag.FromDateTime(when, TimestampTagStyles.ShortDateTime)}
-`Target:` {(rem.IsPrivate ? "DM" : "Channel")} [`{rem.ChannelId}`]
-`Message:` {rem.Message?.TrimTo(50)}");
+                        $"""
+                         `When:` {TimestampTag.FromDateTime(when, TimestampTagStyles.ShortDateTime)}
+                         `Target:` {(rem.IsPrivate ? "DM" : "Channel")} [`{rem.ChannelId}`]
+                         `Message:` {rem.Message?.TrimTo(50)}
+                         """);
                 }
             }
             else
+            {
                 embed.WithDescription(GetText(strs.reminders_none));
+            }
 
             embed.AddPaginatedFooter(page + 1, null);
             await Response().Embed(embed).SendAsync();
         }
+
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -201,19 +210,13 @@ public partial class Utility
             }
 
             // var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
-            try
-            {
-                await Response()
-                      .Confirm($"\u23f0 {GetText(strs.remind2(
-                          Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
-                          Format.Bold(message),
-                          TimestampTag.FromDateTime(DateTime.UtcNow.Add(ts), TimestampTagStyles.Relative),
-                          TimestampTag.FormatFromDateTime(time, TimestampTagStyles.ShortDateTime)))}")
-                      .SendAsync();
-            }
-            catch
-            {
-            }
+            await Response()
+                  .Confirm($"\u23f0 {GetText(strs.remind2(
+                      Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),
+                      Format.Bold(message),
+                      TimestampTag.FromDateTime(DateTime.UtcNow.Add(ts), TimestampTagStyles.Relative),
+                      TimestampTag.FormatFromDateTime(time, TimestampTagStyles.ShortDateTime)))}")
+                  .SendAsync();
 
             return true;
         }

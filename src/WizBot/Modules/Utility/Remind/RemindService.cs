@@ -11,7 +11,8 @@ namespace WizBot.Modules.Utility.Services;
 public class RemindService : INService, IReadyExecutor, IRemindService
 {
     private readonly Regex _regex =
-        new(@"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
+        new(
+            @"^(?:(?:at|on(?:\sthe)?)?\s*(?<date>(?:\d{2}:\d{2}\s)?\d{1,2}\.\d{1,2}(?:\.\d{2,4})?)|(?:in\s?)?\s*(?:(?<mo>\d+)(?:\s?(?:months?|mos?),?))?(?:(?:\sand\s|\s*)?(?<w>\d+)(?:\s?(?:weeks?|w),?))?(?:(?:\sand\s|\s*)?(?<d>\d+)(?:\s?(?:days?|d),?))?(?:(?:\sand\s|\s*)?(?<h>\d+)(?:\s?(?:hours?|h),?))?(?:(?:\sand\s|\s*)?(?<m>\d+)(?:\s?(?:minutes?|mins?|m),?))?)\s+(?:to:?\s+)?(?<what>(?:\r\n|[\r\n]|.)+)",
             RegexOptions.Compiled | RegexOptions.Multiline);
 
     private readonly DiscordSocketClient _client;
@@ -208,12 +209,12 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             {
                 await _sender.Response(ch)
                              .Embed(_sender.CreateEmbed()
-                                    .WithOkColor()
-                                    .WithTitle("Reminder")
-                                    .AddField("Created At",
-                                        r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                                    .AddField("By",
-                                        (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()))
+                                           .WithOkColor()
+                                           .WithTitle("Reminder")
+                                           .AddField("Created At",
+                                               r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
+                                           .AddField("By",
+                                               (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()))
                              .Text(r.Message)
                              .SendAsync();
             }
@@ -254,5 +255,17 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         await ctx.Set<Reminder>()
                  .AddAsync(rem);
         await ctx.SaveChangesAsync();
+    }
+
+    public async Task<List<Reminder>> GetServerReminders(int page, ulong guildId)
+    {
+        await using var uow = _db.GetDbContext();
+        return uow.Set<Reminder>().RemindersForServer(guildId, page).ToList();
+    }
+
+    public async Task<List<Reminder>> GetUserReminders(int page, ulong userId)
+    {
+        await using var uow = _db.GetDbContext();
+        return uow.Set<Reminder>().RemindersFor(userId, page).ToList();
     }
 }
