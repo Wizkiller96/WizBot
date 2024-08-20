@@ -11,7 +11,7 @@ namespace WizBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class QuoteCommands : WizBotModule
+    public partial class QuoteCommands : WizBotModule<QuoteService>
     {
         private const string PREPEND_EXPORT =
             """
@@ -60,23 +60,20 @@ public partial class Utility
             if (page < 0)
                 return;
 
-            IEnumerable<Quote> quotes;
-            await using (var uow = _db.GetDbContext())
+            var quotes = await _service.GetAllQuotesAsync(ctx.Guild.Id, page, order);
+
+            if (quotes.Count == 0)
             {
-                quotes = uow.Set<Quote>().GetGroup(ctx.Guild.Id, page, order);
+                await Response().Error(strs.quotes_page_none).SendAsync();
+                return;
             }
 
-            if (quotes.Any())
-            {
-                await Response()
-                      .Confirm(GetText(strs.quotes_page(page + 1)),
-                          string.Join("\n",
-                              quotes.Select(q
-                                  => $"`{new kwum(q.Id)}` {Format.Bold(q.Keyword.SanitizeAllMentions()),-20} by {q.AuthorName.SanitizeAllMentions()}")))
-                      .SendAsync();
-            }
-            else
-                await Response().Error(strs.quotes_page_none).SendAsync();
+            var list = quotes.Select(q => $"`{new kwum(q.Id)}` {Format.Bold(q.Keyword),-20} by {q.AuthorName}")
+                             .Join("\n");
+            
+            await Response()
+                  .Confirm(GetText(strs.quotes_page(page + 1)), list)
+                  .SendAsync();
         }
 
         [Cmd]
@@ -156,8 +153,8 @@ public partial class Utility
                 async (sm) =>
                 {
                     var msg = sm.Data.Components.FirstOrDefault()?.Value;
-                    
-                    if(!string.IsNullOrWhiteSpace(msg)) 
+
+                    if (!string.IsNullOrWhiteSpace(msg))
                         await QuoteEdit(id, msg);
                 }
             );
@@ -306,7 +303,7 @@ public partial class Utility
                                       .UpdateWithOutputAsync((del, ins) => ins);
 
                 q = result.FirstOrDefault();
-                
+
                 await uow.SaveChangesAsync();
             }
 

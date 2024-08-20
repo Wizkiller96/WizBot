@@ -1,4 +1,5 @@
 #nullable disable
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
 
@@ -8,22 +9,7 @@ public static class QuoteExtensions
 {
     public static IEnumerable<Quote> GetForGuild(this DbSet<Quote> quotes, ulong guildId)
         => quotes.AsQueryable().Where(x => x.GuildId == guildId);
-
-    public static IReadOnlyCollection<Quote> GetGroup(
-        this DbSet<Quote> quotes,
-        ulong guildId,
-        int page,
-        OrderType order)
-    {
-        var q = quotes.AsQueryable().Where(x => x.GuildId == guildId);
-        if (order == OrderType.Keyword)
-            q = q.OrderBy(x => x.Keyword);
-        else
-            q = q.OrderBy(x => x.Id);
-
-        return q.Skip(15 * page).Take(15).ToArray();
-    }
-
+    
     public static async Task<Quote> GetRandomQuoteByKeywordAsync(
         this DbSet<Quote> quotes,
         ulong guildId,
@@ -45,7 +31,7 @@ public static class QuoteExtensions
                                         && (EF.Functions.Like(q.Text.ToUpper(), $"%{text.ToUpper()}%")
                                             || EF.Functions.Like(q.AuthorName, text)))
                             .ToArrayAsync())
-               .RandomOrDefault();
+            .RandomOrDefault();
     }
 
     public static void RemoveAllByKeyword(this DbSet<Quote> quotes, ulong guildId, string keyword)
