@@ -195,7 +195,7 @@
   "srvr_banner_too_large": "Specified image is too large! Maximum size is 8MB.",
   "srvr_banner_invalid_url": "Specified url is not valid. Make sure you're specifying a direct image url.",
   "set_channel_name": "New channel name set.",
-  "set_game": "New game set!",
+  "set_activity": "New activity set!",
   "set_stream": "New stream set!",
   "set_topic": "New channel topic set.",
   "shard_reconnecting": "Shard {0} reconnecting.",

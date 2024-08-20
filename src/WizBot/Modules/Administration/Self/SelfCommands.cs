@@ -459,7 +459,7 @@ public partial class Administration
 
             await Response().Confirm(strs.bot_name(Format.Bold(newName))).SendAsync();
         }
-        
+
         [Cmd]
         [OwnerOnly]
         public async Task SetStatus([Leftover] SettableUserStatus status)
@@ -491,14 +491,26 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async Task SetGame(ActivityType type, [Leftover] string game = null)
+        public async Task SetActivity(ActivityType type, [Leftover] string game = null)
         {
             // var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             var repCtx = new ReplacementContext(ctx);
-            await _service.SetGameAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
+            await _service.SetActivityAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
 
-            await Response().Confirm(strs.set_game).SendAsync();
+            await Response().Confirm(strs.set_activity).SendAsync();
+        }
+
+        [Cmd]
+        [OwnerOnly]
+        public Task SetActivity([Leftover] string game = null)
+            => SetActivity(null, game);
+
+        public class SetActivityOptions
+        {
+            public ActivityType? Type { get; set; }
+            public string Game { get; set; }
+
         }
 
         [Cmd]
@@ -541,11 +553,11 @@ public partial class Administration
                 return;
             }
 
-            
+
             var repCtx = new ReplacementContext(ctx);
             text = await repSvc.ReplaceAsync(text, repCtx);
             await Response().Channel(ch).Text(text).SendAsync();
-         
+
             await ctx.OkAsync();
         }
 

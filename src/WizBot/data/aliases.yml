@@ -208,7 +208,8 @@ setavatar:
   - setav
 setbanner:
   - setbanner
-setgame:
+setactivity:
+  - setactivity
   - setgame
 send:
   - send

@@ -813,12 +813,12 @@ setbanner:
   params:
     - img:
         desc: "The URL of the image file to be displayed as the bot's banner."
-setgame:
-  desc: Sets the bots game status to either Playing, Listening, or Watching.
+setactivity:
+  desc: Sets the bots game status to a Custom, Playing, Listening, or Watching status.
   ex:
-    - Playing with snakes.
-    - Watching anime.
-    - Listening music.
+    - Just chilling
+    - Playing with snakes
+    - Listening music
   params:
     - type:
         desc: "The activity type determines whether the bot is engaged in a game, listening to audio, or watching a video."

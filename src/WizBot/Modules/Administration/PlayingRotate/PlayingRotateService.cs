@@ -58,7 +58,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                     : rotatingStatuses[index++];
 
                 var statusText = await _repService.ReplaceAsync(playingStatus.Status, new (client: _client));
-                await _selfService.SetGameAsync(statusText, (ActivityType)playingStatus.Type);
+                await _selfService.SetActivityAsync(statusText, (ActivityType)playingStatus.Type);
             }
             catch (Exception ex)
             {

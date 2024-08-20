@@ -87,13 +87,14 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     {
         await using var uow = _db.GetDbContext();
 
-        autoCommands = uow.Set<AutoCommand>().AsNoTracking()
-            .Where(x => x.Interval >= 5)
-            .AsEnumerable()
-            .GroupBy(x => x.GuildId)
-            .ToDictionary(x => x.Key,
-                y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
-            .ToConcurrent();
+        autoCommands = uow.Set<AutoCommand>()
+                          .AsNoTracking()
+                          .Where(x => x.Interval >= 5)
+                          .AsEnumerable()
+                          .GroupBy(x => x.GuildId)
+                          .ToDictionary(x => x.Key,
+                              y => y.ToDictionary(x => x.Id, TimerFromAutoCommand).ToConcurrent())
+                          .ToConcurrent();
 
         var startupCommands = uow.Set<AutoCommand>().AsNoTracking().Where(x => x.Interval == 0);
         foreach (var cmd in startupCommands)
@@ -172,18 +173,18 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     private async Task LoadOwnerChannels()
     {
         var channels = await _creds.OwnerIds.Select(id =>
-            {
-                var user = _client.GetUser(id);
-                if (user is null)
-                    return Task.FromResult<IDMChannel>(null);
+                                   {
+                                       var user = _client.GetUser(id);
+                                       if (user is null)
+                                           return Task.FromResult<IDMChannel>(null);
 
-                return user.CreateDMChannelAsync();
-            })
-            .WhenAll();
+                                       return user.CreateDMChannelAsync();
+                                   })
+                                   .WhenAll();
 
         ownerChannels = channels.Where(x => x is not null)
-            .ToDictionary(x => x.Recipient.Id, x => x)
-            .ToImmutableDictionary();
+                                .ToDictionary(x => x.Recipient.Id, x => x)
+                                .ToImmutableDictionary();
 
         if (!ownerChannels.Any())
         {
@@ -431,7 +432,10 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
             {
                 try
                 {
-                    await _client.SetGameAsync(data.Name, data.Link, data.Type);
+                    if (data.Type is { } activityType)
+                        await _client.SetGameAsync(data.Name, data.Link, activityType);
+                    else
+                        await _client.SetCustomStatusAsync(data.Name);
                 }
                 catch (Exception ex)
                 {
@@ -439,7 +443,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 }
             });
 
-    public Task SetGameAsync(string game, ActivityType type)
+    public Task SetActivityAsync(string game, ActivityType? type)
         => _pubSub.Pub(_activitySetKey,
             new()
             {
@@ -461,10 +465,10 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     {
         public string Name { get; init; }
         public string Link { get; init; }
-        public ActivityType Type { get; init; }
+        public ActivityType? Type { get; init; }
     }
-    
-    
+
+
     /// <summary>
     /// Adds the specified <paramref name="users"/> to the database. If a database user with placeholder name
     /// and discriminator is present in <paramref name="users"/>, their name and discriminator get updated accordingly.
@@ -476,39 +480,44 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     {
         await using var ctx = _db.GetDbContext(); 
         var presentDbUsers = await ctx.GetTable<DiscordUser>()
-            .Select(x => new { x.UserId, x.Username, x.Discriminator })
-            .Where(x => users.Select(y => y.Id).Contains(x.UserId))
-            .ToArrayAsyncEF();
+                                      .Select(x => new
+                                      {
+                                          x.UserId,
+                                          x.Username,
+                                          x.Discriminator
+                                      })
+                                      .Where(x => users.Select(y => y.Id).Contains(x.UserId))
+                                      .ToArrayAsyncEF();
 
         var usersToAdd = users
-            .Where(x => !presentDbUsers.Select(x => x.UserId).Contains(x.Id))
-            .Select(x => new DiscordUser()
-            {
-                UserId = x.Id,
-                AvatarId = x.AvatarId,
-                Username = x.Username,
-                Discriminator = x.Discriminator
-            });
+                         .Where(x => !presentDbUsers.Select(x => x.UserId).Contains(x.Id))
+                         .Select(x => new DiscordUser()
+                         {
+                             UserId = x.Id,
+                             AvatarId = x.AvatarId,
+                             Username = x.Username,
+                             Discriminator = x.Discriminator
+                         });
 
         var added = (await ctx.BulkCopyAsync(usersToAdd)).RowsCopied;
         var toUpdateUserIds = presentDbUsers
-            .Where(x => x.Username == "Unknown" && x.Discriminator == "????")
-            .Select(x => x.UserId)
-            .ToArray();
+                              .Where(x => x.Username == "Unknown" && x.Discriminator == "????")
+                              .Select(x => x.UserId)
+                              .ToArray();
 
         foreach (var user in users.Where(x => toUpdateUserIds.Contains(x.Id)))
         {
             await ctx.GetTable<DiscordUser>()
-                .Where(x => x.UserId == user.Id)
-                .UpdateAsync(x => new DiscordUser()
-                {
-                    Username = user.Username,
-                    Discriminator = user.Discriminator,
+                     .Where(x => x.UserId == user.Id)
+                     .UpdateAsync(x => new DiscordUser()
+                     {
+                         Username = user.Username,
+                         Discriminator = user.Discriminator,
 
-                    // .award tends to set AvatarId and DateAdded to NULL, so account for that.
-                    AvatarId = user.AvatarId,
-                    DateAdded = x.DateAdded ?? DateTime.UtcNow
-                });
+                         // .award tends to set AvatarId and DateAdded to NULL, so account for that.
+                         AvatarId = user.AvatarId,
+                         DateAdded = x.DateAdded ?? DateTime.UtcNow
+                     });
         }
 
         return (added, toUpdateUserIds.Length);
