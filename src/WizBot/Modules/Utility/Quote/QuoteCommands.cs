@@ -70,7 +70,7 @@ public partial class Utility
 
             var list = quotes.Select(q => $"`{new kwum(q.Id)}` {Format.Bold(q.Keyword),-20} by {q.AuthorName}")
                              .Join("\n");
-            
+
             await Response()
                   .Confirm(GetText(strs.quotes_page(page + 1)), list)
                   .SendAsync();
@@ -85,16 +85,7 @@ public partial class Utility
 
             keyword = keyword.ToUpperInvariant();
 
-            Quote quote;
-            await using (var uow = _db.GetDbContext())
-            {
-                quote = await uow.Set<Quote>().GetRandomQuoteByKeywordAsync(ctx.Guild.Id, keyword);
-                //if (quote is not null)
-                //{
-                //    quote.UseCount += 1;
-                //    uow.Complete();
-                //}
-            }
+            var quote = await _service.GetQuoteByKeywordAsync(ctx.Guild.Id, keyword);
 
             if (quote is null)
                 return;
@@ -109,6 +100,7 @@ public partial class Utility
                   .Sanitize()
                   .SendAsync();
         }
+
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -186,27 +178,30 @@ public partial class Utility
                   .SendAsync();
         }
 
-        private async Task QuoteSearchinternalAsync(string? keyword, string textOrAuthor)
+        private async Task QuoteSearchInternalAsync(string? keyword, string textOrAuthor)
         {
             if (string.IsNullOrWhiteSpace(textOrAuthor))
                 return;
 
             keyword = keyword?.ToUpperInvariant();
 
-            Quote quote;
-            await using (var uow = _db.GetDbContext())
-            {
-                quote = await uow.Set<Quote>().SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
-            }
-
-            if (quote is null)
-                return;
+            var quotes = await _service.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
 
             await Response()
-                  .Confirm($"`{new kwum(quote.Id)}` 💬 ",
-                      quote.Keyword.ToLowerInvariant()
-                      + ":  "
-                      + quote.Text.SanitizeAllMentions())
+                  .Paginated()
+                  .Items(quotes)
+                  .PageSize(1)
+                  .Page((pageQuotes, _) =>
+                  {
+                      var quote = pageQuotes[0];
+
+                      var text = quote.Keyword.ToLowerInvariant() + ":  " + quote.Text;
+
+                      return _sender.CreateEmbed()
+                                    .WithOkColor()
+                                    .WithTitle($"{new kwum(quote.Id)} 💬 ")
+                                    .WithDescription(text);
+                  })
                   .SendAsync();
         }
 
@@ -214,13 +209,13 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
         public Task QuoteSearch(string textOrAuthor)
-            => QuoteSearchinternalAsync(null, textOrAuthor);
+            => QuoteSearchInternalAsync(null, textOrAuthor);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
         public Task QuoteSearch(string keyword, [Leftover] string textOrAuthor)
-            => QuoteSearchinternalAsync(keyword, textOrAuthor);
+            => QuoteSearchInternalAsync(keyword, textOrAuthor);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -229,14 +224,7 @@ public partial class Utility
             if (quoteId < 0)
                 return;
 
-            Quote quote;
-
-            var repCtx = new ReplacementContext(Context);
-
-            await using (var uow = _db.GetDbContext())
-            {
-                quote = uow.Set<Quote>().GetById(quoteId);
-            }
+            var quote = await _service.GetQuoteByIdAsync(quoteId);
 
             if (quote is null || quote.GuildId != ctx.Guild.Id)
             {
@@ -249,6 +237,7 @@ public partial class Utility
                            + ":\n";
 
 
+            var repCtx = new ReplacementContext(Context);
             var text = SmartText.CreateFrom(quote.Text);
             text = await repSvc.ReplaceAsync(text, repCtx);
             await Response()
@@ -256,6 +245,7 @@ public partial class Utility
                   .Sanitize()
                   .SendAsync();
         }
+
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -388,7 +378,7 @@ public partial class Utility
 
             await using (var uow = _db.GetDbContext())
             {
-                uow.Set<Quote>().RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
+                await _service.RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
 
                 await uow.SaveChangesAsync();
             }
@@ -401,11 +391,7 @@ public partial class Utility
         [UserPerm(GuildPerm.Administrator)]
         public async Task QuotesExport()
         {
-            IEnumerable<Quote> quotes;
-            await using (var uow = _db.GetDbContext())
-            {
-                quotes = uow.Set<Quote>().GetForGuild(ctx.Guild.Id).ToList();
-            }
+            var quotes = _service.GetForGuild(ctx.Guild.Id).ToList();
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
                                   .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
