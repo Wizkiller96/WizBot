@@ -112,28 +112,32 @@ public partial class Utility : WizBotModule
             return;
         }
 
-        var rng = new WizBotRandom();
-        var arr = await Task.Run(() => socketGuild.Users
-                                                  .Where(u => u.Activities.Any(x
-                                                      => x.Name is not null && x.Name.ToUpperInvariant() == game))
-                                                  .Select(u => u.Username)
-                                                  .OrderBy(_ => rng.Next())
-                                                  .Take(60)
-                                                  .ToArray());
+        
+        var userNames = new List<IUser>(socketGuild.Users.Count / 100);
+        foreach (var user in socketGuild.Users)
+        {
+            if (user.Activities.Any(x => x.Name is not null && x.Name.ToUpperInvariant() == game))
+            {
+                userNames.Add(user);
+            }
+        }
+
+        userNames.Shuffle();
 
         var i = 0;
-        if (arr.Length == 0)
-            await Response().Error(strs.nobody_playing_game).SendAsync();
-        else
+        if (userNames.Count == 0)
         {
-            await Response()
-                  .Confirm("```css\n"
-                           + string.Join("\n",
-                               arr.GroupBy(_ => i++ / 2)
-                                  .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}"))))
-                           + "\n```")
-                  .SendAsync();
+            await Response().Error(strs.nobody_playing_game).SendAsync();
+            return;
         }
+        
+        var users = userNames.GroupBy(_ => i++ / 2)
+                             .Select(ig => string.Concat(ig.Select(el => $"• {el,-27}")))
+                             .Join('\n');
+
+        await Response()
+              .Confirm(Format.Code(users))
+              .SendAsync();
     }
 
     [Cmd]
