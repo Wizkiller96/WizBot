@@ -491,7 +491,7 @@ public partial class Administration
 
         [Cmd]
         [OwnerOnly]
-        public async Task SetActivity(ActivityType type, [Leftover] string game = null)
+        public async Task SetActivity(ActivityType? type, [Leftover] string game = null)
         {
             // var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
@@ -510,7 +510,6 @@ public partial class Administration
         {
             public ActivityType? Type { get; set; }
             public string Game { get; set; }
-
         }
 
         [Cmd]
