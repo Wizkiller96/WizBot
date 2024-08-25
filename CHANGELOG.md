@@ -2,6 +2,26 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.8]
+
+### Added
+
+### Changed
+
+- `.quote` commands cleaned up and improved
+  - All quote commands now start with `.q<whatever>` and follow the same naming pattern as Expression commands
+  - `.liqu` renamed to `.qli`
+  - `.quotesearch` / `.qse` is now paginated for easier searching
+- `.whosplaying` is now paginated
+- `.setgame` renamed to`.setactivity` and now supports custom text activity. You don't have to specify playing, listening etc before the activity
+- Clarified and added some embed / placeholder links to command help where needed
+- dev: A lot of code cleanup and internal improvements
+
+### Fixed
+
+- Fixed `.xpcurrew` breaking xp gain if user gains 0 xp from being in a voice channel
+- Fixed a bug in `.gatari` command
+
 ## [5.1.7] - 08.08.2024
 
 ### Fixed
