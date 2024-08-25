@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling.Common;
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 2;
+    public int Version { get; set; } = 8;
 
     [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
@@ -20,9 +20,9 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
     public int MinBet { get; set; } = 0;
 
     [Comment("""
-        Maximum amount users can bet
-        Set 0 for unlimited
-        """)]
+             Maximum amount users can bet
+             Set 0 for unlimited
+             """)]
     public int MaxBet { get; set; } = 0;
 
     [Comment("""Settings for betflip command""")]
@@ -35,14 +35,14 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
     public GenerationConfig Generation { get; set; }
 
     [Comment("""
-        Settings for timely command 
-        (letting people claim X amount of currency every Y hours)
-        """)]
+             Settings for timely command 
+             (letting people claim X amount of currency every Y hours)
+             """)]
     public TimelyConfig Timely { get; set; }
 
     [Comment("""How much will each user's owned currency decay over time.""")]
     public DecayConfig Decay { get; set; }
-    
+
     [Comment("""What is the bot's cut on some transactions""")]
     public BotCutConfig BotCuts { get; set; }
 
@@ -53,15 +53,15 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
     public WaifuConfig Waifu { get; set; }
 
     [Comment("""
-        Amount of currency selfhosters will get PER pledged dollar CENT.
-        1 = 100 currency per $. Used almost exclusively on public nadeko.
-        """)]
+             Amount of currency selfhosters will get PER pledged dollar CENT.
+             1 = 100 currency per $. Used almost exclusively on public wizbot.
+             """)]
     public decimal PatreonCurrencyPerCent { get; set; } = 1;
 
     [Comment("""
-        Currency reward per vote.
-        This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting
-        """)]
+             Currency reward per vote.
+             This will work only if you've set up VotesApi and correct credentials for topgg and/or discords voting
+             """)]
     public long VoteReward { get; set; } = 100;
 
     [Comment("""Slot config""")]
@@ -91,9 +91,9 @@ public class CurrencyConfig
     public string Name { get; set; } = "Cherry Blossom";
 
     [Comment("""
-        For how long (in days) will the transactions be kept in the database (curtrs)
-        Set 0 to disable cleanup (keep transactions forever)
-        """)]
+             For how long (in days) will the transactions be kept in the database (curtrs)
+             Set 0 to disable cleanup (keep transactions forever)
+             """)]
     public int TransactionsLifetime { get; set; } = 0;
 }
 
@@ -101,15 +101,15 @@ public class CurrencyConfig
 public partial class TimelyConfig
 {
     [Comment("""
-        How much currency will the users get every time they run .timely command
-        setting to 0 or less will disable this feature
-        """)]
+             How much currency will the users get every time they run .timely command
+             setting to 0 or less will disable this feature
+             """)]
     public int Amount { get; set; } = 0;
 
     [Comment("""
-        How often (in hours) can users claim currency with .timely command
-        setting to 0 or less will disable this feature
-        """)]
+             How often (in hours) can users claim currency with .timely command
+             setting to 0 or less will disable this feature
+             """)]
     public int Cooldown { get; set; } = 24;
 }
 
@@ -124,10 +124,10 @@ public partial class BetFlipConfig
 public partial class BetRollConfig
 {
     [Comment("""
-        When betroll is played, user will roll a number 0-100.
-        This setting will describe which multiplier is used for when the roll is higher than the given number.
-        Doesn't have to be ordered.
-        """)]
+             When betroll is played, user will roll a number 0-100.
+             This setting will describe which multiplier is used for when the roll is higher than the given number.
+             Doesn't have to be ordered.
+             """)]
     public BetRollPair[] Pairs { get; set; } = Array.Empty<BetRollPair>();
 
     public BetRollConfig()
@@ -155,17 +155,17 @@ public partial class BetRollConfig
 public partial class GenerationConfig
 {
     [Comment("""
-        when currency is generated, should it also have a random password
-        associated with it which users have to type after the .pick command
-        in order to get it
-        """)]
+             when currency is generated, should it also have a random password
+             associated with it which users have to type after the .pick command
+             in order to get it
+             """)]
     public bool HasPassword { get; set; } = true;
 
     [Comment("""
-        Every message sent has a certain % chance to generate the currency
-        specify the percentage here (1 being 100%, 0 being 0% - for example
-        default is 0.02, which is 2%
-        """)]
+             Every message sent has a certain % chance to generate the currency
+             specify the percentage here (1 being 100%, 0 being 0% - for example
+             default is 0.02, which is 2%
+             """)]
     public decimal Chance { get; set; } = 0.02M;
 
     [Comment("""How many seconds have to pass for the next message to have a chance to spawn currency""")]
@@ -175,9 +175,9 @@ public partial class GenerationConfig
     public int MinAmount { get; set; } = 1;
 
     [Comment("""
-        Maximum amount of currency that can spawn.
-         Set to the same value as MinAmount to always spawn the same amount
-        """)]
+             Maximum amount of currency that can spawn.
+              Set to the same value as MinAmount to always spawn the same amount
+             """)]
     public int MaxAmount { get; set; } = 1;
 }
 
@@ -185,9 +185,9 @@ public partial class GenerationConfig
 public partial class DecayConfig
 {
     [Comment("""
-        Percentage of user's current currency which will be deducted every 24h. 
-        0 - 1 (1 is 100%, 0.5 50%, 0 disabled)
-        """)]
+             Percentage of user's current currency which will be deducted every 24h. 
+             0 - 1 (1 is 100%, 0.5 50%, 0 disabled)
+             """)]
     public decimal Percent { get; set; } = 0;
 
     [Comment("""Maximum amount of user's currency that can decay at each interval. 0 for unlimited.""")]
@@ -219,15 +219,15 @@ public sealed partial class WaifuConfig
     public MultipliersData Multipliers { get; set; } = new();
 
     [Comment("""
-        Settings for periodic waifu price decay.
-        Waifu price decays only if the waifu has no claimer.
-        """)]
+             Settings for periodic waifu price decay.
+             Waifu price decays only if the waifu has no claimer.
+             """)]
     public WaifuDecayConfig Decay { get; set; } = new();
 
     [Comment("""
-        List of items available for gifting.
-        If negative is true, gift will instead reduce waifu value.
-        """)]
+             List of items available for gifting.
+             If negative is true, gift will instead reduce waifu value.
+             """)]
     public List<WaifuItemModel> Items { get; set; } = [];
 
     public WaifuConfig()
@@ -274,19 +274,25 @@ public sealed partial class WaifuConfig
     public class WaifuDecayConfig
     {
         [Comment("""
-            Percentage (0 - 100) of the waifu value to reduce.
-            Set 0 to disable
-            For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
-            """)]
-        public int Percent { get; set; } = 0;
+                 Percentage (0 - 100) of the waifu value to reduce.
+                 Set 0 to disable
+                 For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
+                 """)]
+        public int UnclaimedDecayPercent { get; set; } = 0;
+
+        [Comment("""
+                 Claimed waifus will decay by this percentage (0 - 100).
+                 Default is 0 (disabled)
+                 """)]
+        public int ClaimedDecayPercent { get; set; } = 0;
 
         [Comment("""How often to decay waifu values, in hours""")]
         public int HourInterval { get; set; } = 24;
 
         [Comment("""
-            Minimum waifu price required for the decay to be applied.
-            For example if this value is set to 300, any waifu with the price 300 or less will not experience decay.
-            """)]
+                 Minimum waifu price required for the decay to be applied.
+                 For example if this value is set to 300, any waifu with the price 300 or less will not experience decay.
+                 """)]
         public long MinPrice { get; set; } = 300;
     }
 }
@@ -295,54 +301,54 @@ public sealed partial class WaifuConfig
 public sealed partial class MultipliersData
 {
     [Comment("""
-        Multiplier for waifureset. Default 150.
-        Formula (at the time of writing this): 
-        price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up
-        """)]
+             Multiplier for waifureset. Default 150.
+             Formula (at the time of writing this): 
+             price = (waifu_price * 1.25f) + ((number_of_divorces + changes_of_heart + 2) * WaifuReset) rounded up
+             """)]
     public int WaifuReset { get; set; } = 150;
 
     [Comment("""
-        The minimum amount of currency that you have to pay 
-        in order to buy a waifu who doesn't have a crush on you.
-        Default is 1.1
-        Example: If a waifu is worth 100, you will have to pay at least 100 * NormalClaim currency to claim her.
-        (100 * 1.1 = 110)
-        """)]
+             The minimum amount of currency that you have to pay 
+             in order to buy a waifu who doesn't have a crush on you.
+             Default is 1.1
+             Example: If a waifu is worth 100, you will have to pay at least 100 * NormalClaim currency to claim her.
+             (100 * 1.1 = 110)
+             """)]
     public decimal NormalClaim { get; set; } = 1.1m;
 
     [Comment("""
-        The minimum amount of currency that you have to pay 
-        in order to buy a waifu that has a crush on you.
-        Default is 0.88
-        Example: If a waifu is worth 100, you will have to pay at least 100 * CrushClaim currency to claim her.
-        (100 * 0.88 = 88)
-        """)]
+             The minimum amount of currency that you have to pay 
+             in order to buy a waifu that has a crush on you.
+             Default is 0.88
+             Example: If a waifu is worth 100, you will have to pay at least 100 * CrushClaim currency to claim her.
+             (100 * 0.88 = 88)
+             """)]
     public decimal CrushClaim { get; set; } = 0.88M;
 
     [Comment("""
-        When divorcing a waifu, her new value will be her current value multiplied by this number.
-        Default 0.75 (meaning will lose 25% of her value)
-        """)]
+             When divorcing a waifu, her new value will be her current value multiplied by this number.
+             Default 0.75 (meaning will lose 25% of her value)
+             """)]
     public decimal DivorceNewValue { get; set; } = 0.75M;
 
     [Comment("""
-        All gift prices will be multiplied by this number.
-        Default 1 (meaning no effect)
-        """)]
+             All gift prices will be multiplied by this number.
+             Default 1 (meaning no effect)
+             """)]
     public decimal AllGiftPrices { get; set; } = 1.0M;
 
     [Comment("""
-        What percentage of the value of the gift will a waifu gain when she's gifted.
-        Default 0.95 (meaning 95%)
-        Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)
-        """)]
+             What percentage of the value of the gift will a waifu gain when she's gifted.
+             Default 0.95 (meaning 95%)
+             Example: If a waifu is worth 1000, and she receives a gift worth 100, her new value will be 1095)
+             """)]
     public decimal GiftEffect { get; set; } = 0.95M;
 
     [Comment("""
-        What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
-        Default 0.5 (meaning 50%)
-        Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)
-        """)]
+             What percentage of the value of the gift will a waifu lose when she's gifted a gift marked as 'negative'.
+             Default 0.5 (meaning 50%)
+             Example: If a waifu is worth 1000, and she receives a negative gift worth 100, her new value will be 950)
+             """)]
     public decimal NegativeGiftEffect { get; set; } = 0.50M;
 }
 

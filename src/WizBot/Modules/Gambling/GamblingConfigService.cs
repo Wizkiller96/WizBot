@@ -174,7 +174,7 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
                 c.Version = 5;
             });
         }
-        
+
         if (data.Version < 6)
         {
             ModifyConfig(c =>
@@ -188,6 +188,15 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             ModifyConfig(c =>
             {
                 c.Version = 7;
+            });
+        }
+        
+        if (data.Version < 8)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 8;
+                c.Waifu.Decay.UnclaimedDecayPercent = 0;
             });
         }
     }

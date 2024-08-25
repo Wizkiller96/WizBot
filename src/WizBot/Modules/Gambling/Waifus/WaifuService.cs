@@ -531,11 +531,18 @@ public class WaifuService : INService, IReadyExecutor
         {
             try
             {
-                var multi = _gss.Data.Waifu.Decay.Percent / 100f;
-                var minPrice = _gss.Data.Waifu.Decay.MinPrice;
-                var decayInterval = _gss.Data.Waifu.Decay.HourInterval;
+                var decay = _gss.Data.Waifu.Decay;
 
-                if (multi is < 0f or > 1f || decayInterval < 0)
+                var unclaimedMulti = 1 - (decay.UnclaimedDecayPercent / 100f);
+                var claimedMulti = 1 - (decay.ClaimedDecayPercent / 100f);
+
+                var minPrice = decay.MinPrice;
+                var decayInterval = decay.HourInterval;
+
+                if (decayInterval <= 0)
+                    continue;
+
+                if ((unclaimedMulti < 0 || unclaimedMulti > 1) && (claimedMulti < 0 || claimedMulti > 1))
                     continue;
 
                 var now = DateTime.UtcNow;
@@ -554,14 +561,28 @@ public class WaifuService : INService, IReadyExecutor
 
                 await _cache.AddAsync(_waifuDecayKey, nowB);
 
-                await using var uow = _db.GetDbContext();
+                if (unclaimedMulti is > 0 and <= 1)
+                {
+                    await using var uow = _db.GetDbContext();
 
-                await uow.GetTable<WaifuInfo>()
-                         .Where(x => x.Price > minPrice && x.ClaimerId == null)
-                         .UpdateAsync(old => new()
-                         {
-                             Price = (long)(old.Price * multi)
-                         });
+                    await uow.GetTable<WaifuInfo>()
+                             .Where(x => x.Price > minPrice && x.ClaimerId == null)
+                             .UpdateAsync(old => new()
+                             {
+                                 Price = (long)(old.Price * unclaimedMulti)
+                             });
+                }
+
+                if (claimedMulti is > 0 and <= 1)
+                {
+                    await using var uow = _db.GetDbContext();
+                    await uow.GetTable<WaifuInfo>()
+                             .Where(x => x.Price > minPrice && x.ClaimerId == null)
+                             .UpdateAsync(old => new()
+                             {
+                                 Price = (long)(old.Price * claimedMulti)
+                             });
+                }
             }
             catch (Exception ex)
             {

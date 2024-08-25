@@ -63,6 +63,8 @@ public static class WaifuExtensions
 
     public static async Task<WaifuInfoStats> GetWaifuInfoAsync(this DbContext ctx, ulong userId)
     {
+        await ctx.EnsureUserCreatedAsync(userId);
+        
         await ctx.Set<WaifuInfo>()
                  .ToLinqToDBTable()
                  .InsertOrUpdateAsync(() => new()
@@ -78,7 +80,8 @@ public static class WaifuExtensions
                          WaifuId = ctx.Set<DiscordUser>().Where(x => x.UserId == userId).Select(x => x.Id).First()
                      });
 
-        var toReturn = ctx.Set<WaifuInfo>().AsQueryable()
+        var toReturn = ctx.Set<WaifuInfo>()
+                          .AsQueryable()
                           .Where(w => w.WaifuId
                                       == ctx.Set<DiscordUser>()
                                             .AsQueryable()
