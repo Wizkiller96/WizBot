@@ -70,7 +70,11 @@ public partial class Gambling
                 return;
             }
 
-            var msg = GetText(strs.waifu_claimed(Format.Bold(target.ToString()), N(amount)));
+            var msg = GetText(strs.waifu_claimed(
+                Format.Bold(ctx.User.ToString()),
+                Format.Bold(target.ToString()),
+                N(amount)));
+
             if (w.Affinity?.UserId == ctx.User.Id)
                 msg += "\n" + GetText(strs.waifu_fulfilled(target, N(w.Price)));
             else
@@ -191,13 +195,21 @@ public partial class Gambling
             }
 
             if (user is null)
+            {
                 await Response().Confirm(strs.waifu_affinity_reset).SendAsync();
+            }
             else if (oldAff is null)
-                await Response().Confirm(strs.waifu_affinity_set(Format.Bold(user.ToString()))).SendAsync();
+            {
+                await Response()
+                      .Confirm(strs.waifu_affinity_set(Format.Bold(ctx.User.ToString()), Format.Bold(user.ToString())))
+                      .SendAsync();
+            }
             else
             {
                 await Response()
-                      .Confirm(strs.waifu_affinity_changed(Format.Bold(oldAff.ToString()),
+                      .Confirm(strs.waifu_affinity_changed(
+                          Format.Bold(ctx.User.ToString()),
+                          Format.Bold(oldAff.ToString()),
                           Format.Bold(user.ToString())))
                       .SendAsync();
             }
