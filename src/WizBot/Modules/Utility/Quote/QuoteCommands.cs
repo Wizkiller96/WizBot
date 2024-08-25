@@ -321,7 +321,7 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageMessages)]
-        public async Task DelAllQuotes([Leftover] string keyword)
+        public async Task QuotesDeleteAll([Leftover] string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword))
                 return;

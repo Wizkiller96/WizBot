@@ -700,10 +700,10 @@ guide:
   - readme
 calcops:
   - calcops
-delallquotes:
-  - delallquotes
-  - daq
-  - delallq
+quotesdeleteall:
+  - quotesdeleteall
+  - qdall
+  - qdeleteall
 greetdmmsg:
   - greetdmmsg
 cash:

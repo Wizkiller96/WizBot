@@ -1308,7 +1308,8 @@ quotesearch:
       textOrAuthor:
         desc: "The search term to find a matching quote."
 quoteid:
-  desc: Displays the quote with the specified ID number. Quote ID numbers can be found by typing `{0}liqu [num]` where `[num]` is a number of a page which contains 15 quotes.
+  desc: -|
+    Displays the quote with the specified ID number.
   ex:
     - 123456
   params:
@@ -2165,13 +2166,13 @@ calcops:
     - ''
   params:
     - {}
-delallquotes:
-  desc: Deletes all quotes on a specified keyword.
+quotesdeleteall:
+  desc: Deletes all quotes with the specified keyword.
   ex:
     - kek
   params:
     - keyword:
-        desc: "The keyword to search for in the text."
+        desc: "The keyword/trigger of the quotes to be deleted."
 greetdmmsg:
   desc: Sets a new join announcement message which will be sent to the user who joined. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <https://wizbot.cc/embedbuilder> instead of a regular text, if you want the message to be embedded.
   ex:
