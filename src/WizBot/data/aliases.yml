@@ -343,28 +343,57 @@ allcmdcooldowns:
   - cmdcds
 quoteadd:
   - quoteadd
+  - qa
+  - qadd
+  - quadd
   - .
 quoteedit:
   - quoteedit
+  - qe
+  - que
   - qedit
 quoteprint:
   - quoteprint
+  - qp
+  - qup
   - ..
+  - qprint
 quoteshow:
   - quoteshow
+  - qsh
   - qshow
+  - qushow
 quotesearch:
   - quotesearch
+  - qs
+  - qse
   - qsearch
 quoteid:
   - quoteid
   - qid
 quotedelete:
   - quotedelete
+  - qd
   - qdel
+  - qdelete
 quotedeleteauthor:
   - quotedeleteauthor
+  - qda
   - qdelauth
+quotesexport:
+  - quotesexport
+  - qex
+  - qexport
+quotesimport:
+  - quotesimport
+  - qim
+  - qimp
+  - qimport
+quotelist:
+  - quotelist
+  - qli
+  - quli
+  - qulist
 draw:
   - draw
 drawnew:
@@ -761,9 +790,6 @@ autotranslate:
   - autotranslate
   - at
   - autotrans
-listquotes:
-  - listquotes
-  - liqu
 typedel:
   - typedel
 typelist:
@@ -1210,12 +1236,6 @@ linkonlychannel:
   - linkssonly
 coordreload:
   - coordreload
-quotesexport:
-  - quotesexport
-  - qexport
-quotesimport:
-  - quotesimport
-  - qimport
 showembed:
   - showembed
 # WizBotExpressions

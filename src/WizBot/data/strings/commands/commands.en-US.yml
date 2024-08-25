@@ -2502,7 +2502,7 @@ autotranslate:
   params:
     - autoDelete:
         desc: "The option to automatically remove translated messages from the chat."
-listquotes:
+quotelist:
   desc: Lists all quotes on the server ordered alphabetically or by ID. 15 Per page.
   ex:
     - 3

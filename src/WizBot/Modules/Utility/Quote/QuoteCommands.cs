@@ -1,6 +1,4 @@
 #nullable disable warnings
-using LinqToDB;
-using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.Yml;
 using WizBot.Db.Models;
 using YamlDotNet.Serialization;
@@ -11,7 +9,7 @@ namespace WizBot.Modules.Utility;
 public partial class Utility
 {
     [Group]
-    public partial class QuoteCommands : WizBotModule<QuoteService>
+    public partial class QuoteCommands : WizBotModule
     {
         private const string PREPEND_EXPORT =
             """
@@ -48,19 +46,19 @@ public partial class Utility
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(1)]
-        public Task ListQuotes(OrderType order = OrderType.Keyword)
-            => ListQuotes(1, order);
+        public Task QuoteList(OrderType order = OrderType.Keyword)
+            => QuoteList(1, order);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [Priority(0)]
-        public async Task ListQuotes(int page = 1, OrderType order = OrderType.Keyword)
+        public async Task QuoteList(int page = 1, OrderType order = OrderType.Keyword)
         {
             page -= 1;
             if (page < 0)
                 return;
 
-            var quotes = await _service.GetAllQuotesAsync(ctx.Guild.Id, page, order);
+            var quotes = await _qs.GetAllQuotesAsync(ctx.Guild.Id, page, order);
 
             if (quotes.Count == 0)
             {
@@ -85,7 +83,7 @@ public partial class Utility
 
             keyword = keyword.ToUpperInvariant();
 
-            var quote = await _service.GetQuoteByKeywordAsync(ctx.Guild.Id, keyword);
+            var quote = await _qs.GetQuoteByKeywordAsync(ctx.Guild.Id, keyword);
 
             if (quote is null)
                 return;
@@ -97,7 +95,6 @@ public partial class Utility
 
             await Response()
                   .Text($"`{new kwum(quote.Id)}` 📣 " + text)
-                  .Sanitize()
                   .SendAsync();
         }
 
@@ -106,7 +103,7 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async Task QuoteShow(kwum quoteId)
         {
-            var quote = await _service.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
+            var quote = await _qs.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
 
             if (quote is null)
             {
@@ -179,7 +176,7 @@ public partial class Utility
 
             keyword = keyword?.ToUpperInvariant();
 
-            var quotes = await _service.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
+            var quotes = await _qs.SearchQuoteKeywordTextAsync(ctx.Guild.Id, keyword, textOrAuthor);
 
             await Response()
                   .Paginated()
@@ -218,7 +215,7 @@ public partial class Utility
             if (quoteId < 0)
                 return;
 
-            var quote = await _service.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
+            var quote = await _qs.GetQuoteByIdAsync(ctx.Guild.Id, quoteId);
 
             if (quote is null)
             {
@@ -226,8 +223,8 @@ public partial class Utility
                 return;
             }
 
-            var infoText = $"*`{new kwum(quote.Id)}` added by {quote.AuthorName.SanitizeAllMentions()}* 🗯️ "
-                           + quote.Keyword.ToLowerInvariant().SanitizeAllMentions()
+            var infoText = $"*`{new kwum(quote.Id)}` added by {quote.AuthorName}* 🗯️ "
+                           + quote.Keyword.ToLowerInvariant()
                            + ":\n";
 
 
@@ -236,7 +233,6 @@ public partial class Utility
             text = await repSvc.ReplaceAsync(text, repCtx);
             await Response()
                   .Text(infoText + text)
-                  .Sanitize()
                   .SendAsync();
         }
 
@@ -248,25 +244,13 @@ public partial class Utility
             if (string.IsNullOrWhiteSpace(keyword) || string.IsNullOrWhiteSpace(text))
                 return;
 
-            keyword = keyword.ToUpperInvariant();
+            var quote = await _qs.AddQuoteAsync(ctx.Guild.Id, ctx.User.Id, ctx.User.Username, keyword, text);
 
-            Quote q;
-            await using (var uow = _db.GetDbContext())
-            {
-                uow.Set<Quote>()
-                   .Add(q = new()
-                   {
-                       AuthorId = ctx.Message.Author.Id,
-                       AuthorName = ctx.Message.Author.Username,
-                       GuildId = ctx.Guild.Id,
-                       Keyword = keyword,
-                       Text = text
-                   });
-                await uow.SaveChangesAsync();
-            }
-
-            await Response().Confirm(strs.quote_added_new(Format.Code(new kwum(q.Id).ToString()))).SendAsync();
+            await Response()
+                  .Confirm(strs.quote_added_new(Format.Code(new kwum(quote.Id).ToString())))
+                  .SendAsync();
         }
+
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -277,19 +261,7 @@ public partial class Utility
                 return;
             }
 
-            Quote q;
-            await using (var uow = _db.GetDbContext())
-            {
-                var intId = (int)quoteId;
-                var result = await uow.GetTable<Quote>()
-                                      .Where(x => x.Id == intId && x.AuthorId == ctx.User.Id)
-                                      .Set(x => x.Text, text)
-                                      .UpdateWithOutputAsync((del, ins) => ins);
-
-                q = result.FirstOrDefault();
-
-                await uow.SaveChangesAsync();
-            }
+            var q = await _qs.EditQuoteAsync(ctx.User.Id, quoteId, text);
 
             if (q is not null)
             {
@@ -309,33 +281,19 @@ public partial class Utility
             }
         }
 
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task QuoteDelete(kwum quoteId)
         {
             var hasManageMessages = ((IGuildUser)ctx.Message.Author).GuildPermissions.ManageMessages;
 
-            var success = false;
-            string response;
-            await using (var uow = _db.GetDbContext())
-            {
-                var q = uow.Set<Quote>().GetById(quoteId);
-
-                if (q?.GuildId != ctx.Guild.Id || (!hasManageMessages && q.AuthorId != ctx.Message.Author.Id))
-                    response = GetText(strs.quotes_remove_none);
-                else
-                {
-                    uow.Set<Quote>().Remove(q);
-                    await uow.SaveChangesAsync();
-                    success = true;
-                    response = GetText(strs.quote_deleted(new kwum(quoteId)));
-                }
-            }
+            var success = await _qs.DeleteQuoteAsync(ctx.Guild.Id, ctx.User.Id, hasManageMessages, quoteId);
 
             if (success)
-                await Response().Confirm(response).SendAsync();
+                await Response().Confirm(strs.quote_deleted(quoteId)).SendAsync();
             else
-                await Response().Error(response).SendAsync();
+                await Response().Error(strs.quotes_remove_none).SendAsync();
         }
 
         [Cmd]
@@ -368,16 +326,9 @@ public partial class Utility
             if (string.IsNullOrWhiteSpace(keyword))
                 return;
 
-            keyword = keyword.ToUpperInvariant();
+            await _qs.RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
 
-            await using (var uow = _db.GetDbContext())
-            {
-                await _service.RemoveAllByKeyword(ctx.Guild.Id, keyword.ToUpperInvariant());
-
-                await uow.SaveChangesAsync();
-            }
-
-            await Response().Confirm(strs.quotes_deleted(Format.Bold(keyword.SanitizeAllMentions()))).SendAsync();
+            await Response().Confirm(strs.quotes_deleted(Format.Bold(keyword))).SendAsync();
         }
 
         [Cmd]
@@ -385,7 +336,7 @@ public partial class Utility
         [UserPerm(GuildPerm.Administrator)]
         public async Task QuotesExport()
         {
-            var quotes = _service.GetForGuild(ctx.Guild.Id).ToList();
+            var quotes = await _qs.GetGuildQuotesAsync(ctx.Guild.Id);
 
             var exprsDict = quotes.GroupBy(x => x.Keyword)
                                   .ToDictionary(x => x.Key, x => x.Select(ExportedQuote.FromModel));
@@ -428,7 +379,7 @@ public partial class Utility
                 }
             }
 
-            var succ = await ImportExprsAsync(ctx.Guild.Id, input);
+            var succ = await _qs.ImportQuotesAsync(ctx.Guild.Id, input);
             if (!succ)
             {
                 await Response().Error(strs.expr_import_invalid_data).SendAsync();
@@ -436,57 +387,6 @@ public partial class Utility
             }
 
             await ctx.OkAsync();
-        }
-
-        private async Task<bool> ImportExprsAsync(ulong guildId, string input)
-        {
-            Dictionary<string, List<ExportedQuote>> data;
-            try
-            {
-                data = Yaml.Deserializer.Deserialize<Dictionary<string, List<ExportedQuote>>>(input);
-                if (data.Sum(x => x.Value.Count) == 0)
-                    return false;
-            }
-            catch
-            {
-                return false;
-            }
-
-            await using var uow = _db.GetDbContext();
-            foreach (var entry in data)
-            {
-                var keyword = entry.Key;
-                await uow.Set<Quote>()
-                         .AddRangeAsync(entry.Value.Where(quote => !string.IsNullOrWhiteSpace(quote.Txt))
-                                             .Select(quote => new Quote
-                                             {
-                                                 GuildId = guildId,
-                                                 Keyword = keyword,
-                                                 Text = quote.Txt,
-                                                 AuthorId = quote.Aid,
-                                                 AuthorName = quote.An
-                                             }));
-            }
-
-            await uow.SaveChangesAsync();
-            return true;
-        }
-
-        public class ExportedQuote
-        {
-            public string Id { get; set; }
-            public string An { get; set; }
-            public ulong Aid { get; set; }
-            public string Txt { get; set; }
-
-            public static ExportedQuote FromModel(Quote quote)
-                => new()
-                {
-                    Id = ((kwum)quote.Id).ToString(),
-                    An = quote.AuthorName,
-                    Aid = quote.AuthorId,
-                    Txt = quote.Text
-                };
         }
     }
 }

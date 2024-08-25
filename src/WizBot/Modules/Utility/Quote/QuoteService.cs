@@ -1,6 +1,8 @@
 #nullable disable warnings
 using LinqToDB;
+using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
+using WizBot.Common.Yml;
 using WizBot.Db.Models;
 
 namespace WizBot.Modules.Utility;
@@ -97,11 +99,12 @@ public sealed class QuoteService : IQuoteService, INService
         return toReturn;
     }
 
-    public IEnumerable<Quote> GetForGuild(ulong guildId)
+    public async Task<IReadOnlyCollection<Quote>> GetGuildQuotesAsync(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
-        var quotes = uow.GetTable<Quote>()
-                        .Where(x => x.GuildId == guildId);
+        await using var uow = _db.GetDbContext();
+        var quotes = await uow.GetTable<Quote>()
+                              .Where(x => x.GuildId == guildId)
+                              .ToListAsyncLinqToDB();
         return quotes;
     }
 
@@ -121,11 +124,99 @@ public sealed class QuoteService : IQuoteService, INService
     public async Task<Quote?> GetQuoteByIdAsync(ulong guildId, kwum quoteId)
     {
         await using var uow = _db.GetDbContext();
-        
+
         var quote = await uow.GetTable<Quote>()
                              .Where(x => x.Id == quoteId && x.GuildId == guildId)
                              .FirstOrDefaultAsyncLinqToDB();
 
         return quote;
+    }
+
+    public async Task<Quote> AddQuoteAsync(
+        ulong guildId,
+        ulong authorId,
+        string authorName,
+        string keyword,
+        string text)
+    {
+        keyword = keyword.ToUpperInvariant();
+
+        Quote q;
+        await using var uow = _db.GetDbContext();
+        uow.Set<Quote>()
+           .Add(q = new()
+           {
+               AuthorId = authorId,
+               AuthorName = authorName,
+               GuildId = guildId,
+               Keyword = keyword,
+               Text = text
+           });
+        await uow.SaveChangesAsync();
+
+        return q;
+    }
+
+    public async Task<Quote?> EditQuoteAsync(ulong authorId, int quoteId, string text)
+    {
+        await using var uow = _db.GetDbContext();
+        var result = await uow.GetTable<Quote>()
+                              .Where(x => x.Id == quoteId && x.AuthorId == authorId)
+                              .Set(x => x.Text, text)
+                              .UpdateWithOutputAsync((del, ins) => ins);
+
+        var q = result.FirstOrDefault();
+        return q;
+    }
+
+    public async Task<bool> DeleteQuoteAsync(
+        ulong guildId,
+        ulong authorId,
+        bool isQuoteManager,
+        int quoteId)
+    {
+        await using var uow = _db.GetDbContext();
+        var q = uow.Set<Quote>().GetById(quoteId);
+
+
+        var count = await uow.GetTable<Quote>()
+                             .Where(x => x.GuildId == guildId && x.Id == quoteId)
+                             .Where(x => isQuoteManager || (x.AuthorId == authorId))
+                             .DeleteAsync();
+
+
+        return count > 0;
+    }
+
+    public async Task<bool> ImportQuotesAsync(ulong guildId, string input)
+    {
+        Dictionary<string?, List<ExportedQuote?>> data;
+        try
+        {
+            data = Yaml.Deserializer.Deserialize<Dictionary<string?, List<ExportedQuote?>>>(input);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Quote import failed: {Message}", ex.Message);
+            return false;
+        }
+
+
+        var toImport = data.SelectMany(x => x.Value.Select(v => (Key: x.Key, Value: v)))
+                           .Where(x => !string.IsNullOrWhiteSpace(x.Key) && !string.IsNullOrWhiteSpace(x.Value?.Txt));
+
+        await using var uow = _db.GetDbContext();
+        await uow.GetTable<Quote>()
+                 .BulkCopyAsync(toImport
+                     .Select(q => new Quote
+                     {
+                         GuildId = guildId,
+                         Keyword = q.Key,
+                         Text = q.Value.Txt,
+                         AuthorId = q.Value.Aid,
+                         AuthorName = q.Value.An
+                     }));
+
+        return true;
     }
 }
