@@ -16,13 +16,13 @@ gencmdlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 donate:
   desc: Provides instructions for helping the project financially.
   ex:
     - ''
   params:
-    - {}
+    - { }
 modules:
   desc: |-
     List all of the bot's modules.
@@ -59,7 +59,7 @@ greet:
   ex:
     - ''
   params:
-    - {}
+    - { }
 greetmsg:
   desc: |-
     Sets a new join announcement message which will be shown in the current channel.
@@ -75,7 +75,7 @@ bye:
   ex:
     - ''
   params:
-    - {}
+    - { }
 byemsg:
   desc: |-
     Sets a new leave announcement message which will be shown in the current channel. 
@@ -99,7 +99,7 @@ greetdm:
   ex:
     - ''
   params:
-    - {}
+    - { }
 greettest:
   desc: Sends the greet message in the current channel as if you just joined the server. You can optionally specify a different user.
   ex:
@@ -139,7 +139,7 @@ boost:
   ex:
     - ''
   params:
-    - {}
+    - { }
 boostmsg:
   desc: |-
     Sets a new boost announcement message which will be shown in the current channel. 
@@ -173,7 +173,7 @@ logignore:
     - '@SomeUser'
     - '#some-channel'
   params:
-    - {}
+    - { }
     - target:
         desc: "The channel to ignore or show the list of ignored channels for."
     - target:
@@ -183,7 +183,7 @@ repeatlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 repeatremove:
   desc: Removes a repeating message by index. Use `{0}replst` to see indexes.
   ex:
@@ -276,7 +276,7 @@ rotateplaying:
   ex:
     - ''
   params:
-    - {}
+    - { }
 addplaying:
   desc: Adds a specified string to the list of playing strings to rotate. You have to pick either `Playing`, `Watching` or `Listening` as the first parameter.
   ex:
@@ -292,7 +292,7 @@ listplaying:
   ex:
     - ''
   params:
-    - {}
+    - { }
 removeplaying:
   desc: Removes a playing status by index. Use `{0}lipl` to see indexes.
   ex:
@@ -305,7 +305,7 @@ vcrolelist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 vcrole:
   desc: Sets or resets a role which will be given to users who join the voice channel you're in when you run this command. Provide no role name to disable. You must be in a voice channel to run this command.
   ex:
@@ -366,7 +366,7 @@ togglexclsar:
   ex:
     - ''
   params:
-    - {}
+    - { }
 iam:
   desc: Adds a role to you that you choose. Role must be on the list of self-assignable roles.
   ex:
@@ -439,25 +439,25 @@ exprclear:
   ex:
     - ''
   params:
-    - {}
+    - { }
 fwclear:
   desc: Deletes all filtered words on this server.
   ex:
     - ''
   params:
-    - {}
+    - { }
 filterlist:
   desc: Lists invite and link filter channels and status.
   ex:
     - ''
   params:
-    - {}
+    - { }
 aliasesclear:
   desc: Deletes all aliases on this server.
   ex:
     - ''
   params:
-    - {}
+    - { }
 autoassignrole:
   desc: |-
     Toggles the role which will be assigned to every user who joins the server.
@@ -470,7 +470,7 @@ autoassignrole:
   params:
     - role:
         desc: "The role assigned to new users, determining their permissions and access rights within the server."
-    - {}
+    - { }
 leave:
   desc: Makes WizBot leave the server. Either server name or server ID is required.
   ex:
@@ -516,7 +516,7 @@ restart:
   ex:
     - ''
   params:
-    - {}
+    - { }
 setrole:
   desc: Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.
   ex:
@@ -772,7 +772,7 @@ prunecancel:
   ex:
     - ''
   params:
-    - {}
+    - { }
 die:
   desc: Shuts the bot down.
   ex:
@@ -912,7 +912,7 @@ serverinfo:
   params:
     - guildId:
         desc: "The ID of a server for which to retrieve information."
-    - {}
+    - { }
 channelinfo:
   desc: Shows info about the channel. If no channel is supplied, it defaults to current one.
   ex:
@@ -967,7 +967,7 @@ stats:
   ex:
     - ''
   params:
-    - {}
+    - { }
 userid:
   desc: Shows user ID.
   ex:
@@ -981,13 +981,13 @@ channelid:
   ex:
     - ''
   params:
-    - {}
+    - { }
 serverid:
   desc: Shows current server ID.
   ex:
     - ''
   params:
-    - {}
+    - { }
 roles:
   desc: List roles on this server or roles of a user if specified. Paginated, 20 roles per page.
   ex:
@@ -1012,31 +1012,31 @@ chnlfilterinv:
   ex:
     - ''
   params:
-    - {}
+    - { }
 srvrfilterinv:
   desc: Toggles automatic deletion of invites posted in the server. Does not affect users with the Administrator permission.
   ex:
     - ''
   params:
-    - {}
+    - { }
 chnlfilterlin:
   desc: Toggles automatic deletion of links posted in the channel. Does not negate the `{0}srvrfilterlin` enabled setting. Does not affect users with the Administrator permission.
   ex:
     - ''
   params:
-    - {}
+    - { }
 srvrfilterlin:
   desc: Toggles automatic deletion of links posted in the server. Does not affect users with the Administrator permission.
   ex:
     - ''
   params:
-    - {}
+    - { }
 chnlfilterwords:
   desc: Toggles automatic deletion of messages containing filtered words on the channel. Does not negate the `{0}srvrfilterwords` enabled setting. Does not affect users with the Administrator permission.
   ex:
     - ''
   params:
-    - {}
+    - { }
 filterword:
   desc: Adds or removes (if it exists) a word from the list of filtered words. Use`{0}sfw` or `{0}cfw` to toggle filtering.
   ex:
@@ -1049,7 +1049,7 @@ srvrfilterwords:
   ex:
     - ''
   params:
-    - {}
+    - { }
 lstfilterwords:
   desc: Shows a list of filtered words.
   ex:
@@ -1352,7 +1352,7 @@ playlistshuffle:
   ex:
     - ''
   params:
-    - {}
+    - { }
 flip:
   desc: Flips coin(s) - heads or tails, and shows an image.
   ex:
@@ -1384,7 +1384,7 @@ roll:
     - 3d5
     - 5dF
   params:
-    - {}
+    - { }
     - num:
         desc: "The number of sides on the dice being rolled."
     - arg:
@@ -1428,7 +1428,7 @@ nunchi:
   ex:
     - ''
   params:
-    - {}
+    - { }
 connect4:
   desc: Creates or joins an existing connect4 game. 2 players are required for the game. Objective of the game is to get 4 of your pieces next to each other in a vertical, horizontal or diagonal line. You can specify a bet when you create a game and only users who bet the same amount will be able to join your game.
   ex:
@@ -1564,13 +1564,13 @@ tl:
   ex:
     - ''
   params:
-    - {}
+    - { }
 tq:
   desc: Quits current trivia after current question.
   ex:
     - ''
   params:
-    - {}
+    - { }
 typestart:
   desc: Starts a typing contest.
   ex:
@@ -1583,7 +1583,7 @@ typestop:
   ex:
     - ''
   params:
-    - {}
+    - { }
 typeadd:
   desc: Adds a new article to the typing contest.
   ex:
@@ -1614,7 +1614,7 @@ gencurrency:
   ex:
     - ''
   params:
-    - {}
+    - { }
 gencurlist:
   desc: Shows the list of server and channel ids where gc is enabled. Paginated with 9 per page.
   ex:
@@ -1647,7 +1647,7 @@ next:
   ex:
     - ''
   params:
-    - {}
+    - { }
 play:
   desc: |-
     Queues up and plays a song or video based on a search query, song name, artist name or youtube link.
@@ -1660,7 +1660,7 @@ play:
     - 5
     - Dream Of Venice
   params:
-    - {}
+    - { }
     - index:
         desc: "The index of the desired song or search result to navigate to."
     - query:
@@ -1670,19 +1670,19 @@ stop:
   ex:
     - ''
   params:
-    - {}
+    - { }
 destroy:
   desc: Completely stops the music and unbinds the bot from the channel. (may cause weird behaviour)
   ex:
     - ''
   params:
-    - {}
+    - { }
 pause:
   desc: Pauses or Unpauses the song.
   ex:
     - ''
   params:
-    - {}
+    - { }
 queue:
   desc: |-
     Queues up and plays a song or video based on a search query, song name, artist name, search query or youtube link.
@@ -1713,7 +1713,7 @@ listqueue:
     - ''
     - 2
   params:
-    - {}
+    - { }
     - page:
         desc: "The current page number for the song queue listing."
 nowplaying:
@@ -1721,7 +1721,7 @@ nowplaying:
   ex:
     - ''
   params:
-    - {}
+    - { }
 volume:
   desc: Sets the music playback volume (0-100%). Persistent server setting. Default 100
   ex:
@@ -1762,7 +1762,7 @@ join:
   ex:
     - ''
   params:
-    - {}
+    - { }
 trackremove:
   desc: "Remove a song by its # in the queue, or 'all' (or provide no parameter) to remove all songs from the queue."
   ex:
@@ -1812,7 +1812,7 @@ streamrole:
         desc: "The role of users being monitored for streamer status."
       addRole:
         desc: "The role to be added to users when they start streaming."
-    - {}
+    - { }
 load:
   desc: Loads a saved playlist using its ID. Use `{0}pls` to list all saved playlists and `{0}save` to save new ones.
   ex:
@@ -1848,7 +1848,7 @@ queueautoplay:
   ex:
     - ''
   params:
-    - {}
+    - { }
 streamadd:
   desc: Notifies this channel when the stream on the specified URL goes online or offline. Offline notifications will only show if you enable `{0}streamoff`. Maximum 10 per server.
   ex:
@@ -1861,7 +1861,7 @@ streamsclear:
   ex:
     - ''
   params:
-    - {}
+    - { }
 streamremove:
   desc: Stops following the stream on the specified index. (use `{0}stl` to see indexes)
   ex:
@@ -1881,13 +1881,13 @@ streamoffline:
   ex:
     - ''
   params:
-    - {}
+    - { }
 streamonlinedelete:
   desc: Toggles whether the bot will delete stream online message when the stream goes offline.
   ex:
     - ''
   params:
-    - {}
+    - { }
 streammessage:
   desc: Sets the message which will show when the stream on the specified index comes online. You can use %user% and %platform% placeholders.
   ex:
@@ -1927,13 +1927,13 @@ convertlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 wowjoke:
   desc: Get one of penultimate WoW jokes.
   ex:
     - ''
   params:
-    - {}
+    - { }
 calculate:
   desc: Evaluate a mathematical expression.
   ex:
@@ -2031,25 +2031,25 @@ randomcat:
   ex:
     - ''
   params:
-    - {}
+    - { }
 randomdog:
   desc: Shows a random dog image.
   ex:
     - ''
   params:
-    - {}
+    - { }
 randomfood:
   desc: Shows a random food image.
   ex:
     - ''
   params:
-    - {}
+    - { }
 randombird:
   desc: Shows a random bird image.
   ex:
     - ''
   params:
-    - {}
+    - { }
 image:
   desc: Pulls a random image using a search parameter.
   ex:
@@ -2090,31 +2090,31 @@ catfact:
   ex:
     - ''
   params:
-    - {}
+    - { }
 yomama:
   desc: Shows a random yomama joke.
   ex:
     - ''
   params:
-    - {}
+    - { }
 randjoke:
   desc: Shows a random joke.
   ex:
     - ''
   params:
-    - {}
+    - { }
 chucknorris:
   desc: Shows a random Chuck Norris joke.
   ex:
     - ''
   params:
-    - {}
+    - { }
 magicitem:
   desc: Shows a random magic item with its description.
   ex:
     - ''
   params:
-    - {}
+    - { }
 wiki:
   desc: Gives you back a wikipedia link
   ex:
@@ -2153,19 +2153,19 @@ translangs:
   ex:
     - ''
   params:
-    - {}
+    - { }
 guide:
   desc: Sends a readme and a guide links to the channel.
   ex:
     - ''
   params:
-    - {}
+    - { }
 calcops:
   desc: Shows all available operations in the `{0}calc` command
   ex:
     - ''
   params:
-    - {}
+    - { }
 quotesdeleteall:
   desc: Deletes all quotes with the specified keyword.
   ex:
@@ -2174,7 +2174,7 @@ quotesdeleteall:
     - keyword:
         desc: "The keyword/trigger of the quotes to be deleted."
 greetdmmsg:
-  desc: Sets a new join announcement message which will be sent to the user who joined. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <https://wizbot.cc/embedbuilder> instead of a regular text, if you want the message to be embedded.
+  desc: Sets a new join announcement message which will be sent to the user who joined. Type `%user.mention%` if you want to mention the new member. Using it with no message will show the current DM greet message. You can use embed json from <https://wizbot.cc/embedbuilder/> instead of a regular text, if you want the message to be embedded.
   ex:
     - Welcome to the server, %user.mention%
   params:
@@ -2303,40 +2303,51 @@ deckshuffle:
   ex:
     - ''
   params:
-    - {}
+    - { }
 forwardmessages:
   desc: Toggles forwarding of non-command messages sent to bot's DM to the bot owners
   ex:
     - ''
   params:
-    - {}
+    - { }
 forwardtoall:
   desc: Toggles whether messages will be forwarded to all bot owners or only to the first one specified in the creds.yml file
   ex:
     - ''
   params:
-    - {}
+    - { }
 forwardtochannel:
   desc: Toggles forwarding of non-command messages sent to bot's DM to the current channel
   ex:
     - ''
   params:
-    - {}
+    - { }
 resetperms:
   desc: Resets the bot's permissions module on this server to the default value.
   ex:
     - ''
   params:
-    - {}
+    - { }
 antiraid:
-  desc: 'Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut'
+  desc: |-
+    Sets an anti-raid protection on the server.
+    
+    First parameter is number of people which will trigger the protection.
+    
+    Second parameter is a time interval in which that number of people needs to join in order to trigger the protection.
+    
+    Third parameter is punishment for those people.
+    Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut
+    You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.
+    
+    Provide no parameters to disable.
   ex:
     - 5 20 Kick
     - 7 9 Ban
     - 10 10 Ban 6h30m
     - ''
   params:
-    - {}
+    - { }
     - userThreshold:
         desc: "The number of users that must join the server within a specified time interval to trigger the anti-raid protection."
       seconds:
@@ -2352,14 +2363,19 @@ antiraid:
       action:
         desc: "The punishment action specifies the consequence for users who trigger the anti-raid protection."
 antispam:
-  desc: 'Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Max message count is 10. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles, Warn, TimeOut'
+  desc: |-
+    Applies a Punishment to people who repeat the same message X times in a row.
+    Available Punishments are: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut
+    You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.
+    Max message count is 10. 
+    Provide no parameters to disable.
   ex:
     - 3 Mute
     - 5 Ban
     - 5 Ban 3h30m
     - ''
   params:
-    - {}
+    - { }
     - messageCount:
         desc: "The maximum number of times a user can send the same message before being punished."
       action:
@@ -2377,12 +2393,17 @@ antispam:
       action:
         desc: "The type of punishment to be applied to the offender."
 antialt:
-  desc: Applies a punishment action to any user whose account is younger than the specified threshold. Specify time after the punishment to have a timed punishment (not all punishments support timers).
+  desc: |-
+    Applies a punishment action to any user whose account is younger than the specified threshold. 
+    Available Punishments are: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut
+    You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.
+    Max message count is 10.
+    Provide no parameters to disable.
   ex:
     - 1h Ban
     - 3d Mute 1h
   params:
-    - {}
+    - { }
     - minAge:
         desc: "The minimum age of an account for which the punishment should be applied."
       action:
@@ -2446,7 +2467,7 @@ adsarm:
   ex:
     - ''
   params:
-    - {}
+    - { }
 setstream:
   desc: Sets the bots stream. First parameter is the twitch link, second parameter is stream name.
   ex:
@@ -2490,7 +2511,7 @@ autotranslang:
   ex:
     - en fr
   params:
-    - {}
+    - { }
     - fromLang:
         desc:
       toLang:
@@ -2538,14 +2559,14 @@ serverlist:
     - page:
         desc: "The number of pages to retrieve from the server list."
 cleverbot:
-  desc:  |-
+  desc: |-
     Toggles cleverbot/chatgpt session.
     When enabled, the bot will reply to messages starting with bot mention in the server.
     Expressions starting with %bot.mention% won't work if cleverbot/chatgpt is enabled.
   ex:
     - ''
   params:
-    - {}
+    - { }
 shorten:
   desc: Attempts to shorten an URL, if it fails, returns the input URL.
   ex:
@@ -2575,7 +2596,7 @@ hangmanlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 hangman:
   desc: Starts a game of hangman in the channel. You can optionally select a category `{0}hangmanlist` to see a list of available categories.
   ex:
@@ -2589,7 +2610,7 @@ hangmanstop:
   ex:
     - ''
   params:
-    - {}
+    - { }
 acrophobia:
   desc: Starts an Acrophobia game.
   ex:
@@ -2603,7 +2624,7 @@ logevents:
   ex:
     - ''
   params:
-    - {}
+    - { }
 log:
   desc: Toggles logging event. Disables it if it is active anywhere on the server. Enables if it isn't active. Use `{0}logevents` to see a list of all events you can subscribe to.
   ex:
@@ -2617,7 +2638,7 @@ queuefairplay:
   ex:
     - ''
   params:
-    - {}
+    - { }
 define:
   desc: Finds a definition of a word.
   ex:
@@ -2661,13 +2682,13 @@ antilist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 antispamignore:
   desc: Toggles whether antispam ignores current channel. Antispam must be enabled.
   ex:
     - ''
   params:
-    - {}
+    - { }
 eventstart:
   desc: |-
     Starts one of the events seen on public WizBot.
@@ -2687,13 +2708,14 @@ betstats:
   ex:
     - ''
   params:
-    - {}
+    - { }
 slot:
   desc: |-
     Play WizBot slots by placing your bet.
     You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 5
+    - 'all'
   params:
     - amount:
         desc: "The amount of currency to bet."
@@ -2719,7 +2741,7 @@ waifureset:
   ex:
     - ''
   params:
-    - {}
+    - { }
 waifutransfer:
   desc: Transfer the ownership of one of your waifus to another user. You must pay 10%  of your waifu's value unless that waifu has affinity towards you, in which case you must pay 60% fee. Transferred waifu's price will be reduced by the fee amount.
   ex:
@@ -2739,7 +2761,7 @@ waifugift:
     The waifu's value will be increased by the percentage of the gift's value.
     You can optionally prefix the gift with a multiplier to gift the item that many times.
     For example, 3xRose will give the waifu 3 roses, 10xBread will give the waifu 10 breads. Do not use plural forms.
-    Negative gifts will not show up in waifuinfo.
+    Negative gifts will not show up in waifuinfo. 
     Provide no parameters to see a list of items that you can gift.
   ex:
     - ''
@@ -2785,13 +2807,13 @@ setmusicchannel:
   ex:
     - ''
   params:
-    - {}
+    - { }
 unsetmusicchannel:
   desc: Bot will output playing, finished, paused and removed songs to the channel where the first song was queued in. Persistent server setting.
   ex:
     - ''
   params:
-    - {}
+    - { }
 musicquality:
   desc: 'Gets or sets the default music player quality. Available settings: Highest, High, Medium, Low. Default is **Highest**. Provide no argument to see current setting.'
   ex:
@@ -2799,7 +2821,7 @@ musicquality:
     - High
     - Low
   params:
-    - {}
+    - { }
     - preset:
         desc: "The selected preset determines the level of audio compression and processing applied to the music playback."
 stringsreload:
@@ -2807,7 +2829,7 @@ stringsreload:
   ex:
     - ''
   params:
-    - {}
+    - { }
 shardstats:
   desc: |-
     Stats for shards. Paginated with 25 shards per page.
@@ -2848,7 +2870,7 @@ timezone:
     - ''
     - GMT Standard Time
   params:
-    - {}
+    - { }
     - id:
         desc: "The identifier for a specific timezone region."
 languagesetdefault:
@@ -2857,7 +2879,7 @@ languagesetdefault:
     - en-US
     - default
   params:
-    - {}
+    - { }
     - name:
         desc: "The code page or character encoding for the target audience."
 languageset:
@@ -2866,7 +2888,7 @@ languageset:
     - 'de-DE '
     - default
   params:
-    - {}
+    - { }
     - name:
         desc: "The locale name for which the response language should be set."
 languageslist:
@@ -2874,13 +2896,13 @@ languageslist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 exprtoggleglobal:
   desc: Toggles whether global expressions are usable on this server.
   ex:
     - ''
   params:
-    - {}
+    - { }
 exprreact:
   desc: Sets or resets reactions (up to 3) which will be added to the response message of the Expression with the specified ID. Provide no emojis to reset.
   ex:
@@ -2925,7 +2947,7 @@ exprsreload:
   ex:
     - ''
   params:
-    - {}
+    - { }
 exprsimport:
   desc: Upload the file or send the raw .yml data with this command to import all expressions from the specified string or file into the current server (or as global expressions in dm)
   ex:
@@ -2938,7 +2960,7 @@ exprsexport:
   ex:
     - ''
   params:
-    - {}
+    - { }
 quotesimport:
   desc: Upload the file or send the raw .yml data with this command to import all quotes from the specified string or file into the current server.
   ex:
@@ -2951,7 +2973,7 @@ quotesexport:
   ex:
     - ''
   params:
-    - {}
+    - { }
 aliaslist:
   desc: Shows the list of currently set aliases. Paginated.
   ex:
@@ -3047,7 +3069,7 @@ startupcommandsclear:
   ex:
     - ''
   params:
-    - {}
+    - { }
 startupcommandslist:
   desc: Lists all startup commands in the order they will be executed in.
   ex:
@@ -3097,7 +3119,7 @@ banmsgreset:
   ex:
     - ''
   params:
-    - {}
+    - { }
 banprune:
   desc: |-
     Sets how many days of messages will be deleted when a user is banned.
@@ -3122,7 +3144,7 @@ warnexpire:
     - 3
     - 6 --delete
   params:
-    - {}
+    - { }
     - days:
         desc: "The number of days after which expired warnings will be automatically cleared from the system."
       params:
@@ -3153,7 +3175,7 @@ warnpunishlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 warnpunish:
   desc: "Sets a punishment for a certain number of warnings. You can specify a time string after 'Ban' or *'Mute' punishments to make it a temporary mute/ban. Provide no punishment to remove. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles"
   ex:
@@ -3183,7 +3205,7 @@ ping:
   ex:
     - ''
   params:
-    - {}
+    - { }
 time:
   desc: Shows the current time and timezone in the specified location.
   ex:
@@ -3299,7 +3321,7 @@ gamevoicechannel:
   ex:
     - ''
   params:
-    - {}
+    - { }
 shoplistadd:
   desc: Adds an item to the list of items for sale in the shop entry given the index. You usually want to run this command in the secret channel, so that the unique items are not leaked.
   ex:
@@ -3328,19 +3350,19 @@ globalpermlist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 resetglobalperms:
   desc: Resets global permissions set by bot owner.
   ex:
     - ''
   params:
-    - {}
+    - { }
 prefix:
   desc: Sets this server's prefix for all bot commands. Provide no parameters to see the current server prefix. **Setting prefix requires Administrator server permission.**
   ex:
     - +
   params:
-    - {}
+    - { }
     - _:
         desc: "The default text that is prepended to all bot command names."
       newPrefix:
@@ -3430,13 +3452,13 @@ xptemplatereload:
   ex:
     - ''
   params:
-    - {}
+    - { }
 xpexclusionlist:
   desc: Shows the roles and channels excluded from the XP system on this server, as well as whether the whole server is excluded.
   ex:
     - ''
   params:
-    - {}
+    - { }
 xpexclude:
   desc: Exclude a channel, role or current server from the xp system.
   ex:
@@ -3459,7 +3481,7 @@ xpnotify:
     - global dm
     - server channel
   params:
-    - {}
+    - { }
     - place:
         desc: "The location where notifications should be sent, such as a specific channel or DM."
       type:
@@ -3476,7 +3498,7 @@ xprewsreset:
   ex:
     - ''
   params:
-    - {}
+    - { }
 xprolereward:
   desc: |-
     Add or remove a role from the user who reaches the specified level.
@@ -3593,13 +3615,13 @@ clubleave:
   ex:
     - ''
   params:
-    - {}
+    - { }
 clubdisband:
   desc: Disbands the club you're the owner of. This action is irreversible.
   ex:
     - ''
   params:
-    - {}
+    - { }
 clubkick:
   desc: Kicks the user from the club. You must be the club owner. They will be able to apply again.
   ex:
@@ -3783,7 +3805,7 @@ deletewaifus:
   ex:
     - ''
   params:
-    - {}
+    - { }
 deletewaifu:
   desc: Deletes everything from WaifuUpdates, WaifuItem and WaifuInfo tables for the specified user. Also makes specified user's waifus free.
   ex:
@@ -3798,19 +3820,19 @@ deletecurrency:
   ex:
     - ''
   params:
-    - {}
+    - { }
 deleteplaylists:
   desc: Deletes everything from MusicPlaylists.
   ex:
     - ''
   params:
-    - {}
+    - { }
 deletexp:
   desc: Deletes everything from UserXpStats, Clubs and sets users' TotalXP to 0.
   ex:
     - ''
   params:
-    - {}
+    - { }
 discordpermoverride:
   desc: Overrides required user permissions that the command has with the specified ones. You can only use server-level permissions. This action will make the bot ignore user permission requirements which command has by default. Provide no permissions to reset to default.
   ex:
@@ -3833,13 +3855,13 @@ discordpermoverridereset:
   ex:
     - ''
   params:
-    - {}
+    - { }
 autodisconnect:
   desc: Toggles whether the bot should disconnect from the voice channel once it's done playing all of the songs and queue repeat option is set to `none`.
   ex:
     - ''
   params:
-    - {}
+    - { }
 timelyset:
   desc: Sets the 'timely' currency allowance amount for users. Second parameter is period in hours, default is 24 hours.
   ex:
@@ -3858,13 +3880,13 @@ timely:
   ex:
     - ''
   params:
-    - {}
+    - { }
 timelyreset:
   desc: Resets all user timeouts on `{0}timely` command.
   ex:
     - ''
   params:
-    - {}
+    - { }
 crypto:
   desc: Shows basic stats about a cryptocurrency from coinmarketcap.com. You can use either a name or an abbreviation of the currency.
   ex:
@@ -3946,7 +3968,7 @@ rerodeleteall:
   ex:
     - ''
   params:
-    - {}
+    - { }
 rerotransfer:
   desc: Transfers reaction roles from one message to another by specifying their ids. If the target message has reaction roles specified already, the reaction roles will be MERGED, not overwritten.
   ex:
@@ -3973,19 +3995,19 @@ hit:
   ex:
     - ''
   params:
-    - {}
+    - { }
 stand:
   desc: Finish your turn in the blackjack game.
   ex:
     - ''
   params:
-    - {}
+    - { }
 double:
   desc: In the blackjack game, double your bet in order to receive exactly one more card, and your turn ends.
   ex:
     - ''
   params:
-    - {}
+    - { }
 xpreset:
   desc: Resets specified user's XP, or the XP of all users in the server. You can't reverse this action.
   ex:
@@ -3996,7 +4018,7 @@ xpreset:
         desc: "The ID of a specific guild member whose XP is being reset."
     - userId:
         desc: "The ID of a specific player whose experience points are being reset."
-    - {}
+    - { }
 xpshop:
   desc: Access the xp shop (if enabled). You can purchase either xp card frames or backgrounds. You can optionally provide a page number
   ex:
@@ -4004,7 +4026,7 @@ xpshop:
     - frames
     - bgs 3
   params:
-    - {}
+    - { }
     - type:
         desc: "The type of item to be purchased, such as an XP card frame or background."
       page:
@@ -4096,7 +4118,7 @@ agerestricttoggle:
   ex:
     - ''
   params:
-    - {}
+    - { }
 purgeuser:
   desc: Purge user from the database completely. This includes currency, xp, clubs that user owns, waifu info
   ex:
@@ -4125,7 +4147,7 @@ coordreload:
   ex:
     - ''
   params:
-    - {}
+    - { }
 showembed:
   desc: Prints the json equivalent of the embed of the message specified by its Id.
   ex:
@@ -4143,7 +4165,7 @@ deleteemptyservers:
   ex:
     - ''
   params:
-    - {}
+    - { }
 medusaload:
   desc: |-
     Loads a medusa with the specified name from the data/medusae/ folder.
@@ -4184,13 +4206,13 @@ medusalist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 medusasearch:
   desc: Searches for medusae online given the search term
   ex:
     - shrine
   params:
-    - {}
+    - { }
 bankdeposit:
   desc: Deposits the specified amount of currency into the bank for later use.
   ex:
@@ -4215,7 +4237,7 @@ bankbalance:
     - ''
     - '@User'
   params:
-    - {}
+    - { }
 banktake:
   desc: Takes the specified amount of currency from a user's bank
   ex:
@@ -4243,7 +4265,7 @@ patron:
   ex:
     - ''
   params:
-    - {}
+    - { }
     - user:
         desc: "The ID or handle of the user whose patronage status is being checked."
 patronmessage:
@@ -4308,7 +4330,7 @@ bettest:
     - betflip 1000
     - slot 2000
   params:
-    - {}
+    - { }
     - target:
         desc: "The type of game or wager being tested."
       tests:
@@ -4332,7 +4354,7 @@ autopublish:
   ex:
     - ''
   params:
-    - {}
+    - { }
 doas:
   desc: Execute the command as if you were the target user. Requires bot ownership and server administrator permission.
   ex:
@@ -4355,7 +4377,7 @@ cacheusers:
     - ''
     - serverId
   params:
-    - {}
+    - { }
     - guild:
         desc: "The guild for which user data is being cached."
 stickyroles:
@@ -4363,7 +4385,7 @@ stickyroles:
   ex:
     - ''
   params:
-    - {}
+    - { }
 giveawaystart:
   desc: Starts a giveaway. Specify the duration (between 1 minute and 30 days) followed by the prize.
   ex:
@@ -4401,13 +4423,13 @@ giveawaylist:
   ex:
     - ''
   params:
-    - {}
+    - { }
 todolist:
   desc: Lists all todos.
   ex:
     - ''
   params:
-    - {}
+    - { }
 todoadd:
   desc: Adds a new todo.
   ex:
@@ -4443,7 +4465,7 @@ todoclear:
   ex:
     - ''
   params:
-    - {}
+    - { }
 todoarchiveadd:
   desc: Creates a new archive with the specified name using current todos.
   ex:
@@ -4486,7 +4508,7 @@ cleanupguilddata:
   ex:
     - ''
   params:
-    - {}
+    - { }
 prompt:
   desc: |-
     Ask the bot to do something for you.
