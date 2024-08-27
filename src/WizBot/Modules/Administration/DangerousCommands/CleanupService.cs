@@ -59,14 +59,19 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
             var allGuildIds = _client.Guilds.Select(x => x.Id);
 
-            var table = await GetKeptGuildsTable();
+            HashSet<ulong> dontDelete;
+            await using (var db = _db.GetDbContext())
+            {
+                await using var ctx = db.CreateLinqToDBContext();
+                var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
 
-            var dontDeleteList = await table
-                                       .Where(x => allGuildIds.Contains(x.GuildId))
-                                       .Select(x => x.GuildId)
-                                       .ToListAsyncLinqToDB();
+                var dontDeleteList = await table
+                                           .Where(x => allGuildIds.Contains(x.GuildId))
+                                           .Select(x => x.GuildId)
+                                           .ToListAsyncLinqToDB();
 
-            var dontDelete = dontDeleteList.ToHashSet();
+                dontDelete = dontDeleteList.ToHashSet();
+            }
 
             guildIds = new();
             foreach (var guildId in allGuildIds)
@@ -209,7 +214,9 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     public async Task<bool> KeepGuild(ulong guildId)
     {
-        var table = await GetKeptGuildsTable();
+        await using var db = _db.GetDbContext();
+        await using var ctx = db.CreateLinqToDBContext();
+        var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
 
         if (await table.AnyAsyncLinqToDB(x => x.GuildId == guildId))
             return false;
@@ -224,16 +231,10 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     public async Task<int> GetKeptGuildCount()
     {
-        var table = await GetKeptGuildsTable();
-        return await table.CountAsync();
-    }
-
-    private async Task<ITable<KeptGuilds>> GetKeptGuildsTable()
-    {
         await using var db = _db.GetDbContext();
         await using var ctx = db.CreateLinqToDBContext();
         var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
-        return table;
+        return await table.CountAsync();
     }
 
     public async Task LeaveUnkeptServers()
