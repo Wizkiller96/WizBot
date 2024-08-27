@@ -4556,6 +4556,13 @@ keep:
     - ''
   params:
     - {}
+leaveunkeptservers:
+  desc: |-
+    Leaves all servers whose owners didn't run .keep
+  ex:
+    - ''
+  params:
+    - {}
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

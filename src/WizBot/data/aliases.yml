@@ -1424,6 +1424,8 @@ afk:
   - afk
 keep:
   - keep
+leaveunkeptservers:
+  - leaveunkeptservers
 # WizNet System
 feedback:
   - feedback

@@ -2,7 +2,7 @@
 
 namespace WizBot.Modules.Administration;
 
-public partial class Administration 
+public partial class Administration
 {
     [Group]
     public partial class CleanupCommands : CleanupModuleBase
@@ -38,6 +38,28 @@ public partial class Administration
             var result = await _svc.KeepGuild(Context.Guild.Id);
 
             await Response().Text("This guild's bot data will be saved.").SendAsync();
+        }
+        
+        [Cmd]
+        [OwnerOnly]
+        public async Task LeaveUnkeptServers()
+        {
+            var keptGuildCount = await _svc.GetKeptGuildCount();
+
+            var response = await PromptUserConfirmAsync(new EmbedBuilder()
+                .WithDescription($"""
+                                  Do you want the bot to leave all unkept servers?
+
+                                  There are currently {keptGuildCount} kept servers.   
+
+                                  **This is a highly destructive and irreversible action.**
+                                  """));
+
+            if (!response)
+                return;
+
+            await _svc.LeaveUnkeptServers();
+            await ctx.OkAsync();
         }
     }
 }
