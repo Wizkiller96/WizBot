@@ -14,7 +14,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     private TypedKey<KeepReport> _cleanupReportKey = new("cleanup:report");
     private TypedKey<bool> _cleanupTriggerKey = new("cleanup:trigger");
 
-    private TypedKey<bool> _keepTriggerKey = new("keep:trigger");
+    private TypedKey<int> _keepTriggerKey = new("keep:trigger");
 
     private readonly IPubSub _pubSub;
     private readonly DiscordSocketClient _client;
@@ -47,8 +47,11 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     private bool keepTriggered = false;
 
-    private async ValueTask InternalTriggerKeep(bool arg)
+    private async ValueTask InternalTriggerKeep(int shardId)
     {
+        if (_client.ShardId != shardId)
+            return;
+
         if (keepTriggered)
             return;
 
@@ -80,7 +83,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                     continue;
 
                 // 1 leave per 20 seconds per shard
-                await Task.Delay(RandomNumberGenerator.GetInt32(18_000, 22_000));
+                await Task.Delay(500);
 
                 SocketGuild? guild = null;
                 try
@@ -237,8 +240,8 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         return await table.CountAsync();
     }
 
-    public async Task LeaveUnkeptServers()
-        => await _pubSub.Pub(_keepTriggerKey, true);
+    public async Task LeaveUnkeptServers(int shardId)
+        => await _pubSub.Pub(_keepTriggerKey, shardId);
 
     private ValueTask OnKeepReport(KeepReport report)
     {
