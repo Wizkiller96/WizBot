@@ -12,7 +12,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     private TypedKey<KeepReport> _cleanupReportKey = new("cleanup:report");
     private TypedKey<bool> _cleanupTriggerKey = new("cleanup:trigger");
 
-    private TypedKey<(int, int)> _keepTriggerKey = new("keep:trigger");
+    private TypedKey<int> _keepTriggerKey = new("keep:trigger");
 
     private readonly IPubSub _pubSub;
     private readonly DiscordSocketClient _client;
@@ -45,10 +45,8 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     private bool keepTriggered = false;
 
-    private async ValueTask InternalTriggerKeep((int, int) data)
+    private async ValueTask InternalTriggerKeep(int shardId)
     {
-        var (shardId, delay) = data;
-
         if (_client.ShardId != shardId)
             return;
 
@@ -74,13 +72,16 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                 dontDelete = dontDeleteList.ToHashSet();
             }
 
-            Log.Information("Leaving {RemainingCount} guilds every {Delay} seconds, {DontDeleteCount} will remain", allGuildIds.Length - dontDelete.Count, delay, dontDelete.Count);
+            Log.Information("Leaving {RemainingCount} guilds every {Delay} seconds, {DontDeleteCount} will remain",
+                allGuildIds.Length - dontDelete.Count,
+                shardId,
+                dontDelete.Count);
             foreach (var guildId in allGuildIds)
             {
                 if (dontDelete.Contains(guildId))
                     continue;
 
-                await Task.Delay(delay);
+                await Task.Delay(1016);
 
                 SocketGuild? guild = null;
                 try
@@ -236,8 +237,8 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         return await table.CountAsync();
     }
 
-    public async Task LeaveUnkeptServers(int shardId, int delay)
-        => await _pubSub.Pub(_keepTriggerKey, (shardId, delay));
+    public async Task LeaveUnkeptServers(int shardId)
+        => await _pubSub.Pub(_keepTriggerKey, shardId);
 
     private ValueTask OnKeepReport(KeepReport report)
     {

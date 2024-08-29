@@ -8,9 +8,13 @@ public partial class Administration
     public partial class CleanupCommands : CleanupModuleBase
     {
         private readonly ICleanupService _svc;
+        private readonly IBotCredsProvider _creds;
 
-        public CleanupCommands(ICleanupService svc)
-            => _svc = svc;
+        public CleanupCommands(ICleanupService svc, IBotCredsProvider creds)
+        {
+            _svc = svc;
+            _creds = creds;
+        }
 
         [Cmd]
         [OwnerOnly]
@@ -42,7 +46,7 @@ public partial class Administration
         
         [Cmd]
         [OwnerOnly]
-        public async Task LeaveUnkeptServers(int shardId, int delay = 1000)
+        public async Task LeaveUnkeptServers(int startShardId)
         {
             var keptGuildCount = await _svc.GetKeptGuildCount();
 
@@ -58,7 +62,12 @@ public partial class Administration
             if (!response)
                 return;
 
-            await _svc.LeaveUnkeptServers(shardId, delay);
+            for (var i = startShardId; i < _creds.GetCreds().TotalShards; i++)
+            {
+                await _svc.LeaveUnkeptServers(startShardId);
+                await Task.Delay(2250 * 1000);
+            }
+
             await ctx.OkAsync();
         }
     }
