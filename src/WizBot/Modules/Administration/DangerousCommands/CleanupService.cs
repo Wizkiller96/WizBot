@@ -58,7 +58,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         keepTriggered = true;
         try
         {
-            var allGuildIds = _client.Guilds.Select(x => x.Id);
+            var allGuildIds = _client.Guilds.Select(x => x.Id).ToArray();
 
             HashSet<ulong> dontDelete;
             await using (var db = _db.GetDbContext())
@@ -74,7 +74,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                 dontDelete = dontDeleteList.ToHashSet();
             }
 
-            guildIds = new();
+            Log.Information("Leaving {RemainingCount} guilds every {Delay} seconds, {DontDeleteCount} will remain", allGuildIds.Length - dontDelete.Count, delay, dontDelete.Count);
             foreach (var guildId in allGuildIds)
             {
                 if (dontDelete.Contains(guildId))
