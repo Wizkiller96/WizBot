@@ -45,7 +45,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     private bool keepTriggered = false;
 
-    private async ValueTask InternalTriggerKeep((int shardId, int delay) data)
+    private async ValueTask InternalTriggerKeep((int, int) data)
     {
         var (shardId, delay) = data;
 

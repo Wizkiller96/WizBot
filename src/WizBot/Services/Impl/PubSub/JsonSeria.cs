@@ -7,6 +7,7 @@ public class JsonSeria : ISeria
 {
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
+        IncludeFields = true,
         Converters =
         {
             new Rgba32Converter(),

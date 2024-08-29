@@ -42,7 +42,7 @@ public partial class Administration
         
         [Cmd]
         [OwnerOnly]
-        public async Task LeaveUnkeptServers(int shardId = 0, int delay = 1000)
+        public async Task LeaveUnkeptServers(int shardId, int delay = 1000)
         {
             var keptGuildCount = await _svc.GetKeptGuildCount();
 

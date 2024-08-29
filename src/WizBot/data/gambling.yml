@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 7
+version: 8
 # Currency settings
 currency:
   # What is the emoji/character which represents the currency
@@ -128,7 +128,10 @@ waifu:
     # Percentage (0 - 100) of the waifu value to reduce.
     # Set 0 to disable
     # For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
-    percent: 0
+    unclaimedDecayPercent: 0
+    # Claimed waifus will decay by this percentage (0 - 100).
+    # Default is 0 (disabled)
+    claimedDecayPercent: 0
     # How often to decay waifu values, in hours
     hourInterval: 24
     # Minimum waifu price required for the decay to be applied.
