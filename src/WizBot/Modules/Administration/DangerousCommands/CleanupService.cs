@@ -237,7 +237,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         return await table.CountAsync();
     }
 
-    public async Task LeaveUnkeptServers(int shardId)
+    public async Task StartLeavingUnkeptServers(int shardId)
         => await _pubSub.Pub(_keepTriggerKey, shardId);
 
     private ValueTask OnKeepReport(KeepReport report)

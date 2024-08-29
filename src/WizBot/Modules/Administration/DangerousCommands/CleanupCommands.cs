@@ -62,10 +62,10 @@ public partial class Administration
             if (!response)
                 return;
 
-            for (var i = startShardId; i < _creds.GetCreds().TotalShards; i++)
+            for (var shardId = startShardId; shardId < _creds.GetCreds().TotalShards; shardId++)
             {
-                await _svc.LeaveUnkeptServers(i);
-                await Task.Delay(2250 * 1000);
+                await _svc.StartLeavingUnkeptServers(shardId);
+                await Task.Delay(2500 * 1000);
             }
 
             await ctx.OkAsync();
