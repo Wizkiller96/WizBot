@@ -4562,7 +4562,10 @@ leaveunkeptservers:
   ex:
     - ''
   params:
-    - {}
+    - shardId:
+        desc: "Shard id from which to start leaving unkept servers."
+    - delay:
+        desc: "Delay in miliseconds between leaves"
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

@@ -2,10 +2,8 @@
 using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
 using LinqToDB.Mapping;
-using LinqToDB.Tools;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
-using System.Security.Cryptography;
 
 namespace WizBot.Modules.Administration.DangerousCommands;
 
@@ -14,7 +12,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     private TypedKey<KeepReport> _cleanupReportKey = new("cleanup:report");
     private TypedKey<bool> _cleanupTriggerKey = new("cleanup:trigger");
 
-    private TypedKey<int> _keepTriggerKey = new("keep:trigger");
+    private TypedKey<(int, int)> _keepTriggerKey = new("keep:trigger");
 
     private readonly IPubSub _pubSub;
     private readonly DiscordSocketClient _client;
@@ -47,8 +45,10 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
 
     private bool keepTriggered = false;
 
-    private async ValueTask InternalTriggerKeep(int shardId)
+    private async ValueTask InternalTriggerKeep((int shardId, int delay) data)
     {
+        var (shardId, delay) = data;
+
         if (_client.ShardId != shardId)
             return;
 
@@ -58,8 +58,6 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         keepTriggered = true;
         try
         {
-            await Task.Delay(10 + (10 * _client.ShardId));
-
             var allGuildIds = _client.Guilds.Select(x => x.Id);
 
             HashSet<ulong> dontDelete;
@@ -82,8 +80,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                 if (dontDelete.Contains(guildId))
                     continue;
 
-                // 1 leave per 20 seconds per shard
-                await Task.Delay(500);
+                await Task.Delay(delay);
 
                 SocketGuild? guild = null;
                 try
@@ -220,7 +217,6 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         await using var db = _db.GetDbContext();
         await using var ctx = db.CreateLinqToDBContext();
         var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
-
         if (await table.AnyAsyncLinqToDB(x => x.GuildId == guildId))
             return false;
 
@@ -240,8 +236,8 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         return await table.CountAsync();
     }
 
-    public async Task LeaveUnkeptServers(int shardId)
-        => await _pubSub.Pub(_keepTriggerKey, shardId);
+    public async Task LeaveUnkeptServers(int shardId, int delay)
+        => await _pubSub.Pub(_keepTriggerKey, (shardId, delay));
 
     private ValueTask OnKeepReport(KeepReport report)
     {
