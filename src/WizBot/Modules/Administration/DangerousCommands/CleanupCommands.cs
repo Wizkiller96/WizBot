@@ -65,7 +65,7 @@ public partial class Administration
             for (var shardId = startShardId; shardId < _creds.GetCreds().TotalShards; shardId++)
             {
                 await _svc.StartLeavingUnkeptServers(shardId);
-                await Task.Delay(2500 * 1000);
+                await Task.Delay(3000 * 1000);
             }
 
             await ctx.OkAsync();
