@@ -29,7 +29,7 @@ public interface IQuoteService
 
     Task<IReadOnlyCollection<Quote>> GetGuildQuotesAsync(ulong guildId);
     Task<int> RemoveAllByKeyword(ulong guildId, string keyword);
-    Task<Quote?> GetQuoteByIdAsync(ulong guildId, kwum quoteId);
+    Task<Quote?> GetQuoteByIdAsync(ulong guildId, int quoteId);
 
     Task<Quote> AddQuoteAsync(
         ulong guildId,
