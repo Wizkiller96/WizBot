@@ -12,7 +12,7 @@ public partial class Administration
 {
     [Group]
     [OwnerOnly]
-    [NoPublicBot]
+    // [NoPublicBot]
     public partial class DangerousCommands : CleanupModuleBase
     {
         private readonly DangerousCommandsService _ds;
