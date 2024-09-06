@@ -55,76 +55,60 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
 
         _client.ChannelCreated += c =>
         {
-            _ = Task.Run(() =>
-            {
-                if (c is ITextChannel)
-                    Interlocked.Increment(ref textChannels);
-                else if (c is IVoiceChannel)
-                    Interlocked.Increment(ref voiceChannels);
-            });
+            if (c is IVoiceChannel)
+                Interlocked.Increment(ref voiceChannels);
+            else if (c is ITextChannel)
+                Interlocked.Increment(ref textChannels);
 
             return Task.CompletedTask;
         };
 
         _client.ChannelDestroyed += c =>
         {
-            _ = Task.Run(() =>
-            {
-                if (c is ITextChannel)
-                    Interlocked.Decrement(ref textChannels);
-                else if (c is IVoiceChannel)
-                    Interlocked.Decrement(ref voiceChannels);
-            });
+            if (c is IVoiceChannel)
+                Interlocked.Decrement(ref voiceChannels);
+            else if (c is ITextChannel)
+                Interlocked.Decrement(ref textChannels);
 
             return Task.CompletedTask;
         };
 
         _client.GuildAvailable += g =>
         {
-            _ = Task.Run(() =>
-            {
-                var tc = g.Channels.Count(cx => cx is ITextChannel);
-                var vc = g.Channels.Count - tc;
-                Interlocked.Add(ref textChannels, tc);
-                Interlocked.Add(ref voiceChannels, vc);
-            });
+            var tc = g.Channels.Count(cx => cx is ITextChannel and not IVoiceChannel);
+            var vc = g.Channels.Count(cx => cx is IVoiceChannel);
+            Interlocked.Add(ref textChannels, tc);
+            Interlocked.Add(ref voiceChannels, vc);
+
             return Task.CompletedTask;
         };
 
         _client.JoinedGuild += g =>
         {
-            _ = Task.Run(() =>
-            {
-                var tc = g.Channels.Count(cx => cx is ITextChannel);
-                var vc = g.Channels.Count - tc;
-                Interlocked.Add(ref textChannels, tc);
-                Interlocked.Add(ref voiceChannels, vc);
-            });
+            var tc = g.Channels.Count(cx => cx is ITextChannel and not IVoiceChannel);
+            var vc = g.Channels.Count(cx => cx is IVoiceChannel);
+            Interlocked.Add(ref textChannels, tc);
+            Interlocked.Add(ref voiceChannels, vc);
+
             return Task.CompletedTask;
         };
 
         _client.GuildUnavailable += g =>
         {
-            _ = Task.Run(() =>
-            {
-                var tc = g.Channels.Count(cx => cx is ITextChannel);
-                var vc = g.Channels.Count - tc;
-                Interlocked.Add(ref textChannels, -tc);
-                Interlocked.Add(ref voiceChannels, -vc);
-            });
+            var tc = g.Channels.Count(cx => cx is ITextChannel and not IVoiceChannel);
+            var vc = g.Channels.Count(cx => cx is IVoiceChannel);
+            Interlocked.Add(ref textChannels, -tc);
+            Interlocked.Add(ref voiceChannels, -vc);
 
             return Task.CompletedTask;
         };
 
         _client.LeftGuild += g =>
         {
-            _ = Task.Run(() =>
-            {
-                var tc = g.Channels.Count(cx => cx is ITextChannel);
-                var vc = g.Channels.Count - tc;
-                Interlocked.Add(ref textChannels, -tc);
-                Interlocked.Add(ref voiceChannels, -vc);
-            });
+            var tc = g.Channels.Count(cx => cx is ITextChannel and not IVoiceChannel);
+            var vc = g.Channels.Count(cx => cx is IVoiceChannel);
+            Interlocked.Add(ref textChannels, -tc);
+            Interlocked.Add(ref voiceChannels, -vc);
 
             return Task.CompletedTask;
         };
@@ -133,7 +117,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
     private void InitializeChannelCount()
     {
         var guilds = _client.Guilds;
-        textChannels = guilds.Sum(static g => g.Channels.Count(static cx => cx is ITextChannel));
+        textChannels = guilds.Sum(static g => g.Channels.Count(static cx => cx is ITextChannel and not IVoiceChannel));
         voiceChannels = guilds.Sum(static g => g.Channels.Count(static cx => cx is IVoiceChannel));
     }
 
@@ -177,19 +161,19 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
     public string GetUptimeString(string separator = ", ")
     {
         var time = GetUptime();
-        
+
         if (time.Days > 0)
             return $"{time.Days}d {time.Hours}h {time.Minutes}m";
-        
+
         if (time.Hours > 0)
             return $"{time.Hours}h {time.Minutes}m";
-        
+
         if (time.Minutes > 0)
             return $"{time.Minutes}m {time.Seconds}s";
-        
+
         return $"{time.Seconds}s";
     }
-    
+
     public double GetPrivateMemoryMegabytes()
     {
         _currentProcess.Refresh();
