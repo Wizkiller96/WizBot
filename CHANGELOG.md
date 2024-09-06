@@ -6,6 +6,9 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 
 ### Added
 
+- Added `.leaveunkeptservers` which will make the bot leave all servers on all shards whose owners didn't run `.keep` command.
+  - This is a dangerous and irreversible command, don't use it. Meant for use on the public bot.
+
 ### Changed
 
 - `.quote` commands cleaned up and improved
@@ -21,6 +24,8 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 
 - Fixed `.xpcurrew` breaking xp gain if user gains 0 xp from being in a voice channel
 - Fixed a bug in `.gatari` command
+- Fixed some waifu related strings
+- Fixed `.quoteshow` and `.quoteid` commands
 
 ## [5.1.7] - 08.08.2024
 
