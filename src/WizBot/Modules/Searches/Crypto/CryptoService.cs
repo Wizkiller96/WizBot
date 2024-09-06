@@ -90,7 +90,7 @@ public class CryptoService : INService
 
         img.Mutate(x =>
         {
-            x.DrawLines(color, 2, points);
+            x.DrawLine(color, 2, points);
         });
 
         return img;
@@ -220,7 +220,7 @@ public class CryptoService : INService
     {
         if (page >= 25)
             page = 24;
-        
+
         using var http = _httpFactory.CreateClient();
 
         http.AddFakeHeaders();

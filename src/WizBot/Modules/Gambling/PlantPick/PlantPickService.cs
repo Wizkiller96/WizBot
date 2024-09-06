@@ -48,7 +48,7 @@ public class PlantPickService : INService, IExecNoCommand
         _rng = new();
         _client = client;
         _gss = gss;
-        
+
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
         var configs = uow.Set<GuildConfig>()
@@ -111,13 +111,17 @@ public class PlantPickService : INService, IExecNoCommand
     {
         var curImg = await _images.GetCurrencyImageAsync();
 
+        if (curImg is null)
+            return (new MemoryStream(), null);
+
         if (string.IsNullOrWhiteSpace(pass))
         {
             // determine the extension
-            using var load = _ = Image.Load(curImg, out var format);
+            using var load = Image.Load(curImg);
 
+            var format = load.Metadata.DecodedImageFormat;
             // return the image
-            return (curImg.ToStream(), format.FileExtensions.FirstOrDefault() ?? "png");
+            return (curImg.ToStream(), format?.FileExtensions.FirstOrDefault() ?? "png");
         }
 
         // get the image stream and extension
@@ -134,16 +138,17 @@ public class PlantPickService : INService, IExecNoCommand
     {
         // draw lower, it looks better
         pass = pass.TrimTo(10, true).ToLowerInvariant();
-        using var img = Image.Load<Rgba32>(curImg, out var format);
+        using var img = Image.Load<Rgba32>(curImg);
         // choose font size based on the image height, so that it's visible
         var font = _fonts.NotoSans.CreateFont(img.Height / 12.0f, FontStyle.Bold);
         img.Mutate(x =>
         {
             // measure the size of the text to be drawing
-            var size = TextMeasurer.Measure(pass, new TextOptions(font)
-            {
-                Origin = new PointF(0, 0)
-            });
+            var size = TextMeasurer.MeasureSize(pass,
+                new RichTextOptions(font)
+                {
+                    Origin = new PointF(0, 0)
+                });
 
             // fill the background with black, add 5 pixels on each side to make it look better
             x.FillPolygon(Color.ParseHex("00000080"),
@@ -156,7 +161,8 @@ public class PlantPickService : INService, IExecNoCommand
             x.DrawText(pass, font, Color.White, new(0, 0));
         });
         // return image as a stream for easy sending
-        return (img.ToStream(format), format.FileExtensions.FirstOrDefault() ?? "png");
+        var format = img.Metadata.DecodedImageFormat;
+        return (img.ToStream(format), format?.FileExtensions.FirstOrDefault() ?? "png");
     }
 
     private Task PotentialFlowerGeneration(IUserMessage imsg)
@@ -256,7 +262,8 @@ public class PlantPickService : INService, IExecNoCommand
 
                 pass = pass?.Trim().TrimTo(10, true).ToUpperInvariant();
                 // gets all plants in this channel with the same password
-                var entries = uow.Set<PlantedCurrency>().AsQueryable()
+                var entries = uow.Set<PlantedCurrency>()
+                                 .AsQueryable()
                                  .Where(x => x.ChannelId == ch.Id && pass == x.Password)
                                  .ToList();
                 // sum how much currency that is, and get all of the message ids (so that i can delete them)
@@ -368,15 +375,16 @@ public class PlantPickService : INService, IExecNoCommand
         string pass)
     {
         await using var uow = _db.GetDbContext();
-        uow.Set<PlantedCurrency>().Add(new()
-        {
-            Amount = amount,
-            GuildId = gid,
-            ChannelId = cid,
-            Password = pass,
-            UserId = uid,
-            MessageId = mid
-        });
+        uow.Set<PlantedCurrency>()
+           .Add(new()
+           {
+               Amount = amount,
+               GuildId = gid,
+               ChannelId = cid,
+               Password = pass,
+               UserId = uid,
+               MessageId = mid
+           });
         await uow.SaveChangesAsync();
     }
 }

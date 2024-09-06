@@ -36,6 +36,8 @@ public class AutoPublishService : IExecNoCommand, IReadyExecutor, INService
             RetryMode = RetryMode.AlwaysFail
         });
     }
+    
+    // todo GUILDS
 
     public async Task OnReadyAsync()
     {

@@ -172,13 +172,13 @@ public partial class Gambling
             }
 
             var slotBg = await _images.GetSlotBgAsync();
-            var bgImage = Image.Load<Rgba32>(slotBg, out _);
+            var bgImage = Image.Load<Rgba32>(slotBg);
             var numbers = new int[3];
             result.Rolls.CopyTo(numbers, 0);
 
             Color fontColor = Config.Slots.CurrencyFontColor;
 
-            bgImage.Mutate(x => x.DrawText(new TextOptions(_fonts.DottyFont.CreateFont(65))
+            bgImage.Mutate<Rgba32>(x => x.DrawText(new RichTextOptions(_fonts.DottyFont.CreateFont(65))
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -190,7 +190,7 @@ public partial class Gambling
 
             var bottomFont = _fonts.DottyFont.CreateFont(50);
 
-            bgImage.Mutate(x => x.DrawText(new TextOptions(bottomFont)
+            bgImage.Mutate(x => x.DrawText(new RichTextOptions(bottomFont)
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,

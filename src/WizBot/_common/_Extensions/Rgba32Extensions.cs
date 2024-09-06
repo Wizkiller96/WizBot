@@ -24,7 +24,7 @@ public static class Rgba32Extensions
                 using var frame = imgArray[i].Frames.CloneFrame(frameNumber % imgArray[i].Frames.Count);
                 var offset = xOffset;
                 imgFrame.Mutate(x => x.DrawImage(frame, new Point(offset, 0), new GraphicsOptions()));
-                xOffset += imgArray[i].Bounds().Width;
+                xOffset += imgArray[i].Bounds.Width;
             }
         }
 

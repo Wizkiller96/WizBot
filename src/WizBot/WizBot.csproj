@@ -69,9 +69,9 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="7.0.1" />
 
-        <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta17" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
+        <PackageReference Include="SixLabors.Fonts" Version="2.0.4" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
         <PackageReference Include="SixLabors.Shapes" Version="1.0.0-beta0009" />
         <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
         <PackageReference Include="YamlDotNet" Version="15.1.4" />

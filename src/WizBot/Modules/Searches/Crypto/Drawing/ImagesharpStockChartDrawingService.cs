@@ -94,7 +94,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         => image.Mutate(ctx =>
         {
             foreach (var data in drawData)
-                ctx.DrawLines(data.IsGreen
+                ctx.DrawLine(data.IsGreen
                         ? _greenBrush
                         : _redBrush,
                     1,
@@ -128,7 +128,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         {
             // draw guides
             foreach (var y in lines)
-                ctx.DrawLines(_lineGuideColor, 1, new PointF(0, y), new PointF(WIDTH, y));
+                ctx.DrawLine(_lineGuideColor, 1, new PointF(0, y), new PointF(WIDTH, y));
             
             // // draw min and max price on the chart
             // ctx.DrawText(min.ToString(CultureInfo.InvariantCulture),
@@ -156,7 +156,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         
         image.Mutate(ctx =>
         {
-            ctx.DrawLines(_sparklineColor, 2, points);
+            ctx.DrawLine(_sparklineColor, 2, points);
         });
     
         return Task.FromResult<ImageData?>(new("png", image.ToStream()));
@@ -177,7 +177,7 @@ public sealed class ImagesharpStockChartDrawingService : IStockChartDrawingServi
         var points = GetSparklinePointsInternal(series);
         image.Mutate(ctx =>
         {
-            ctx.DrawLines(Color.ParseHex("00FFFFAA"), 1, points);
+            ctx.DrawLine(Color.ParseHex("00FFFFAA"), 1, points);
         });
 
         return Task.FromResult<ImageData?>(new("png", image.ToStream()));

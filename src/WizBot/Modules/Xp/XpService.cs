@@ -994,23 +994,23 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 throw new ArgumentNullException(nameof(bgBytes));
             }
 
-            var outlinePen = new Pen(Color.Black, 1f);
+            var outlinePen = new SolidPen(Color.Black, 1f);
 
-            using var img = Image.Load<Rgba32>(bgBytes, out var imageFormat);
+            using var img = Image.Load<Rgba32>(bgBytes);
             if (template.User.Name.Show)
             {
                 var fontSize = (int)(template.User.Name.FontSize * 0.9);
                 var username = stats.User.ToString();
                 var usernameFont = _fonts.NotoSans.CreateFont(fontSize, FontStyle.Bold);
 
-                var size = TextMeasurer.Measure($"@{username}", new(usernameFont));
+                var size = TextMeasurer.MeasureSize($"@{username}", new(usernameFont));
                 var scale = 400f / size.Width;
                 if (scale < 1)
                     usernameFont = _fonts.NotoSans.CreateFont(template.User.Name.FontSize * scale, FontStyle.Bold);
 
                 img.Mutate(x =>
                 {
-                    x.DrawText(new TextOptions(usernameFont)
+                    x.DrawText(new RichTextOptions(usernameFont)
                         {
                             HorizontalAlignment = HorizontalAlignment.Left,
                             VerticalAlignment = VerticalAlignment.Center,
@@ -1031,7 +1031,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
                 var clubFont = _fonts.NotoSans.CreateFont(template.Club.Name.FontSize, FontStyle.Regular);
 
-                img.Mutate(x => x.DrawText(new TextOptions(clubFont)
+                img.Mutate(x => x.DrawText(new RichTextOptions(clubFont)
                     {
                         HorizontalAlignment = HorizontalAlignment.Right,
                         VerticalAlignment = VerticalAlignment.Top,
@@ -1051,7 +1051,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 int maxSize)
             {
                 var font = fontFamily.CreateFont(fontSize, style);
-                var size = TextMeasurer.Measure(text, new(font));
+                var size = TextMeasurer.MeasureSize(text, new(font));
                 var scale = maxSize / size.Width;
                 if (scale < 1)
                     font = fontFamily.CreateFont(fontSize * scale, style);
@@ -1114,7 +1114,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.Xp.Global.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold))
+                    new RichTextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Global.FontSize, FontStyle.Bold))
                     {
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -1128,7 +1128,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.User.Xp.Guild.Show)
             {
                 img.Mutate(x => x.DrawText(
-                    new TextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold))
+                    new RichTextOptions(_fonts.NotoSans.CreateFont(template.User.Xp.Guild.FontSize, FontStyle.Bold))
                     {
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -1152,7 +1152,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     new(awX, awY)));
             }
 
-            var rankPen = new Pen(Color.White, 1);
+            var rankPen = new SolidPen(Color.White, 1);
             //ranking
             if (template.User.GlobalRank.Show)
             {
@@ -1166,7 +1166,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     68);
 
                 img.Mutate(x => x.DrawText(
-                    new TextOptions(globalRankFont)
+                    new RichTextOptions(globalRankFont)
                     {
                         Origin = new(template.User.GlobalRank.Pos.X, template.User.GlobalRank.Pos.Y)
                     },
@@ -1188,7 +1188,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     43);
 
                 img.Mutate(x => x.DrawText(
-                    new TextOptions(guildRankFont)
+                    new RichTextOptions(guildRankFont)
                     {
                         Origin = new(template.User.GuildRank.Pos.X, template.User.GuildRank.Pos.Y)
                     },
@@ -1231,7 +1231,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         }
 
                         using var toDraw = Image.Load(data);
-                        if (toDraw.Size() != new Size(template.User.Icon.Size.X, template.User.Icon.Size.Y))
+                        if (toDraw.Size != new Size(template.User.Icon.Size.X, template.User.Icon.Size.Y))
                             toDraw.Mutate(x => x.Resize(template.User.Icon.Size.X, template.User.Icon.Size.Y));
 
                         img.Mutate(x => x.DrawImage(toDraw,
@@ -1257,6 +1257,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (outputSize.X != img.Width || outputSize.Y != img.Height)
                 img.Mutate(x => x.Resize(template.OutputSize.X, template.OutputSize.Y));
 
+            var imageFormat = img.Metadata.DecodedImageFormat;
             var output = ((Stream)await img.ToStreamAsync(imageFormat), imageFormat);
 
             return output;
@@ -1395,7 +1396,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 }
 
                 using var toDraw = Image.Load(data);
-                if (toDraw.Size() != new Size(template.Club.Icon.Size.X, template.Club.Icon.Size.Y))
+                if (toDraw.Size != new Size(template.Club.Icon.Size.X, template.Club.Icon.Size.Y))
                     toDraw.Mutate(x => x.Resize(template.Club.Icon.Size.X, template.Club.Icon.Size.Y));
 
                 img.Mutate(x => x.DrawImage(
