@@ -86,16 +86,16 @@ public sealed class Bot : IBot
     public IReadOnlyList<ulong> GetCurrentGuildIds()
         => Client.Guilds.Select(x => x.Id).ToList().AsReadOnly();
 
-    private void AddServices()
+    private async Task AddServices()
     {
         var startingGuildIdList = GetCurrentGuildIds();
         var startTime = Stopwatch.GetTimestamp();
         var bot = Client.CurrentUser;
 
-        using (var uow = _db.GetDbContext())
+        await using (var uow = _db.GetDbContext())
         {
             uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
-            AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList);
+            AllGuildConfigs = await uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList);
         }
 
         // var svcs = new StandardKernel(new NinjectSettings()
@@ -261,7 +261,7 @@ public sealed class Bot : IBot
         Log.Information("Shard {ShardId} loading services...", Client.ShardId);
         try
         {
-            AddServices();
+            await AddServices();
         }
         catch (Exception ex)
         {

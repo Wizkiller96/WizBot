@@ -1,4 +1,5 @@
 #nullable disable
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
 
@@ -42,7 +43,7 @@ public static class GuildConfigExtensions
     }
 
     private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
-        => configs.AsQueryable()
+        => configs
             .AsSplitQuery()
             .Include(gc => gc.CommandCooldowns)
             .Include(gc => gc.FollowedStreams)
@@ -52,14 +53,13 @@ public static class GuildConfigExtensions
                 .ThenInclude(x => x.ExclusionList)
     ;
 
-    public static IReadOnlyCollection<GuildConfig> GetAllGuildConfigs(
+    public static Task<GuildConfig[]> GetAllGuildConfigs(
         this DbSet<GuildConfig> configs,
         IReadOnlyList<ulong> availableGuilds)
         => configs.IncludeEverything()
                   .Where(x => availableGuilds.Contains(x.GuildId))
                   .AsNoTracking()
-                  .ToList()
-                  .AsReadOnly();
+                  .ToArrayAsyncEF();
 
     /// <summary>
     ///     Gets and creates if it doesn't exist a config for a guild.
