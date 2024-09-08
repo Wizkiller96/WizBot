@@ -47,14 +47,19 @@ public static class GuildConfigExtensions
             .Include(gc => gc.CommandCooldowns)
             .Include(gc => gc.FollowedStreams)
             .Include(gc => gc.StreamRole)
+            .Include(gc => gc.DelMsgOnCmdChannels)
             .Include(gc => gc.XpSettings)
-            .ThenInclude(x => x.ExclusionList)
-            .Include(gc => gc.DelMsgOnCmdChannels);
+                .ThenInclude(x => x.ExclusionList)
+    ;
 
-    public static IEnumerable<GuildConfig> GetAllGuildConfigs(
+    public static IReadOnlyCollection<GuildConfig> GetAllGuildConfigs(
         this DbSet<GuildConfig> configs,
         IReadOnlyList<ulong> availableGuilds)
-        => configs.IncludeEverything().AsNoTracking().Where(x => availableGuilds.Contains(x.GuildId)).ToList();
+        => configs.IncludeEverything()
+                  .Where(x => availableGuilds.Contains(x.GuildId))
+                  .AsNoTracking()
+                  .ToList()
+                  .AsReadOnly();
 
     /// <summary>
     ///     Gets and creates if it doesn't exist a config for a guild.

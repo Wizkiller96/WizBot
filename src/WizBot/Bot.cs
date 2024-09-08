@@ -84,7 +84,7 @@ public sealed class Bot : IBot
 
 
     public IReadOnlyList<ulong> GetCurrentGuildIds()
-        => Client.Guilds.Select(x => x.Id).ToList().ToList();
+        => Client.Guilds.Select(x => x.Id).ToList().AsReadOnly();
 
     private void AddServices()
     {
@@ -95,7 +95,7 @@ public sealed class Bot : IBot
         using (var uow = _db.GetDbContext())
         {
             uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
-            AllGuildConfigs = uow.Set<GuildConfig>().GetAllGuildConfigs(startingGuildIdList).ToImmutableArray();
+            AllGuildConfigs = uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList);
         }
 
         // var svcs = new StandardKernel(new NinjectSettings()
