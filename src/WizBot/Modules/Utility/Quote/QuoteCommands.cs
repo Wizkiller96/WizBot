@@ -351,9 +351,6 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Ratelimit(300)]
-#if GLOBAL_WIZBOT
-            [OwnerOnly]
-#endif
         public async Task QuotesImport([Leftover] string? input = null)
         {
             input = input?.Trim();

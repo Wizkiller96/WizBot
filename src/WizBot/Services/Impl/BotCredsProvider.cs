@@ -48,19 +48,20 @@ public sealed class BotCredsProvider : IBotCredsProvider
         {
             // this can fail in docker containers
         }
-
-        MigrateCredentials();
-
-        if (!File.Exists(CredsPath))
-        {
-            Log.Warning(
-                "{CredsPath} is missing. Attempting to load creds from environment variables prefixed with 'WizBot_'. Example is in {CredsExamplePath}",
-                CredsPath,
-                CredsExamplePath);
-        }
+        
 
         try
         {
+            MigrateCredentials();
+
+            if (!File.Exists(CredsPath))
+            {
+                Log.Warning(
+                    "{CredsPath} is missing. Attempting to load creds from environment variables prefixed with 'WizBot_'. Example is in {CredsExamplePath}",
+                    CredsPath,
+                    CredsExamplePath);
+            }
+
             _config = new ConfigurationBuilder().AddYamlFile(CredsPath, false, true)
                                                 .AddEnvironmentVariables("WizBot_")
                                                 .Build();
