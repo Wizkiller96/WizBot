@@ -1,6 +1,5 @@
 #nullable disable
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using WizBot.Common.Yml;
 
 namespace WizBot.Services;
@@ -22,7 +21,6 @@ public sealed class BotCredsProvider : IBotCredsProvider
 
 
     private readonly object _reloadLock = new();
-    private readonly IDisposable _changeToken;
 
     public BotCredsProvider(int? totalShards = null, string credPath = null)
     {
@@ -70,8 +68,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
         {
             Console.WriteLine(ex.ToString());
         }
-
-        _changeToken = ChangeToken.OnChange(() => _config.GetReloadToken(), Reload);
+        
         Reload();
     }
 

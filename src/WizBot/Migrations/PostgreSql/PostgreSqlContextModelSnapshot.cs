@@ -17,7 +17,7 @@ namespace WizBot.Migrations.PostgreSql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -1220,41 +1220,9 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("autoassignroleids");
 
-                    b.Property<int>("AutoDeleteByeMessagesTimer")
-                        .HasColumnType("integer")
-                        .HasColumnName("autodeletebyemessagestimer");
-
-                    b.Property<int>("AutoDeleteGreetMessagesTimer")
-                        .HasColumnType("integer")
-                        .HasColumnName("autodeletegreetmessagestimer");
-
                     b.Property<bool>("AutoDeleteSelfAssignedRoleMessages")
                         .HasColumnType("boolean")
                         .HasColumnName("autodeleteselfassignedrolemessages");
-
-                    b.Property<string>("BoostMessage")
-                        .HasColumnType("text")
-                        .HasColumnName("boostmessage");
-
-                    b.Property<decimal>("BoostMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("boostmessagechannelid");
-
-                    b.Property<int>("BoostMessageDeleteAfter")
-                        .HasColumnType("integer")
-                        .HasColumnName("boostmessagedeleteafter");
-
-                    b.Property<decimal>("ByeMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("byemessagechannelid");
-
-                    b.Property<string>("ChannelByeMessageText")
-                        .HasColumnType("text")
-                        .HasColumnName("channelbyemessagetext");
-
-                    b.Property<string>("ChannelGreetMessageText")
-                        .HasColumnType("text")
-                        .HasColumnName("channelgreetmessagetext");
 
                     b.Property<bool>("CleverbotEnabled")
                         .HasColumnType("boolean")
@@ -1276,10 +1244,6 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnType("boolean")
                         .HasColumnName("disableglobalexpressions");
 
-                    b.Property<string>("DmGreetMessageText")
-                        .HasColumnType("text")
-                        .HasColumnName("dmgreetmessagetext");
-
                     b.Property<bool>("ExclusiveSelfAssignedRoles")
                         .HasColumnType("boolean")
                         .HasColumnName("exclusiveselfassignedroles");
@@ -1299,10 +1263,6 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal?>("GameVoiceChannel")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("gamevoicechannel");
-
-                    b.Property<decimal>("GreetMessageChannelId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("greetmessagechannelid");
 
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
@@ -1327,22 +1287,6 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<string>("Prefix")
                         .HasColumnType("text")
                         .HasColumnName("prefix");
-
-                    b.Property<bool>("SendBoostMessage")
-                        .HasColumnType("boolean")
-                        .HasColumnName("sendboostmessage");
-
-                    b.Property<bool>("SendChannelByeMessage")
-                        .HasColumnType("boolean")
-                        .HasColumnName("sendchannelbyemessage");
-
-                    b.Property<bool>("SendChannelGreetMessage")
-                        .HasColumnType("boolean")
-                        .HasColumnName("sendchannelgreetmessage");
-
-                    b.Property<bool>("SendDmGreetMessage")
-                        .HasColumnType("boolean")
-                        .HasColumnName("senddmgreetmessage");
 
                     b.Property<bool>("StickyRoles")
                         .HasColumnType("boolean")
@@ -1386,23 +1330,23 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("guildconfigs", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.HoneypotChannel", b =>
-            {
-                b.Property<decimal>("GuildId")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("guildid");
+                {
+                    b.Property<decimal>("GuildId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
-                b.Property<decimal>("ChannelId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("channelid");
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
 
-                b.HasKey("GuildId")
-                 .HasName("pk_honeypotchannels");
+                    b.HasKey("GuildId")
+                        .HasName("pk_honeypotchannels");
 
-                b.ToTable("honeypotchannels", (string)null);
-            });
+                    b.ToTable("honeypotchannels", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {
@@ -3161,6 +3105,53 @@ namespace WizBot.Migrations.PostgreSql
                         .HasDatabaseName("ix_xpshopowneditem_userid_itemtype_itemkey");
 
                     b.ToTable("xpshopowneditem", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Services.GreetSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AutoDeleteTimer")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("autodeletetimer");
+
+                    b.Property<decimal?>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
+
+                    b.Property<int>("GreetType")
+                        .HasColumnType("integer")
+                        .HasColumnName("greettype");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("isenabled");
+
+                    b.Property<string>("MessageText")
+                        .HasColumnType("text")
+                        .HasColumnName("messagetext");
+
+                    b.HasKey("Id")
+                        .HasName("pk_greetsettings");
+
+                    b.HasIndex("GuildId", "GreetType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_greetsettings_guildid_greettype");
+
+                    b.ToTable("greetsettings", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.AntiAltSetting", b =>

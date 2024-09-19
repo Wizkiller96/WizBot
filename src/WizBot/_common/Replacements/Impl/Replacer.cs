@@ -9,8 +9,8 @@ public sealed partial class Replacer
     private readonly IEnumerable<RegexReplacementInfo> _regexReps;
     private readonly object[] _inputData;
 
-    [GeneratedRegex(@"\%[\p{L}\p{N}\._]*[\p{L}\p{N}]+[\p{L}\p{N}\._]*\%")]
-    private static partial Regex TokenExtractionRegex();
+    // [GeneratedRegex(@"\%[\p{L}\p{N}\._]*[\p{L}\p{N}]+[\p{L}\p{N}\._]*\%")]
+    // private static partial Regex TokenExtractionRegex();
 
     public Replacer(IEnumerable<ReplacementInfo> reps, IEnumerable<RegexReplacementInfo> regexReps, object[] inputData)
     {
@@ -24,19 +24,19 @@ public sealed partial class Replacer
         if (string.IsNullOrWhiteSpace(input))
             return input;
 
-        var matches = TokenExtractionRegex().IsMatch(input);
+        // var matches = TokenExtractionRegex().IsMatch(input);
 
-        if (matches)
+        // if (matches)
+        // {
+        foreach (var rep in _reps)
         {
-            foreach (var rep in _reps)
+            if (input.Contains(rep.Token, StringComparison.InvariantCulture))
             {
-                if (input.Contains(rep.Token, StringComparison.InvariantCulture))
-                {
-                    var objs = GetParams(rep.InputTypes);
-                    input = input.Replace(rep.Token, await rep.GetValueAsync(objs), StringComparison.InvariantCulture);
-                }
+                var objs = GetParams(rep.InputTypes);
+                input = input.Replace(rep.Token, await rep.GetValueAsync(objs), StringComparison.InvariantCulture);
             }
         }
+        // }
 
         foreach (var rep in _regexReps)
         {
@@ -47,7 +47,7 @@ public sealed partial class Replacer
             if (match.Success)
             {
                 sb.Append(input, 0, match.Index)
-                    .Append(await rep.GetValueAsync(match, objs));
+                  .Append(await rep.GetValueAsync(match, objs));
 
                 var lastIndex = match.Index + match.Length;
                 sb.Append(input, lastIndex, input.Length - lastIndex);
@@ -91,16 +91,18 @@ public sealed partial class Replacer
         => new()
         {
             Embeds = await embedArr.Embeds.Map(async e => await ReplaceAsync(e) with
-            {
-                Color = e.Color
-            }).WhenAll(),
+                                   {
+                                       Color = e.Color
+                                   })
+                                   .WhenAll(),
             Content = await ReplaceAsync(embedArr.Content)
         };
 
     private async ValueTask<SmartPlainText> ReplaceAsync(SmartPlainText plain)
         => await ReplaceAsync(plain.Text);
 
-    private async Task<T> ReplaceAsync<T>(T embedData) where T : SmartEmbedTextBase, new()
+    private async Task<T> ReplaceAsync<T>(T embedData)
+        where T : SmartEmbedTextBase, new()
     {
         var newEmbedData = new T
         {
@@ -117,13 +119,14 @@ public sealed partial class Replacer
                     IconUrl = await ReplaceAsync(embedData.Author.IconUrl)
                 },
             Fields = await Task.WhenAll(embedData
-                .Fields?
-                .Map(async f => new SmartTextEmbedField
-                {
-                    Name = await ReplaceAsync(f.Name),
-                    Value = await ReplaceAsync(f.Value),
-                    Inline = f.Inline
-                }) ?? []),
+                                        .Fields?
+                                        .Map(async f => new SmartTextEmbedField
+                                        {
+                                            Name = await ReplaceAsync(f.Name),
+                                            Value = await ReplaceAsync(f.Value),
+                                            Inline = f.Inline
+                                        })
+                                        ?? []),
             Footer = embedData.Footer is null
                 ? null
                 : new()

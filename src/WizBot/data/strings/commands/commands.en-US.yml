@@ -175,9 +175,9 @@ logignore:
   params:
     - { }
     - target:
-        desc: "The channel to ignore or show the list of ignored channels for."
+        desc: "The channel to ignore."
     - target:
-        desc: "The user or channel being targeted for logging ignore or inclusion."
+        desc: "The user to ignore."
 repeatlist:
   desc: Lists currently repeating messages and their indexes.
   ex:
@@ -283,9 +283,11 @@ addplaying:
     - Playing with you
     - Watching you sleep
   params:
-    - t:
+    - statusType:
         desc: "The type of status, allowed values are `Playing`, `Watching`, or `Listening`."
       status:
+        desc: "The status text."
+    - status:
         desc: "The status text."
 listplaying:
   desc: Lists all playing statuses and their indexes.
@@ -387,18 +389,18 @@ expradd:
     - '"hello" Hi there %user.mention%'
   params:
     - trigger:
-        desc: "The trigger word or phrase for the bot to respond to users typing."
+        desc: "The trigger word or phrase (phrase must be in quotes)."
       response:
-        desc: "The text of the message that shows up when a user types the trigger word."
+        desc: "The text of the message that shows up when a user types the trigger word or phrase."
 expraddserver:
   desc: 'Add an expression with a trigger and a response in this server. Bot will post a response whenever someone types the trigger word. This command is useful if you want to lower the permission requirement for managing expressions by using `{0}dpo`. Guide [here](<https://wizbot.readthedocs.io/en/latest/custom-reactions/>).'
   ex:
     - '"hello" Hi there %user.mention%'
   params:
-    - key:
-        desc: "The trigger word or phrase for the bot to respond to users typing."
-      message:
-        desc: "The text of the message that shows up when a user types the trigger word."
+    - trigger:
+        desc: "The trigger word or phrase (phrase must be in quotes)."
+      response:
+        desc: "The text of the message that shows up when a user types the trigger word or phrase."
 exprlist:
   desc: |-
     Lists global or server expressions (20 expressions per page).
@@ -496,21 +498,21 @@ delmsgoncmd:
     - list
   params:
     - _:
-        desc: "The list of channels or servers where the automatic deletion is enabled, disabled, or inherited."
+        desc: "The word 'list'"
     - _:
-        desc: "The server where the command is being executed or monitored for chat flood prevention."
+        desc: "The word 'server'"
     - _:
-        desc: "The channel where the automatic deletion of successful command messages should be toggled."
+        desc: "The word 'channel'"
       s:
-        desc: "The state of whether automatic deletion is enabled or disabled for a specific channel."
+        desc: "The state to set. One of 'enable', 'disable', or 'inherit'."
       ch:
-        desc: "The channel where the automatic deletion of successful command messages should be toggled for."
+        desc: "Channel in which to set"
     - _:
-        desc: "The channel where the automatic deletion of successful command messages should be toggled."
+        desc: "The word 'channel'"
       s:
-        desc: "The state of whether automatic deletion is enabled or disabled for a specific channel."
+        desc: "The state to set. One of 'enable', 'disable', or 'inherit'."
       chId:
-        desc: "The ID of a channel where the automatic deletion should be toggled or inherited."
+        desc: "Optional channel id. If omitted, defaults to the current channel."
 restart:
   desc: Restarts the bot. Might not work.
   ex:
@@ -1623,12 +1625,12 @@ gencurlist:
     - page:
         desc: "The current page number for pagination."
 choose:
-  desc: Chooses a thing from a list of things
+  desc: Chooses a thing from a list of things. Separate items with a semicolon ;
   ex:
     - Get up;Sleep;Sleep more
   params:
     - list:
-        desc: "The type of items in the collection being searched."
+        desc: "The items separated by ;"
 rps:
   desc: |-
     Play a game of Rocket-Paperclip-Scissors with WizBot.
@@ -3341,7 +3343,7 @@ globalcommand:
 globalmodule:
   desc: Toggles whether a module can be used on any server.
   ex:
-    - nsfw
+    - 'Gambling'
   params:
     - module:
         desc: "The type of module or configuration information being toggled."

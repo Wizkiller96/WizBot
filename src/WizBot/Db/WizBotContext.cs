@@ -10,6 +10,7 @@ namespace WizBot.Db;
 public abstract class WizBotContext : DbContext
 {
     public DbSet<GuildConfig> GuildConfigs { get; set; }
+    public DbSet<GreetSettings> GreetSettings { get; set; }
 
     public DbSet<Quote> Quotes { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
@@ -676,6 +677,29 @@ public abstract class WizBotContext : DbContext
                     .WithOne()
                     .HasForeignKey(x => x.ArchiveId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+        #endregion
+        
+        #region GreetSettings
+
+        modelBuilder
+            .Entity<GreetSettings>(gs => gs.HasIndex(x => new
+                                           {
+                                               x.GuildId,
+                                               x.GreetType
+                                           })
+                                           .IsUnique());
+
+        modelBuilder.Entity<GreetSettings>(gs =>
+        {
+            gs
+                .Property(x => x.IsEnabled)
+                .HasDefaultValue(false);
+            
+            gs
+                .Property(x => x.AutoDeleteTimer)
+                .HasDefaultValue(0);
+        });
 
         #endregion
     }

@@ -243,43 +243,54 @@ public class UserPunishService : INService, IReadyExecutor
     public async Task CheckAllWarnExpiresAsync()
     {
         await using var uow = _db.GetDbContext();
-        var cleared = await uow.Set<Warning>()
-                               .Where(x => uow.Set<GuildConfig>()
-                                              .Any(y => y.GuildId == x.GuildId
-                                                        && y.WarnExpireHours > 0
-                                                        && y.WarnExpireAction == WarnExpireAction.Clear)
+
+        var toClear = await uow.GetTable<Warning>()
+                               .Where(x => uow.GetTable<GuildConfig>()
+                                              .Count(y => y.GuildId == x.GuildId
+                                                          && y.WarnExpireHours > 0
+                                                          && y.WarnExpireAction == WarnExpireAction.Clear)
+                                           > 0
                                            && x.Forgiven == false
                                            && x.DateAdded
-                                           < DateTime.UtcNow.AddHours(-uow.Set<GuildConfig>()
+                                           < DateTime.UtcNow.AddHours(-uow.GetTable<GuildConfig>()
                                                                           .Where(y => x.GuildId == y.GuildId)
                                                                           .Select(y => y.WarnExpireHours)
                                                                           .First()))
-                               .UpdateAsync(_ => new()
-                               {
-                                   Forgiven = true,
-                                   ForgivenBy = "expiry"
-                               });
+                               .Select(x => x.Id)
+                               .ToListAsyncLinqToDB();
 
-        var deleted = await uow.Set<Warning>()
-                               .Where(x => uow.Set<GuildConfig>()
-                                              .Any(y => y.GuildId == x.GuildId
-                                                        && y.WarnExpireHours > 0
-                                                        && y.WarnExpireAction == WarnExpireAction.Delete)
-                                           && x.DateAdded
-                                           < DateTime.UtcNow.AddHours(-uow.Set<GuildConfig>()
-                                                                          .Where(y => x.GuildId == y.GuildId)
-                                                                          .Select(y => y.WarnExpireHours)
-                                                                          .First()))
-                               .DeleteAsync();
+        var cleared = await uow.GetTable<Warning>()
+                         .Where(x => toClear.Contains(x.Id))
+                         .UpdateAsync(_ => new()
+                         {
+                             Forgiven = true,
+                             ForgivenBy = "expiry"
+                         });
+
+        var toDelete = await uow.GetTable<Warning>()
+                                .Where(x => uow.GetTable<GuildConfig>()
+                                               .Count(y => y.GuildId == x.GuildId
+                                                           && y.WarnExpireHours > 0
+                                                           && y.WarnExpireAction == WarnExpireAction.Delete)
+                                            > 0
+                                            && x.DateAdded
+                                            < DateTime.UtcNow.AddHours(-uow.GetTable<GuildConfig>()
+                                                                           .Where(y => x.GuildId == y.GuildId)
+                                                                           .Select(y => y.WarnExpireHours)
+                                                                           .First()))
+                                .Select(x => x.Id)
+                                .ToListAsyncLinqToDB();
+
+        var deleted = await uow.GetTable<Warning>()
+                 .Where(x => toDelete.Contains(x.Id))
+                 .DeleteAsync();
 
         if (cleared > 0 || deleted > 0)
         {
             Log.Information("Cleared {ClearedWarnings} warnings and deleted {DeletedWarnings} warnings due to expiry",
                 cleared,
-                deleted);
+                toDelete.Count);
         }
-
-        await uow.SaveChangesAsync();
     }
 
     public async Task CheckWarnExpiresAsync(ulong guildId)

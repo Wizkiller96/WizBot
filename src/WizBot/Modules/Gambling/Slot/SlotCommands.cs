@@ -167,7 +167,8 @@ public partial class Gambling
             long ownedAmount;
             await using (var uow = _db.GetDbContext())
             {
-                ownedAmount = uow.Set<DiscordUser>().FirstOrDefault(x => x.UserId == ctx.User.Id)?.CurrencyAmount
+                ownedAmount = uow.Set<DiscordUser>()
+                                 .FirstOrDefault(x => x.UserId == ctx.User.Id)?.CurrencyAmount
                               ?? 0;
             }
 

@@ -36,7 +36,7 @@ public static class WizBotExpressionExtensions
         var repCtx = new ReplacementContext(client: client,
                 guild: (ctx.Channel as ITextChannel)?.Guild as SocketGuild,
                 channel: ctx.Channel,
-                users: ctx.Author
+                user: ctx.Author
             )
             .WithOverride("%target%",
                 () => canMentionEveryone

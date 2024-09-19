@@ -6,7 +6,7 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class PlayingRotateCommands : WizBotModule<PlayingRotateService>
+    public partial class PlayingRotateCommands : NadekoModule<PlayingRotateService>
     {
         [Cmd]
         [OwnerOnly]
@@ -18,11 +18,17 @@ public partial class Administration
                 await Response().Confirm(strs.ropl_disabled).SendAsync();
         }
 
+
         [Cmd]
         [OwnerOnly]
-        public async Task AddPlaying(ActivityType t, [Leftover] string status)
+        public Task AddPlaying([Leftover] string status)
+            => AddPlaying(ActivityType.CustomStatus, status);
+        
+        [Cmd]
+        [OwnerOnly]
+        public async Task AddPlaying(ActivityType statusType, [Leftover] string status)
         {
-            await _service.AddPlaying(t, status);
+            await _service.AddPlaying(statusType, status);
 
             await Response().Confirm(strs.ropl_added).SendAsync();
         }

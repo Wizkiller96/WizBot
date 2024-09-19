@@ -7,7 +7,7 @@ public sealed class ReplacementContext
     public DiscordSocketClient? Client { get; }
     public IGuild? Guild { get; }
     public IMessageChannel? Channel { get; }
-    public IUser[]? Users { get; }
+    public IUser? User { get; }
 
     private readonly List<ReplacementInfo> _overrides = new();
     private readonly HashSet<string> _tokens = new();
@@ -21,10 +21,11 @@ public sealed class ReplacementContext
     public IReadOnlyList<RegexReplacementInfo> RegexOverrides
         => _regexOverrides.AsReadOnly();
 
-    public ReplacementContext(ICommandContext cmdContext) : this(cmdContext.Client as DiscordSocketClient,
-        cmdContext.Guild,
-        cmdContext.Channel,
-        cmdContext.User)
+    public ReplacementContext(ICommandContext cmdContext)
+        : this(cmdContext.Client as DiscordSocketClient,
+            cmdContext.Guild,
+            cmdContext.Channel,
+            cmdContext.User)
     {
     }
 
@@ -32,12 +33,12 @@ public sealed class ReplacementContext
         DiscordSocketClient? client = null,
         IGuild? guild = null,
         IMessageChannel? channel = null,
-        params IUser[]? users)
+        IUser? user = null)
     {
         Client = client;
         Guild = guild;
         Channel = channel;
-        Users = users;
+        User = user;
     }
 
     public ReplacementContext WithOverride(string key, Func<ValueTask<string>> repFactory)

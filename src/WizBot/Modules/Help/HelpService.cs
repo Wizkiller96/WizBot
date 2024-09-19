@@ -31,7 +31,7 @@ public class HelpService : IExecNoCommand, INService
                 return;
             }
 
-            var repCtx = new ReplacementContext(guild: guild, channel: msg.Channel, users: msg.Author)
+            var repCtx = new ReplacementContext(guild: guild, channel: msg.Channel, user: msg.Author)
                          .WithOverride("%prefix%", () => _bss.Data.Prefix)
                          .WithOverride("%bot.prefix%", () => _bss.Data.Prefix);
 
