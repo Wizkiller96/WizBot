@@ -72,6 +72,22 @@ public static class EnumerableExtensions
         where TKey : notnull
         => new(dict);
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ConcurrentDictionary{TKey,TValue}" /> class
+    ///     that contains elements copied from the specified <see cref="IEnumerable{T}" />
+    ///     has the default concurrency level, has the default initial capacity,
+    ///     and uses the default comparer for the key type.
+    /// </summary>
+    /// <param name="dict">
+    ///     The <see cref="IEnumerable{T}" /> whose elements are copied to the new
+    ///     <see cref="ConcurrentDictionary{TKey,TValue}" />.
+    /// </param>
+    /// <returns>A new instance of the <see cref="ConcurrentDictionary{TKey,TValue}" /> class</returns>
+    public static ConcurrentHashSet<TValue> ToConcurrentSet<TValue>(
+        this IReadOnlyCollection<TValue> dict)
+        where TValue : notnull
+        => new(dict);
+
     public static IndexedCollection<T> ToIndexed<T>(this IEnumerable<T> enumerable)
         where T : class, IIndexed
         => new(enumerable);

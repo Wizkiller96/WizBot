@@ -44,8 +44,6 @@ public sealed class WizBotDbService : DbService
             case "postgres":
             case "pgsql":
                 return new PostgreSqlContext(connString);
-            case "mysql":
-                return new MysqlContext(connString);
             case "sqlite":
                 return new SqliteContext(connString);
             default:

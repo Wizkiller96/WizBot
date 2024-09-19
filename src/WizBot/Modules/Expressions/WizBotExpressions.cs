@@ -58,14 +58,14 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
 
     [Cmd]
     [UserPerm(GuildPerm.Administrator)]
-    public async Task ExprAddServer(string key, [Leftover] string message)
+    public async Task ExprAddServer(string trigger, [Leftover] string response)
     {
-        if (string.IsNullOrWhiteSpace(message) || string.IsNullOrWhiteSpace(key))
+        if (string.IsNullOrWhiteSpace(response) || string.IsNullOrWhiteSpace(trigger))
         {
             return;
         }
 
-        await ExprAddInternalAsync(key, message);
+        await ExprAddInternalAsync(trigger, response);
     }
 
 

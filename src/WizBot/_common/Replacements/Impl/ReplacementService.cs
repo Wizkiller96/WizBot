@@ -40,8 +40,8 @@ public sealed class ReplacementService : IReplacementService, INService
         if (repCtx.Guild is not null)
             obj.Add(repCtx.Guild);
 
-        if (repCtx.Users is not null)
-            obj.Add(repCtx.Users);
+        if (repCtx.User is not null)
+            obj.Add(repCtx.User);
 
         if (repCtx.Channel is not null)
             obj.Add(repCtx.Channel);
@@ -86,9 +86,9 @@ public sealed class ReplacementService : IReplacementService, INService
             objs.Add(repCtx.Channel);
         }
 
-        if (repCtx.Users is not null)
+        if (repCtx.User is not null)
         {
-            objs.Add(repCtx.Users);
+            objs.Add(repCtx.User);
         }
 
         if (repCtx.Guild is not null)
@@ -117,9 +117,9 @@ public sealed class ReplacementService : IReplacementService, INService
             objs.Add(repCtx.Channel);
         }
 
-        if (repCtx.Users is not null)
+        if (repCtx.User is not null)
         {
-            objs.Add(repCtx.Users);
+            objs.Add(repCtx.User);
         }
 
         if (repCtx.Guild is not null)

@@ -176,8 +176,6 @@ public sealed partial class Help : WizBotModule<HelpService>
                 return strs.module_description_gambling;
             case "music":
                 return strs.module_description_music;
-            case "nsfw":
-                return strs.module_description_nsfw;
             case "permissions":
                 return strs.module_description_permissions;
             case "xp":
@@ -214,8 +212,6 @@ public sealed partial class Help : WizBotModule<HelpService>
                 return "💰";
             case "music":
                 return "🎶";
-            case "nsfw":
-                return "😳";
             case "permissions":
                 return "🚓";
             case "xp":

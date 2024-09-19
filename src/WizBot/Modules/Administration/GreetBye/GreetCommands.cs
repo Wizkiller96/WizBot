@@ -8,235 +8,218 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async Task Boost()
-        {
-            var enabled = await _service.ToggleBoost(ctx.Guild.Id, ctx.Channel.Id);
-
-            if (enabled)
-                await Response().Confirm(strs.boost_on).SendAsync();
-            else
-                await Response().Pending(strs.boost_off).SendAsync();
-        }
+        public Task Boost()
+            => Toggle(GreetType.Boost);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageGuild)]
-        public async Task BoostDel(int timer = 30)
+        public Task BoostDel(int timer = 30)
+            => SetDel(GreetType.Boost, timer);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task BoostMsg([Leftover] string? text = null)
+            => SetMsg(GreetType.Boost, text);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task Greet()
+            => Toggle(GreetType.Greet);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetDel(int timer = 30)
+            => SetDel(GreetType.Greet, timer);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetMsg([Leftover] string? text = null)
+            => SetMsg(GreetType.Greet, text);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetDm()
+            => Toggle(GreetType.GreetDm);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetDmMsg([Leftover] string? text = null)
+            => SetMsg(GreetType.GreetDm, text);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task Bye()
+            => Toggle(GreetType.Bye);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task ByeDel(int timer = 30)
+            => SetDel(GreetType.Bye, timer);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task ByeMsg([Leftover] string? text = null)
+            => SetMsg(GreetType.Bye, text);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetTest([Leftover] IGuildUser? user = null)
+            => Test(GreetType.Greet, user);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        public Task GreetDmTest([Leftover] IGuildUser? user = null)
+            => Test(GreetType.GreetDm, user);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        [Ratelimit(5)]
+        public Task ByeTest([Leftover] IGuildUser? user = null)
+            => Test(GreetType.Bye, user);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageGuild)]
+        [Ratelimit(5)]
+        public Task BoostTest([Leftover] IGuildUser? user = null)
+            => Test(GreetType.Boost, user);
+
+
+        public async Task Toggle(GreetType type)
+        {
+            var enabled = await _service.SetGreet(ctx.Guild.Id, ctx.Channel.Id, type);
+
+            if (enabled)
+                await Response()
+                      .Confirm(
+                          type switch
+                          {
+                              GreetType.Boost => strs.boost_on,
+                              GreetType.Greet => strs.greet_on,
+                              GreetType.Bye => strs.bye_on,
+                              GreetType.GreetDm => strs.greetdm_on,
+                              _ => strs.error
+                          }
+                      )
+                      .SendAsync();
+            else
+                await Response()
+                      .Pending(
+                          type switch
+                          {
+                              GreetType.Boost => strs.boost_off,
+                              GreetType.Greet => strs.greet_off,
+                              GreetType.Bye => strs.bye_off,
+                              GreetType.GreetDm => strs.greetdm_off,
+                              _ => strs.error
+                          }
+                      )
+                      .SendAsync();
+        }
+
+
+        public async Task SetDel(GreetType type, int timer)
         {
             if (timer is < 0 or > 600)
                 return;
 
-            await _service.SetBoostDel(ctx.Guild.Id, timer);
+            await _service.SetDeleteTimer(ctx.Guild.Id, type, timer);
 
             if (timer > 0)
-                await Response().Confirm(strs.boostdel_on(timer)).SendAsync();
+                await Response()
+                      .Confirm(
+                          type switch
+                          {
+                              GreetType.Boost => strs.boostdel_on(timer),
+                              GreetType.Greet => strs.greetdel_on(timer),
+                              GreetType.Bye => strs.byedel_on(timer),
+                              _ => strs.error
+                          }
+                      )
+                      .SendAsync();
             else
-                await Response().Pending(strs.boostdel_off).SendAsync();
+                await Response()
+                      .Pending(
+                          type switch
+                          {
+                              GreetType.Boost => strs.boostdel_off,
+                              GreetType.Greet => strs.greetdel_off,
+                              GreetType.Bye => strs.byedel_off,
+                              _ => strs.error
+                          })
+                      .SendAsync();
         }
 
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task BoostMsg([Leftover] string? text = null)
+
+        public async Task SetMsg(GreetType type, string? text = null)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
-                var boostMessage = _service.GetBoostMessage(ctx.Guild.Id);
-                await Response().Confirm(strs.boostmsg_cur(boostMessage?.SanitizeMentions())).SendAsync();
+                var conf = await _service.GetGreetSettingsAsync(ctx.Guild.Id, type);
+                var msg = conf?.MessageText ?? GreetService.GetDefaultGreet(type);
+                await Response()
+                      .Confirm(
+                          type switch
+                          {
+                              GreetType.Boost => strs.boostmsg_cur(msg),
+                              GreetType.Greet => strs.greetmsg_cur(msg),
+                              GreetType.Bye => strs.byemsg_cur(msg),
+                              GreetType.GreetDm => strs.greetdmmsg_cur(msg),
+                              _ => strs.error
+                          })
+                      .SendAsync();
                 return;
             }
 
-            var sendBoostEnabled = _service.SetBoostMessage(ctx.Guild.Id, ref text);
+            var isEnabled = await _service.SetMessage(ctx.Guild.Id, type, text);
 
-            await Response().Confirm(strs.boostmsg_new).SendAsync();
-            if (!sendBoostEnabled)
-                await Response().Pending(strs.boostmsg_enable($"`{prefix}boost`")).SendAsync();
-        }
+            await Response()
+                  .Confirm(type switch
+                  {
+                      GreetType.Boost => strs.boostmsg_new,
+                      GreetType.Greet => strs.greetmsg_new,
+                      GreetType.Bye => strs.byemsg_new,
+                      GreetType.GreetDm => strs.greetdmmsg_new,
+                      _ => strs.error
+                  })
+                  .SendAsync();
 
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task GreetDel(int timer = 30)
-        {
-            if (timer is < 0 or > 600)
-                return;
 
-            await _service.SetGreetDel(ctx.Guild.Id, timer);
-
-            if (timer > 0)
-                await Response().Confirm(strs.greetdel_on(timer)).SendAsync();
-            else
-                await Response().Pending(strs.greetdel_off).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task Greet()
-        {
-            var enabled = await _service.SetGreet(ctx.Guild.Id, ctx.Channel.Id);
-
-            if (enabled)
-                await Response().Confirm(strs.greet_on).SendAsync();
-            else
-                await Response().Pending(strs.greet_off).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task GreetMsg([Leftover] string? text = null)
-        {
-            if (string.IsNullOrWhiteSpace(text))
+            if (!isEnabled)
             {
-                var greetMsg = _service.GetGreetMsg(ctx.Guild.Id);
-                await Response().Confirm(strs.greetmsg_cur(greetMsg?.SanitizeMentions())).SendAsync();
-                return;
+                var cmdName = type switch
+                {
+                    GreetType.Greet => "greet",
+                    GreetType.Bye => "bye",
+                    GreetType.Boost => "boost",
+                    GreetType.GreetDm => "greetdm",
+                    _ => "unknown_command"
+                };
+
+                await Response().Pending(strs.boostmsg_enable($"`{prefix}{cmdName}`")).SendAsync();
             }
-
-            var sendGreetEnabled = _service.SetGreetMessage(ctx.Guild.Id, ref text);
-
-            await Response().Confirm(strs.greetmsg_new).SendAsync();
-
-            if (!sendGreetEnabled)
-                await Response().Pending(strs.greetmsg_enable($"`{prefix}greet`")).SendAsync();
         }
 
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task GreetDm()
-        {
-            var enabled = await _service.SetGreetDm(ctx.Guild.Id);
-
-            if (enabled)
-                await Response().Confirm(strs.greetdm_on).SendAsync();
-            else
-                await Response().Confirm(strs.greetdm_off).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task GreetDmMsg([Leftover] string? text = null)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                var dmGreetMsg = _service.GetDmGreetMsg(ctx.Guild.Id);
-                await Response().Confirm(strs.greetdmmsg_cur(dmGreetMsg?.SanitizeMentions())).SendAsync();
-                return;
-            }
-
-            var sendGreetEnabled = _service.SetGreetDmMessage(ctx.Guild.Id, ref text);
-
-            await Response().Confirm(strs.greetdmmsg_new).SendAsync();
-            if (!sendGreetEnabled)
-                await Response().Pending(strs.greetdmmsg_enable($"`{prefix}greetdm`")).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task Bye()
-        {
-            var enabled = await _service.SetBye(ctx.Guild.Id, ctx.Channel.Id);
-
-            if (enabled)
-                await Response().Confirm(strs.bye_on).SendAsync();
-            else
-                await Response().Confirm(strs.bye_off).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task ByeMsg([Leftover] string? text = null)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                var byeMsg = _service.GetByeMessage(ctx.Guild.Id);
-                await Response().Confirm(strs.byemsg_cur(byeMsg?.SanitizeMentions())).SendAsync();
-                return;
-            }
-
-            var sendByeEnabled = _service.SetByeMessage(ctx.Guild.Id, ref text);
-
-            await Response().Confirm(strs.byemsg_new).SendAsync();
-            if (!sendByeEnabled)
-                await Response().Pending(strs.byemsg_enable($"`{prefix}bye`")).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        public async Task ByeDel(int timer = 30)
-        {
-            await _service.SetByeDel(ctx.Guild.Id, timer);
-
-            if (timer > 0)
-                await Response().Confirm(strs.byedel_on(timer)).SendAsync();
-            else
-                await Response().Pending(strs.byedel_off).SendAsync();
-        }
-
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        [Ratelimit(5)]
-        public async Task ByeTest([Leftover] IGuildUser? user = null)
+        public async Task Test(GreetType type, IGuildUser? user = null)
         {
             user ??= (IGuildUser)ctx.User;
 
-            await _service.ByeTest((ITextChannel)ctx.Channel, user);
-            var enabled = _service.GetByeEnabled(ctx.Guild.Id);
-            if (!enabled)
-                await Response().Pending(strs.byemsg_enable($"`{prefix}bye`")).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        [Ratelimit(5)]
-        public async Task GreetTest([Leftover] IGuildUser? user = null)
-        {
-            user ??= (IGuildUser)ctx.User;
-
-            await _service.GreetTest((ITextChannel)ctx.Channel, user);
-            var enabled = _service.GetGreetEnabled(ctx.Guild.Id);
-            if (!enabled)
-                await Response().Pending(strs.greetmsg_enable($"`{prefix}greet`")).SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        [Ratelimit(5)]
-        public async Task GreetDmTest([Leftover] IGuildUser? user = null)
-        {
-            user ??= (IGuildUser)ctx.User;
-
-            var success = await _service.GreetDmTest(user);
-            if (success)
-                await ctx.OkAsync();
-            else
-                await ctx.WarningAsync();
-            var enabled = _service.GetGreetDmEnabled(ctx.Guild.Id);
-            if (!enabled)
-                await Response().Pending(strs.greetdmmsg_enable($"`{prefix}greetdm`")).SendAsync();
-        }
-        
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.ManageGuild)]
-        [Ratelimit(5)]
-        public async Task BoostTest([Leftover] IGuildUser? user = null)
-        {
-            user ??= (IGuildUser)ctx.User;
-
-            await _service.BoostTest((ITextChannel)ctx.Channel, user);
-            var enabled = _service.GetBoostEnabled(ctx.Guild.Id);
-            if (!enabled)
+            await _service.Test(ctx.Guild.Id, type, (ITextChannel)ctx.Channel, user);
+            var conf = await _service.GetGreetSettingsAsync(ctx.Guild.Id, type);
+            if (conf?.IsEnabled is not true)
                 await Response().Pending(strs.boostmsg_enable($"`{prefix}boost`")).SendAsync();
         }
     }

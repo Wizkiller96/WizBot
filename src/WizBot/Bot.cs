@@ -1,5 +1,6 @@
 #nullable disable
 using DryIoc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using WizBot.Common.Configs;
@@ -88,14 +89,14 @@ public sealed class Bot : IBot
 
     private async Task AddServices()
     {
-        var startingGuildIdList = GetCurrentGuildIds();
+        var startingGuildIdList = GetCurrentGuildIds().ToList();
         var startTime = Stopwatch.GetTimestamp();
         var bot = Client.CurrentUser;
 
         await using (var uow = _db.GetDbContext())
         {
-            uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
             AllGuildConfigs = await uow.GuildConfigs.GetAllGuildConfigs(startingGuildIdList);
+            uow.EnsureUserCreated(bot.Id, bot.Username, bot.Discriminator, bot.AvatarId);
         }
 
         // var svcs = new StandardKernel(new NinjectSettings()
@@ -105,7 +106,7 @@ public sealed class Bot : IBot
         // });
 
         var svcs = new Container();
-        
+
         // this is required in order for medusa unloading to work
         // svcs.Components.Remove<IPlanner, Planner>();
         // svcs.Components.Add<IPlanner, RemovablePlanner>();
@@ -157,7 +158,8 @@ public sealed class Bot : IBot
             LoadTypeReaders(a);
         }
 
-        Log.Information("All services loaded in {ServiceLoadTime:F2}s", Stopwatch.GetElapsedTime(startTime) .TotalSeconds);
+        Log.Information("All services loaded in {ServiceLoadTime:F2}s",
+            Stopwatch.GetElapsedTime(startTime).TotalSeconds);
     }
 
     private void LoadTypeReaders(Assembly assembly)
@@ -257,7 +259,7 @@ public sealed class Bot : IBot
         var startTime = Stopwatch.GetTimestamp();
 
         await LoginAsync(_creds.Token);
-        
+
         Log.Information("Shard {ShardId} loading services...", Client.ShardId);
         try
         {
@@ -269,7 +271,9 @@ public sealed class Bot : IBot
             Helpers.ReadErrorAndExit(9);
         }
 
-        Log.Information("Shard {ShardId} connected in {Elapsed:F2}s", Client.ShardId, Stopwatch.GetElapsedTime(startTime).TotalSeconds);
+        Log.Information("Shard {ShardId} connected in {Elapsed:F2}s",
+            Client.ShardId,
+            Stopwatch.GetElapsedTime(startTime).TotalSeconds);
         var commandHandler = Services.GetRequiredService<CommandHandler>();
 
         // start handling messages received in commandhandler
@@ -334,26 +338,26 @@ public sealed class Bot : IBot
         if (arg.Exception is { InnerException: WebSocketClosedException { CloseCode: 4014 } })
         {
             Log.Error("""
-                Login failed.
-                
-                *** Please enable privileged intents ***
-                
-                Certain WizBot features require Discord's privileged gateway intents.
-                These include greeting and goodbye messages, as well as creating the Owner message channels for DM forwarding.
-                
-                How to enable privileged intents:
-                1. Head over to the Discord Developer Portal https://discord.com/developers/applications/
-                2. Select your Application.
-                3. Click on `Bot` in the left side navigation panel, and scroll down to the intents section.
-                4. Enable all intents.
-                5. Restart your bot.
-                
-                Read this only if your bot is in 100 or more servers:
-                
-                You'll need to apply to use the intents with Discord, but for small selfhosts, all that is required is enabling the intents in the developer portal.
-                Yes, this is a new thing from Discord, as of October 2020. No, there's nothing we can do about it. Yes, we're aware it worked before.
-                While waiting for your bot to be accepted, you can change the 'usePrivilegedIntents' inside your creds.yml to 'false', although this will break many of the nadeko's features
-                """);
+                      Login failed.
+
+                      *** Please enable privileged intents ***
+
+                      Certain WizBot features require Discord's privileged gateway intents.
+                      These include greeting and goodbye messages, as well as creating the Owner message channels for DM forwarding.
+
+                      How to enable privileged intents:
+                      1. Head over to the Discord Developer Portal https://discord.com/developers/applications/
+                      2. Select your Application.
+                      3. Click on `Bot` in the left side navigation panel, and scroll down to the intents section.
+                      4. Enable all intents.
+                      5. Restart your bot.
+
+                      Read this only if your bot is in 100 or more servers:
+
+                      You'll need to apply to use the intents with Discord, but for small selfhosts, all that is required is enabling the intents in the developer portal.
+                      Yes, this is a new thing from Discord, as of October 2020. No, there's nothing we can do about it. Yes, we're aware it worked before.
+                      While waiting for your bot to be accepted, you can change the 'usePrivilegedIntents' inside your creds.yml to 'false', although this will break many of the WizBot's features
+                      """);
             return Task.CompletedTask;
         }
 

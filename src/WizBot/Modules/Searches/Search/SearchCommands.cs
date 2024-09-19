@@ -72,7 +72,7 @@ public partial class Searches
         }
 
         [Cmd]
-        public async Task Image([Leftover] string? query = null)
+        public async Task Image([Leftover] string? query)
         {
             query = query?.Trim();
 

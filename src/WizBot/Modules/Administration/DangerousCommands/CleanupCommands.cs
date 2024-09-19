@@ -46,7 +46,7 @@ public partial class Administration
         
         [Cmd]
         [OwnerOnly]
-        public async Task LeaveUnkeptServers(int startShardId)
+        public async Task LeaveUnkeptServers(int startShardId, int shardMultiplier = 3000)
         {
             var keptGuildCount = await _svc.GetKeptGuildCount();
 
@@ -65,7 +65,7 @@ public partial class Administration
             for (var shardId = startShardId; shardId < _creds.GetCreds().TotalShards; shardId++)
             {
                 await _svc.StartLeavingUnkeptServers(shardId);
-                await Task.Delay(3000 * 1000);
+                await Task.Delay(shardMultiplier * 1000);
             }
 
             await ctx.OkAsync();

@@ -72,10 +72,10 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                 dontDelete = dontDeleteList.ToHashSet();
             }
 
-            Log.Information("Leaving {RemainingCount} guilds every {Delay} seconds, {DontDeleteCount} will remain",
+            Log.Information("Leaving {RemainingCount} guilds, 1 every second. {DontDeleteCount} will remain",
                 allGuildIds.Length - dontDelete.Count,
-                shardId,
                 dontDelete.Count);
+            
             foreach (var guildId in allGuildIds)
             {
                 if (dontDelete.Contains(guildId))

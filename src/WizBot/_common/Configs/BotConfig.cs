@@ -13,7 +13,7 @@ namespace WizBot.Common.Configs;
 public sealed partial class BotConfig : ICloneable<BotConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 7;
+    public int Version { get; set; } = 8;
 
     [Comment("""
         Most commands, when executed, have a small colored line
@@ -84,20 +84,7 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
 
     [Comment("""Which string will be used to recognize the commands""")]
     public string Prefix { get; set; }
-
-    [Comment("""
-        Toggles whether your bot will group greet/bye messages into a single message every 5 seconds.
-        1st user who joins will get greeted immediately
-        If more users join within the next 5 seconds, they will be greeted in groups of 5.
-        This will cause %user.mention% and other placeholders to be replaced with multiple users. 
-        Keep in mind this might break some of your embeds - for example if you have %user.avatar% in the thumbnail,
-        it will become invalid, as it will resolve to a list of avatars of grouped users.
-        note: This setting is primarily used if you're afraid of raids, or you're running medium/large bots where some
-              servers might get hundreds of people join at once. This is used to prevent the bot from getting ratelimited,
-              and (slightly) reduce the greet spam in those servers.
-        """)]
-    public bool GroupGreets { get; set; }
-
+    
     [Comment("""
         Whether the bot will rotate through all specified statuses.
         This setting can be changed via .ropl command.
@@ -145,7 +132,6 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
         Blocked = blocked;
         Prefix = ".";
         RotateStatuses = false;
-        GroupGreets = false;
         DmHelpTextKeywords =
         [
             "help",

@@ -262,7 +262,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
         var repCtx = new ReplacementContext(client: _client,
             guild: guild,
             channel: channel,
-            users: guild.CurrentUser);
+            user: guild.CurrentUser);
 
         try
         {

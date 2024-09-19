@@ -140,13 +140,13 @@
   imageUrl: https://cdn.nadeko.bot/flags/gt-flag.gif
 - word: Guinea
   imageUrl: https://cdn.nadeko.bot/flags/gv-flag.gif
-- word: Guinea-Bissau
+- word: Guinea Bissau
   imageUrl: https://cdn.nadeko.bot/flags/pu-flag.gif
 - word: Guyana
   imageUrl: https://cdn.nadeko.bot/flags/gy-flag.gif
 - word: Haiti
   imageUrl: https://cdn.nadeko.bot/flags/ha-flag.gif
-- word: Holy See
+- word: Vatican
   imageUrl: https://cdn.nadeko.bot/flags/vt-flag.gif
 - word: Honduras
   imageUrl: https://cdn.nadeko.bot/flags/ho-flag.gif
@@ -184,7 +184,7 @@
   imageUrl: https://cdn.nadeko.bot/flags/ku-flag.gif
 - word: Kyrgyzstan
   imageUrl: https://cdn.nadeko.bot/flags/kg-flag.gif
-- word: Laos
+- word: Lao People's Democratic Republic
   imageUrl: https://cdn.nadeko.bot/flags/la-flag.gif
 - word: Latvia
   imageUrl: https://cdn.nadeko.bot/flags/lg-flag.gif
@@ -282,7 +282,7 @@
   imageUrl: https://cdn.nadeko.bot/flags/qa-flag.gif
 - word: Romania
   imageUrl: https://cdn.nadeko.bot/flags/ro-flag.gif
-- word: Russia
+- word: Russian Federation
   imageUrl: https://cdn.nadeko.bot/flags/rs-flag.gif
 - word: Rwanda
   imageUrl: https://cdn.nadeko.bot/flags/rw-flag.gif
@@ -318,7 +318,7 @@
   imageUrl: https://cdn.nadeko.bot/flags/so-flag.gif
 - word: South Africa
   imageUrl: https://cdn.nadeko.bot/flags/sf-flag.gif
-- word: South Korea
+- word: Republic of Korea
   imageUrl: https://cdn.nadeko.bot/flags/ks-flag.gif
 - word: South Sudan
   imageUrl: https://cdn.nadeko.bot/flags/od-flag.gif
@@ -326,9 +326,9 @@
   imageUrl: https://cdn.nadeko.bot/flags/sp-flag.gif
 - word: Sri Lanka
   imageUrl: https://cdn.nadeko.bot/flags/ce-flag.gif
-- word: St. Vincent Grenadines
+- word: Saint Vincent and the Grenadines
   imageUrl: https://cdn.nadeko.bot/flags/vc-flag.gif
-- word: State of Palestine
+- word: Palestine
   imageUrl: https://cdn.nadeko.bot/flags/palestine-flag.gif
 - word: Sudan
   imageUrl: https://cdn.nadeko.bot/flags/su-flag.gif
@@ -338,11 +338,11 @@
   imageUrl: https://cdn.nadeko.bot/flags/sw-flag.gif
 - word: Switzerland
   imageUrl: https://cdn.nadeko.bot/flags/sz-flag.gif
-- word: Syria
+- word: Syrian Arab Republic
   imageUrl: https://cdn.nadeko.bot/flags/sy-flag.gif
 - word: Tajikistan
   imageUrl: https://cdn.nadeko.bot/flags/ti-flag.gif
-- word: Tanzania
+- word: United Republic of Tanzania
   imageUrl: https://cdn.nadeko.bot/flags/tz-flag.gif
 - word: Thailand
   imageUrl: https://cdn.nadeko.bot/flags/th-flag.gif
@@ -380,7 +380,7 @@
   imageUrl: https://cdn.nadeko.bot/flags/nh-flag.gif
 - word: Venezuela
   imageUrl: https://cdn.nadeko.bot/flags/ve-flag.gif
-- word: Vietnam
+- word: Viet Nam
   imageUrl: https://cdn.nadeko.bot/flags/vm-flag.gif
 - word: Yemen
   imageUrl: https://cdn.nadeko.bot/flags/ym-flag.gif
