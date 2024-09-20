@@ -51,7 +51,9 @@ public static class ServiceCollectionExtensions
         svcs.RegisterMany<MusicService>(Reuse.Singleton);
 
         svcs.AddSingleton<ITrackResolveProvider, TrackResolveProvider>();
-        svcs.AddSingleton<IYoutubeResolver, YtdlYoutubeResolver>();
+        svcs.AddSingleton<YtdlYoutubeResolver>();
+        svcs.AddSingleton<InvidiousYoutubeResolver>();
+        svcs.AddSingleton<IYoutubeResolverFactory, YoutubeResolverFactory>();
         svcs.AddSingleton<ILocalTrackResolver, LocalTrackResolver>();
         svcs.AddSingleton<IRadioResolver, RadioResolver>();
         svcs.AddSingleton<ITrackCacher, TrackCacher>();

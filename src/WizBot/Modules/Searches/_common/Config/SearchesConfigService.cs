@@ -54,5 +54,13 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
                 c.Version = 2;
             });
         }
+        
+        if (data.Version < 3)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 3;
+            });
+        }
     }
 }

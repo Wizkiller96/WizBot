@@ -8,5 +8,4 @@ public interface ITrackInfo
     public string Thumbnail { get; }
     public TimeSpan Duration { get; }
     public MusicPlatform Platform { get; }
-    public ValueTask<string?> GetStreamUrl();
 }

@@ -24,7 +24,4 @@ public sealed class SimpleTrackInfo : ITrackInfo
         Platform = platform;
         StreamUrl = streamUrl;
     }
-
-    public ValueTask<string?> GetStreamUrl()
-        => new(StreamUrl);
 }

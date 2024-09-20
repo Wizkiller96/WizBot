@@ -28,9 +28,6 @@ public sealed partial class MusicQueue
             TrackInfo = trackInfo;
             Queuer = queuer;
         }
-
-        public ValueTask<string?> GetStreamUrl()
-            => TrackInfo.GetStreamUrl();
     }
 }
 
