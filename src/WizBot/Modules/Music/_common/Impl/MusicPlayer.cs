@@ -1,5 +1,6 @@
 using WizBot.Voice;
 using WizBot.Db.Models;
+using WizBot.Modules.Music.Resolvers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -27,6 +28,7 @@ public sealed class MusicPlayer : IMusicPlayer
 
     private readonly IMusicQueue _queue;
     private readonly ITrackResolveProvider _trackResolveProvider;
+    private readonly IYoutubeResolverFactory _ytResolverFactory;
     private readonly IVoiceProxy _proxy;
     private readonly IGoogleApiService _googleApiService;
     private readonly ISongBuffer _songBuffer;
@@ -41,6 +43,7 @@ public sealed class MusicPlayer : IMusicPlayer
     public MusicPlayer(
         IMusicQueue queue,
         ITrackResolveProvider trackResolveProvider,
+        IYoutubeResolverFactory ytResolverFactory,
         IVoiceProxy proxy,
         IGoogleApiService googleApiService,
         QualityPreset qualityPreset,
@@ -48,6 +51,7 @@ public sealed class MusicPlayer : IMusicPlayer
     {
         _queue = queue;
         _trackResolveProvider = trackResolveProvider;
+        _ytResolverFactory = ytResolverFactory;
         _proxy = proxy;
         _googleApiService = googleApiService;
         AutoPlay = autoPlay;
@@ -118,7 +122,7 @@ public sealed class MusicPlayer : IMusicPlayer
                 // make sure song buffer is ready to be (re)used
                 _songBuffer.Reset();
 
-                var streamUrl = await track.GetStreamUrl();
+                var streamUrl = await GetStreamUrl(track);
                 // start up the data source
                 using var source = FfmpegTrackDataSource.CreateAsync(
                     _vc.BitDepth,
@@ -256,6 +260,7 @@ public sealed class MusicPlayer : IMusicPlayer
                 IsStopped = true;
                 Log.Error("Please install ffmpeg and make sure it's added to your "
                           + "PATH environment variable before trying again");
+                
             }
             catch (OperationCanceledException)
             {
@@ -264,6 +269,7 @@ public sealed class MusicPlayer : IMusicPlayer
             catch (Exception ex)
             {
                 Log.Error(ex, "Unknown error in music loop: {ErrorMessage}", ex.Message);
+                await Task.Delay(3_000);
             }
             finally
             {
@@ -301,6 +307,14 @@ public sealed class MusicPlayer : IMusicPlayer
                 await Task.Delay(100);
             }
         }
+    }
+
+    private async Task<string?> GetStreamUrl(IQueuedTrackInfo track)
+    {
+        if (track.TrackInfo is SimpleTrackInfo sti)
+            return sti.StreamUrl;
+       
+        return await _ytResolverFactory.GetYoutubeResolver().GetStreamUrl(track.TrackInfo.Id);
     }
 
     private bool? CopyChunkToOutput(ISongBuffer sb, VoiceClient vc)

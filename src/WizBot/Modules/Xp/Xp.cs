@@ -448,9 +448,10 @@ public partial class Xp : WizBotModule<XpService>
                   if (!string.IsNullOrWhiteSpace(item.Author))
                       eb.AddField(GetText(strs.author), item.Author);
 
+#if GLOBAL_WIZBOT
                   if (key == "default")
                       eb.WithDescription(GetText(strs.xpshop_website));
-
+#endif
 
                   var tier = _service.GetXpShopTierRequirement(type);
                   if (tier != PatronTier.None)

@@ -16,9 +16,6 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
 
     private static readonly Regex _simplePlaylistRegex = new(@"&list=(?<id>[\w\-]{12,})", RegexOptions.Compiled);
 
-    public Regex YtVideoIdRegex { get; } =
-        new(@"(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)(?<id>[a-zA-Z0-9_-]{6,11})",
-            RegexOptions.Compiled);
 
     private readonly ITrackCacher _trackCacher;
 
@@ -32,7 +29,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
     {
         _trackCacher = trackCacher;
         _google = google;
-        
+
 
         _ytdlPlaylistOperation = new("-4 "
                                      + "--geo-bypass "
@@ -46,7 +43,8 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                      + "--no-check-certificate "
                                      + "-i "
                                      + "--yes-playlist "
-                                     + "-- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                                     + "-- \"{0}\"",
+            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
 
         _ytdlIdOperation = new("-4 "
                                + "--geo-bypass "
@@ -58,7 +56,8 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                + "--get-thumbnail "
                                + "--get-duration "
                                + "--no-check-certificate "
-                               + "-- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                               + "-- \"{0}\"",
+            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
 
         _ytdlSearchOperation = new("-4 "
                                    + "--geo-bypass "
@@ -71,7 +70,8 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                    + "--get-duration "
                                    + "--no-check-certificate "
                                    + "--default-search "
-                                   + "\"ytsearch:\" -- \"{0}\"", scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                                   + "\"ytsearch:\" -- \"{0}\"",
+            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
     }
 
     private YtTrackData ResolveYtdlData(string ytdlOutputString)
@@ -102,8 +102,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
             $"https://youtube.com/watch?v={trackData.Id}",
             trackData.Thumbnail,
             trackData.Duration,
-            MusicPlatform.Youtube,
-            CreateCacherFactory(trackData.Id));
+            MusicPlatform.Youtube);
 
     private Func<Task<string?>> CreateCacherFactory(string id)
         => () => _trackCacher.GetOrCreateStreamLink(id,
@@ -268,7 +267,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
     {
         if (tryResolving)
         {
-            var match = YtVideoIdRegex.Match(query);
+            var match = YoutubeHelpers.YtVideoIdRegex.Match(query);
             if (match.Success)
                 return await ResolveByIdAsync(match.Groups["id"].Value);
         }
@@ -290,6 +289,8 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
         return DataToInfo(new(cachedData.Title, cachedData.Id, cachedData.Thumbnail, null, cachedData.Duration));
     }
 
+    public Task<string?> GetStreamUrl(string videoId)
+        => CreateCacherFactory(videoId)();
     private readonly struct YtTrackData
     {
         public readonly string Title;

@@ -60,21 +60,21 @@ public partial class Searches
             descStr = descStr.TrimTo(4096);
 
             var embed = _sender.CreateEmbed()
-                           .WithOkColor()
-                           .WithAuthor(ctx.User)
-                           .WithTitle(query.TrimTo(64)!)
-                           .WithDescription(descStr)
-                           .WithFooter(
-                               GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
-                               "https://i.imgur.com/G46fm8J.png");
+                                .WithOkColor()
+                                .WithAuthor(ctx.User)
+                                .WithTitle(query.TrimTo(64)!)
+                                .WithDescription(descStr)
+                                .WithFooter(
+                                    GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
+                                    "https://i.imgur.com/G46fm8J.png");
 
             await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
-        public async Task Image([Leftover] string? query)
+        public async Task Image([Leftover] string query)
         {
-            query = query?.Trim();
+            query = query.Trim();
 
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -99,34 +99,37 @@ public partial class Searches
             EmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
             {
                 return _sender.CreateEmbed()
-                          .WithOkColor()
-                          .WithAuthor(ctx.User)
-                          .WithTitle(query)
-                          .WithUrl("https://google.com")
-                          .WithImageUrl(entry.Link);
+                                .WithOkColor()
+                                .WithAuthor(ctx.User)
+                                .WithTitle(query)
+                                .WithUrl("https://google.com")
+                                .WithImageUrl(entry.Link);
             }
 
-            embeds.Add(CreateEmbed(data.Entries.First())
-                .WithFooter(
-                    GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
-                    "https://i.imgur.com/G46fm8J.png"));
+            await Response()
+                  .Paginated()
+                  .Items(data.Entries)
+                  .PageSize(1)
+                  .AddFooter(false)
+                  .Page((items, _) =>
+                  {
+                      var item = items.FirstOrDefault();
 
-            var random = data.Entries.Skip(1)
-                             .Shuffle()
-                             .Take(3)
-                             .ToArray();
+                      if (item is null)
+                          return _sender.CreateEmbed()
+                                        .WithDescription(GetText(strs.no_search_results));
 
-            foreach (var entry in random)
-            {
-                embeds.Add(CreateEmbed(entry));
-            }
+                      var embed = CreateEmbed(item);
+                      embeds.Add(embed);
 
-            await Response().Embeds(embeds).SendAsync();
+                      return embed;
+                  })
+                  .SendAsync();
         }
 
         private TypedKey<string> GetYtCacheKey(string query)
             => new($"search:youtube:{query}");
-        
+
         private async Task AddYoutubeUrlToCacheAsync(string query, string url)
             => await _cache.AddAsync(GetYtCacheKey(query), url, expiry: 1.Hours());
 
@@ -158,7 +161,7 @@ public partial class Searches
 
             var maybeResult = await GetYoutubeUrlFromCacheAsync(query)
                               ?? await _searchFactory.GetYoutubeSearchService().SearchAsync(query);
-            if (maybeResult is not {} result || result is {Url: null})
+            if (maybeResult is not { } result || result is { Url: null })
             {
                 await Response().Error(strs.no_results).SendAsync();
                 return;

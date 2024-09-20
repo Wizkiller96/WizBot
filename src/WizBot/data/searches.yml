@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 2
+version: 3
 # Which engine should .search command
 # 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 # 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
@@ -9,7 +9,7 @@ webSearchEngine: Google_Scrape
 # 'google'- official google api. googleApiKey and google.imageSearchId set in creds.yml
 # 'searx' requires at least one searx instance specified in the 'searxInstances' property below
 imgSearchEngine: Google
-# Which search provider will be used for the `.youtube` command.
+# Which search provider will be used for the `.youtube` and `.q` commands.
 # 
 # - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console
 # 
@@ -35,7 +35,6 @@ ytProvider: Ytdlp
 searxInstances: []
 # Set the invidious instance urls in case you want to use 'invidious' for `.youtube` search
 # WizBot will use a random one for each request.
-# These instances may be used for music queue functionality in the future.
 # Use a fully qualified url. Example: https://my-invidious-instance.mydomain.com
 # 
 # Instances specified must have api available.
@@ -43,5 +42,5 @@ searxInstances: []
 invidiousInstances: []
 # Maximum number of followed streams per server
 followedStreams:
-# Maximum number of streams that each server can follow. -1 for infinite
+  # Maximum number of streams that each server can follow. -1 for infinite
   maxCount: 10

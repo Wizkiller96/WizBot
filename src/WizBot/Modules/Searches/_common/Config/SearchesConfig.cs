@@ -7,7 +7,7 @@ namespace WizBot.Modules.Searches;
 public partial class SearchesConfig : ICloneable<SearchesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 0;
+    public int Version { get; set; } = 3;
 
     [Comment("""
              Which engine should .search command
@@ -26,7 +26,7 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
 
 
     [Comment("""
-             Which search provider will be used for the `.youtube` command.
+             Which search provider will be used for the `.youtube` and `.q` commands.
 
              - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console
 
@@ -58,7 +58,6 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
     [Comment("""
              Set the invidious instance urls in case you want to use 'invidious' for `.youtube` search
              WizBot will use a random one for each request.
-             These instances may be used for music queue functionality in the future.
              Use a fully qualified url. Example: https://my-invidious-instance.mydomain.com
 
              Instances specified must have api available.

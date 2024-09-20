@@ -130,13 +130,14 @@ public sealed partial class Music
                 return;
             }
 
+            // todo check locally queued songs
             var songs = mp.GetQueuedTracks()
                           .Select(s => new PlaylistSong
                           {
                               Provider = s.Platform.ToString(),
                               ProviderType = (MusicType)s.Platform,
                               Title = s.Title,
-                              Query = s.Platform == MusicPlatform.Local ? s.GetStreamUrl().Result!.Trim('"') : s.Url
+                              Query = s.Url
                           })
                           .ToList();
 

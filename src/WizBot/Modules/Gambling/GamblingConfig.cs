@@ -274,8 +274,8 @@ public sealed partial class WaifuConfig
     public class WaifuDecayConfig
     {
         [Comment("""
-                 Percentage (0 - 100) of the waifu value to reduce.
-                 Set 0 to disable
+                 Unclaimed waifus will decay by this percentage (0 - 100).
+                 Default is 0 (disabled)
                  For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
                  """)]
         public int UnclaimedDecayPercent { get; set; } = 0;
@@ -283,6 +283,7 @@ public sealed partial class WaifuConfig
         [Comment("""
                  Claimed waifus will decay by this percentage (0 - 100).
                  Default is 0 (disabled)
+                 For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
                  """)]
         public int ClaimedDecayPercent { get; set; } = 0;
 

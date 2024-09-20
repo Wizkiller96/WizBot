@@ -1,4 +1,5 @@
 ﻿using WizBot.Db.Models;
+using WizBot.Modules.Music.Resolvers;
 using System.Diagnostics.CodeAnalysis;
 
 namespace WizBot.Modules.Music.Services;
@@ -8,7 +9,7 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
     private readonly AyuVoiceStateService _voiceStateService;
     private readonly ITrackResolveProvider _trackResolveProvider;
     private readonly DbService _db;
-    private readonly IYoutubeResolver _ytResolver;
+    private readonly IYoutubeResolverFactory _ytResolver;
     private readonly ILocalTrackResolver _localResolver;
     private readonly DiscordSocketClient _client;
     private readonly IBotStrings _strings;
@@ -24,7 +25,7 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
         AyuVoiceStateService voiceStateService,
         ITrackResolveProvider trackResolveProvider,
         DbService db,
-        IYoutubeResolver ytResolver,
+        IYoutubeResolverFactory ytResolver,
         ILocalTrackResolver localResolver,
         DiscordSocketClient client,
         IBotStrings strings,
@@ -93,7 +94,7 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
     public async Task<int> EnqueueYoutubePlaylistAsync(IMusicPlayer mp, string query, string queuer)
     {
         var count = 0;
-        await foreach (var track in _ytResolver.ResolveTracksFromPlaylistAsync(query))
+        await foreach (var track in _ytResolver.GetYoutubeResolver().ResolveTracksFromPlaylistAsync(query))
         {
             if (mp.IsKilled)
                 break;
@@ -139,6 +140,7 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
 
         var mp = new MusicPlayer(queue,
             resolver,
+            _ytResolver,
             proxy,
             _googleApiService,
             settings.QualityPreset,

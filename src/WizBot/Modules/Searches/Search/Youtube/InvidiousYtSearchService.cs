@@ -32,13 +32,15 @@ public sealed class InvidiousYtSearchService : IYoutubeSearchService, INService
 
         var instance = instances[_rng.Next(0, instances.Count)];
 
+        var url = $"{instance}/api/v1/search"
+                  + $"?q={query}"
+                  + $"&type=video";
+
         using var http = _http.CreateClient();
         var res = await http.GetFromJsonAsync<List<InvidiousSearchResponse>>(
-            $"{instance}/api/v1/search"
-            + $"?q={query}"
-            + $"&type=video");
+            url);
 
-        if (res is null or {Count: 0})
+        if (res is null or { Count: 0 })
             return null;
 
         return new VideoInfo(res[0].VideoId);

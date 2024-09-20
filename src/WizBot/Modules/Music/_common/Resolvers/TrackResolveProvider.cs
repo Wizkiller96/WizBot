@@ -1,13 +1,16 @@
-﻿namespace WizBot.Modules.Music;
+﻿using WizBot.Modules.Music.Resolvers;
+
+namespace WizBot.Modules.Music;
+
 
 public sealed class TrackResolveProvider : ITrackResolveProvider
 {
-    private readonly IYoutubeResolver _ytResolver;
+    private readonly IYoutubeResolverFactory _ytResolver;
     private readonly ILocalTrackResolver _localResolver;
     private readonly IRadioResolver _radioResolver;
 
     public TrackResolveProvider(
-        IYoutubeResolver ytResolver,
+        IYoutubeResolverFactory ytResolver,
         ILocalTrackResolver localResolver,
         IRadioResolver radioResolver)
     {
@@ -23,19 +26,22 @@ public sealed class TrackResolveProvider : ITrackResolveProvider
             case MusicPlatform.Radio:
                 return _radioResolver.ResolveByQueryAsync(query);
             case MusicPlatform.Youtube:
-                return _ytResolver.ResolveByQueryAsync(query);
+                return _ytResolver.GetYoutubeResolver().ResolveByQueryAsync(query);
             case MusicPlatform.Local:
                 return _localResolver.ResolveByQueryAsync(query);
             case null:
-                var match = _ytResolver.YtVideoIdRegex.Match(query);
+                var match = YoutubeHelpers.YtVideoIdRegex.Match(query);
+                
                 if (match.Success)
-                    return _ytResolver.ResolveByIdAsync(match.Groups["id"].Value);
-                else if (Uri.TryCreate(query, UriKind.Absolute, out var uri) && uri.IsFile)
+                    return _ytResolver.GetYoutubeResolver().ResolveByIdAsync(match.Groups["id"].Value);
+
+                if (Uri.TryCreate(query, UriKind.Absolute, out var uri) && uri.IsFile)
                     return _localResolver.ResolveByQueryAsync(uri.AbsolutePath);
-                else if (IsRadioLink(query))
+                
+                if (IsRadioLink(query))
                     return _radioResolver.ResolveByQueryAsync(query);
-                else
-                    return _ytResolver.ResolveByQueryAsync(query, false);
+                
+                return _ytResolver.GetYoutubeResolver().ResolveByQueryAsync(query, false);
             default:
                 Log.Error("Unsupported platform: {MusicPlatform}", forcePlatform);
                 return Task.FromResult<ITrackInfo?>(null);
