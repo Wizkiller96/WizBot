@@ -2,12 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.1.8]
+## [5.1.8] - 19.09.2024
 
 ### Added
 
 - Added `.leaveunkeptservers` which will make the bot leave all servers on all shards whose owners didn't run `.keep` command.
   - This is a dangerous and irreversible command, don't use it. Meant for use on the public bot.
+- `.adpl` now supports custom statuses (you no longer need to specify Playing, Watching, etc...)
 
 ### Changed
 
@@ -16,6 +17,7 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
   - `.liqu` renamed to `.qli`
   - `.quotesearch` / `.qse` is now paginated for easier searching
 - `.whosplaying` is now paginated
+- `.img` is now paginated
 - `.setgame` renamed to`.setactivity` and now supports custom text activity. You don't have to specify playing, listening etc before the activity
 - Clarified and added some embed / placeholder links to command help where needed
 - dev: A lot of code cleanup and internal improvements
@@ -26,6 +28,14 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 - Fixed a bug in `.gatari` command
 - Fixed some waifu related strings
 - Fixed `.quoteshow` and `.quoteid` commands
+- Fixed some placeholders not working in `.greetdm`
+- Fixed postgres support
+- Fixed and clarified some command strings/parameter descriptions
+
+### Removed
+
+- Removed mysql support as it didn't work for a while, and requires some special handling/maintenance
+  - Sqlite and Postgres support stays
 
 ## [5.1.7] - 08.08.2024
 
