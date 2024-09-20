@@ -6,7 +6,7 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    public partial class PlayingRotateCommands : NadekoModule<PlayingRotateService>
+    public partial class PlayingRotateCommands : WizBotModule<PlayingRotateService>
     {
         [Cmd]
         [OwnerOnly]
