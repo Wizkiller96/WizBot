@@ -129,8 +129,7 @@ public sealed partial class Music
                 await Response().Error(strs.no_player).SendAsync();
                 return;
             }
-
-            // todo check locally queued songs
+            
             var songs = mp.GetQueuedTracks()
                           .Select(s => new PlaylistSong
                           {
