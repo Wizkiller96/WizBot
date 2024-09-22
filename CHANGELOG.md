@@ -2,6 +2,19 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.9] - 21.09.2024
+
+### Fixed
+
+- Fixed `.greettest`, and other `.*test` commands if you didn't have them enabled.
+- Fixed `.greetdmtest` sending messages twice.
+- Fixed a serious bug which caused greet messages to be jumbled up, and wrong ones to be sent for the wrong events.
+  - There is no database issue, all greet messages are safe, the cache was caching any setting every 3 seconds with no regard for the type of the event
+  - This also caused `.greetdm` messages to not be sent if `.greet` is enabled
+  - This bug was introduced in 5.1.8. PLEASE UPDATE if you are on 5.1.8
+- Selfhosters only: Fixed medusa dependency loading
+  -  Note: Make sure to not publish any other DLLs besides the ones you are sure you will need, as there can be version conflicts which didn't happen before.
+
 ## [5.1.8] - 19.09.2024
 
 ### Added

@@ -75,11 +75,19 @@ public class GreetService : INService, IReadyExecutor
 
         _client.GuildMemberUpdated += ClientOnGuildMemberUpdated;
 
-        var timer = new PeriodicTimer(TimeSpan.FromSeconds(2));
-        while (await timer.WaitForNextTickAsync())
+        while (true)
         {
-            var (conf, user, ch) = await _greetQueue.Reader.ReadAsync();
-            await GreetUsers(conf, ch, user);
+            try
+            {
+                var (conf, user, ch) = await _greetQueue.Reader.ReadAsync();
+                await GreetUsers(conf, ch, user);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Greet Loop almost crashed. Please report this!");
+            }
+
+            await Task.Delay(2016);
         }
     }
 
@@ -155,10 +163,11 @@ public class GreetService : INService, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private readonly TypedKey<GreetSettings?> _greetSettingsKey = new("greet_settings");
+    private TypedKey<GreetSettings?> GreetSettingsKey(GreetType type)
+        => new($"greet_settings:{type}");
 
     public async Task<GreetSettings?> GetGreetSettingsAsync(ulong gid, GreetType type)
-        => await _cache.GetOrAddAsync<GreetSettings?>(_greetSettingsKey,
+        => await _cache.GetOrAddAsync<GreetSettings?>(GreetSettingsKey(type),
             () => InternalGetGreetSettingsAsync(gid, type),
             TimeSpan.FromSeconds(3));
 
@@ -216,15 +225,7 @@ public class GreetService : INService, IReadyExecutor
             Log.Warning(ex, "Error embeding greet message");
         }
     }
-
-
-    private async Task<bool> GreetDmUser(GreetSettings conf, IGuildUser user)
-    {
-        var completionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-        await _greetQueue.Writer.WriteAsync((conf, user, null));
-        return await completionSource.Task;
-    }
-
+    
     private async Task<bool> GreetDmUserInternal(GreetSettings conf, IGuildUser user)
     {
         try
@@ -311,21 +312,28 @@ public class GreetService : INService, IReadyExecutor
         {
             try
             {
-                var conf = await GetGreetSettingsAsync(user.GuildId, GreetType.Greet);
-
-                if (conf is not null && conf.IsEnabled && conf.ChannelId is { } channelId)
+                if (_enabled[GreetType.Greet].Contains(user.GuildId))
                 {
-                    var channel = await user.Guild.GetTextChannelAsync(channelId);
-                    if (channel is not null)
+                    var conf = await GetGreetSettingsAsync(user.GuildId, GreetType.Greet);
+                    if (conf?.ChannelId is ulong cid)
                     {
-                        await _greetQueue.Writer.WriteAsync((conf, user, channel));
+                        var channel = await user.Guild.GetTextChannelAsync(cid);
+                        if (channel is not null)
+                        {
+                            await _greetQueue.Writer.WriteAsync((conf, user, channel));
+                        }
                     }
                 }
+                
 
-                var confDm = await GetGreetSettingsAsync(user.GuildId, GreetType.GreetDm);
-
-                if (confDm?.IsEnabled ?? false)
-                    await GreetDmUser(confDm, user);
+                if (_enabled[GreetType.GreetDm].Contains(user.GuildId))
+                {
+                    var confDm = await GetGreetSettingsAsync(user.GuildId, GreetType.GreetDm);
+                    if (confDm is not null)
+                    {
+                        await _greetQueue.Writer.WriteAsync((confDm, user, null));
+                    }
+                }
             }
             catch
             {
@@ -354,8 +362,8 @@ public class GreetService : INService, IReadyExecutor
     {
         await using var uow = _db.GetDbContext();
         var q = uow.GetTable<GreetSettings>();
-        
-        if(value is null)
+
+        if (value is null)
             value = !_enabled[greetType].Contains(guildId);
 
         if (value is { } v)
@@ -477,7 +485,8 @@ public class GreetService : INService, IReadyExecutor
     {
         if (conf.GreetType == GreetType.GreetDm)
         {
-            return await GreetDmUser(conf, user);
+            await _greetQueue.Writer.WriteAsync((conf, user, null));
+            return true;
         }
 
         if (channel is not ITextChannel ch)
