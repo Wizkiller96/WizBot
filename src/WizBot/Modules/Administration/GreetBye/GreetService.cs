@@ -457,7 +457,17 @@ public class GreetService : INService, IReadyExecutor
     {
         var conf = await GetGreetSettingsAsync(guildId, type);
         if (conf is null)
-            return false;
+        {
+            conf = new GreetSettings()
+            {
+                ChannelId = channel.Id,
+                GreetType = type,
+                IsEnabled = false,
+                GuildId = guildId,
+                AutoDeleteTimer = 30,
+                MessageText = GetDefaultGreet(type)
+            };
+        }
 
         await SendMessage(conf, channel, user);
         return true;
@@ -467,7 +477,6 @@ public class GreetService : INService, IReadyExecutor
     {
         if (conf.GreetType == GreetType.GreetDm)
         {
-            await _greetQueue.Writer.WriteAsync((conf, user, channel as ITextChannel));
             return await GreetDmUser(conf, user);
         }
 
