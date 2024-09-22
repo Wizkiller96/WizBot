@@ -330,9 +330,9 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
             throw new FileNotFoundException($"Medusa dll not found: {path}");
 
         strings = MedusaStrings.CreateDefault(dir);
-        var ctx = new MedusaAssemblyLoadContext(Path.GetDirectoryName(path)!);
+        var ctx = new MedusaAssemblyLoadContext(path);
         var a = ctx.LoadFromAssemblyPath(Path.GetFullPath(path));
-        ctx.LoadDependencies(a);
+        // ctx.LoadDependencies(a);
 
         // load services
         iocModule = new MedusaNinjectIocModule(_cont, a, safeName);
