@@ -2,6 +2,16 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.10] - 24.09.2024
+
+### Fixed
+
+- Fixed claimed waifu decay in `games.yml`
+
+### Changed
+
+- Added some logs for greet service in case there are unforeseen issues, for easier debugging
+
 ## [5.1.9] - 21.09.2024
 
 ### Fixed
