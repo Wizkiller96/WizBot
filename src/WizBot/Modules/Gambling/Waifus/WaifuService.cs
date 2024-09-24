@@ -577,7 +577,7 @@ public class WaifuService : INService, IReadyExecutor
                 {
                     await using var uow = _db.GetDbContext();
                     await uow.GetTable<WaifuInfo>()
-                             .Where(x => x.Price > minPrice && x.ClaimerId == null)
+                             .Where(x => x.Price > minPrice && x.ClaimerId != null)
                              .UpdateAsync(old => new()
                              {
                                  Price = (long)(old.Price * claimedMulti)

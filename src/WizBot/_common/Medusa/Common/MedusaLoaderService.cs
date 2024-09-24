@@ -250,6 +250,7 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         }
         catch (Exception ex) when (ex is FileNotFoundException or BadImageFormatException)
         {
+            Log.Error(ex, "An error occurred loading a medusa");
             return MedusaLoadResult.NotFound;
         }
         catch (Exception ex)
@@ -334,23 +335,34 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
         var a = ctx.LoadFromAssemblyPath(Path.GetFullPath(path));
         // ctx.LoadDependencies(a);
 
+        iocModule = null;
         // load services
-        iocModule = new MedusaNinjectIocModule(_cont, a, safeName);
-        iocModule.Load();
-        
-        var sis = LoadSneksFromAssembly(safeName, a);
-        typeReaders = LoadTypeReadersFromAssembly(a, strings);
-        
-        if (sis.Count == 0)
+        try
         {
-            iocModule.Unload();
-            return false;
+            iocModule = new MedusaNinjectIocModule(_cont, a, safeName);
+            iocModule.Load();
+
+            var sis = LoadSneksFromAssembly(safeName, a);
+            typeReaders = LoadTypeReadersFromAssembly(a, strings);
+
+            if (sis.Count == 0)
+            {
+                iocModule.Unload();
+                ctx.Unload();
+                return false;
+            }
+
+            ctxWr = new(ctx);
+            snekData = sis;
+
+            return true;
         }
-
-        ctxWr = new(ctx);
-        snekData = sis;
-
-        return true;
+        catch
+        {
+            iocModule?.Unload();
+            ctx.Unload();
+            throw;
+        }
     }
 
     private static readonly Type _paramParserType = typeof(ParamParser<>);
@@ -460,10 +472,6 @@ public sealed class MedusaLoaderService : IMedusaLoaderService, IReadyExecutor, 
                 else if (ubp is bot_owner_onlyAttribute)
                 {
                     cb.AddPrecondition(new OwnerOnlyAttribute());
-                }
-                else if (ubp is bot_admin_onlyAttribute)
-                {
-                    cb.AddPrecondition(new AdminOnlyAttribute());
                 }
             }
 
