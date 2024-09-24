@@ -291,8 +291,9 @@ public class GreetService : INService, IReadyExecutor
 
             await _sender.Response(user).Text(smartText).Sanitize(false).SendAsync();
         }
-        catch
+        catch(Exception ex)
         {
+            Log.Error(ex, "Error sending greet dm");
             return false;
         }
 
@@ -335,9 +336,9 @@ public class GreetService : INService, IReadyExecutor
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                // ignored
+                Log.Error(ex, "Error in GreetService.OnUserJoined. This should not happen. Please report it");
             }
         });
         return Task.CompletedTask;
