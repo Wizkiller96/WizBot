@@ -249,46 +249,54 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
 
         try
         {
-            if (guild is SocketGuild sg)
+            if (guild is not SocketGuild sg)
+                return false;
+
+            var result = await _permChecker.CheckPermsAsync(
+                guild,
+                msg.Channel,
+                msg.Author,
+                "ACTUALEXPRESSIONS",
+                expr.Trigger
+            );
+
+            if (!result.IsAllowed)
             {
-                var result = await _permChecker.CheckPermsAsync(
-                    guild,
-                    msg.Channel,
-                    msg.Author,
-                    "ACTUALEXPRESSIONS",
-                    expr.Trigger
-                );
-                
-                if (!result.IsAllowed)
+                var cache = _pc.GetCacheFor(guild.Id);
+                if (cache.Verbose)
                 {
-                    var cache = _pc.GetCacheFor(guild.Id);
-                    if (cache.Verbose)
+                    if (result.TryPickT3(out var disallowed, out _))
                     {
-                        if (result.TryPickT3(out var disallowed, out _))
+                        var permissionMessage = _strings.GetText(strs.perm_prevent(disallowed.PermIndex + 1,
+                                Format.Bold(disallowed.PermText)),
+                            sg.Id);
+
+                        try
                         {
-                            var permissionMessage = _strings.GetText(strs.perm_prevent(disallowed.PermIndex + 1,
-                                    Format.Bold(disallowed.PermText)),
-                                sg.Id);
-
-                            try
-                            {
-                                await _sender.Response(msg.Channel)
-                                             .Error(permissionMessage)
-                                             .SendAsync();
-                            }
-                            catch
-                            {
-                            }
-
-                            Log.Information("{PermissionMessage}", permissionMessage);
+                            await _sender.Response(msg.Channel)
+                                         .Error(permissionMessage)
+                                         .SendAsync();
                         }
-                    }
+                        catch
+                        {
+                        }
 
-                    return true;
+                        Log.Information("{PermissionMessage}", permissionMessage);
+                    }
                 }
+
+                return true;
             }
 
-            var sentMsg = await expr.Send(msg, _repSvc, _client, _sender);
+            var cu = sg.CurrentUser;
+
+            var channel = expr.DmResponse ? await msg.Author.CreateDMChannelAsync() : msg.Channel;
+
+            // have no perms to speak in that channel
+            if (channel is ITextChannel tc && !cu.GetPermissions(tc).SendMessages)
+                return false;
+
+            var sentMsg = await Send(expr, msg, channel);
 
             var reactions = expr.GetReactions();
             foreach (var reaction in reactions)
@@ -334,6 +342,47 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
         }
 
         return false;
+    }
+
+
+    public string ResolveTriggerString(string str)
+        => str.Replace("%bot.mention%", _client.CurrentUser.Mention, StringComparison.Ordinal);
+
+    public async Task<IUserMessage> Send(
+        WizBotExpression cr,
+        IUserMessage ctx,
+        IMessageChannel channel
+    )
+    {
+        var trigger = ResolveTriggerString(cr.Trigger);
+        var substringIndex = trigger.Length;
+        if (cr.ContainsAnywhere)
+        {
+            var pos = ctx.Content.AsSpan().GetWordPosition(trigger);
+            if (pos == WordPosition.Start)
+                substringIndex += 1;
+            else if (pos == WordPosition.End)
+                substringIndex = ctx.Content.Length;
+            else if (pos == WordPosition.Middle)
+                substringIndex += ctx.Content.IndexOf(trigger, StringComparison.InvariantCulture);
+        }
+
+        var canMentionEveryone = (ctx.Author as IGuildUser)?.GuildPermissions.MentionEveryone ?? true;
+
+        var repCtx = new ReplacementContext(client: _client,
+                guild: (ctx.Channel as ITextChannel)?.Guild as SocketGuild,
+                channel: ctx.Channel,
+                user: ctx.Author
+            )
+            .WithOverride("%target%",
+                () => canMentionEveryone
+                    ? ctx.Content[substringIndex..].Trim()
+                    : ctx.Content[substringIndex..].Trim().SanitizeMentions(true));
+
+        var text = SmartText.CreateFrom(cr.Response);
+        text = await _repSvc.ReplaceAsync(text, repCtx);
+
+        return await _sender.Response(channel).Text(text).Sanitize(false).SendAsync();
     }
 
     public async Task ResetExprReactions(ulong? maybeGuildId, int id)
