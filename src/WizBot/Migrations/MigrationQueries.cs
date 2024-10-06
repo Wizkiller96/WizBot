@@ -38,7 +38,7 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
                      DELETE FROM "DelMsgOnCmdChannel" WHERE "GuildConfigId" is NULL;
                      DELETE FROM "WarningPunishment" WHERE "GuildConfigId" NOT IN (SELECT "Id" from "GuildConfigs");
                      DELETE FROM "StreamRoleBlacklistedUser" WHERE "StreamRoleSettingsId" is NULL;
-                     DELETE FROM "PermissionsV2" WHERE "GuildConfigId" NOT IN (SELECT "Id" from "GuildConfigs");
+                     DELETE FROM "Permissions" WHERE "GuildConfigId" NOT IN (SELECT "Id" from "GuildConfigs");
                      """);
     }
 
