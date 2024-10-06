@@ -185,6 +185,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
 
     public async Task<GuildInfo> GetGuildInfoAsync(ulong id)
     {
+        var g = _client.GetGuild(id);
         var ig = (IGuild)g;
         
         return new GuildInfo()
