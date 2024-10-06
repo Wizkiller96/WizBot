@@ -93,6 +93,9 @@ public class GreetService : INService, IReadyExecutor
 
     private Task ClientOnGuildMemberUpdated(Cacheable<SocketGuildUser, ulong> optOldUser, SocketGuildUser newUser)
     {
+        if (!_enabled[GreetType.Boost].Contains(newUser.Guild.Id))
+            return Task.CompletedTask;
+
         // if user is a new booster
         // or boosted again the same server
         if ((optOldUser.Value is { PremiumSince: null } && newUser is { PremiumSince: not null })
@@ -134,21 +137,63 @@ public class GreetService : INService, IReadyExecutor
                  .DeleteAsync();
     }
 
-    private Task OnUserLeft(SocketGuild guild, SocketUser user)
+    private Task OnUserJoined(IGuildUser user)
     {
         _ = Task.Run(async () =>
         {
             try
             {
+                if (_enabled[GreetType.Greet].Contains(user.GuildId))
+                {
+                    var conf = await GetGreetSettingsAsync(user.GuildId, GreetType.Greet);
+                    if (conf?.ChannelId is ulong cid)
+                    {
+                        var channel = await user.Guild.GetTextChannelAsync(cid);
+                        if (channel is not null)
+                        {
+                            await _greetQueue.Writer.WriteAsync((conf, user, channel));
+                        }
+                    }
+                }
+
+
+                if (_enabled[GreetType.GreetDm].Contains(user.GuildId))
+                {
+                    var confDm = await GetGreetSettingsAsync(user.GuildId, GreetType.GreetDm);
+                    if (confDm is not null)
+                    {
+                        await _greetQueue.Writer.WriteAsync((confDm, user, null));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GreetService.OnUserJoined. This should not happen. Please report it");
+            }
+        });
+        return Task.CompletedTask;
+    }
+
+    private Task OnUserLeft(SocketGuild guild, SocketUser user)
+    {
+        _ = Task.Run(async () =>
+        {
+            if (!_enabled[GreetType.Bye].Contains(guild.Id))
+                return;
+
+            try
+            {
                 var conf = await GetGreetSettingsAsync(guild.Id, GreetType.Bye);
 
-                if (conf is null)
+                if (conf?.ChannelId is not { } cid)
                     return;
 
-                var channel = guild.TextChannels.FirstOrDefault(c => c.Id == conf.ChannelId);
-
+                var channel = guild.GetChannel(cid) as ITextChannel;
                 if (channel is null) //maybe warn the server owner that the channel is missing
                 {
+                    Log.Warning("Channel {ChannelId} in {GuildId} was not found. Bye message will be disabled",
+                        conf.ChannelId,
+                        conf.GuildId);
                     await SetGreet(guild.Id, null, GreetType.Bye, false);
                     return;
                 }
@@ -216,16 +261,17 @@ public class GreetService : INService, IReadyExecutor
                                            or DiscordErrorCode.UnknownChannel)
         {
             Log.Warning(ex,
-                "Missing permissions to send a bye message, the greet message will be disabled on server: {GuildId}",
+                "Missing permissions to send a {GreetType} message, it will be disabled on server: {GuildId}",
+                conf.GreetType,
                 channel.GuildId);
-            await SetGreet(channel.GuildId, channel.Id, GreetType.Greet, false);
+            await SetGreet(channel.GuildId, channel.Id, conf.GreetType, false);
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "Error embeding greet message");
         }
     }
-    
+
     private async Task<bool> GreetDmUserInternal(GreetSettings conf, IGuildUser user)
     {
         try
@@ -291,7 +337,7 @@ public class GreetService : INService, IReadyExecutor
 
             await _sender.Response(user).Text(smartText).Sanitize(false).SendAsync();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Log.Error(ex, "Error sending greet dm");
             return false;
@@ -306,43 +352,6 @@ public class GreetService : INService, IReadyExecutor
             Text = $"This message was sent from {user.Guild} server.",
             IconUrl = user.Guild.IconUrl
         };
-
-    private Task OnUserJoined(IGuildUser user)
-    {
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                if (_enabled[GreetType.Greet].Contains(user.GuildId))
-                {
-                    var conf = await GetGreetSettingsAsync(user.GuildId, GreetType.Greet);
-                    if (conf?.ChannelId is ulong cid)
-                    {
-                        var channel = await user.Guild.GetTextChannelAsync(cid);
-                        if (channel is not null)
-                        {
-                            await _greetQueue.Writer.WriteAsync((conf, user, channel));
-                        }
-                    }
-                }
-                
-
-                if (_enabled[GreetType.GreetDm].Contains(user.GuildId))
-                {
-                    var confDm = await GetGreetSettingsAsync(user.GuildId, GreetType.GreetDm);
-                    if (confDm is not null)
-                    {
-                        await _greetQueue.Writer.WriteAsync((confDm, user, null));
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Log.Error(ex, "Error in GreetService.OnUserJoined. This should not happen. Please report it");
-            }
-        });
-        return Task.CompletedTask;
-    }
 
 
     public static string GetDefaultGreet(GreetType greetType)
