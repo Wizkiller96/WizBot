@@ -2,6 +2,16 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.12] - 03.10.2024
+
+### Added
+
+- Added support for `seq` for logging. If you fill in seq url and apiKey in creds.yml, bot will sends logs to it
+
+### Fixed
+
+- Fixed another bug in `.greet` / `.bye` system, which caused it to show wrong message on a wrong server occasionally
+
 ## [5.1.11] - 03.10.2024
 
 ### Added

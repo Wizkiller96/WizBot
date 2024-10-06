@@ -11,7 +11,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
     public static string GiveawayEmoji = "🎉";
 
     private readonly DbService _db;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DiscordSocketClient _client;
     private readonly IMessageSenderService _sender;
     private readonly IBotStrings _strings;
@@ -20,7 +20,7 @@ public sealed class GiveawayService : INService, IReadyExecutor
     private SortedSet<GiveawayModel> _giveawayCache = new SortedSet<GiveawayModel>();
     private readonly WizBotRandom _rng;
 
-    public GiveawayService(DbService db, IBotCredentials creds, DiscordSocketClient client,
+    public GiveawayService(DbService db, IBotCreds creds, DiscordSocketClient client,
         IMessageSenderService sender, IBotStrings strings, ILocalization localization, IMemoryCache cache)
     {
         _db = db;

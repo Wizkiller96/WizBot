@@ -34,7 +34,7 @@ public partial class Utility : WizBotModule
     private readonly DiscordSocketClient _client;
     private readonly ICoordinator _coord;
     private readonly IStatsService _stats;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DownloadTracker _tracker;
     private readonly IHttpClientFactory _httpFactory;
     private readonly VerboseErrorsService _veService;
@@ -45,7 +45,7 @@ public partial class Utility : WizBotModule
         DiscordSocketClient client,
         ICoordinator coord,
         IStatsService stats,
-        IBotCredentials creds,
+        IBotCreds creds,
         DownloadTracker tracker,
         IHttpClientFactory httpFactory,
         VerboseErrorsService veService,

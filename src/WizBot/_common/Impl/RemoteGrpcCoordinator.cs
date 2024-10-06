@@ -11,7 +11,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
     private readonly Coordinator.Coordinator.CoordinatorClient _coordClient;
     private readonly DiscordSocketClient _client;
 
-    public RemoteGrpcCoordinator(IBotCredentials creds, DiscordSocketClient client)
+    public RemoteGrpcCoordinator(IBotCreds creds, DiscordSocketClient client)
     {
         var coordUrl = string.IsNullOrWhiteSpace(creds.CoordinatorUrl) ? "http://localhost:3442" : creds.CoordinatorUrl;
 

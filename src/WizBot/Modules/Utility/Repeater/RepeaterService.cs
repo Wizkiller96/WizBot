@@ -12,7 +12,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
 
     private readonly DbService _db;
     private readonly IReplacementService _repSvc;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DiscordSocketClient _client;
     private readonly LinkedList<RunningRepeater> _repeaterQueue;
     private readonly ConcurrentHashSet<int> _noRedundant;
@@ -25,7 +25,7 @@ public sealed class RepeaterService : IReadyExecutor, INService
         DiscordSocketClient client,
         DbService db,
         IReplacementService repSvc,
-        IBotCredentials creds,
+        IBotCreds creds,
         IMessageSenderService sender)
     {
         _db = db;

@@ -103,7 +103,7 @@ public static class Extensions
     /// <summary>
     ///     First 10 characters of teh bot token.
     /// </summary>
-    public static string RedisKey(this IBotCredentials bc)
+    public static string RedisKey(this IBotCreds bc)
         => bc.Token[..10];
 
     public static bool IsAuthor(this IMessage msg, IDiscordClient client)

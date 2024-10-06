@@ -12,10 +12,10 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
         All
     }
 
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly IHttpClientFactory _clientFactory;
 
-    public WizBotExpressions(IBotCredentials creds, IHttpClientFactory clientFactory)
+    public WizBotExpressions(IBotCreds creds, IHttpClientFactory clientFactory)
     {
         _creds = creds;
         _clientFactory = clientFactory;

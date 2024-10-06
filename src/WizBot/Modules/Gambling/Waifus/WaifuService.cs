@@ -15,7 +15,7 @@ public class WaifuService : INService, IReadyExecutor
     private readonly ICurrencyService _cs;
     private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DiscordSocketClient _client;
 
     public WaifuService(
@@ -23,7 +23,7 @@ public class WaifuService : INService, IReadyExecutor
         ICurrencyService cs,
         IBotCache cache,
         GamblingConfigService gss,
-        IBotCredentials creds,
+        IBotCreds creds,
         DiscordSocketClient client)
     {
         _db = db;

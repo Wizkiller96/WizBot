@@ -61,7 +61,7 @@ public static class ServiceCollectionExtensions
         return svcs;
     }
 
-    public static IContainer AddCache(this IContainer cont, IBotCredentials creds)
+    public static IContainer AddCache(this IContainer cont, IBotCreds creds)
     {
         if (creds.BotCache == BotCacheImplemenation.Redis)
         {

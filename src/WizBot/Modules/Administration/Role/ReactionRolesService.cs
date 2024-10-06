@@ -13,7 +13,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
 {
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
 
     private ConcurrentDictionary<ulong, List<ReactionRoleV2>> _cache;
     private readonly object _cacheLock = new();
@@ -24,7 +24,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         DiscordSocketClient client,
         IPatronageService ps,
         DbService db,
-        IBotCredentials creds)
+        IBotCreds creds)
     {
         _db = db;
         _client = client;

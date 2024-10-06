@@ -29,7 +29,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
 
     private readonly Process _currentProcess = Process.GetCurrentProcess();
     private readonly DiscordSocketClient _client;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DateTime _started;
 
     private long textChannels;
@@ -42,7 +42,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
     public StatsService(
         DiscordSocketClient client,
         CommandHandler cmdHandler,
-        IBotCredentials creds,
+        IBotCreds creds,
         IHttpClientFactory factory)
     {
         _client = client;

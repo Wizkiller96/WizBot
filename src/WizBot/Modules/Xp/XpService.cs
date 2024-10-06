@@ -25,7 +25,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly IImageCache _images;
     private readonly IBotStrings _strings;
     private readonly FontProvider _fonts;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly ICurrencyService _cs;
     private readonly IHttpClientFactory _httpFactory;
     private readonly XpConfigService _xpConfig;
@@ -55,7 +55,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         IImageCache images,
         IBotCache c,
         FontProvider fonts,
-        IBotCredentials creds,
+        IBotCreds creds,
         ICurrencyService cs,
         IHttpClientFactory http,
         XpConfigService xpConfig,

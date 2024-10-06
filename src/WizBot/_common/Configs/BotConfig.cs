@@ -29,7 +29,7 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
     public CultureInfo DefaultLocale { get; set; }
 
     [Comment("""
-        Style in which executed commands will show up in the console.
+        Style in which executed commands will show up in the logs.
         Allowed values: Simple, Normal, None
         """)]
     public ConsoleOutputType ConsoleOutputType { get; set; }

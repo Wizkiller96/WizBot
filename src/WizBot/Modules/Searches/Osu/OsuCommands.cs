@@ -9,10 +9,10 @@ public partial class Searches
     [Group]
     public partial class OsuCommands : WizBotModule<OsuService>
     {
-        private readonly IBotCredentials _creds;
+        private readonly IBotCreds _creds;
         private readonly IHttpClientFactory _httpFactory;
 
-        public OsuCommands(IBotCredentials creds, IHttpClientFactory factory)
+        public OsuCommands(IBotCreds creds, IHttpClientFactory factory)
         {
             _creds = creds;
             _httpFactory = factory;

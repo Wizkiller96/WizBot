@@ -1,5 +1,3 @@
-var pid = Environment.ProcessId;
-
 var shardId = 0;
 int? totalShards = null; // 0 to read from creds.yml
 if (args.Length > 0 && args[0] != "run")
@@ -22,7 +20,5 @@ if (args.Length > 0 && args[0] != "run")
     }
 }
 
-LogSetup.SetupLogger(shardId);
-Log.Information("Pid: {ProcessId}", pid);
 
 await new Bot(shardId, totalShards, Environment.GetEnvironmentVariable("WizBot__creds")).RunAndBlockAsync();

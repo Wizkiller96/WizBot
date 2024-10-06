@@ -14,12 +14,12 @@ public sealed class BlacklistService : IExecOnMessage
 
     private readonly DbService _db;
     private readonly IPubSub _pubSub;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private IReadOnlyList<BlacklistEntry> blacklist;
 
     private readonly TypedKey<BlacklistEntry[]> _blPubKey = new("blacklist.reload");
 
-    public BlacklistService(DbService db, IPubSub pubSub, IBotCredentials creds)
+    public BlacklistService(DbService db, IPubSub pubSub, IBotCreds creds)
     {
         _db = db;
         _pubSub = pubSub;

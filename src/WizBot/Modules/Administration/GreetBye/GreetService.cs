@@ -208,11 +208,11 @@ public class GreetService : INService, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private TypedKey<GreetSettings?> GreetSettingsKey(GreetType type)
-        => new($"greet_settings:{type}");
+    private TypedKey<GreetSettings?> GreetSettingsKey(ulong gid, GreetType type)
+        => new($"greet_settings:{gid}:{type}");
 
     public async Task<GreetSettings?> GetGreetSettingsAsync(ulong gid, GreetType type)
-        => await _cache.GetOrAddAsync<GreetSettings?>(GreetSettingsKey(type),
+        => await _cache.GetOrAddAsync<GreetSettings?>(GreetSettingsKey(gid, type),
             () => InternalGetGreetSettingsAsync(gid, type),
             TimeSpan.FromSeconds(3));
 

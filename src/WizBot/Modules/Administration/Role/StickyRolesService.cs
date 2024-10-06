@@ -9,13 +9,13 @@ namespace WizBot.Modules.Administration;
 public sealed class StickyRolesService : INService, IReadyExecutor
 {
     private readonly DiscordSocketClient _client;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DbService _db;
     private HashSet<ulong> _stickyRoles = new();
 
     public StickyRolesService(
         DiscordSocketClient client,
-        IBotCredentials creds,
+        IBotCreds creds,
         DbService db)
     {
         _client = client;

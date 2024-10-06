@@ -15,13 +15,13 @@ public class RedisBotStringsProvider : IBotStringsProvider
 
     private readonly ConnectionMultiplexer _redis;
     private readonly IStringsSource _source;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
 
     public RedisBotStringsProvider(
         ConnectionMultiplexer redis,
         DiscordSocketClient discordClient,
         IStringsSource source,
-        IBotCredentials creds)
+        IBotCreds creds)
     {
         _redis = redis;
         _source = source;

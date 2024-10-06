@@ -120,7 +120,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
         }
     }
 
-    public void ModifyCredsFile(Action<IBotCredentials> func)
+    public void ModifyCredsFile(Action<IBotCreds> func)
     {
         var ymlData = File.ReadAllText(CREDS_FILE_NAME);
         var creds = Yaml.Deserializer.Deserialize<Creds>(ymlData);
@@ -138,17 +138,17 @@ public sealed class BotCredsProvider : IBotCredsProvider
             var creds = Yaml.Deserializer.Deserialize<Creds>(File.ReadAllText(CREDS_FILE_NAME));
             if (creds.Version <= 5)
             {
-                creds.BotCache = BotCacheImplemenation.Redis;
+                creds.BotCache = BotCacheImplemenation.Memory;
             }
-            if (creds.Version <= 9)
+            if (creds.Version < 11)
             {
-                creds.Version = 10;
+                creds.Version = 11;
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }
     }
 
-    public IBotCredentials GetCreds()
+    public IBotCreds GetCreds()
     {
         lock (_reloadLock)
         {

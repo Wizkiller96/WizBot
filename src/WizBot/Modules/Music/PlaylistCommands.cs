@@ -12,9 +12,9 @@ public sealed partial class Music
     {
         private static readonly SemaphoreSlim _playlistLock = new(1, 1);
         private readonly DbService _db;
-        private readonly IBotCredentials _creds;
+        private readonly IBotCreds _creds;
 
-        public PlaylistCommands(DbService db, IBotCredentials creds)
+        public PlaylistCommands(DbService db, IBotCreds creds)
         {
             _db = db;
             _creds = creds;

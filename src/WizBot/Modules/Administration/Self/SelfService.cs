@@ -15,7 +15,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
     private readonly IBotStrings _strings;
     private readonly DiscordSocketClient _client;
 
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
 
     private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
         new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
@@ -38,7 +38,7 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
         CommandHandler cmdHandler,
         DbService db,
         IBotStrings strings,
-        IBotCredentials creds,
+        IBotCreds creds,
         IHttpClientFactory factory,
         BotConfigService bss,
         IPubSub pubSub,

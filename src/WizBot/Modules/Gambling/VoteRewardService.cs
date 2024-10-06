@@ -14,13 +14,13 @@ public class VoteModel
 public class VoteRewardService : INService, IReadyExecutor
 {
     private readonly DiscordSocketClient _client;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly ICurrencyService _currencyService;
     private readonly GamblingConfigService _gamb;
 
     public VoteRewardService(
         DiscordSocketClient client,
-        IBotCredentials creds,
+        IBotCreds creds,
         ICurrencyService currencyService,
         GamblingConfigService gamb)
     {

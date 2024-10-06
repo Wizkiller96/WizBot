@@ -7,9 +7,9 @@ namespace WizBot.Modules.Searches;
 public sealed class OsuService : INService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
 
-    public OsuService(IHttpClientFactory httpFactory, IBotCredentials creds)
+    public OsuService(IHttpClientFactory httpFactory, IBotCreds creds)
     {
         _httpFactory = httpFactory;
         _creds = creds;

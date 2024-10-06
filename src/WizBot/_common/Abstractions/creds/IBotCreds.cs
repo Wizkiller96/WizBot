@@ -1,7 +1,7 @@
 ﻿#nullable disable
 namespace WizBot;
 
-public interface IBotCredentials
+public interface IBotCreds
 {
     string Token { get; }
     string NadekoAiToken { get; }
@@ -31,6 +31,7 @@ public interface IBotCredentials
     GoogleApiConfig Google { get; set; }
     BotCacheImplemenation BotCache { get; set; }
     Creds.GrpcApiConfig GrpcApi { get; set; }
+    SeqConfig Seq { get; set; }
 }
 
 public interface IVotesSettings

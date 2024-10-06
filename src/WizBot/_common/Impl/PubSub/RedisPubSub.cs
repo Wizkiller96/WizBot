@@ -4,11 +4,11 @@ namespace Wiz.Common;
 
 public sealed class RedisPubSub : IPubSub
 {
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly ConnectionMultiplexer _multi;
     private readonly ISeria _serializer;
 
-    public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer, IBotCredentials creds)
+    public RedisPubSub(ConnectionMultiplexer multi, ISeria serializer, IBotCreds creds)
     {
         _multi = multi;
         _serializer = serializer;

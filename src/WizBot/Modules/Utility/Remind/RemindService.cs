@@ -17,14 +17,14 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
     private readonly DiscordSocketClient _client;
     private readonly DbService _db;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly IMessageSenderService _sender;
     private readonly CultureInfo _culture;
 
     public RemindService(
         DiscordSocketClient client,
         DbService db,
-        IBotCredentials creds,
+        IBotCreds creds,
         IMessageSenderService sender)
     {
         _client = client;

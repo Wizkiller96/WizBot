@@ -5,10 +5,10 @@ namespace WizBot.Services;
 
 public class SingleProcessCoordinator : ICoordinator
 {
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly DiscordSocketClient _client;
 
-    public SingleProcessCoordinator(IBotCredentials creds, DiscordSocketClient client)
+    public SingleProcessCoordinator(IBotCreds creds, DiscordSocketClient client)
     {
         _creds = creds;
         _client = client;

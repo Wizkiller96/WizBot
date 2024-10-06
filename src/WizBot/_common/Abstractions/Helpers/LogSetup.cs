@@ -6,9 +6,9 @@ namespace Wiz.Common;
 
 public static class LogSetup
 {
-    public static void SetupLogger(object source)
+    public static void SetupLogger(object source, IBotCreds creds)
     {
-        Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        var config = new LoggerConfiguration().MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                                               .MinimumLevel.Override("System", LogEventLevel.Information)
                                               .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                                               .Enrich.FromLogContext()
@@ -16,8 +16,13 @@ public static class LogSetup
                                                   theme: GetTheme(),
                                                   outputTemplate:
                                                   "[{Timestamp:HH:mm:ss} {Level:u3}] | #{LogSource} | {Message:lj}{NewLine}{Exception}")
-                                              .Enrich.WithProperty("LogSource", source)
-                                              .CreateLogger();
+                                              .Enrich.WithProperty("LogSource", source);
+
+        if (!string.IsNullOrWhiteSpace(creds.Seq.Url))
+            config = config.WriteTo.Seq(creds.Seq.Url, apiKey: creds.Seq.ApiKey);
+
+        Log.Logger = config
+            .CreateLogger();
 
         Console.OutputEncoding = Encoding.UTF8;
     }

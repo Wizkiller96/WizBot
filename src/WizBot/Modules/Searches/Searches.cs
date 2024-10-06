@@ -14,14 +14,14 @@ namespace WizBot.Modules.Searches;
 
 public partial class Searches : WizBotModule<SearchesService>
 {
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly IGoogleApiService _google;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IMemoryCache _cache;
     private readonly ITimezoneService _tzSvc;
 
     public Searches(
-        IBotCredentials creds,
+        IBotCreds creds,
         IGoogleApiService google,
         IHttpClientFactory factory,
         IMemoryCache cache,

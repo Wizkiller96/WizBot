@@ -19,7 +19,7 @@ public class ChatterBotService : IExecOnMessage
 
     private readonly DiscordSocketClient _client;
     private readonly IPermissionChecker _perms;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly IHttpClientFactory _httpFactory;
     private readonly GamesConfigService _gcs;
     private readonly IMessageSenderService _sender;
@@ -32,7 +32,7 @@ public class ChatterBotService : IExecOnMessage
         IBot bot,
         IPatronageService ps,
         IHttpClientFactory factory,
-        IBotCredentials creds,
+        IBotCreds creds,
         GamesConfigService gcs,
         IMessageSenderService sender,
         DbService db)

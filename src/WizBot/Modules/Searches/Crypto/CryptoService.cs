@@ -16,11 +16,11 @@ public class CryptoService : INService
 {
     private readonly IBotCache _cache;
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
 
     private readonly SemaphoreSlim _getCryptoLock = new(1, 1);
 
-    public CryptoService(IBotCache cache, IHttpClientFactory httpFactory, IBotCredentials creds)
+    public CryptoService(IBotCache cache, IHttpClientFactory httpFactory, IBotCreds creds)
     {
         _cache = cache;
         _httpFactory = httpFactory;

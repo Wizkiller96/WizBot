@@ -25,7 +25,7 @@ public sealed class Bot : IBot
     public bool IsReady { get; private set; }
     public int ShardId { get; set; }
 
-    private readonly IBotCredentials _creds;
+    private readonly IBotCreds _creds;
     private readonly CommandService _commandService;
     private readonly DbService _db;
 
@@ -41,6 +41,9 @@ public sealed class Bot : IBot
         ShardId = shardId;
         _credsProvider = new BotCredsProvider(totalShards, credPath);
         _creds = _credsProvider.GetCreds();
+
+        LogSetup.SetupLogger(shardId, _creds);
+        Log.Information("Pid: {ProcessId}", Environment.ProcessId);
 
         _db = new WizBotDbService(_credsProvider);
 
@@ -111,7 +114,7 @@ public sealed class Bot : IBot
         // svcs.Components.Remove<IPlanner, Planner>();
         // svcs.Components.Add<IPlanner, RemovablePlanner>();
 
-        svcs.AddSingleton<IBotCredentials>(_ => _credsProvider.GetCreds());
+        svcs.AddSingleton<IBotCreds>(_ => _credsProvider.GetCreds());
         svcs.AddSingleton<DbService, DbService>(_db);
         svcs.AddSingleton<IBotCredsProvider>(_credsProvider);
         svcs.AddSingleton<DiscordSocketClient>(Client);
