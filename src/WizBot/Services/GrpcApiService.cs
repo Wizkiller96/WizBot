@@ -31,7 +31,7 @@ public class GrpcApiService : INService, IReadyExecutor
     public Task OnReadyAsync()
     {
         var creds = _creds.GetCreds();
-        if (creds.GrpcApi is null || creds.GrpcApi.Enabled)
+        if (creds.GrpcApi is null || !creds.GrpcApi.Enabled)
             return Task.CompletedTask;
 
         try
