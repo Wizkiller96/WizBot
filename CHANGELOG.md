@@ -2,6 +2,16 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.14] - 03.10.2024
+
+## Changed
+
+- Improved `.xplb -c`, it will now correctly only show users who are still in the server with no count limit
+
+## Fixed
+
+- Fixed medusa load error on startup
+
 ## [5.1.13] - 03.10.2024
 
 ### Fixed

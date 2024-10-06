@@ -4,7 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>true</ImplicitUsings>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-        <Version>5.1.13</Version>
+        <Version>5.1.14</Version>
 
         <!-- Output/build -->
         <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
