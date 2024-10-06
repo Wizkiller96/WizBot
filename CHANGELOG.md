@@ -2,6 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.13] - 03.10.2024
+
+### Fixed
+
+- Grpc api server will no longer start unless enabled in creds
+- Seq comment in creds fixed
+
 ## [5.1.12] - 03.10.2024
 
 ### Added

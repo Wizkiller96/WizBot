@@ -6,7 +6,7 @@ namespace Wiz.Common;
 public sealed class Creds : IBotCreds
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 11;
+    public int Version { get; set; } = 12;
 
     [Comment("""Bot token. Do not share with anyone ever -> https://discordapp.com/developers/applications/""")]
     public string Token { get; set; }
@@ -170,7 +170,7 @@ public sealed class Creds : IBotCreds
     public GrpcApiConfig GrpcApi { get; set; }
     
     [Comment("""
-             Url to 
+             Url and api key to a seq server. If url is set, bot will try to send logs to it.
              """)]
     public SeqConfig Seq { get; set; }
 

@@ -140,9 +140,9 @@ public sealed class BotCredsProvider : IBotCredsProvider
             {
                 creds.BotCache = BotCacheImplemenation.Memory;
             }
-            if (creds.Version < 11)
+            if (creds.Version < 12)
             {
-                creds.Version = 11;
+                creds.Version = 12;
                 File.WriteAllText(CREDS_FILE_NAME, Yaml.Serializer.Serialize(creds));
             }
         }
