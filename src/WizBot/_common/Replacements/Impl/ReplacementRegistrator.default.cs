@@ -70,8 +70,9 @@ public sealed partial class ReplacementPatternStore
         Register("%user.id%", static (IUser user) => user.Id.ToString());
         Register("%user.created_time%", static (IUser user) => user.CreatedAt.ToString("HH:mm"));
         Register("%user.created_date%", static (IUser user) => user.CreatedAt.ToString("dd.MM.yyyy"));
-        Register("%user.joined_time%", static (IGuildUser user) => user.JoinedAt?.ToString("HH:mm"));
-        Register("%user.joined_date%", static (IGuildUser user) => user.JoinedAt?.ToString("dd.MM.yyyy"));
+        Register("%user.joined_time%", static (IGuildUser user) => user.JoinedAt?.ToString("HH:mm") ?? "??:??");
+        Register("%user.joined_date%",
+            static (IGuildUser user) => user.JoinedAt?.ToString("dd.MM.yyyy") ?? "??.??.????");
 
         Register("%user%",
             static (IUser[] users) => string.Join(" ", users.Select(user => user.Mention)));

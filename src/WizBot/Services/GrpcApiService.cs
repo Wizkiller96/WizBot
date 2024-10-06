@@ -8,8 +8,6 @@ public class GrpcApiService : INService, IReadyExecutor
 {
     private Server? _app;
 
-    private static readonly bool _isEnabled = true;
-
     private readonly DiscordSocketClient _client;
     private readonly OtherSvc _other;
     private readonly ExprsSvc _exprs;
@@ -30,11 +28,11 @@ public class GrpcApiService : INService, IReadyExecutor
         _creds = creds;
     }
 
-    public async Task OnReadyAsync()
+    public Task OnReadyAsync()
     {
         var creds = _creds.GetCreds();
         if (creds.GrpcApi is null || creds.GrpcApi.Enabled)
-            return;
+            return Task.CompletedTask;
 
         try
         {
@@ -65,5 +63,7 @@ public class GrpcApiService : INService, IReadyExecutor
         {
             _app?.ShutdownAsync().GetAwaiter().GetResult();
         }
+
+        return Task.CompletedTask;
     }
 }

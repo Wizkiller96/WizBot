@@ -3,7 +3,6 @@ using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -50,7 +49,7 @@ namespace WizBot.Generators
                     predicate: static (s, _) => s is MethodDeclarationSyntax,
                     transform: static (ctx, _) => GetMethodSemanticTargets(ctx.SemanticModel, ctx.TargetNode))
                 .Where(static m => m is not null)
-                .Select(static (x, _) => x.Value)
+                .Select(static (x, _) => x!.Value)
                 .Collect();
 
             context.RegisterSourceOutput(enumsToGenerate,
@@ -74,7 +73,7 @@ namespace WizBot.Generators
             // if (model.GetSymbolInfo(attr).Symbol is not IMethodSymbol attrSymbol)
             //     return null;
 
-            return new  MethodPermData(name, attr.ArgumentList.Arguments[0].ToString());
+            return new  MethodPermData(name, attr.ArgumentList?.Arguments[0].ToString() ?? "__missing_perm__");
             // return new MethodPermData(name, attrSymbol.Parameters[0].ContainingType.ToDisplayString() + "." + attrSymbol.Parameters[0].Name);
         }
 
@@ -99,7 +98,7 @@ namespace WizBot.Generators
                 sw.Indent++;
                 foreach (var field in fields)
                 {
-                    sw.WriteLine("{{ \"{0}\", {1} }},", field!.Name, field!.Value);
+                    sw.WriteLine("{{ \"{0}\", {1} }},", field.Name, field.Value);
                 }
 
                 sw.Indent--;
