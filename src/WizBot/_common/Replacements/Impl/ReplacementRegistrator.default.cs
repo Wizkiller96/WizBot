@@ -65,6 +65,7 @@ public sealed partial class ReplacementPatternStore
         Register("%user.mention%", static (IUser user) => user.Mention);
         Register("%user.fullname%", static (IUser user) => user.ToString()!);
         Register("%user.name%", static (IUser user) => user.Username);
+        Register("%user.displayname%", static (IUser user) => user is IGuildUser gu ? gu.DisplayName : user.Username);
         Register("%user.discrim%", static (IUser user) => user.Discriminator);
         Register("%user.avatar%", static (IUser user) => user.RealAvatarUrl().ToString());
         Register("%user.id%", static (IUser user) => user.Id.ToString());

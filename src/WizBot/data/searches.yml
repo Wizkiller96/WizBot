@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 3
+version: 4
 # Which engine should .search command
 # 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 # 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
@@ -11,14 +11,12 @@ webSearchEngine: Google_Scrape
 imgSearchEngine: Google
 # Which search provider will be used for the `.youtube` and `.q` commands.
 # 
-# - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console
+# - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console. `.q` is not supported for this setting. It will fallback to yt-dlp.
 # 
-# - `ytdl` - default, uses youtube-dl. Requires `youtube-dl` to be installed and it's path added to env variables. Slow.
-# 
-# - `ytdlp` - recommended easy, uses `yt-dlp`. Requires `yt-dlp` to be installed and it's path added to env variables
+# - `ytdlp` - default, recommended easy, uses `yt-dlp`. Requires `yt-dlp` to be installed and it's path added to env variables
 # 
 # - `invidious` - recommended advanced, uses invidious api. Requires at least one invidious instance specified in the `invidiousInstances` property
-ytProvider: Ytdlp
+ytProvider: Ytdl
 # Set the searx instance urls in case you want to use 'searx' for either img or web search.
 # WizBot will use a random one for each request.
 # Use a fully qualified url. Example: `https://my-searx-instance.mydomain.com`

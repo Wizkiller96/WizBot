@@ -2,6 +2,26 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.11] - 03.10.2024
+
+### Added
+
+- Added `%user.displayname%` placeholder. It will show users nickname, if there is one, otherwise it will show the username.
+  - Nickname won't be shown in bye messages.
+- Added initial version of grpc api. Beta
+
+### Fixed
+
+- Fixed a bug which caused `.bye` and `.greet` messages to be randomly disabled
+- Fixed `.lb -c` breaking sometimes, and fixed pagination
+
+### Changed
+
+- Youtube now always uses `yt-dlp`. Dropped support for `youtube-dl`
+  - If you've previously renamed your yt-dlp file to youtube-dl, please rename it back.
+- ytProvider in data/searches.yml now also controls where you're getting your song streams from.
+  - (Invidious support added for .q)
+
 ## [5.1.10] - 24.09.2024
 
 ### Fixed

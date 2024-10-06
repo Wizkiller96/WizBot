@@ -646,12 +646,11 @@ public partial class Gambling : GamblingModule<GamblingService>
                 var cleanRichest = await uow.GetTable<DiscordUser>()
                                             .Where(x => x.UserId.In(users))
                                             .OrderByDescending(x => x.CurrencyAmount)
-                                            .Skip(page * perPage)
+                                            .Skip(curPage * perPage)
                                             .Take(perPage)
                                             .ToListAsync();
 
-                var sg = (SocketGuild)ctx.Guild!;
-                return cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
+                return cleanRichest;
             }
             else
             {
@@ -659,9 +658,6 @@ public partial class Gambling : GamblingModule<GamblingService>
                 return await uow.Set<DiscordUser>().GetTopRichest(_client.CurrentUser.Id, curPage);
             }
         }
-
-        var res = Response()
-            .Paginated();
 
         await Response()
               .Paginated()

@@ -28,11 +28,9 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
     [Comment("""
              Which search provider will be used for the `.youtube` and `.q` commands.
 
-             - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console
+             - `ytDataApiv3` - uses google's official youtube data api. Requires `GoogleApiKey` set in creds and youtube data api enabled in developers console. `.q` is not supported for this setting. It will fallback to yt-dlp.
 
-             - `ytdl` - default, uses youtube-dl. Requires `youtube-dl` to be installed and it's path added to env variables. Slow.
-
-             - `ytdlp` - recommended easy, uses `yt-dlp`. Requires `yt-dlp` to be installed and it's path added to env variables
+             - `ytdlp` - default, recommended easy, uses `yt-dlp`. Requires `yt-dlp` to be installed and it's path added to env variables
 
              - `invidious` - recommended advanced, uses invidious api. Requires at least one invidious instance specified in the `invidiousInstances` property
              """)]
