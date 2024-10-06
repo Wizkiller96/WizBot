@@ -167,7 +167,7 @@ public sealed class Creds : IBotCredentials
              We don't provide support for this.
              If you leave certPath empty, the api will run on http.
              """)]
-    public ApiConfig Api { get; set; }
+    public GrpcApiConfig GrpcApi { get; set; }
 
     public Creds()
     {
@@ -195,7 +195,7 @@ public sealed class Creds : IBotCredentials
         RestartCommand = new RestartConfig();
         Google = new GoogleApiConfig();
 
-        Api = new ApiConfig();
+        GrpcApi = new GrpcApiConfig();
     }
 
     public class DbOptions
@@ -290,7 +290,7 @@ public sealed class Creds : IBotCredentials
         }
     }
 
-    public sealed record ApiConfig
+    public sealed record GrpcApiConfig
     {
         public bool Enabled { get; set; } = false;
         public string CertPath { get; set; } = string.Empty;

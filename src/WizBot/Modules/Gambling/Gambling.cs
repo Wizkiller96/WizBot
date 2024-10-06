@@ -1,6 +1,7 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using LinqToDB.Tools;
 using WizBot.Db.Models;
 using WizBot.Modules.Gambling.Bank;
 using WizBot.Modules.Gambling.Common;
@@ -101,7 +102,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await Response().Embed(eb).SendAsync();
     }
-    
+
     private async Task RemindTimelyAction(SocketMessageComponent smc, DateTime when)
     {
         var tt = TimestampTag.FromDateTime(when, TimestampTagStyles.Relative);
@@ -127,7 +128,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                     customId: "timely:remind_me"),
                 (smc) => RemindTimelyAction(smc, DateTime.UtcNow.Add(TimeSpan.FromHours(period)))
             );
-            
+
     // Creates timely reminder button, parameter in milliseconds.
     private WizBotInteractionBase CreateRemindMeInteraction(double ms)
         => _inter
@@ -166,7 +167,7 @@ public partial class Gambling : GamblingModule<GamblingService>
             await Response().Pending(strs.timely_already_claimed(relativeTag)).Interaction(interaction).SendAsync();
             return;
         }
-        
+
 
         var patron = await _ps.GetPatronAsync(ctx.User.Id);
 
@@ -625,8 +626,6 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
-        // List<DiscordUser> cleanRichest;
-        // it's pointless to have clean on dm context
         if (ctx.Guild is null)
         {
             opts.Clean = false;
@@ -640,10 +639,16 @@ public partial class Gambling : GamblingModule<GamblingService>
                 await ctx.Channel.TriggerTypingAsync();
                 await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
-                await using var uow = _db.GetDbContext();
+                var users = ((SocketGuild)ctx.Guild).Users.Map(x => x.Id);
+                var perPage = 9;
 
-                var cleanRichest = await uow.Set<DiscordUser>()
-                                            .GetTopRichest(_client.CurrentUser.Id, 0, 1000);
+                await using var uow = _db.GetDbContext();
+                var cleanRichest = await uow.GetTable<DiscordUser>()
+                                            .Where(x => x.UserId.In(users))
+                                            .OrderByDescending(x => x.CurrencyAmount)
+                                            .Skip(page * perPage)
+                                            .Take(perPage)
+                                            .ToListAsync();
 
                 var sg = (SocketGuild)ctx.Guild!;
                 return cleanRichest.Where(x => sg.GetUser(x.UserId) is not null).ToList();
@@ -661,7 +666,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         await Response()
               .Paginated()
               .PageItems(GetTopRichest)
-              .TotalElements(900)
               .PageSize(9)
               .CurrentPage(page)
               .Page((toSend, curPage) =>

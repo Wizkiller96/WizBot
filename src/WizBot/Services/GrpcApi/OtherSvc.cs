@@ -5,6 +5,12 @@ using WizBot.Modules.Xp.Services;
 
 namespace WizBot.GrpcApi;
 
+public static class GrpcApiExtensions
+{
+    public static ulong GetUserId(this ServerCallContext context)
+        => ulong.Parse(context.RequestHeaders.FirstOrDefault(x => x.Key == "userid")!.Value);
+}
+
 public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
 {
     private readonly IDiscordClient _client;
@@ -12,22 +18,54 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
     private readonly ICurrencyService _cur;
     private readonly WaifuService _waifus;
     private readonly ICoordinator _coord;
+    private readonly IStatsService _stats;
 
     public OtherSvc(
         DiscordSocketClient client,
         XpService xp,
         ICurrencyService cur,
         WaifuService waifus,
-        ICoordinator coord)
+        ICoordinator coord,
+        IStatsService stats)
     {
         _client = client;
         _xp = xp;
         _cur = cur;
         _waifus = waifus;
         _coord = coord;
+        _stats = stats;
     }
 
-    public override async Task<GetTextChannelsReply> GetTextChannels(GetTextChannelsRequest request, ServerCallContext context)
+    public override async Task<GetGuildsReply> GetGuilds(Empty request, ServerCallContext context)
+    {
+        var guilds = await _client.GetGuildsAsync(CacheMode.CacheOnly);
+
+        var reply = new GetGuildsReply();
+        var userId = context.GetUserId();
+
+        var toReturn = new List<IGuild>();
+        foreach (var g in guilds)
+        {
+            var user = await g.GetUserAsync(userId, CacheMode.AllowDownload);
+            if (user.GuildPermissions.Has(GuildPermission.Administrator))
+                toReturn.Add(g);
+        }
+
+        reply.Guilds.AddRange(toReturn
+            .Select(x => new GuildReply()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                IconUrl = x.IconUrl
+            }));
+
+        return reply;
+    }
+
+    [GrpcApiPerm(GuildPerm.Administrator)]
+    public override async Task<GetTextChannelsReply> GetTextChannels(
+        GetTextChannelsRequest request,
+        ServerCallContext context)
     {
         var g = await _client.GetGuildAsync(request.GuildId);
         var reply = new GetTextChannelsReply();
@@ -54,9 +92,9 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
             return new CurrencyLbEntryReply()
             {
                 Amount = x.CurrencyAmount,
-                User = user.ToString(),
+                User = user?.ToString() ?? x.Username,
                 UserId = x.UserId,
-                Avatar = user.RealAvatarUrl().ToString()
+                Avatar = user?.RealAvatarUrl().ToString() ?? x.RealAvatarUrl()?.ToString()
             };
         });
 
@@ -96,7 +134,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         var reply = new WaifuLbReply();
         reply.Entries.AddRange(waifus.Select(x => new WaifuLbEntry()
         {
-            ClaimedBy = x.Claimer,
+            ClaimedBy = x.Claimer ?? string.Empty,
             IsMutual = x.Claimer == x.Affinity,
             Value = x.Price,
             User = x.Username,
@@ -108,6 +146,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
     {
         var reply = new GetShardStatusesReply();
 
+        // todo cache
         var shards = _coord.GetAllShardStatuses();
 
         reply.Shards.AddRange(shards.Select(x => new ShardStatusReply()
@@ -119,5 +158,42 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         }));
 
         return Task.FromResult(reply);
+    }
+
+    [GrpcApiPerm(GuildPerm.Administrator)]
+    public override async Task<GetServerInfoReply> GetServerInfo(ServerInfoRequest request, ServerCallContext context)
+    {
+        var info = await _stats.GetGuildInfoAsync(request.GuildId);
+
+        var reply = new GetServerInfoReply()
+        {
+            Id = info.Id,
+            Name = info.Name,
+            IconUrl = info.IconUrl,
+            OwnerId = info.OwnerId,
+            OwnerName = info.Owner,
+            TextChannels = info.TextChannels,
+            VoiceChannels = info.VoiceChannels,
+            MemberCount = info.MemberCount,
+            CreatedAt = info.CreatedAt.Ticks,
+        };
+
+        reply.Features.AddRange(info.Features);
+        reply.Emojis.AddRange(info.Emojis.Select(x => new EmojiReply()
+        {
+            Name = x.Name,
+            Url = x.Url,
+            Code = x.ToString()
+        }));
+
+        reply.Roles.AddRange(info.Roles.Select(x => new RoleReply()
+        {
+            Id = x.Id,
+            Name = x.Name,
+            IconUrl = x.GetIconUrl() ?? string.Empty,
+            Color = x.Color.ToString()
+        }));
+
+        return reply;
     }
 }

@@ -49,8 +49,8 @@ public interface IStatsService
     /// </summary>
     double GetPrivateMemoryMegabytes();
 
-    GuildInfo GetGuildInfo(string name);
-    GuildInfo GetGuildInfo(ulong id);
+    GuildInfo GetGuildInfoAsync(string name);
+    Task<GuildInfo> GetGuildInfoAsync(ulong id);
 }
 
 public record struct GuildInfo

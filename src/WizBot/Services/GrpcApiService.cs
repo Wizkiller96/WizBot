@@ -1,5 +1,5 @@
-﻿using Grpc;
-using Grpc.Core;
+﻿using Grpc.Core;
+using Grpc.Core.Interceptors;
 using WizBot.Common.ModuleBehaviors;
 
 namespace WizBot.GrpcApi;
@@ -9,55 +9,61 @@ public class GrpcApiService : INService, IReadyExecutor
     private Server? _app;
 
     private static readonly bool _isEnabled = true;
-    private readonly string _host = "localhost";
-    private readonly int _port = 5030;
-    private readonly ServerCredentials _creds = ServerCredentials.Insecure;
 
+    private readonly DiscordSocketClient _client;
     private readonly OtherSvc _other;
     private readonly ExprsSvc _exprs;
-    private readonly ServerInfoSvc _info;
     private readonly GreetByeSvc _greet;
+    private readonly IBotCredsProvider _creds;
 
     public GrpcApiService(
+        DiscordSocketClient client,
         OtherSvc other,
         ExprsSvc exprs,
-        ServerInfoSvc info,
-        GreetByeSvc greet)
+        GreetByeSvc greet,
+        IBotCredsProvider creds)
     {
+        _client = client;
         _other = other;
         _exprs = exprs;
-        _info = info;
         _greet = greet;
+        _creds = creds;
     }
 
     public async Task OnReadyAsync()
     {
-        if (!_isEnabled)
+        var creds = _creds.GetCreds();
+        if (creds.GrpcApi is null || creds.GrpcApi.Enabled)
             return;
-        
+
         try
         {
-            _app = new()
+            var host = creds.GrpcApi.Host;
+            var port = creds.GrpcApi.Port + _client.ShardId;
+
+            var interceptor = new PermsInterceptor(_client);
+
+            _app = new Server()
             {
                 Services =
                 {
-                    GrpcOther.BindService(_other),
-                    GrpcExprs.BindService(_exprs),
-                    GrpcInfo.BindService(_info),
-                    GrpcGreet.BindService(_greet)
+                    GrpcOther.BindService(_other).Intercept(interceptor),
+                    GrpcExprs.BindService(_exprs).Intercept(interceptor),
+                    GrpcGreet.BindService(_greet).Intercept(interceptor),
                 },
                 Ports =
                 {
-                    new(_host, _port, _creds),
+                    new(host, port, ServerCredentials.Insecure),
                 }
             };
+
             _app.Start();
+
+            Log.Information("Grpc Api Server started on port {Host}:{Port}", host, port);
         }
-        finally
+        catch
         {
             _app?.ShutdownAsync().GetAwaiter().GetResult();
         }
-
-        Log.Information("Grpc Api Server started on port {Host}:{Port}", _host, _port);
     }
 }

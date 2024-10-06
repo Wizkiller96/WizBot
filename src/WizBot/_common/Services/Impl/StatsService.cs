@@ -180,19 +180,19 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
         return _currentProcess.PrivateMemorySize64 / 1.Megabytes();
     }
 
-    public GuildInfo GetGuildInfo(string name)
+    public GuildInfo GetGuildInfoAsync(string name)
         => throw new NotImplementedException();
 
-    public GuildInfo GetGuildInfo(ulong id)
+    public async Task<GuildInfo> GetGuildInfoAsync(ulong id)
     {
-        var g = _client.GetGuild(id);
+        var ig = (IGuild)g;
         
         return new GuildInfo()
         {
             Id = g.Id,
             IconUrl = g.IconUrl,
             Name = g.Name,
-            Owner = g.Owner.Username,
+            Owner = (await ig.GetUserAsync(g.OwnerId))?.Username ?? "Unknown",
             OwnerId = g.OwnerId,
             CreatedAt = g.CreatedAt.UtcDateTime,
             VoiceChannels = g.VoiceChannels.Count,

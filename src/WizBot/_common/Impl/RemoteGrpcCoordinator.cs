@@ -90,8 +90,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                 {
                     if (!gracefulImminent)
                     {
-                        Log.Warning(ex,
-                            "Hearbeat failed and graceful shutdown was not expected: {Message}",
+                        Log.Warning(ex, "Hearbeat failed and graceful shutdown was not expected: {Message}",
                             ex.Message);
                         break;
                     }
