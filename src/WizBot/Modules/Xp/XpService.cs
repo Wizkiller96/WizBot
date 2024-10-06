@@ -12,6 +12,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System.Threading.Channels;
 using LinqToDB.EntityFrameworkCore;
+using LinqToDB.Tools;
 using WizBot.Modules.Patronage;
 using Color = SixLabors.ImageSharp.Color;
 using Exception = System.Exception;
@@ -566,13 +567,24 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public async Task<IReadOnlyCollection<UserXpStats>> GetUserXps(ulong guildId, int page)
     {
         await using var uow = _db.GetDbContext();
-        return await uow.Set<UserXpStats>().GetUsersFor(guildId, page);
+        return await uow
+                     .UserXpStats
+                     .Where(x => x.GuildId == guildId)
+                     .OrderByDescending(x => x.Xp + x.AwardedXp)
+                     .Skip(page * 9)
+                     .Take(9)
+                     .ToArrayAsyncLinqToDB();
     }
 
-    public async Task<IReadOnlyCollection<UserXpStats>> GetTopUserXps(ulong guildId, int count)
+    public async Task<IReadOnlyCollection<UserXpStats>> GetTopUserXps(ulong guildId, List<ulong> users, int curPage)
     {
         await using var uow = _db.GetDbContext();
-        return await uow.Set<UserXpStats>().GetTopUserXps(guildId, count);
+        return await uow.Set<UserXpStats>()
+                        .Where(x => x.GuildId == guildId && x.UserId.In(users))
+                        .OrderByDescending(x => x.Xp + x.AwardedXp)
+                        .Skip(curPage * 9)
+                        .Take(9)
+                        .ToArrayAsyncLinqToDB();
     }
 
     public Task<IReadOnlyCollection<DiscordUser>> GetUserXps(int page, int perPage = 9)

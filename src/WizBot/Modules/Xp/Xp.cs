@@ -183,27 +183,26 @@ public partial class Xp : WizBotModule<XpService>
 
         await ctx.Channel.TriggerTypingAsync();
 
-        var socketGuild = (SocketGuild)ctx.Guild;
-        var allCleanUsers = new List<UserXpStats>();
-        if (opts.Clean)
+        
+        async Task<IReadOnlyCollection<UserXpStats>> GetPageItems(int curPage)
         {
-            await ctx.Channel.TriggerTypingAsync();
-            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
+            var socketGuild = (SocketGuild)ctx.Guild;
+            if (opts.Clean)
+            {
+                await ctx.Channel.TriggerTypingAsync();
+                await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
 
-            allCleanUsers = (await _service.GetTopUserXps(ctx.Guild.Id, 1000))
-                            .Where(user => socketGuild.GetUser(user.UserId) is not null)
-                            .ToList();
+                return await _service.GetTopUserXps(ctx.Guild.Id,
+                    socketGuild.Users.Select(x => x.Id).ToList(),
+                    curPage);
+            }
+
+            return await _service.GetUserXps(ctx.Guild.Id, curPage);
         }
 
-        var res = opts.Clean
-            ? Response()
+        await Response()
               .Paginated()
-              .Items(allCleanUsers)
-            : Response()
-              .Paginated()
-              .PageItems((curPage) => _service.GetUserXps(ctx.Guild.Id, curPage));
-
-        await res
+              .PageItems(GetPageItems)
               .PageSize(9)
               .CurrentPage(page)
               .Page((users, curPage) =>

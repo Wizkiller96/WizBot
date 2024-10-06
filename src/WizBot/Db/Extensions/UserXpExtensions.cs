@@ -26,17 +26,6 @@ public static class UserXpExtensions
         return usr;
     }
 
-    public static async Task<IReadOnlyCollection<UserXpStats>> GetUsersFor(
-        this DbSet<UserXpStats> xps,
-        ulong guildId,
-        int page)
-        => await xps.ToLinqToDBTable()
-                    .Where(x => x.GuildId == guildId)
-                    .OrderByDescending(x => x.Xp + x.AwardedXp)
-                    .Skip(page * 9)
-                    .Take(9)
-                    .ToArrayAsyncLinqToDB();
-
     public static async Task<List<UserXpStats>> GetTopUserXps(this DbSet<UserXpStats> xps, ulong guildId, int count)
         => await xps.ToLinqToDBTable()
                     .Where(x => x.GuildId == guildId)
