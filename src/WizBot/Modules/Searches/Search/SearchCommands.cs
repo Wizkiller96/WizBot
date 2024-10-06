@@ -60,13 +60,13 @@ public partial class Searches
             descStr = descStr.TrimTo(4096);
 
             var embed = _sender.CreateEmbed()
-                                .WithOkColor()
-                                .WithAuthor(ctx.User)
-                                .WithTitle(query.TrimTo(64)!)
-                                .WithDescription(descStr)
-                                .WithFooter(
-                                    GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
-                                    "https://i.imgur.com/G46fm8J.png");
+                               .WithOkColor()
+                               .WithAuthor(ctx.User)
+                               .WithTitle(query.TrimTo(64)!)
+                               .WithDescription(descStr)
+                               .WithFooter(
+                                   GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
+                                   "https://i.imgur.com/G46fm8J.png");
 
             await Response().Embed(embed).SendAsync();
         }
@@ -93,17 +93,13 @@ public partial class Searches
                 return;
             }
 
-            var embeds = new List<EmbedBuilder>(4);
-
-
             EmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
             {
                 return _sender.CreateEmbed()
-                                .WithOkColor()
-                                .WithAuthor(ctx.User)
-                                .WithTitle(query)
-                                .WithUrl("https://google.com")
-                                .WithImageUrl(entry.Link);
+                              .WithOkColor()
+                              .WithAuthor(ctx.User)
+                              .WithTitle(query)
+                              .WithImageUrl(entry.Link);
             }
 
             await Response()
@@ -120,55 +116,50 @@ public partial class Searches
                                         .WithDescription(GetText(strs.no_search_results));
 
                       var embed = CreateEmbed(item);
-                      embeds.Add(embed);
 
                       return embed;
                   })
                   .SendAsync();
         }
 
-        private TypedKey<string> GetYtCacheKey(string query)
-            => new($"search:youtube:{query}");
+        private TypedKey<string[]> GetYtCacheKey(string query)
+            => new($"search:yt:{query}");
 
-        private async Task AddYoutubeUrlToCacheAsync(string query, string url)
+        private async Task AddYoutubeUrlToCacheAsync(string query, string[] url)
             => await _cache.AddAsync(GetYtCacheKey(query), url, expiry: 1.Hours());
 
-        private async Task<VideoInfo?> GetYoutubeUrlFromCacheAsync(string query)
+        private async Task<VideoInfo[]?> GetYoutubeUrlFromCacheAsync(string query)
         {
             var result = await _cache.GetAsync(GetYtCacheKey(query));
 
-            if (!result.TryGetValue(out var url) || string.IsNullOrWhiteSpace(url))
+            if (!result.TryGetValue(out var urls) || urls.Length == 0)
                 return null;
 
-            return new VideoInfo()
+            return urls.Map(url => new VideoInfo()
             {
                 Url = url
-            };
+            });
         }
 
         [Cmd]
-        public async Task Youtube([Leftover] string? query = null)
+        public async Task Youtube([Leftover] string query)
         {
-            query = query?.Trim();
-
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                await Response().Error(strs.specify_search_params).SendAsync();
-                return;
-            }
+            query = query.Trim();
 
             _ = ctx.Channel.TriggerTypingAsync();
 
-            var maybeResult = await GetYoutubeUrlFromCacheAsync(query)
-                              ?? await _searchFactory.GetYoutubeSearchService().SearchAsync(query);
-            if (maybeResult is not { } result || result is { Url: null })
+            var maybeResults = await GetYoutubeUrlFromCacheAsync(query)
+                               ?? await _searchFactory.GetYoutubeSearchService().SearchAsync(query);
+
+            if (maybeResults is not { } result || result.Length == 0)
             {
                 await Response().Error(strs.no_results).SendAsync();
                 return;
             }
 
-            await AddYoutubeUrlToCacheAsync(query, result.Url);
-            await Response().Text(result.Url).SendAsync();
+            await AddYoutubeUrlToCacheAsync(query, result.Map(x => x.Url));
+
+            await Response().Text(result[0].Url).SendAsync();
         }
 
 //     [Cmd]

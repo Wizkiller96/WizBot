@@ -9,18 +9,15 @@ public sealed class YoutubeDataApiSearchService : IYoutubeSearchService, INServi
         _gapi = gapi;
     }
 
-    public async Task<VideoInfo?> SearchAsync(string query)
+    public async Task<VideoInfo[]?> SearchAsync(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
 
         var results = await _gapi.GetVideoLinksByKeywordAsync(query);
-        var first = results.FirstOrDefault();
-        if (first is null)
+        
+        if(results.Count == 0)
             return null;
 
-        return new()
-        {
-            Url = first
-        };
+        return results.Map(r => new VideoInfo(r));
     }
 }

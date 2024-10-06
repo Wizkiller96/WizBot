@@ -43,8 +43,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                      + "--no-check-certificate "
                                      + "-i "
                                      + "--yes-playlist "
-                                     + "-- \"{0}\"",
-            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                                     + "-- \"{0}\"");
 
         _ytdlIdOperation = new("-4 "
                                + "--geo-bypass "
@@ -56,8 +55,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                + "--get-thumbnail "
                                + "--get-duration "
                                + "--no-check-certificate "
-                               + "-- \"{0}\"",
-            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                               + "-- \"{0}\"");
 
         _ytdlSearchOperation = new("-4 "
                                    + "--geo-bypass "
@@ -70,8 +68,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
                                    + "--get-duration "
                                    + "--no-check-certificate "
                                    + "--default-search "
-                                   + "\"ytsearch:\" -- \"{0}\"",
-            scs.Data.YtProvider != YoutubeSearcher.Ytdl);
+                                   + "\"ytsearch:\" -- \"{0}\"");
     }
 
     private YtTrackData ResolveYtdlData(string ytdlOutputString)
@@ -291,6 +288,7 @@ public sealed class YtdlYoutubeResolver : IYoutubeResolver
 
     public Task<string?> GetStreamUrl(string videoId)
         => CreateCacherFactory(videoId)();
+    
     private readonly struct YtTrackData
     {
         public readonly string Title;

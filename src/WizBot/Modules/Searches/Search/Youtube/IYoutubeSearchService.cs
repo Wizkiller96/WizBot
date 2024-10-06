@@ -2,5 +2,5 @@
 
 public interface IYoutubeSearchService
 {
-    Task<VideoInfo?> SearchAsync(string query);
+    Task<VideoInfo[]?> SearchAsync(string query);
 }

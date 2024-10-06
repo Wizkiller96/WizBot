@@ -18,7 +18,7 @@ public sealed class InvidiousYtSearchService : IYoutubeSearchService, INService
         _rng = new();
     }
 
-    public async Task<VideoInfo?> SearchAsync(string query)
+    public async Task<VideoInfo[]?> SearchAsync(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
 
@@ -43,6 +43,6 @@ public sealed class InvidiousYtSearchService : IYoutubeSearchService, INService
         if (res is null or { Count: 0 })
             return null;
 
-        return new VideoInfo(res[0].VideoId);
+        return res.Map(r => new VideoInfo(r.VideoId));
     }
 }

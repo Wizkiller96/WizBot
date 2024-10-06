@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "WizBot.GrpcApi";
+
+package econ;
+
+service GrpcEcon {
+  rpc GetEconomy(EconomyRequest) returns (EconomyReply);
+}
+
+message EconomyRequest {
+  string guildId = 1;
+}
+
+message EconomyReply {
+  uint64 totalOwned = 1;
+  uint64 byTopOnePercent = 2;
+  uint64 plantedAmount = 3;
+  uint64 ownedByTheBot = 4;
+  uint64 inTheBank = 5;
+  uint64 totalEconomy = 6;
+}
+
+message CurrencyLbRequest {
+  int32 page = 1;
+}

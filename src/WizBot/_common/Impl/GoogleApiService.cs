@@ -75,7 +75,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId).Skip(1);
     }
 
-    public async Task<IEnumerable<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
+    public async Task<IReadOnlyList<string>> GetVideoLinksByKeywordAsync(string keywords, int count = 1)
     {
         if (string.IsNullOrWhiteSpace(keywords))
             throw new ArgumentNullException(nameof(keywords));
@@ -87,7 +87,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
         query.Q = keywords;
         query.Type = "video";
         query.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.Strict;
-        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId);
+        return (await query.ExecuteAsync()).Items.Select(i => "https://www.youtube.com/watch?v=" + i.Id.VideoId).ToArray();
     }
 
     public async Task<IEnumerable<(string Name, string Id, string Url, string Thumbnail)>> GetVideoInfosByKeywordAsync(

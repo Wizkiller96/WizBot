@@ -10,10 +10,9 @@ public class YtdlOperation
     private readonly string _baseArgString;
     private readonly bool _isYtDlp;
 
-    public YtdlOperation(string baseArgString, bool isYtDlp = false)
+    public YtdlOperation(string baseArgString)
     {
         _baseArgString = baseArgString;
-        _isYtDlp = isYtDlp;
     }
 
     private Process CreateProcess(string[] args)
@@ -23,7 +22,7 @@ public class YtdlOperation
         {
             StartInfo = new()
             {
-                FileName = _isYtDlp ? "yt-dlp" : "youtube-dl",
+                FileName = "yt-dlp",
                 Arguments = string.Format(_baseArgString, newArgs),
                 UseShellExecute = false,
                 RedirectStandardError = true,
@@ -47,18 +46,18 @@ public class YtdlOperation
             var str = await process.StandardOutput.ReadToEndAsync();
             var err = await process.StandardError.ReadToEndAsync();
             if (!string.IsNullOrEmpty(err))
-                Log.Warning("YTDL warning: {YtdlWarning}", err);
+                Log.Warning("yt-dlp warning: {YtdlWarning}", err);
 
             return str;
         }
         catch (Win32Exception)
         {
-            Log.Error("youtube-dl is likely not installed. Please install it before running the command again");
+            Log.Error("yt-dlp is likely not installed. Please install it before running the command again");
             return default;
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Exception running youtube-dl: {ErrorMessage}", ex.Message);
+            Log.Error(ex, "Exception running yt-dlp: {ErrorMessage}", ex.Message);
             return default;
         }
     }

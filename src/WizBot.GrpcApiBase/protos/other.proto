@@ -1,0 +1,81 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "WizBot.GrpcApi";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package other;
+
+service GrpcOther {
+  rpc GetTextChannels(GetTextChannelsRequest) returns (GetTextChannelsReply);
+
+  rpc GetCurrencyLb(GetLbRequest) returns (CurrencyLbReply);
+  rpc GetXpLb(GetLbRequest) returns (XpLbReply);
+  rpc GetWaifuLb(GetLbRequest) returns (WaifuLbReply);
+
+  rpc GetShardStatuses(google.protobuf.Empty) returns (GetShardStatusesReply);
+}
+
+message GetShardStatusesReply {
+  repeated ShardStatusReply shards = 1;
+}
+
+message ShardStatusReply {
+  int32 id = 1;
+  string status = 2;
+
+  int32 guildCount = 3;
+  google.protobuf.Timestamp lastUpdate = 4;
+}
+
+message GetTextChannelsRequest{
+  uint64 guildId = 1;
+}
+
+message GetTextChannelsReply {
+  repeated TextChannelReply textChannels = 1;
+}
+
+message TextChannelReply {
+  uint64 id = 1;
+  string name = 2;
+}
+
+message CurrencyLbReply {
+  repeated CurrencyLbEntryReply entries = 1;
+}
+
+message CurrencyLbEntryReply {
+  string user = 1;
+  uint64 userId = 2;
+  int64 amount = 3;
+  string avatar = 4;
+}
+
+message GetLbRequest {
+  int32 page = 1;
+  int32 perPage = 2;
+}
+
+message XpLbReply {
+  repeated XpLbEntryReply entries = 1;
+}
+
+message XpLbEntryReply {
+  string user = 1;
+  uint64 userId = 2;
+  int64 totalXp = 3;
+  int64 level = 4;
+}
+
+message WaifuLbReply {
+  repeated WaifuLbEntry entries = 1;
+}
+
+message WaifuLbEntry {
+  string user = 1;
+  string claimedBy = 2;
+  int64 value = 3;
+  bool isMutual = 4;
+}

@@ -1,0 +1,52 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "WizBot.GrpcApi";
+
+package info;
+
+service GrpcInfo {
+  rpc GetServerInfo(ServerInfoRequest) returns (GetServerInfoReply);
+}
+
+message ServerInfoRequest {
+  uint64 guildId = 1;
+}
+
+message GetServerInfoReply {
+  uint64 id = 1;
+  string name = 2;
+  string iconUrl = 3;
+  uint64 ownerId = 4;
+  string ownerName = 5;
+  repeated RoleReply roles = 6;
+  repeated EmojiReply emojis = 7;
+  repeated string features = 8;
+  int32 textChannels = 9;
+  int32 voiceChannels = 10;
+  int32 memberCount = 11;
+  int64 createdAt = 12;
+}
+
+message RoleReply {
+  uint64 id = 1;
+  string name = 2;
+  string iconUrl = 3;
+  string color = 4;
+}
+
+message EmojiReply {
+  string name = 1;
+  string url = 2;
+  string code = 3;
+}
+
+message ChannelReply {
+  uint64 id = 1;
+  string name = 2;
+  ChannelType type = 3;
+}
+
+enum ChannelType {
+  Text = 0;
+  Voice = 1;
+}

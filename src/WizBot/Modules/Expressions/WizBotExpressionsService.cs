@@ -789,7 +789,7 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
 
         if (newguildExpressions.TryGetValue(guildId, out var exprs))
         {
-            return (exprs.Where(x => x.Trigger.Contains(query))
+            return (exprs.Where(x => x.Trigger.Contains(query) || x.Response.Contains(query))
                          .Skip(page * 9)
                          .Take(9)
                          .ToArray(), exprs.Length);

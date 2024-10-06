@@ -1,0 +1,83 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "WizBot.GrpcApi";
+
+package warn;
+
+service GrpcWarn {
+  rpc GetWarnSettings (WarnSettingsRequest) returns (WarnSettingsReply);
+  rpc AddWarnp (AddWarnpRequest) returns (AddWarnpReply);
+  rpc DeleteWarnp (DeleteWarnpRequest) returns (DeleteWarnpReply);
+  rpc GetUserWarnings(GetUserWarningsRequest) returns (GetUserWarningsReply);
+  rpc ClearWarning(ClearWarningRequest) returns (ClearWarningReply);
+  rpc SetWarnExpiry(SetWarnExpiryRequest) returns (SetWarnExpiryReply);
+}
+message WarnSettingsRequest {
+  uint64 guildId = 1;
+}
+
+message WarnPunishment {
+  int32 threshold = 1;
+  string action = 2;
+  int64 duration = 3;
+}
+
+message WarnSettingsReply {
+  repeated WarnPunishment punishments = 1;
+  int32 expiryDays = 2;
+}
+
+message AddWarnpRequest {
+  uint64 guildId = 1;
+  WarnPunishment punishment = 2;
+}
+
+message AddWarnpReply {
+  bool success = 1;
+}
+
+message DeleteWarnpRequest {
+  uint64 guildId = 1;
+  int32 warnpIndex = 2;
+}
+
+message DeleteWarnpReply {
+  bool success = 1;
+}
+
+message GetUserWarningsRequest {
+  uint64 guildId = 1;
+  uint64 user_id = 2;
+}
+
+message GetUserWarningsReply {
+  repeated Warning warnings = 1;
+}
+
+message Warning {
+  int32 id = 1;
+  string reason = 2;
+  int64 timestamp = 3;
+  int64 expiry_timestamp = 4;
+  bool cleared = 5;
+  string clearedBy = 6;
+}
+
+message ClearWarningRequest {
+  uint64 guildId = 1;
+  uint64 userId = 2;
+  optional int32 warnId = 3;
+}
+
+message ClearWarningReply {
+  bool success = 1;
+}
+
+message SetWarnExpiryRequest {
+  uint64 guildId = 1;
+  int32 expiryDays = 2;
+}
+
+message SetWarnExpiryReply {
+  bool success = 1;
+}

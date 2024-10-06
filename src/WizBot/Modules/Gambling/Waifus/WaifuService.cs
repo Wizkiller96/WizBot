@@ -300,10 +300,10 @@ public class WaifuService : INService, IReadyExecutor
         return (oldAff, success, remaining);
     }
 
-    public IEnumerable<WaifuLbResult> GetTopWaifusAtPage(int page, int perPage = 9)
+    public async Task<IReadOnlyList<WaifuLbResult>> GetTopWaifusAtPage(int page, int perPage = 9)
     {
-        using var uow = _db.GetDbContext();
-        return uow.Set<WaifuInfo>().GetTop(perPage, page * perPage);
+        await using var uow = _db.GetDbContext();
+        return await uow.Set<WaifuInfo>().GetTop(perPage, page * perPage);
     }
 
     public ulong GetWaifuUserId(ulong ownerId, string name)

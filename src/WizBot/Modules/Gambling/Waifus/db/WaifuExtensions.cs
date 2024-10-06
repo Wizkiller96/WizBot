@@ -25,30 +25,30 @@ public static class WaifuExtensions
         return includes(waifus).AsQueryable().FirstOrDefault(wi => wi.Waifu.UserId == userId);
     }
 
-    public static IEnumerable<WaifuLbResult> GetTop(this DbSet<WaifuInfo> waifus, int count, int skip = 0)
+    public static async Task<IReadOnlyList<WaifuLbResult>> GetTop(this DbSet<WaifuInfo> waifus, int count, int skip = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (count == 0)
             return [];
 
-        return waifus.Include(wi => wi.Waifu)
-                     .Include(wi => wi.Affinity)
-                     .Include(wi => wi.Claimer)
-                     .OrderByDescending(wi => wi.Price)
-                     .Skip(skip)
-                     .Take(count)
-                     .Select(x => new WaifuLbResult
-                     {
-                         Affinity = x.Affinity == null ? null : x.Affinity.Username,
-                         AffinityDiscrim = x.Affinity == null ? null : x.Affinity.Discriminator,
-                         Claimer = x.Claimer == null ? null : x.Claimer.Username,
-                         ClaimerDiscrim = x.Claimer == null ? null : x.Claimer.Discriminator,
-                         Username = x.Waifu.Username,
-                         Discrim = x.Waifu.Discriminator,
-                         Price = x.Price
-                     })
-                     .ToList();
+        return await waifus.Include(wi => wi.Waifu)
+                           .Include(wi => wi.Affinity)
+                           .Include(wi => wi.Claimer)
+                           .OrderByDescending(wi => wi.Price)
+                           .Skip(skip)
+                           .Take(count)
+                           .Select(x => new WaifuLbResult
+                           {
+                               Affinity = x.Affinity == null ? null : x.Affinity.Username,
+                               AffinityDiscrim = x.Affinity == null ? null : x.Affinity.Discriminator,
+                               Claimer = x.Claimer == null ? null : x.Claimer.Username,
+                               ClaimerDiscrim = x.Claimer == null ? null : x.Claimer.Discriminator,
+                               Username = x.Waifu.Username,
+                               Discrim = x.Waifu.Discriminator,
+                               Price = x.Price
+                           })
+                           .ToListAsyncEF();
     }
 
     public static decimal GetTotalValue(this DbSet<WaifuInfo> waifus)
@@ -64,7 +64,7 @@ public static class WaifuExtensions
     public static async Task<WaifuInfoStats> GetWaifuInfoAsync(this DbContext ctx, ulong userId)
     {
         await ctx.EnsureUserCreatedAsync(userId);
-        
+
         await ctx.Set<WaifuInfo>()
                  .ToLinqToDBTable()
                  .InsertOrUpdateAsync(() => new()

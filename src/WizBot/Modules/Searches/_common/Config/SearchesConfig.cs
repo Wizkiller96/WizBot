@@ -77,9 +77,9 @@ public sealed class FollowedStreamConfig
 
 public enum YoutubeSearcher
 {
-    YtDataApiv3,
-    Ytdl,
-    Ytdlp,
-    Invid,
+    YtDataApiv3 = 0,
+    Ytdl = 1,
+    Ytdlp = 1,
+    Invid = 3,
     Invidious = 3
 }
