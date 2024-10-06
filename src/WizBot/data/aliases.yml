@@ -365,7 +365,6 @@ quoteshow:
   - qushow
 quotesearch:
   - quotesearch
-  - qs
   - qse
   - qsearch
 quoteid:
