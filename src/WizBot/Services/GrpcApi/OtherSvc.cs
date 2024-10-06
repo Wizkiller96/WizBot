@@ -105,7 +105,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
 
     public override async Task<XpLbReply> GetXpLb(GetLbRequest request, ServerCallContext context)
     {
-        var users = await _xp.GetUserXps(request.Page, request.PerPage);
+        var users = await _xp.GetGuildUserXps(request.Page, request.PerPage);
 
         var reply = new XpLbReply();
 

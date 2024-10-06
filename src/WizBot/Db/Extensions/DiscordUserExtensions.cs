@@ -88,13 +88,6 @@ public static class DiscordUserExtensions
                 .Count()
            + 1;
 
-    public static async Task<IReadOnlyCollection<DiscordUser>> GetUsersXpLeaderboardFor(this DbSet<DiscordUser> users, int page, int perPage)
-        => await users.ToLinqToDBTable()
-                      .OrderByDescending(x => x.TotalXp)
-                      .Skip(page * perPage)
-                      .Take(perPage)
-                      .ToArrayAsyncLinqToDB();
-
     public static Task<List<DiscordUser>> GetTopRichest(
         this DbSet<DiscordUser> users,
         ulong botId,

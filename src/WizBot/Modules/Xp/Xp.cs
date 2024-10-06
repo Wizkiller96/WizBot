@@ -182,22 +182,22 @@ public partial class Xp : WizBotModule<XpService>
         var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
 
         await ctx.Channel.TriggerTypingAsync();
+        if (opts.Clean)
+        {
+            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
+        }
 
-        
         async Task<IReadOnlyCollection<UserXpStats>> GetPageItems(int curPage)
         {
             var socketGuild = (SocketGuild)ctx.Guild;
             if (opts.Clean)
             {
-                await ctx.Channel.TriggerTypingAsync();
-                await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
-
-                return await _service.GetTopUserXps(ctx.Guild.Id,
+                return await _service.GetGuildUserXps(ctx.Guild.Id,
                     socketGuild.Users.Select(x => x.Id).ToList(),
                     curPage);
             }
 
-            return await _service.GetUserXps(ctx.Guild.Id, curPage);
+            return await _service.GetGuildUserXps(ctx.Guild.Id, curPage);
         }
 
         await Response()
@@ -236,14 +236,32 @@ public partial class Xp : WizBotModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpGlobalLeaderboard(int page = 1)
+    public async Task XpGlobalLeaderboard(int page = 1, params string[] args)
     {
         if (--page < 0 || page > 99)
             return;
+        
+        var (opts, _) = OptionsParser.ParseFrom(new LbOpts(), args);
+
+        await ctx.Channel.TriggerTypingAsync();
+        if (opts.Clean)
+        {
+            await _tracker.EnsureUsersDownloadedAsync(ctx.Guild);
+        }
+
+        async Task<IReadOnlyCollection<DiscordUser>> GetPageItems(int curPage)
+        {
+            if (opts.Clean)
+            {
+                return await _service.GetGlobalUserXps(page, ((SocketGuild)ctx.Guild).Users.Select(x => x.Id).ToList());
+            }
+
+            return await _service.GetGlobalUserXps(curPage);
+        }
 
         await Response()
               .Paginated()
-              .PageItems(async curPage => await _service.GetUserXps(curPage))
+              .PageItems(GetPageItems)
               .PageSize(9)
               .Page((users, curPage) =>
               {
@@ -281,7 +299,9 @@ public partial class Xp : WizBotModule<XpService>
         if (role.IsManaged)
             return;
 
-        var count = await _service.AddXpToUsersAsync(ctx.Guild.Id, amount, role.Members.Select(x => x.Id).ToArray());
+        var count = await _service.AddXpToUsersAsync(ctx.Guild.Id,
+            amount,
+            role.Members.Select(x => x.Id).ToArray());
         await Response()
               .Confirm(
                   strs.xpadd_users(Format.Bold(amount.ToString()), Format.Bold(count.ToString())))

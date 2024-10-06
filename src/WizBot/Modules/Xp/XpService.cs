@@ -564,7 +564,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         uow.SaveChanges();
     }
 
-    public async Task<IReadOnlyCollection<UserXpStats>> GetUserXps(ulong guildId, int page)
+    public async Task<IReadOnlyCollection<UserXpStats>> GetGuildUserXps(ulong guildId, int page)
     {
         await using var uow = _db.GetDbContext();
         return await uow
@@ -576,22 +576,38 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                      .ToArrayAsyncLinqToDB();
     }
 
-    public async Task<IReadOnlyCollection<UserXpStats>> GetTopUserXps(ulong guildId, List<ulong> users, int curPage)
+    public async Task<IReadOnlyCollection<UserXpStats>> GetGuildUserXps(ulong guildId, List<ulong> users, int page)
     {
         await using var uow = _db.GetDbContext();
         return await uow.Set<UserXpStats>()
                         .Where(x => x.GuildId == guildId && x.UserId.In(users))
                         .OrderByDescending(x => x.Xp + x.AwardedXp)
-                        .Skip(curPage * 9)
+                        .Skip(page * 9)
                         .Take(9)
                         .ToArrayAsyncLinqToDB();
     }
 
-    public Task<IReadOnlyCollection<DiscordUser>> GetUserXps(int page, int perPage = 9)
+    public async Task<IReadOnlyCollection<DiscordUser>> GetGlobalUserXps(int page)
     {
-        using var uow = _db.GetDbContext();
-        return uow.Set<DiscordUser>()
-                  .GetUsersXpLeaderboardFor(page, perPage);
+        await using var uow = _db.GetDbContext();
+
+        return await uow.GetTable<DiscordUser>()
+                        .OrderByDescending(x => x.TotalXp)
+                        .Skip(page * 9)
+                        .Take(9)
+                        .ToArrayAsyncLinqToDB();
+    }
+
+    public async Task<IReadOnlyCollection<DiscordUser>> GetGlobalUserXps(int page, List<ulong> users)
+    {
+        await using var uow = _db.GetDbContext();
+
+        return await uow.GetTable<DiscordUser>()
+                        .Where(x => x.UserId.In(users))
+                        .OrderByDescending(x => x.TotalXp)
+                        .Skip(page * 9)
+                        .Take(9)
+                        .ToArrayAsyncLinqToDB();
     }
 
     public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)
