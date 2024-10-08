@@ -134,10 +134,10 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         var reply = new WaifuLbReply();
         reply.Entries.AddRange(waifus.Select(x => new WaifuLbEntry()
         {
-            ClaimedBy = x.Claimer ?? string.Empty,
-            IsMutual = x.Claimer == x.Affinity,
+            ClaimedBy = x.ClaimerName ?? string.Empty,
+            IsMutual = x.ClaimerName == x.Affinity,
             Value = x.Price,
-            User = x.Username,
+            User = x.WaifuName,
         }));
         return reply;
     }

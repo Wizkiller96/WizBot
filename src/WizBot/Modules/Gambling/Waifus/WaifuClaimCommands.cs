@@ -252,18 +252,18 @@ public partial class Gambling
             var claimer = "no one";
             string status;
 
-            var waifuUsername = w.Username.TrimTo(20);
-            var claimerUsername = w.Claimer?.TrimTo(20);
+            var waifuUsername = w.WaifuName.TrimTo(20);
+            var claimerUsername = w.ClaimerName?.TrimTo(20);
 
-            if (w.Claimer is not null)
-                claimer = $"{claimerUsername}#{w.ClaimerDiscrim}";
+            if (w.ClaimerName is not null)
+                claimer = $"{claimerUsername}";
             if (w.Affinity is null)
                 status = $"... but {waifuUsername}'s heart is empty";
-            else if (w.Affinity + w.AffinityDiscrim == w.Claimer + w.ClaimerDiscrim)
+            else if (w.Affinity == w.ClaimerName)
                 status = $"... and {waifuUsername} likes {claimerUsername} too <3";
             else
-                status = $"... but {waifuUsername}'s heart belongs to {w.Affinity.TrimTo(20)}#{w.AffinityDiscrim}";
-            return $"**{waifuUsername}#{w.Discrim}** - claimed by **{claimer}**\n\t{status}";
+                status = $"... but {waifuUsername}'s heart belongs to {w.Affinity.TrimTo(20)}";
+            return $"**{waifuUsername}** - claimed by **{claimer}**\n\t{status}";
         }
 
         [Cmd]

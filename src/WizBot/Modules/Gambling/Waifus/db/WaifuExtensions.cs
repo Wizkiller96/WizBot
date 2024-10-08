@@ -40,12 +40,17 @@ public static class WaifuExtensions
                            .Take(count)
                            .Select(x => new WaifuLbResult
                            {
-                               Affinity = x.Affinity == null ? null : x.Affinity.Username,
-                               AffinityDiscrim = x.Affinity == null ? null : x.Affinity.Discriminator,
-                               Claimer = x.Claimer == null ? null : x.Claimer.Username,
-                               ClaimerDiscrim = x.Claimer == null ? null : x.Claimer.Discriminator,
-                               Username = x.Waifu.Username,
-                               Discrim = x.Waifu.Discriminator,
+                               Affinity = x.Affinity == null
+                                   ? null
+                                   : x.Affinity.Username
+                                     + (x.Affinity.Discriminator != "0000" ? "#" + x.Affinity.Discriminator : ""),
+                               ClaimerName =
+                                   x.Claimer == null
+                                       ? null
+                                       : x.Claimer.Username
+                                         + (x.Claimer.Discriminator != "0000" ? "#" + x.Claimer.Discriminator : ""),
+                               WaifuName = x.Waifu.Username
+                                           + (x.Waifu.Discriminator != "0000" ? "#" + x.Waifu.Discriminator : ""),
                                Price = x.Price
                            })
                            .ToListAsyncEF();
