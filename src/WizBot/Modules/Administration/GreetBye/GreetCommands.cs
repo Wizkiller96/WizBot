@@ -200,9 +200,7 @@ public partial class Administration
 
             if (!isEnabled)
             {
-                var cmdName = GetCmdName(type);
-
-                await Response().Pending(strs.boostmsg_enable($"`{prefix}{cmdName}`")).SendAsync();
+                await SendGreetEnableHint(type);
             }
         }
         
@@ -226,19 +224,24 @@ public partial class Administration
             await _service.Test(ctx.Guild.Id, type, (ITextChannel)ctx.Channel, user);
             var conf = await _service.GetGreetSettingsAsync(ctx.Guild.Id, type);
             
+            if (conf?.IsEnabled is not true)
+                await SendGreetEnableHint(type);
+        }
+
+        private async Task SendGreetEnableHint(GreetType type)
+        {
             var cmd = $"`{prefix}{GetCmdName(type)}`";
 
             var str = type switch
             {
-                GreetType.Greet => strs.boostmsg_enable(cmd),
-                GreetType.Bye => strs.greetmsg_enable(cmd),
-                GreetType.Boost => strs.byemsg_enable(cmd),
+                GreetType.Greet => strs.greetmsg_enable(cmd),
+                GreetType.Bye => strs.byemsg_enable(cmd),
+                GreetType.Boost => strs.boostmsg_enable(cmd),
                 GreetType.GreetDm => strs.greetdmmsg_enable(cmd),
                 _ => strs.error
             };
 
-            if (conf?.IsEnabled is not true)
-                await Response().Pending(str).SendAsync();
+            await Response().Pending(str).SendAsync();
         }
     }
 }
