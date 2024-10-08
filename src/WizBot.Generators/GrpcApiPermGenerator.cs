@@ -87,7 +87,7 @@ namespace WizBot.Generators
                 sw.WriteLine("namespace WizBot.GrpcApi;");
                 sw.WriteLine();
 
-                sw.WriteLine("public partial class PermsInterceptor");
+                sw.WriteLine("public partial class GrpcApiPermsInterceptor");
                 sw.WriteLine("{");
 
                 sw.Indent++;

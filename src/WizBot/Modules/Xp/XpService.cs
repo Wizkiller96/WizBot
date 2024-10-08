@@ -571,8 +571,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                      .UserXpStats
                      .Where(x => x.GuildId == guildId)
                      .OrderByDescending(x => x.Xp + x.AwardedXp)
-                     .Skip(page * 9)
-                     .Take(9)
+                     .Skip(page * 10)
+                     .Take(10)
                      .ToArrayAsyncLinqToDB();
     }
 
@@ -582,8 +582,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return await uow.Set<UserXpStats>()
                         .Where(x => x.GuildId == guildId && x.UserId.In(users))
                         .OrderByDescending(x => x.Xp + x.AwardedXp)
-                        .Skip(page * 9)
-                        .Take(9)
+                        .Skip(page * 10)
+                        .Take(10)
                         .ToArrayAsyncLinqToDB();
     }
 
@@ -593,8 +593,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
         return await uow.GetTable<DiscordUser>()
                         .OrderByDescending(x => x.TotalXp)
-                        .Skip(page * 9)
-                        .Take(9)
+                        .Skip(page * 10)
+                        .Take(10)
                         .ToArrayAsyncLinqToDB();
     }
 
@@ -605,8 +605,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return await uow.GetTable<DiscordUser>()
                         .Where(x => x.UserId.In(users))
                         .OrderByDescending(x => x.TotalXp)
-                        .Skip(page * 9)
-                        .Take(9)
+                        .Skip(page * 10)
+                        .Take(10)
                         .ToArrayAsyncLinqToDB();
     }
 

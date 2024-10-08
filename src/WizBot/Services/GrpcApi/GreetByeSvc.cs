@@ -14,12 +14,6 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         _client = client;
     }
 
-    public GreetSettings GetDefaultGreet(GreetType type)
-        => new GreetSettings()
-        {
-            GreetType = type
-        };
-
     private static GrpcGreetSettings ToConf(GreetSettings? conf)
     {
         if (conf is null)
@@ -35,23 +29,13 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
     }
 
     [GrpcApiPerm(GuildPerm.Administrator)]
-    public override async Task<GetGreetReply> GetGreetSettings(GetGreetRequest request, ServerCallContext context)
+    public override async Task<GrpcGreetSettings> GetGreetSettings(GetGreetRequest request, ServerCallContext context)
     {
         var guildId = request.GuildId;
 
-        var greetConf = await _gs.GetGreetSettingsAsync(guildId, GreetType.Greet);
-        var byeConf = await _gs.GetGreetSettingsAsync(guildId, GreetType.Bye);
-        var boostConf = await _gs.GetGreetSettingsAsync(guildId, GreetType.Boost);
-        var greetDmConf = await _gs.GetGreetSettingsAsync(guildId, GreetType.GreetDm);
-        // todo timer
+        var conf = await _gs.GetGreetSettingsAsync(guildId, (GreetType)request.Type);
 
-        return new GetGreetReply()
-        {
-            Greet = ToConf(greetConf),
-            Bye = ToConf(byeConf),
-            Boost = ToConf(boostConf),
-            GreetDm = ToConf(greetDmConf)
-        };
+        return ToConf(conf);
     }
 
     [GrpcApiPerm(GuildPerm.Administrator)]
@@ -61,12 +45,18 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         var s = request.Settings;
         var msg = s.Message;
 
-        await _gs.SetMessage(gid, GetGreetType(s.Type), msg);
-        await _gs.SetGreet(gid, s.ChannelId, GetGreetType(s.Type), s.IsEnabled);
+        var type = GetGreetType(s.Type);
 
+        await _gs.SetMessage(gid, GetGreetType(s.Type), msg);
+        await _gs.SetGreet(gid, s.ChannelId, type, s.IsEnabled);
+        var settings = await _gs.GetGreetSettingsAsync(gid, type);
+
+        if (settings is null)
+            return new();
+        
         return new()
         {
-            Success = true
+            Settings = ToConf(settings)
         };
     }
 

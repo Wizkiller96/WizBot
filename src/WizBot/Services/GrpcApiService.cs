@@ -39,7 +39,7 @@ public class GrpcApiService : INService, IReadyExecutor
             var host = creds.GrpcApi.Host;
             var port = creds.GrpcApi.Port + _client.ShardId;
 
-            var interceptor = new PermsInterceptor(_client);
+            var interceptor = new GrpcApiPermsInterceptor(_client);
 
             _app = new Server()
             {

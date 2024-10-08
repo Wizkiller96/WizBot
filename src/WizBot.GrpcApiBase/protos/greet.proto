@@ -5,16 +5,9 @@ option csharp_namespace = "WizBot.GrpcApi";
 package greet;
 
 service GrpcGreet {
-  rpc GetGreetSettings (GetGreetRequest) returns (GetGreetReply);
+  rpc GetGreetSettings (GetGreetRequest) returns (GrpcGreetSettings);
   rpc UpdateGreet (UpdateGreetRequest) returns (UpdateGreetReply);
   rpc TestGreet (TestGreetRequest) returns (TestGreetReply);
-}
-
-message GetGreetReply {
-  GrpcGreetSettings greet = 1;
-  GrpcGreetSettings greetDm = 2;
-  GrpcGreetSettings bye = 3;
-  GrpcGreetSettings boost = 4;
 }
 
 message GrpcGreetSettings {
@@ -26,6 +19,7 @@ message GrpcGreetSettings {
 
 message GetGreetRequest {
   uint64 guildId = 1;
+  GrpcGreetType type = 2;
 }
 
 message UpdateGreetRequest {
@@ -41,7 +35,7 @@ enum GrpcGreetType {
 }
 
 message UpdateGreetReply {
-  bool success = 1;
+  GrpcGreetSettings settings = 1;
 }
 
 message TestGreetRequest {

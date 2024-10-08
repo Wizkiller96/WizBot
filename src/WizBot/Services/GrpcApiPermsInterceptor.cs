@@ -3,11 +3,11 @@ using Grpc.Core.Interceptors;
 
 namespace WizBot.GrpcApi;
 
-public sealed partial class PermsInterceptor : Interceptor
+public sealed partial class GrpcApiPermsInterceptor : Interceptor
 {
     private readonly DiscordSocketClient _client;
 
-    public PermsInterceptor(DiscordSocketClient client)
+    public GrpcApiPermsInterceptor(DiscordSocketClient client)
     {
         _client = client;
         Log.Information("interceptor created");
@@ -29,6 +29,8 @@ public sealed partial class PermsInterceptor : Interceptor
                            .RequestHeaders
                            .ToDictionary(x => x.Key, x => x.Value);
 
+            if(!metadata.ContainsKey("userid"))
+                throw new RpcException(new Status(StatusCode.Unauthenticated, "userid has to be specified."));
 
             var method = context.Method[(context.Method.LastIndexOf('/') + 1)..];
 

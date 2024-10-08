@@ -107,7 +107,7 @@ public partial class Xp : WizBotModule<XpService>
     [Cmd]
     [UserPerm(GuildPerm.ManageChannels)]
     [RequireContext(ContextType.Guild)]
-    public async Task XpExclude(Channel _, [Leftover] IChannel channel = null)
+    public async Task XpExclude(Channel _, [Leftover] IChannel? channel = null)
     {
         if (channel is null)
             channel = ctx.Channel;
@@ -203,7 +203,7 @@ public partial class Xp : WizBotModule<XpService>
         await Response()
               .Paginated()
               .PageItems(GetPageItems)
-              .PageSize(9)
+              .PageSize(10)
               .CurrentPage(page)
               .Page((users, curPage) =>
               {
@@ -262,7 +262,7 @@ public partial class Xp : WizBotModule<XpService>
         await Response()
               .Paginated()
               .PageItems(GetPageItems)
-              .PageSize(9)
+              .PageSize(10)
               .Page((users, curPage) =>
               {
                   var embed = _sender.CreateEmbed()
