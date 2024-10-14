@@ -41,6 +41,19 @@ public class GrpcApiService : INService, IReadyExecutor
 
             var interceptor = new GrpcApiPermsInterceptor(_client);
 
+            var serverCreds = ServerCredentials.Insecure;
+
+            if (creds.GrpcApi is
+                {
+                    CertPrivateKey: not null and not "",
+                    CertChain: not null and not ""
+                } cert)
+            {
+                serverCreds = new SslServerCredentials(
+                    new[] { new KeyCertificatePair(cert.CertChain, cert.CertPrivateKey) });
+            }
+
+
             _app = new Server()
             {
                 Services =
@@ -51,7 +64,7 @@ public class GrpcApiService : INService, IReadyExecutor
                 },
                 Ports =
                 {
-                    new(host, port, ServerCredentials.Insecure),
+                    new(host, port, serverCreds),
                 }
             };
 
@@ -59,8 +72,9 @@ public class GrpcApiService : INService, IReadyExecutor
 
             Log.Information("Grpc Api Server started on port {Host}:{Port}", host, port);
         }
-        catch
+        catch (Exception ex)
         {
+            Log.Error(ex, "Error starting Grpc Api Server");
             _app?.ShutdownAsync().GetAwaiter().GetResult();
         }
 

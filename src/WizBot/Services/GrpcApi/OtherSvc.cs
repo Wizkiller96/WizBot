@@ -19,6 +19,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
     private readonly WaifuService _waifus;
     private readonly ICoordinator _coord;
     private readonly IStatsService _stats;
+    private readonly IBotCache _cache;
 
     public OtherSvc(
         DiscordSocketClient client,
@@ -26,7 +27,8 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         ICurrencyService cur,
         WaifuService waifus,
         ICoordinator coord,
-        IStatsService stats)
+        IStatsService stats,
+        IBotCache cache)
     {
         _client = client;
         _xp = xp;
@@ -34,35 +36,9 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         _waifus = waifus;
         _coord = coord;
         _stats = stats;
+        _cache = cache;
     }
 
-    public override async Task<GetGuildsReply> GetGuilds(Empty request, ServerCallContext context)
-    {
-        var guilds = await _client.GetGuildsAsync(CacheMode.CacheOnly);
-
-        var reply = new GetGuildsReply();
-        var userId = context.GetUserId();
-
-        var toReturn = new List<IGuild>();
-        foreach (var g in guilds)
-        {
-            var user = await g.GetUserAsync(userId, CacheMode.AllowDownload);
-            if (user.GuildPermissions.Has(GuildPermission.Administrator))
-                toReturn.Add(g);
-        }
-
-        reply.Guilds.AddRange(toReturn
-            .Select(x => new GuildReply()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IconUrl = x.IconUrl
-            }));
-
-        return reply;
-    }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
     public override async Task<GetTextChannelsReply> GetTextChannels(
         GetTextChannelsRequest request,
         ServerCallContext context)
@@ -81,6 +57,35 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         return reply;
     }
 
+    [GrpcNoAuthRequired]
+    public override async Task<GetGuildsReply> GetGuilds(Empty request, ServerCallContext context)
+    {
+        var guilds = await _client.GetGuildsAsync(CacheMode.CacheOnly);
+
+        var reply = new GetGuildsReply();
+        var userId = context.GetUserId();
+
+        var toReturn = new List<IGuild>();
+        foreach (var g in guilds)
+        {
+            var user = await g.GetUserAsync(userId);
+            if (user.GuildPermissions.Has(GuildPermission.Administrator))
+                toReturn.Add(g);
+        }
+
+        reply.Guilds.AddRange(toReturn
+            .Select(x => new GuildReply()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                IconUrl = x.IconUrl
+            }));
+
+        return reply;
+    }
+
+    
+    [GrpcNoAuthRequired]
     public override async Task<CurrencyLbReply> GetCurrencyLb(GetLbRequest request, ServerCallContext context)
     {
         var users = await _cur.GetTopRichest(_client.CurrentUser.Id, request.Page, request.PerPage);
@@ -103,6 +108,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         return reply;
     }
 
+    [GrpcNoAuthRequired]
     public override async Task<XpLbReply> GetXpLb(GetLbRequest request, ServerCallContext context)
     {
         var users = await _xp.GetGlobalUserXps(request.Page);
@@ -127,6 +133,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         return reply;
     }
 
+    [GrpcNoAuthRequired]
     public override async Task<WaifuLbReply> GetWaifuLb(GetLbRequest request, ServerCallContext context)
     {
         var waifus = await _waifus.GetTopWaifusAtPage(request.Page, request.PerPage);
@@ -142,11 +149,15 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         return reply;
     }
 
-    public override Task<GetShardStatusesReply> GetShardStatuses(Empty request, ServerCallContext context)
+    [GrpcNoAuthRequired]
+    public override async Task<GetShardStatusesReply> GetShardStatuses(Empty request, ServerCallContext context)
     {
         var reply = new GetShardStatusesReply();
 
-        // todo cache
+        await _cache.GetOrAddAsync<List<ShardStatus>>("coord:statuses",
+            () => Task.FromResult(_coord.GetAllShardStatuses().ToList())!,
+            TimeSpan.FromMinutes(1));
+
         var shards = _coord.GetAllShardStatuses();
 
         reply.Shards.AddRange(shards.Select(x => new ShardStatusReply()
@@ -156,11 +167,11 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
             GuildCount = x.GuildCount,
             LastUpdate = Timestamp.FromDateTime(x.LastUpdate),
         }));
+        
 
-        return Task.FromResult(reply);
+        return reply;
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<GetServerInfoReply> GetServerInfo(ServerInfoRequest request, ServerCallContext context)
     {
         var info = await _stats.GetGuildInfoAsync(request.GuildId);

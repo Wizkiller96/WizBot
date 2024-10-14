@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿﻿#nullable enable
 using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -12,13 +12,14 @@ namespace WizBot.Generators
 {
     public readonly record struct MethodPermData
     {
-        public readonly string Name;
-        public readonly string Value;
+        public readonly ImmutableArray<(string Name, string Value)> MethodPerms;
+        public readonly ImmutableArray<string> NoAuthRequired;
 
-        public MethodPermData(string name, string value)
+        public MethodPermData(ImmutableArray<(string Name, string Value)> methodPerms,
+            ImmutableArray<string> noAuthRequired)
         {
-            Name = name;
-            Value = value;
+            MethodPerms = methodPerms;
+            NoAuthRequired = noAuthRequired;
         }
     }
 
@@ -26,7 +27,7 @@ namespace WizBot.Generators
     [Generator]
     public class GrpcApiPermGenerator : IIncrementalGenerator
     {
-        public const string Attribute =
+        public const string GRPC_API_PERM_ATTRIBUTE =
             """
             namespace WizBot.GrpcApi;
 
@@ -37,13 +38,26 @@ namespace WizBot.Generators
                 public GrpcApiPermAttribute(GuildPerm value) => Value = value;
             }
             """;
+        
+        public const string GRPC_NO_AUTH_REQUIRED_ATTRIBUTE =
+            """
+            namespace WizBot.GrpcApi;
+
+            [System.AttributeUsage(System.AttributeTargets.Method)]
+            public class GrpcNoAuthRequiredAttribute : System.Attribute
+            {
+            }
+            """;
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             context.RegisterPostInitializationOutput(ctx => ctx.AddSource("GrpcApiPermAttribute.cs",
-                SourceText.From(Attribute, Encoding.UTF8)));
+                SourceText.From(GRPC_API_PERM_ATTRIBUTE, Encoding.UTF8)));
+            
+            context.RegisterPostInitializationOutput(ctx => ctx.AddSource("GrpcNoAuthRequiredAttribute.cs",
+                SourceText.From(GRPC_NO_AUTH_REQUIRED_ATTRIBUTE, Encoding.UTF8)));
 
-            var enumsToGenerate = context.SyntaxProvider
+            var perms = context.SyntaxProvider
                 .ForAttributeWithMetadataName(
                     "WizBot.GrpcApi.GrpcApiPermAttribute",
                     predicate: static (s, _) => s is MethodDeclarationSyntax,
@@ -52,11 +66,24 @@ namespace WizBot.Generators
                 .Select(static (x, _) => x!.Value)
                 .Collect();
 
-            context.RegisterSourceOutput(enumsToGenerate,
+
+            var all = context.SyntaxProvider
+                .ForAttributeWithMetadataName(
+                    "WizBot.GrpcApi.GrpcNoAuthRequiredAttribute",
+                    predicate: static (s, _) => s is MethodDeclarationSyntax,
+                    transform: static (ctx, _) => GetNoAuthMethodName(ctx.SemanticModel, ctx.TargetNode))
+                .Collect()
+                .Combine(perms)
+                .Select((x, _) => new MethodPermData(x.Right, x.Left));
+                
+            context.RegisterSourceOutput(all,
                 static (spc, source) => Execute(source, spc));
         }
 
-        private static MethodPermData? GetMethodSemanticTargets(SemanticModel model, SyntaxNode node)
+        private static string GetNoAuthMethodName(SemanticModel model, SyntaxNode node)
+            => ((MethodDeclarationSyntax)node).Identifier.Text;
+
+        private static (string Name, string Value)? GetMethodSemanticTargets(SemanticModel model, SyntaxNode node)
         {
             var method = (MethodDeclarationSyntax)node;
 
@@ -64,20 +91,14 @@ namespace WizBot.Generators
             var attr = method.AttributeLists
                 .SelectMany(x => x.Attributes)
                 .FirstOrDefault();
-                // .FirstOrDefault(x => x.Name.ToString() == "GrpcApiPermAttribute");
-
 
             if (attr is null)
                 return null;
 
-            // if (model.GetSymbolInfo(attr).Symbol is not IMethodSymbol attrSymbol)
-            //     return null;
-
-            return new  MethodPermData(name, attr.ArgumentList?.Arguments[0].ToString() ?? "__missing_perm__");
-            // return new MethodPermData(name, attrSymbol.Parameters[0].ContainingType.ToDisplayString() + "." + attrSymbol.Parameters[0].Name);
+            return (name, attr.ArgumentList?.Arguments[0].ToString() ?? "__missing_perm__");
         }
 
-        private static void Execute(ImmutableArray<MethodPermData> fields, SourceProductionContext ctx)
+        private static void Execute(MethodPermData data, SourceProductionContext ctx)
         {
             using (var stringWriter = new StringWriter())
             using (var sw = new IndentedTextWriter(stringWriter))
@@ -92,17 +113,33 @@ namespace WizBot.Generators
 
                 sw.Indent++;
 
-                sw.WriteLine("public static FrozenDictionary<string, GuildPerm> perms = new Dictionary<string, GuildPerm>()");
+                sw.WriteLine(
+                    "private static FrozenDictionary<string, GuildPerm> _perms = new Dictionary<string, GuildPerm>()");
                 sw.WriteLine("{");
 
                 sw.Indent++;
-                foreach (var field in fields)
+                foreach (var field in data.MethodPerms)
                 {
                     sw.WriteLine("{{ \"{0}\", {1} }},", field.Name, field.Value);
                 }
 
                 sw.Indent--;
                 sw.WriteLine("}.ToFrozenDictionary();");
+
+                sw.WriteLine();
+                sw.WriteLine("private static FrozenSet<string> _noAuthRequired = new HashSet<string>()");
+                sw.WriteLine("{");
+
+                sw.Indent++;
+                foreach (var noauth in data.NoAuthRequired)
+                {
+                    sw.WriteLine("{{ \"{0}\" }},", noauth);
+                }
+
+                sw.WriteLine("");
+
+                sw.Indent--;
+                sw.WriteLine("}.ToFrozenSet();");
 
                 sw.Indent--;
                 sw.WriteLine("}");

@@ -100,10 +100,6 @@ public sealed class AiAssistantService
 
         using var client = _httpFactory.CreateClient();
 
-        // todo customize according to the bot's config
-        // - CurrencyName
-        // - 
-
         using var response = await client.SendAsync(request);
 
         if (response.StatusCode == HttpStatusCode.TooManyRequests)

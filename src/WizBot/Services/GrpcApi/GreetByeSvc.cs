@@ -23,12 +23,11 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         {
             Message = conf.MessageText,
             Type = (GrpcGreetType)conf.GreetType,
-            ChannelId = conf.ChannelId ?? 0,
+            ChannelId = conf.ChannelId?.ToString() ?? string.Empty,
             IsEnabled = conf.IsEnabled,
         };
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<GrpcGreetSettings> GetGreetSettings(GetGreetRequest request, ServerCallContext context)
     {
         var guildId = request.GuildId;
@@ -37,8 +36,7 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
 
         return ToConf(conf);
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<UpdateGreetReply> UpdateGreet(UpdateGreetRequest request, ServerCallContext context)
     {
         var gid = request.GuildId;
@@ -48,7 +46,7 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         var type = GetGreetType(s.Type);
 
         await _gs.SetMessage(gid, GetGreetType(s.Type), msg);
-        await _gs.SetGreet(gid, s.ChannelId, type, s.IsEnabled);
+        await _gs.SetGreet(gid, ulong.Parse(s.ChannelId), type, s.IsEnabled);
         var settings = await _gs.GetGreetSettingsAsync(gid, type);
 
         if (settings is null)
@@ -59,8 +57,7 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
             Settings = ToConf(settings)
         };
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override Task<TestGreetReply> TestGreet(TestGreetRequest request, ServerCallContext context)
         => TestGreet(request.GuildId, request.ChannelId, request.UserId, request.Type);
 

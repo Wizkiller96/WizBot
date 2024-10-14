@@ -13,8 +13,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
     {
         _svc = svc;
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<AddExprReply> AddExpr(AddExprRequest request, ServerCallContext context)
     {
         WizBotExpression expr;
@@ -44,8 +43,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
             Success = true,
         };
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<GetExprsReply> GetExprs(GetExprsRequest request, ServerCallContext context)
     {
         var (exprs, totalCount) = await _svc.FindExpressionsAsync(request.GuildId, request.Query, request.Page);
@@ -65,8 +63,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
 
         return reply;
     }
-
-    [GrpcApiPerm(GuildPerm.Administrator)]
+    
     public override async Task<Empty> DeleteExpr(DeleteExprRequest request, ServerCallContext context)
     {
         await _svc.DeleteAsync(request.GuildId, new kwum(request.Id));

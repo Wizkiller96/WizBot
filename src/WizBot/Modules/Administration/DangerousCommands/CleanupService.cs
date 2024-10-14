@@ -207,6 +207,18 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                                        .Contains(x.GuildId))
                  .DeleteAsync();
 
+        // delete autopublish channels
+        await ctx.GetTable<AutoPublishChannel>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete greet settings
+        await ctx.GetTable<GreetSettings>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+
         return new()
         {
             GuildCount = guildIds.Keys.Count,

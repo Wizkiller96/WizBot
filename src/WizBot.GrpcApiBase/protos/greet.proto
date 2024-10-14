@@ -11,7 +11,7 @@ service GrpcGreet {
 }
 
 message GrpcGreetSettings {
-  optional uint64 channelId = 1;
+  string channelId = 1;
   string message = 2;
   bool isEnabled = 3;
   GrpcGreetType type = 4;
