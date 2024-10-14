@@ -69,7 +69,7 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         foreach (var g in guilds)
         {
             var user = await g.GetUserAsync(userId);
-            if (user.GuildPermissions.Has(GuildPermission.Administrator))
+            if (user is not null && user.GuildPermissions.Has(GuildPermission.Administrator))
                 toReturn.Add(g);
         }
 
