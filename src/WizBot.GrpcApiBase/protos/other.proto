@@ -9,6 +9,7 @@ package other;
 
 service GrpcOther {
 
+  rpc BotOnGuild(BotOnGuildRequest) returns (BotOnGuildReply);
   rpc GetGuilds(google.protobuf.Empty) returns (GetGuildsReply);
   rpc GetTextChannels(GetTextChannelsRequest) returns (GetTextChannelsReply);
 
@@ -18,6 +19,14 @@ service GrpcOther {
 
   rpc GetShardStatuses(google.protobuf.Empty) returns (GetShardStatusesReply);
   rpc GetServerInfo(ServerInfoRequest) returns (GetServerInfoReply);
+}
+
+message BotOnGuildRequest {
+  uint64 guildId = 1;
+}
+
+message BotOnGuildReply {
+  bool success = 1;
 }
 
 message GetGuildsReply {

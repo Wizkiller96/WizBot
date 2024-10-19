@@ -38,6 +38,19 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, INService
         _stats = stats;
         _cache = cache;
     }
+    
+    [GrpcNoAuthRequired]
+    public override async Task<BotOnGuildReply> BotOnGuild(BotOnGuildRequest request, ServerCallContext context)
+    {
+        var guild = await _client.GetGuildAsync(request.GuildId);
+        
+        var reply = new BotOnGuildReply
+        {
+            Success = guild is not null
+        };
+        
+        return reply;
+    }
 
     public override async Task<GetTextChannelsReply> GetTextChannels(
         GetTextChannelsRequest request,
