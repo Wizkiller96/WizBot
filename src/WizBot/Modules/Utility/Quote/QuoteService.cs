@@ -168,6 +168,23 @@ public sealed class QuoteService : IQuoteService, INService
         var q = result.FirstOrDefault();
         return q;
     }
+    
+    public async Task<Quote?> EditQuoteAsync(
+        ulong guildId,
+        int quoteId,
+        string keyword,
+        string text)
+    {
+        await using var uow = _db.GetDbContext();
+        var result = await uow.GetTable<Quote>()
+                              .Where(x => x.Id == quoteId && x.GuildId == guildId)
+                              .Set(x => x.Keyword, keyword)
+                              .Set(x => x.Text, text)
+                              .UpdateWithOutputAsync((del, ins) => ins);
+
+        var q = result.FirstOrDefault();
+        return q;
+    }
 
     public async Task<bool> DeleteQuoteAsync(
         ulong guildId,
@@ -218,5 +235,25 @@ public sealed class QuoteService : IQuoteService, INService
                      }));
 
         return true;
+    }
+    
+    public async Task<(IReadOnlyCollection<Quote> quotes, int totalCount)> FindQuotesAsync(
+        ulong guildId,
+        string query,
+        int page)
+    {
+        await using var uow = _db.GetDbContext();
+
+        var baseQuery = uow.GetTable<Quote>()
+                           .Where(x => x.GuildId == guildId)
+                           .Where(x => x.Keyword.Contains(query) || x.Text.Contains(query));
+        
+        var quotes = await baseQuery
+                           .OrderBy(x => x.Id)
+                           .Skip((page - 1) * 10)
+                           .Take(10)
+                           .ToListAsyncLinqToDB();
+
+        return (quotes, await baseQuery.CountAsyncLinqToDB());
     }
 }

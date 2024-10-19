@@ -2,20 +2,31 @@
 using Grpc.Core;
 using WizBot.Db.Models;
 using WizBot.Modules.WizBotExpressions;
+using WizBot.Modules.Utility;
 
 namespace WizBot.GrpcApi;
 
 public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
 {
     private readonly WizBotExpressionsService _svc;
+    private readonly IQuoteService _qs;
+    private readonly DiscordSocketClient _client;
 
-    public ExprsSvc(WizBotExpressionsService svc)
+    public ExprsSvc(WizBotExpressionsService svc, IQuoteService qs, DiscordSocketClient client)
     {
         _svc = svc;
+        _qs = qs;
+        _client = client;
     }
-    
+
+    private ulong GetUserId(Metadata meta)
+        => ulong.Parse(meta.FirstOrDefault(x => x.Key == "userid")!.Value);
+
     public override async Task<AddExprReply> AddExpr(AddExprRequest request, ServerCallContext context)
     {
+        if (string.IsNullOrWhiteSpace(request.Expr.Trigger) || string.IsNullOrWhiteSpace(request.Expr.Response))
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Trigger and response are required"));
+
         WizBotExpression expr;
         if (!string.IsNullOrWhiteSpace(request.Expr.Id))
         {
@@ -43,7 +54,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
             Success = true,
         };
     }
-    
+
     public override async Task<GetExprsReply> GetExprs(GetExprsRequest request, ServerCallContext context)
     {
         var (exprs, totalCount) = await _svc.FindExpressionsAsync(request.GuildId, request.Query, request.Page);
@@ -63,11 +74,76 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
 
         return reply;
     }
-    
+
     public override async Task<Empty> DeleteExpr(DeleteExprRequest request, ServerCallContext context)
     {
-        await _svc.DeleteAsync(request.GuildId, new kwum(request.Id));
+        if (kwum.TryParse(request.Id, out var id))
+            await _svc.DeleteAsync(request.GuildId, id);
 
+        return new Empty();
+    }
+
+    public override async Task<GetQuotesReply> GetQuotes(GetQuotesRequest request, ServerCallContext context)
+    {
+        if (request.Page < 0)
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Page must be >= 0"));
+
+        var (quotes, totalCount) = await _qs.FindQuotesAsync(request.GuildId, request.Query, request.Page);
+
+        var reply = new GetQuotesReply();
+        reply.TotalCount = totalCount;
+        reply.Quotes.AddRange(quotes.Select(x => new QuoteDto()
+        {
+            Id = new kwum(x.Id).ToString(),
+            Trigger = x.Keyword,
+            Response = x.Text,
+            AuthorId = x.AuthorId,
+            AuthorName = x.AuthorName
+        }));
+
+        return reply;
+    }
+
+    public override async Task<AddQuoteReply> AddQuote(AddQuoteRequest request, ServerCallContext context)
+    {
+        var userId = GetUserId(context.RequestHeaders);
+
+        if (string.IsNullOrWhiteSpace(request.Quote.Trigger) || string.IsNullOrWhiteSpace(request.Quote.Response))
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Trigger and response are required"));
+
+        if (string.IsNullOrWhiteSpace(request.Quote.Id))
+        {
+            var q = await _qs.AddQuoteAsync(request.GuildId,
+                userId,
+                (await _client.GetUserAsync(userId))?.Username ?? userId.ToString(),
+                request.Quote.Trigger,
+                request.Quote.Response);
+
+            return new()
+            {
+                Id = new kwum(q.Id).ToString()
+            };
+        }
+
+        if (!kwum.TryParse(request.Quote.Id, out var qid))
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid quote id"));
+
+        await _qs.EditQuoteAsync(
+            request.GuildId,
+            new kwum(request.Quote.Id),
+            request.Quote.Trigger,
+            request.Quote.Response);
+
+        return new()
+        {
+            Id = new kwum(qid).ToString()
+        };
+    }
+
+
+    public override async Task<Empty> DeleteQuote(DeleteQuoteRequest request, ServerCallContext context)
+    {
+        await _qs.DeleteQuoteAsync(request.GuildId, GetUserId(context.RequestHeaders), true, new kwum(request.Id));
         return new Empty();
     }
 }

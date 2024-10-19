@@ -10,6 +10,10 @@ service GrpcExprs {
   rpc GetExprs(GetExprsRequest) returns (GetExprsReply);
   rpc AddExpr(AddExprRequest) returns (AddExprReply);
   rpc DeleteExpr(DeleteExprRequest) returns (google.protobuf.Empty);
+
+  rpc GetQuotes(GetQuotesRequest) returns (GetQuotesReply);
+  rpc AddQuote(AddQuoteRequest) returns (AddQuoteReply);
+  rpc DeleteQuote(DeleteQuoteRequest) returns (google.protobuf.Empty);
 }
 
 message DeleteExprRequest {
@@ -47,4 +51,39 @@ message AddExprRequest {
 message AddExprReply {
   string id = 1;
   bool success = 2;
+}
+
+message GetQuotesRequest {
+  uint64 guildId = 1;
+  string query = 2;
+  int32 page = 3;
+}
+
+message GetQuotesReply {
+  repeated QuoteDto quotes = 1;
+  int32 totalCount = 2;
+}
+
+message QuoteDto {
+  string id = 1;
+  string trigger = 2;
+  string response = 3;
+
+  uint64 authorId = 4;
+  string authorName = 5;
+}
+
+message AddQuoteRequest {
+  uint64 guildId = 1;
+  QuoteDto quote = 2;
+}
+
+message AddQuoteReply {
+  string id = 1;
+  bool success = 2;
+}
+
+message DeleteQuoteRequest {
+  string id = 1;
+  uint64 guildId = 2;
 }

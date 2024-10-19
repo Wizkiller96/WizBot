@@ -26,6 +26,8 @@ public interface IQuoteService
         ulong guildId,
         string? keyword,
         string text);
+    
+    Task<(IReadOnlyCollection<Quote> quotes, int totalCount)> FindQuotesAsync(ulong guildId, string query, int page);
 
     Task<IReadOnlyCollection<Quote>> GetGuildQuotesAsync(ulong guildId);
     Task<int> RemoveAllByKeyword(ulong guildId, string keyword);
@@ -39,6 +41,7 @@ public interface IQuoteService
         string text);
 
     Task<Quote?> EditQuoteAsync(ulong authorId, int quoteId, string text);
+    Task<Quote?> EditQuoteAsync(ulong guildId, int quoteId, string keyword, string text);
 
     Task<bool> DeleteQuoteAsync(
         ulong guildId,

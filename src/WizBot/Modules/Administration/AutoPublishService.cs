@@ -1,4 +1,3 @@
-#nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
@@ -11,7 +10,7 @@ public class AutoPublishService : IExecNoCommand, IReadyExecutor, INService
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
     private readonly IBotCredsProvider _creds;
-    private ConcurrentDictionary<ulong, ulong> _enabled;
+    private ConcurrentDictionary<ulong, ulong> _enabled = new();
 
     public AutoPublishService(DbService db, DiscordSocketClient client, IBotCredsProvider creds)
     {
@@ -20,7 +19,7 @@ public class AutoPublishService : IExecNoCommand, IReadyExecutor, INService
         _creds = creds;
     }
 
-    public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
+    public async Task ExecOnNoCommandAsync(IGuild? guild, IUserMessage msg)
     {
         if (guild is null)
             return;

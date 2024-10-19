@@ -67,7 +67,6 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
     // private readonly GlobalPermissionService _gperm;
     // private readonly CmdCdService _cmdCds;
     private readonly IPermissionChecker _permChecker;
-    private readonly ICommandHandler _cmd;
     private readonly IBotStrings _strings;
     private readonly IBot _bot;
     private readonly IPubSub _pubSub;
@@ -84,7 +83,6 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
         IBotStrings strings,
         IBot bot,
         DiscordSocketClient client,
-        ICommandHandler cmd,
         IPubSub pubSub,
         IMessageSenderService sender,
         IReplacementService repSvc,
@@ -93,7 +91,6 @@ public sealed class WizBotExpressionsService : IExecOnMessage, IReadyExecutor
     {
         _db = db;
         _client = client;
-        _cmd = cmd;
         _strings = strings;
         _bot = bot;
         _pubSub = pubSub;
