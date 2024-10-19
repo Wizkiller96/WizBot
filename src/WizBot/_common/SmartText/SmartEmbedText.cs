@@ -69,6 +69,7 @@ public abstract record SmartEmbedTextBase : SmartText
         => !string.IsNullOrWhiteSpace(Title)
            || !string.IsNullOrWhiteSpace(Description)
            || !string.IsNullOrWhiteSpace(Url)
+           || !string.IsNullOrWhiteSpace(Author?.Name)
            || !string.IsNullOrWhiteSpace(Thumbnail)
            || !string.IsNullOrWhiteSpace(Image)
            || (Footer is not null
