@@ -70,8 +70,9 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
     public static void AddGuildIdsToWarningPunishment(MigrationBuilder builder)
     {
         builder.Sql("""
+                    DELETE FROM WarningPunishment WHERE GuildConfigId IS NULL OR GuildConfigId NOT IN (SELECT Id FROM GuildConfigs);
                     UPDATE WarningPunishment 
-                    SET GuildId = (SELECT GuildId FROM guildconfigs WHERE Id = GuildConfigId);
+                    SET GuildId = (SELECT GuildId FROM GuildConfigs WHERE Id = GuildConfigId);
                     
                     DELETE FROM WarningPunishment as wp
                     WHERE (wp.Count, wp.GuildConfigId) in (
