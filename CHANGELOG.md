@@ -2,6 +2,28 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.15] - 21.10.2024
+
+## Added
+
+- Added -c option for `.xpglb`
+-
+
+## Change
+
+- Leaderboards will now show 10 users per page
+- A lot of internal changes and improvements
+
+## Fixed
+
+- Fixed a big issue which caused several features to not get loaded on bot restart
+- Alias collision fix `.qse` is now quotesearch, `.qs` will stay `.queuesearch`
+- Fixed some migrations which would prevent users from updating from ancient versions
+- Waifulb will no longer show #0000 discrims
+- More `.greet` command fixes
+- Author name will now be counted as content in embeds. Embeds can now only have author fields and still be valid
+- Grpc api fixes, and additions
+
 ## [5.1.14] - 03.10.2024
 
 ## Changed
