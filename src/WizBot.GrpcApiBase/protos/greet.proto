@@ -35,7 +35,7 @@ enum GrpcGreetType {
 }
 
 message UpdateGreetReply {
-  GrpcGreetSettings settings = 1;
+  bool Success = 1;
 }
 
 message TestGreetRequest {

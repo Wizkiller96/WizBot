@@ -9,22 +9,16 @@ public class GrpcApiService : INService, IReadyExecutor
     private Server? _app;
 
     private readonly DiscordSocketClient _client;
-    private readonly OtherSvc _other;
-    private readonly ExprsSvc _exprs;
-    private readonly GreetByeSvc _greet;
+    private readonly IEnumerable<IGrpcSvc> _svcs;
     private readonly IBotCredsProvider _creds;
 
     public GrpcApiService(
         DiscordSocketClient client,
-        OtherSvc other,
-        ExprsSvc exprs,
-        GreetByeSvc greet,
+        IEnumerable<IGrpcSvc> svcs,
         IBotCredsProvider creds)
     {
         _client = client;
-        _other = other;
-        _exprs = exprs;
-        _greet = greet;
+        _svcs = svcs;
         _creds = creds;
     }
 
@@ -52,21 +46,19 @@ public class GrpcApiService : INService, IReadyExecutor
                 serverCreds = new SslServerCredentials(
                     new[] { new KeyCertificatePair(cert.CertChain, cert.CertPrivateKey) });
             }
-
-
-            _app = new Server()
+            
+            _app = new()
             {
-                Services =
-                {
-                    GrpcOther.BindService(_other).Intercept(interceptor),
-                    GrpcExprs.BindService(_exprs).Intercept(interceptor),
-                    GrpcGreet.BindService(_greet).Intercept(interceptor),
-                },
                 Ports =
                 {
                     new(host, port, serverCreds),
                 }
             };
+
+            foreach (var svc in _svcs)
+            {
+                _app.Services.Add(svc.Bind().Intercept(interceptor));
+            }
 
             _app.Start();
 

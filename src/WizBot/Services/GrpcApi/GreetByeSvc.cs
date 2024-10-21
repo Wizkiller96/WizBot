@@ -3,7 +3,7 @@ using GreetType = WizBot.Services.GreetType;
 
 namespace WizBot.GrpcApi;
 
-public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
+public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, IGrpcSvc, INService
 {
     private readonly GreetService _gs;
     private readonly DiscordSocketClient _client;
@@ -13,6 +13,9 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         _gs = gs;
         _client = client;
     }
+    
+    public ServerServiceDefinition Bind()
+        => GrpcGreet.BindService(this);
 
     private static GrpcGreetSettings ToConf(GreetSettings? conf)
     {
@@ -50,11 +53,14 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, INService
         var settings = await _gs.GetGreetSettingsAsync(gid, type);
 
         if (settings is null)
-            return new();
-        
+            return new()
+            {
+                Success = false
+            };
+
         return new()
         {
-            Settings = ToConf(settings)
+            Success = true
         };
     }
     

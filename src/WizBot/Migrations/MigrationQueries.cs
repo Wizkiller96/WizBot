@@ -66,4 +66,19 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
                     WHERE SendBoostMessage = TRUE;
                     """);
     }
+    
+    public static void AddGuildIdsToWarningPunishment(MigrationBuilder builder)
+    {
+        builder.Sql("""
+                    UPDATE WarningPunishment 
+                    SET GuildId = (SELECT GuildId FROM guildconfigs WHERE Id = GuildConfigId);
+                    
+                    DELETE FROM WarningPunishment as wp
+                    WHERE (wp.Count, wp.GuildConfigId) in (
+                        SELECT wp2.Count, wp2.GuildConfigId FROM WarningPunishment as wp2
+                        GROUP BY wp2.Count, wp2.GuildConfigId
+                        HAVING COUNT(id) > 1
+                    );
+                    """);
+    }
 }

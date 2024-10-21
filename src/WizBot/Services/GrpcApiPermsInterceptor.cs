@@ -45,7 +45,7 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
                 return await continuation(request, context);
 
             // otherwise the method requires auth, and if it requires auth then the guildid has to be specified
-            if (!metadata.ContainsKey("guildid"))
+            if (string.IsNullOrWhiteSpace(gidString))
                 throw new RpcException(new(StatusCode.Unauthenticated, "guildid has to be specified."));
 
             var userId = ulong.Parse(metadata["userid"]);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Db;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    partial class PostgreSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20241018004623_warn-split")]
+    partial class warnsplit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2939,12 +2942,12 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("guildid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
                     b.Property<int>("Punishment")
-                     .HasColumnType("integer")
-                     .HasColumnName("punishment");
+                        .HasColumnType("integer")
+                        .HasColumnName("punishment");
 
                     b.Property<decimal?>("RoleId")
                         .HasColumnType("numeric(20,0)")
@@ -2958,7 +2961,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasName("pk_warningpunishment");
 
                     b.HasAlternateKey("GuildId", "Count")
-                     .HasName("ak_warningpunishment_guildid_count");
+                        .HasName("ak_warningpunishment_guildid_count");
 
                     b.ToTable("warningpunishment", (string)null);
                 });

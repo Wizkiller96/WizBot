@@ -6,7 +6,7 @@ using WizBot.Modules.Utility;
 
 namespace WizBot.GrpcApi;
 
-public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
+public class ExprsSvc : GrpcExprs.GrpcExprsBase, IGrpcSvc, INService
 {
     private readonly WizBotExpressionsService _svc;
     private readonly IQuoteService _qs;
@@ -18,6 +18,9 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, INService
         _qs = qs;
         _client = client;
     }
+    
+    public ServerServiceDefinition Bind()
+        => GrpcExprs.BindService(this);
 
     private ulong GetUserId(Metadata meta)
         => ulong.Parse(meta.FirstOrDefault(x => x.Key == "userid")!.Value);

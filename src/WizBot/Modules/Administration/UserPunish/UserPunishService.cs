@@ -1,7 +1,6 @@
 #nullable disable
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Common.TypeReaders.Models;
 using WizBot.Modules.Permissions.Services;
@@ -83,17 +82,24 @@ public class UserPunishService : INService, IReadyExecutor
         };
 
         long previousCount;
-        List<WarningPunishment> ps;
+        var ps = await WarnPunishList(guildId);
         await using (var uow = _db.GetDbContext())
         {
-            ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-
-            previousCount = uow.Set<Warning>()
-                               .ForId(guildId, userId)
-                               .Where(w => !w.Forgiven && w.UserId == userId)
+            previousCount = uow.GetTable<Warning>()
+                               .Where(w => w.GuildId == guildId && w.UserId == userId && !w.Forgiven)
                                .Sum(x => x.Weight);
 
-            uow.Set<Warning>().Add(warn);
+            await uow.GetTable<Warning>()
+                     .InsertAsync(() => new()
+                     {
+                         UserId = userId,
+                         GuildId = guildId,
+                         Forgiven = false,
+                         Reason = reason,
+                         Moderator = modName,
+                         Weight = weight,
+                         DateAdded = DateTime.UtcNow,
+                     });
 
             await uow.SaveChangesAsync();
         }
@@ -228,7 +234,7 @@ public class UserPunishService : INService, IReadyExecutor
             case PunishmentAction.RemoveRoles:
                 return botUser.GuildPermissions.ManageRoles;
             case PunishmentAction.ChatMute:
-                return botUser.GuildPermissions.ManageRoles; // adds wizbot-mute role
+                return botUser.GuildPermissions.ManageRoles; // adds nadeko-mute role
             case PunishmentAction.VoiceMute:
                 return botUser.GuildPermissions.MuteMembers;
             case PunishmentAction.AddRole:
@@ -260,12 +266,12 @@ public class UserPunishService : INService, IReadyExecutor
                                .ToListAsyncLinqToDB();
 
         var cleared = await uow.GetTable<Warning>()
-                         .Where(x => toClear.Contains(x.Id))
-                         .UpdateAsync(_ => new()
-                         {
-                             Forgiven = true,
-                             ForgivenBy = "expiry"
-                         });
+                               .Where(x => toClear.Contains(x.Id))
+                               .UpdateAsync(_ => new()
+                               {
+                                   Forgiven = true,
+                                   ForgivenBy = "expiry"
+                               });
 
         var toDelete = await uow.GetTable<Warning>()
                                 .Where(x => uow.GetTable<GuildConfig>()
@@ -282,8 +288,8 @@ public class UserPunishService : INService, IReadyExecutor
                                 .ToListAsyncLinqToDB();
 
         var deleted = await uow.GetTable<Warning>()
-                 .Where(x => toDelete.Contains(x.Id))
-                 .DeleteAsync();
+                               .Where(x => toDelete.Contains(x.Id))
+                               .DeleteAsync();
 
         if (cleared > 0 || deleted > 0)
         {
@@ -377,18 +383,19 @@ public class UserPunishService : INService, IReadyExecutor
         return toReturn;
     }
 
-    public bool WarnPunish(
+    public async Task<bool> WarnPunish(
         ulong guildId,
         int number,
         PunishmentAction punish,
-        StoopidTime time,
+        TimeSpan? time,
         IRole role = null)
     {
         // these 3 don't make sense with time
         if (punish is PunishmentAction.Softban or PunishmentAction.Kick or PunishmentAction.RemoveRoles
             && time is not null)
             return false;
-        if (number <= 0 || (time is not null && time.Time > TimeSpan.FromDays(49)))
+
+        if (number <= 0 || (time is not null && time > TimeSpan.FromDays(59)))
             return false;
 
         if (punish is PunishmentAction.AddRole && role is null)
@@ -397,47 +404,51 @@ public class UserPunishService : INService, IReadyExecutor
         if (punish is PunishmentAction.TimeOut && time is null)
             return false;
 
-        using var uow = _db.GetDbContext();
-        var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-        var toDelete = ps.Where(x => x.Count == number);
-
-        uow.RemoveRange(toDelete);
-
-        ps.Add(new()
-        {
-            Count = number,
-            Punishment = punish,
-            Time = (int?)time?.Time.TotalMinutes ?? 0,
-            RoleId = punish == PunishmentAction.AddRole ? role!.Id : default(ulong?)
-        });
-        uow.SaveChanges();
+        var timeMinutes = (int?)time?.TotalMinutes ?? 0;
+        var roleId = punish == PunishmentAction.AddRole ? role!.Id : default(ulong?);
+        await using var uow = _db.GetDbContext();
+        await uow.GetTable<WarningPunishment>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         GuildId = guildId,
+                         Count = number,
+                         Punishment = punish,
+                         Time = timeMinutes,
+                         RoleId = roleId
+                     },
+                     _ => new()
+                     {
+                         Punishment = punish,
+                         Time = timeMinutes,
+                         RoleId = roleId
+                     },
+                     () => new()
+                     {
+                         GuildId = guildId,
+                         Count = number
+                     });
         return true;
     }
 
-    public bool WarnPunishRemove(ulong guildId, int number)
+    public async Task<bool> WarnPunishRemove(ulong guildId, int count)
     {
-        if (number <= 0)
-            return false;
+        await using var uow = _db.GetDbContext();
+        var numDeleted = await uow.GetTable<WarningPunishment>()
+                                  .DeleteAsync(x => x.GuildId == guildId && x.Count == count);
 
-        using var uow = _db.GetDbContext();
-        var ps = uow.GuildConfigsForId(guildId, set => set.Include(x => x.WarnPunishments)).WarnPunishments;
-        var p = ps.FirstOrDefault(x => x.Count == number);
-
-        if (p is not null)
-        {
-            uow.Remove(p);
-            uow.SaveChanges();
-        }
-
-        return true;
+        return numDeleted > 0;
     }
 
-    public WarningPunishment[] WarnPunishList(ulong guildId)
+
+    public async Task<WarningPunishment[]> WarnPunishList(ulong guildId)
     {
-        using var uow = _db.GetDbContext();
-        return uow.GuildConfigsForId(guildId, gc => gc.Include(x => x.WarnPunishments))
-                  .WarnPunishments.OrderBy(x => x.Count)
-                  .ToArray();
+        await using var uow = _db.GetDbContext();
+
+        var wps = uow.GetTable<WarningPunishment>()
+                     .Where(x => x.GuildId == guildId)
+                     .OrderBy(x => x.Count)
+                     .ToArray();
+        return wps;
     }
 
     public (IReadOnlyCollection<(string Original, ulong? Id, string Reason)> Bans, int Missing) MassKill(
@@ -607,12 +618,12 @@ public class UserPunishService : INService, IReadyExecutor
         return await _repSvc.ReplaceAsync(output, repCtx);
     }
 
-    public async Task<Warning> WarnDelete(ulong userId, int index)
+    public async Task<Warning> WarnDelete(ulong guildId, ulong userId, int index)
     {
         await using var uow = _db.GetDbContext();
 
         var warn = await uow.GetTable<Warning>()
-                            .Where(x => x.UserId == userId)
+                            .Where(x => x.GuildId == guildId && x.UserId == userId)
                             .OrderByDescending(x => x.DateAdded)
                             .Skip(index)
                             .FirstOrDefaultAsyncLinqToDB();
@@ -625,5 +636,74 @@ public class UserPunishService : INService, IReadyExecutor
         }
 
         return warn;
+    }
+
+    public async Task<bool> WarnDelete(ulong guildId, int id)
+    {
+        await using var uow = _db.GetDbContext();
+
+        var numDeleted = await uow.GetTable<Warning>()
+                                  .Where(x => x.GuildId == guildId && x.Id == id)
+                                  .DeleteAsync();
+
+        return numDeleted > 0;
+    }
+
+    public async Task<(IReadOnlyCollection<Warning> latest, int totalCount)> GetLatestWarnings(
+        ulong guildId,
+        int page = 1)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page);
+
+        await using var uow = _db.GetDbContext();
+        var latest = await uow.GetTable<Warning>()
+                              .Where(x => x.GuildId == guildId)
+                              .OrderByDescending(x => x.DateAdded)
+                              .Skip(10 * (page - 1))
+                              .Take(10)
+                              .ToListAsyncLinqToDB();
+
+        var totalCount = await uow.GetTable<Warning>()
+                                  .Where(x => x.GuildId == guildId)
+                                  .CountAsyncLinqToDB();
+
+        return (latest, totalCount);
+    }
+
+    public async Task<bool> ForgiveWarning(ulong requestGuildId, int warnId, string modName)
+    {
+        await using var uow = _db.GetDbContext();
+        var success = await uow.GetTable<Warning>()
+                               .Where(x => x.GuildId == requestGuildId && x.Id == warnId)
+                               .UpdateAsync(_ => new()
+                               {
+                                   Forgiven = true,
+                                   ForgivenBy = modName,
+                               })
+                      == 1;
+
+        return success;
+    }
+
+    public async Task<(IReadOnlyCollection<Warning> latest, int totalCount)> GetUserWarnings(
+        ulong guildId,
+        ulong userId,
+        int page)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(page);
+
+        await using var uow = _db.GetDbContext();
+        var latest = await uow.GetTable<Warning>()
+                              .Where(x => x.GuildId == guildId && x.UserId == userId)
+                              .OrderByDescending(x => x.DateAdded)
+                              .Skip(10 * (page - 1))
+                              .Take(10)
+                              .ToListAsyncLinqToDB();
+
+        var totalCount = await uow.GetTable<Warning>()
+                                  .Where(x => x.GuildId == guildId && x.UserId == userId)
+                                  .CountAsyncLinqToDB();
+
+        return (latest, totalCount);
     }
 }

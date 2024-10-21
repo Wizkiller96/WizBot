@@ -195,11 +195,6 @@ public abstract class WizBotContext : DbContext
                     .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.WarnPunishments)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
                     .HasMany(x => x.SlowmodeIgnoredRoles)
                     .WithOne()
                     .OnDelete(DeleteBehavior.Cascade);
@@ -276,6 +271,18 @@ public abstract class WizBotContext : DbContext
 
         #endregion
 
+        #region WarningPunishments
+
+        var warnpunishmentEntity = modelBuilder.Entity<WarningPunishment>(b =>
+        {
+            b.HasAlternateKey(x => new
+            {
+                x.GuildId,
+                x.Count
+            });
+        });
+
+        #endregion
 
         #region Self Assignable Roles
 
@@ -338,6 +345,7 @@ public abstract class WizBotContext : DbContext
             du.HasIndex(x => x.TotalXp);
             du.HasIndex(x => x.CurrencyAmount);
             du.HasIndex(x => x.UserId);
+            du.HasIndex(x => x.Username);
         });
 
         #endregion
@@ -694,7 +702,7 @@ public abstract class WizBotContext : DbContext
             gs
                 .Property(x => x.IsEnabled)
                 .HasDefaultValue(false);
-            
+
             gs
                 .Property(x => x.AutoDeleteTimer)
                 .HasDefaultValue(0);

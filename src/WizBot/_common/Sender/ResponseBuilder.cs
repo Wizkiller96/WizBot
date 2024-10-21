@@ -287,9 +287,9 @@ public sealed partial class ResponseBuilder
         return this;
     }
 
-    public ResponseBuilder UserBasedMentions()
+    public ResponseBuilder UserBasedMentions(IGuildUser? permUser = null)
     {
-        sanitizeMentions = !((InternalResolveUser() as IGuildUser)?.GuildPermissions.MentionEveryone ?? false);
+        sanitizeMentions = !((InternalResolveUser() as IGuildUser ?? permUser)?.GuildPermissions.MentionEveryone ?? false);
         return this;
     }
 

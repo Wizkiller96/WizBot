@@ -12,6 +12,7 @@ service GrpcOther {
   rpc BotOnGuild(BotOnGuildRequest) returns (BotOnGuildReply);
   rpc GetGuilds(google.protobuf.Empty) returns (GetGuildsReply);
   rpc GetTextChannels(GetTextChannelsRequest) returns (GetTextChannelsReply);
+  rpc GetRoles(GetRolesRequest) returns (GetRolesReply);
 
   rpc GetCurrencyLb(GetLbRequest) returns (CurrencyLbReply);
   rpc GetXpLb(GetLbRequest) returns (XpLbReply);
@@ -19,6 +20,14 @@ service GrpcOther {
 
   rpc GetShardStatuses(google.protobuf.Empty) returns (GetShardStatusesReply);
   rpc GetServerInfo(ServerInfoRequest) returns (GetServerInfoReply);
+}
+
+message GetRolesRequest {
+  uint64 guildId = 1;
+}
+
+message GetRolesReply {
+  repeated RoleReply roles = 1;
 }
 
 message BotOnGuildRequest {

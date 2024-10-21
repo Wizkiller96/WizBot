@@ -52,4 +52,14 @@ public class StoopidTime
             Time = ts
         };
     }
+    
+    public static implicit operator TimeSpan(StoopidTime st)
+        => st.Time;
+    
+    public static implicit operator StoopidTime(TimeSpan ts)
+        => new()
+        {
+            Input = ts.ToString(),
+            Time = ts
+        };
 }

@@ -197,26 +197,29 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
             var st = SmartText.CreateFrom(r.Message);
 
+            var res = _sender.Response(ch)
+                             .UserBasedMentions(_client.GetGuild(r.ServerId)?.GetUser(r.UserId));
+
             if (st is SmartEmbedText set)
             {
-                await _sender.Response(ch).Embed(set.GetEmbed()).SendAsync();
+                await res.Embed(set.GetEmbed()).SendAsync();
             }
             else if (st is SmartEmbedTextArray seta)
             {
-                await _sender.Response(ch).Embeds(seta.GetEmbedBuilders()).SendAsync();
+                await res.Embeds(seta.GetEmbedBuilders()).SendAsync();
             }
             else
             {
-                await _sender.Response(ch)
-                             .Embed(_sender.CreateEmbed()
-                                           .WithOkColor()
-                                           .WithTitle("Reminder")
-                                           .AddField("Created At",
-                                               r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
-                                           .AddField("By",
-                                               (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()))
-                             .Text(r.Message)
-                             .SendAsync();
+                await res
+                      .Embed(_sender.CreateEmbed()
+                                    .WithOkColor()
+                                    .WithTitle("Reminder")
+                                    .AddField("Created At",
+                                        r.DateAdded.HasValue ? r.DateAdded.Value.ToLongDateString() : "?")
+                                    .AddField("By",
+                                        (await ch.GetUserAsync(r.UserId))?.ToString() ?? r.UserId.ToString()))
+                      .Text(r.Message)
+                      .SendAsync();
             }
         }
         catch (Exception ex)

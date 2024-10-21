@@ -77,7 +77,6 @@ public class GuildConfig : DbEntity
     public HashSet<UnroleTimer> UnroleTimer { get; set; } = new();
     public HashSet<VcRoleInfo> VcRoleInfos { get; set; }
     public HashSet<CommandAlias> CommandAliases { get; set; } = new();
-    public List<WarningPunishment> WarnPunishments { get; set; } = new();
     public bool WarningsInitialized { get; set; }
     public HashSet<SlowmodeIgnoredUser> SlowmodeIgnoredUsers { get; set; }
     public HashSet<SlowmodeIgnoredRole> SlowmodeIgnoredRoles { get; set; }
