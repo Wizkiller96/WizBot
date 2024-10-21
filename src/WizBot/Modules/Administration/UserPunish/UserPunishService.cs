@@ -330,11 +330,11 @@ public class UserPunishService : INService, IReadyExecutor
         await uow.SaveChangesAsync();
     }
 
-    public Task<int> GetWarnExpire(ulong guildId)
+    public Task<(int, bool)> GetWarnExpire(ulong guildId)
     {
         using var uow = _db.GetDbContext();
         var config = uow.GuildConfigsForId(guildId, set => set);
-        return Task.FromResult(config.WarnExpireHours / 24);
+        return Task.FromResult((config.WarnExpireHours / 24, config.WarnExpireAction == WarnExpireAction.Delete));
     }
 
     public async Task WarnExpireAsync(ulong guildId, int days, bool delete)

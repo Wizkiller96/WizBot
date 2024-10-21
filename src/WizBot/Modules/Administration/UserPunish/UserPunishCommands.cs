@@ -118,7 +118,7 @@ public partial class Administration
         [Priority(1)]
         public async Task WarnExpire()
         {
-            var expireDays = await _service.GetWarnExpire(ctx.Guild.Id);
+            var (expireDays, _) = await _service.GetWarnExpire(ctx.Guild.Id);
 
             if (expireDays == 0)
                 await Response().Confirm(strs.warns_dont_expire).SendAsync();

@@ -27,6 +27,8 @@ public sealed class WarnSvc : GrpcWarn.GrpcWarnBase, IGrpcSvc, INService
 
         var wsr = new WarnSettingsReply();
 
+        (wsr.ExpiryDays, wsr.DeleteOnExpire) =  await _ups.GetWarnExpire(request.GuildId);
+        
         wsr.Punishments.AddRange(list.Select(x => new WarnPunishment()
         {
             Action = x.Punishment.ToString(),
