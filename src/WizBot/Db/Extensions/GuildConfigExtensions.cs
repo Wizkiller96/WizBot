@@ -57,8 +57,7 @@ public static class GuildConfigExtensions
         List<ulong> availableGuilds)
     {
         var result = await configs
-                           .AsQueryable()
-                           .Include(x => x.CommandCooldowns)
+                           .IncludeEverything()
                            .Where(x => availableGuilds.Contains(x.GuildId))
                            .AsNoTracking()
                            .ToArrayAsync();
