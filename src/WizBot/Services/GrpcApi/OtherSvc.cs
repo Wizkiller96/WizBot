@@ -13,69 +13,67 @@ public static class GrpcApiExtensions
 
 public sealed class OtherSvc : GrpcOther.GrpcOtherBase, IGrpcSvc, INService
 {
-    private readonly IDiscordClient _client;
+    private readonly DiscordSocketClient _client;
     private readonly XpService _xp;
     private readonly ICurrencyService _cur;
     private readonly WaifuService _waifus;
-    private readonly ICoordinator _coord;
     private readonly IStatsService _stats;
-    private readonly IBotCache _cache;
+    private readonly CommandHandler _cmdHandler;
 
     public OtherSvc(
         DiscordSocketClient client,
         XpService xp,
         ICurrencyService cur,
         WaifuService waifus,
-        ICoordinator coord,
         IStatsService stats,
-        IBotCache cache)
+        CommandHandler cmdHandler)
     {
         _client = client;
         _xp = xp;
         _cur = cur;
         _waifus = waifus;
-        _coord = coord;
         _stats = stats;
-        _cache = cache;
+        _cmdHandler = cmdHandler;
     }
-    
+
     public ServerServiceDefinition Bind()
         => GrpcOther.BindService(this);
 
     [GrpcNoAuthRequired]
-    public override async Task<BotOnGuildReply> BotOnGuild(BotOnGuildRequest request, ServerCallContext context)
+    public override Task<BotOnGuildReply> BotOnGuild(BotOnGuildRequest request, ServerCallContext context)
     {
-        var guild = await _client.GetGuildAsync(request.GuildId);
-        
+        var guild = _client.GetGuild(request.GuildId);
+
         var reply = new BotOnGuildReply
         {
             Success = guild is not null
         };
-        
-        return reply;
+
+        return Task.FromResult(reply);
     }
 
-    public override async Task<GetRolesReply> GetRoles(GetRolesRequest request, ServerCallContext context)
+    public override Task<GetRolesReply> GetRoles(GetRolesRequest request, ServerCallContext context)
     {
-        var g = await _client.GetGuildAsync(request.GuildId);
+        var g = _client.GetGuild(request.GuildId);
         var roles = g?.Roles;
         var reply = new GetRolesReply();
         reply.Roles.AddRange(roles?.Select(x => new RoleReply()
-        {
-            Id = x.Id,
-            Name = x.Name,
-            Color = x.Color.ToString(),
-            IconUrl = x.GetIconUrl() ?? string.Empty,
-        }) ?? new List<RoleReply>());
+                             {
+                                 Id = x.Id,
+                                 Name = x.Name,
+                                 Color = x.Color.ToString(),
+                                 IconUrl = x.GetIconUrl() ?? string.Empty,
+                             })
+                             ?? new List<RoleReply>());
 
-        return reply;
+        return Task.FromResult(reply);
     }
-    
+
     public override async Task<GetTextChannelsReply> GetTextChannels(
         GetTextChannelsRequest request,
         ServerCallContext context)
     {
-        var g = await _client.GetGuildAsync(request.GuildId);
+        IGuild g = _client.GetGuild(request.GuildId);
         var reply = new GetTextChannelsReply();
 
         var chs = await g.GetTextChannelsAsync();
@@ -89,50 +87,23 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, IGrpcSvc, INService
         return reply;
     }
 
-    [GrpcNoAuthRequired]
-    public override async Task<GetGuildsReply> GetGuilds(Empty request, ServerCallContext context)
-    {
-        var guilds = await _client.GetGuildsAsync(CacheMode.CacheOnly);
 
-        var reply = new GetGuildsReply();
-        var userId = context.GetUserId();
-
-        var toReturn = new List<IGuild>();
-        foreach (var g in guilds)
-        {
-            var user = await g.GetUserAsync(userId);
-            if (user is not null && user.GuildPermissions.Has(GuildPermission.Administrator))
-                toReturn.Add(g);
-        }
-
-        reply.Guilds.AddRange(toReturn
-            .Select(x => new GuildReply()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                IconUrl = x.IconUrl
-            }));
-
-        return reply;
-    }
-
-    
     [GrpcNoAuthRequired]
     public override async Task<CurrencyLbReply> GetCurrencyLb(GetLbRequest request, ServerCallContext context)
     {
         var users = await _cur.GetTopRichest(_client.CurrentUser.Id, request.Page, request.PerPage);
 
         var reply = new CurrencyLbReply();
-        var entries = users.Select(async x =>
+        var entries = users.Select(x =>
         {
-            var user = await _client.GetUserAsync(x.UserId, CacheMode.CacheOnly);
-            return new CurrencyLbEntryReply()
+            var user = _client.GetUser(x.UserId);
+            return Task.FromResult(new CurrencyLbEntryReply()
             {
                 Amount = x.CurrencyAmount,
                 User = user?.ToString() ?? x.Username,
                 UserId = x.UserId,
                 Avatar = user?.RealAvatarUrl().ToString() ?? x.RealAvatarUrl()?.ToString()
-            };
+            });
         });
 
         reply.Entries.AddRange(await entries.WhenAll());
@@ -182,28 +153,68 @@ public sealed class OtherSvc : GrpcOther.GrpcOtherBase, IGrpcSvc, INService
     }
 
     [GrpcNoAuthRequired]
-    public override async Task<GetShardStatusesReply> GetShardStatuses(Empty request, ServerCallContext context)
+    public override async Task GetShardStats(
+        Empty request,
+        IServerStreamWriter<ShardStatsReply> responseStream,
+        ServerCallContext context)
     {
-        var reply = new GetShardStatusesReply();
-
-        await _cache.GetOrAddAsync<List<ShardStatus>>("coord:statuses",
-            () => Task.FromResult(_coord.GetAllShardStatuses().ToList())!,
-            TimeSpan.FromMinutes(1));
-
-        var shards = _coord.GetAllShardStatuses();
-
-        reply.Shards.AddRange(shards.Select(x => new ShardStatusReply()
+        while (true)
         {
-            Id = x.ShardId,
-            Status = x.ConnectionState.ToString(),
-            GuildCount = x.GuildCount,
-            LastUpdate = Timestamp.FromDateTime(x.LastUpdate),
-        }));
-        
+            var stats = new ShardStatsReply()
+            {
+                Id = _client.ShardId,
+                Commands = _stats.CommandsRan,
+                Uptime = _stats.GetUptimeString(),
+                Status = GetConnectionState(_client.ConnectionState),
+                GuildCount = _client.Guilds.Count,
+            };
 
-        return reply;
+            await responseStream.WriteAsync(stats);
+            await Task.Delay(1000);
+        }
     }
-    
+
+    [GrpcNoAuthRequired]
+    public override async Task GetCommandFeed(
+        Empty request,
+        IServerStreamWriter<CommandFeedEntry> responseStream,
+        ServerCallContext context)
+    {
+        var taskCompletion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        Task OnCommandExecuted(IUserMessage userMessage, CommandInfo commandInfo)
+        {
+            try
+            {
+                responseStream.WriteAsync(new()
+                {
+                    Command = commandInfo.Name
+                });
+            }
+            catch
+            {
+                _cmdHandler.CommandExecuted -= OnCommandExecuted;
+                taskCompletion.TrySetResult(true);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        _cmdHandler.CommandExecuted += OnCommandExecuted;
+
+        await taskCompletion.Task;
+    }
+
+    private string GetConnectionState(ConnectionState clientConnectionState)
+    {
+        return clientConnectionState switch
+        {
+            ConnectionState.Connected => "Connected",
+            ConnectionState.Connecting => "Connecting",
+            _ => "Disconnected"
+        };
+    }
+
     public override async Task<GetServerInfoReply> GetServerInfo(ServerInfoRequest request, ServerCallContext context)
     {
         var info = await _stats.GetGuildInfoAsync(request.GuildId);

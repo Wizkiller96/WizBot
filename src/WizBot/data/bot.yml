@@ -15,7 +15,7 @@ color:
   pending: faa61a
 # Default bot language. It has to be in the list of supported languages (.langli)
 defaultLocale: en-US
-# Style in which executed commands will show up in the console.
+# Style in which executed commands will show up in the logs.
 # Allowed values: Simple, Normal, None
 consoleOutputType: Normal
 # Whether the bot will check for new releases every hour

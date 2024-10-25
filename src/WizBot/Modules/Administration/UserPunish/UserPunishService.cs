@@ -2,7 +2,6 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Common.TypeReaders.Models;
 using WizBot.Modules.Permissions.Services;
 using WizBot.Db.Models;
 using Newtonsoft.Json;

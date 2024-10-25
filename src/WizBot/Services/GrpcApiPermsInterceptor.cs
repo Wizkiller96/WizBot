@@ -14,10 +14,7 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
         _client = client;
     }
 
-    public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(
-        TRequest request,
-        ServerCallContext context,
-        UnaryServerMethod<TRequest, TResponse> continuation)
+    private async Task RequestHandler(ServerCallContext context)
     {
         try
         {
@@ -42,7 +39,7 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
 
             // if the method is explicitly marked as not requiring auth
             if (_noAuthRequired.Contains(method))
-                return await continuation(request, context);
+                return;
 
             // otherwise the method requires auth, and if it requires auth then the guildid has to be specified
             if (string.IsNullOrWhiteSpace(gidString))
@@ -61,8 +58,6 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
                 // if not then use the default, which is Administrator permission
                 await EnsureUserHasPermission(guildId, userId, DEFAULT_PERMISSION);
             }
-
-            return await continuation(request, context);
         }
         catch (Exception ex)
         {
@@ -70,7 +65,7 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
             throw;
         }
     }
-
+    
     private async Task EnsureUserHasPermission(ulong guildId, ulong userId, GuildPerm perm)
     {
         IGuild guild = _client.GetGuild(guildId);
@@ -82,5 +77,43 @@ public sealed partial class GrpcApiPermsInterceptor : Interceptor
         if (!user.GuildPermissions.Has(perm))
             throw new RpcException(new Status(StatusCode.PermissionDenied,
                 $"You need {perm} permission to use this method"));
+    }
+
+    public override async Task<TResponse> ClientStreamingServerHandler<TRequest, TResponse>(
+        IAsyncStreamReader<TRequest> requestStream,
+        ServerCallContext context,
+        ClientStreamingServerMethod<TRequest, TResponse> continuation)
+    {
+        await RequestHandler(context);
+        return await continuation(requestStream, context);
+    }
+
+    public override async Task DuplexStreamingServerHandler<TRequest, TResponse>(
+        IAsyncStreamReader<TRequest> requestStream,
+        IServerStreamWriter<TResponse> responseStream,
+        ServerCallContext context,
+        DuplexStreamingServerMethod<TRequest, TResponse> continuation)
+    {
+        await RequestHandler(context);
+        await continuation(requestStream, responseStream, context);
+    }
+
+    public override async Task ServerStreamingServerHandler<TRequest, TResponse>(
+        TRequest request,
+        IServerStreamWriter<TResponse> responseStream,
+        ServerCallContext context,
+        ServerStreamingServerMethod<TRequest, TResponse> continuation)
+    {
+        await RequestHandler(context);
+        await continuation(request, responseStream, context);
+    }
+
+    public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(
+        TRequest request,
+        ServerCallContext context,
+        UnaryServerMethod<TRequest, TResponse> continuation)
+    {
+        await RequestHandler(context);
+        return await continuation(request, context);
     }
 }
