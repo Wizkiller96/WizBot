@@ -80,20 +80,33 @@ upload-builds:
      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $INSTALLER_FILE_NAME $PACKAGE_REGISTRY_URL/$INSTALLER_FILE_NAME
 
 release:
- stage: release
- image: registry.gitlab.com/gitlab-org/release-cli:latest
- rules:
-   - if: $CI_COMMIT_TAG
- script:
-   - |
-     release-cli create --name "WizBot v$CI_COMMIT_TAG" --description "## [Changelog](https://gitlab.com/Wizkiller96/WizBot/-/blob/v5/CHANGELOG.md#$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))" --tag-name $CI_COMMIT_TAG \
-       --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${LINUX_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${WIN_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${MACOS_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}" \
-       --assets-link "{\"name\":\"${INSTALLER_FILE_NAME}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}\"}"
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "WizBot v$CI_COMMIT_TAG" --description "## [Changelog](https://gitlab.com/Wizkiller96/WizBot/-/blob/v5/CHANGELOG.md#$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${LINUX_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${LINUX_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${WIN_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${WIN_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${MACOS_X64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${MACOS_ARM64_RELEASE}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}\"}" \
+        --assets-link "{\"name\":\"${INSTALLER_FILE_NAME}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}\"}"
+    - |
+      curl -X POST -H "Authorization: token $GITHUB_TOKEN" -d '{
+        "tag_name": "'$CI_COMMIT_TAG'",
+        "target_commitish": "main",
+        "name": "WizBot v'$CI_COMMIT_TAG'",
+        "body": "## [Changelog](https://github.com/Wizkiller96/WizBot/blob/v5/CHANGELOG.md#$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))",
+        "draft": false,
+        "prerelease": false
+      }' https://api.github.com/repos/wizkiller96/wizbot/releases
+    - |
+      for asset in "${LINUX_X64_RELEASE}" "${LINUX_ARM64_RELEASE}" "${WIN_X64_RELEASE}" "${WIN_ARM64_RELEASE}" "${MACOS_X64_RELEASE}" "${MACOS_ARM64_RELEASE}" "${INSTALLER_FILE_NAME}"; do
+        curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type $asset)" --data-binary @$asset https://uploads.github.com/repos/wizkiller96/wizbot/releases/latest/assets?name=$(basename $asset)
+      done
 
 test:
   stage: test
