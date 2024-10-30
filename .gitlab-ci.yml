@@ -106,7 +106,6 @@ release-github:
     - apk add --no-cache curl file jq
     - echo "CI_COMMIT_TAG=$CI_COMMIT_TAG"
     - echo "GITHUB_TOKEN has been provided"
-    - echo "Target Commitish: v5"
     - |
       # Construct the body content
       CHANGELOG_URL="https://gitlab.com/WizNet/WizBot/-/blob/v5/CHANGELOG.md#$(echo ${CI_COMMIT_TAG} | sed 's/\\.//g')-$(date +%d%m%Y)"
