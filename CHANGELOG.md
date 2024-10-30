@@ -2,6 +2,21 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.16] - 28.10.2024
+
+## Added
+
+- Added .ncanvas and related commands.
+  - You can set pixel colors (and text) on a 500x350 canvas, pepega version of r/place
+  - You use currency to set pixels.
+  - Commands:
+    - see the entire canvas: `.nc`
+    - zoom: `.ncz <pos>` or `.ncz x y`
+    - set pixel: `.ncsp <pos> <color> <text?>`
+    - get pixel: `.ncp <pos>`
+  - Owners can use .ncsetimg to set a starting image, use `.h .setimg` for instructions
+  - Owners can reset the whole canvas via `.ncreset`
+
 ## [5.1.15] - 21.10.2024
 
 ## Added
