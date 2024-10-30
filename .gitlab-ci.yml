@@ -128,25 +128,30 @@ release-github:
         echo "Failed to create a release"
         exit 1
       fi
-      # Upload each asset
+      # Function to download and upload asset
       upload_asset() {
         local asset_name=$1
-        local asset_file=$2
-        local url=$3
+        local asset_url=$2
+        local asset_file=$(basename "$asset_url")
+        echo "Downloading asset: $asset_name from $asset_url"
+        curl -L -o "$asset_file" "$asset_url"
         if [ -f "$asset_file" ]; then
           echo "Uploading asset: $asset_name"
-          curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type "$asset_file")" --data-binary @"$asset_file" "https://uploads.github.com/repos/wizkiller96/wizbot/releases/$RELEASE_ID/assets?name=$(basename $asset_name)"
+          curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type "$asset_file")" --data-binary @"$asset_file" "https://uploads.github.com/repos/wizkiller96/wizbot/releases/$RELEASE_ID/assets?name=$(basename $asset_file)"
         else
           echo "Asset not found: $asset_file"
         fi
       }
-      upload_asset "${LINUX_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}"
-      upload_asset "${LINUX_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}"
-      upload_asset "${WIN_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}"
-      upload_asset "${WIN_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}"
-      upload_asset "${MACOS_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}"
-      upload_asset "${MACOS_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}"
-      upload_asset "${INSTALLER_FILE_NAME}" "${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}"
+      download_and_upload_assets() {
+        upload_asset "${LINUX_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}"
+        upload_asset "${LINUX_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}"
+        upload_asset "${WIN_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}"
+        upload_asset "${WIN_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}"
+        upload_asset "${MACOS_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}"
+        upload_asset "${MACOS_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}"
+        upload_asset "${INSTALLER_FILE_NAME}" "${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}"
+      }
+      download_and_upload_assets
 
 test:
   stage: test
