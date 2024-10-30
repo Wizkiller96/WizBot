@@ -107,7 +107,6 @@ release-github:
     - |
       curl -X POST -H "Authorization: token $GITHUB_TOKEN" -d '{
         "tag_name": "'"$CI_COMMIT_TAG"'",
-        "target_commitish": "main",
         "name": "WizBot v'"$CI_COMMIT_TAG"'",
         "body": "## [Changelog](https://gitlab.com/WizNet/WizBot/-/blob/v5/CHANGELOG.md#$(echo \"$CI_COMMIT_TAG\" | sed \"s/\\.//g\")-$(date +%d%m%Y)) --tag-name $CI_COMMIT_TAG",
         "draft": false,
