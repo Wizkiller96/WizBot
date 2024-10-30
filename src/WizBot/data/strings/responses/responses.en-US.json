@@ -1103,5 +1103,14 @@
   "honeypot_on": "Honeypot enabled on this channel." ,
   "honeypot_off": "Honeypot disabled.",
   "afk_set": "AFK message set. Type a message in any channel to clear.",
-  "rero_message_not_found": "The specified message wasn't found. Make sure you've specified the message from this channel."
+  "rero_message_not_found": "The specified message wasn't found. Make sure you've specified the message from this channel.",
+  "nc_pixel_not_found": "Pixel not found",
+  "nc_pixel": "Pixel {0}",
+  "nc_position": "Position",
+  "nc_pixel_set": "Pixel {0} successfully set!",
+  "invalid_color": "Color you've specified is invalid.",
+  "nc_pixel_set_confirm": "Are you sure you want to set pixel {0}? It will cost you {1}",
+  "nc_hint": "Use `{0}nczoom x y` command to zoom in. Image is {1}x{2} pixels.",
+  "invalid_img_size": "Image must to be {0}x{1} pixels.",
+  "no_attach_found": "No attachment found. Please send the image along with this command."
 }

@@ -76,6 +76,9 @@ public readonly struct kwum : IEquatable<kwum>
 
     public override string ToString()
     {
+        if (_value == 0)
+            return VALID_CHARACTERS[0].ToString();
+
         var count = VALID_CHARACTERS.Length;
         var localValue = _value;
         var arrSize = (int)Math.Log(localValue, count) + 1;

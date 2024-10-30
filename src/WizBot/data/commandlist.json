@@ -396,6 +396,21 @@
     },
     {
       "Aliases": [
+        ".leaveunkeptservers"
+      ],
+      "Description": "Leaves all servers whose owners didn't run .keep",
+      "Usage": [
+        ".leaveunkeptservers"
+      ],
+      "Submodule": "CleanupCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
         ".sqlselect"
       ],
       "Description": "Executes provided sql query and returns the results. Dangerous.",
@@ -586,13 +601,11 @@
     },
     {
       "Aliases": [
-        ".greetdel",
-        ".grdel"
+        ".greet"
       ],
-      "Description": "Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to `0` to disable automatic deletion.",
+      "Description": "Toggles announcements on the current channel when someone joins the server.",
       "Usage": [
-        ".greetdel 0",
-        ".greetdel 30"
+        ".greet"
       ],
       "Submodule": "GreetCommands",
       "Module": "Administration",
@@ -603,11 +616,13 @@
     },
     {
       "Aliases": [
-        ".greet"
+        ".greetdel",
+        ".grdel"
       ],
-      "Description": "Toggles announcements on the current channel when someone joins the server.",
+      "Description": "Sets the time it takes (in seconds) for greet messages to be auto-deleted. Set it to `0` to disable automatic deletion.",
       "Usage": [
-        ".greet"
+        ".greetdel 0",
+        ".greetdel 30"
       ],
       "Submodule": "GreetCommands",
       "Module": "Administration",
@@ -678,21 +693,6 @@
     },
     {
       "Aliases": [
-        ".byemsg"
-      ],
-      "Description": "Sets a new leave announcement message which will be shown in the current channel. \nUsing this command with no message will show the current bye message. \nSupports [placeholders](https://docs.wizbot.cc/en/latest/placeholders/) and [embeds](https://wizbot.cc/embedbuilder/)",
-      "Usage": [
-        ".byemsg %user.name% has left."
-      ],
-      "Submodule": "GreetCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageServer Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
         ".byedel"
       ],
       "Description": "Sets the time it takes (in seconds) for bye messages to be auto-deleted. Set it to `0` to disable automatic deletion.",
@@ -709,12 +709,11 @@
     },
     {
       "Aliases": [
-        ".byetest"
+        ".byemsg"
       ],
-      "Description": "Sends the bye message in the current channel as if you just left the server. You can optionally specify a different user.",
+      "Description": "Sets a new leave announcement message which will be shown in the current channel. \nUsing this command with no message will show the current bye message. \nSupports [placeholders](https://docs.wizbot.cc/en/latest/placeholders/) and [embeds](https://wizbot.cc/embedbuilder)",
       "Usage": [
-        ".byetest",
-        ".byetest @SomeoneElse"
+        ".byemsg %user.name% has left."
       ],
       "Submodule": "GreetCommands",
       "Module": "Administration",
@@ -747,6 +746,22 @@
       "Usage": [
         ".greetdmtest",
         ".greetdmtest @SomeoneElse"
+      ],
+      "Submodule": "GreetCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageServer Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".byetest"
+      ],
+      "Description": "Sends the bye message in the current channel as if you just left the server. You can optionally specify a different user.",
+      "Usage": [
+        ".byetest",
+        ".byetest @SomeoneElse"
       ],
       "Submodule": "GreetCommands",
       "Module": "Administration",
@@ -1090,7 +1105,7 @@
       "Aliases": [
         ".antialt"
       ],
-      "Description": "Applies a punishment action to any user whose account is younger than the specified threshold. Specify time after the punishment to have a timed punishment (not all punishments support timers).",
+      "Description": "Applies a punishment action to any user whose account is younger than the specified threshold. \nAvailable Punishments are: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut\nYou can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.\nMax message count is 10.\nProvide no parameters to disable.",
       "Usage": [
         ".antialt 1h Ban",
         ".antialt 3d Mute 1h"
@@ -1106,7 +1121,7 @@
       "Aliases": [
         ".antiraid"
       ],
-      "Description": "Sets an anti-raid protection on the server. Provide no parameters to disable. First parameter is number of people which will trigger the protection. Second parameter is a time interval in which that number of people needs to join in order to trigger the protection, and third parameter is punishment for those people. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut",
+      "Description": "Sets an anti-raid protection on the server.\n\nFirst parameter is number of people which will trigger the protection.\n\nSecond parameter is a time interval in which that number of people needs to join in order to trigger the protection.\n\nThird parameter is punishment for those people.\nAvailable punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut\nYou can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.\n\nProvide no parameters to disable.",
       "Usage": [
         ".antiraid 5 20 Kick",
         ".antiraid 7 9 Ban",
@@ -1124,7 +1139,7 @@
       "Aliases": [
         ".antispam"
       ],
-      "Description": "Stops people from repeating same message X times in a row. Provide no parameters to disable. You can specify to either mute, kick or ban the offenders. You can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h. Max message count is 10. Available punishments: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, AddRole, RemoveRoles, Warn, TimeOut",
+      "Description": "Applies a Punishment to people who repeat the same message X times in a row.\nAvailable Punishments are: Ban, Kick, Softban, Mute, VoiceMute, ChatMute, RemoveRoles, AddRole, Warn, TimeOut\nYou can specify an additional time argument to do a timed punishment for actions which support it (Ban, Mute, etc) up to 24h.\nMax message count is 10. \nProvide no parameters to disable.",
       "Usage": [
         ".antispam 3 Mute",
         ".antispam 5 Ban",
@@ -1939,13 +1954,14 @@
     },
     {
       "Aliases": [
+        ".setactivity",
         ".setgame"
       ],
-      "Description": "Sets the bots game status to either Playing, Listening, or Watching.",
+      "Description": "Sets the bots game status to a Custom, Playing, Listening, or Watching status.",
       "Usage": [
-        ".setgame Playing with snakes.",
-        ".setgame Watching anime.",
-        ".setgame Listening music."
+        ".setactivity Just chilling",
+        ".setactivity Playing with snakes",
+        ".setactivity Listening music"
       ],
       "Submodule": "SelfCommands",
       "Module": "Administration",
@@ -3669,7 +3685,7 @@
       "Aliases": [
         ".choose"
       ],
-      "Description": "Chooses a thing from a list of things",
+      "Description": "Chooses a thing from a list of things. Separate items with a semicolon ;",
       "Usage": [
         ".choose Get up;Sleep;Sleep more"
       ],
@@ -3767,6 +3783,98 @@
       "Module": "Games",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".ncanvas",
+        ".nc",
+        ".ncanv"
+      ],
+      "Description": "Shows the current nCanvas.\nThe canvas allows users to set each pixel's color and text using currency.",
+      "Usage": [
+        ".ncanvas"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".nczoom",
+        ".ncz"
+      ],
+      "Description": "Zooms in on the nCanvas.\nBot will show the 10x10 grid with the position of each cell for use with `ncset`.\nYou can either use alphanumeric position (ex. s4u) or pixel x and y (ex. 123 123)",
+      "Usage": [
+        ".nczoom sgu",
+        ".nczoom 123 123"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".ncsetpixel",
+        ".ncsp",
+        ".ncs"
+      ],
+      "Description": "Sets a pixel's color and text on the nCanvas.\nYou must specify the position of the pixel to set in alphanumeric format.\nYou can obtain alphanumeric position of the pixel by using `nczoom` or `ncp <x> <y>`",
+      "Usage": [
+        ".ncsetpixel sgu #ff0000 Some text"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".ncpixel",
+        ".ncp",
+        ".ncgp"
+      ],
+      "Description": "Shows the pixel at the specified position.\nYou can get pixel positions by using `nczoom`",
+      "Usage": [
+        ".ncpixel sgu",
+        ".ncpixel 123 123"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".ncsetimg",
+        ".ncsi"
+      ],
+      "Description": "Attach the image to the message sending the command to overwrite the nCanvas with it.\nAll prices and colors will be reset.\nThe image must be equal to the size of the nCanvas (default is 500x350)\nThis command is dangerous and irreversible.",
+      "Usage": [
+        ".ncsetimg"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
+        ".ncreset"
+      ],
+      "Description": "Clears the nCanvas.\nAll prices and colors will be reset.\nThis command is dangerous and irreversible.",
+      "Usage": [
+        ".ncreset"
+      ],
+      "Submodule": "NCanvasCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
     },
     {
       "Aliases": [
@@ -5199,7 +5307,7 @@
       ],
       "Description": "Toggles whether a module can be used on any server.",
       "Usage": [
-        ".globalmodule nsfw"
+        ".globalmodule Gambling"
       ],
       "Submodule": "GlobalPermissionCommands",
       "Module": "Permissions",
@@ -6819,13 +6927,15 @@
     },
     {
       "Aliases": [
-        ".listquotes",
-        ".liqu"
+        ".quotelist",
+        ".qli",
+        ".quli",
+        ".qulist"
       ],
       "Description": "Lists all quotes on the server ordered alphabetically or by ID. 15 Per page.",
       "Usage": [
-        ".listquotes 3",
-        ".listquotes 3 id"
+        ".quotelist 3",
+        ".quotelist 3 id"
       ],
       "Submodule": "QuoteCommands",
       "Module": "Utility",
@@ -6835,7 +6945,10 @@
     {
       "Aliases": [
         ".quoteprint",
-        "..."
+        ".qp",
+        ".qup",
+        "...",
+        ".qprint"
       ],
       "Description": "Prints a random quote with a specified name.",
       "Usage": [
@@ -6849,7 +6962,9 @@
     {
       "Aliases": [
         ".quoteshow",
-        ".qshow"
+        ".qsh",
+        ".qshow",
+        ".qushow"
       ],
       "Description": "Shows information about a quote with the specified ID.",
       "Usage": [
@@ -6863,6 +6978,7 @@
     {
       "Aliases": [
         ".quotesearch",
+        ".qse",
         ".qsearch"
       ],
       "Description": "Shows a random quote given a search query. Partially matches in several ways: 1) Only content of any quote, 2) only by author, 3) keyword and content, 3) or keyword and author",
@@ -6882,7 +6998,7 @@
         ".quoteid",
         ".qid"
       ],
-      "Description": "Displays the quote with the specified ID number. Quote ID numbers can be found by typing `.liqu [num]` where `[num]` is a number of a page which contains 15 quotes.",
+      "Description": "-| Displays the quote with the specified ID number.",
       "Usage": [
         ".quoteid 123456"
       ],
@@ -6894,6 +7010,9 @@
     {
       "Aliases": [
         ".quoteadd",
+        ".qa",
+        ".qadd",
+        ".quadd",
         ".."
       ],
       "Description": "Adds a new quote with the specified name and message.",
@@ -6908,6 +7027,8 @@
     {
       "Aliases": [
         ".quoteedit",
+        ".qe",
+        ".que",
         ".qedit"
       ],
       "Description": "Edits a quote with the specified ID.",
@@ -6922,7 +7043,9 @@
     {
       "Aliases": [
         ".quotedelete",
-        ".qdel"
+        ".qd",
+        ".qdel",
+        ".qdelete"
       ],
       "Description": "Deletes a quote with the specified ID. You have to either have the Manage Messages permission or be the creator of the quote to delete it.",
       "Usage": [
@@ -6936,6 +7059,7 @@
     {
       "Aliases": [
         ".quotedeleteauthor",
+        ".qda",
         ".qdelauth"
       ],
       "Description": "Deletes all quotes by the specified author. If the author is not you, then ManageMessage server permission is required.",
@@ -6949,13 +7073,13 @@
     },
     {
       "Aliases": [
-        ".delallquotes",
-        ".daq",
-        ".delallq"
+        ".quotesdeleteall",
+        ".qdall",
+        ".qdeleteall"
       ],
-      "Description": "Deletes all quotes on a specified keyword.",
+      "Description": "Deletes all quotes with the specified keyword.",
       "Usage": [
-        ".delallquotes kek"
+        ".quotesdeleteall kek"
       ],
       "Submodule": "QuoteCommands",
       "Module": "Utility",
@@ -6967,6 +7091,7 @@
     {
       "Aliases": [
         ".quotesexport",
+        ".qex",
         ".qexport"
       ],
       "Description": "Exports quotes from the current server into a .yml file",
@@ -6983,6 +7108,8 @@
     {
       "Aliases": [
         ".quotesimport",
+        ".qim",
+        ".qimp",
         ".qimport"
       ],
       "Description": "Upload the file or send the raw .yml data with this command to import all quotes from the specified string or file into the current server.",
@@ -6993,7 +7120,6 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only",
         "Administrator Server Permission"
       ]
     },

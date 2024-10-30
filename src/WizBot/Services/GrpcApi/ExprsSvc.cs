@@ -18,13 +18,10 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, IGrpcSvc, INService
         _qs = qs;
         _client = client;
     }
-    
+
     public ServerServiceDefinition Bind()
         => GrpcExprs.BindService(this);
-
-    private ulong GetUserId(Metadata meta)
-        => ulong.Parse(meta.FirstOrDefault(x => x.Key == "userid")!.Value);
-
+    
     public override async Task<AddExprReply> AddExpr(AddExprRequest request, ServerCallContext context)
     {
         if (string.IsNullOrWhiteSpace(request.Expr.Trigger) || string.IsNullOrWhiteSpace(request.Expr.Response))
@@ -109,7 +106,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, IGrpcSvc, INService
 
     public override async Task<AddQuoteReply> AddQuote(AddQuoteRequest request, ServerCallContext context)
     {
-        var userId = GetUserId(context.RequestHeaders);
+        var userId = context.RequestHeaders.GetUserId();
 
         if (string.IsNullOrWhiteSpace(request.Quote.Trigger) || string.IsNullOrWhiteSpace(request.Quote.Response))
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Trigger and response are required"));
@@ -146,7 +143,7 @@ public class ExprsSvc : GrpcExprs.GrpcExprsBase, IGrpcSvc, INService
 
     public override async Task<Empty> DeleteQuote(DeleteQuoteRequest request, ServerCallContext context)
     {
-        await _qs.DeleteQuoteAsync(request.GuildId, GetUserId(context.RequestHeaders), true, new kwum(request.Id));
+        await _qs.DeleteQuoteAsync(request.GuildId, context.RequestHeaders.GetUserId(), true, new kwum(request.Id));
         return new Empty();
     }
 }

@@ -2,8 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WizBot.Db;
+using NadekoBot.Db;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    partial class PostgreSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20241028033704_ncanvas")]
+    partial class ncanvas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -798,9 +801,9 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_discorduser_userid");
-                    
+
                     b.HasIndex("Username")
-                     .HasDatabaseName("ix_discorduser_username");
+                        .HasDatabaseName("ix_discorduser_username");
 
                     b.ToTable("discorduser", (string)null);
                 });
@@ -1629,49 +1632,49 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("muteduserid", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.NCPixel", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<long>("Color")
-                 .HasColumnType("bigint")
-                 .HasColumnName("color");
+                    b.Property<long>("Color")
+                        .HasColumnType("bigint")
+                        .HasColumnName("color");
 
-                b.Property<decimal>("OwnerId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("ownerid");
+                    b.Property<decimal>("OwnerId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("ownerid");
 
-                b.Property<int>("Position")
-                 .HasColumnType("integer")
-                 .HasColumnName("position");
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
 
-                b.Property<long>("Price")
-                 .HasColumnType("bigint")
-                 .HasColumnName("price");
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price");
 
-                b.Property<string>("Text")
-                 .IsRequired()
-                 .HasMaxLength(256)
-                 .HasColumnType("character varying(256)")
-                 .HasColumnName("text");
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("text");
 
-                b.HasKey("Id")
-                 .HasName("pk_ncpixel");
+                    b.HasKey("Id")
+                        .HasName("pk_ncpixel");
 
-                b.HasAlternateKey("Position")
-                 .HasName("ak_ncpixel_position");
+                    b.HasAlternateKey("Position")
+                        .HasName("ak_ncpixel_position");
 
-                b.HasIndex("OwnerId")
-                 .HasDatabaseName("ix_ncpixel_ownerid");
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_ncpixel_ownerid");
 
-                b.ToTable("ncpixel", (string)null);
-            });
+                    b.ToTable("ncpixel", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.WizBotExpression", b =>
                 {
@@ -2985,12 +2988,12 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("guildid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
                     b.Property<int>("Punishment")
-                     .HasColumnType("integer")
-                     .HasColumnName("punishment");
+                        .HasColumnType("integer")
+                        .HasColumnName("punishment");
 
                     b.Property<decimal?>("RoleId")
                         .HasColumnType("numeric(20,0)")
@@ -3004,7 +3007,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasName("pk_warningpunishment");
 
                     b.HasAlternateKey("GuildId", "Count")
-                     .HasName("ak_warningpunishment_guildid_count");
+                        .HasName("ak_warningpunishment_guildid_count");
 
                     b.ToTable("warningpunishment", (string)null);
                 });

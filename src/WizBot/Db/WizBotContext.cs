@@ -73,6 +73,16 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region NCanvas
+
+        modelBuilder.Entity<NCPixel>()
+                    .HasAlternateKey(x => x.Position);
+
+        modelBuilder.Entity<NCPixel>()
+                    .HasIndex(x => x.OwnerId);
+
+        #endregion
+
         #region QUOTES
 
         var quoteEntity = modelBuilder.Entity<Quote>();
