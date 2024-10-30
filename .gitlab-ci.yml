@@ -109,7 +109,7 @@ release-github:
         "tag_name": "'"$CI_COMMIT_TAG"'",
         "target_commitish": "main",
         "name": "WizBot v'"$CI_COMMIT_TAG"'",
-        "body": "## [Changelog](https://github.com/Wizkiller96/WizBot/blob/v5/CHANGELOG.md#tag-'$(echo "$CI_COMMIT_TAG" | sed "s/\.//g")-$(date +%d%m%Y))",
+        "body": "## [Changelog](https://gitlab.com/WizNet/WizBot/-/blob/v5/CHANGELOG.md#$(echo \"$CI_COMMIT_TAG\" | sed \"s/\\.//g\")-$(date +%d%m%Y)) --tag-name $CI_COMMIT_TAG",
         "draft": false,
         "prerelease": false
       }' https://api.github.com/repos/wizkiller96/wizbot/releases || true
