@@ -4568,7 +4568,6 @@ leaveunkeptservers:
         desc: "Shard id from which to start leaving unkept servers."
     - delay:
         desc: "Delay in miliseconds between leaves"
-desc: "Delay in miliseconds between leaves"
 ncanvas:
   desc: |-
     Shows the current nCanvas.
