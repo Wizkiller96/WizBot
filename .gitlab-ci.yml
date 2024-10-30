@@ -108,11 +108,9 @@ release-github:
     - echo "GITHUB_TOKEN has been provided"
     - |
       # Construct the body content
-      CHANGELOG_URL="https://gitlab.com/WizNet/WizBot/-/blob/v5/CHANGELOG.md#$(echo ${CI_COMMIT_TAG} | sed 's/\\.//g')-$(date +%d%m%Y)"
-      BODY_CONTENT="## [Changelog](${CHANGELOG_URL}) --tag-name ${CI_COMMIT_TAG}"
-
+      CHANGELOG_URL="https://github.com/Wizkiller96/WizBot/blob/v5/CHANGELOG.md#$(echo ${CI_COMMIT_TAG} | sed 's/\\.//g')-$(date +%d%m%Y)"
+      BODY_CONTENT="## [Changelog](${CHANGELOG_URL})"
       echo "Body content being sent: ${BODY_CONTENT}"
-
       # Create the GitHub release and capture the release ID
       RELEASE_RESPONSE=$(curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/json" -d '{
         "tag_name": "'"${CI_COMMIT_TAG}"'",
@@ -122,27 +120,33 @@ release-github:
         "draft": false,
         "prerelease": false
       }' https://api.github.com/repos/wizkiller96/wizbot/releases)
-
       # Extract the release ID from the response using jq
       RELEASE_ID=$(echo $RELEASE_RESPONSE | jq -r ".id")
-
       echo "Release ID: $RELEASE_ID"
-
       # Check if the release ID was captured correctly
       if [ "$RELEASE_ID" = "null" ] || [ -z "$RELEASE_ID" ]; then
         echo "Failed to create a release"
         exit 1
       fi
-
-      # Loop through each asset and upload it
-      for asset in $(ls release/*); do
-        if [ -f "$asset" ]; then
-          echo "Uploading asset: $asset"
-          curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type "$asset")" --data-binary @"$asset" "https://uploads.github.com/repos/wizkiller96/wizbot/releases/$RELEASE_ID/assets?name=$(basename "$asset")"
+      # Upload each asset
+      upload_asset() {
+        local asset_name=$1
+        local asset_file=$2
+        local url=$3
+        if [ -f "$asset_file" ]; then
+          echo "Uploading asset: $asset_name"
+          curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: $(file -b --mime-type "$asset_file")" --data-binary @"$asset_file" "https://uploads.github.com/repos/wizkiller96/wizbot/releases/$RELEASE_ID/assets?name=$(basename $asset_name)"
         else
-          echo "Asset not found: $asset"
+          echo "Asset not found: $asset_file"
         fi
-      done
+      }
+      upload_asset "${LINUX_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_X64_RELEASE}"
+      upload_asset "${LINUX_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${LINUX_ARM64_RELEASE}"
+      upload_asset "${WIN_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_X64_RELEASE}"
+      upload_asset "${WIN_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${WIN_ARM64_RELEASE}"
+      upload_asset "${MACOS_X64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_X64_RELEASE}"
+      upload_asset "${MACOS_ARM64_RELEASE}" "${PACKAGE_REGISTRY_URL}/${MACOS_ARM64_RELEASE}"
+      upload_asset "${INSTALLER_FILE_NAME}" "${PACKAGE_REGISTRY_URL}/${INSTALLER_FILE_NAME}"
 
 test:
   stage: test
