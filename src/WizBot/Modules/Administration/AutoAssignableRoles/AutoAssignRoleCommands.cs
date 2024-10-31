@@ -24,6 +24,13 @@ public partial class Administration
                 await Response().Error(strs.hierarchy).SendAsync();
                 return;
             }
+            
+            // the user can't aar the role which is greater or equal to the bot's highest role
+            if (role.Position >= ((SocketGuild)ctx.Guild).CurrentUser.GetRoles().Max(x => x.Position))
+            {
+                await Response().Error(strs.hierarchy).SendAsync();
+                return;
+            }
 
             var roles = await _service.ToggleAarAsync(ctx.Guild.Id, role.Id);
             if (roles.Count == 0)
