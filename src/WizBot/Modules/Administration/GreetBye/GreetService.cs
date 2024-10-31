@@ -339,7 +339,7 @@ public class GreetService : INService, IReadyExecutor
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error sending greet dm");
+            Log.Warning(ex, "Unable to send Greet DM. Probably the user has closed DMs");
             return false;
         }
 

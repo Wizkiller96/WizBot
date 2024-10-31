@@ -20,7 +20,7 @@ public sealed class NCanvasService : INCanvasService, IReadyExecutor, INService
 
     public const int CANVAS_WIDTH = 500;
     public const int CANVAS_HEIGHT = 350;
-    public const int INITIAL_PRICE = 10;
+    public const int INITIAL_PRICE = 3;
 
     public NCanvasService(
         DbService db,
