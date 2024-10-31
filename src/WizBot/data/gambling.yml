@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 8
+version: 9
 # Currency settings
 currency:
   # What is the emoji/character which represents the currency
@@ -56,6 +56,8 @@ timely:
   # How often (in hours) can users claim currency with .timely command
   # setting to 0 or less will disable this feature
   cooldown: 12
+  # Whether the users are required to type a password when they do timely.
+  requirePassword: true
 # How much will each user's owned currency decay over time.
 decay:
   # Percentage of user's current currency which will be deducted every 24h.
@@ -125,12 +127,13 @@ waifu:
   # Settings for periodic waifu price decay.
   # Waifu price decays only if the waifu has no claimer.
   decay:
-    # Percentage (0 - 100) of the waifu value to reduce.
-    # Set 0 to disable
+    # Unclaimed waifus will decay by this percentage (0 - 100).
+    # Default is 0 (disabled)
     # For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
     unclaimedDecayPercent: 0
     # Claimed waifus will decay by this percentage (0 - 100).
     # Default is 0 (disabled)
+    # For example if a waifu has a price of 500$, setting this value to 10 would reduce the waifu value by 10% (50$)
     claimedDecayPercent: 0
     # How often to decay waifu values, in hours
     hourInterval: 24

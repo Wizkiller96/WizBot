@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
@@ -25,6 +27,7 @@ public class PlantPickService : INService, IExecNoCommand
     private readonly WizBotRandom _rng;
     private readonly DiscordSocketClient _client;
     private readonly GamblingConfigService _gss;
+    private readonly GamblingService _gs;
 
     private readonly ConcurrentHashSet<ulong> _generationChannels;
     private readonly SemaphoreSlim _pickLock = new(1, 1);
@@ -37,7 +40,8 @@ public class PlantPickService : INService, IExecNoCommand
         ICurrencyService cs,
         CommandHandler cmdHandler,
         DiscordSocketClient client,
-        GamblingConfigService gss)
+        GamblingConfigService gss,
+        GamblingService gs)
     {
         _db = db;
         _strings = strings;
@@ -48,6 +52,7 @@ public class PlantPickService : INService, IExecNoCommand
         _rng = new();
         _client = client;
         _gss = gss;
+        _gs = gs;
 
         using var uow = db.GetDbContext();
         var guildIds = client.Guilds.Select(x => x.Id).ToList();
@@ -87,6 +92,7 @@ public class PlantPickService : INService, IExecNoCommand
             var toDelete = guildConfig.GenerateCurrencyChannelIds.FirstOrDefault(x => x.Equals(toAdd));
             if (toDelete is not null)
                 uow.Remove(toDelete);
+
             _generationChannels.TryRemove(cid);
             enabled = false;
         }
@@ -208,7 +214,7 @@ public class PlantPickService : INService, IExecNoCommand
                               + " "
                               + GetText(channel.GuildId, strs.pick_pl(prefix));
 
-                        var pw = config.Generation.HasPassword ? GenerateCurrencyPassword().ToUpperInvariant() : null;
+                        var pw = config.Generation.HasPassword ? _gs.GeneratePassword().ToUpperInvariant() : null;
 
                         IUserMessage sent;
                         var (stream, ext) = await GetRandomCurrencyImageAsync(pw);
@@ -232,67 +238,44 @@ public class PlantPickService : INService, IExecNoCommand
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    ///     Generate a hexadecimal string from 1000 to ffff.
-    /// </summary>
-    /// <returns>A hexadecimal string from 1000 to ffff</returns>
-    private string GenerateCurrencyPassword()
-    {
-        // generate a number from 1000 to ffff
-        var num = _rng.Next(4096, 65536);
-        // convert it to hexadecimal
-        return num.ToString("x4");
-    }
-
     public async Task<long> PickAsync(
         ulong gid,
         ITextChannel ch,
         ulong uid,
         string pass)
     {
-        await _pickLock.WaitAsync();
+        long amount;
+        ulong[] ids;
+        await using (var uow = _db.GetDbContext())
+        {
+            // this method will sum all plants with that password,
+            // remove them, and get messageids of the removed plants
+
+            pass = pass?.Trim().TrimTo(10, true)?.ToUpperInvariant();
+            // gets all plants in this channel with the same password
+            var entries = await uow.GetTable<PlantedCurrency>()
+                                   .Where(x => x.ChannelId == ch.Id && pass == x.Password)
+                                   .DeleteWithOutputAsync();
+
+            if (!entries.Any())
+                return 0;
+
+            amount = entries.Sum(x => x.Amount);
+            ids = entries.Select(x => x.MessageId).ToArray();
+        }
+
+        if (amount > 0)
+            await _cs.AddAsync(uid, amount, new("currency", "collect"));
+
+
         try
         {
-            long amount;
-            ulong[] ids;
-            await using (var uow = _db.GetDbContext())
-            {
-                // this method will sum all plants with that password,
-                // remove them, and get messageids of the removed plants
-
-                pass = pass?.Trim().TrimTo(10, true).ToUpperInvariant();
-                // gets all plants in this channel with the same password
-                var entries = uow.Set<PlantedCurrency>()
-                                 .AsQueryable()
-                                 .Where(x => x.ChannelId == ch.Id && pass == x.Password)
-                                 .ToList();
-                // sum how much currency that is, and get all of the message ids (so that i can delete them)
-                amount = entries.Sum(x => x.Amount);
-                ids = entries.Select(x => x.MessageId).ToArray();
-                // remove them from the database
-                uow.RemoveRange(entries);
-
-
-                if (amount > 0)
-                    // give the picked currency to the user
-                    await _cs.AddAsync(uid, amount, new("currency", "collect"));
-                await uow.SaveChangesAsync();
-            }
-
-            try
-            {
-                // delete all of the plant messages which have just been picked
-                _ = ch.DeleteMessagesAsync(ids);
-            }
-            catch { }
-
-            // return the amount of currency the user picked
-            return amount;
+            _ = ch.DeleteMessagesAsync(ids);
         }
-        finally
-        {
-            _pickLock.Release();
-        }
+        catch { }
+
+        // return the amount of currency the user picked
+        return amount;
     }
 
     public async Task<ulong?> SendPlantMessageAsync(

@@ -16,6 +16,7 @@ public class GamblingService : INService, IReadyExecutor
     private readonly DiscordSocketClient _client;
     private readonly IBotCache _cache;
     private readonly GamblingConfigService _gss;
+    private readonly WizBotRandom _rng;
 
     private static readonly TypedKey<long> _curDecayKey = new("currency:last_decay");
 
@@ -29,10 +30,18 @@ public class GamblingService : INService, IReadyExecutor
         _client = client;
         _cache = cache;
         _gss = gss;
+        _rng = new WizBotRandom();
     }
 
     public Task OnReadyAsync()
         => Task.WhenAll(CurrencyDecayLoopAsync(), TransactionClearLoopAsync());
+
+
+    public string GeneratePassword()
+    {
+        var num = _rng.Next((int)Math.Pow(31, 2), (int)Math.Pow(32, 3));
+        return new kwum(num).ToString();
+    }
 
     private async Task TransactionClearLoopAsync()
     {
@@ -52,7 +61,7 @@ public class GamblingService : INService, IReadyExecutor
                 var days = TimeSpan.FromDays(lifetime);
                 await using var uow = _db.GetDbContext();
                 await uow.Set<CurrencyTransaction>()
-                    .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
+                         .DeleteAsync(ct => ct.DateAdded == null || now - ct.DateAdded < days);
             }
             catch (Exception ex)
             {
@@ -90,11 +99,11 @@ public class GamblingService : INService, IReadyExecutor
                 }
 
                 Log.Information("""
-                    --- Decaying users' currency ---
-                    | decay: {ConfigDecayPercent}% 
-                    | max: {MaxDecay} 
-                    | threshold: {DecayMinTreshold}
-                    """,
+                                --- Decaying users' currency ---
+                                | decay: {ConfigDecayPercent}% 
+                                | max: {MaxDecay} 
+                                | threshold: {DecayMinTreshold}
+                                """,
                     config.Decay.Percent * 100,
                     maxDecay,
                     config.Decay.MinThreshold);
@@ -104,14 +113,14 @@ public class GamblingService : INService, IReadyExecutor
 
                 var decay = (double)config.Decay.Percent;
                 await uow.Set<DiscordUser>()
-                    .Where(x => x.CurrencyAmount > config.Decay.MinThreshold && x.UserId != _client.CurrentUser.Id)
-                    .UpdateAsync(old => new()
-                    {
-                        CurrencyAmount =
-                            maxDecay > Sql.Round((old.CurrencyAmount * decay) - 0.5)
-                                ? (long)(old.CurrencyAmount - Sql.Round((old.CurrencyAmount * decay) - 0.5))
-                                : old.CurrencyAmount - maxDecay
-                    });
+                         .Where(x => x.CurrencyAmount > config.Decay.MinThreshold && x.UserId != _client.CurrentUser.Id)
+                         .UpdateAsync(old => new()
+                         {
+                             CurrencyAmount =
+                                 maxDecay > Sql.Round((old.CurrencyAmount * decay) - 0.5)
+                                     ? (long)(old.CurrencyAmount - Sql.Round((old.CurrencyAmount * decay) - 0.5))
+                                     : old.CurrencyAmount - maxDecay
+                         });
 
                 await uow.SaveChangesAsync();
 
@@ -132,6 +141,7 @@ public class GamblingService : INService, IReadyExecutor
 
     private static TypedKey<Dictionary<ulong, long>> _timelyKey
         = new("timely:claims");
+
 
     public async Task<TimeSpan?> ClaimTimelyAsync(ulong userId, int period)
     {
@@ -178,9 +188,10 @@ public class GamblingService : INService, IReadyExecutor
     public bool UserHasTimelyReminder(ulong userId)
     {
         var db = _db.GetDbContext();
-        return db.GetTable<Reminder>().Any(x => x.UserId == userId
-                                         && x.Type == ReminderType.Timely);
-    }   
+        return db.GetTable<Reminder>()
+                 .Any(x => x.UserId == userId
+                           && x.Type == ReminderType.Timely);
+    }
 
     public async Task RemoveAllTimelyClaimsAsync()
         => await _cache.RemoveAsync(_timelyKey);

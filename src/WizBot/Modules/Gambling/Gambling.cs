@@ -14,6 +14,12 @@ using System.Text;
 using WizBot.Modules.Gambling.Rps;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Patronage;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Gambling;
 
@@ -26,6 +32,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly NumberFormatInfo _enUsCulture;
     private readonly DownloadTracker _tracker;
     private readonly GamblingConfigService _configService;
+    private readonly FontProvider _fonts;
     private readonly IBankService _bank;
     private readonly IRemindService _remind;
     private readonly GamblingTxTracker _gamblingTxTracker;
@@ -38,6 +45,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         DiscordSocketClient client,
         DownloadTracker tracker,
         GamblingConfigService configService,
+        FontProvider fonts,
         IBankService bank,
         IRemindService remind,
         IPatronageService patronage,
@@ -58,6 +66,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _enUsCulture.NumberGroupSeparator = " ";
         _tracker = tracker;
         _configService = configService;
+        _fonts = fonts;
     }
 
     public async Task<string> GetBalanceStringAsync(ulong userId)
@@ -149,6 +158,49 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             await Response().Error(strs.timely_none).SendAsync();
             return;
+        }
+        
+        if (Config.Timely.RequirePassword)
+        {
+            var password = _service.GeneratePassword();
+
+            var img = new Image<Rgba32>(100, 40);
+
+            var font = _fonts.NotoSans.CreateFont(30);
+            var outlinePen = new SolidPen(Color.Black, 1f);
+            // draw password on the image
+            img.Mutate(x =>
+            {
+                x.DrawText(new RichTextOptions(font)
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        FallbackFontFamilies = _fonts.FallBackFonts,
+                        Origin = new(50, 20)
+                    },
+                    password,
+                    Brushes.Solid(Color.White),
+                    outlinePen);
+            });
+            using var stream = await img.ToStreamAsync();
+            var captcha = await Response()
+                                .Embed(_sender.CreateEmbed()
+                                              .WithOkColor()
+                                              .WithImageUrl("attachment://timely.png"))
+                                .File(stream, "timely.png")
+                                .SendAsync();
+            try
+            {
+                var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
+                if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
+                {
+                    return;
+                }
+            }
+            finally
+            {
+                _ = captcha.DeleteAsync();
+            }
         }
 
         if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } remainder)

@@ -357,7 +357,7 @@ public partial class Xp : WizBotModule<XpService>
         if (!await PromptUserConfirmAsync(embed))
             return;
 
-        _service.XpReset(ctx.Guild.Id, userId);
+        await _service.XpReset(ctx.Guild.Id, userId);
 
         await Response().Confirm(strs.reset_user(userId)).SendAsync();
     }

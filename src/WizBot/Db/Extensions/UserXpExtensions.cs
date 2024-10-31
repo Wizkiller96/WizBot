@@ -44,9 +44,6 @@ public static class UserXpExtensions
                     .CountAsyncLinqToDB()
            + 1;
 
-    public static void ResetGuildUserXp(this DbSet<UserXpStats> xps, ulong userId, ulong guildId)
-        => xps.Delete(x => x.UserId == userId && x.GuildId == guildId);
-
     public static void ResetGuildXp(this DbSet<UserXpStats> xps, ulong guildId)
         => xps.Delete(x => x.GuildId == guildId);
 

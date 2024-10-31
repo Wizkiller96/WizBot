@@ -143,6 +143,11 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             int.TryParse,
             ConfigPrinters.ToString,
             val => val >= 0);
+        
+        AddParsedProp("timely.pass",
+            gs => gs.Timely.RequirePassword,
+            bool.TryParse,
+            ConfigPrinters.ToString);
 
         Migrate();
     }
@@ -167,22 +172,6 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             });
         }
 
-        if (data.Version < 5)
-        {
-            ModifyConfig(c =>
-            {
-                c.Version = 5;
-            });
-        }
-
-        if (data.Version < 6)
-        {
-            ModifyConfig(c =>
-            {
-                c.Version = 6;
-            });
-        }
-
         if (data.Version < 7)
         {
             ModifyConfig(c =>
@@ -197,6 +186,14 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             {
                 c.Version = 8;
                 c.Waifu.Decay.UnclaimedDecayPercent = 0;
+            });
+        }
+        
+        if (data.Version < 9)
+        {
+            ModifyConfig(c =>
+            {
+                c.Version = 9;
             });
         }
     }

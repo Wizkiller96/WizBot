@@ -20,6 +20,31 @@ using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Xp.Services;
 
+public interface IUserService
+{
+    Task<DiscordUser?> GetUserAsync(ulong userId);
+}
+
+public sealed class UserService : IUserService, INService
+{
+    private readonly DbService _db;
+
+    public UserService(DbService db)
+    {
+        _db = db;
+    }
+
+    public async Task<DiscordUser> GetUserAsync(ulong userId)
+    {
+        await using var uow = _db.GetDbContext();
+        var user = await uow
+                         .GetTable<DiscordUser>()
+                         .FirstOrDefaultAsyncLinqToDB(u => u.UserId == userId);
+
+        return user;
+    }
+}
+
 public class XpService : INService, IReadyExecutor, IExecNoCommand
 {
     private readonly DbService _db;
@@ -1439,11 +1464,11 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
     }
 
-    public void XpReset(ulong guildId, ulong userId)
+    public async Task XpReset(ulong guildId, ulong userId)
     {
-        using var uow = _db.GetDbContext();
-        uow.Set<UserXpStats>().ResetGuildUserXp(userId, guildId);
-        uow.SaveChanges();
+        await using var uow = _db.GetDbContext();
+        await uow.GetTable<UserXpStats>()
+                 .DeleteAsync(x => x.UserId == userId && x.GuildId == guildId);
     }
 
     public void XpReset(ulong guildId)
@@ -1639,6 +1664,15 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     public bool IsShopEnabled()
         => _xpConfig.Data.Shop.IsEnabled;
+    
+    public async Task<int> GetTotalGuildUsers(ulong requestGuildId, List<ulong>? guildUsers = null)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<UserXpStats>()
+                        .Where(x => x.GuildId == requestGuildId
+                                    && (guildUsers == null || guildUsers.Contains(x.UserId)))
+                        .CountAsyncLinqToDB();
+    }
 }
 
 public enum BuyResult

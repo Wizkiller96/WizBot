@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling.Common;
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 8;
+    public int Version { get; set; } = 9;
 
     [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
@@ -111,6 +111,11 @@ public partial class TimelyConfig
              setting to 0 or less will disable this feature
              """)]
     public int Cooldown { get; set; } = 24;
+    
+    [Comment("""
+             Whether the users are required to type a password when they do timely.
+             """)]
+    public bool RequirePassword { get; set; } = true;
 }
 
 [Cloneable]
