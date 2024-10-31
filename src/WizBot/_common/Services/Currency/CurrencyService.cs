@@ -55,14 +55,14 @@ public sealed class CurrencyService : ICurrencyService, INService
         {
             await using var ctx = _db.GetDbContext();
             await ctx
-                .GetTable<DiscordUser>()
-                .Where(x => userIds.Contains(x.UserId))
-                .UpdateAsync(du => new()
-                {
-                    CurrencyAmount = du.CurrencyAmount >= amount
-                        ? du.CurrencyAmount - amount
-                        : 0
-                });
+                  .GetTable<DiscordUser>()
+                  .Where(x => userIds.Contains(x.UserId))
+                  .UpdateAsync(du => new()
+                  {
+                      CurrencyAmount = du.CurrencyAmount >= amount
+                          ? du.CurrencyAmount - amount
+                          : 0
+                  });
             await ctx.SaveChangesAsync();
             return;
         }
@@ -111,5 +111,30 @@ public sealed class CurrencyService : ICurrencyService, INService
     {
         await using var uow = _db.GetDbContext();
         return await uow.Set<DiscordUser>().GetTopRichest(ignoreId, page, perPage);
+    }
+
+    public async Task<IReadOnlyList<CurrencyTransaction>> GetTransactionsAsync(
+        ulong userId,
+        int page,
+        int perPage = 15)
+    {
+        await using var uow = _db.GetDbContext();
+
+        var trs = await uow.GetTable<CurrencyTransaction>()
+                           .Where(x => x.UserId == userId)
+                           .OrderByDescending(x => x.DateAdded)
+                           .Skip(perPage * page)
+                           .Take(perPage)
+                           .ToListAsyncLinqToDB();
+
+        return trs;
+    }
+
+    public async Task<int> GetTransactionsCountAsync(ulong userId)
+    {
+        await using var uow = _db.GetDbContext();
+        return await uow.GetTable<CurrencyTransaction>()
+                       .Where(x => x.UserId == userId)
+                       .CountAsyncLinqToDB();
     }
 }

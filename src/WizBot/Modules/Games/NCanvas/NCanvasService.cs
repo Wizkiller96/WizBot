@@ -110,7 +110,7 @@ public sealed class NCanvasService : INCanvasService, IReadyExecutor, INService
 
         var wallet = await _cs.GetWalletAsync(userId);
 
-        var paid = await wallet.Take(price, new("canvas", "pixel", $"Bought pixel #{position}"));
+        var paid = await wallet.Take(price, new("canvas", "pixel-buy", $"Bought pixel {new kwum(position)}"));
         if (!paid)
         {
             return SetPixelResult.NotEnoughMoney;
@@ -138,7 +138,7 @@ public sealed class NCanvasService : INCanvasService, IReadyExecutor, INService
 
         if (!success)
         {
-            await wallet.Add(price, new("canvas", "pixel-refund", $"Refund pixel #{position} purchase"));
+            await wallet.Add(price, new("canvas", "pixel-refund", $"Refund pixel {new kwum(position)} purchase"));
         }
 
         return success ? SetPixelResult.Success : SetPixelResult.InsufficientPayment;

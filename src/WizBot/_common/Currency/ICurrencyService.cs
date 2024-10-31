@@ -40,4 +40,11 @@ public interface ICurrencyService
         TxData? txData);
     
     Task<IReadOnlyList<DiscordUser>> GetTopRichest(ulong ignoreId, int page = 0, int perPage = 9);
+    
+    Task<IReadOnlyList<CurrencyTransaction>> GetTransactionsAsync(
+        ulong userId,
+        int page,
+        int perPage = 15);
+    
+    Task<int> GetTransactionsCountAsync(ulong userId);
 }
