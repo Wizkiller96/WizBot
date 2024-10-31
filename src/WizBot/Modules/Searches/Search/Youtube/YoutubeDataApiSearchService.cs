@@ -18,6 +18,9 @@ public sealed class YoutubeDataApiSearchService : IYoutubeSearchService, INServi
         if(results.Count == 0)
             return null;
 
-        return results.Map(r => new VideoInfo(r));
+        return results.Map(r => new VideoInfo()
+        {
+            Url = r
+        });
     }
 }
