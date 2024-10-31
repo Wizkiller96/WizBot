@@ -67,7 +67,7 @@ public partial class Permissions
 
                       return _sender.CreateEmbed()
                              .WithTitle(title)
-                             .WithDescription(allItems.Join('\n'))
+                             .WithDescription(pageItems.Join('\n'))
                              .WithOkColor();
                   })
                   .SendAsync();
