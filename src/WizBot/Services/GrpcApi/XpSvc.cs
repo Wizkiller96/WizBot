@@ -1,0 +1,245 @@
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
+using WizBot.Db.Models;
+using WizBot.Modules.Gambling.Bank;
+using WizBot.Modules.WizBotExpressions;
+using WizBot.Modules.Utility;
+using WizBot.Modules.Xp.Services;
+
+namespace WizBot.GrpcApi;
+
+public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
+{
+    private readonly XpService _xp;
+    private readonly DiscordSocketClient _client;
+    private readonly IUserService _duSvc;
+
+    public XpSvc(XpService xp, DiscordSocketClient client, IUserService duSvc)
+    {
+        _xp = xp;
+        _client = client;
+        _duSvc = duSvc;
+    }
+
+    public ServerServiceDefinition Bind()
+        => GrpcXp.BindService(this);
+
+    public override async Task<GetXpSettingsReply> GetXpSettings(
+        GetXpSettingsRequest request,
+        ServerCallContext context)
+    {
+        var guild = _client.GetGuild(request.GuildId);
+
+        if (guild is null)
+            throw new RpcException(new Status(StatusCode.NotFound, "Guild not found"));
+
+        var excludedChannels = _xp.GetExcludedChannels(request.GuildId);
+        var excludedRoles = _xp.GetExcludedRoles(request.GuildId);
+        var isServerExcluded = _xp.IsServerExcluded(request.GuildId);
+
+        var reply = new GetXpSettingsReply();
+
+        reply.Exclusions.AddRange(excludedChannels
+                                  .Select(x => new ExclItemReply()
+                                  {
+                                      Id = x,
+                                      Type = "Channel",
+                                      Name = guild.GetChannel(x)?.Name ?? "????"
+                                  })
+                                  .Concat(excludedRoles
+                                      .Select(x => new ExclItemReply()
+                                      {
+                                          Id = x,
+                                          Type = "Role",
+                                          Name = guild.GetRole(x)?.Name ?? "????"
+                                      })));
+
+        reply.ServerExcluded = isServerExcluded;
+
+        return reply;
+    }
+
+    public override async Task<AddExclusionReply> AddExclusion(AddExclusionRequest request, ServerCallContext context)
+    {
+        await Task.Yield();
+
+        var success = false;
+        var guild = _client.GetGuild(request.GuildId);
+
+        if (guild is null)
+            throw new RpcException(new Status(StatusCode.NotFound, "Guild not found"));
+
+        if (request.Type == "Role")
+        {
+            if (guild.GetRole(request.Id) is null)
+                return new()
+                {
+                    Success = false
+                };
+
+            success = _xp.ToggleExcludeRole(request.GuildId, request.Id);
+        }
+        else if (request.Type == "Channel")
+        {
+            if (guild.GetTextChannel(request.Id) is null)
+                return new()
+                {
+                    Success = false
+                };
+
+            success = _xp.ToggleExcludeChannel(request.GuildId, request.Id);
+        }
+
+        return new()
+        {
+            Success = success
+        };
+    }
+
+    public override Task<DeleteExclusionReply> DeleteExclusion(
+        DeleteExclusionRequest request,
+        ServerCallContext context)
+    {
+        var success = false;
+        if (request.Type == "Role")
+            success = _xp.ToggleExcludeRole(request.GuildId, request.Id);
+        else
+            success = _xp.ToggleExcludeChannel(request.GuildId, request.Id);
+
+        return Task.FromResult(new DeleteExclusionReply
+        {
+            Success = success
+        });
+    }
+
+    public override async Task<AddRewardReply> AddReward(AddRewardRequest request, ServerCallContext context)
+    {
+        await Task.Yield();
+
+        var success = false;
+        var guild = _client.GetGuild(request.GuildId);
+
+        if (guild is null)
+            throw new RpcException(new Status(StatusCode.NotFound, "Guild not found"));
+
+        if (request.Type == "AddRole" || request.Type == "RemoveRole")
+        {
+            if (!ulong.TryParse(request.Value, out var rid))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid role id"));
+
+            var role = guild.GetRole(rid);
+            if (role is null)
+                return new()
+                {
+                    Success = false
+                };
+
+            _xp.SetRoleReward(request.GuildId, request.Level, rid, request.Type == "RemoveRole");
+            success = true;
+        }
+        else if (request.Type == "Currency")
+        {
+            if (!int.TryParse(request.Value, out var amount))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid amount"));
+
+            _xp.SetCurrencyReward(request.GuildId, request.Level, amount);
+            success = true;
+        }
+
+        return new()
+        {
+            Success = success
+        };
+    }
+
+    public override Task<DeleteRewardReply> DeleteReward(DeleteRewardRequest request, ServerCallContext context)
+    {
+        var success = false;
+
+        if (request.Type == "AddRole" || request.Type == "RemoveRole")
+        {
+            _xp.ResetRoleReward(request.GuildId, request.Level);
+            success = true;
+        }
+        else if (request.Type == "Currency")
+        {
+            _xp.SetCurrencyReward(request.GuildId, request.Level, 0);
+            success = true;
+        }
+
+        return Task.FromResult(new DeleteRewardReply
+        {
+            Success = success
+        });
+    }
+
+    public override async Task<ResetUserXpReply> ResetUserXp(ResetUserXpRequest request, ServerCallContext context)
+    {
+        await _xp.XpReset(request.GuildId, request.UserId);
+
+        return new ResetUserXpReply
+        {
+            Success = true
+        };
+    }
+
+    public override async Task<GetXpLbReply> GetXpLb(GetXpLbRequest request, ServerCallContext context)
+    {
+        if (request.Page < 0)
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Page must be greater than or equal to 0"));
+
+        var guild = _client.GetGuild(request.GuildId);
+
+        if (guild is null)
+            throw new RpcException(new Status(StatusCode.NotFound, "Guild not found"));
+
+        var data = await _xp.GetGuildUserXps(request.GuildId, request.Page);
+        var total = await _xp.GetTotalGuildUsers(request.GuildId);
+
+        var reply = new GetXpLbReply
+        {
+            Total = total
+        };
+
+        reply.Users.AddRange(await data
+                                   .Select(async x =>
+                                   {
+                                       var user = guild.GetUser(x.UserId);
+
+                                       if (user is null)
+                                       {
+                                           var du = await _duSvc.GetUserAsync(x.UserId);
+                                           if (du is null)
+                                               return new XpLbUserReply
+                                               {
+                                                   UserId = x.UserId,
+                                                   Avatar = string.Empty,
+                                                   Username = string.Empty,
+                                                   Xp = x.Xp,
+                                                   Level = new LevelStats(x.Xp).Level
+                                               };
+
+                                           return new XpLbUserReply()
+                                           {
+                                               UserId = x.UserId,
+                                               Avatar = du.RealAvatarUrl()?.ToString() ?? string.Empty,
+                                               Username = du.ToString() ?? string.Empty,
+                                               Xp = x.Xp,
+                                               Level = new LevelStats(x.Xp).Level
+                                           };
+                                       }
+
+                                       return new XpLbUserReply
+                                       {
+                                           UserId = x.UserId,
+                                           Avatar = user?.GetAvatarUrl() ?? string.Empty,
+                                           Username = user?.ToString() ?? string.Empty,
+                                           Xp = x.Xp,
+                                           Level = new LevelStats(x.Xp).Level
+                                       };
+                                   })
+                                   .WhenAll());
+
+        return reply;
+    }
+}
