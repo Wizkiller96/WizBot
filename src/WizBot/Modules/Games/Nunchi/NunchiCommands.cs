@@ -29,7 +29,7 @@ public partial class Games
                 if (!await nunchi.Join(ctx.User.Id, ctx.User.ToString()))
                     return;
 
-                await Response().Error(strs.nunchi_joined(nunchi.ParticipantCount)).SendAsync();
+                await Response().Confirm(strs.nunchi_joined(nunchi.ParticipantCount)).SendAsync();
                 return;
             }
 

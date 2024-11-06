@@ -193,7 +193,7 @@ public sealed class StatsService : IStatsService, IReadyExecutor, INService
             Id = g.Id,
             IconUrl = g.IconUrl,
             Name = g.Name,
-            Owner = (await ig.GetUserAsync(g.OwnerId))?.Username ?? "Unknown",
+            Owner = (await ig.GetUserAsync(g.OwnerId))?.Username ?? "??Unknown",
             OwnerId = g.OwnerId,
             CreatedAt = g.CreatedAt.UtcDateTime,
             VoiceChannels = g.VoiceChannels.Count,

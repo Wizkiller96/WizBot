@@ -77,8 +77,7 @@ public class DefaultWallet : IWallet
                  .InsertOrUpdateAsync(() => new()
                      {
                          UserId = userId,
-                         Username = "Unknown",
-                         Discriminator = "????",
+                         Username = "??Unknown",
                          CurrencyAmount = amount,
                      },
                      (old) => new()

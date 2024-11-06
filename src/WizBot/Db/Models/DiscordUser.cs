@@ -7,7 +7,7 @@ public class DiscordUser : DbEntity
 {
     public ulong UserId { get; set; }
     public string Username { get; set; }
-    public string Discriminator { get; set; }
+    // public string Discriminator { get; set; }
     public string AvatarId { get; set; }
 
     public int? ClubId { get; set; }
@@ -27,9 +27,6 @@ public class DiscordUser : DbEntity
 
     public override string ToString()
     {
-        if (string.IsNullOrWhiteSpace(Discriminator) || Discriminator == "0000")
-            return Username;
-        
-        return Username + "#" + Discriminator;
+        return Username;
     }
 }

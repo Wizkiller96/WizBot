@@ -1113,5 +1113,7 @@
   "nc_hint": "Use `{0}nczoom x y` command to zoom in. Image is {1}x{2} pixels.",
   "nc_insuff_payment": "Invalid payment.",
   "invalid_img_size": "Image must to be {0}x{1} pixels.",
-  "no_attach_found": "No attachment found. Please send the image along with this command."
+  "no_attach_found": "No attachment found. Please send the image along with this command." ,
+  "trfl_enabled": "Flag translation enabled on this channel. Reacting to a message with a flag will translate it to that language.",
+  "trfl_disabled": "Flag translation disabled."
 }

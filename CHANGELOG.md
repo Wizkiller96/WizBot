@@ -2,6 +2,35 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.18] - 05.11.2024
+
+### Added
+
+- Added `.translateflags` / `.trfl` command.
+  - Enable on a per-channel basis.
+  - Reacting on any message in that channel with a flag emoji will post the translation of that message in the
+    language of that country
+  - 5 second cooldown per user
+  - The message can only be translated once per language (counter resets every 24h)
+- `.timely` now has a captcha. Togglable via `.conf gambling`
+
+## Changed
+
+- [public bot] Patreon reward bonus for flowers reduced. Timely bonuses stay the same
+- discriminators removed from the databases. All users who had ???? as discriminator have been renamed to ??username.
+  - all new unknown users will have ??Unknown as their name
+
+## Fixed
+
+- nunchi join game message is now ok color instead of error color
+
+## [5.1.17] - 29.10.2024
+
+### Fixed
+
+- fix: Bot will now not accept .aar Role if that Role is higher than or equal to bot's role. Previously bot would just
+  fail silently, now there is a proper error message.
+
 ## [5.1.16] - 28.10.2024
 
 ## Added

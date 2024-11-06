@@ -25,7 +25,6 @@ public static class DiscordUserExtensions
                   {
                       UserId = userId,
                       Username = username,
-                      Discriminator = discrim,
                       AvatarId = avatarId,
                       TotalXp = 0,
                       CurrencyAmount = 0
@@ -33,7 +32,6 @@ public static class DiscordUserExtensions
                   old => new()
                   {
                       Username = username,
-                      Discriminator = discrim,
                       AvatarId = avatarId
                   },
                   () => new()
@@ -49,8 +47,7 @@ public static class DiscordUserExtensions
                   () => new()
                   {
                       UserId = userId,
-                      Username = "Unknown",
-                      Discriminator = "????",
+                      Username = "??Unknown",
                       AvatarId = string.Empty,
                       TotalXp = 0,
                       CurrencyAmount = 0

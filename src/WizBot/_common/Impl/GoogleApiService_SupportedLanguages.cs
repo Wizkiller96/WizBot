@@ -154,7 +154,6 @@ public sealed partial class GoogleApiService
         }
 
         Languages = langs;
-
     }
 
 }

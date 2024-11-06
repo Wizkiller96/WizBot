@@ -5,6 +5,11 @@ namespace WizBot.Migrations;
 
 public static class MigrationQueries
 {
+    public static void UpdateUsernames(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("UPDATE DiscordUser SET Username = '??' + Username WHERE Discriminator = '????';");
+    }
+
     public static void MigrateRero(MigrationBuilder migrationBuilder)
     {
         if (migrationBuilder.IsSqlite())

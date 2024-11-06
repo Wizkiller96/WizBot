@@ -4634,6 +4634,14 @@ ncreset:
     - ''
   params:
     - { }
+translateflags:
+  desc: |-
+    Toggles translate flags on the current channel.
+    Reacting with a country flag will translate the message to that country's language.
+  ex:
+    - ''
+  params:
+    - { }
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

@@ -201,8 +201,11 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
     {
         string text;
 
-        if (!Languages.ContainsKey(sourceLanguage) || !Languages.ContainsKey(targetLanguage))
+        if (!Languages.ContainsKey(targetLanguage))
             throw new ArgumentException(nameof(sourceLanguage) + "/" + nameof(targetLanguage));
+        
+        if (string.IsNullOrWhiteSpace(sourceLanguage) || !Languages.ContainsKey(sourceLanguage))
+            sourceLanguage = "auto";
 
 
         var url = new Uri(string.Format(
@@ -223,7 +226,7 @@ public sealed partial class GoogleApiService : IGoogleApiService, INService
     private string ConvertToLanguageCode(string language)
     {
         Languages.TryGetValue(language, out var mode);
-        return mode;
+        return string.IsNullOrWhiteSpace(mode) ? language : mode;
     }
 }
 

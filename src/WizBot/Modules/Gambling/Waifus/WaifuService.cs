@@ -603,7 +603,7 @@ public class WaifuService : INService, IReadyExecutor
                                        .Where(wi => wi.ClaimerId == waifuId)
                                        .Select(wi => wi.WaifuId)
                                        .Contains(x.Id))
-                        .Select(x => $"{x.Username}#{x.Discriminator}")
+                        .Select(x => x.Username)
                         .ToListAsyncEF();
     }
 
@@ -615,7 +615,7 @@ public class WaifuService : INService, IReadyExecutor
                                        .Where(wi => wi.AffinityId == waifuId)
                                        .Select(wi => wi.WaifuId)
                                        .Contains(x.Id))
-                        .Select(x => $"{x.Username}#{x.Discriminator}")
+                        .Select(x => x.Username)
                         .ToListAsyncEF();
     }
 

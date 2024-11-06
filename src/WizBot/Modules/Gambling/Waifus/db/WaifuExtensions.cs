@@ -42,15 +42,12 @@ public static class WaifuExtensions
                            {
                                Affinity = x.Affinity == null
                                    ? null
-                                   : x.Affinity.Username
-                                     + (x.Affinity.Discriminator != "0000" ? "#" + x.Affinity.Discriminator : ""),
+                                   : x.Affinity.Username,
                                ClaimerName =
                                    x.Claimer == null
                                        ? null
-                                       : x.Claimer.Username
-                                         + (x.Claimer.Discriminator != "0000" ? "#" + x.Claimer.Discriminator : ""),
-                               WaifuName = x.Waifu.Username
-                                           + (x.Waifu.Discriminator != "0000" ? "#" + x.Waifu.Discriminator : ""),
+                                       : x.Claimer.Username,
+                               WaifuName = x.Waifu.Username,
                                Price = x.Price
                            })
                            .ToListAsyncEF();
@@ -62,7 +59,7 @@ public static class WaifuExtensions
     public static ulong GetWaifuUserId(this DbSet<WaifuInfo> waifus, ulong ownerId, string name)
         => waifus.AsQueryable()
                  .AsNoTracking()
-                 .Where(x => x.Claimer.UserId == ownerId && x.Waifu.Username + "#" + x.Waifu.Discriminator == name)
+                 .Where(x => x.Claimer.UserId == ownerId && x.Waifu.Username == name)
                  .Select(x => x.Waifu.UserId)
                  .FirstOrDefault();
 
@@ -100,7 +97,7 @@ public static class WaifuExtensions
                                   ctx.Set<DiscordUser>()
                                      .AsQueryable()
                                      .Where(u => u.UserId == userId)
-                                     .Select(u => u.Username + "#" + u.Discriminator)
+                                     .Select(u => u.Username)
                                      .FirstOrDefault(),
                               AffinityCount =
                                   ctx.Set<WaifuUpdate>()
@@ -112,14 +109,14 @@ public static class WaifuExtensions
                                   ctx.Set<DiscordUser>()
                                      .AsQueryable()
                                      .Where(u => u.Id == w.AffinityId)
-                                     .Select(u => u.Username + "#" + u.Discriminator)
+                                     .Select(u => u.Username)
                                      .FirstOrDefault(),
                               ClaimCount = ctx.Set<WaifuInfo>().AsQueryable().Count(x => x.ClaimerId == w.WaifuId),
                               ClaimerName =
                                   ctx.Set<DiscordUser>()
                                      .AsQueryable()
                                      .Where(u => u.Id == w.ClaimerId)
-                                     .Select(u => u.Username + "#" + u.Discriminator)
+                                     .Select(u => u.Username)
                                      .FirstOrDefault(),
                               DivorceCount =
                                   ctx.Set<WaifuUpdate>()

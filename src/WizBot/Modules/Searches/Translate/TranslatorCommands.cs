@@ -6,6 +6,14 @@ public partial class Searches
     [Group]
     public partial class TranslateCommands : WizBotModule<ITranslateService>
     {
+        private readonly FlagTranslateService _flagSvc;
+
+        public TranslateCommands(FlagTranslateService flagSvc)
+        {
+            _flagSvc = flagSvc;
+        }
+
+        
         public enum AutoDeleteAutoTranslate
         {
             Del,
@@ -90,6 +98,19 @@ public partial class Searches
             }
 
             await Response().Embed(eb).SendAsync();
+        }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(ChannelPermission.ManageChannels)]
+        [BotPerm(ChannelPermission.SendMessages | ChannelPermission.EmbedLinks)]
+        public async Task TranslateFlags()
+        {
+            var enabled = await _flagSvc.Toggle(ctx.Guild.Id, ctx.Channel.Id);
+            if (enabled)
+                await Response().Confirm(strs.trfl_enabled).SendAsync();
+            else
+                await Response().Confirm(strs.trfl_disabled).SendAsync();
         }
     }
 }

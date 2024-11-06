@@ -1445,6 +1445,11 @@ ncpixel:
   - ncgp
 ncreset:
   - ncreset
+translateflags:
+  - translateflags
+  - trfl
+  - fltr
+  - transflags
 # WizNet System
 feedback:
   - feedback

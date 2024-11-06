@@ -28,6 +28,8 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
         GetXpSettingsRequest request,
         ServerCallContext context)
     {
+        await Task.Yield();
+        
         var guild = _client.GetGuild(request.GuildId);
 
         if (guild is null)
@@ -53,6 +55,26 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
                                           Type = "Role",
                                           Name = guild.GetRole(x)?.Name ?? "????"
                                       })));
+
+        var curRews = _xp.GetCurrencyRewards(request.GuildId);
+        var roleRews = _xp.GetRoleRewards(request.GuildId);
+
+        var rews = curRews.Select(x => new RewItemReply()
+        {
+            Level = x.Level,
+            Type = "Currency",
+            Value = x.Amount.ToString()
+        });
+        
+        rews = rews.Concat(roleRews.Select(x => new RewItemReply()
+                   {
+                       Level = x.Level,
+                       Type = "Role",
+                       Value = guild.GetRole(x.RoleId)?.ToString() ?? x.RoleId.ToString()
+                   }))
+                   .OrderBy(x => x.Level);
+
+        reply.Rewards.AddRange(rews);
 
         reply.ServerExcluded = isServerExcluded;
 

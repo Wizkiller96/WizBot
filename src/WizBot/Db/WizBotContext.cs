@@ -73,6 +73,14 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region Flag Translate 
+
+        modelBuilder.Entity<FlagTranslateChannel>()
+                    .HasIndex(x => new { x.GuildId, x.ChannelId })
+                    .IsUnique();
+        
+        #endregion
+
         #region NCanvas
 
         modelBuilder.Entity<NCPixel>()
