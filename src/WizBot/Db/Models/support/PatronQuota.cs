@@ -5,8 +5,8 @@ namespace WizBot.Db.Models;
 
 public class PatronUser
 {
-    [Key]
-    public int Id { get; set; }
+    // [Key]
+    // public int Id { get; set; }
     public string UniquePlatformUserId { get; set; }
     public ulong UserId { get; set; }
     public int AmountCents { get; set; }
