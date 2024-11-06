@@ -116,7 +116,7 @@ public sealed class AnimalRace : IDisposable
             {
                 foreach (var user in _users)
                 {
-                    user.Progress += rng.Next(1, 11);
+                    user.Progress += rng.Next(1, 10);
                     if (user.Progress >= 60)
                         user.Progress = 60;
                 }
@@ -126,7 +126,7 @@ public sealed class AnimalRace : IDisposable
                 FinishedUsers.AddRange(finished);
 
                 _ = OnStateUpdate?.Invoke(this);
-                await Task.Delay(2500);
+                await Task.Delay(1750);
             }
 
             if (FinishedUsers[0].Bet > 0)
