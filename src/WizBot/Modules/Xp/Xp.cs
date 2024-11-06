@@ -225,7 +225,7 @@ public partial class Xp : WizBotModule<XpService>
                       else if (userXpData.AwardedXp < 0)
                           awardStr = $"({userXpData.AwardedXp})";
 
-                      embed.AddField($"#{i + 1 + (curPage * 9)} {user?.ToString() ?? users[i].UserId.ToString()}",
+                      embed.AddField($"#{i + 1 + (curPage * 10)} {user?.ToString() ?? users[i].UserId.ToString()}",
                           $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
                   }
 
@@ -278,7 +278,7 @@ public partial class Xp : WizBotModule<XpService>
                   for (var i = 0; i < users.Count; i++)
                   {
                       var user = users[i];
-                      embed.AddField($"#{i + 1 + (curPage * 9)} {user}",
+                      embed.AddField($"#{i + 1 + (curPage * 10)} {user}",
                           $"{GetText(strs.level_x(new LevelStats(users[i].TotalXp).Level))} - {users[i].TotalXp}xp");
                   }
 
