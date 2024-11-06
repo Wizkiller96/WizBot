@@ -2738,6 +2738,12 @@ waifuclaim:
         desc: "The cost of claiming the waifu."
       target:
         desc: "The user to whom the claim is being made, allowing the waifu to be claimed from their collection."
+waifuclaims:
+  desc: Shows all of your currently claimed waifus.
+  ex:
+    - ''
+  params:
+    - { }
 waifureset:
   desc: Resets your waifu stats, except current waifus.
   ex:

@@ -318,25 +318,20 @@ public class WaifuService : INService, IReadyExecutor
     private static TypedKey<long> GetAffinityKey(ulong userId)
         => new($"waifu:affinity:{userId}");
 
-    public async Task<(WaifuInfo, DivorceResult, long, TimeSpan?)> DivorceWaifuAsync(IUser user, ulong targetId)
+    public async Task<(WaifuInfo, DivorceResult, long)> DivorceWaifuAsync(IUser user, ulong targetId)
     {
         DivorceResult result;
-        TimeSpan? remaining = null;
         long amount = 0;
         WaifuInfo w;
         await using (var uow = _db.GetDbContext())
         {
             w = uow.Set<WaifuInfo>().ByWaifuUserId(targetId);
             if (w?.Claimer is null || w.Claimer.UserId != user.Id)
+            {
                 result = DivorceResult.NotYourWife;
+            }
             else
             {
-                remaining = await _cache.GetRatelimitAsync(GetDivorceKey(user.Id), 6.Hours());
-                if (remaining is TimeSpan rem)
-                {
-                    result = DivorceResult.Cooldown;
-                    return (w, result, amount, rem);
-                }
 
                 amount = w.Price / 2;
 
@@ -369,7 +364,7 @@ public class WaifuService : INService, IReadyExecutor
             await uow.SaveChangesAsync();
         }
 
-        return (w, result, amount, remaining);
+        return (w, result, amount);
     }
 
     public async Task<bool> GiftWaifuAsync(
@@ -630,4 +625,38 @@ public class WaifuService : INService, IReadyExecutor
                                           .FirstOrDefault())
                         .ToListAsyncEF();
     }
+
+    public async Task<IReadOnlyCollection<WaifuClaimsResult>> GetClaimsAsync(ulong userId, int page)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var wid = ctx.GetTable<DiscordUser>()
+                     .Where(x => x.UserId == userId)
+                     .Select(x => x.Id)
+                     .FirstOrDefault();
+
+        if (wid == 0)
+            return [];
+
+        return await ctx.GetTable<WaifuInfo>()
+                        .Where(x => x.ClaimerId == wid)
+                        .LeftJoin(ctx.GetTable<DiscordUser>(),
+                            (wi, du) => wi.WaifuId == du.Id,
+                            (wi, du) => new WaifuClaimsResult(
+                                du.Username,
+                                du.UserId,
+                                wi.Price
+                            ))
+                        .OrderByDescending(x => x.Price)
+                        .Skip(page * 9)
+                        .Take(9)
+                        .ToListAsyncLinqToDB();
+    }
+}
+
+public sealed class WaifuClaimsResult(string username, ulong userId, long price)
+{
+    public string Username { get; } = username;
+    public ulong UserId { get; } = userId;
+    public long Price { get; } = price;
 }

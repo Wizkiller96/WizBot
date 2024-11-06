@@ -354,11 +354,16 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        if (booster)
+        var msg = GetText(strs.timely(N(val), period));
+        if (booster || percentBonus > float.Epsilon)
         {
-            var msg = GetText(strs.timely(N(val), period))
-                      + "\n\n"
-                      + $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {userInfo.guild}!*";
+            msg += "\n\n";
+            if (booster)
+                msg += $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {userInfo.guild}!*";
+
+            if (percentBonus > float.Epsilon)
+                msg +=
+                    $"*+{percentBonus:P0} bonus for the [Patreon](https://patreon.com/WizNet) pledge! <:hart:746995901758832712>*";
 
             await Response().Confirm(msg).Interaction(inter).SendAsync();
         }

@@ -36,6 +36,45 @@ public partial class Gambling
 
             await Response().Error(strs.waifu_reset_fail).SendAsync();
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public async Task WaifuClaims()
+        {
+            await Response()
+                  .Paginated()
+                  .PageItems(async (page) => await _service.GetClaimsAsync(ctx.User.Id, page))
+                  .Page((items, page) =>
+                  {
+                      var eb = _sender.CreateEmbed()
+                                      .WithOkColor()
+                                      .WithTitle("Waifus");
+
+                      if (items.Count == 0)
+                      {
+                          eb
+                              .WithPendingColor()
+                              .WithDescription(GetText(strs.empty_page));
+
+                          return eb;
+                      }
+
+                      for (var i = 0; i < items.Count; i++)
+                      {
+                          var item = items[i];
+                          eb.AddField($"`#{(page * 9) + 1 + i}`  {N(item.Price)}",
+                              $"""
+                               {item.Username}
+                               ||{item.UserId}||
+                               """,
+                              true
+                          );
+                      }
+
+                      return eb;
+                  })
+                  .SendAsync();
+        }
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -144,7 +183,7 @@ public partial class Gambling
             if (targetId == ctx.User.Id)
                 return;
 
-            var (w, result, amount, remaining) = await _service.DivorceWaifuAsync(ctx.User, targetId);
+            var (w, result, amount) = await _service.DivorceWaifuAsync(ctx.User, targetId);
 
             if (result == DivorceResult.SucessWithPenalty)
             {
@@ -157,14 +196,6 @@ public partial class Gambling
                 await Response().Confirm(strs.waifu_divorced_notlike(N(amount))).SendAsync();
             else if (result == DivorceResult.NotYourWife)
                 await Response().Error(strs.waifu_not_yours).SendAsync();
-            else if (remaining is { } rem)
-            {
-                await Response()
-                      .Error(strs.waifu_recent_divorce(
-                          Format.Bold(((int)rem.TotalHours).ToString()),
-                          Format.Bold(rem.Minutes.ToString())))
-                      .SendAsync();
-            }
         }
 
         [Cmd]

@@ -863,6 +863,11 @@ affinity:
 waifuclaim:
   - waifuclaim
   - claim
+  - wc
+waifuclaims:
+  - waifuclaims
+  - claims
+  - wcs
 waifureset:
   - waifureset
 waifutransfer:
