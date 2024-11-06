@@ -72,5 +72,10 @@ public partial class FlagTranslateService
                                      AU en
                                      NZ en
                                      KZ kz
+                                     NO no
+                                     SE sv
+                                     DK da
+                                     FI fi
+                                     HU hu
                                      """;
 }
