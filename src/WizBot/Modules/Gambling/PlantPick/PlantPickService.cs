@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
 using SixLabors.Fonts;
+using SixLabors.Fonts.Unicode;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -163,8 +164,26 @@ public class PlantPickService : INService, IExecNoCommand
                 new PointF(size.Width + 5, size.Height + 10),
                 new PointF(0, size.Height + 10));
 
+            var strikeoutRun = new RichTextRun
+            {
+                Start = 0,
+                End = pass.GetGraphemeCount(),
+                Font = font,
+                StrikeoutPen = new SolidPen(Color.White, 5),
+                TextDecorations = TextDecorations.Strikeout
+            };
+
             // draw the password over the background
-            x.DrawText(pass, font, Color.White, new(0, 0));
+            x.DrawText(new RichTextOptions(font)
+                {
+                    Origin = new(0, 0),
+                    TextRuns =
+                    [
+                        strikeoutRun
+                    ]
+                },
+                pass,
+                new SolidBrush(Color.White));
         });
         // return image as a stream for easy sending
         var format = img.Metadata.DecodedImageFormat;

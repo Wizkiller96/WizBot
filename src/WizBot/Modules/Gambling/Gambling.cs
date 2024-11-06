@@ -15,11 +15,13 @@ using WizBot.Modules.Gambling.Rps;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Patronage;
 using SixLabors.Fonts;
+using SixLabors.Fonts.Unicode;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Color = SixLabors.ImageSharp.Color;
+using Random = System.Random;
 
 namespace WizBot.Modules.Gambling;
 
@@ -60,6 +62,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _remind = remind;
         _gamblingTxTracker = gamblingTxTracker;
         _ps = patronage;
+        _rng = new WizBotRandom();
 
         _enUsCulture = new CultureInfo("en-US", false).NumberFormat;
         _enUsCulture.NumberDecimalDigits = 0;
@@ -162,45 +165,57 @@ public partial class Gambling : GamblingModule<GamblingService>
         
         if (Config.Timely.RequirePassword)
         {
-            var password = _service.GeneratePassword();
+            // var password = _service.GeneratePassword();
+            //
+            // var img = new Image<Rgba32>(100, 40);
+            //
+            // var font = _fonts.NotoSans.CreateFont(30);
+            // var outlinePen = new SolidPen(Color.Black, 1f);
+            // var strikeoutRun = new RichTextRun
+            // {
+            //     Start = 0,
+            //     End = password.GetGraphemeCount(),
+            //     Font = font,
+            //     StrikeoutPen = new SolidPen(Color.White, 3),
+            //     TextDecorations = TextDecorations.Strikeout
+            // };
+            // // draw password on the image
+            // img.Mutate(x =>
+            // {
+            //     x.DrawText(new RichTextOptions(font)
+            //         {
+            //             HorizontalAlignment = HorizontalAlignment.Center,
+            //             VerticalAlignment = VerticalAlignment.Center,
+            //             FallbackFontFamilies = _fonts.FallBackFonts,
+            //             Origin = new(50, 20),
+            //             TextRuns = [strikeoutRun]
+            //         },
+            //         password,
+            //         Brushes.Solid(Color.White),
+            //         outlinePen);
+            // });
+            // using var stream = await img.ToStreamAsync();
+            // var captcha = await Response()
+            //                     .Embed(_sender.CreateEmbed()
+            //                                   .WithOkColor()
+            //                                   .WithImageUrl("attachment://timely.png"))
+            //                     .File(stream, "timely.png")
+            //                     .SendAsync();
+            // try
+            // {
+            //     var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
+            //     if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
+            //     {
+            //         return;
+            //     }
+            // }
+            // finally
+            // {
+            //     _ = captcha.DeleteAsync();
+            // }
 
-            var img = new Image<Rgba32>(100, 40);
-
-            var font = _fonts.NotoSans.CreateFont(30);
-            var outlinePen = new SolidPen(Color.Black, 1f);
-            // draw password on the image
-            img.Mutate(x =>
-            {
-                x.DrawText(new RichTextOptions(font)
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        FallbackFontFamilies = _fonts.FallBackFonts,
-                        Origin = new(50, 20)
-                    },
-                    password,
-                    Brushes.Solid(Color.White),
-                    outlinePen);
-            });
-            using var stream = await img.ToStreamAsync();
-            var captcha = await Response()
-                                .Embed(_sender.CreateEmbed()
-                                              .WithOkColor()
-                                              .WithImageUrl("attachment://timely.png"))
-                                .File(stream, "timely.png")
-                                .SendAsync();
-            try
-            {
-                var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
-                if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
-                {
-                    return;
-                }
-            }
-            finally
-            {
-                _ = captcha.DeleteAsync();
-            }
+            // await Response()
+                // .Interaction(_inter.Create(ctx.User.Id,new ButtonBuilder("Timely", $"timely:{rng}" Emoji.Parse("⏰")),null))
         }
 
         if (await _service.ClaimTimelyAsync(ctx.User.Id, period) is { } remainder)
@@ -814,6 +829,8 @@ public partial class Gambling : GamblingModule<GamblingService>
     private static readonly ImmutableArray<string> _emojis =
         new[] { "⬆", "↖", "⬅", "↙", "⬇", "↘", "➡", "↗" }.ToImmutableArray();
 
+    private readonly WizBotRandom _rng;
+    
 
     [Cmd]
     public async Task LuckyLadder([OverrideTypeReader(typeof(BalanceTypeReader))] long amount)
