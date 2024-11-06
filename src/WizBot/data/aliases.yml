@@ -848,6 +848,10 @@ eventstart:
   - eventstart
 betstats:
   - betstats
+  - bs
+gamblestats:
+  - gamblestats
+  - gs
 bettest:
   - bettest
 slot:

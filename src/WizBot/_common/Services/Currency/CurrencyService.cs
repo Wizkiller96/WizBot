@@ -77,7 +77,7 @@ public sealed class CurrencyService : ICurrencyService, INService
     {
         var wallet = await GetWalletAsync(userId);
         await wallet.Add(amount, txData);
-        await _txTracker.TrackAdd(amount, txData);
+        await _txTracker.TrackAdd(userId, amount, txData);
     }
 
     public async Task AddAsync(
@@ -97,7 +97,7 @@ public sealed class CurrencyService : ICurrencyService, INService
         var wallet = await GetWalletAsync(userId);
         var result = await wallet.Take(amount, txData);
         if (result)
-            await _txTracker.TrackRemove(amount, txData);
+            await _txTracker.TrackRemove(userId, amount, txData);
         return result;
     }
 

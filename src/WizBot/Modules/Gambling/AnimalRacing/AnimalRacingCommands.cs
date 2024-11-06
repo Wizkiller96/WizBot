@@ -113,14 +113,14 @@ public partial class Gambling
 
         private async Task Ar_OnStateUpdate(AnimalRace race)
         {
-            var text = $@"|🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🔚|
+            var text = $@"|🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁🔚|
 {string.Join("\n", race.Users.Select(p =>
 {
     var index = race.FinishedUsers.IndexOf(p);
     var extra = index == -1 ? "" : $"#{index + 1} {(index == 0 ? "🏆" : "")}";
     return $"{(int)(p.Progress / 60f * 100),-2}%|{new string('‣', p.Progress) + p.Animal.Icon + extra}";
 }))}
-|🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🏁🔚|";
+|🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🏁 🔚|";
 
             var msg = raceMessage;
 

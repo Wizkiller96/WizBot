@@ -62,6 +62,7 @@ public abstract class WizBotContext : DbContext
     public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
     public DbSet<HoneypotChannel> HoneyPotChannels { get; set; }
     
+    
     // public DbSet<GuildColors> GuildColors { get; set; }
 
 
@@ -73,6 +74,15 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region UserBetStats
+        
+        modelBuilder.Entity<UserBetStats>()
+                    .HasIndex(x => new { x.UserId, x.Game })
+                    .IsUnique();
+        
+        
+        #endregion
+
         #region Flag Translate 
 
         modelBuilder.Entity<FlagTranslateChannel>()

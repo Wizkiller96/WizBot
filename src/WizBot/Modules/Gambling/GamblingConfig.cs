@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling.Common;
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 9;
+    public int Version { get; set; } = 10;
 
     [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
@@ -67,6 +67,11 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
     [Comment("""Slot config""")]
     public SlotsConfig Slots { get; set; }
 
+    [Comment("""
+             Bonus config for server boosts
+             """)]
+    public BoostBonusConfig BoostBonus { get; set; }
+
     public GamblingConfig()
     {
         BetRoll = new();
@@ -79,6 +84,7 @@ public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
         Slots = new();
         LuckyLadder = new();
         BotCuts = new();
+        BoostBonus = new();
     }
 }
 
@@ -104,7 +110,7 @@ public partial class TimelyConfig
              How much currency will the users get every time they run .timely command
              setting to 0 or less will disable this feature
              """)]
-    public int Amount { get; set; } = 0;
+    public long Amount { get; set; } = 0;
 
     [Comment("""
              How often (in hours) can users claim currency with .timely command
@@ -115,7 +121,7 @@ public partial class TimelyConfig
     [Comment("""
              Whether the users are required to type a password when they do timely.
              """)]
-    public bool RequirePassword { get; set; } = true;
+    public bool HasButton { get; set; } = true;
 }
 
 [Cloneable]
@@ -413,4 +419,18 @@ public sealed partial class BotCutConfig
              Default 0.1 (10%).
              """)]
     public decimal ShopSaleCut { get; set; } = 0.1m;
+}
+
+[Cloneable]
+public sealed partial class BoostBonusConfig
+{
+    [Comment("Users will receive a bonus if they boost any of these servers")]
+    public List<ulong> GuildIds { get; set; } =
+    [
+        99273784988557312
+    ];
+
+    [Comment("This bonus will be added before any other multiplier is applied to the .timely command")]
+
+    public long BaseTimelyBonus { get; set; } = 50;
 }

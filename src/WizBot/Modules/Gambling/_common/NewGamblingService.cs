@@ -37,7 +37,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         var won = (long)result.Won;
         if (won > 0)
         {
-            await _cs.AddAsync(userId, won, new("lula", "win"));
+            await _cs.AddAsync(userId, won, new("lula",  result.Multiplier >= 1 ? "win" : "lose"));
         }
 
         return result;
@@ -155,7 +155,7 @@ public sealed class NewGamblingService : IGamblingService, INService
         var won = (long)result.Won;
         if (won > 0)
         {
-            await _cs.AddAsync(userId, won, new("slot", "won"));
+            await _cs.AddAsync(userId, won, new("slot", "win"));
         }
 
         return result;

@@ -71,7 +71,65 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
+    [Priority(3)]
     public async Task BetStats()
+        => await BetStats(ctx.User, null);
+
+    [Cmd]
+    [Priority(2)]
+    public async Task BetStats(GamblingGame game)
+        => await BetStats(ctx.User, game);
+
+    [Cmd]
+    [Priority(1)]
+    public async Task BetStats([Leftover] IUser user)
+        => await BetStats(user, null);
+
+    [Cmd]
+    [Priority(0)]
+    public async Task BetStats(IUser user, GamblingGame? game)
+    {
+        var stats = await _gamblingTxTracker.GetUserStatsAsync(user.Id, game);
+
+        if (stats.Count == 0)
+            stats = new()
+            {
+                new()
+                {
+                    TotalBet = 1
+                }
+            };
+
+        var eb = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithAuthor(user)
+                        .AddField("Total Won", N(stats.Sum(x => x.PaidOut)), true)
+                        .AddField("Biggest Win", N(stats.Max(x => x.MaxWin)), true)
+                        .AddField("Biggest Bet", N(stats.Max(x => x.MaxBet)), true)
+                        .AddField("# Bets", stats.Sum(x => x.WinCount + x.LoseCount), true)
+                        .AddField("Payout",
+                            (stats.Sum(x => x.PaidOut) / stats.Sum(x => x.TotalBet)).ToString("P2", Culture),
+                            true);
+        if (game == null)
+        {
+            var favGame = stats.MaxBy(x => x.WinCount + x.LoseCount);
+            eb.AddField("Favorite Game",
+                favGame.Game + "\n" + Format.Italics((favGame.WinCount + favGame.LoseCount) + " plays"),
+                true);
+        }
+        else
+        {
+            eb.WithDescription(game.ToString())
+              .AddField("# Wins", stats.Sum(x => x.WinCount), true);
+        }
+
+        await Response()
+              .Embed(eb)
+              .SendAsync();
+    }
+
+    [Cmd]
+    public async Task GamblingStats()
     {
         var stats = await _gamblingTxTracker.GetAllAsync();
 
@@ -167,57 +225,8 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
         
-        if (Config.Timely.RequirePassword)
+        if (Config.Timely.HasButton)
         {
-            // var password = _service.GeneratePassword();
-            //
-            // var img = new Image<Rgba32>(100, 40);
-            //
-            // var font = _fonts.NotoSans.CreateFont(30);
-            // var outlinePen = new SolidPen(Color.Black, 1f);
-            // var strikeoutRun = new RichTextRun
-            // {
-            //     Start = 0,
-            //     End = password.GetGraphemeCount(),
-            //     Font = font,
-            //     StrikeoutPen = new SolidPen(Color.White, 3),
-            //     TextDecorations = TextDecorations.Strikeout
-            // };
-            // // draw password on the image
-            // img.Mutate(x =>
-            // {
-            //     x.DrawText(new RichTextOptions(font)
-            //         {
-            //             HorizontalAlignment = HorizontalAlignment.Center,
-            //             VerticalAlignment = VerticalAlignment.Center,
-            //             FallbackFontFamilies = _fonts.FallBackFonts,
-            //             Origin = new(50, 20),
-            //             TextRuns = [strikeoutRun]
-            //         },
-            //         password,
-            //         Brushes.Solid(Color.White),
-            //         outlinePen);
-            // });
-            // using var stream = await img.ToStreamAsync();
-            // var captcha = await Response()
-            //                     .Embed(_sender.CreateEmbed()
-            //                                   .WithOkColor()
-            //                                   .WithImageUrl("attachment://timely.png"))
-            //                     .File(stream, "timely.png")
-            //                     .SendAsync();
-            // try
-            // {
-            //     var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
-            //     if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
-            //     {
-            //         return;
-            //     }
-            // }
-            // finally
-            // {
-            //     _ = captcha.DeleteAsync();
-            // }
-
             var interaction = CreateTimelyInteraction();
             var msg = await Response().Pending(strs.timely_button).Interaction(interaction).SendAsync();
             await msg.DeleteAsync();
@@ -249,6 +258,19 @@ public partial class Gambling : GamblingModule<GamblingService>
 
 
         var val = Config.Timely.Amount;
+        
+        var guildUsers = await (Config.BoostBonus
+                                      .GuildIds
+                                ?? new())
+                               .Select(x => ((IGuild)_client.GetGuild(x))?.GetUserAsync(ctx.User.Id))
+                               .WhenAll();
+
+        var boostGuildUser = guildUsers.FirstOrDefault(x => x?.PremiumSince is not null);
+        var booster = boostGuildUser is not null;
+
+        if (booster)
+            val += Config.BoostBonus.BaseTimelyBonus;
+
         var patron = await _ps.GetPatronAsync(ctx.User.Id);
 
         var percentBonus = (_ps.PercentBonus(patron) / 100f);
@@ -259,7 +281,16 @@ public partial class Gambling : GamblingModule<GamblingService>
 
         await _cs.AddAsync(ctx.User.Id, val, new("timely", "claim"));
 
-        await Response().Confirm(strs.timely(N(val), period)).Interaction(inter).SendAsync();
+        if (booster)
+        {
+            var msg = GetText(strs.timely(N(val), period))
+                      + "\n\n"
+                      + $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {boostGuildUser.Guild}!*";
+
+            await Response().Confirm(msg).Interaction(inter).SendAsync();
+        }
+        else
+            await Response().Confirm(strs.timely(N(val), period)).Interaction(inter).SendAsync();
     }
 
     [Cmd]
@@ -370,8 +401,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         var embed = _sender.CreateEmbed()
-                           .WithTitle(GetText(strs.transactions(((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
-                                                                ?? $"{userId}")))
+                           .WithTitle(GetText(strs.transactions(
+                               ((SocketGuild)ctx.Guild)?.GetUser(userId)?.ToString()
+                               ?? $"{userId}")))
                            .WithOkColor();
 
         var sb = new StringBuilder();
@@ -627,7 +659,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         else
         {
-            await Response().Error(strs.take_fail(N(amount), Format.Bold(user.ToString()), CurrencySign)).SendAsync();
+            await Response()
+                  .Error(strs.take_fail(N(amount), Format.Bold(user.ToString()), CurrencySign))
+                  .SendAsync();
         }
     }
 
@@ -648,7 +682,9 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         else
         {
-            await Response().Error(strs.take_fail(N(amount), Format.Code(usrId.ToString()), CurrencySign)).SendAsync();
+            await Response()
+                  .Error(strs.take_fail(N(amount), Format.Code(usrId.ToString()), CurrencySign))
+                  .SendAsync();
         }
     }
 
