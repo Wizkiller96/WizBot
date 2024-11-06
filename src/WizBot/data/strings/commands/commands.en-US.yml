@@ -2703,7 +2703,7 @@ eventstart:
         desc: "The type of event being started."
       options:
         desc: "The optional option flags for the event."
-betstats:
+gamblestats:
   desc: |-
     Shows the total stats of several gambling features.
     Updates once an hour.
@@ -4642,6 +4642,27 @@ translateflags:
     - ''
   params:
     - { }
+betstats:
+    desc: |-
+      Shows the current bet stats for yourself, or the targetted user.
+      You may optionally specify the game to show stats for.
+      Supported games right now are: bf, br, bd, lula, slot, race
+    ex:
+      - ''
+      - '@someone'
+      - '@someone lula'
+      - 'bd'
+    params:
+      - { }
+      - user:
+          desc: 'The user for who to show the betstats for.'
+      - user:
+          desc: 'The user for who to show the betstats for.'
+        game:
+          desc: 'The game to show betstats for. Omit to show betstats for all games combined'
+      - game:
+          desc: 'The game to show betstats for. Omit to show betstats for all games combined'
+
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

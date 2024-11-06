@@ -129,7 +129,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     }
 
     [Cmd]
-    public async Task GamblingStats()
+    public async Task GambleStats()
     {
         var stats = await _gamblingTxTracker.GetAllAsync();
 
