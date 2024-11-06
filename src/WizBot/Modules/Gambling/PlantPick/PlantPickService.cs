@@ -169,7 +169,7 @@ public class PlantPickService : INService, IExecNoCommand
                 Start = 0,
                 End = pass.GetGraphemeCount(),
                 Font = font,
-                StrikeoutPen = new SolidPen(Color.White, 5),
+                StrikeoutPen = new SolidPen(Color.White, 3),
                 TextDecorations = TextDecorations.Strikeout
             };
 

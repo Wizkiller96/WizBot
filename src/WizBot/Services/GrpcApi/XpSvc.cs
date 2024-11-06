@@ -29,7 +29,7 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
         ServerCallContext context)
     {
         await Task.Yield();
-        
+
         var guild = _client.GetGuild(request.GuildId);
 
         if (guild is null)
@@ -65,11 +65,11 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
             Type = "Currency",
             Value = x.Amount.ToString()
         });
-        
+
         rews = rews.Concat(roleRews.Select(x => new RewItemReply()
                    {
                        Level = x.Level,
-                       Type = "Role",
+                       Type = x.Remove ? "RemoveRole" : "AddRole",
                        Value = guild.GetRole(x.RoleId)?.ToString() ?? x.RoleId.ToString()
                    }))
                    .OrderBy(x => x.Level);
@@ -207,15 +207,15 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
 
     public override async Task<GetXpLbReply> GetXpLb(GetXpLbRequest request, ServerCallContext context)
     {
-        if (request.Page < 0)
-            throw new RpcException(new Status(StatusCode.InvalidArgument, "Page must be greater than or equal to 0"));
+        if (request.Page < 1)
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Page must be greater than or equal to 1"));
 
         var guild = _client.GetGuild(request.GuildId);
 
         if (guild is null)
             throw new RpcException(new Status(StatusCode.NotFound, "Guild not found"));
 
-        var data = await _xp.GetGuildUserXps(request.GuildId, request.Page);
+        var data = await _xp.GetGuildUserXps(request.GuildId, request.Page - 1);
         var total = await _xp.GetTotalGuildUsers(request.GuildId);
 
         var reply = new GetXpLbReply
@@ -223,45 +223,60 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
             Total = total
         };
 
-        reply.Users.AddRange(await data
-                                   .Select(async x =>
-                                   {
-                                       var user = guild.GetUser(x.UserId);
+        var users = await data
+                          .Select(async x =>
+                          {
+                              var user = guild.GetUser(x.UserId);
 
-                                       if (user is null)
-                                       {
-                                           var du = await _duSvc.GetUserAsync(x.UserId);
-                                           if (du is null)
-                                               return new XpLbUserReply
-                                               {
-                                                   UserId = x.UserId,
-                                                   Avatar = string.Empty,
-                                                   Username = string.Empty,
-                                                   Xp = x.Xp,
-                                                   Level = new LevelStats(x.Xp).Level
-                                               };
+                              if (user is null)
+                              {
+                                  var du = await _duSvc.GetUserAsync(x.UserId);
+                                  if (du is null)
+                                      return new XpLbUserReply
+                                      {
+                                          UserId = x.UserId,
+                                          Avatar = string.Empty,
+                                          Username = string.Empty,
+                                          Xp = x.Xp,
+                                          Level = new LevelStats(x.Xp).Level
+                                      };
 
-                                           return new XpLbUserReply()
-                                           {
-                                               UserId = x.UserId,
-                                               Avatar = du.RealAvatarUrl()?.ToString() ?? string.Empty,
-                                               Username = du.ToString() ?? string.Empty,
-                                               Xp = x.Xp,
-                                               Level = new LevelStats(x.Xp).Level
-                                           };
-                                       }
+                                  return new XpLbUserReply()
+                                  {
+                                      UserId = x.UserId,
+                                      Avatar = du.RealAvatarUrl()?.ToString() ?? string.Empty,
+                                      Username = du.ToString() ?? string.Empty,
+                                      Xp = x.Xp,
+                                      Level = new LevelStats(x.Xp).Level
+                                  };
+                              }
 
-                                       return new XpLbUserReply
-                                       {
-                                           UserId = x.UserId,
-                                           Avatar = user?.GetAvatarUrl() ?? string.Empty,
-                                           Username = user?.ToString() ?? string.Empty,
-                                           Xp = x.Xp,
-                                           Level = new LevelStats(x.Xp).Level
-                                       };
-                                   })
-                                   .WhenAll());
+                              return new XpLbUserReply
+                              {
+                                  UserId = x.UserId,
+                                  Avatar = user?.GetAvatarUrl() ?? string.Empty,
+                                  Username = user?.ToString() ?? string.Empty,
+                                  Xp = x.Xp,
+                                  Level = new LevelStats(x.Xp).Level
+                              };
+                          })
+                          .WhenAll();
+
+        reply.Users.AddRange(users);
 
         return reply;
+    }
+
+    public override async Task<SetServerExclusionReply> SetServerExclusion(
+        SetServerExclusionRequest request,
+        ServerCallContext context)
+    {
+        await Task.Yield();
+        
+        var newValue = _xp.ToggleExcludeServer(request.GuildId);
+        return new()
+        {
+            Success = newValue
+        };
     }
 }

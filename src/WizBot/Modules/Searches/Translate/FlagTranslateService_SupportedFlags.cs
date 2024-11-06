@@ -69,5 +69,8 @@ public partial class FlagTranslateService
                                      YE ar
                                      AL sq
                                      AE ar
+                                     AU en
+                                     NZ en
+                                     KZ kz
                                      """;
 }

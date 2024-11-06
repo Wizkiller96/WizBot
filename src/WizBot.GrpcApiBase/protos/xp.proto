@@ -15,6 +15,17 @@ service GrpcXp {
 
   rpc AddReward(AddRewardRequest) returns (AddRewardReply);
   rpc DeleteReward(DeleteRewardRequest) returns (DeleteRewardReply);
+
+  rpc SetServerExclusion(SetServerExclusionRequest) returns (SetServerExclusionReply);
+}
+
+message SetServerExclusionRequest {
+  uint64 guildId = 1;
+  bool serverExcluded = 2;
+}
+
+message SetServerExclusionReply {
+  bool success = 1;
 }
 
 message GetXpLbRequest {
@@ -32,7 +43,8 @@ message XpLbUserReply {
   string username = 2;
   int64 xp = 3;
   int64 level = 4;
-  string avatar = 5;
+  int64 levelPercent = 5;
+  string avatar = 6;
 }
 
 message ResetUserXpRequest {
