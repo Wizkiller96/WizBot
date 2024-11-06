@@ -215,6 +215,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                 });
 
     [Cmd]
+    [RequireContext(ContextType.Guild)]
     public async Task Timely()
     {
         var val = Config.Timely.Amount;
@@ -258,11 +259,24 @@ public partial class Gambling : GamblingModule<GamblingService>
 
 
         var val = Config.Timely.Amount;
-        
-        var guildUsers = await (Config.BoostBonus
-                                      .GuildIds
-                                ?? new())
-                               .Select(x => ((IGuild)_client.GetGuild(x))?.GetUserAsync(ctx.User.Id))
+        var boostGuilds = Config.BoostBonus.GuildIds ?? new();
+        var guildUsers = await boostGuilds
+                               .Select(async gid =>
+                               {
+                                   try
+                                   {
+                                       var guild = await ((IDiscordClient)_client).GetGuildAsync(gid);
+                                       if (guild is null)
+                                           return null;
+
+                                       var user = await guild.GetUserAsync(ctx.User.Id);
+                                       return user;
+                                   }
+                                   catch
+                                   {
+                                       return null;
+                                   }
+                               })
                                .WhenAll();
 
         var boostGuildUser = guildUsers.FirstOrDefault(x => x?.PremiumSince is not null);
