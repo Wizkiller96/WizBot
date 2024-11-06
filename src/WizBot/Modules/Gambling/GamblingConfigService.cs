@@ -189,11 +189,16 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             });
         }
         
-        if (data.Version < 11)
+        if (data.Version < 12)
         {
             ModifyConfig(c =>
             {
-                c.Version = 11;
+                c.Version = 12;
+
+                if (c.BetRoll.Pairs.Length == 3 && c.BetRoll.Pairs[2].WhenAbove == 66)
+                {
+                    c.BetRoll.Pairs[2].WhenAbove = 65;
+                }
             });
         }
     }

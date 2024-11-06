@@ -88,6 +88,10 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
                 if (users.Count == 0)
                     continue;
 
+                // rakeback
+                var rakebacks = new Dictionary<ulong, decimal>();
+
+                // update userstats
                 foreach (var (k, x) in users.GroupBy(x => (x.UserId, x.Game))
                                             .ToDictionary(x => x.Key,
                                                 x => x.Aggregate((a, b) => new()
@@ -100,6 +104,10 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
                                                     MaxWin = Math.Max(a.MaxWin, b.MaxWin),
                                                 })))
                 {
+                    rakebacks.TryAdd(k.UserId, 0m);
+                    rakebacks[k.UserId] += x.TotalBet * GetHouseEdge(k.Game) * BASE_RAKEBACK;
+
+
                     // bulk upsert in the future
                     await using var uow = _db.GetDbContext();
                     await uow.GetTable<UserBetStats>()
@@ -129,6 +137,25 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
                                      Game = k.Game
                                  });
                 }
+
+                foreach (var (k, v) in rakebacks)
+                {
+                    await _db.GetDbContext()
+                             .GetTable<Rakeback>()
+                             .InsertOrUpdateAsync(() => new()
+                                 {
+                                     UserId = k,
+                                     Amount = v
+                                 },
+                                 (old) => new()
+                                 {
+                                     Amount = old.Amount + v
+                                 },
+                                 () => new()
+                                 {
+                                     UserId = k
+                                 });
+                }
             }
             catch (Exception ex)
             {
@@ -136,6 +163,8 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
             }
         }
     }
+
+    private const decimal BASE_RAKEBACK = 0.05m;
 
     public Task TrackAdd(ulong userId, long amount, TxData? txData)
     {
@@ -275,6 +304,19 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
                      .Where(x => x.UserId == userId && x.Game == game)
                      .ToListAsync();
     }
+
+    public decimal GetHouseEdge(GamblingGame game)
+        => game switch
+        {
+            GamblingGame.Betflip => 0.025m,
+            GamblingGame.Betroll => 0.04m,
+            GamblingGame.Betdraw => 0.04m,
+            GamblingGame.Slots => 0.034m,
+            GamblingGame.Blackjack => 0.02m,
+            GamblingGame.Lula => 0.025m,
+            GamblingGame.Race => 0.06m,
+            _ => 0
+        };
 }
 
 public sealed class UserBetStats
@@ -305,4 +347,10 @@ public enum GamblingGame
     Lula = 5,
     Race = 6,
     AnimalRace = 6
+}
+
+public sealed class Rakeback
+{
+    public ulong UserId { get; set; }
+    public decimal Amount { get; set; }
 }

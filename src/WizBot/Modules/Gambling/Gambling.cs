@@ -38,6 +38,7 @@ public partial class Gambling : GamblingModule<GamblingService>
     private readonly IRemindService _remind;
     private readonly GamblingTxTracker _gamblingTxTracker;
     private readonly IPatronageService _ps;
+    private readonly RakebackService _rb;
 
     public Gambling(
         IGamblingService gs,
@@ -50,7 +51,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         IBankService bank,
         IRemindService remind,
         IPatronageService patronage,
-        GamblingTxTracker gamblingTxTracker)
+        GamblingTxTracker gamblingTxTracker,
+        RakebackService rb)
         : base(configService)
     {
         _gs = gs;
@@ -60,6 +62,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         _bank = bank;
         _remind = remind;
         _gamblingTxTracker = gamblingTxTracker;
+        _rb = rb;
         _ps = patronage;
         _rng = new WizBotRandom();
 
@@ -1086,6 +1089,47 @@ public partial class Gambling : GamblingModule<GamblingService>
               .Confirm(GetText(strs.test_results_for(target)),
                   sb.ToString(),
                   footer: $"Total Bet: {tests} | Payout: {payout:F0} | {payout * 1.0M / tests * 100}%")
+              .SendAsync();
+    }
+    
+    private WizBotInteractionBase CreateRakebackInteraction()
+        => _inter.Create(ctx.User.Id,
+            new ButtonBuilder(
+                customId: "cash:rakeback",
+                emote: new Emoji("💸")),
+            RakebackAction);
+
+    private async Task RakebackAction(SocketMessageComponent arg)
+    {
+        var rb = await _rb.ClaimRakebackAsync(ctx.User.Id);
+
+        if (rb == 0)
+        {
+            await arg.DeferAsync();
+            return;
+        }
+
+        await arg.RespondAsync(_sender, GetText(strs.rakeback_claimed(N(rb))), MsgType.Ok);
+    }
+
+    [Cmd]
+    public async Task Rakeback()
+    {
+        var rb = await _rb.GetRakebackAsync(ctx.User.Id);
+
+        if (rb < 1)
+        {
+            await Response()
+                  .Error(strs.rakeback_none)
+                  .SendAsync();
+
+            return;
+        }
+
+        var inter = CreateRakebackInteraction();
+        await Response()
+              .Pending(strs.rakeback_available(N(rb)))
+              .Interaction(inter)
               .SendAsync();
     }
 }

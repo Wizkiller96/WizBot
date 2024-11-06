@@ -74,6 +74,13 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region Rakeback
+
+        modelBuilder.Entity<Rakeback>()
+                    .HasKey(x => x.UserId);
+        
+        #endregion
+
         #region UserBetStats
         
         modelBuilder.Entity<UserBetStats>()

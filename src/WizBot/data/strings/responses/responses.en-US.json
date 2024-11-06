@@ -1116,5 +1116,8 @@
   "invalid_img_size": "Image must to be {0}x{1} pixels.",
   "no_attach_found": "No attachment found. Please send the image along with this command." ,
   "trfl_enabled": "Flag translation enabled on this channel. Reacting to a message with a flag will translate it to that language.",
-  "trfl_disabled": "Flag translation disabled."
+  "trfl_disabled": "Flag translation disabled.",
+  "rakeback_claimed": "You've claimed {0} as rakeback!",
+  "rakeback_none": "You don't have any rakeback to claim yet.",
+  "rakeback_available": "You have {0} rakeback available. Click the button to claim."
 }

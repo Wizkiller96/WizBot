@@ -11,9 +11,9 @@ public class SlotGame
     {
         var rolls = new[]
         {
-            (byte)_rng.Next(0, 6),
-            (byte)_rng.Next(0, 6),
-            (byte)_rng.Next(0, 6)
+            (byte)_rng.Next(0, 7),
+            (byte)_rng.Next(0, 7),
+            (byte)_rng.Next(0, 7)
         };
 
         ref var a = ref rolls[0];
@@ -24,24 +24,24 @@ public class SlotGame
         var winType = SlotWinType.None;
         if (a == b && b == c)
         {
-            if (a == 5)
+            if (a == 6)
             {
                 winType = SlotWinType.TrippleJoker;
-                multi = 30;
+                multi = 25;
             }
             else
             {
                 winType = SlotWinType.TrippleNormal;
-                multi = 10;
+                multi = 15;
             }
         }
-        else if (a == 5 && (b == 5 || c == 5)
-                 || (b == 5 && c == 5))
+        else if (a == 6 && (b == 6 || c == 6)
+                 || (b == 6 && c == 6))
         {
             winType = SlotWinType.DoubleJoker;
-            multi = 4;
+            multi = 6;
         }
-        else if (a == 5 || b == 5 || c == 5)
+        else if (a == 6 || b == 6 || c == 6)
         {
             winType = SlotWinType.SingleJoker;
             multi = 1;

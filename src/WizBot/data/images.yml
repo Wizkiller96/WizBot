@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 5
+version: 6
 coins:
   heads:
     - https://cdn.wizbot.cc/coins/heads3.png
@@ -22,15 +22,13 @@ dice:
   - https://cdn.wizbot.cc/other/dice/9.png
 xp:
   bg: https://cdn.wizbot.cc/other/xp/bg_k.png
-rip:
-  bg: https://cdn.wizbot.cc/other/rip/rip.png
-  overlay: https://cdn.wizbot.cc/other/rip/overlay.png
 slots:
   emojis:
-    - https://cdn.wizbot.cc/slots/0.png
-    - https://cdn.wizbot.cc/slots/1.png
-    - https://cdn.wizbot.cc/slots/2.png
-    - https://cdn.wizbot.cc/slots/3.png
-    - https://cdn.wizbot.cc/slots/4.png
-    - https://cdn.wizbot.cc/slots/5.png
+    - https://cdn.wizbot.cc/slots/10.png
+    - https://cdn.wizbot.cc/slots/11.png
+    - https://cdn.wizbot.cc/slots/12.png
+    - https://cdn.wizbot.cc/slots/13.png
+    - https://cdn.wizbot.cc/slots/14.png
+    - https://cdn.wizbot.cc/slots/15.png
+    - https://cdn.wizbot.cc/slots/16.png
   bg: https://cdn.wizbot.cc/slots/slots_bg.png

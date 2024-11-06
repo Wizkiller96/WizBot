@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling.Common;
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 11;
+    public int Version { get; set; } = 12;
 
     [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
@@ -164,7 +164,7 @@ public partial class BetRollConfig
             },
             new()
             {
-                WhenAbove = 66,
+                WhenAbove = 65,
                 MultiplyBy = 2
             }
         ];
@@ -226,7 +226,7 @@ public partial class LuckyLadderSettings
     public decimal[] Multipliers { get; set; }
 
     public LuckyLadderSettings()
-        => Multipliers = [2.4M, 1.7M, 1.5M, 1.2M, 0.5M, 0.3M, 0.2M, 0.1M];
+        => Multipliers = [2.4M, 1.7M, 1.5M, 1.1M, 0.5M, 0.3M, 0.2M, 0.1M];
 }
 
 [Cloneable]

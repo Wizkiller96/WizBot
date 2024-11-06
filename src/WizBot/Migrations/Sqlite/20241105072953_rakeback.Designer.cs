@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Db;
 
@@ -10,9 +11,11 @@ using WizBot.Db;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20241105072953_rakeback")]
+    partial class rakeback
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -2398,9 +2401,9 @@ namespace WizBot.Migrations
 
                     b.ToTable("GreetSettings");
                 });
-            
+
             modelBuilder.Entity("WizBot.Services.Rakeback", b =>
-            {
+                {
                     b.Property<ulong>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
@@ -2411,7 +2414,7 @@ namespace WizBot.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Rakeback");
-            });
+                });
 
             modelBuilder.Entity("WizBot.Services.UserBetStats", b =>
                 {

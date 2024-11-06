@@ -27,5 +27,22 @@ public sealed class ImagesConfig : ConfigServiceBase<ImageUrls>
                 c.Version = 5;
             });
         }
+        
+        if (data.Version < 6)
+        {
+            ModifyConfig(c =>
+            {
+                if (c.Slots.Emojis?.Length == 6)
+                {
+                    c.Slots.Emojis =
+                    [
+                        new("https://cdn.wizbot.cc/slots/15.png"),
+                        ..c.Slots.Emojis
+                    ];
+                }
+
+                c.Version = 6;
+            });
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Wiz.Common;
 public partial class ImageUrls : ICloneable<ImageUrls> 
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 5;
+    public int Version { get; set; } = 6;
 
     public CoinData Coins { get; set; }
     public Uri[] Currency { get; set; }

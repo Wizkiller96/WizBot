@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using WizBot.Modules.Gambling.Betdraw;
 using WizBot.Modules.Gambling.Rps;
 using WizBot.Modules.Gambling.Services;
@@ -8,15 +10,15 @@ namespace WizBot.Modules.Gambling;
 
 public sealed class NewGamblingService : IGamblingService, INService
 {
-    private readonly GamblingConfigService _bcs;
+    private readonly GamblingConfigService _gcs;
     private readonly ICurrencyService _cs;
 
-    public NewGamblingService(GamblingConfigService bcs, ICurrencyService cs)
+    public NewGamblingService(GamblingConfigService gcs, ICurrencyService cs)
     {
-        _bcs = bcs;
+        _gcs = gcs;
         _cs = cs;
     }
-    
+
     public async Task<OneOf<LuLaResult, GamblingError>> LulaAsync(ulong userId, long amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(amount);
@@ -31,13 +33,13 @@ public sealed class NewGamblingService : IGamblingService, INService
             }
         }
 
-        var game = new LulaGame(_bcs.Data.LuckyLadder.Multipliers);
+        var game = new LulaGame(_gcs.Data.LuckyLadder.Multipliers);
         var result = game.Spin(amount);
-        
+
         var won = (long)result.Won;
         if (won > 0)
         {
-            await _cs.AddAsync(userId, won, new("lula",  result.Multiplier >= 1 ? "win" : "lose"));
+            await _cs.AddAsync(userId, won, new("lula", result.Multiplier >= 1 ? "win" : "lose"));
         }
 
         return result;
@@ -57,9 +59,9 @@ public sealed class NewGamblingService : IGamblingService, INService
             }
         }
 
-        var game = new BetrollGame(_bcs.Data.BetRoll.Pairs
-            .Select(x => (x.WhenAbove, (decimal)x.MultiplyBy))
-            .ToList());
+        var game = new BetrollGame(_gcs.Data.BetRoll.Pairs
+                                        .Select(x => (x.WhenAbove, (decimal)x.MultiplyBy))
+                                        .ToList());
 
         var result = game.Roll(amount);
 
@@ -88,19 +90,23 @@ public sealed class NewGamblingService : IGamblingService, INService
             }
         }
 
-        var game = new BetflipGame(_bcs.Data.BetFlip.Multiplier);
+        var game = new BetflipGame(_gcs.Data.BetFlip.Multiplier);
         var result = game.Flip(guess, amount);
-        
+
         var won = (long)result.Won;
         if (won > 0)
         {
             await _cs.AddAsync(userId, won, new("betflip", "win"));
         }
-        
+
         return result;
     }
     
-    public async Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(ulong userId, long amount, byte? maybeGuessValue, byte? maybeGuessColor)
+    public async Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(
+        ulong userId,
+        long amount,
+        byte? maybeGuessValue,
+        byte? maybeGuessColor)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(amount);
 
@@ -109,7 +115,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         if (maybeGuessColor > 1)
             throw new ArgumentOutOfRangeException(nameof(maybeGuessColor));
-        
+
         if (maybeGuessValue > 1)
             throw new ArgumentOutOfRangeException(nameof(maybeGuessValue));
 
@@ -125,13 +131,13 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         var game = new BetdrawGame();
         var result = game.Draw((BetdrawValueGuess?)maybeGuessValue, (BetdrawColorGuess?)maybeGuessColor, amount);
-        
+
         var won = (long)result.Won;
         if (won > 0)
         {
             await _cs.AddAsync(userId, won, new("betdraw", "win"));
         }
-        
+
         return result;
     }
 
@@ -178,7 +184,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         return Task.FromResult(results);
     }
-    
+
     //
     //
     // private readonly ConcurrentDictionary<ulong, Deck> _decks = new ConcurrentDictionary<ulong, Deck>();
@@ -236,7 +242,7 @@ public sealed class NewGamblingService : IGamblingService, INService
     {
         ArgumentOutOfRangeException.ThrowIfNegative(amount);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(pick, 2);
-        
+
         if (amount > 0)
         {
             var isTakeSuccess = await _cs.RemoveAsync(userId, amount, new("rps", "bet"));
@@ -249,7 +255,7 @@ public sealed class NewGamblingService : IGamblingService, INService
 
         var rps = new RpsGame();
         var result = rps.Play((RpsPick)pick, amount);
-        
+
         var won = (long)result.Won;
         if (won > 0)
         {
@@ -264,5 +270,47 @@ public sealed class NewGamblingService : IGamblingService, INService
         }
 
         return result;
+    }
+}
+
+public sealed class RakebackService: INService
+{
+    private readonly DbService _db;
+    private readonly ICurrencyService _cs;
+
+    public RakebackService(DbService db, ICurrencyService cs)
+    {
+        _db = db;
+        _cs = cs;
+    }
+
+    public async Task<long> GetRakebackAsync(ulong userId)
+    {
+        await using var uow = _db.GetDbContext();
+        
+        var rb = uow.GetTable<Rakeback>()
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.Amount)
+                    .FirstOrDefault();
+
+        return (long)rb;
+    }
+
+    public async Task<long> ClaimRakebackAsync(ulong userId)
+    {
+        await using var uow = _db.GetDbContext();
+
+        var rbs = await uow.GetTable<Rakeback>()
+                           .Where(x => x.UserId == userId)
+                           .DeleteWithOutputAsync((x) => x.Amount);
+        
+        if(rbs.Length == 0)
+            return 0;
+
+        var rb = (long)rbs[0];
+
+        await _cs.AddAsync(userId, rb, new("rakeback", "claim"));
+
+        return rb;
     }
 }

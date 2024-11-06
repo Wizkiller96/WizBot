@@ -13,5 +13,10 @@ public interface IGamblingService
     Task<OneOf<SlotResult, GamblingError>> SlotAsync(ulong userId, long amount);
     Task<FlipResult[]> FlipAsync(int count);
     Task<OneOf<RpsResult, GamblingError>> RpsAsync(ulong userId, long amount, byte pick);
-    Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(ulong userId, long amount, byte? maybeGuessValue, byte? maybeGuessColor);
+    
+    Task<OneOf<BetdrawResult, GamblingError>> BetDrawAsync(
+        ulong userId,
+        long amount,
+        byte? maybeGuessValue,
+        byte? maybeGuessColor);
 }

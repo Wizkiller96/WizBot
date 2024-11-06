@@ -4662,7 +4662,14 @@ betstats:
           desc: 'The game to show betstats for. Omit to show betstats for all games combined'
       - game:
           desc: 'The game to show betstats for. Omit to show betstats for all games combined'
-
+rakeback:
+  desc: |-
+    Try to claim any rakeback that you have avaialable.
+    Rakeback is accumulated by betting (not by winning or losing).
+    Default rakeback is 0.05 * house edge
+    House edge is defined per game
+  params:
+    - { }
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 11
+version: 12
 # Currency settings
 currency:
   # What is the emoji/character which represents the currency
@@ -28,7 +28,7 @@ betRoll:
       multiplyBy: 10
     - whenAbove: 90
       multiplyBy: 4
-    - whenAbove: 66
+    - whenAbove: 65
       multiplyBy: 2
 # Automatic currency generation settings.
 generation:
@@ -85,7 +85,7 @@ luckyLadder:
     - 2.4
     - 1.7
     - 1.5
-    - 1.2
+    - 1.1
     - 0.5
     - 0.3
     - 0.2
