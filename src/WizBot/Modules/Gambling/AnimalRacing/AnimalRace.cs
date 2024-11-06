@@ -6,6 +6,10 @@ namespace WizBot.Modules.Gambling.Common.AnimalRacing;
 
 public sealed class AnimalRace : IDisposable
 {
+    public const double BASE_MULTIPLIER = 0.82;
+    public const double MAX_MULTIPLIER = 0.94;
+    public const double MULTI_PER_USER = 0.01;
+
     public enum Phase
     {
         WaitingForPlayers,
@@ -100,7 +104,7 @@ public sealed class AnimalRace : IDisposable
             foreach (var user in _users)
             {
                 if (user.Bet > 0)
-                    await _currency.AddAsync(user.UserId, user.Bet, new("animalrace", "refund"));
+                    await _currency.AddAsync(user.UserId, (long)(user.Bet * BASE_MULTIPLIER), new("animalrace", "refund"));
             }
 
             _ = OnStartingFailed?.Invoke(this);
@@ -131,8 +135,10 @@ public sealed class AnimalRace : IDisposable
 
             if (FinishedUsers[0].Bet > 0)
             {
+                Multi = FinishedUsers.Count
+                        * Math.Min(MAX_MULTIPLIER, BASE_MULTIPLIER + (MULTI_PER_USER * FinishedUsers.Count));
                 await _currency.AddAsync(FinishedUsers[0].UserId,
-                    FinishedUsers[0].Bet * (_users.Count - 1),
+                    (long)(FinishedUsers[0].Bet * Multi),
                     new("animalrace", "win"));
             }
 
@@ -140,6 +146,8 @@ public sealed class AnimalRace : IDisposable
         });
     }
 
+    public double Multi { get; set; } = BASE_MULTIPLIER;
+    
     public void Dispose()
     {
         CurrentPhase = Phase.Ended;

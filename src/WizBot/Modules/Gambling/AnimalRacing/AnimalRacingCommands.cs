@@ -74,10 +74,14 @@ public partial class Gambling
                 if (race.FinishedUsers[0].Bet > 0)
                 {
                     return Response()
-                           .Confirm(GetText(strs.animal_race),
-                               GetText(strs.animal_race_won_money(Format.Bold(winner.Username),
-                                   winner.Animal.Icon,
-                                   (race.FinishedUsers[0].Bet * (race.Users.Count - 1)) + CurrencySign)))
+                           .Embed(_sender.CreateEmbed()
+                                         .WithOkColor()
+                                         .WithTitle(GetText(strs.animal_race))
+                                         .WithDescription(GetText(strs.animal_race_won_money(
+                                             Format.Bold(winner.Username),
+                                             winner.Animal.Icon,
+                                             N(race.FinishedUsers[0].Bet * race.Multi))))
+                                         .WithFooter($"x{race.Multi:F2}"))
                            .SendAsync();
                 }
 
@@ -129,10 +133,10 @@ public partial class Gambling
             else
             {
                 await msg.ModifyAsync(x => x.Embed = _sender.CreateEmbed()
-                                                        .WithTitle(GetText(strs.animal_race))
-                                                        .WithDescription(text)
-                                                        .WithOkColor()
-                                                        .Build());
+                                                            .WithTitle(GetText(strs.animal_race))
+                                                            .WithDescription(text)
+                                                            .WithOkColor()
+                                                            .Build());
             }
         }
 

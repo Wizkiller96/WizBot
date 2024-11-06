@@ -18,6 +18,9 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 ### Changed
 
 - `.plant/pick` password font size will be slightly bigger
+- `.race` will now have 82-94% payout rate based on the number of players playing (1-12, x0.01 per player).
+  - Any player over 12 won't increase payout
+
 
 ### Fixed
 
