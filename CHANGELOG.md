@@ -12,13 +12,14 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
     language of that country
   - 5 second cooldown per user
   - The message can only be translated once per language (counter resets every 24h)
-- `.timely` now has a captcha. Togglable via `.conf gambling`
+- `.timely` now has a button. Togglable via `.conf gambling` it's called pass because previously it was a captcha, but captchas are too annoying
 
 ## Changed
 
 - [public bot] Patreon reward bonus for flowers reduced. Timely bonuses stay the same
 - discriminators removed from the databases. All users who had ???? as discriminator have been renamed to ??username.
   - all new unknown users will have ??Unknown as their name
+- Flower currency generation will now have a strikeout to try combat the pickbots. This is the weakest but easiest protection to implement. There may be more options in the future
 
 ## Fixed
 
