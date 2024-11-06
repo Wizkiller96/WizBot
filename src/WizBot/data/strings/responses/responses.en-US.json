@@ -623,6 +623,7 @@
   "region": "Region",
   "remind2": "I will remind {0} to {1} {2} ({3})",
   "remind_timely": "I will remind you about your timely reward {0}",
+  "timely_button": "Click the button to claim your timely reward.",
   "remind_invalid": "Not a valid remind format. Remind must have a target, timer and a reason. Check the command list.",
   "remind_too_long": "Remind time has exceeded maximum.",
   "repeater_redundant_no": "Repeater **#{0}** won't post redundant messages anymore.",
