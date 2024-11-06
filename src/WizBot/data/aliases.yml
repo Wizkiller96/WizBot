@@ -1454,6 +1454,9 @@ translateflags:
   - trfl
   - fltr
   - transflags
+rakeback:
+  - rakeback
+  - rb
 # WizNet System
 feedback:
   - feedback
