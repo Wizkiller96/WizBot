@@ -171,7 +171,23 @@ public partial class Games
                 return;
             }
 
-            await _service.SetPixel(position, clr.PackedValue, text, ctx.User.Id, pixel.Price);
+            var result = await _service.SetPixel(position, clr.PackedValue, text, ctx.User.Id, pixel.Price);
+
+            if (result == SetPixelResult.NotEnoughMoney) 
+            {
+                await Response().Error(strs.not_enough(_gcs.Data.Currency.Sign)).SendAsync();
+                return;
+            }
+            else if (result == SetPixelResult.InsufficientPayment)
+            {
+                await Response().Error(strs.nc_insuff_payment).SendAsync();
+                return;
+            }
+            else if (result == SetPixelResult.InvalidInput)
+            {
+                await Response().Error(strs.invalid_input).SendAsync();
+                return;
+            }
 
             using var img = await GetZoomImage(position);
             await using var stream = await img.ToStreamAsync();
