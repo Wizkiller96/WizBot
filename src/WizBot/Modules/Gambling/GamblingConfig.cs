@@ -425,10 +425,7 @@ public sealed partial class BotCutConfig
 public sealed partial class BoostBonusConfig
 {
     [Comment("Users will receive a bonus if they boost any of these servers")]
-    public List<ulong> GuildIds { get; set; } =
-    [
-        99273784988557312
-    ];
+    public List<ulong> GuildIds { get; set; } = new();
 
     [Comment("This bonus will be added before any other multiplier is applied to the .timely command")]
 
