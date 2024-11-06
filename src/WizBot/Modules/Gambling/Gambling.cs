@@ -14,6 +14,13 @@ using System.Text;
 using WizBot.Modules.Gambling.Rps;
 using WizBot.Common.TypeReaders;
 using WizBot.Modules.Patronage;
+using SixLabors.Fonts;
+using SixLabors.Fonts.Unicode;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using Color = SixLabors.ImageSharp.Color;
 
 namespace WizBot.Modules.Gambling;
 
@@ -211,6 +218,7 @@ public partial class Gambling : GamblingModule<GamblingService>
                     customId: "timely:" + _rng.Next(123456, 999999)),
                 async (smc) =>
                 {
+                    await smc.DeferAsync();
                     await ClaimTimely();
                 });
 
@@ -226,12 +234,64 @@ public partial class Gambling : GamblingModule<GamblingService>
             return;
         }
         
-        if (Config.Timely.HasButton)
+        if (Config.Timely.ProtType == TimelyProt.Button)
         {
             var interaction = CreateTimelyInteraction();
             var msg = await Response().Pending(strs.timely_button).Interaction(interaction).SendAsync();
             await msg.DeleteAsync();
             return;
+        }
+        else if(Config.Timely.ProtType == TimelyProt.Captcha)
+        {
+            var password = _service.GeneratePassword();
+            
+            var img = new Image<Rgba32>(70, 35);
+            
+            var font = _fonts.NotoSans.CreateFont(30);
+            var outlinePen = new SolidPen(Color.Black, 1f);
+            var strikeoutRun = new RichTextRun
+            {
+                Start = 0,
+                End = password.GetGraphemeCount(),
+                Font = font,
+                StrikeoutPen = new SolidPen(Color.White, 3),
+                TextDecorations = TextDecorations.Strikeout
+            };
+            // draw password on the image
+            img.Mutate(x =>
+            {
+                x.DrawText(new RichTextOptions(font)
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        FallbackFontFamilies = _fonts.FallBackFonts,
+                        Origin = new(35, 17),
+                        TextRuns = [strikeoutRun]
+                    },
+                    password,
+                    Brushes.Solid(Color.White),
+                    outlinePen);
+            });
+            using var stream = await img.ToStreamAsync();
+            var captcha = await Response()
+                                // .Embed(_sender.CreateEmbed()
+                                //               .WithOkColor()
+                                //               .WithImageUrl("attachment://timely.png"))
+                                .File(stream, "timely.png")
+                                .SendAsync();
+            try
+            {
+                var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
+                if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
+                {
+                    return;
+                }
+            }
+            finally
+            {
+                _ = captcha.DeleteAsync();
+            }
+
         }
 
         await ClaimTimely();

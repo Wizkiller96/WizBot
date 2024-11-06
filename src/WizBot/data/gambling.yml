@@ -56,8 +56,9 @@ timely:
   # How often (in hours) can users claim currency with .timely command
   # setting to 0 or less will disable this feature
   cooldown: 12
-  # Whether the users are required to type a password when they do timely.
-  hasButton: true
+  # How will timely be protected?
+  # None, Button (users have to click the button) or Captcha (users have to type the captcha from an image)
+  protType: Captcha
 # How much will each user's owned currency decay over time.
 decay:
   # Percentage of user's current currency which will be deducted every 24h.

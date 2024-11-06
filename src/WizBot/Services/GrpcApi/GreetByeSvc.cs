@@ -17,10 +17,13 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, IGrpcSvc, INService
     public ServerServiceDefinition Bind()
         => GrpcGreet.BindService(this);
 
-    private static GrpcGreetSettings ToConf(GreetSettings? conf)
+    private static GrpcGreetSettings ToConf(GreetSettings? conf, GreetType type)
     {
         if (conf is null)
-            return new GrpcGreetSettings();
+            return new GrpcGreetSettings()
+            {
+                Type = (GrpcGreetType)type
+            };
 
         return new GrpcGreetSettings()
         {
@@ -35,9 +38,10 @@ public sealed class GreetByeSvc : GrpcGreet.GrpcGreetBase, IGrpcSvc, INService
     {
         var guildId = request.GuildId;
 
-        var conf = await _gs.GetGreetSettingsAsync(guildId, (GreetType)request.Type);
+        var type = (GreetType)request.Type;
+        var conf = await _gs.GetGreetSettingsAsync(guildId, type);
 
-        return ToConf(conf);
+        return ToConf(conf, type);
     }
     
     public override async Task<UpdateGreetReply> UpdateGreet(UpdateGreetRequest request, ServerCallContext context)

@@ -144,9 +144,9 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             ConfigPrinters.ToString,
             val => val >= 0);
         
-        AddParsedProp("timely.btn",
-            gs => gs.Timely.HasButton,
-            bool.TryParse,
+        AddParsedProp("timely.prot",
+            gs => gs.Timely.ProtType,
+            ConfigParsers.InsensitiveEnum,
             ConfigPrinters.ToString);
 
         Migrate();
@@ -189,11 +189,11 @@ public sealed class GamblingConfigService : ConfigServiceBase<GamblingConfig>
             });
         }
         
-        if (data.Version < 10)
+        if (data.Version < 11)
         {
             ModifyConfig(c =>
             {
-                c.Version = 10;
+                c.Version = 11;
             });
         }
     }

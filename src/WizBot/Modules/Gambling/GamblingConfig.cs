@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling.Common;
 public sealed partial class GamblingConfig : ICloneable<GamblingConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 10;
+    public int Version { get; set; } = 11;
 
     [Comment("""Currency settings""")]
     public CurrencyConfig Currency { get; set; }
@@ -119,9 +119,17 @@ public partial class TimelyConfig
     public int Cooldown { get; set; } = 24;
     
     [Comment("""
-             Whether the users are required to type a password when they do timely.
+             How will timely be protected?
+             None, Button (users have to click the button) or Captcha (users have to type the captcha from an image)
              """)]
-    public bool HasButton { get; set; } = true;
+    public TimelyProt ProtType { get; set; } = TimelyProt.Button;
+}
+
+public enum TimelyProt
+{
+    None,
+    Button,
+    Captcha
 }
 
 [Cloneable]
