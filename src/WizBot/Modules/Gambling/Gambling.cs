@@ -241,12 +241,12 @@ public partial class Gambling : GamblingModule<GamblingService>
             await msg.DeleteAsync();
             return;
         }
-        else if(Config.Timely.ProtType == TimelyProt.Captcha)
+        else if (Config.Timely.ProtType == TimelyProt.Captcha)
         {
             var password = _service.GeneratePassword();
-            
+
             var img = new Image<Rgba32>(70, 35);
-            
+
             var font = _fonts.NotoSans.CreateFont(30);
             var outlinePen = new SolidPen(Color.Black, 1f);
             var strikeoutRun = new RichTextRun
@@ -291,7 +291,6 @@ public partial class Gambling : GamblingModule<GamblingService>
             {
                 _ = captcha.DeleteAsync();
             }
-
         }
 
         await ClaimTimely();
@@ -325,22 +324,19 @@ public partial class Gambling : GamblingModule<GamblingService>
                                {
                                    try
                                    {
-                                       var guild = await ((IDiscordClient)_client).GetGuildAsync(gid);
-                                       if (guild is null)
-                                           return null;
-
-                                       var user = await guild.GetUserAsync(ctx.User.Id);
-                                       return user;
+                                       var guild = await _client.Rest.GetGuildAsync(gid, false);
+                                       var user = await _client.Rest.GetGuildUserAsync(gid, ctx.User.Id);
+                                       return (guild, user);
                                    }
                                    catch
                                    {
-                                       return null;
+                                       return default;
                                    }
                                })
                                .WhenAll();
 
-        var boostGuildUser = guildUsers.FirstOrDefault(x => x?.PremiumSince is not null);
-        var booster = boostGuildUser is not null;
+        var userInfo = guildUsers.FirstOrDefault(x => x.user?.PremiumSince is not null);
+        var booster = userInfo != default;
 
         if (booster)
             val += Config.BoostBonus.BaseTimelyBonus;
@@ -359,7 +355,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             var msg = GetText(strs.timely(N(val), period))
                       + "\n\n"
-                      + $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {boostGuildUser.Guild}!*";
+                      + $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {userInfo.guild}!*";
 
             await Response().Confirm(msg).Interaction(inter).SendAsync();
         }

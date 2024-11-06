@@ -2,7 +2,27 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
-## [5.1.19]
+## [5.1.19] - 06.11.2024
+
+### Added
+
+- Added `.betstats`
+  - See your own stats with .betstats
+  - Target someone else:  .betstats @seraphe
+  - You can also specify a game .betstats lula
+  - Or both! .betstats seraphe br
+- `.timely` can now have a server boost bonus
+  - Configure server ids and reward amount in data/gambling.yml
+  - anyone who boosts one of the sepcified servers gets the amount as base timely bonus
+
+### Changed
+
+- `.plant/pick` password font size will be slightly bigger
+
+### Fixed
+
+- `.xplb` and `.xpglb` now have proper ranks after page 1
+- Fixed boost bonus on shards different than the specified servers' shard
 
 ## [5.1.18] - 05.11.2024
 
@@ -14,14 +34,16 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
     language of that country
   - 5 second cooldown per user
   - The message can only be translated once per language (counter resets every 24h)
-- `.timely` now has a button. Togglable via `.conf gambling` it's called pass because previously it was a captcha, but captchas are too annoying
+- `.timely` now has a button. Togglable via `.conf gambling` it's called pass because previously it was a captcha, but
+  captchas are too annoying
 
 ## Changed
 
 - [public bot] Patreon reward bonus for flowers reduced. Timely bonuses stay the same
 - discriminators removed from the databases. All users who had ???? as discriminator have been renamed to ??username.
   - all new unknown users will have ??Unknown as their name
-- Flower currency generation will now have a strikeout to try combat the pickbots. This is the weakest but easiest protection to implement. There may be more options in the future
+- Flower currency generation will now have a strikeout to try combat the pickbots. This is the weakest but easiest
+  protection to implement. There may be more options in the future
 
 ## Fixed
 

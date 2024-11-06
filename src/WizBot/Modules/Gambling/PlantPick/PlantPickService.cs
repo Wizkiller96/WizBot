@@ -147,7 +147,7 @@ public class PlantPickService : INService, IExecNoCommand
         pass = pass.TrimTo(10, true).ToLowerInvariant();
         using var img = Image.Load<Rgba32>(curImg);
         // choose font size based on the image height, so that it's visible
-        var font = _fonts.NotoSans.CreateFont(img.Height / 12.0f, FontStyle.Bold);
+        var font = _fonts.NotoSans.CreateFont(img.Height / 11.0f, FontStyle.Bold);
         img.Mutate(x =>
         {
             // measure the size of the text to be drawing
@@ -159,7 +159,7 @@ public class PlantPickService : INService, IExecNoCommand
 
             // fill the background with black, add 5 pixels on each side to make it look better
             x.FillPolygon(Color.ParseHex("00000080"),
-                new PointF(0, 0),
+                new PointF(1, 1),
                 new PointF(size.Width + 5, 0),
                 new PointF(size.Width + 5, size.Height + 10),
                 new PointF(0, size.Height + 10));
