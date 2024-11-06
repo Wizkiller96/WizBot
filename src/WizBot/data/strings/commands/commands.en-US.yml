@@ -4668,6 +4668,8 @@ rakeback:
     Rakeback is accumulated by betting (not by winning or losing).
     Default rakeback is 0.05 * house edge
     House edge is defined per game
+  ex:
+    - ''
   params:
     - { }
 feedback:
