@@ -122,11 +122,11 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
         var dollarValue = pledgeCents / 100;
         percentBonus = dollarValue switch
         {
-            >= 100 => 20,
-            >= 50 => 10,
-            >= 20 => 5,
-            >= 10 => 3,
-            >= 5 => 1,
+            >= 100 => 25,
+            >= 50 => 20,
+            >= 20 => 15,
+            >= 10 => 10,
+            >= 5 => 5,
             _ => 0
         };
         return (long)(modifiedAmount * (1 + (percentBonus / 100.0f)));
