@@ -8,7 +8,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class PlantPickCommands : GamblingSubmodule<PlantPickService>
+    public partial class PlantPickCommands : GamblingModule<PlantPickService>
     {
         private readonly ILogCommandService _logService;
 

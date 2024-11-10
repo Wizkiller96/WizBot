@@ -1462,6 +1462,17 @@ translateflags:
 rakeback:
   - rakeback
   - rb
+betstatsreset:
+  - betstatsreset
+  - bsr
+  - bsreset
+gamblestatsreset:
+  - gamblestatsreset
+  - gsr
+  - gsreset
+snipe:
+  - snipe
+  - sn
 # WizNet System
 feedback:
   - feedback

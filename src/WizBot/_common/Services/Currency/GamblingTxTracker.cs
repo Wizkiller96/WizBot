@@ -4,6 +4,7 @@ using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Services.Currency;
 using WizBot.Db.Models;
+using WizBot.Modules.Gambling;
 using System.Collections.Concurrent;
 
 namespace WizBot.Services;
@@ -317,6 +318,8 @@ public sealed class GamblingTxTracker : ITxTracker, INService, IReadyExecutor
             GamblingGame.Race => 0.06m,
             _ => 0
         };
+    
+    
 }
 
 public sealed class UserBetStats

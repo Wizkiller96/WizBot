@@ -1119,5 +1119,6 @@
   "trfl_disabled": "Flag translation disabled.",
   "rakeback_claimed": "You've claimed {0} as rakeback!",
   "rakeback_none": "You don't have any rakeback to claim yet.",
-  "rakeback_available": "You have {0} rakeback available. Click the button to claim."
+  "rakeback_available": "You have {0} rakeback available. Click the button to claim.",
+  "sniped_by": "Sniped by {0}"
 }

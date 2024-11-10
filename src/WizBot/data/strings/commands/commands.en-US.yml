@@ -2711,6 +2711,13 @@ gamblestats:
     - ''
   params:
     - { }
+gamblestatsreset:
+  desc: |-
+    Resets the gamble stats.
+  ex:
+    - ''
+  params:
+    - { }
 slot:
   desc: |-
     Play WizBot slots by placing your bet.
@@ -4648,6 +4655,16 @@ translateflags:
     - ''
   params:
     - { }
+betstatsreset:
+  desc: |-
+    Reset all of your Bet Stats for a fee.
+    You can alternatively reset Bet Stats for the specified game.
+  ex:
+    - ''
+    - 'game'
+  params:
+    - game:
+        desc: 'The game to reset betstats for. Omit to reset all games'
 betstats:
     desc: |-
       Shows the current bet stats for yourself, or the targetted user.
@@ -4674,6 +4691,14 @@ rakeback:
     Rakeback is accumulated by betting (not by winning or losing).
     Default rakeback is 0.05 * house edge
     House edge is defined per game
+  ex:
+    - ''
+  params:
+    - { }
+snipe:
+  desc: |-
+    Snipe the message you replied to with this command.
+    Otherwise, if you don't reply to a message, it will snipe the last message sent in the channel (out of the last few messages) which has text or an image.
   ex:
     - ''
   params:

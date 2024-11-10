@@ -12,7 +12,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class AnimalRacingCommands : GamblingSubmodule<AnimalRaceService>
+    public partial class AnimalRacingCommands : GamblingModule<AnimalRaceService>
     {
         private readonly ICurrencyService _cs;
         private readonly DiscordSocketClient _client;

@@ -18,39 +18,39 @@ public partial class Permissions
         {
             ArgumentOutOfRangeException.ThrowIfNegative(page);
 
-            var list = _service.GetBlacklist();
-            var allItems = await list.Where(x => x.Type == type)
-                                  .Select(i =>
-                                  {
-                                      try
-                                      {
-                                          return Task.FromResult(i.Type switch
-                                          {
-                                              BlacklistType.Channel => Format.Code(i.ItemId.ToString())
-                                                                       + " "
-                                                                       + (_client.GetChannel(i.ItemId)?.ToString()
-                                                                          ?? ""),
-                                              BlacklistType.User => Format.Code(i.ItemId.ToString())
-                                                                    + " "
-                                                                    + ((_client.GetUser(i.ItemId))
-                                                                       ?.ToString()
-                                                                       ?? ""),
-                                              BlacklistType.Server => Format.Code(i.ItemId.ToString())
+            var list = await _service.GetBlacklist(type);
+            var allItems = await list
+                                 .Select(i =>
+                                 {
+                                     try
+                                     {
+                                         return Task.FromResult(type switch
+                                         {
+                                             BlacklistType.Channel => Format.Code(i.ItemId.ToString())
                                                                       + " "
-                                                                      + (_client.GetGuild(i.ItemId)?.ToString() ?? ""),
-                                              _ => Format.Code(i.ItemId.ToString())
-                                          });
-                                      }
-                                      catch
-                                      {
-                                          Log.Warning("Can't get {BlacklistType} [{BlacklistItemId}]",
-                                              i.Type,
-                                              i.ItemId);
-                                          
-                                          return Task.FromResult(Format.Code(i.ItemId.ToString()));
-                                      }
-                                  })
-                                  .WhenAll();
+                                                                      + (_client.GetChannel(i.ItemId)?.ToString()
+                                                                         ?? ""),
+                                             BlacklistType.User => Format.Code(i.ItemId.ToString())
+                                                                   + " "
+                                                                   + ((_client.GetUser(i.ItemId))
+                                                                      ?.ToString()
+                                                                      ?? ""),
+                                             BlacklistType.Server => Format.Code(i.ItemId.ToString())
+                                                                     + " "
+                                                                     + (_client.GetGuild(i.ItemId)?.ToString() ?? ""),
+                                             _ => Format.Code(i.ItemId.ToString())
+                                         });
+                                     }
+                                     catch
+                                     {
+                                         Log.Warning("Can't get {BlacklistType} [{BlacklistItemId}]",
+                                             i.Type,
+                                             i.ItemId);
+
+                                         return Task.FromResult(Format.Code(i.ItemId.ToString()));
+                                     }
+                                 })
+                                 .WhenAll();
 
             await Response()
                   .Paginated()
@@ -61,14 +61,14 @@ public partial class Permissions
                   {
                       if (pageItems.Count == 0)
                           return _sender.CreateEmbed()
-                                 .WithOkColor()
-                                 .WithTitle(title)
-                                 .WithDescription(GetText(strs.empty_page));
+                                        .WithOkColor()
+                                        .WithTitle(title)
+                                        .WithDescription(GetText(strs.empty_page));
 
                       return _sender.CreateEmbed()
-                             .WithTitle(title)
-                             .WithDescription(pageItems.Join('\n'))
-                             .WithOkColor();
+                                    .WithTitle(title)
+                                    .WithDescription(pageItems.Join('\n'))
+                                    .WithOkColor();
                   })
                   .SendAsync();
         }

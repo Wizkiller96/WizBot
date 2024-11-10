@@ -9,7 +9,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class Connect4Commands : GamblingSubmodule<GamblingService>
+    public partial class Connect4Commands : GamblingModule<GamblingService>
     {
         private static readonly string[] _numbers =
         [

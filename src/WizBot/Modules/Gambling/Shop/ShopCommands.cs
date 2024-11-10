@@ -10,7 +10,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class ShopCommands : GamblingSubmodule<IShopService>
+    public partial class ShopCommands : GamblingModule<IShopService>
     {
         public enum List
         {

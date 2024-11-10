@@ -21,7 +21,7 @@ public enum GamblingError
 public partial class Gambling
 {
     [Group]
-    public partial class SlotCommands : GamblingSubmodule<IGamblingService>
+    public partial class SlotCommands : GamblingModule<IGamblingService>
     {
         private readonly IImageCache _images;
         private readonly FontProvider _fonts;

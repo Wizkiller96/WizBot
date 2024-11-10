@@ -12,7 +12,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class DrawCommands : GamblingSubmodule<IGamblingService>
+    public partial class DrawCommands : GamblingModule<IGamblingService>
     {
         private static readonly ConcurrentDictionary<IGuild, Deck> _allDecks = new();
         private readonly IImageCache _images;

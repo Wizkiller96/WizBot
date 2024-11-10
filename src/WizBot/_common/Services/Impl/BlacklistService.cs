@@ -4,10 +4,11 @@ using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
+using System.Collections.Frozen;
 
 namespace WizBot.Modules.Permissions.Services;
 
-public sealed class BlacklistService : IExecOnMessage
+public sealed class BlacklistService : IExecOnMessage, IReadyExecutor
 {
     public int Priority
         => int.MaxValue;
@@ -15,69 +16,115 @@ public sealed class BlacklistService : IExecOnMessage
     private readonly DbService _db;
     private readonly IPubSub _pubSub;
     private readonly IBotCreds _creds;
-    private IReadOnlyList<BlacklistEntry> blacklist;
+    private readonly DiscordSocketClient _client;
 
-    private readonly TypedKey<BlacklistEntry[]> _blPubKey = new("blacklist.reload");
+    private FrozenSet<ulong> blacklistedGuilds = new HashSet<ulong>().ToFrozenSet();
+    private FrozenSet<ulong> blacklistedUsers = new HashSet<ulong>().ToFrozenSet();
+    private FrozenSet<ulong> blacklistedChannels = new HashSet<ulong>().ToFrozenSet();
 
-    public BlacklistService(DbService db, IPubSub pubSub, IBotCreds creds)
+    private readonly TypedKey<bool> _blPubKey = new("blacklist.reload");
+
+    public BlacklistService(
+        DbService db,
+        IPubSub pubSub,
+        IBotCreds creds,
+        DiscordSocketClient client)
     {
         _db = db;
         _pubSub = pubSub;
         _creds = creds;
+        _client = client;
 
-        Reload(false);
-        _pubSub.Sub(_blPubKey, OnReload);
+        _pubSub.Sub(_blPubKey, async _ => await Reload(false));
+    }
+
+    public async Task OnReadyAsync()
+    {
+        _client.JoinedGuild += async (g) =>
+        {
+            if (blacklistedGuilds.Contains(g.Id))
+            {
+                await g.LeaveAsync();
+            }
+        };
+
+        await Reload(false);
     }
 
     private ValueTask OnReload(BlacklistEntry[] newBlacklist)
     {
-        blacklist = newBlacklist;
+        if (newBlacklist is null)
+            return default;
+
+        blacklistedGuilds =
+            new HashSet<ulong>(newBlacklist.Where(x => x.Type == BlacklistType.Server).Select(x => x.ItemId))
+                .ToFrozenSet();
+        blacklistedChannels =
+            new HashSet<ulong>(newBlacklist.Where(x => x.Type == BlacklistType.Channel).Select(x => x.ItemId))
+                .ToFrozenSet();
+        blacklistedUsers =
+            new HashSet<ulong>(newBlacklist.Where(x => x.Type == BlacklistType.User).Select(x => x.ItemId))
+                .ToFrozenSet();
+
         return default;
     }
 
     public Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage usrMsg)
     {
-        foreach (var bl in blacklist)
+        if (blacklistedGuilds.Contains(guild.Id))
         {
-            if (guild is not null && bl.Type == BlacklistType.Server && bl.ItemId == guild.Id)
-            {
-                Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]", guild.Name, guild.Id);
+            Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]",
+                guild.Name,
+                guild.Id.ToString());
+            return Task.FromResult(true);
+        }
 
-                return Task.FromResult(true);
-            }
+        if (blacklistedChannels.Contains(usrMsg.Channel.Id))
+        {
+            Log.Information("Blocked input from blacklisted channel: {ChannelName} [{ChannelId}]",
+                usrMsg.Channel.Name,
+                usrMsg.Channel.Id.ToString());
+        }
+        
 
-            if (bl.Type == BlacklistType.Channel && bl.ItemId == usrMsg.Channel.Id)
-            {
-                Log.Information("Blocked input from blacklisted channel: {ChannelName} [{ChannelId}]",
-                    usrMsg.Channel.Name,
-                    usrMsg.Channel.Id);
-
-                return Task.FromResult(true);
-            }
-
-            if (bl.Type == BlacklistType.User && bl.ItemId == usrMsg.Author.Id)
-            {
-                Log.Information("Blocked input from blacklisted user: {UserName} [{UserId}]",
-                    usrMsg.Author.ToString(),
-                    usrMsg.Author.Id);
-
-                return Task.FromResult(true);
-            }
+        if (blacklistedUsers.Contains(usrMsg.Author.Id))
+        {
+            Log.Information("Blocked input from blacklisted user: {UserName} [{UserId}]",
+                usrMsg.Author.ToString(),
+                usrMsg.Author.Id.ToString());
+            return Task.FromResult(true);
         }
 
         return Task.FromResult(false);
     }
 
-    public IReadOnlyList<BlacklistEntry> GetBlacklist()
-        => blacklist;
-
-    public void Reload(bool publish = true)
+    public async Task<IReadOnlyList<BlacklistEntry>> GetBlacklist(BlacklistType type)
     {
-        using var uow = _db.GetDbContext();
-        var toPublish = uow.GetTable<BlacklistEntry>().ToArray();
-        blacklist = toPublish;
+        await using var uow = _db.GetDbContext();
+
+        return await uow
+                     .GetTable<BlacklistEntry>()
+                     .Where(x => x.Type == type)
+                     .ToListAsync();
+    }
+
+    public async Task Reload(bool publish = true)
+    {
+        var totalShards = _creds.TotalShards;
+        await using var uow = _db.GetDbContext();
+        var items = uow.GetTable<BlacklistEntry>()
+                       .Where(x => x.Type != BlacklistType.Server
+                                   || (x.Type == BlacklistType.Server
+                                       && Linq2DbExpressions.GuildOnShard(x.ItemId, totalShards, _client.ShardId)))
+                       .ToArray();
+
+        
         if (publish)
-            _pubSub.Pub(_blPubKey, toPublish);
+        {
+            await _pubSub.Pub(_blPubKey, true);
+        }
+
+        await OnReload(items);
     }
 
     public async Task Blacklist(BlacklistType type, ulong id)
@@ -88,34 +135,34 @@ public sealed class BlacklistService : IExecOnMessage
         await using var uow = _db.GetDbContext();
 
         await uow
-            .GetTable<BlacklistEntry>()
-            .InsertAsync(() => new()
-            {
-                ItemId = id,
-                Type = type,
-            });
+              .GetTable<BlacklistEntry>()
+              .InsertAsync(() => new()
+              {
+                  ItemId = id,
+                  Type = type,
+              });
 
         if (type == BlacklistType.User)
         {
             await uow.GetTable<DiscordUser>()
-                .Where(x => x.UserId == id)
-                .UpdateAsync(_ => new()
-                {
-                    CurrencyAmount = 0
-                });
+                     .Where(x => x.UserId == id)
+                     .UpdateAsync(_ => new()
+                     {
+                         CurrencyAmount = 0
+                     });
         }
 
-        Reload();
+        await Reload();
     }
 
     public async Task UnBlacklist(BlacklistType type, ulong id)
     {
         await using var uow = _db.GetDbContext();
         await uow.GetTable<BlacklistEntry>()
-            .Where(bi => bi.ItemId == id && bi.Type == type)
-            .DeleteAsync();
+                 .Where(bi => bi.ItemId == id && bi.Type == type)
+                 .DeleteAsync();
 
-        Reload();
+        await Reload();
     }
 
     public async Task BlacklistUsers(IReadOnlyCollection<ulong> toBlacklist)
@@ -130,12 +177,12 @@ public sealed class BlacklistService : IExecOnMessage
 
         var blList = toBlacklist.ToList();
         await uow.GetTable<DiscordUser>()
-            .Where(x => blList.Contains(x.UserId))
-            .UpdateAsync(_ => new()
-            {
-                CurrencyAmount = 0
-            });
+                 .Where(x => blList.Contains(x.UserId))
+                 .UpdateAsync(_ => new()
+                 {
+                     CurrencyAmount = 0
+                 });
 
-        Reload();
+        await Reload();
     }
 }

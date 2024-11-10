@@ -58,11 +58,3 @@ public abstract class GamblingModule<TService> : WizBotModule<TService>
         return InternalCheckBet(amount);
     }
 }
-
-public abstract class GamblingSubmodule<TService> : GamblingModule<TService>
-{
-    protected GamblingSubmodule(GamblingConfigService gamblingConfService)
-        : base(gamblingConfService)
-    {
-    }
-}

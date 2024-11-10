@@ -11,7 +11,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class FlipCoinCommands : GamblingSubmodule<IGamblingService>
+    public partial class FlipCoinCommands : GamblingModule<IGamblingService>
     {
         public enum BetFlipGuess : byte
         {

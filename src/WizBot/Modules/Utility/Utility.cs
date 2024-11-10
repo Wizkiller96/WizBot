@@ -790,6 +790,30 @@ public partial class Utility : WizBotModule
     }
     
     [Cmd]
+    public async Task Snipe()
+    {
+        if (ctx.Message.ReferencedMessage is not { } msg)
+        {
+            var msgs = await ctx.Channel.GetMessagesAsync(ctx.Message, Direction.Before, 3).FlattenAsync();
+            msg = msgs.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.Content) || (x.Attachments.FirstOrDefault()?.Width is not null)) as IUserMessage;
+
+            if (msg is null)
+                return;
+        }
+
+        var eb = _sender.CreateEmbed()
+                        .WithOkColor()
+                        .WithDescription(msg.Content)
+                        .WithAuthor(msg.Author)
+                        .WithTimestamp(msg.Timestamp)
+                        .WithImageUrl(msg.Attachments.FirstOrDefault()?.Url)
+                        .WithFooter(GetText(strs.sniped_by(ctx.User.ToString())), ctx.User.GetDisplayAvatarUrl());
+
+        ctx.Message.DeleteAfter(1);
+        await Response().Embed(eb).SendAsync();
+    }
+    
+    [Cmd]
     [OnlyPublicBot]
     public async Task Donators()
     {

@@ -10,7 +10,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class WaifuClaimCommands : GamblingSubmodule<WaifuService>
+    public partial class WaifuClaimCommands : GamblingModule<WaifuService>
     {
         public WaifuClaimCommands(GamblingConfigService gamblingConfService)
             : base(gamblingConfService)

@@ -9,7 +9,7 @@ namespace WizBot.Modules.Gambling;
 public partial class Gambling
 {
     [Group]
-    public partial class CurrencyEventsCommands : GamblingSubmodule<CurrencyEventsService>
+    public partial class CurrencyEventsCommands : GamblingModule<CurrencyEventsService>
     {
         public CurrencyEventsCommands(GamblingConfigService gamblingConf)
             : base(gamblingConf)
