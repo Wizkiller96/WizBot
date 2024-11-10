@@ -159,14 +159,14 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
             _xp.SetRoleReward(request.GuildId, request.Level, rid, request.Type == "RemoveRole");
             success = true;
         }
-        else if (request.Type == "Currency")
-        {
-            if (!int.TryParse(request.Value, out var amount))
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid amount"));
-
-            _xp.SetCurrencyReward(request.GuildId, request.Level, amount);
-            success = true;
-        }
+        // else if (request.Type == "Currency")
+        // {
+        //     if (!int.TryParse(request.Value, out var amount))
+        //         throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid amount"));
+        //
+        //     _xp.SetCurrencyReward(request.GuildId, request.Level, amount);
+        //     success = true;
+        // }
 
         return new()
         {

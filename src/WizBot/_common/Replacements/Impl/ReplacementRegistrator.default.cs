@@ -12,7 +12,11 @@ public sealed partial class ReplacementPatternStore
     {
         Register("%bot.time%",
             static ()
-                => DateTime.Now.ToString("HH:mm " + TimeZoneInfo.Local.StandardName.GetInitials()));
+                => TimestampTag.FromDateTime(DateTime.UtcNow, TimestampTagStyles.ShortTime).ToString());
+
+        Register("%bot.date%",
+            static ()
+                => TimestampTag.FromDateTime(DateTime.UtcNow, TimestampTagStyles.ShortDate).ToString());
     }
 
     private void WithClient()

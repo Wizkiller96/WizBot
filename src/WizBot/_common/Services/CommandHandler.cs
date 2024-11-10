@@ -165,7 +165,7 @@ public class CommandHandler : INService, IReadyExecutor, ICommandHandler
             Log.Information("Succ | g:{GuildId} | c: {ChannelId} | u: {UserId} | msg: {Message}",
                 channel?.Guild.Id.ToString() ?? "-",
                 channel?.Id.ToString() ?? "-",
-                usrMsg.Author.Id,
+                usrMsg.Author.Id.ToString(),
                 usrMsg.Content.TrimTo(10));
         }
 

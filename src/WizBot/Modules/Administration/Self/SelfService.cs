@@ -73,7 +73,6 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 if (server.OwnerId != _client.CurrentUser.Id)
                 {
                     await server.LeaveAsync();
-                    Log.Information("Left server {Name} [{Id}]", server.Name, server.Id);
                 }
                 else
                 {

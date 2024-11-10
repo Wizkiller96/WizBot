@@ -3026,6 +3026,20 @@
     },
     {
       "Aliases": [
+        ".rakeback",
+        ".rb"
+      ],
+      "Description": "Try to claim any rakeback that you have avaialable.\nRakeback is accumulated by betting (not by winning or losing).\nDefault rakeback is 0.05 * house edge\nHouse edge is defined per game",
+      "Usage": [
+        ".rakeback"
+      ],
+      "Submodule": "Gambling",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".race"
       ],
       "Description": "Starts a new animal race.",
@@ -3598,8 +3612,24 @@
     },
     {
       "Aliases": [
+        ".waifuclaims",
+        ".claims",
+        ".wcs"
+      ],
+      "Description": "Shows all of your currently claimed waifus.",
+      "Usage": [
+        ".waifuclaims"
+      ],
+      "Submodule": "WaifuClaimCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".waifuclaim",
-        ".claim"
+        ".claim",
+        ".wc"
       ],
       "Description": "Claim a waifu for yourself by spending currency.  You must spend at least 10% more than her current value unless she set `.affinity` towards you.",
       "Usage": [
