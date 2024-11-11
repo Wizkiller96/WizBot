@@ -2752,37 +2752,6 @@
   "Gambling": [
     {
       "Aliases": [
-        ".betstats",
-        ".bs"
-      ],
-      "Description": "Shows the current bet stats for yourself, or the targetted user.\nYou may optionally specify the game to show stats for.\nSupported games right now are: bf, br, bd, lula, slot, race",
-      "Usage": [
-        ".betstats",
-        ".betstats @someone",
-        ".betstats @someone lula",
-        ".betstats bd"
-      ],
-      "Submodule": "Gambling",
-      "Module": "Gambling",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".gamblestats",
-        ".gs"
-      ],
-      "Description": "Shows the total stats of several gambling features.\nUpdates once an hour.",
-      "Usage": [
-        ".gamblestats"
-      ],
-      "Submodule": "Gambling",
-      "Module": "Gambling",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".timely"
       ],
       "Description": "Use to claim your timely currency.\nThis is usually set by the bot owners to be daily, hourly or once every 12 hours.\nBot owner has to specify the amount and the period on how often you can claim your currency.",
@@ -3029,7 +2998,7 @@
         ".rakeback",
         ".rb"
       ],
-      "Description": "Try to claim any rakeback that you have avaialable.\nRakeback is accumulated by betting (not by winning or losing).\nDefault rakeback is 0.05 * house edge\nHouse edge is defined per game",
+      "Description": "Try to claim any rakeback that you have available.\nRakeback is accumulated by betting (not by winning or losing).\nDefault rakeback is 0.05 * house edge\nHouse edge is defined per game",
       "Usage": [
         ".rakeback"
       ],
@@ -3143,6 +3112,70 @@
       "Options": null,
       "Requirements": [
         "Bot Staff Only"
+      ]
+    },
+    {
+      "Aliases": [
+        ".betstatsreset",
+        ".bsr",
+        ".bsreset"
+      ],
+      "Description": "Reset all of your Bet Stats for a fee.\nYou can alternatively reset Bet Stats for the specified game.",
+      "Usage": [
+        ".betstatsreset",
+        ".betstatsreset game"
+      ],
+      "Submodule": "BetStatsCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".betstats",
+        ".bs"
+      ],
+      "Description": "Shows the current bet stats for yourself, or the targetted user.\nYou may optionally specify the game to show stats for.\nSupported games right now are: bf, br, bd, lula, slot, race",
+      "Usage": [
+        ".betstats",
+        ".betstats @someone",
+        ".betstats @someone lula",
+        ".betstats bd"
+      ],
+      "Submodule": "BetStatsCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".gamblestats",
+        ".gs"
+      ],
+      "Description": "Shows the total stats of several gambling features.\nUpdates once an hour.",
+      "Usage": [
+        ".gamblestats"
+      ],
+      "Submodule": "BetStatsCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".gamblestatsreset",
+        ".gsr",
+        ".gsreset"
+      ],
+      "Description": "Resets the gamble stats.",
+      "Usage": [
+        ".gamblestatsreset"
+      ],
+      "Submodule": "BetStatsCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
       ]
     },
     {
@@ -6643,6 +6676,20 @@
         "Bot Owner Only",
         "No Public Bot"
       ]
+    },
+    {
+      "Aliases": [
+        ".snipe",
+        ".sn"
+      ],
+      "Description": "Snipe the message you replied to with this command.\nOtherwise, if you don't reply to a message, it will snipe the last message sent in the channel (out of the last few messages) which has text or an image.",
+      "Usage": [
+        ".snipe"
+      ],
+      "Submodule": "Utility",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": []
     },
     {
       "Aliases": [
