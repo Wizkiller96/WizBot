@@ -2,6 +2,27 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.1.20] - 11.11.2024
+
+### Added
+
+- Added `.rakeback` command, get a % of house edge back as claimable currency
+- Added `.snipe` command to quickly get a copy of  a posted message as an embed
+  - You can reply to a message to snipe that message
+  - Or just type .snipe and the bot will snipe the last message in the channel with content or image
+- Added `.betstatsreset` / `.bsreset` command to reset your stats for a fee
+- Added `.gamblestatsreset` / `.gsreset` owner-only command to reset bot stats for all games
+- Added `.waifuclaims` command which lists all of your claimed waifus
+- Added and changed `%bot.time%` and `%bot.date%` placeholders. They use timestamp tags now
+
+### Changed
+
+- `.divorce` no longer has a cooldown
+- `.betroll` has a 2% better payout
+- `.slot` payout balanced out (less volatile), reduced jackpot win but increased other wins,
+  - now has a new symbol, wheat
+  - worse around 1% in total (now shares the top spot with .bf)
+
 ## [5.1.19] - 06.11.2024
 
 ### Added
