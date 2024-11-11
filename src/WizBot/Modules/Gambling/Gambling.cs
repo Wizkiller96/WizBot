@@ -264,7 +264,7 @@ public partial class Gambling : GamblingModule<GamblingService>
         {
             msg += "\n\n";
             if (booster)
-                msg += $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {userInfo.guild}!*";
+                msg += $"*+{N(Config.BoostBonus.BaseTimelyBonus)} bonus for boosting {userInfo.guild}!*\n";
 
             if (percentBonus > float.Epsilon)
                 msg +=
