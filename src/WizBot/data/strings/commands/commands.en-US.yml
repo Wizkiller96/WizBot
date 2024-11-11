@@ -1517,7 +1517,7 @@ take:
 betroll:
   desc: |-
     Bets the specified amount of currency and rolls a dice.
-    Rolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.
+    Rolling over 65 yields x2 of your currency, over 90 - x4 and 100 x10.
     You can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.
   ex:
     - 5
