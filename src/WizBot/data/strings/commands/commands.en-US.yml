@@ -4687,7 +4687,7 @@ betstats:
           desc: 'The game to show betstats for. Omit to show betstats for all games combined'
 rakeback:
   desc: |-
-    Try to claim any rakeback that you have avaialable.
+    Try to claim any rakeback that you have available.
     Rakeback is accumulated by betting (not by winning or losing).
     Default rakeback is 0.05 * house edge
     House edge is defined per game
