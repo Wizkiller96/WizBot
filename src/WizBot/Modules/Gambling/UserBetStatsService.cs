@@ -8,7 +8,7 @@ namespace WizBot.Modules.Gambling.Services;
 public sealed class UserBetStatsService : INService
 {
     private const long RESET_MIN_PRICE = 1000;
-    private const decimal RESET_TOTAL_MULTIPLIER = 0.02m;
+    private const decimal RESET_TOTAL_MULTIPLIER = 0.002m;
 
     private readonly DbService _db;
     private readonly ICurrencyService _cs;
