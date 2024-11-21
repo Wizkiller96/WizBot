@@ -5,7 +5,7 @@ namespace WizBot.Modules.Searches.Common.StreamNotifications.Providers;
 /// <summary>
 ///     Abstract class implemented by providers of all supported platforms
 /// </summary>
-public abstract class StreamProvider
+public abstract class Provider
 {
     /// <summary>
     ///     Type of the platform.
