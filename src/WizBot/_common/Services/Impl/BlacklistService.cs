@@ -1,4 +1,3 @@
-#nullable disable
 using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.EntityFrameworkCore;
@@ -53,8 +52,7 @@ public sealed class BlacklistService : IExecOnMessage, IReadyExecutor
 
     private ValueTask OnReload(BlacklistEntry[] newBlacklist)
     {
-        if (newBlacklist is null)
-            return default;
+        newBlacklist ??= [];
 
         blacklistedGuilds =
             new HashSet<ulong>(newBlacklist.Where(x => x.Type == BlacklistType.Server).Select(x => x.ItemId))
@@ -69,9 +67,9 @@ public sealed class BlacklistService : IExecOnMessage, IReadyExecutor
         return default;
     }
 
-    public Task<bool> ExecOnMessageAsync(IGuild guild, IUserMessage usrMsg)
+    public Task<bool> ExecOnMessageAsync(IGuild? guild, IUserMessage usrMsg)
     {
-        if (blacklistedGuilds.Contains(guild.Id))
+        if (guild is not null && blacklistedGuilds.Contains(guild.Id))
         {
             Log.Information("Blocked input from blacklisted guild: {GuildName} [{GuildId}]",
                 guild.Name,
