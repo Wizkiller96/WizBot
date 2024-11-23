@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace WizBot.Common.TypeReaders.Models;
 
@@ -9,8 +8,8 @@ public class StoopidTime
         @"^(?:(?<months>\d)mo)?(?:(?<weeks>\d{1,2})w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,4})h)?(?:(?<minutes>\d{1,5})m)?(?:(?<seconds>\d{1,6})s)?$",
         RegexOptions.Compiled | RegexOptions.Multiline);
 
-    public string Input { get; set; }
-    public TimeSpan Time { get; set; }
+    public string Input { get; set; } = string.Empty;
+    public TimeSpan Time { get; set; } = default;
 
     private StoopidTime() { }
 
@@ -53,8 +52,8 @@ public class StoopidTime
         };
     }
     
-    public static implicit operator TimeSpan(StoopidTime st)
-        => st.Time;
+    public static implicit operator TimeSpan?(StoopidTime? st)
+        => st?.Time;
     
     public static implicit operator StoopidTime(TimeSpan ts)
         => new()
