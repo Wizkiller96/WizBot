@@ -283,7 +283,13 @@ public partial class Administration
         {
             var res = await _service.SetExclusiveButtonRoles(ctx.Guild.Id, messageId, exclusive.Value);
 
-            if (res)
+            if (!res)
+            {
+                await Response().Error(strs.btnrole_not_found).SendAsync();
+                return;
+            }
+
+            if (exclusive.Value)
             {
                 await Response().Confirm(strs.btnrole_exclusive).SendAsync();
             }

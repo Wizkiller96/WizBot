@@ -126,7 +126,11 @@ public sealed class ButtonRolesService : INService, IReadyExecutor
                          Emote = emoteStr,
                          Label = string.Empty,
                          ButtonId = $"{BTN_PREFIX}:{guildId}:{guid}",
-                         Exclusive = (uow.GetTable<ButtonRole>().Where(x => x.GuildId == guildId && x.MessageId == messageId).All(x => x.Exclusive))
+                         Exclusive = uow.GetTable<ButtonRole>()
+                                        .Any(x => x.GuildId == guildId && x.MessageId == messageId)
+                                     && uow.GetTable<ButtonRole>()
+                                           .Where(x => x.GuildId == guildId && x.MessageId == messageId)
+                                           .All(x => x.Exclusive)
                      },
                      _ => new()
                      {
@@ -178,7 +182,6 @@ public sealed class ButtonRolesService : INService, IReadyExecutor
                         .UpdateAsync((_) => new()
                         {
                             Exclusive = exclusive
-                        })
-               > 0;
+                        }) > 0;
     }
 }

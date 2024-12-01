@@ -75,6 +75,14 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
                      {
                          GuildId = guildId
                      });
+
+        if (!_colors.TryAdd(guildId, new Colors(null, null, color?.ToDiscordColor())))
+        {
+            _colors[guildId] = _colors[guildId] with
+            {
+                Ok = color?.ToDiscordColor()
+            };
+        }
     }
 
     public async Task SetPendingColor(ulong guildId, Rgba32? color)
@@ -95,6 +103,14 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
                      {
                          GuildId = guildId
                      });
+
+        if (!_colors.TryAdd(guildId, new Colors(null, color?.ToDiscordColor(), null)))
+        {
+            _colors[guildId] = _colors[guildId] with
+            {
+                Ok = color?.ToDiscordColor()
+            };
+        }
     }
 
     public async Task OnReadyAsync()

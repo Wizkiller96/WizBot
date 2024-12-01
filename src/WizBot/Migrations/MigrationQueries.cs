@@ -21,17 +21,14 @@ public static class MigrationQueries
                              INNER JOIN GuildConfigs as GC ON GN.GuildConfigId = GC.Id;
 
                              INSERT INTO Sar (GuildId, RoleId, SarGroupId, LevelReq)
-                             SELECT SAR.GuildId, SAR.RoleId, SG2.Id, MIN(SAR.LevelRequirement)
-                              FROM SelfAssignableRoles as SAR
-                              INNER JOIN (SELECT GuildId FROM GroupName as gn
+                             SELECT SAR.GuildId, SAR.RoleId, (SELECT Id FROM SarGroup WHERE SG.Number = SarGroup.GroupNumber AND SG.GuildId = SarGroup.GuildId), MIN(SAR.LevelRequirement)
+                               FROM SelfAssignableRoles as SAR
+                               INNER JOIN (SELECT GuildId, gn.Number FROM GroupName as gn
                              	INNER JOIN GuildConfigs as gc ON gn.GuildConfigId =gc.Id
-                              ) as SG 
+                               ) as SG 
                              	ON SG.GuildId = SAR.GuildId 
-                              INNER JOIN (SELECT gn.Id, Number FROM GroupName as gn
-                             	INNER JOIN GuildConfigs as gc ON gn.GuildConfigId =gc.Id
-                              ) as SG2
-                             	ON SG2.Number = SAR."Group"
-                              GROUP BY SAR.GuildId, SAR.RoleId;
+                             WHERE SG.Number IN (SELECT GroupNumber FROM SarGroup WHERE Sar.GuildId = SarGroup.GuildId)
+                             GROUP BY SAR.GuildId, SAR.RoleId;
 
                              INSERT INTO SarAutoDelete (GuildId, IsEnabled)
                              SELECT GuildId, AutoDeleteSelfAssignedRoleMessages FROM GuildConfigs WHERE AutoDeleteSelfAssignedRoleMessages = TRUE;
