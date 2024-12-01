@@ -80,7 +80,7 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
         {
             _colors[guildId] = _colors[guildId] with
             {
-                Ok = color?.ToDiscordColor()
+                Error = color?.ToDiscordColor()
             };
         }
     }
@@ -108,7 +108,7 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
         {
             _colors[guildId] = _colors[guildId] with
             {
-                Ok = color?.ToDiscordColor()
+                Pending = color?.ToDiscordColor()
             };
         }
     }
