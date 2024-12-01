@@ -147,7 +147,7 @@ public partial class Utility
         private async Task ShowQuoteData(Quote quote)
         {
             var inter = CreateEditInteraction(quote.Id, quote);
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithOkColor()
                             .WithTitle($"{GetText(strs.quote_id($"`{new kwum(quote.Id)}"))}`")
                             .WithDescription(Format.Sanitize(quote.Text).Replace("](", "]\\(").TrimTo(4096))
@@ -188,7 +188,7 @@ public partial class Utility
 
                       var text = quote.Keyword.ToLowerInvariant() + ":  " + quote.Text;
 
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                                     .WithOkColor()
                                     .WithTitle($"{new kwum(quote.Id)} 💬 ")
                                     .WithDescription(text);
@@ -266,7 +266,7 @@ public partial class Utility
             if (q is not null)
             {
                 await Response()
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(CreateEmbed()
                                     .WithOkColor()
                                     .WithTitle(GetText(strs.quote_edited))
                                     .WithDescription($"#{quoteId}")

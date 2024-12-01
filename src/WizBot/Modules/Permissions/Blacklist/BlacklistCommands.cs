@@ -60,12 +60,12 @@ public partial class Permissions
                   .Page((pageItems, _) =>
                   {
                       if (pageItems.Count == 0)
-                          return _sender.CreateEmbed()
+                          return CreateEmbed()
                                         .WithOkColor()
                                         .WithTitle(title)
                                         .WithDescription(GetText(strs.empty_page));
 
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                                     .WithTitle(title)
                                     .WithDescription(pageItems.Join('\n'))
                                     .WithOkColor();
@@ -74,7 +74,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task UserBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -84,7 +84,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task ChannelBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -94,7 +94,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task ServerBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -104,27 +104,27 @@ public partial class Permissions
         }
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task UserBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.User);
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task UserBlacklist(AddRemove action, IUser usr)
             => Blacklist(action, usr.Id, BlacklistType.User);
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task ChannelBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Channel);
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task ServerBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Server);
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public Task ServerBlacklist(AddRemove action, IGuild guild)
             => Blacklist(action, guild.Id, BlacklistType.Server);
 

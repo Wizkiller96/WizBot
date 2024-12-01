@@ -13,7 +13,7 @@ public partial class Searches
             _flagSvc = flagSvc;
         }
 
-        
+
         public enum AutoDeleteAutoTranslate
         {
             Del,
@@ -28,7 +28,7 @@ public partial class Searches
                 await ctx.Channel.TriggerTypingAsync();
                 var translation = await _service.Translate(fromLang, toLang, text);
 
-                var embed = _sender.CreateEmbed().WithOkColor().AddField(fromLang, text).AddField(toLang, translation);
+                var embed = CreateEmbed().WithOkColor().AddField(fromLang, text).AddField(toLang, translation);
 
                 await Response().Embed(embed).SendAsync();
             }
@@ -88,7 +88,7 @@ public partial class Searches
         {
             var langs = _service.GetLanguages().ToList();
             
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                         .WithTitle(GetText(strs.supported_languages))
                         .WithOkColor();
 
@@ -99,7 +99,7 @@ public partial class Searches
 
             await Response().Embed(eb).SendAsync();
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(ChannelPermission.ManageChannels)]

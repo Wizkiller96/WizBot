@@ -32,7 +32,7 @@ public partial class Administration
             var usrs = settings?.LogIgnores.Where(x => x.ItemType == IgnoredItemType.User).ToList()
                        ?? new List<IgnoredLogItem>();
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                         .WithOkColor()
                         .AddField(GetText(strs.log_ignored_channels),
                             chs.Count == 0

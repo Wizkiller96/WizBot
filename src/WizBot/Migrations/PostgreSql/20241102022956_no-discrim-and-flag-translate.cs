@@ -12,8 +12,6 @@ namespace WizBot.Migrations.PostgreSql
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            MigrationQueries.UpdateUsernames(migrationBuilder);
-            
             migrationBuilder.DropColumn(
                 name: "discriminator",
                 table: "discorduser");

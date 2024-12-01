@@ -62,7 +62,7 @@ public partial class Administration
             var (added, updated) = await _service.RefreshUsersAsync(users);
 
             await message.ModifyAsync(x =>
-                x.Embed = _sender.CreateEmbed()
+                x.Embed = CreateEmbed()
                                  .WithDescription(GetText(strs.cache_users_done(added, updated)))
                                  .WithOkColor()
                                  .Build()
@@ -115,7 +115,7 @@ public partial class Administration
             _service.AddNewAutoCommand(cmd);
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle(GetText(strs.scadd))
                                 .AddField(GetText(strs.server),
@@ -343,7 +343,7 @@ public partial class Administration
                       if (string.IsNullOrWhiteSpace(str))
                           str = GetText(strs.no_shards_on_page);
 
-                      return _sender.CreateEmbed().WithOkColor().WithDescription($"{status}\n\n{str}");
+                      return CreateEmbed().WithOkColor().WithDescription($"{status}\n\n{str}");
                   })
                   .SendAsync();
         }

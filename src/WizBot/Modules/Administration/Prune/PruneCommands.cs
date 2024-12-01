@@ -113,7 +113,7 @@ public partial class Administration
                 {
                     await progressMsg.ModifyAsync(props =>
                     {
-                        props.Embed = _sender.CreateEmbed()
+                        props.Embed = CreateEmbed()
                                              .WithPendingColor()
                                              .WithDescription(GetText(strs.prune_progress(deleted, total)))
                                              .Build();

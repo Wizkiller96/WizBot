@@ -64,7 +64,7 @@ public partial class Utility
             }
 
             var description = GetRepeaterInfoString(removed);
-            await Response().Embed(_sender.CreateEmbed()
+            await Response().Embed(CreateEmbed()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_removed(index + 1)))
                 .WithDescription(description)).SendAsync();
@@ -187,7 +187,7 @@ public partial class Utility
             }
 
             var description = GetRepeaterInfoString(runner);
-            await Response().Embed(_sender.CreateEmbed()
+            await Response().Embed(CreateEmbed()
                 .WithOkColor()
                 .WithTitle(GetText(strs.repeater_created))
                 .WithDescription(description)).SendAsync();
@@ -205,7 +205,7 @@ public partial class Utility
                 return;
             }
 
-            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.list_of_repeaters)).WithOkColor();
+            var embed = CreateEmbed().WithTitle(GetText(strs.list_of_repeaters)).WithOkColor();
 
             var i = 0;
             foreach (var runner in repeaters.OrderBy(r => r.Repeater.Id))

@@ -123,7 +123,7 @@ public partial class Searches
             if (!feeds.Any())
             {
                 await Response()
-                      .Embed(_sender.CreateEmbed().WithOkColor().WithDescription(GetText(strs.feed_no_feed)))
+                      .Embed(CreateEmbed().WithOkColor().WithDescription(GetText(strs.feed_no_feed)))
                       .SendAsync();
                 return;
             }
@@ -135,7 +135,7 @@ public partial class Searches
                   .CurrentPage(page)
                   .Page((items, cur) =>
                   {
-                      var embed = _sender.CreateEmbed().WithOkColor();
+                      var embed = CreateEmbed().WithOkColor();
                       var i = 0;
                       var fs = string.Join("\n",
                           items.Select(x => $"`{(cur * 10) + ++i}.` <#{x.ChannelId}> {x.Url}"));

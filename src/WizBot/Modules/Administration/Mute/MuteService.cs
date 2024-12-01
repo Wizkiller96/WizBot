@@ -122,7 +122,7 @@ public class MuteService : INService
             return;
 
         _ = Task.Run(() => _sender.Response(user)
-                                  .Embed(_sender.CreateEmbed()
+                                  .Embed(_sender.CreateEmbed(user?.GuildId)
                                          .WithDescription($"You've been muted in {user.Guild} server")
                                          .AddField("Mute Type", type.ToString())
                                          .AddField("Moderator", mod.ToString())
@@ -140,7 +140,7 @@ public class MuteService : INService
             return;
 
         _ = Task.Run(() => _sender.Response(user)
-                                  .Embed(_sender.CreateEmbed()
+                                  .Embed(_sender.CreateEmbed(user.GuildId)
                                          .WithDescription($"You've been unmuted in {user.Guild} server")
                                          .AddField("Unmute Type", type.ToString())
                                          .AddField("Moderator", mod.ToString())

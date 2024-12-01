@@ -1,5 +1,4 @@
-﻿#nullable disable
-using LinqToDB;
+﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
@@ -8,6 +7,9 @@ namespace WizBot.Db;
 
 public static class UserXpExtensions
 {
+    public static async Task<UserXpStats?> GetGuildUserXp(this ITable<UserXpStats> table, ulong guildId, ulong userId)
+        => await table.FirstOrDefaultAsyncLinqToDB(x => x.GuildId == guildId && x.UserId == userId);
+
     public static UserXpStats GetOrCreateUserXpStats(this DbContext ctx, ulong guildId, ulong userId)
     {
         var usr = ctx.Set<UserXpStats>().FirstOrDefault(x => x.UserId == userId && x.GuildId == guildId);

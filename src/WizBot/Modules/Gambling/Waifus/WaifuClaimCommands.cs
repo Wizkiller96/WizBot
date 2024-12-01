@@ -21,9 +21,9 @@ public partial class Gambling
         public async Task WaifuReset()
         {
             var price = _service.GetResetPrice(ctx.User);
-            var embed = _sender.CreateEmbed()
-                            .WithTitle(GetText(strs.waifu_reset_confirm))
-                            .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
+            var embed = CreateEmbed()
+                               .WithTitle(GetText(strs.waifu_reset_confirm))
+                               .WithDescription(GetText(strs.waifu_reset_price(Format.Bold(N(price)))));
 
             if (!await PromptUserConfirmAsync(embed))
                 return;
@@ -36,7 +36,7 @@ public partial class Gambling
 
             await Response().Error(strs.waifu_reset_fail).SendAsync();
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         public async Task WaifuClaims()
@@ -46,7 +46,7 @@ public partial class Gambling
                   .PageItems(async (page) => await _service.GetClaimsAsync(ctx.User.Id, page))
                   .Page((items, page) =>
                   {
-                      var eb = _sender.CreateEmbed()
+                      var eb = CreateEmbed()
                                       .WithOkColor()
                                       .WithTitle("Waifus");
 
@@ -266,7 +266,7 @@ public partial class Gambling
                 return;
             }
 
-            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
+            var embed = CreateEmbed().WithTitle(GetText(strs.waifus_top_waifus)).WithOkColor();
 
             var i = 0;
             foreach (var w in waifus)
@@ -350,7 +350,7 @@ public partial class Gambling
             if (string.IsNullOrWhiteSpace(fansStr))
                 fansStr = "-";
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithTitle(GetText(strs.waifu)
                                           + " "
@@ -393,8 +393,8 @@ public partial class Gambling
                   .CurrentPage(page)
                   .Page((items, _) =>
                   {
-                      var embed = _sender.CreateEmbed().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
-                      
+                      var embed = CreateEmbed().WithTitle(GetText(strs.waifu_gift_shop)).WithOkColor();
+
                       items
                           .ToList()
                           .ForEach(x => embed.AddField(

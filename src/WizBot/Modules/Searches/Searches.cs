@@ -40,7 +40,7 @@ public partial class Searches : WizBotModule<SearchesService>
         if (!await ValidateQuery(query))
             return;
 
-        var embed = _sender.CreateEmbed();
+        var embed = CreateEmbed();
         var data = await _service.GetWeatherDataAsync(query);
 
         if (data is null)
@@ -103,7 +103,7 @@ public partial class Searches : WizBotModule<SearchesService>
             return;
         }
 
-        var eb = _sender.CreateEmbed()
+        var eb = CreateEmbed()
                     .WithOkColor()
                     .WithTitle(GetText(strs.time_new))
                     .WithDescription(Format.Code(data.Time.ToString(Culture)))
@@ -129,7 +129,7 @@ public partial class Searches : WizBotModule<SearchesService>
         }
 
         await Response()
-              .Embed(_sender.CreateEmbed()
+              .Embed(CreateEmbed()
                             .WithOkColor()
                             .WithTitle(movie.Title)
                             .WithUrl($"https://www.imdb.com/title/{movie.ImdbId}/")
@@ -162,7 +162,7 @@ public partial class Searches : WizBotModule<SearchesService>
     private Task InternalRandomImage(SearchesService.ImageTag tag)
     {
         var url = _service.GetRandomImageUrl(tag);
-        return Response().Embed(_sender.CreateEmbed().WithOkColor().WithImageUrl(url)).SendAsync();
+        return Response().Embed(CreateEmbed().WithOkColor().WithImageUrl(url)).SendAsync();
     }
 
     [Cmd]
@@ -191,7 +191,7 @@ public partial class Searches : WizBotModule<SearchesService>
         }
 
         await Response()
-              .Embed(_sender.CreateEmbed()
+              .Embed(CreateEmbed()
                         .WithOkColor()
                         .AddField(GetText(strs.original_url), $"<{query}>")
                         .AddField(GetText(strs.short_url), $"<{shortLink}>"))
@@ -214,7 +214,7 @@ public partial class Searches : WizBotModule<SearchesService>
             return;
         }
 
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                         .WithOkColor()
                         .WithTitle(card.Name)
                         .WithDescription(card.Description)
@@ -247,7 +247,7 @@ public partial class Searches : WizBotModule<SearchesService>
             return;
         }
 
-        var embed = _sender.CreateEmbed().WithOkColor().WithImageUrl(card.Img);
+        var embed = CreateEmbed().WithOkColor().WithImageUrl(card.Img);
 
         if (!string.IsNullOrWhiteSpace(card.Flavor))
             embed.WithDescription(card.Flavor);
@@ -281,7 +281,7 @@ public partial class Searches : WizBotModule<SearchesService>
               .Page((items, _) =>
               {
                   var item = items[0];
-                  return _sender.CreateEmbed()
+                  return CreateEmbed()
                                 .WithOkColor()
                                 .WithUrl(item.Permalink)
                                 .WithTitle(item.Word)
@@ -312,7 +312,7 @@ public partial class Searches : WizBotModule<SearchesService>
               .Page((items, _) =>
               {
                   var model = items.First();
-                  var embed = _sender.CreateEmbed()
+                  var embed = CreateEmbed()
                                      .WithDescription(ctx.User.Mention)
                                      .AddField(GetText(strs.word), model.Word, true)
                                      .AddField(GetText(strs._class), model.WordType, true)
@@ -375,7 +375,7 @@ public partial class Searches : WizBotModule<SearchesService>
     }
 
     [Cmd]
-    public async Task Color(params Color[] colors)
+    public async Task Color(params Rgba32[] colors)
     {
         if (!colors.Any())
             return;
@@ -404,7 +404,7 @@ public partial class Searches : WizBotModule<SearchesService>
 
         await Response()
               .Embed(
-                  _sender.CreateEmbed()
+                  CreateEmbed()
                         .WithOkColor()
                         .AddField("Username", usr.ToString())
                         .AddField("Avatar Url", avatarUrl)
@@ -462,7 +462,7 @@ public partial class Searches : WizBotModule<SearchesService>
 
             if (cat.Contains(category))
                 await Response()
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(CreateEmbed()
                                     .WithOkColor()
                                     .WithAuthor(
                                         $"Nekos Life - Image Database {nekotitle["cat"]}",
@@ -472,7 +472,7 @@ public partial class Searches : WizBotModule<SearchesService>
                       .SendAsync();
             else
                 await Response()
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(CreateEmbed()
                                     .WithErrorColor()
                                     .WithAuthor("Nekos Life - Invalid Category",
                                         "https://i.imgur.com/a36AMkG.png",
@@ -501,7 +501,7 @@ public partial class Searches : WizBotModule<SearchesService>
             {
                 //var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
                 await Response()
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(CreateEmbed()
                                     .WithOkColor()
                                     .WithAuthor("This Waifu Does Not Exist",
                                         null,

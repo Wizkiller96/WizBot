@@ -21,22 +21,23 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         if (await ctx
-                .GetTable<TodoModel>()
-                .Where(x => x.UserId == userId && x.ArchiveId == null)
-                .CountAsync() >= TODO_MAX_COUNT)
+                  .GetTable<TodoModel>()
+                  .Where(x => x.UserId == userId && x.ArchiveId == null)
+                  .CountAsync()
+            >= TODO_MAX_COUNT)
         {
             return TodoAddResult.MaxLimitReached;
         }
 
         await ctx
-            .GetTable<TodoModel>()
-            .InsertAsync(() => new TodoModel()
-            {
-                UserId = userId,
-                Todo = todo,
-                DateAdded = DateTime.UtcNow,
-                IsDone = false,
-            });
+              .GetTable<TodoModel>()
+              .InsertAsync(() => new TodoModel()
+              {
+                  UserId = userId,
+                  Todo = todo,
+                  DateAdded = DateTime.UtcNow,
+                  IsDone = false,
+              });
 
         return TodoAddResult.Success;
     }
@@ -45,10 +46,11 @@ public sealed class TodoService : INService
     {
         await using var ctx = _db.GetDbContext();
         return await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.Id == todoId)
-            .Set(x => x.Todo, newMessage)
-            .UpdateAsync() > 0;
+                     .GetTable<TodoModel>()
+                     .Where(x => x.UserId == userId && x.Id == todoId)
+                     .Set(x => x.Todo, newMessage)
+                     .UpdateAsync()
+               > 0;
     }
 
     public async Task<TodoModel[]> GetAllTodosAsync(ulong userId)
@@ -56,9 +58,9 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         return await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.ArchiveId == null)
-            .ToArrayAsyncLinqToDB();
+                     .GetTable<TodoModel>()
+                     .Where(x => x.UserId == userId && x.ArchiveId == null)
+                     .ToArrayAsyncLinqToDB();
     }
 
     public async Task<bool> CompleteTodoAsync(ulong userId, int todoId)
@@ -66,10 +68,23 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         var count = await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.Id == todoId)
-            .Set(x => x.IsDone, true)
-            .UpdateAsync();
+                          .GetTable<TodoModel>()
+                          .Where(x => x.UserId == userId && x.Id == todoId)
+                          .Set(x => x.IsDone, true)
+                          .UpdateAsync();
+
+        return count > 0;
+    }
+
+    public async Task<bool> UncompleteTodoAsync(ulong userId, int todoId)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var count = await ctx
+                          .GetTable<TodoModel>()
+                          .Where(x => x.UserId == userId && x.Id == todoId)
+                          .Set(x => x.IsDone, false)
+                          .UpdateAsync();
 
         return count > 0;
     }
@@ -79,9 +94,9 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         var count = await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.Id == todoId)
-            .DeleteAsync();
+                          .GetTable<TodoModel>()
+                          .Where(x => x.UserId == userId && x.Id == todoId)
+                          .DeleteAsync();
 
         return count > 0;
     }
@@ -91,9 +106,9 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.ArchiveId == null)
-            .DeleteAsync();
+              .GetTable<TodoModel>()
+              .Where(x => x.UserId == userId && x.ArchiveId == null)
+              .DeleteAsync();
     }
 
     public async Task<ArchiveTodoResult> ArchiveTodosAsync(ulong userId, string name)
@@ -106,28 +121,28 @@ public sealed class TodoService : INService
 
         // check if the user reached the limit
         var count = await ctx
-            .GetTable<ArchivedTodoListModel>()
-            .Where(x => x.UserId == userId)
-            .CountAsync();
+                          .GetTable<ArchivedTodoListModel>()
+                          .Where(x => x.UserId == userId)
+                          .CountAsync();
 
         if (count >= ARCHIVE_MAX_COUNT)
             return ArchiveTodoResult.MaxLimitReached;
 
         var inserted = await ctx
-            .GetTable<ArchivedTodoListModel>()
-            .InsertWithOutputAsync(() => new ArchivedTodoListModel()
-            {
-                UserId = userId,
-                Name = name,
-            });
+                             .GetTable<ArchivedTodoListModel>()
+                             .InsertWithOutputAsync(() => new ArchivedTodoListModel()
+                             {
+                                 UserId = userId,
+                                 Name = name,
+                             });
 
         // mark all existing todos as archived
 
         var updated = await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.ArchiveId == null)
-            .Set(x => x.ArchiveId, inserted.Id)
-            .UpdateAsync();
+                            .GetTable<TodoModel>()
+                            .Where(x => x.UserId == userId && x.ArchiveId == null)
+                            .Set(x => x.ArchiveId, inserted.Id)
+                            .UpdateAsync();
 
         if (updated == 0)
         {
@@ -140,7 +155,7 @@ public sealed class TodoService : INService
 
             return ArchiveTodoResult.NoTodos;
         }
-        
+
         await tr.CommitAsync();
 
         return ArchiveTodoResult.Success;
@@ -152,9 +167,9 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         return await ctx
-            .GetTable<ArchivedTodoListModel>()
-            .Where(x => x.UserId == userId)
-            .ToArrayAsyncLinqToDB();
+                     .GetTable<ArchivedTodoListModel>()
+                     .Where(x => x.UserId == userId)
+                     .ToArrayAsyncLinqToDB();
     }
 
     public async Task<ArchivedTodoListModel?> GetArchivedTodoListAsync(ulong userId, int archiveId)
@@ -162,10 +177,10 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         return await ctx
-            .GetTable<ArchivedTodoListModel>()
-            .Where(x => x.UserId == userId && x.Id == archiveId)
-            .LoadWith(x => x.Items)
-            .FirstOrDefaultAsyncLinqToDB();
+                     .GetTable<ArchivedTodoListModel>()
+                     .Where(x => x.UserId == userId && x.Id == archiveId)
+                     .LoadWith(x => x.Items)
+                     .FirstOrDefaultAsyncLinqToDB();
     }
 
     public async Task<bool> ArchiveDeleteAsync(ulong userId, int archiveId)
@@ -173,9 +188,9 @@ public sealed class TodoService : INService
         await using var ctx = _db.GetDbContext();
 
         var count = await ctx
-            .GetTable<ArchivedTodoListModel>()
-            .Where(x => x.UserId == userId && x.Id == archiveId)
-            .DeleteAsync();
+                          .GetTable<ArchivedTodoListModel>()
+                          .Where(x => x.UserId == userId && x.Id == archiveId)
+                          .DeleteAsync();
 
         return count > 0;
     }
@@ -183,10 +198,10 @@ public sealed class TodoService : INService
     public async Task<TodoModel?> GetTodoAsync(ulong userId, int todoId)
     {
         await using var ctx = _db.GetDbContext();
-        
+
         return await ctx
-            .GetTable<TodoModel>()
-            .Where(x => x.UserId == userId && x.Id == todoId)
-            .FirstOrDefaultAsyncLinqToDB();
+                     .GetTable<TodoModel>()
+                     .Where(x => x.UserId == userId && x.Id == todoId)
+                     .FirstOrDefaultAsyncLinqToDB();
     }
 }

@@ -241,7 +241,7 @@ public partial class Administration
                 return;
             }
 
-            var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.prot_active));
+            var embed = CreateEmbed().WithOkColor().WithTitle(GetText(strs.prot_active));
 
             if (spam is not null)
                 embed.AddField("Anti-Spam", GetAntiSpamString(spam).TrimTo(1024), true);

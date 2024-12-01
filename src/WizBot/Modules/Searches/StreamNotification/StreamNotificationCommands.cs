@@ -79,9 +79,9 @@ public partial class Searches
                   .Page((elements, cur) =>
                   {
                       if (elements.Count == 0)
-                          return _sender.CreateEmbed().WithDescription(GetText(strs.streams_none)).WithErrorColor();
+                          return CreateEmbed().WithDescription(GetText(strs.streams_none)).WithErrorColor();
 
-                      var eb = _sender.CreateEmbed().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
+                      var eb = CreateEmbed().WithTitle(GetText(strs.streams_follow_title)).WithOkColor();
                       for (var index = 0; index < elements.Count; index++)
                       {
                           var elem = elements[index];

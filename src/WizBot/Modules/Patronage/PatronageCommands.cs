@@ -53,7 +53,7 @@ public partial class Help
         //     
         //     var patron = _service.GiftPatronAsync(user, amount);
         //
-        //     var eb = _sender.CreateEmbed();
+        //     var eb = CreateEmbed();
         //
         //     await Response().Embed(eb.WithDescription($"Added **{days}** days of Patron benefits to {user.Mention}!")
         //                                    .AddField("Tier", Format.Bold(patron.Tier.ToString()), true)
@@ -75,7 +75,7 @@ public partial class Help
 
             var quotaStats = await _service.LimitStats(user.Id);
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithAuthor(user)
                             .WithTitle(GetText(strs.patron_info))
                             .WithOkColor();

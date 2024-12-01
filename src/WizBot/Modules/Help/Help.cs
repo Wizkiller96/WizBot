@@ -115,7 +115,7 @@ public sealed partial class Help : WizBotModule<HelpService>
               .AddFooter(false)
               .Page((items, _) =>
               {
-                  var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.list_of_modules));
+                  var embed = CreateEmbed().WithOkColor().WithTitle(GetText(strs.list_of_modules));
 
                   if (!items.Any())
                   {
@@ -320,7 +320,7 @@ public sealed partial class Help : WizBotModule<HelpService>
                  .WithPlaceholder("Select a submodule to see detailed commands");
 
         var groups = cmdsWithGroup.ToArray();
-        var embed = _sender.CreateEmbed().WithOkColor();
+        var embed = CreateEmbed().WithOkColor();
         foreach (var g in groups)
         {
             sb.AddOption(g.Key, g.Key);
@@ -388,7 +388,7 @@ public sealed partial class Help : WizBotModule<HelpService>
               .Interaction(inter)
               .Page((items, _) =>
               {
-                  var eb = _sender.CreateEmbed()
+                  var eb = CreateEmbed()
                                   .WithTitle(GetText(strs.cmd_group_commands(group.Name)))
                                   .WithOkColor();
 
@@ -539,7 +539,7 @@ public sealed partial class Help : WizBotModule<HelpService>
         {
             var fbmsg = await _client.GetGuild(99273784988557312)
                                      .GetTextChannel(1245658384452288573)
-                                     .EmbedAsync(_sender.CreateEmbed()
+                                     .EmbedAsync(CreateEmbed()
                                                     .WithOkColor()
                                                     .WithTitle($"New Suggestion")
                                                     .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
@@ -564,7 +564,7 @@ public sealed partial class Help : WizBotModule<HelpService>
                          .SendMessageAsync("<@99272781513920512>");
             await _client.GetGuild(99273784988557312)
                          .GetTextChannel(1012808771371794433)
-                         .EmbedAsync(_sender.CreateEmbed()
+                         .EmbedAsync(CreateEmbed()
                                         .WithOkColor()
                                         .WithTitle($"New Bug Report")
                                         .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
@@ -581,7 +581,7 @@ public sealed partial class Help : WizBotModule<HelpService>
             await ctx.Channel.SendMessageAsync("Bug report has been sent to WizNet's Discord.").ConfigureAwait(false);
         }
         else
-            await ctx.Channel.EmbedAsync(_sender.CreateEmbed()
+            await ctx.Channel.EmbedAsync(CreateEmbed()
                                             .WithErrorColor()
                                             .WithTitle($"Error: Report not sent.")
                                             .WithDescription(
@@ -598,7 +598,7 @@ public sealed partial class Help : WizBotModule<HelpService>
 
             if (((user == null)) && (string.IsNullOrEmpty(rexplaination)))
             {
-                await ctx.Channel.EmbedAsync(_sender.CreateEmbed()
+                await ctx.Channel.EmbedAsync(CreateEmbed()
                                                 .WithErrorColor()
                                                 .WithTitle($"Error: Abuse report not sent.")
                                                 .WithDescription(
@@ -607,7 +607,7 @@ public sealed partial class Help : WizBotModule<HelpService>
             }
             else if (user == null)
             {
-                await ctx.Channel.EmbedAsync(_sender.CreateEmbed()
+                await ctx.Channel.EmbedAsync(CreateEmbed()
                                                 .WithErrorColor()
                                                 .WithTitle($"Error: Abuse report not sent.")
                                                 .WithDescription(
@@ -616,7 +616,7 @@ public sealed partial class Help : WizBotModule<HelpService>
             }
             else if (string.IsNullOrEmpty(rexplaination))
             {
-                await ctx.Channel.EmbedAsync(_sender.CreateEmbed()
+                await ctx.Channel.EmbedAsync(CreateEmbed()
                                                 .WithErrorColor()
                                                 .WithTitle($"Error: Abuse report not sent.")
                                                 .WithDescription(
@@ -630,7 +630,7 @@ public sealed partial class Help : WizBotModule<HelpService>
 
             await _client.GetGuild(99273784988557312)
                          .GetTextChannel(590829242690961408)
-                         .EmbedAsync(_sender.CreateEmbed()
+                         .EmbedAsync(CreateEmbed()
                                         .WithOkColor()
                                         .WithTitle($"Abuse Report")
                                         .WithThumbnailUrl($"{ctx.User.GetAvatarUrl()}")
@@ -659,7 +659,7 @@ public sealed partial class Help : WizBotModule<HelpService>
     [OnlyPublicBot]
     public async Task Donate()
     {
-        var eb = _sender.CreateEmbed()
+        var eb = CreateEmbed()
                         .WithOkColor()
                         .WithTitle("Thank you for considering to donate to the WizBot project!");
 

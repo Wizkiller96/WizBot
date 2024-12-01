@@ -38,7 +38,7 @@ public partial class Gambling
 
             var fileName = $"dice.{format.FileExtensions.First()}";
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .AddField(GetText(strs.roll2), gen)
@@ -115,7 +115,7 @@ public partial class Gambling
                 d.Dispose();
 
             var imageName = $"dice.{format.FileExtensions.First()}";
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                 .WithOkColor()
                 .WithAuthor(ctx.User)
                 .AddField(GetText(strs.rolls), values.Select(x => Format.Code(x.ToString())).Join(' '), true)
@@ -141,7 +141,7 @@ public partial class Gambling
 
                 for (var i = 0; i < n1; i++)
                     rolls.Add(_fateRolls[rng.Next(0, _fateRolls.Length)]);
-                var embed = _sender.CreateEmbed()
+                var embed = CreateEmbed()
                                .WithOkColor()
                                .WithAuthor(ctx.User)
                                .WithDescription(GetText(strs.dice_rolled_num(Format.Bold(n1.ToString()))))
@@ -170,7 +170,7 @@ public partial class Gambling
                         arr[i] = rng.Next(1, n2 + 1);
 
                     var sum = arr.Sum();
-                    var embed = _sender.CreateEmbed()
+                    var embed = CreateEmbed()
                                    .WithOkColor()
                                    .WithAuthor(ctx.User)
                                    .WithDescription(GetText(strs.dice_rolled_num(n1 + $"`1 - {n2}`")))

@@ -8,7 +8,7 @@ public sealed class AiCommandModel
     public required string Name { get; set; }
 
     [JsonPropertyName("desc")]
-    public required string Desc { get; set; }
+    public required string? Desc { get; set; }
 
     [JsonPropertyName("params")]
     public required IReadOnlyList<AiCommandParamModel> Params { get; set; }

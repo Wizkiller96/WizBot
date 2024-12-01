@@ -44,7 +44,7 @@ public partial class Searches
 
 
                 await Response()
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(CreateEmbed()
                                     .WithOkColor()
                                     .WithTitle($"osu! {smode} profile for {user}")
                                     .WithThumbnailUrl($"https://a.ppy.sh/{userId}")
@@ -78,7 +78,7 @@ public partial class Searches
                 return;
             }
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithTitle($"osu!Gatari {modeStr} profile for {user}")
                                .WithThumbnailUrl($"https://a.gatari.pw/{userStats.Id}")
@@ -113,7 +113,7 @@ public partial class Searches
             var plays = await _service.GetOsuPlay(user, mode);
             
 
-            var eb = _sender.CreateEmbed().WithOkColor().WithTitle($"Top 5 plays for {user}");
+            var eb = CreateEmbed().WithOkColor().WithTitle($"Top 5 plays for {user}");
 
             foreach(var (title, desc) in plays)
                 eb.AddField(title, desc);

@@ -109,7 +109,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
 
         try
         {
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithAuthor(GetText(strs.queued_track) + " #" + (index + 1), MUSIC_ICON_URL)
                                .WithDescription($"{trackInfo.PrettyName()}\n{GetText(strs.queue)} ")
@@ -314,7 +314,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
             if (!string.IsNullOrWhiteSpace(add))
                 desc = add + "\n" + desc;
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithAuthor(
                                    GetText(strs.player_queue(curPage + 1, (tracks.Count / LQ_ITEMS_PER_PAGE) + 1)),
                                    MUSIC_ICON_URL)
@@ -352,7 +352,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
         }
 
 
-        var embeds = videos.Select((x, i) => _sender.CreateEmbed()
+        var embeds = videos.Select((x, i) => CreateEmbed()
                                                     .WithOkColor()
                                                     .WithThumbnailUrl(x.Thumbnail)
                                                     .WithDescription($"`{i + 1}.` {Format.Bold(x.Title)}\n\t{x.Url}"))
@@ -424,7 +424,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
             return;
         }
 
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithAuthor(GetText(strs.removed_track) + " #" + index, MUSIC_ICON_URL)
                            .WithDescription(track.PrettyName())
                            .WithFooter(track.PrettyInfo())
@@ -592,7 +592,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
             return;
         }
 
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithTitle(track.Title.TrimTo(65))
                            .WithAuthor(GetText(strs.track_moved), MUSIC_ICON_URL)
                            .AddField(GetText(strs.from_position), $"#{from + 1}", true)
@@ -651,7 +651,7 @@ public sealed partial class Music : WizBotModule<IMusicService>
         if (currentTrack is null)
             return;
 
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithOkColor()
                            .WithAuthor(GetText(strs.now_playing), MUSIC_ICON_URL)
                            .WithDescription(currentTrack.PrettyName())
@@ -751,5 +751,21 @@ public sealed partial class Music : WizBotModule<IMusicService>
             await Response().Confirm(strs.music_fairplay).SendAsync();
         else
             await Response().Error(strs.no_player).SendAsync();
+    }
+
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    public async Task WrongSong()
+    {
+        var removed = await _service.RemoveLastQueuedTrackAsync(ctx.Guild.Id);
+
+        if (removed is null)
+        {
+            await Response().Error(strs.no_last_queued_found).SendAsync();
+        }
+        else
+        {
+            await Response().Confirm(strs.wrongsong_success(removed.Title.TrimTo(30))).SendAsync();
+        }
     }
 }

@@ -38,4 +38,5 @@ public interface IMusicPlayer : IDisposable
     void SetRepeat(PlayerRepeatType type);
     void ShuffleQueue();
     void SetFairplay();
+    Task<IQueuedTrackInfo?> RemoveLastQueuedTrack();
 }

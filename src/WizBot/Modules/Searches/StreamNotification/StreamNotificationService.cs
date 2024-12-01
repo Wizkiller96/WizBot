@@ -491,11 +491,11 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
 
     public EmbedBuilder GetEmbed(ulong guildId, StreamData status, bool showViewers = true)
     {
-        var embed = _sender.CreateEmbed()
-                        .WithTitle(status.Name)
-                        .WithUrl(status.StreamUrl)
-                        .WithDescription(status.StreamUrl)
-                        .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
+        var embed = _sender.CreateEmbed(guildId)
+                           .WithTitle(status.Name)
+                           .WithUrl(status.StreamUrl)
+                           .WithDescription(status.StreamUrl)
+                           .AddField(GetText(guildId, strs.status), status.IsLive ? "🟢 Online" : "🔴 Offline", true);
 
         if (showViewers)
         {
@@ -647,7 +647,7 @@ public sealed class StreamNotificationService : INService, IReadyExecutor
         public StreamDataKey Key { get; init; }
         public ulong GuildId { get; init; }
     }
-    
+
     public async Task<List<FollowedStream>> GetAllStreamsAsync(SocketGuild guild)
     {
         var allStreams = new List<FollowedStream>();

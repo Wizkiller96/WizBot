@@ -8,5 +8,5 @@ public interface IMessageSenderService
 
     ResponseBuilder Response(SocketMessageComponent smc);
 
-    WizBotEmbedBuilder CreateEmbed();
+    WizBotEmbedBuilder CreateEmbed(ulong? guildId = null);
 }

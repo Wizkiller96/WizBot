@@ -24,7 +24,7 @@ public partial class Gambling
         {
             var price = await _service.GetResetStatsPriceAsync(ctx.User.Id, game);
 
-            var result = await PromptUserConfirmAsync(_sender.CreateEmbed()
+            var result = await PromptUserConfirmAsync(CreateEmbed()
                                                              .WithDescription(
                                                                  $"""
                                                                   Are you sure you want to reset your bet stats for **{GetGameName(game)}**?
@@ -87,7 +87,7 @@ public partial class Gambling
                     }
                 };
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithOkColor()
                             .WithAuthor(user)
                             .AddField("Total Won", N(stats.Sum(x => x.PaidOut)), true)
@@ -120,7 +120,7 @@ public partial class Gambling
         {
             var stats = await _gamblingTxTracker.GetAllAsync();
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithOkColor();
 
             var str = "` Feature `｜`   Bet  `｜`Paid Out`｜`  RoI  `\n";
@@ -156,7 +156,7 @@ public partial class Gambling
         [OwnerOnly]
         public async Task GambleStatsReset()
         {
-            if (!await PromptUserConfirmAsync(_sender.CreateEmbed()
+            if (!await PromptUserConfirmAsync(CreateEmbed()
                                                      .WithDescription(
                                                          """
                                                          Are you sure?

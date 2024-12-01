@@ -32,9 +32,8 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
         _sender = sender;
         _config = config;
         _client = client;
-
     }
-    
+
     public Task OnReadyAsync()
     {
         _ps.OnNewPatronPayment += OnNewPayment;
@@ -55,29 +54,29 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
             await using (var ctx = _db.GetDbContext())
             {
                 old = await ctx.GetTable<RewardedUser>()
-                         .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
-                         .FirstOrDefaultAsync();
-                
+                               .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
+                               .FirstOrDefaultAsync();
+
                 if (old is null)
                 {
                     await OnNewPayment(newPatron);
                     return;
                 }
-                
+
                 // no action as the amount is the same or lower
                 if (old.AmountRewardedThisMonth >= newAmount)
                     return;
-                
+
                 var count = await ctx.GetTable<RewardedUser>()
-                                  .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
-                                  .UpdateAsync(_ => new()
-                                  {
-                                      PlatformUserId = newPatron.UniquePlatformUserId,
-                                      UserId = newPatron.UserId,
-                                      // amount before bonuses
-                                      AmountRewardedThisMonth = newAmount,
-                                      LastReward = newPatron.PaidAt
-                                  });
+                                     .Where(x => x.PlatformUserId == newPatron.UniquePlatformUserId)
+                                     .UpdateAsync(_ => new()
+                                     {
+                                         PlatformUserId = newPatron.UniquePlatformUserId,
+                                         UserId = newPatron.UserId,
+                                         // amount before bonuses
+                                         AmountRewardedThisMonth = newAmount,
+                                         LastReward = newPatron.PaidAt
+                                     });
 
                 // shouldn't ever happen
                 if (count == 0)
@@ -90,21 +89,21 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
                 (int)(newAmount / conf.PatreonCurrencyPerCent),
                 newAmount,
                 out var percentBonus);
-            
+
             var realOldAmount = GetRealCurrencyReward(
                 (int)(oldAmount / conf.PatreonCurrencyPerCent),
                 oldAmount,
                 out _);
-            
+
             var diff = realNewAmount - realOldAmount;
             if (diff <= 0)
                 return; // no action if new is lower
 
             // if the user pledges 5$ or more, they will get X % more flowers where X is amount in dollars,
             // up to 100%
-            
-            await _cs.AddAsync(newPatron.UserId, diff, new TxData("patron","update"));
-            
+
+            await _cs.AddAsync(newPatron.UserId, diff, new TxData("patron", "update"));
+
             _ = SendMessageToUser(newPatron.UserId,
                 $"You've received an additional **{diff}**{_config.Data.Currency.Sign} as a currency reward (+{percentBonus}%)!");
         }
@@ -155,7 +154,7 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
                      {
                          PlatformUserId = patron.UniquePlatformUserId
                      });
-        
+
         var realAmount = GetRealCurrencyReward(patron.Amount, amount, out var percentBonus);
         await _cs.AddAsync(patron.UserId, realAmount, new("patron", "new"));
         _ = SendMessageToUser(patron.UserId,
@@ -171,9 +170,9 @@ public sealed class CurrencyRewardService : INService, IReadyExecutor
                 return;
 
             var eb = _sender.CreateEmbed()
-                        .WithOkColor()
-                        .WithDescription(message);
-            
+                            .WithOkColor()
+                            .WithDescription(message);
+
             await _sender.Response(user).Embed(eb).SendAsync();
         }
         catch

@@ -9,7 +9,8 @@ public class FollowedStream : DbEntity
         Picarto = 3,
         Youtube = 4,
         Facebook = 5,
-        Trovo = 6
+        Trovo = 6,
+        Kick = 7,
     }
 
     public ulong GuildId { get; set; }

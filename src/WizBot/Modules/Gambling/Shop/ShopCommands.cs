@@ -56,8 +56,8 @@ public partial class Gambling
                    .Page((items, curPage) =>
                    {
                        if (!items.Any())
-                           return _sender.CreateEmbed().WithErrorColor().WithDescription(GetText(strs.shop_none));
-                       var embed = _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.shop));
+                           return CreateEmbed().WithErrorColor().WithDescription(GetText(strs.shop_none));
+                       var embed = CreateEmbed().WithOkColor().WithTitle(GetText(strs.shop));
 
                        for (var i = 0; i < items.Count; i++)
                        {
@@ -188,7 +188,7 @@ public partial class Gambling
                     {
                         await Response()
                               .User(ctx.User)
-                              .Embed(_sender.CreateEmbed()
+                              .Embed(CreateEmbed()
                                      .WithOkColor()
                                      .WithTitle(GetText(strs.shop_purchase(ctx.Guild.Name)))
                                      .AddField(GetText(strs.item), item.Text)
@@ -253,8 +253,8 @@ public partial class Gambling
                                    .Replace("%you.username%", buyer.Username)
                                    .Replace("%you.name%", buyer.GlobalName ?? buyer.Username)
                                    .Replace("%you.nick%", buyer.DisplayName);
-
-                    var eb = _sender.CreateEmbed()
+                    
+                    var eb = CreateEmbed()
                              .WithPendingColor()
                              .WithTitle("Executing shop command")
                              .WithDescription(cmd);
@@ -541,7 +541,7 @@ public partial class Gambling
 
         public EmbedBuilder EntryToEmbed(ShopEntry entry)
         {
-            var embed = _sender.CreateEmbed().WithOkColor();
+            var embed = CreateEmbed().WithOkColor();
 
             if (entry.Type == ShopEntryType.Role)
             {

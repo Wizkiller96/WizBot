@@ -59,14 +59,14 @@ public partial class Searches
 
             descStr = descStr.TrimTo(4096);
 
-            var embed = _sender.CreateEmbed()
-                               .WithOkColor()
-                               .WithAuthor(ctx.User)
-                               .WithTitle(query.TrimTo(64)!)
-                               .WithDescription(descStr)
-                               .WithFooter(
-                                   GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
-                                   "https://i.imgur.com/G46fm8J.png");
+            var embed = CreateEmbed()
+                        .WithOkColor()
+                        .WithAuthor(ctx.User)
+                        .WithTitle(query.TrimTo(64)!)
+                        .WithDescription(descStr)
+                        .WithFooter(
+                            GetText(strs.results_in(data.Info.TotalResults, data.Info.SearchTime)),
+                            "https://i.imgur.com/G46fm8J.png");
 
             await Response().Embed(embed).SendAsync();
         }
@@ -93,13 +93,13 @@ public partial class Searches
                 return;
             }
 
-            EmbedBuilder CreateEmbed(IImageSearchResultEntry entry)
+            EmbedBuilder CreateImageEmbed(IImageSearchResultEntry entry)
             {
-                return _sender.CreateEmbed()
-                              .WithOkColor()
-                              .WithAuthor(ctx.User)
-                              .WithTitle(query)
-                              .WithImageUrl(entry.Link);
+                return CreateEmbed()
+                       .WithOkColor()
+                       .WithAuthor(ctx.User)
+                       .WithTitle(query)
+                       .WithImageUrl(entry.Link);
             }
 
             await Response()
@@ -112,10 +112,11 @@ public partial class Searches
                       var item = items.FirstOrDefault();
 
                       if (item is null)
-                          return _sender.CreateEmbed()
-                                        .WithDescription(GetText(strs.no_search_results));
+                          return CreateEmbed()
+                                 .WithPendingColor()
+                                 .WithDescription(GetText(strs.no_search_results));
 
-                      var embed = CreateEmbed(item);
+                      var embed = CreateImageEmbed(item);
 
                       return embed;
                   })
@@ -184,7 +185,7 @@ public partial class Searches
 //
 //         var descStr = string.Join("\n\n", desc);
 //
-//         var embed = _sender.CreateEmbed()
+//         var embed = CreateEmbed()
 //                        .WithAuthor(ctx.User.ToString(),
 //                            "https://upload.wikimedia.org/wikipedia/en/9/90/The_DuckDuckGo_Duck.png")
 //                        .WithDescription($"{GetText(strs.search_for)} **{query}**\n\n" + descStr)

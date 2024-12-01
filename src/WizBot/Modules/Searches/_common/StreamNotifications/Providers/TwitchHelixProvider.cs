@@ -5,6 +5,46 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WizBot.Modules.Searches.Common.StreamNotifications.Providers;
 
+// public sealed class YoutubeProvide : Provider
+// {
+//     private readonly IGoogleApiService _api;
+//     private readonly IHttpClientFactory _httpFactory;
+//
+//     public override FollowedStream.FType Platform
+//         => FollowedStream.FType.Youtube;
+//
+//     public YoutubeProvide(IGoogleApiService api, IHttpClientFactory httpFactory)
+//     {
+//         _api = api;
+//         _httpFactory = httpFactory;
+//     }
+//
+//     public override async Task<bool> IsValidUrl(string url)
+//     {
+//         await Task.Yield();
+//         return url.Contains("youtube.com");
+//     }
+//
+//     public override Task<StreamData?> GetStreamDataByUrlAsync(string url)
+//     {
+//         return default;
+//     }
+//
+//     public override Task<StreamData?> GetStreamDataAsync(string login)
+//     {
+//         var client = _httpFactory.CreateClient();
+//         
+//         client.GetAsync()
+//         
+//         return default;
+//     }
+//
+//     public override Task<IReadOnlyCollection<StreamData>> GetStreamDataAsync(List<string> usernames)
+//     {
+//         return default;
+//     }
+// }
+//
 public sealed class TwitchHelixProvider : Provider
 {
     private readonly IHttpClientFactory _httpClientFactory;

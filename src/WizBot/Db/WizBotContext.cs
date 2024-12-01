@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WizBot.Db.Models;
+using WizBot.Modules.Administration.Services;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -14,7 +15,6 @@ public abstract class WizBotContext : DbContext
 
     public DbSet<Quote> Quotes { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
-    public DbSet<SelfAssignedRole> SelfAssignableRoles { get; set; }
     public DbSet<MusicPlaylist> MusicPlaylists { get; set; }
     public DbSet<WizBotExpression> Expressions { get; set; }
     public DbSet<CurrencyTransaction> CurrencyTransactions { get; set; }
@@ -61,7 +61,7 @@ public abstract class WizBotContext : DbContext
     public DbSet<TodoModel> Todos { get; set; }
     public DbSet<ArchivedTodoListModel> TodosArchive { get; set; }
     public DbSet<HoneypotChannel> HoneyPotChannels { get; set; }
-    
+
     
     // public DbSet<GuildColors> GuildColors { get; set; }
 
@@ -74,6 +74,58 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region GuildColors
+
+        modelBuilder.Entity<GuildColors>()
+                    .HasIndex(x => x.GuildId)
+                    .IsUnique(true);
+
+        #endregion
+
+        #region Button Roles
+
+        modelBuilder.Entity<ButtonRole>(br =>
+        {
+            br.HasIndex(x => x.GuildId)
+              .IsUnique(false);
+
+            br.HasAlternateKey(x => new
+            {
+                x.RoleId,
+                x.MessageId,
+            });
+        });
+
+        #endregion
+
+        #region New Sar
+
+        modelBuilder.Entity<SarGroup>(sg =>
+        {
+            sg.HasAlternateKey(x => new
+            {
+                x.GuildId,
+                x.GroupNumber
+            });
+
+            sg.HasMany(x => x.Roles)
+              .WithOne()
+              .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Sar>()
+                    .HasAlternateKey(x => new
+                    {
+                        x.GuildId,
+                        x.RoleId
+                    });
+
+        modelBuilder.Entity<SarAutoDelete>()
+                    .HasIndex(x => x.GuildId)
+                    .IsUnique();
+
+        #endregion
+
         #region Rakeback
 
         modelBuilder.Entity<Rakeback>()
@@ -84,18 +136,25 @@ public abstract class WizBotContext : DbContext
         #region UserBetStats
         
         modelBuilder.Entity<UserBetStats>()
-                    .HasIndex(x => new { x.UserId, x.Game })
+                    .HasIndex(x => new
+                    {
+                        x.UserId,
+                        x.Game
+                    })
                     .IsUnique();
-        
-        
+
         #endregion
 
-        #region Flag Translate 
+        #region Flag Translate
 
         modelBuilder.Entity<FlagTranslateChannel>()
-                    .HasIndex(x => new { x.GuildId, x.ChannelId })
+                    .HasIndex(x => new
+                    {
+                        x.GuildId,
+                        x.ChannelId
+                    })
                     .IsUnique();
-        
+
         #endregion
 
         #region NCanvas
@@ -286,11 +345,6 @@ public abstract class WizBotContext : DbContext
                     .HasForeignKey(x => x.GuildConfigId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.SelfAssignableRoleGroupNames)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<FeedSub>()
                     .HasAlternateKey(x => new
                     {
@@ -316,21 +370,6 @@ public abstract class WizBotContext : DbContext
                 x.Count
             });
         });
-
-        #endregion
-
-        #region Self Assignable Roles
-
-        var selfassignableRolesEntity = modelBuilder.Entity<SelfAssignedRole>();
-
-        selfassignableRolesEntity.HasIndex(s => new
-                                 {
-                                     s.GuildId,
-                                     s.RoleId
-                                 })
-                                 .IsUnique();
-
-        selfassignableRolesEntity.Property(x => x.Group).HasDefaultValue(0);
 
         #endregion
 
@@ -513,23 +552,6 @@ public abstract class WizBotContext : DbContext
         #region Reminders
 
         modelBuilder.Entity<Reminder>().HasIndex(x => x.When);
-
-        #endregion
-
-        #region GroupName
-
-        modelBuilder.Entity<GroupName>()
-                    .HasIndex(x => new
-                    {
-                        x.GuildConfigId,
-                        x.Number
-                    })
-                    .IsUnique();
-
-        modelBuilder.Entity<GroupName>()
-                    .HasOne(x => x.GuildConfig)
-                    .WithMany(x => x.SelfAssignableRoleGroupNames)
-                    .IsRequired();
 
         #endregion
 

@@ -74,7 +74,7 @@ public partial class Gambling
                 if (race.FinishedUsers[0].Bet > 0)
                 {
                     return Response()
-                           .Embed(_sender.CreateEmbed()
+                           .Embed(CreateEmbed()
                                          .WithOkColor()
                                          .WithTitle(GetText(strs.animal_race))
                                          .WithDescription(GetText(strs.animal_race_won_money(
@@ -132,7 +132,7 @@ public partial class Gambling
                 raceMessage = await Response().Confirm(text).SendAsync();
             else
             {
-                await msg.ModifyAsync(x => x.Embed = _sender.CreateEmbed()
+                await msg.ModifyAsync(x => x.Embed = CreateEmbed()
                                                             .WithTitle(GetText(strs.animal_race))
                                                             .WithDescription(text)
                                                             .WithOkColor()

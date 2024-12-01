@@ -42,7 +42,7 @@ public partial class Administration
                   .Items(timezoneStrings)
                   .PageSize(timezonesPerPage)
                   .CurrentPage(page)
-                  .Page((items, _) => _sender.CreateEmbed()
+                  .Page((items, _) => CreateEmbed()
                                       .WithOkColor()
                                       .WithTitle(GetText(strs.timezones_available))
                                       .WithDescription(string.Join("\n", items)))

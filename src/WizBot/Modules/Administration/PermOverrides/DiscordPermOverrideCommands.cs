@@ -36,7 +36,7 @@ public partial class Administration
         [UserPerm(GuildPerm.Administrator)]
         public async Task DiscordPermOverrideReset()
         {
-            var result = await PromptUserConfirmAsync(_sender.CreateEmbed()
+            var result = await PromptUserConfirmAsync(CreateEmbed()
                                                       .WithOkColor()
                                                       .WithDescription(GetText(strs.perm_override_all_confirm)));
 
@@ -65,7 +65,7 @@ public partial class Administration
                   .CurrentPage(page)
                   .Page((items, _) =>
                   {
-                      var eb = _sender.CreateEmbed().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
+                      var eb = CreateEmbed().WithTitle(GetText(strs.perm_overrides)).WithOkColor();
 
                       if (items.Count == 0)
                           eb.WithDescription(GetText(strs.perm_override_page_none));

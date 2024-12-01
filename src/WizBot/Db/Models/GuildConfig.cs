@@ -13,27 +13,10 @@ public class GuildConfig : DbEntity
 
     public string AutoAssignRoleIds { get; set; }
 
-    // //greet stuff
-    // public int AutoDeleteGreetMessagesTimer { get; set; } = 30;
-    // public int AutoDeleteByeMessagesTimer { get; set; } = 30;
-    //
-    // public ulong GreetMessageChannelId { get; set; }
-    // public ulong ByeMessageChannelId { get; set; }
-    //
-    // public bool SendDmGreetMessage { get; set; }
-    // public string DmGreetMessageText { get; set; } = "Welcome to the %server% server, %user%!";
-    //
-    // public bool SendChannelGreetMessage { get; set; }
-    // public string ChannelGreetMessageText { get; set; } = "Welcome to the %server% server, %user%!";
-    //
-    // public bool SendChannelByeMessage { get; set; }
-    // public string ChannelByeMessageText { get; set; } = "%user% has left!";
-    // public bool SendBoostMessage { get; set; }
-    // pulic int BoostMessageDeleteAfter { get; set; }
-
-    //self assignable roles
+    //todo FUTURE: DELETE, UNUSED
     public bool ExclusiveSelfAssignedRoles { get; set; }
     public bool AutoDeleteSelfAssignedRoleMessages { get; set; }
+
 
     //stream notifications
     public HashSet<FollowedStream> FollowedStreams { get; set; } = new();
@@ -91,15 +74,10 @@ public class GuildConfig : DbEntity
     public List<FeedSub> FeedSubs { get; set; } = new();
     public bool NotifyStreamOffline { get; set; }
     public bool DeleteStreamOnlineMessage { get; set; }
-    public List<GroupName> SelfAssignableRoleGroupNames { get; set; }
     public int WarnExpireHours { get; set; }
     public WarnExpireAction WarnExpireAction { get; set; } = WarnExpireAction.Clear;
 
     public bool DisableGlobalExpressions { get; set; } = false;
 
-    #region Boost Message
-    
     public bool StickyRoles { get; set; }
-
-    #endregion
 }

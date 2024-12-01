@@ -160,7 +160,7 @@ public partial class Games
         {
             try
             {
-                questionEmbed = _sender.CreateEmbed()
+                questionEmbed = CreateEmbed()
                                    .WithOkColor()
                                    .WithTitle(GetText(strs.trivia_game))
                                    .AddField(GetText(strs.category), question.Category)
@@ -189,7 +189,7 @@ public partial class Games
         {
             try
             {
-                var embed = _sender.CreateEmbed()
+                var embed = CreateEmbed()
                                .WithErrorColor()
                                .WithTitle(GetText(strs.trivia_game))
                                .WithDescription(GetText(strs.trivia_times_up(Format.Bold(question.Answer))));
@@ -221,7 +221,7 @@ public partial class Games
         {
             try
             {
-                await Response().Embed(_sender.CreateEmbed()
+                await Response().Embed(CreateEmbed()
                                     .WithOkColor()
                                     .WithAuthor(GetText(strs.trivia_ended))
                                     .WithTitle(GetText(strs.leaderboard))
@@ -247,7 +247,7 @@ public partial class Games
         {
             try
             {
-                var embed = _sender.CreateEmbed()
+                var embed = CreateEmbed()
                                .WithOkColor()
                                .WithTitle(GetText(strs.trivia_game))
                                .WithDescription(GetText(strs.trivia_win(user.Name,

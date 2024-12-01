@@ -59,7 +59,7 @@ public partial class Gambling
         {
             var bal = await _bank.GetBalanceAsync(ctx.User.Id);
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                         .WithOkColor()
                         .WithDescription(GetText(strs.bank_balance(N(bal))));
 
@@ -80,7 +80,7 @@ public partial class Gambling
         {
             var bal = await _bank.GetBalanceAsync(user.Id);
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithOkColor()
                             .WithDescription(GetText(strs.bank_balance_other(user.ToString(), N(bal))));
 
@@ -120,19 +120,19 @@ public partial class Gambling
         }
 
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(1)]
         public async Task BankTake(long amount, [Leftover] IUser user)
             => await BankTakeInternalAsync(amount, user.Id);
         
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         [Priority(0)]
         public async Task BankTake(long amount, ulong userId)
             => await BankTakeInternalAsync(amount, userId);
         
         [Cmd]
-        [AdminOnly]
+        [OwnerOnly]
         public async Task BankAward(long amount, [Leftover] IUser user)
             => await BankAwardInternalAsync(amount, user.Id);
     }

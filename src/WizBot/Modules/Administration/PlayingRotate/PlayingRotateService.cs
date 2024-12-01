@@ -9,7 +9,9 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
 {
     private readonly BotConfigService _bss;
     private readonly SelfService _selfService;
+
     private readonly IReplacementService _repService;
+
     // private readonly Replacer _rep;
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
@@ -27,14 +29,13 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         _selfService = selfService;
         _repService = repService;
         _client = client;
-
     }
 
     public async Task OnReadyAsync()
     {
         if (_client.ShardId != 0)
             return;
-        
+
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
         var index = 0;
         while (await timer.WaitForNextTickAsync())
@@ -57,7 +58,7 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
                     ? rotatingStatuses[index = 0]
                     : rotatingStatuses[index++];
 
-                var statusText = await _repService.ReplaceAsync(playingStatus.Status, new (client: _client));
+                var statusText = await _repService.ReplaceAsync(playingStatus.Status, new(client: _client));
                 await _selfService.SetActivityAsync(statusText, (ActivityType)playingStatus.Type);
             }
             catch (Exception ex)
@@ -72,7 +73,11 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         ArgumentOutOfRangeException.ThrowIfNegative(index);
 
         await using var uow = _db.GetDbContext();
-        var toRemove = await uow.Set<RotatingPlayingStatus>().AsQueryable().AsNoTracking().Skip(index).FirstOrDefaultAsync();
+        var toRemove = await uow.Set<RotatingPlayingStatus>()
+                                .AsQueryable()
+                                .AsNoTracking()
+                                .Skip(index)
+                                .FirstOrDefaultAsync();
 
         if (toRemove is null)
             return null;
@@ -92,6 +97,11 @@ public sealed class PlayingRotateService : INService, IReadyExecutor
         };
         uow.Add(toAdd);
         await uow.SaveChangesAsync();
+    }
+
+    public void DisableRotatePlaying()
+    {
+        _bss.ModifyConfig(bs => { bs.RotateStatuses = false; });
     }
 
     public bool ToggleRotatePlaying()

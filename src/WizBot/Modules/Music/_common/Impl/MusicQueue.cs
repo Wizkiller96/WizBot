@@ -60,6 +60,7 @@ public sealed partial class MusicQueue : IMusicQueue
     private LinkedList<QueuedTrackInfo> tracks;
 
     private int index;
+    private int? _lastQueued = null;
 
     private readonly object _locker = new();
 
@@ -74,7 +75,7 @@ public sealed partial class MusicQueue : IMusicQueue
         lock (_locker)
         {
             var added = new QueuedTrackInfo(trackInfo, queuer);
-            enqueuedAt = tracks.Count;
+            _lastQueued = enqueuedAt = tracks.Count;
             tracks.AddLast(added);
           
             return added;
@@ -99,6 +100,8 @@ public sealed partial class MusicQueue : IMusicQueue
 
             tracks.AddAfter(currentNode, added);
 
+            _lastQueued = i;
+
             return added;
         }
     }
@@ -112,6 +115,8 @@ public sealed partial class MusicQueue : IMusicQueue
                 var added = new QueuedTrackInfo(track, queuer);
                 tracks.AddLast(added);
             }
+            
+            _lastQueued = tracks.Count;
         }
     }
 
@@ -146,6 +151,7 @@ public sealed partial class MusicQueue : IMusicQueue
         lock (_locker)
         {
             tracks.Clear();
+            _lastQueued = null;
         }
     }
 
@@ -177,6 +183,18 @@ public sealed partial class MusicQueue : IMusicQueue
         if (index < 0)
             index = Count;
 
+        if (i < _lastQueued)
+        {
+            if (_lastQueued is not null)
+            {
+                _lastQueued -= 1;
+            }
+        }
+        else if (i == _lastQueued)
+        {
+            _lastQueued = null;
+        }
+        
         // if it was the last song in the queue
         // // wrap back to start
         // if (_index == Count)
@@ -206,6 +224,11 @@ public sealed partial class MusicQueue : IMusicQueue
         {
             if (from >= Count || to >= Count)
                 return null;
+
+            if (from == _lastQueued)
+                _lastQueued = to;
+            else if (to == _lastQueued)
+                _lastQueued += 1;
 
             // update current track index
             if (from == index)
@@ -267,6 +290,7 @@ public sealed partial class MusicQueue : IMusicQueue
             var list = tracks.ToArray();
             rng.Shuffle(list);
             tracks = new(list);
+            _lastQueued = null;
         }
     }
 
@@ -318,6 +342,8 @@ public sealed partial class MusicQueue : IMusicQueue
                 if (queuers.Count == 0)
                     break;
             }
+
+            _lastQueued = null;
         }
     }
 
@@ -339,4 +365,6 @@ public sealed partial class MusicQueue : IMusicQueue
             return true;
         }
     }
+    
+    public int? GetLastQueuedIndex() => _lastQueued;
 }

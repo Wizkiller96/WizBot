@@ -48,12 +48,12 @@ public partial class Utility
             if (string.IsNullOrWhiteSpace(features))
                 features = "-";
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithAuthor(GetText(strs.server_info))
                                .WithTitle(guild.Name)
                                .AddField(GetText(strs.id), guild.Id.ToString(), true)
                                .AddField(GetText(strs.owner), ownername.ToString(), true)
-                               .AddField(GetText(strs.members), (guild as SocketGuild)?.MemberCount ?? guild.ApproximateMemberCount, true)
+                               .AddField(GetText(strs.members), (guild as SocketGuild)?.MemberCount.ToString() ?? guild.ApproximateMemberCount?.ToString() ?? "?", true)
                                .AddField(GetText(strs.channels), channels, true)
                                .AddField(GetText(strs.created_at), $"{createdAt:dd.MM.yyyy HH:mm}", true)
                                .AddField(GetText(strs.roles), (guild.Roles.Count - 1).ToString(), true)
@@ -81,7 +81,7 @@ public partial class Utility
                 return;
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(ch.Id >> 22);
             var usercount = (await ch.GetUsersAsync().FlattenAsync()).Count();
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithTitle(ch.Name)
                                .WithDescription(ch.Topic?.SanitizeMentions(true))
                                .AddField(GetText(strs.id), ch.Id.ToString(), true)
@@ -101,7 +101,7 @@ public partial class Utility
             var createdAt = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                 .AddMilliseconds(role.Id >> 22);
             var usercount = role.Members.LongCount();
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithTitle(role.Name.TrimTo(128))
                                .WithDescription(role.Permissions.ToList().Join(" | "))
                                .AddField(GetText(strs.id), role.Id.ToString(), true)
@@ -129,7 +129,7 @@ public partial class Utility
             if (user is null)
                 return;
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .AddField(GetText(strs.name), $"**{user.Username}**#{user.Discriminator}", true);
             if (!string.IsNullOrWhiteSpace(user.Nickname))
                 embed.AddField(GetText(strs.nickname), user.Nickname, true);

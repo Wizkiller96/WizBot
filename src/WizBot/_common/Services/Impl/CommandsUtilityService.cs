@@ -39,7 +39,7 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         var culture = _loc.GetCultureInfo(guild);
 
-        var em = _sender.CreateEmbed()
+        var em = _sender.CreateEmbed(guild?.Id)
                         .AddField(str, $"{com.RealSummary(_strings, _medusae, culture, prefix)}", true);
 
         _dpos.TryGetOverrides(guild?.Id ?? 0, com.Name, out var overrides);
@@ -116,9 +116,6 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         if (cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
             toReturn.Add("Bot Owner Only");
-        
-        if (cmd.Preconditions.Any(x => x is AdminOnlyAttribute))
-            toReturn.Add("Bot Staff Only");
 
         if (cmd.Preconditions.Any(x => x is NoPublicBotAttribute)
             || cmd.Module

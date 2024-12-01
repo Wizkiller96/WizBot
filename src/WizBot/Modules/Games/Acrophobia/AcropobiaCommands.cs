@@ -67,7 +67,7 @@ public partial class Games
 
         private Task Game_OnStarted(AcrophobiaGame game)
         {
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia))
                            .WithDescription(
@@ -92,7 +92,7 @@ public partial class Games
 
             if (submissions.Length == 1)
             {
-                await Response().Embed(_sender.CreateEmbed()
+                await Response().Embed(CreateEmbed()
                                                 .WithOkColor()
                                                 .WithDescription(GetText(
                                                     strs.acro_winner_only(
@@ -103,7 +103,7 @@ public partial class Games
 
 
             var i = 0;
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia) + " - " + GetText(strs.submissions_closed))
                            .WithDescription(GetText(strs.acro_nym_was(
@@ -127,7 +127,7 @@ public partial class Games
 
             var table = votes.OrderByDescending(v => v.Value);
             var winner = table.First();
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                            .WithOkColor()
                            .WithTitle(GetText(strs.acrophobia))
                            .WithDescription(GetText(strs.acro_winner(Format.Bold(winner.Key.UserName),

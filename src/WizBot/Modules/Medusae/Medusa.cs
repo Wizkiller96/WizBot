@@ -40,7 +40,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
                   .PageSize(10)
                   .Page((items, _) =>
                   {
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                              .WithOkColor()
                              .WithTitle(GetText(strs.list_of_unloaded))
                              .WithDescription(items.Join('\n'));
@@ -81,7 +81,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
             }
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                          .WithOkColor()
                          .WithTitle(GetText(strs.loaded_medusae))
                          .WithDescription(loaded.Select(x => x.Name)
@@ -136,7 +136,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
               .Paginated()
               .Items(output)
               .PageSize(10)
-              .Page((items, _) => _sender.CreateEmbed()
+              .Page((items, _) => CreateEmbed()
                                   .WithOkColor()
                                   .WithTitle(GetText(strs.list_of_medusae))
                                   .WithDescription(items.Join('\n')))
@@ -168,7 +168,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
                                     : $"{x.Prefix} {x.Name}"))
                                 .Join("\n");
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                      .WithOkColor()
                      .WithAuthor(GetText(strs.medusa_info))
                      .WithTitle(found.Name)
@@ -201,7 +201,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
               .CurrentPage(0)
               .Page((items, _) =>
               {
-                  var eb = _sender.CreateEmbed()
+                  var eb = CreateEmbed()
                       .WithOkColor();
 
                   foreach (var medusa in items)
@@ -224,7 +224,7 @@ public partial class Medusa : WizBotModule<IMedusaLoaderService>
     [OwnerOnly]
     public async Task MedusaSearch()
     {
-        var eb = _sender.CreateEmbed()
+        var eb = CreateEmbed()
                  .WithTitle(GetText(strs.list_of_medusae))
                  .WithOkColor();
 

@@ -58,7 +58,7 @@ public partial class Xp : WizBotModule<XpService>
         var globalSetting = _service.GetNotificationType(ctx.User);
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithOkColor()
                            .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
                            .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
@@ -153,7 +153,7 @@ public partial class Xp : WizBotModule<XpService>
               .CurrentPage(0)
               .Page((items, _) =>
               {
-                  var embed = _sender.CreateEmbed()
+                  var embed = CreateEmbed()
                                      .WithTitle(GetText(strs.exclusion_list))
                                      .WithDescription(string.Join('\n', items))
                                      .WithOkColor();
@@ -207,7 +207,7 @@ public partial class Xp : WizBotModule<XpService>
               .CurrentPage(page)
               .Page((users, curPage) =>
               {
-                  var embed = _sender.CreateEmbed().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
+                  var embed = CreateEmbed().WithTitle(GetText(strs.server_leaderboard)).WithOkColor();
 
                   if (!users.Any())
                       return embed.WithDescription("-");
@@ -265,7 +265,7 @@ public partial class Xp : WizBotModule<XpService>
               .PageSize(10)
               .Page((users, curPage) =>
               {
-                  var embed = _sender.CreateEmbed()
+                  var embed = CreateEmbed()
                                      .WithOkColor()
                                      .WithTitle(GetText(strs.global_leaderboard));
 
@@ -350,7 +350,7 @@ public partial class Xp : WizBotModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset(ulong userId)
     {
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithTitle(GetText(strs.reset))
                            .WithDescription(GetText(strs.reset_user_confirm));
 
@@ -367,7 +367,7 @@ public partial class Xp : WizBotModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpReset()
     {
-        var embed = _sender.CreateEmbed()
+        var embed = CreateEmbed()
                            .WithTitle(GetText(strs.reset))
                            .WithDescription(GetText(strs.reset_server_confirm));
 
@@ -445,13 +445,13 @@ public partial class Xp : WizBotModule<XpService>
               .Page((items, _) =>
               {
                   if (!items.Any())
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                                     .WithDescription(GetText(strs.not_found))
                                     .WithErrorColor();
 
                   var (key, item) = items.FirstOrDefault();
 
-                  var eb = _sender.CreateEmbed()
+                  var eb = CreateEmbed()
                                   .WithOkColor()
                                   .WithTitle(item.Name)
                                   .AddField(GetText(strs.price),

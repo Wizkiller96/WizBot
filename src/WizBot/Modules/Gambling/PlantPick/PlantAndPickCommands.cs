@@ -103,9 +103,9 @@ public partial class Gambling
                    .Page((items, _) =>
                    {
                        if (!items.Any())
-                           return _sender.CreateEmbed().WithErrorColor().WithDescription("-");
+                           return CreateEmbed().WithErrorColor().WithDescription("-");
 
-                       return items.Aggregate(_sender.CreateEmbed().WithOkColor(),
+                       return items.Aggregate(CreateEmbed().WithOkColor(),
                            (eb, i) => eb.AddField(i.GuildId.ToString(), i.ChannelId));
                    })
                    .SendAsync();

@@ -25,7 +25,7 @@ public partial class Searches
                 if (kvp.Key.ToUpperInvariant() == pokemon.ToUpperInvariant())
                 {
                     var p = kvp.Value;
-                    await Response().Embed(_sender.CreateEmbed()
+                    await Response().Embed(CreateEmbed()
                                                     .WithOkColor()
                                                     .WithTitle(kvp.Key.ToTitleCase())
                                                     .WithDescription(p.BaseStats.ToString())
@@ -55,7 +55,7 @@ public partial class Searches
             {
                 if (kvp.Key.ToUpperInvariant() == ability)
                 {
-                    await Response().Embed(_sender.CreateEmbed()
+                    await Response().Embed(CreateEmbed()
                                                     .WithOkColor()
                                                     .WithTitle(kvp.Value.Name)
                                                     .WithDescription(string.IsNullOrWhiteSpace(kvp.Value.Desc)

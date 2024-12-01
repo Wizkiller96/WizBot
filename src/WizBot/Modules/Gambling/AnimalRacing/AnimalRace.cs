@@ -6,9 +6,9 @@ namespace WizBot.Modules.Gambling.Common.AnimalRacing;
 
 public sealed class AnimalRace : IDisposable
 {
-    public const double BASE_MULTIPLIER = 0.82;
+    public const double BASE_MULTIPLIER = 0.87;
     public const double MAX_MULTIPLIER = 0.94;
-    public const double MULTI_PER_USER = 0.01;
+    public const double MULTI_PER_USER = 0.005;
 
     public enum Phase
     {

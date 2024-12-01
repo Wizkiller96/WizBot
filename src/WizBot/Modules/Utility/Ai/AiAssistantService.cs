@@ -164,8 +164,8 @@ public sealed class AiAssistantService
             funcs.Add(new()
             {
                 Name = cmd,
-                Desc = commandStrings?.Desc?.Replace("currency", "flowers") ?? string.Empty,
-                Params = commandStrings?.Params.FirstOrDefault()
+                Desc = commandStrings.Desc?.Replace("currency", "flowers") ?? string.Empty,
+                Params = commandStrings.Params.FirstOrDefault()
                                        ?.Select(x => new AiCommandParamModel()
                                        {
                                            Desc = x.Value.Desc,
@@ -219,6 +219,9 @@ public sealed class AiAssistantService
         ITextChannel channel,
         string query)
     {
+        if (guild is not SocketGuild sg)
+            return false;
+
         // check permissions
         var pcResult = await _permChecker.CheckPermsAsync(
             guild,
@@ -239,9 +242,6 @@ public sealed class AiAssistantService
         {
             if (model.Name == ".ai_chat")
             {
-                if (guild is not SocketGuild sg)
-                    return false;
-                
                 var sess = _cbs.GetOrCreateSession(guild.Id);
                 if (sess is null)
                     return false;
@@ -253,7 +253,7 @@ public sealed class AiAssistantService
             var commandString = GetCommandString(model);
 
             var msgTask = _sender.Response(channel)
-                                 .Embed(_sender.CreateEmbed()
+                                 .Embed(_sender.CreateEmbed(guild?.Id)
                                                .WithOkColor()
                                                .WithAuthor(msg.Author.GlobalName,
                                                    msg.Author.RealAvatarUrl().ToString())
@@ -261,8 +261,7 @@ public sealed class AiAssistantService
                                  .SendAsync();
 
 
-            await _cmdHandler.TryRunCommand(
-                (SocketGuild)guild,
+            await _cmdHandler.TryRunCommand(sg,
                 (ISocketMessageChannel)channel,
                 new DoAsUserMessage((SocketUserMessage)msg, msg.Author, commandString));
 
@@ -298,7 +297,7 @@ public sealed class AiAssistantService
         await _sender.Response(channel)
                      .Error(errorMsg)
                      .SendAsync();
-        
+
         return true;
     }
 

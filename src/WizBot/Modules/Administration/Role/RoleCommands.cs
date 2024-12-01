@@ -174,12 +174,11 @@ public partial class Administration
         [UserPerm(GuildPerm.ManageRoles)]
         [BotPerm(GuildPerm.ManageRoles)]
         [Priority(0)]
-        public async Task RoleColor(Color color, [Leftover] IRole role)
+        public async Task RoleColor(Rgba32 color, [Leftover] IRole role)
         {
             try
             {
-                var rgba32 = color.ToPixel<Rgba32>();
-                await role.ModifyAsync(r => r.Color = new Discord.Color(rgba32.R, rgba32.G, rgba32.B));
+                await role.ModifyAsync(r => r.Color = new Discord.Color(color.R, color.G, color.B));
                 await Response().Confirm(strs.rc(Format.Bold(role.Name))).SendAsync();
             }
             catch (Exception)

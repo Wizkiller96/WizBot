@@ -260,7 +260,6 @@ public sealed class MusicPlayer : IMusicPlayer
                 IsStopped = true;
                 Log.Error("Please install ffmpeg and make sure it's added to your "
                           + "PATH environment variable before trying again");
-                
             }
             catch (OperationCanceledException)
             {
@@ -313,7 +312,7 @@ public sealed class MusicPlayer : IMusicPlayer
     {
         if (track.TrackInfo is SimpleTrackInfo sti)
             return sti.StreamUrl;
-       
+
         return await _ytResolverFactory.GetYoutubeResolver().GetStreamUrl(track.TrackInfo.Id);
     }
 
@@ -420,20 +419,20 @@ public sealed class MusicPlayer : IMusicPlayer
                 break;
 
             await chunk.Select(async data =>
-                {
-                    var (query, platform) = data;
-                    try
-                    {
-                        await TryEnqueueTrackAsync(query, queuer, false, platform);
-                        errorCount = 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
-                        ++errorCount;
-                    }
-                })
-                .WhenAll();
+                       {
+                           var (query, platform) = data;
+                           try
+                           {
+                               await TryEnqueueTrackAsync(query, queuer, false, platform);
+                               errorCount = 0;
+                           }
+                           catch (Exception ex)
+                           {
+                               Log.Warning(ex, "Error resolving {MusicPlatform} Track {TrackQuery}", platform, query);
+                               ++errorCount;
+                           }
+                       })
+                       .WhenAll();
 
             await Task.Delay(1000);
 
@@ -541,5 +540,16 @@ public sealed class MusicPlayer : IMusicPlayer
     public void SetFairplay()
     {
         _queue.ReorderFairly();
+    }
+
+    public Task<IQueuedTrackInfo?> RemoveLastQueuedTrack()
+    {
+        var last = _queue.GetLastQueuedIndex();
+        if (last is null)
+            return Task.FromResult<IQueuedTrackInfo?>(null);
+
+        return TryRemoveTrackAt(last.Value, out var trackInfo)
+            ? Task.FromResult(trackInfo)
+            : Task.FromResult<IQueuedTrackInfo?>(null);
     }
 }

@@ -1,233 +1,326 @@
-﻿#nullable disable
+﻿using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
+using WizBot.Modules.Xp.Services;
+using OneOf;
+using OneOf.Types;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Channels;
 
 namespace WizBot.Modules.Administration.Services;
 
-public class SelfAssignedRolesService : INService
+public class SelfAssignedRolesService : INService, IReadyExecutor
 {
-    public enum AssignResult
-    {
-        Assigned, // successfully removed
-        ErrNotAssignable, // not assignable (error)
-        ErrAlreadyHave, // you already have that role (error)
-        ErrNotPerms, // bot doesn't have perms (error)
-        ErrLvlReq // you are not required level (error)
-    }
-
-    public enum RemoveResult
-    {
-        Removed, // successfully removed
-        ErrNotAssignable, // not assignable (error)
-        ErrNotHave, // you don't have a role you want to remove (error)
-        ErrNotPerms // bot doesn't have perms (error)
-    }
-
     private readonly DbService _db;
+    private readonly DiscordSocketClient _client;
+    private readonly IBotCreds _creds;
+    
+    private ConcurrentHashSet<ulong> _sarAds = new();
 
-    public SelfAssignedRolesService(DbService db)
-        => _db = db;
-
-    public bool AddNew(ulong guildId, IRole role, int group)
+    public SelfAssignedRolesService(DbService db, DiscordSocketClient client, IBotCreds creds)
     {
-        using var uow = _db.GetDbContext();
-        var roles = uow.Set<SelfAssignedRole>().GetFromGuild(guildId);
-        if (roles.Any(s => s.RoleId == role.Id && s.GuildId == role.Guild.Id))
-            return false;
+        _db = db;
+        _client = client;
+        _creds = creds;
+    }
 
-        uow.Set<SelfAssignedRole>().Add(new()
+    public async Task AddAsync(ulong guildId, ulong roleId, int groupNumber)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        await ctx.GetTable<SarGroup>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         GuildId = guildId,
+                         GroupNumber = groupNumber,
+                         IsExclusive = false
+                     },
+                     _ => new()
+                     {
+                     },
+                     () => new()
+                     {
+                         GuildId = guildId,
+                         GroupNumber = groupNumber
+                     });
+
+        await ctx.GetTable<Sar>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         RoleId = roleId,
+                         LevelReq = 0,
+                         GuildId = guildId,
+                         SarGroupId = ctx.GetTable<SarGroup>()
+                                         .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                                         .Select(x => x.Id)
+                                         .First()
+                     },
+                     _ => new()
+                     {
+                     },
+                     () => new()
+                     {
+                         RoleId = roleId,
+                     });
+    }
+
+    public async Task<bool> RemoveAsync(ulong guildId, ulong roleId)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var deleted = await ctx.GetTable<Sar>()
+                               .Where(x => x.RoleId == roleId && x.GuildId == guildId)
+                               .DeleteAsync();
+
+        return deleted > 0;
+    }
+
+    public async Task<bool> SetGroupNameAsync(ulong guildId, int groupNumber, string? name)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var changes = await ctx.GetTable<SarGroup>()
+                               .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                               .UpdateAsync(x => new()
+                               {
+                                   Name = name
+                               });
+
+        return changes > 0;
+    }
+
+    public async Task<IReadOnlyCollection<SarGroup>> GetSarsAsync(ulong guildId)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var sgs = await ctx.GetTable<SarGroup>()
+                           .Where(x => x.GuildId == guildId)
+                           .LoadWith(x => x.Roles)
+                           .ToListAsyncLinqToDB();
+
+        return sgs;
+    }
+
+    public async Task<bool> SetRoleLevelReq(ulong guildId, ulong roleId, int levelReq)
+    {
+        await using var ctx = _db.GetDbContext();
+        var changes = await ctx.GetTable<Sar>()
+                               .Where(x => x.GuildId == guildId && x.RoleId == roleId)
+                               .UpdateAsync(_ => new()
+                               {
+                                   LevelReq = levelReq,
+                               });
+
+        return changes > 0;
+    }
+
+    public async Task<bool> SetGroupRoleReq(ulong guildId, int groupNumber, ulong? roleId)
+    {
+        await using var ctx = _db.GetDbContext();
+        var changes = await ctx.GetTable<SarGroup>()
+                               .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                               .UpdateAsync(_ => new()
+                               {
+                                   RoleReq = roleId
+                               });
+
+        return changes > 0;
+    }
+
+    public async Task<bool?> SetGroupExclusivityAsync(ulong guildId, int groupNumber)
+    {
+        await using var ctx = _db.GetDbContext();
+        var changes = await ctx.GetTable<SarGroup>()
+                               .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                               .UpdateWithOutputAsync(old => new()
+                                   {
+                                       IsExclusive = !old.IsExclusive
+                                   },
+                                   (o, n) => n.IsExclusive);
+
+        if (changes.Length == 0)
         {
-            Group = group,
-            RoleId = role.Id,
-            GuildId = role.Guild.Id
-        });
-        uow.SaveChanges();
+            return null;
+        }
+
+        return changes[0];
+    }
+
+    public async Task<SarGroup?> GetRoleGroup(ulong guildId, ulong roleId)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var group = await ctx.GetTable<SarGroup>()
+                             .Where(x => x.GuildId == guildId && x.Roles.Any(x => x.RoleId == roleId))
+                             .LoadWith(x => x.Roles)
+                             .FirstOrDefaultAsyncLinqToDB();
+
+
+        return group;
+    }
+
+    public async Task<bool> DeleteRoleGroup(ulong guildId, int groupNumber)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var deleted = await ctx.GetTable<SarGroup>()
+                               .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                               .DeleteAsync();
+
+        return deleted > 0;
+    }
+
+    public async Task<bool> ToggleAutoDelete(ulong guildId)
+    {
+        await using var ctx = _db.GetDbContext();
+
+        var delted = await ctx.GetTable<SarAutoDelete>()
+                              .DeleteAsync(x => x.GuildId == guildId);
+
+        if (delted > 0)
+        {
+            _sarAds.TryRemove(guildId);
+            return false;
+        }
+
+        await ctx.GetTable<SarAutoDelete>()
+                 .InsertOrUpdateAsync(() => new()
+                     {
+                         IsEnabled = true,
+                         GuildId = guildId,
+                     },
+                     (_) => new()
+                     {
+                         IsEnabled = true
+                     },
+                     () => new()
+                     {
+                         GuildId = guildId
+                     });
+
+        _sarAds.Add(guildId);
         return true;
     }
+    
+    public bool GetAutoDelete(ulong guildId)
+        => _sarAds.Contains(guildId);
 
-    public bool ToggleAdSarm(ulong guildId)
+    public async Task OnReadyAsync()
     {
-        bool newval;
-        using var uow = _db.GetDbContext();
-        var config = uow.GuildConfigsForId(guildId, set => set);
-        newval = config.AutoDeleteSelfAssignedRoleMessages = !config.AutoDeleteSelfAssignedRoleMessages;
-        uow.SaveChanges();
-        return newval;
-    }
-
-    public async Task<(AssignResult Result, bool AutoDelete, object extra)> Assign(IGuildUser guildUser, IRole role)
-    {
-        LevelStats userLevelData;
-        await using (var uow = _db.GetDbContext())
-        {
-            var stats = uow.GetOrCreateUserXpStats(guildUser.Guild.Id, guildUser.Id);
-            userLevelData = new(stats.Xp + stats.AwardedXp);
-        }
-
-        var (autoDelete, exclusive, roles) = GetAdAndRoles(guildUser.Guild.Id);
-
-        var theRoleYouWant = roles.FirstOrDefault(r => r.RoleId == role.Id);
-        if (theRoleYouWant is null)
-            return (AssignResult.ErrNotAssignable, autoDelete, null);
-        if (theRoleYouWant.LevelRequirement > userLevelData.Level)
-            return (AssignResult.ErrLvlReq, autoDelete, theRoleYouWant.LevelRequirement);
-        if (guildUser.RoleIds.Contains(role.Id))
-            return (AssignResult.ErrAlreadyHave, autoDelete, null);
-
-        var roleIds = roles.Where(x => x.Group == theRoleYouWant.Group).Select(x => x.RoleId).ToArray();
-        if (exclusive)
-        {
-            var sameRoles = guildUser.RoleIds.Where(r => roleIds.Contains(r));
-
-            foreach (var roleId in sameRoles)
-            {
-                var sameRole = guildUser.Guild.GetRole(roleId);
-                if (sameRole is not null)
-                {
-                    try
-                    {
-                        await guildUser.RemoveRoleAsync(sameRole);
-                        await Task.Delay(300);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-            }
-        }
-
-        try
-        {
-            await guildUser.AddRoleAsync(role);
-        }
-        catch (Exception ex)
-        {
-            return (AssignResult.ErrNotPerms, autoDelete, ex);
-        }
-
-        return (AssignResult.Assigned, autoDelete, null);
-    }
-
-    public async Task<bool> SetNameAsync(ulong guildId, int group, string name)
-    {
-        var set = false;
         await using var uow = _db.GetDbContext();
-        var gc = uow.GuildConfigsForId(guildId, y => y.Include(x => x.SelfAssignableRoleGroupNames));
-        var toUpdate = gc.SelfAssignableRoleGroupNames.FirstOrDefault(x => x.Number == group);
+        var guilds = await uow.GetTable<SarAutoDelete>()
+                              .Where(x => x.IsEnabled && Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
+                              .Select(x => x.GuildId)
+                              .ToListAsyncLinqToDB();
 
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            if (toUpdate is not null)
-                gc.SelfAssignableRoleGroupNames.Remove(toUpdate);
-        }
-        else if (toUpdate is null)
-        {
-            gc.SelfAssignableRoleGroupNames.Add(new()
-            {
-                Name = name,
-                Number = group
-            });
-            set = true;
-        }
-        else
-        {
-            toUpdate.Name = name;
-            set = true;
-        }
-
-        await uow.SaveChangesAsync();
-
-        return set;
-    }
-
-    public async Task<(RemoveResult Result, bool AutoDelete)> Remove(IGuildUser guildUser, IRole role)
-    {
-        var (autoDelete, _, roles) = GetAdAndRoles(guildUser.Guild.Id);
-
-        if (roles.FirstOrDefault(r => r.RoleId == role.Id) is null)
-            return (RemoveResult.ErrNotAssignable, autoDelete);
-        if (!guildUser.RoleIds.Contains(role.Id))
-            return (RemoveResult.ErrNotHave, autoDelete);
-        try
-        {
-            await guildUser.RemoveRoleAsync(role);
-        }
-        catch (Exception)
-        {
-            return (RemoveResult.ErrNotPerms, autoDelete);
-        }
-
-        return (RemoveResult.Removed, autoDelete);
-    }
-
-    public bool RemoveSar(ulong guildId, ulong roleId)
-    {
-        bool success;
-        using var uow = _db.GetDbContext();
-        success = uow.Set<SelfAssignedRole>().DeleteByGuildAndRoleId(guildId, roleId);
-        uow.SaveChanges();
-        return success;
-    }
-
-    public (bool AutoDelete, bool Exclusive, IReadOnlyCollection<SelfAssignedRole>) GetAdAndRoles(ulong guildId)
-    {
-        using var uow = _db.GetDbContext();
-        var gc = uow.GuildConfigsForId(guildId, set => set);
-        var autoDelete = gc.AutoDeleteSelfAssignedRoleMessages;
-        var exclusive = gc.ExclusiveSelfAssignedRoles;
-        var roles = uow.Set<SelfAssignedRole>().GetFromGuild(guildId);
-
-        return (autoDelete, exclusive, roles);
-    }
-
-    public bool SetLevelReq(ulong guildId, IRole role, int level)
-    {
-        using var uow = _db.GetDbContext();
-        var roles = uow.Set<SelfAssignedRole>().GetFromGuild(guildId);
-        var sar = roles.FirstOrDefault(x => x.RoleId == role.Id);
-        if (sar is not null)
-        {
-            sar.LevelRequirement = level;
-            uow.SaveChanges();
-        }
-        else
-            return false;
-
-        return true;
-    }
-
-    public bool ToggleEsar(ulong guildId)
-    {
-        bool areExclusive;
-        using var uow = _db.GetDbContext();
-        var config = uow.GuildConfigsForId(guildId, set => set);
-
-        areExclusive = config.ExclusiveSelfAssignedRoles = !config.ExclusiveSelfAssignedRoles;
-        uow.SaveChanges();
-        return areExclusive;
-    }
-
-    public (bool Exclusive, IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> Roles, IDictionary<int, string>
-        GroupNames
-        ) GetRoles(IGuild guild)
-    {
-        var exclusive = false;
-
-        IReadOnlyCollection<(SelfAssignedRole Model, IRole Role)> roles;
-        IDictionary<int, string> groupNames;
-        using (var uow = _db.GetDbContext())
-        {
-            var gc = uow.GuildConfigsForId(guild.Id, set => set.Include(x => x.SelfAssignableRoleGroupNames));
-            exclusive = gc.ExclusiveSelfAssignedRoles;
-            groupNames = gc.SelfAssignableRoleGroupNames.ToDictionary(x => x.Number, x => x.Name);
-            var roleModels = uow.Set<SelfAssignedRole>().GetFromGuild(guild.Id);
-            roles = roleModels.Select(x => (Model: x, Role: guild.GetRole(x.RoleId)))
-                              .ToList();
-            uow.Set<SelfAssignedRole>().RemoveRange(roles.Where(x => x.Role is null).Select(x => x.Model).ToArray());
-            uow.SaveChanges();
-        }
-
-        return (exclusive, roles.Where(x => x.Role is not null).ToList(), groupNames);
+        _sarAds = new(guilds);
     }
 }
+
+public sealed class SarAssignerService : INService, IReadyExecutor
+{
+    private readonly XpService _xp;
+    private readonly DbService _db;
+
+    private readonly Channel<SarAssignerDataItem> _channel =
+        Channel.CreateBounded<SarAssignerDataItem>(100);
+
+
+    public SarAssignerService(XpService xp, DbService db)
+    {
+        _xp = xp;
+        _db = db;
+    }
+
+    public async Task OnReadyAsync()
+    {
+        var reader = _channel.Reader;
+        while (true)
+        {
+            var item = await reader.ReadAsync();
+
+            try
+            {
+                var sar = item.Group.Roles.First(x => x.RoleId == item.RoleId);
+
+                if (item.User.RoleIds.Contains(item.RoleId))
+                {
+                    item.CompletionTask.TrySetResult(new SarAlreadyHasRole());
+                    continue;
+                }
+
+                if (item.Group.RoleReq is { } rid)
+                {
+                    if (!item.User.RoleIds.Contains(rid))
+                    {
+                        item.CompletionTask.TrySetResult(new SarRoleRequirement(rid));
+                        continue;
+                    }
+
+                    // passed
+                }
+
+                // check level requirement
+                if (sar.LevelReq > 0)
+                {
+                    await using var ctx = _db.GetDbContext();
+                    var xpStats = await ctx.GetTable<UserXpStats>().GetGuildUserXp(sar.GuildId, item.User.Id);
+                    var lvlData = new LevelStats(xpStats?.Xp ?? 0);
+
+                    if (lvlData.Level < sar.LevelReq)
+                    {
+                        item.CompletionTask.TrySetResult(new SarLevelRequirement(sar.LevelReq));
+                        continue;
+                    }
+
+                    // passed
+                }
+
+                if (item.Group.IsExclusive)
+                {
+                    var rolesToRemove = item.Group.Roles.Select(x => x.RoleId);
+                    await item.User.RemoveRolesAsync(rolesToRemove);
+                }
+
+                await item.User.AddRoleAsync(item.RoleId);
+
+                item.CompletionTask.TrySetResult(new Success());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Unknown error ocurred in SAR runner: {Error}", ex.Message);
+                item.CompletionTask.TrySetResult(new Error());
+            }
+        }
+    }
+
+    public async Task Add(SarAssignerDataItem item)
+    {
+        await _channel.Writer.WriteAsync(item);
+    }
+
+}
+
+public sealed class SarAssignerDataItem
+{
+    public required SarGroup Group { get; init; }
+    public required IGuildUser User { get; init; }
+    public required ulong RoleId { get; init; }
+    public required TaskCompletionSource<SarAssignResult> CompletionTask { get; init; }
+}
+
+[GenerateOneOf]
+public sealed partial class SarAssignResult
+    : OneOfBase<Success, Error, SarLevelRequirement, SarRoleRequirement, SarAlreadyHasRole, SarInsuffPerms>
+{
+}
+
+public record class SarLevelRequirement(int Level);
+
+public record class SarRoleRequirement(ulong RoleId);
+
+public record class SarAlreadyHasRole();
+
+public record class SarInsuffPerms();

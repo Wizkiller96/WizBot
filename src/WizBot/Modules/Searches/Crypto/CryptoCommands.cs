@@ -35,7 +35,7 @@ public partial class Searches
                 }
 
                 var symbol = symbols.First();
-                var promptEmbed = _sender.CreateEmbed()
+                var promptEmbed = CreateEmbed()
                                          .WithDescription(symbol.Description)
                                          .WithTitle(GetText(strs.did_you_mean(symbol.Symbol)));
 
@@ -67,7 +67,7 @@ public partial class Searches
 
             var price = stock.Price.ToString("C2", localCulture);
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                             .WithOkColor()
                             .WithAuthor(stock.Symbol)
                             .WithUrl($"https://www.tradingview.com/chart/?symbol={stock.Symbol}")
@@ -112,7 +112,7 @@ public partial class Searches
 
             if (nearest is not null)
             {
-                var embed = _sender.CreateEmbed()
+                var embed = CreateEmbed()
                                    .WithTitle(GetText(strs.crypto_not_found))
                                    .WithDescription(
                                        GetText(strs.did_you_mean(Format.Bold($"{nearest.Name} ({nearest.Symbol})"))));
@@ -145,7 +145,7 @@ public partial class Searches
             await using var sparkline = await _service.GetSparklineAsync(crypto.Id, usd.PercentChange7d >= 0);
             var fileName = $"{crypto.Slug}_7d.png";
 
-            var toSend = _sender.CreateEmbed()
+            var toSend = CreateEmbed()
                                 .WithOkColor()
                                 .WithAuthor($"#{crypto.CmcRank}")
                                 .WithTitle($"{crypto.Name} ({crypto.Symbol})")
@@ -198,7 +198,7 @@ public partial class Searches
                   .PageSize(10)
                   .Page((items, _) =>
                   {
-                      var embed = _sender.CreateEmbed()
+                      var embed = CreateEmbed()
                                          .WithOkColor();
 
                       if (items.Count > 0)

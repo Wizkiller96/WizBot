@@ -33,4 +33,5 @@ public interface IMusicService
     Task SetMusicQualityAsync(ulong guildId, QualityPreset preset);
     Task<bool> ToggleQueueAutoPlayAsync(ulong guildId);
     Task<bool> FairplayAsync(ulong guildId);
+    Task<IQueuedTrackInfo?> RemoveLastQueuedTrackAsync(ulong guildId);
 }

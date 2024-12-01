@@ -28,7 +28,7 @@ public partial class Permissions
         [RequireContext(ContextType.Guild)]
         public async Task FilterList()
         {
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                         .WithOkColor()
                         .WithTitle("Server filter settings");
 
@@ -316,7 +316,7 @@ public partial class Permissions
                   .Items(fws)
                   .PageSize(10)
                   .CurrentPage(page)
-                  .Page((items, _) => _sender.CreateEmbed()
+                  .Page((items, _) => CreateEmbed()
                                       .WithTitle(GetText(strs.filter_word_list))
                                       .WithDescription(string.Join("\n", items))
                                       .WithOkColor())

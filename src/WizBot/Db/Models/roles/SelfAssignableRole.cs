@@ -1,11 +1,24 @@
-#nullable disable
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-public class SelfAssignedRole : DbEntity
+public sealed class Sar
 {
+    [Key]
+    public int Id { get; set; }
+
     public ulong GuildId { get; set; }
     public ulong RoleId { get; set; }
 
-    public int Group { get; set; }
-    public int LevelRequirement { get; set; }
+    public int SarGroupId { get; set; }
+    public int LevelReq { get; set; }
+}
+
+public sealed class SarAutoDelete
+{
+    [Key]
+    public int Id { get; set; }
+
+    public ulong GuildId { get; set; }
+    public bool IsEnabled { get; set; } = false;
 }

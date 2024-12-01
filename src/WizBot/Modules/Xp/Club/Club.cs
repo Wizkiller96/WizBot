@@ -130,7 +130,7 @@ public partial class Xp
                   .PageSize(10)
                   .Page((users, _) =>
                   {
-                      var embed = _sender.CreateEmbed()
+                      var embed = CreateEmbed()
                                   .WithOkColor()
                                   .WithTitle($"{club}")
                                   .WithDescription(GetText(strs.level_x(lvl.Level + $" ({club.Xp} xp)")))
@@ -216,7 +216,7 @@ public partial class Xp
                    {
                        var toShow = string.Join("\n", items.Select(x => x.ToString()));
 
-                       return _sender.CreateEmbed()
+                       return CreateEmbed()
                               .WithTitle(GetText(strs.club_bans_for(club.ToString())))
                               .WithDescription(toShow)
                               .WithOkColor();
@@ -245,7 +245,7 @@ public partial class Xp
                    {
                        var toShow = string.Join("\n", items.Select(x => x.ToString()));
 
-                       return _sender.CreateEmbed()
+                       return CreateEmbed()
                               .WithTitle(GetText(strs.club_apps_for(club.ToString())))
                               .WithDescription(toShow)
                               .WithOkColor();
@@ -415,7 +415,7 @@ public partial class Xp
                     ? "-"
                     : desc;
 
-                var eb = _sender.CreateEmbed()
+                var eb = CreateEmbed()
                          .WithAuthor(ctx.User)
                          .WithTitle(GetText(strs.club_desc_update))
                          .WithOkColor()
@@ -446,7 +446,7 @@ public partial class Xp
 
             var clubs = _service.GetClubLeaderboardPage(page);
 
-            var embed = _sender.CreateEmbed().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
+            var embed = CreateEmbed().WithTitle(GetText(strs.club_leaderboard(page + 1))).WithOkColor();
 
             var i = page * 9;
             foreach (var club in clubs)
@@ -467,7 +467,7 @@ public partial class Xp
                     return;
                 case ClubRenameResult.Success:
                     {
-                        var embed = _sender.CreateEmbed().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
+                        var embed = CreateEmbed().WithTitle(GetText(strs.club_renamed(clubName))).WithOkColor();
                         await Response().Embed(embed).SendAsync();
                         return;
                     }

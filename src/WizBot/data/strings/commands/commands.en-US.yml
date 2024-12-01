@@ -323,7 +323,7 @@ vcrolerm:
   params:
     - vcId:
         desc: "The voice channel ID to remove the vcrole from."
-asar:
+saradd:
   desc: Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled (`{0}tesar`), users will be able to pick one role per group.
   ex:
     - Gamer
@@ -336,7 +336,7 @@ asar:
         desc: "The ID of a group that the designated role should belong to."
       role:
         desc: "The role that can be assigned by the user."
-rsar:
+sarremove:
   desc: Removes a specified role from the list of self-assignable roles.
   ex:
     - Gamer
@@ -345,7 +345,7 @@ rsar:
   params:
     - role:
         desc: "The role to remove from the list of self-assignable roles."
-lsar:
+sarlist:
   desc: Lists self-assignable roles. Shows 20 roles per page.
   ex:
     - ''
@@ -353,22 +353,53 @@ lsar:
   params:
     - page:
         desc: "The page number to show."
-sargn:
+sarautodelete:
+  desc: Toggles the automatic deletion of the user's message and Nadeko's confirmations for `{0}iam` and `{0}iamn` commands.
+  ex:
+    - ''
+  params:
+    - { }
+sargroupname:
   desc: Sets a self assignable role group name. Provide no name to remove.
   ex:
     - 1 Faction
     - 2
   params:
     - group:
-        desc: "The ID of the group to name."
+        desc: "The group number"
       name:
         desc: "The name to assign."
-togglexclsar:
+sargroupdelete:
+  desc: "Deletes a self-assignable role group"
+  ex:
+    - 0
+  params:
+    - group:
+        desc: "The number of the group to delete."
+sarexclusive:
   desc: Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.
   ex:
     - ''
   params:
     - { }
+sarrolelevelreq:
+  desc: Set a level requirement on a self-assignable role.
+  ex:
+    - 5 SomeRole
+  params:
+    - level:
+        desc: "The minimum level required for the role."
+      role:
+        desc: "The role that must be assigned before the user can assign this one."
+sargrouprolereq:
+  desc: Set a role that users have to have in order to assign a self-assignable role from the specified group.
+  ex:
+    - 1 SomeRole
+  params:
+    - group:
+        desc: "The group number."
+      role:
+        desc: "The role that is required."
 iam:
   desc: Adds a role to you that you choose. Role must be on the list of self-assignable roles.
   ex:
@@ -2464,12 +2495,6 @@ muterole:
   params:
     - role:
         desc: "The role that determines whether users are muted or not."
-adsarm:
-  desc: Toggles the automatic deletion of the user's message and WizBot's confirmations for `{0}iam` and `{0}iamn` commands.
-  ex:
-    - ''
-  params:
-    - { }
 setstream:
   desc: Sets the bots stream. First parameter is the twitch link, second parameter is stream name.
   ex:
@@ -3919,15 +3944,6 @@ stock:
   params:
     - query:
         desc: "The ticker symbol or company name used to retrieve the stock's information."
-rolelevelreq:
-  desc: Set a level requirement on a self-assignable role.
-  ex:
-    - 5 SomeRole
-  params:
-    - level:
-        desc: "The minimum level required for the role."
-      role:
-        desc: "The role that must be assigned before the user can assign this one."
 massban:
   desc: Bans multiple users at once. Specify a space separated list of IDs of users who you wish to ban.
   ex:
@@ -4468,6 +4484,13 @@ todocomplete:
   params:
     - todoId:
         desc: "The id of the todo item being marked as completed."
+todouncomplete:
+  desc: Marks a todo with the specified ID as not done.
+  ex:
+    - 4a
+  params:
+    - todoId:
+        desc: "The id of the todo item being marked as not completed."
 tododelete:
   desc: Deletes a todo with the specified ID.
   ex:
@@ -4703,6 +4726,101 @@ snipe:
     - ''
   params:
     - { }
+btnroleadd:
+  desc: |-
+    Adds a button role to the specified message (link or id).
+    Specify a message followed by an emote, followed by a role.
+    If the role already exists on that message, the button will be updated instead.
+    Users clicking on the button will receive the role.
+  ex:
+    - '<msglink> :thumbsup: Good Guy'
+  params:
+    - message:
+        desc: "A message link or id of the message (if id is specified, it has to be a message in this channel)"
+    - emote:
+        desc: "An emoji, custom or unicode"
+    - role:
+        desc: "The role to add once a user clicks the button"
+btnroleremove:
+  desc: |-
+    Removes a button role from the message specified by link or id.
+    Provide a message followed by a role you wish to remove.
+  ex:
+    - '<msglink> Good Guy'
+  params:
+    - message:
+        desc: "A message link or id of the message"
+    - role:
+        desc: "A role to remove"
+btnroleremoveall:
+  desc: |-
+    Removes all button roles from the message specified by link or id.
+  ex:
+    - '<msglink>'
+    - '123123123123'
+  params:
+    - message:
+        desc: "A message link or id of the message"
+btnrolelist:
+  desc: |-
+    Lists all button roles on this server.
+    One message per page.
+  ex:
+    - ''
+  params:
+    - { }
+btnroleexclusive:
+  desc: |-
+    Toggles whether button roles are exclusive or not.
+    If enabled, users can only pick one role from the buttons per message.
+    If disabled, users can pick any number of roles.
+  ex:
+    - '123123123 enable'
+    - '123123123 disable'
+  params:
+    - message:
+        desc: "A message link or id of the message"
+      enable:
+        desc: "Whether to enable or disable exclusive button roles"
+wrongsong:
+  desc: |-
+    Removes the last queued song.
+    If the queue was shuffled or fairly re-ordered the song will not be removed.
+  ex:
+    - ''
+  params:
+    - { }
+servercolorsshow:
+  desc: |-
+    Shows current Ok, Error and Pending colors for this server.
+  ex:
+    - ''
+  params:
+    - { }
+servercolorok:
+  desc: |-
+    Sets the Ok color for this server.
+  ex:
+    - '#00ff00'
+  params:
+    - color:
+        desc: "The hex of the color to set"
+servercolorerror:
+  desc: |-
+    Sets the Error color for this server.
+  ex:
+    - '#ff0000'
+  params:
+    - color:
+        desc: "The hex of the color to set"
+servercolorpending:
+  desc: |-
+    Sets the Pending/Warning color for this server.
+  ex:
+    - '#ffff00'
+  params:
+    - color:
+        desc: "The hex of the color to set"
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

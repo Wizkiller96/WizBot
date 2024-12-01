@@ -35,7 +35,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
         var ex = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
         await Response()
-              .Embed(_sender.CreateEmbed()
+              .Embed(CreateEmbed()
                             .WithOkColor()
                             .WithTitle(GetText(strs.expr_new))
                             .WithDescription($"#{new kwum(ex.Id)}")
@@ -105,7 +105,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
         if (ex is not null)
         {
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle(GetText(strs.expr_edited))
                                 .WithDescription($"#{id}")
@@ -160,7 +160,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
                                                : " // " + string.Join(" ", ex.GetReactions())))
                              .Join('\n');
 
-                  return _sender.CreateEmbed().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
+                  return CreateEmbed().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
               })
               .SendAsync();
     }
@@ -180,7 +180,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
 
         await Response()
               .Interaction(IsValidExprEditor() ? inter : null)
-              .Embed(_sender.CreateEmbed()
+              .Embed(CreateEmbed()
                             .WithOkColor()
                             .WithDescription($"#{id}")
                             .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
@@ -225,7 +225,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
         if (ex is not null)
         {
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle(GetText(strs.expr_deleted))
                                 .WithDescription($"#{id}")
@@ -376,7 +376,7 @@ public partial class WizBotExpressions : WizBotModule<WizBotExpressionsService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task ExprClear()
     {
-        if (await PromptUserConfirmAsync(_sender.CreateEmbed()
+        if (await PromptUserConfirmAsync(CreateEmbed()
                                                 .WithTitle("Expression clear")
                                                 .WithDescription("This will delete all expressions on this server.")))
         {

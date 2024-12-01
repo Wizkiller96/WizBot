@@ -49,7 +49,7 @@ public sealed partial class Music
                 playlists = uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
             }
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                         .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
                         .WithDescription(string.Join("\n",
                             playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
@@ -113,7 +113,7 @@ public sealed partial class Music
                       var str = string.Join("\n",
                           items
                               .Select(x => $"`{++i}.` [{x.Title.TrimTo(45)}]({x.Query}) `{x.Provider}`"));
-                      return _sender.CreateEmbed().WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
+                      return CreateEmbed().WithTitle($"\"{mpl.Name}\" by {mpl.Author}")
                                                .WithOkColor()
                                                .WithDescription(str);
                   })
@@ -129,7 +129,7 @@ public sealed partial class Music
                 await Response().Error(strs.no_player).SendAsync();
                 return;
             }
-            
+
             var songs = mp.GetQueuedTracks()
                           .Select(s => new PlaylistSong
                           {
@@ -155,7 +155,7 @@ public sealed partial class Music
             }
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                          .WithOkColor()
                          .WithTitle(GetText(strs.playlist_saved))
                          .AddField(GetText(strs.name), name)

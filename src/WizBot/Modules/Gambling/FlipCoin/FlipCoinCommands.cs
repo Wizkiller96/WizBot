@@ -56,7 +56,7 @@ public partial class Gambling
             var tailsArr = await _images.GetTailsImageAsync();
 
             var result = await _service.FlipAsync(count);
-            
+
             for (var i = 0; i < result.Length; i++)
             {
                 if (result[i].Side == 0)
@@ -77,18 +77,18 @@ public partial class Gambling
                 i.Dispose();
 
             var imgName = $"coins.{format.FileExtensions.First()}";
-            
+
             var msg = count != 1
                 ? Format.Bold(GetText(strs.flip_results(count, headCount, tailCount)))
                 : GetText(strs.flipped(headCount > 0
                     ? Format.Bold(GetText(strs.heads))
                     : Format.Bold(GetText(strs.tails))));
-            
-            var eb = _sender.CreateEmbed()
-                .WithOkColor()
-                .WithAuthor(ctx.User)
-                .WithDescription(msg)
-                .WithImageUrl($"attachment://{imgName}");
+
+            var eb = CreateEmbed()
+                     .WithOkColor()
+                     .WithAuthor(ctx.User)
+                     .WithDescription(msg)
+                     .WithImageUrl($"attachment://{imgName}");
 
             await ctx.Channel.SendFileAsync(stream,
                 imgName,
@@ -123,18 +123,22 @@ public partial class Gambling
             var won = (long)result.Won;
             if (won > 0)
             {
-                str = Format.Bold(GetText(strs.flip_guess(N(won))));
+                str = Format.Bold(GetText(strs.betflip_guess));
             }
             else
             {
                 str = Format.Bold(GetText(strs.better_luck));
             }
 
-            await Response().Embed(_sender.CreateEmbed()
-                .WithAuthor(ctx.User)
-                                            .WithDescription(str)
-                                            .WithOkColor()
-                                            .WithImageUrl(imageToSend.ToString())).SendAsync();
+            await Response()
+                  .Embed(CreateEmbed()
+                         .WithAuthor(ctx.User)
+                         .WithDescription(str)
+                         .AddField(GetText(strs.bet), N(amount), true)
+                         .AddField(GetText(strs.won), N((long)result.Won), true)
+                         .WithOkColor()
+                         .WithImageUrl(imageToSend.ToString()))
+                  .SendAsync();
         }
     }
 }

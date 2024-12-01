@@ -22,7 +22,7 @@ public partial class Searches
             }
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle($"{verse.BookName} {verse.Chapter}:{verse.Verse}")
                                 .WithDescription(verse.Text))
@@ -48,7 +48,7 @@ public partial class Searches
             await using var audio = await http.GetStreamAsync(arabic.Audio);
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .AddField("Arabic", arabic.Text)
                                 .AddField("English", english.Text)

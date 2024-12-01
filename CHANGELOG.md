@@ -2,6 +2,60 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.2.0] - 01.12.2024
+
+### Added
+
+- Added `.todo undone` command to unmark a todo as done
+- Added Button Roles!
+  - `.btr a` to add a button role to the specified message
+  - `.btr list` to list all button roles on the server
+  - `.btr rm` to remove a button role from the specified message
+  - `.btr rma` to remove all button roles on the specified message
+  - `.btr excl` to toggle exclusive button roles (only 1 role per message or any number)
+  - Use `.h` on any of the above for more info
+- Added `.wrongsong` which will delete the last queued song.
+  - Useful in case you made a mistake, or the bot queued a wrong song
+  - It will reset after a shuffle or fairplay toggle, or similar events.
+- Added Server color Commands!
+  - Every Server can now set their own colors for ok/error/pending embed (the default green/red/yellow color on the left side of the message the bot sends)
+  - Use `.h .sclr` to see the list of commands
+  - `.sclr show` will show the current server colors
+  - `.sclr ok <color hex>` to set ok color
+  - `.sclr warn <color hex>` to set warn color
+  - `.sclr error <color hex>` to set error color
+
+### Changed
+
+- Self Assigned Roles reworked! Use `.h .sar` for the list of commands
+  - `.sar autodel`
+    - Toggles the automatic deletion of the user's message and WizBot's confirmations for .iam and .iamn commands.
+  - `.sar ad`
+    - Adds a role to the list of self-assignable roles. You can also specify a group.
+    - If 'Exclusive self-assignable roles' feature is enabled (.sar exclusive), users will be able to pick one role per group.
+  - `.sar groupname`
+    - Sets a self assignable role group name. Provide no name to remove.
+  - `.sar remove`
+    - Removes a specified role from the list of self-assignable roles.
+  - `.sar list`
+    - Lists self-assignable roles. Shows 20 roles per page.
+  - `.sar exclusive`
+    - Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.
+  - `.sar rolelvlreq`
+    - Set a level requirement on a self-assignable role.
+  - `.sar grouprolereq`
+    - Set a role that users have to have in order to assign a self-assignable role from the specified group.
+  - `.sar groupdelete`
+    - Deletes a self-assignable role group
+  - `.iam` and `.iamn` are unchanged
+- Removed patron limits from Reaction Roles. Anyone can have as many reros as they like.
+- `.timely` captcha made stronger and cached per user.
+- `.bsreset` price reduced by 90%
+
+### Fixed
+
+- Fixed `.sinfo` for servers on other shard
+
 ## [5.1.20] - 11.11.2024
 
 ### Added

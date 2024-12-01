@@ -38,10 +38,10 @@ public partial class Games : WizBotModule<GamesService>
             return;
 
         var res = _service.GetEightballResponse(ctx.User.Id, question);
-        await Response().Embed(_sender.CreateEmbed()
-            .WithOkColor()
-            .WithDescription(ctx.User.ToString())
-            .AddField("❓ " + GetText(strs.question), question)
-            .AddField("🎱 " + GetText(strs._8ball), res)).SendAsync();
+        await Response().Embed(CreateEmbed()
+                               .WithOkColor()
+                               .WithDescription(ctx.User.ToString())
+                               .AddField("❓ " + GetText(strs.question), question)
+                               .AddField("🎱 " + GetText(strs._8ball), res)).SendAsync();
     }
 }

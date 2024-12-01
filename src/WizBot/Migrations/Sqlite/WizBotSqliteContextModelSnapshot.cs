@@ -335,6 +335,54 @@ namespace WizBot.Migrations
                     b.ToTable("Blacklist");
                 });
 
+            modelBuilder.Entity("WizBot.Db.Models.ButtonRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ButtonId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Emote")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Exclusive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("RoleId", "MessageId");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("ButtonRole");
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
                     b.Property<int>("ClubId")
@@ -894,30 +942,33 @@ namespace WizBot.Migrations
                     b.ToTable("GiveawayUser");
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.GroupName", b =>
+            modelBuilder.Entity("WizBot.Db.Models.GuildColors", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("DateAdded")
+                    b.Property<string>("ErrorColor")
+                        .HasMaxLength(9)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("GuildConfigId")
+                    b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("OkColor")
+                        .HasMaxLength(9)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PendingColor")
+                        .HasMaxLength(9)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildConfigId", "Number")
+                    b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("GroupName");
+                    b.ToTable("GuildColors");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.GuildConfig", b =>
@@ -1640,35 +1691,80 @@ namespace WizBot.Migrations
                     b.ToTable("RotatingStatus");
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.SelfAssignedRole", b =>
+            modelBuilder.Entity("WizBot.Db.Models.Sar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Group")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(0);
-
                     b.Property<ulong>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LevelRequirement")
+                    b.Property<int>("LevelReq")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("RoleId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SarGroupId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("GuildId", "RoleId")
+                    b.HasAlternateKey("GuildId", "RoleId");
+
+                    b.HasIndex("SarGroupId");
+
+                    b.ToTable("Sar");
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarAutoDelete", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId")
                         .IsUnique();
 
-                    b.ToTable("SelfAssignableRoles");
+                    b.ToTable("SarAutoDelete");
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GroupNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsExclusive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong?>("RoleReq")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("GuildId", "GroupNumber");
+
+                    b.ToTable("SarGroup");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>
@@ -2398,9 +2494,9 @@ namespace WizBot.Migrations
 
                     b.ToTable("GreetSettings");
                 });
-            
+
             modelBuilder.Entity("WizBot.Services.Rakeback", b =>
-            {
+                {
                     b.Property<ulong>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
@@ -2411,7 +2507,7 @@ namespace WizBot.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Rakeback");
-            });
+                });
 
             modelBuilder.Entity("WizBot.Services.UserBetStats", b =>
                 {
@@ -2660,17 +2756,6 @@ namespace WizBot.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.GroupName", b =>
-                {
-                    b.HasOne("WizBot.Db.Models.GuildConfig", "GuildConfig")
-                        .WithMany("SelfAssignableRoleGroupNames")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("GuildConfig");
-                });
-
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {
                     b.HasOne("WizBot.Db.Models.LogSetting", "LogSetting")
@@ -2704,6 +2789,15 @@ namespace WizBot.Migrations
                         .WithMany("Songs")
                         .HasForeignKey("MusicPlaylistId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.Sar", b =>
+                {
+                    b.HasOne("WizBot.Db.Models.SarGroup", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("SarGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>
@@ -2960,8 +3054,6 @@ namespace WizBot.Migrations
 
                     b.Navigation("Permissions");
 
-                    b.Navigation("SelfAssignableRoleGroupNames");
-
                     b.Navigation("ShopEntries");
 
                     b.Navigation("SlowmodeIgnoredRoles");
@@ -2989,6 +3081,11 @@ namespace WizBot.Migrations
             modelBuilder.Entity("WizBot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarGroup", b =>
+                {
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>

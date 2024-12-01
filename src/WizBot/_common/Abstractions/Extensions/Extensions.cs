@@ -1,3 +1,5 @@
+using WizBot.Db.Models;
+
 namespace Wiz.Common;
 
 public static class Extensions

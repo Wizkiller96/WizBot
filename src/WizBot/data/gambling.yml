@@ -28,7 +28,7 @@ betRoll:
       multiplyBy: 10
     - whenAbove: 90
       multiplyBy: 4
-    - whenAbove: 65
+    - whenAbove: 64
       multiplyBy: 2
 # Automatic currency generation settings.
 generation:

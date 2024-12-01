@@ -47,7 +47,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
             _users[c.ChannelId] = new(c.Users.ToDictionary(x => x.UserId, x => (x.Source.ToLower(), x.Target.ToLower())));
         }
     }
-    
+
     public async Task ExecOnNoCommandAsync(IGuild guild, IUserMessage msg)
     {
         if (string.IsNullOrWhiteSpace(msg.Content))
@@ -67,7 +67,7 @@ public sealed class TranslateService : ITranslateService, IExecNoCommand, IReady
                 || msg.Content.Equals(output, StringComparison.InvariantCultureIgnoreCase))
                 return;
 
-            var embed = _sender.CreateEmbed().WithOkColor();
+            var embed = _sender.CreateEmbed(guild?.Id).WithOkColor();
 
             if (autoDelete)
             {

@@ -135,7 +135,7 @@ public sealed partial class FlagTranslateService : IReadyExecutor, INService
 
             var response = await _ts.Translate("", lang, msg.Content).ConfigureAwait(false);
 
-            await msg.ReplyAsync(embed: _sender.CreateEmbed()
+            await msg.ReplyAsync(embed: _sender.CreateEmbed(tc.Guild?.Id)
                                                .WithOkColor()
                                                .WithFooter(user.ToString() ?? reaction.UserId.ToString(),
                                                    user.RealAvatarUrl().ToString())

@@ -51,7 +51,7 @@ public partial class Utility
                   .AddFooter(false)
                   .Page((items, _) =>
                   {
-                      var eb = _sender.CreateEmbed()
+                      var eb = CreateEmbed()
                                       .WithOkColor()
                                       .WithTitle(GetText(strs.todo_list));
 
@@ -87,6 +87,18 @@ public partial class Utility
         public async Task TodoComplete(kwum todoId)
         {
             if (!await _service.CompleteTodoAsync(ctx.User.Id, todoId))
+            {
+                await Response().Error(strs.todo_not_found).SendAsync();
+                return;
+            }
+
+            await ctx.OkAsync();
+        }
+        
+        [Cmd]
+        public async Task TodoUncomplete(kwum todoId)
+        {
+            if (!await _service.UncompleteTodoAsync(ctx.User.Id, todoId))
             {
                 await Response().Error(strs.todo_not_found).SendAsync();
                 return;
@@ -175,7 +187,7 @@ public partial class Utility
                       .CurrentPage(page)
                       .Page((items, _) =>
                       {
-                          var eb = _sender.CreateEmbed()
+                          var eb = CreateEmbed()
                                           .WithTitle(GetText(strs.todo_archive_list))
                                           .WithOkColor();
 
@@ -206,7 +218,7 @@ public partial class Utility
                       .AddFooter(false)
                       .Page((items, _) =>
                       {
-                          var eb = _sender.CreateEmbed()
+                          var eb = CreateEmbed()
                                           .WithOkColor()
                                           .WithTitle(GetText(strs.todo_archived_list));
 

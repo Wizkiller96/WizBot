@@ -5,6 +5,37 @@ namespace WizBot.Migrations;
 
 public static class MigrationQueries
 {
+    public static void MigrateSar(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("""
+                             INSERT INTO GroupName (Number, GuildConfigId)
+                             SELECT DISTINCT "Group", GC.Id
+                             FROM SelfAssignableRoles as SAR
+                             INNER JOIN GuildConfigs as GC
+                             ON SAR.GuildId = GC.GuildId
+                             WHERE SAR.GuildId not in (SELECT GuildConfigs.GuildId from GroupName LEFT JOIN GuildConfigs ON GroupName.GuildConfigId = GuildConfigs.Id);
+
+                             INSERT INTO SarGroup (Id, GroupNumber, Name, IsExclusive, GuildId)
+                             SELECT GN.Id, GN.Number, GN.Name, GC.ExclusiveSelfAssignedRoles, GC.GuildId
+                             FROM GroupName as GN
+                             INNER JOIN GuildConfigs as GC ON GN.GuildConfigId = GC.Id;
+
+                             INSERT INTO Sar (GuildId, RoleId, SarGroupId, LevelReq)
+                             SELECT SAR.GuildId, SAR.RoleId, MIN(SG2.Id), MIN(SAR.LevelRequirement)
+                             FROM SelfAssignableRoles as SAR
+                             INNER JOIN (SELECT GuildId FROM GroupName as gn
+                                INNER JOIN GuildConfigs as gc ON gn.GuildConfigId =gc.Id
+                             ) as SG 
+                                ON SG.GuildId = SAR.GuildId 
+                             INNER JOIN GroupName as SG2
+                                ON SG2.Number = SAR."Group"
+                             GROUP BY SAR.GuildId, SAR.RoleId;
+
+                             INSERT INTO SarAutoDelete (GuildId, IsEnabled)
+                             SELECT GuildId, AutoDeleteSelfAssignedRoleMessages FROM GuildConfigs WHERE AutoDeleteSelfAssignedRoleMessages = TRUE;
+                             """);
+    }
+
     public static void UpdateUsernames(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql("UPDATE DiscordUser SET Username = '??' || Username WHERE Discriminator = '????';");
@@ -78,7 +109,7 @@ left join guildconfigs on reactionrolemessage.guildconfigid = guildconfigs.id;")
                     DELETE FROM WarningPunishment WHERE GuildConfigId IS NULL OR GuildConfigId NOT IN (SELECT Id FROM GuildConfigs);
                     UPDATE WarningPunishment 
                     SET GuildId = (SELECT GuildId FROM GuildConfigs WHERE Id = GuildConfigId);
-                    
+
                     DELETE FROM WarningPunishment as wp
                     WHERE (wp.Count, wp.GuildConfigId) in (
                         SELECT wp2.Count, wp2.GuildConfigId FROM WarningPunishment as wp2

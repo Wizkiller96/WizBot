@@ -7,7 +7,7 @@ public abstract class CleanupModuleBase : WizBotModule
     {
         try
         {
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                 .WithTitle(GetText(strs.sql_confirm_exec))
                 .WithDescription(name);
 

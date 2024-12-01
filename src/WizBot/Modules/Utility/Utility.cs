@@ -131,12 +131,12 @@ public partial class Utility : WizBotModule
                   {
                       if (names.Count == 0)
                       {
-                          return _sender.CreateEmbed()
+                          return CreateEmbed()
                                         .WithErrorColor()
                                         .WithDescription(GetText(strs.nobody_playing_game));
                       }
 
-                      var eb = _sender.CreateEmbed()
+                      var eb = CreateEmbed()
                                       .WithOkColor();
 
                       var users = names.Join('\n');
@@ -180,11 +180,11 @@ public partial class Utility : WizBotModule
               .Page((pageUsers, _) =>
               {
                   if (pageUsers.Count == 0)
-                      return _sender.CreateEmbed().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
+                      return CreateEmbed().WithOkColor().WithDescription(GetText(strs.no_user_on_this_page));
 
                   var roleName = Format.Bold(role?.Name ?? "No Role");
                   
-                  return _sender.CreateEmbed()
+                  return CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle(GetText(strs.inrole_list(roleName, roleUsers.Count)))
                                 .WithDescription(string.Join("\n", pageUsers));
@@ -330,7 +330,7 @@ public partial class Utility : WizBotModule
         if (string.IsNullOrWhiteSpace(adminIds))
             adminIds = "-";
         
-        var eb = _sender.CreateEmbed()
+        var eb = CreateEmbed()
                         .WithOkColor()
                         .WithAuthor($"WizBot v{StatsService.BotVersion}",
                             "https://cdn.wizbot.cc/other/bot/wizbot_icon.png",
@@ -588,7 +588,7 @@ public partial class Utility : WizBotModule
               {
                   if (!guilds.Any())
                   {
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                                     .WithDescription(GetText(strs.listservers_none))
                                     .WithErrorColor();
                   }
@@ -775,7 +775,7 @@ public partial class Utility : WizBotModule
             var output = result.ReturnValue?.ToString();
             if (!string.IsNullOrWhiteSpace(output))
             {
-                var eb = _sender.CreateEmbed()
+                var eb = CreateEmbed()
                                 .WithOkColor()
                                 .AddField("Code", scriptText)
                                 .AddField("Output", output.TrimTo(512)!);
@@ -801,7 +801,7 @@ public partial class Utility : WizBotModule
                 return;
         }
 
-        var eb = _sender.CreateEmbed()
+        var eb = CreateEmbed()
                         .WithOkColor()
                         .WithDescription(msg.Content)
                         .WithAuthor(msg.Author)
@@ -822,7 +822,7 @@ public partial class Utility : WizBotModule
             var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle($"WizBot - Donators")
                                 .WithDescription("List of users who have donated to WizBot.")
@@ -830,7 +830,7 @@ public partial class Utility : WizBotModule
                   .SendAsync();
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle($"WizBot - Patreon Donators")
                                 .WithDescription("List of users who have donated through WizNet's Patreon.")
@@ -847,7 +847,7 @@ public partial class Utility : WizBotModule
             var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle("WizNet's Info")
                                 .WithThumbnailUrl("https://i.imgur.com/Go5ZymW.png")

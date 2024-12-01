@@ -136,7 +136,7 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         await using var linqCtx = ctx.CreateLinqToDBContext();
         await using var tempTable = linqCtx.CreateTempTable<CleanupId>();
 
-        foreach (var chunk in allIds.Chunk(20000))
+        foreach (var chunk in allIds.Chunk(10000))
         {
             await tempTable.BulkCopyAsync(chunk.Select(x => new CleanupId()
             {
@@ -187,13 +187,6 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
                                        .Contains(x.GuildId))
                  .DeleteAsync();
 
-        // delete ignored users
-        await ctx.GetTable<DiscordPermOverride>()
-                 .Where(x => x.GuildId != null
-                             && !tempTable.Select(x => x.GuildId)
-                                          .Contains(x.GuildId.Value))
-                 .DeleteAsync();
-
         // delete perm overrides
         await ctx.GetTable<DiscordPermOverride>()
                  .Where(x => x.GuildId != null
@@ -215,6 +208,54 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         
         // delete greet settings
         await ctx.GetTable<GreetSettings>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+
+        // delete sar
+        await ctx.GetTable<SarGroup>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete warnings
+        await ctx.GetTable<Warning>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete warn punishments
+        await ctx.GetTable<WarningPunishment>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync(); 
+        
+        // delete sticky roles
+        await ctx.GetTable<StickyRole>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete at channels
+        await ctx.GetTable<AutoTranslateChannel>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete ban templates
+        await ctx.GetTable<BanTemplate>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.GuildId))
+                 .DeleteAsync();
+        
+        // delete reminders
+        await ctx.GetTable<Reminder>()
+                 .Where(x => !tempTable.Select(x => x.GuildId)
+                                       .Contains(x.ServerId))
+                 .DeleteAsync();
+        
+        // delete button roles
+        await ctx.GetTable<ButtonRole>()
                  .Where(x => !tempTable.Select(x => x.GuildId)
                                        .Contains(x.GuildId))
                  .DeleteAsync();

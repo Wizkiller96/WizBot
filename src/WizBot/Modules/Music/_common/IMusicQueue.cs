@@ -20,4 +20,5 @@ public interface IMusicQueue
     void Shuffle(Random rng);
     bool IsLast();
     void ReorderFairly();
+    int? GetLastQueuedIndex();
 }

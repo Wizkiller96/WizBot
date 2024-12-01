@@ -211,7 +211,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             else
             {
                 await res
-                      .Embed(_sender.CreateEmbed()
+                      .Embed(_sender.CreateEmbed(r.ServerId)
                                     .WithOkColor()
                                     .WithTitle("Reminder")
                                     .AddField("Created At",

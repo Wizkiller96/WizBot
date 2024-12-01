@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
 using WizBot.Modules.Administration._common.results;
 
-namespace WizBot.Modules.Administration.Services;
+namespace WizBot.Modules.Administration;
 
 public class AdministrationService : INService
 {

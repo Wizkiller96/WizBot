@@ -25,7 +25,7 @@ public partial class Searches
                     using var http = _httpFactory.CreateClient();
                     var res = await http.GetStringAsync($"{XKCD_URL}/info.0.json");
                     var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
-                    var embed = _sender.CreateEmbed()
+                    var embed = CreateEmbed()
                                    .WithOkColor()
                                    .WithImageUrl(comic.ImageLink)
                                    .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{XKCD_URL}/{comic.Num}")
@@ -60,7 +60,7 @@ public partial class Searches
                 var res = await http.GetStringAsync($"{XKCD_URL}/{num}/info.0.json");
 
                 var comic = JsonConvert.DeserializeObject<XkcdComic>(res);
-                var embed = _sender.CreateEmbed()
+                var embed = CreateEmbed()
                                .WithOkColor()
                                .WithImageUrl(comic.ImageLink)
                                .WithAuthor(comic.Title, "https://xkcd.com/s/919f27.ico", $"{XKCD_URL}/{num}")

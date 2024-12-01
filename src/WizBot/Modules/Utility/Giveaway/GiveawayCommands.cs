@@ -17,7 +17,7 @@ public partial class Utility
                 return;
             }
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                 .WithPendingColor()
                 .WithTitle(GetText(strs.giveaway_starting))
                 .WithDescription(message);
@@ -103,7 +103,7 @@ public partial class Utility
                 return;
             }
 
-            var eb = _sender.CreateEmbed()
+            var eb = CreateEmbed()
                 .WithTitle(GetText(strs.giveaway_list))
                 .WithOkColor();
 

@@ -20,8 +20,14 @@ public sealed class GiveawayService : INService, IReadyExecutor
     private SortedSet<GiveawayModel> _giveawayCache = new SortedSet<GiveawayModel>();
     private readonly WizBotRandom _rng;
 
-    public GiveawayService(DbService db, IBotCreds creds, DiscordSocketClient client,
-        IMessageSenderService sender, IBotStrings strings, ILocalization localization, IMemoryCache cache)
+    public GiveawayService(
+        DbService db,
+        IBotCreds creds,
+        DiscordSocketClient client,
+        IMessageSenderService sender,
+        IBotStrings strings,
+        ILocalization localization,
+        IMemoryCache cache)
     {
         _db = db;
         _creds = creds;
@@ -37,7 +43,8 @@ public sealed class GiveawayService : INService, IReadyExecutor
         _client.ReactionRemoved += OnReactionRemoved;
     }
 
-    private async Task OnReactionRemoved(Cacheable<IUserMessage, ulong> msg,
+    private async Task OnReactionRemoved(
+        Cacheable<IUserMessage, ulong> msg,
         Cacheable<IMessageChannel, ulong> arg2,
         SocketReaction r)
     {
@@ -55,7 +62,9 @@ public sealed class GiveawayService : INService, IReadyExecutor
         }
     }
 
-    private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> msg, Cacheable<IMessageChannel, ulong> ch,
+    private async Task OnReactionAdded(
+        Cacheable<IUserMessage, ulong> msg,
+        Cacheable<IMessageChannel, ulong> ch,
         SocketReaction r)
     {
         if (!r.User.IsSpecified)
@@ -84,9 +93,9 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         var gas = await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
-            .ToArrayAsync();
+                        .GetTable<GiveawayModel>()
+                        .Where(x => Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
+                        .ToArrayAsync();
 
         lock (_giveawayCache)
         {
@@ -101,8 +110,8 @@ public sealed class GiveawayService : INService, IReadyExecutor
             lock (_giveawayCache)
             {
                 toEnd = _giveawayCache.TakeWhile(
-                        x => x.EndsAt <= DateTime.UtcNow.AddSeconds(15))
-                    .ToArray();
+                                          x => x.EndsAt <= DateTime.UtcNow.AddSeconds(15))
+                                      .ToArray();
             }
 
             foreach (var ga in toEnd)
@@ -119,29 +128,33 @@ public sealed class GiveawayService : INService, IReadyExecutor
         }
     }
 
-    public async Task<int?> StartGiveawayAsync(ulong guildId, ulong channelId, ulong messageId, TimeSpan duration,
+    public async Task<int?> StartGiveawayAsync(
+        ulong guildId,
+        ulong channelId,
+        ulong messageId,
+        TimeSpan duration,
         string message)
     {
         await using var ctx = _db.GetDbContext();
 
         // first check if there are more than 5 giveaways
         var count = await ctx
-            .GetTable<GiveawayModel>()
-            .CountAsync(x => x.GuildId == guildId);
+                          .GetTable<GiveawayModel>()
+                          .CountAsync(x => x.GuildId == guildId);
 
         if (count >= 5)
             return null;
 
         var endsAt = DateTime.UtcNow + duration;
         var ga = await ctx.GetTable<GiveawayModel>()
-            .InsertWithOutputAsync(() => new GiveawayModel
-            {
-                GuildId = guildId,
-                MessageId = messageId,
-                ChannelId = channelId,
-                Message = message,
-                EndsAt = endsAt,
-            });
+                          .InsertWithOutputAsync(() => new GiveawayModel
+                          {
+                              GuildId = guildId,
+                              MessageId = messageId,
+                              ChannelId = channelId,
+                              Message = message,
+                              EndsAt = endsAt,
+                          });
 
         lock (_giveawayCache)
         {
@@ -157,18 +170,18 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         var giveaway = await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.GuildId == guildId && x.Id == id)
-            .LoadWith(x => x.Participants)
-            .FirstOrDefaultAsyncLinqToDB();
+                             .GetTable<GiveawayModel>()
+                             .Where(x => x.GuildId == guildId && x.Id == id)
+                             .LoadWith(x => x.Participants)
+                             .FirstOrDefaultAsyncLinqToDB();
 
         if (giveaway is null)
             return false;
 
         await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.Id == id)
-            .DeleteAsync();
+              .GetTable<GiveawayModel>()
+              .Where(x => x.Id == id)
+              .DeleteAsync();
 
         lock (_giveawayCache)
         {
@@ -222,9 +235,9 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         var ga = await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.GuildId == guildId && x.Id == id)
-            .DeleteWithOutputAsync();
+                       .GetTable<GiveawayModel>()
+                       .Where(x => x.GuildId == guildId && x.Id == id)
+                       .DeleteWithOutputAsync();
 
         if (ga is not { Length: > 0 })
             return false;
@@ -242,9 +255,9 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         return await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.GuildId == guildId)
-            .ToListAsync();
+                     .GetTable<GiveawayModel>()
+                     .Where(x => x.GuildId == guildId)
+                     .ToListAsync();
     }
 
     public async Task<bool> JoinGivawayAsync(ulong messageId, ulong userId, string userName)
@@ -252,23 +265,23 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         var giveaway = await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.MessageId == messageId)
-            .FirstOrDefaultAsyncLinqToDB();
+                             .GetTable<GiveawayModel>()
+                             .Where(x => x.MessageId == messageId)
+                             .FirstOrDefaultAsyncLinqToDB();
 
         if (giveaway is null)
             return false;
 
         // add the user to the database
         await ctx.GetTable<GiveawayUser>()
-            .InsertAsync(
-                () => new GiveawayUser()
-                {
-                    UserId = userId,
-                    GiveawayId = giveaway.Id,
-                    Name = userName,
-                }
-            );
+                 .InsertAsync(
+                     () => new GiveawayUser()
+                     {
+                         UserId = userId,
+                         GiveawayId = giveaway.Id,
+                         Name = userName,
+                     }
+                 );
 
         return true;
     }
@@ -278,17 +291,17 @@ public sealed class GiveawayService : INService, IReadyExecutor
         await using var ctx = _db.GetDbContext();
 
         var giveaway = await ctx
-            .GetTable<GiveawayModel>()
-            .Where(x => x.MessageId == messageId)
-            .FirstOrDefaultAsyncLinqToDB();
+                             .GetTable<GiveawayModel>()
+                             .Where(x => x.MessageId == messageId)
+                             .FirstOrDefaultAsyncLinqToDB();
 
         if (giveaway is null)
             return false;
 
         await ctx
-            .GetTable<GiveawayUser>()
-            .Where(x => x.UserId == userId && x.GiveawayId == giveaway.Id)
-            .DeleteAsync();
+              .GetTable<GiveawayUser>()
+              .Where(x => x.UserId == userId && x.GiveawayId == giveaway.Id)
+              .DeleteAsync();
 
         return true;
     }
@@ -316,14 +329,14 @@ public sealed class GiveawayService : INService, IReadyExecutor
                {Format.Code(winner.UserId.ToString())}
                """;
 
-        var eb = _sender.CreateEmbed()
-            .WithOkColor()
-            .WithTitle(GetText(strs.giveaway_ended))
-            .WithDescription(ga.Message)
-            .WithFooter($"id: {new kwum(ga.Id).ToString()}")
-            .AddField(GetText(strs.winner),
-                winnerStr,
-                true);
+        var eb = _sender.CreateEmbed(ch.GuildId)
+                        .WithOkColor()
+                        .WithTitle(GetText(strs.giveaway_ended))
+                        .WithDescription(ga.Message)
+                        .WithFooter($"id: {new kwum(ga.Id).ToString()}")
+                        .AddField(GetText(strs.winner),
+                            winnerStr,
+                            true);
 
         try
         {

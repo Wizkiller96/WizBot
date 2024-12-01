@@ -451,6 +451,69 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("blacklist", (string)null);
                 });
 
+            modelBuilder.Entity("WizBot.Db.Models.ButtonRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ButtonId")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("buttonid");
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
+
+                    b.Property<string>("Emote")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("emote");
+
+                    b.Property<bool>("Exclusive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("exclusive");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("label");
+
+                    b.Property<decimal>("MessageId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("messageid");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
+
+                    b.Property<decimal>("RoleId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("roleid");
+
+                    b.HasKey("Id")
+                        .HasName("pk_buttonrole");
+
+                    b.HasAlternateKey("RoleId", "MessageId")
+                        .HasName("ak_buttonrole_roleid_messageid");
+
+                    b.HasIndex("GuildId")
+                        .HasDatabaseName("ix_buttonrole_guildid");
+
+                    b.ToTable("buttonrole", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.ClubApplicants", b =>
                 {
                     b.Property<int>("ClubId")
@@ -794,9 +857,9 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_discorduser_userid");
-                    
+
                     b.HasIndex("Username")
-                     .HasDatabaseName("ix_discorduser_username");
+                        .HasDatabaseName("ix_discorduser_username");
 
                     b.ToTable("discorduser", (string)null);
                 });
@@ -993,37 +1056,37 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("filteredword", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.FlagTranslateChannel", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<decimal>("ChannelId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("channelid");
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
 
-                b.Property<DateTime?>("DateAdded")
-                 .HasColumnType("timestamp without time zone")
-                 .HasColumnName("dateadded");
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("dateadded");
 
-                b.Property<decimal>("GuildId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("guildid");
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
-                b.HasKey("Id")
-                 .HasName("pk_flagtranslatechannel");
+                    b.HasKey("Id")
+                        .HasName("pk_flagtranslatechannel");
 
-                b.HasIndex("GuildId", "ChannelId")
-                 .IsUnique()
-                 .HasDatabaseName("ix_flagtranslatechannel_guildid_channelid");
+                    b.HasIndex("GuildId", "ChannelId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_flagtranslatechannel_guildid_channelid");
 
-                b.ToTable("flagtranslatechannel", (string)null);
-            });
+                    b.ToTable("flagtranslatechannel", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.FollowedStream", b =>
                 {
@@ -1202,7 +1265,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("giveawayuser", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.GroupName", b =>
+            modelBuilder.Entity("WizBot.Db.Models.GuildColors", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1211,30 +1274,33 @@ namespace WizBot.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("dateadded");
+                    b.Property<string>("ErrorColor")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
+                        .HasColumnName("errorcolor");
 
-                    b.Property<int>("GuildConfigId")
-                        .HasColumnType("integer")
-                        .HasColumnName("guildconfigid");
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                    b.Property<string>("OkColor")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
+                        .HasColumnName("okcolor");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("integer")
-                        .HasColumnName("number");
+                    b.Property<string>("PendingColor")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
+                        .HasColumnName("pendingcolor");
 
                     b.HasKey("Id")
-                        .HasName("pk_groupname");
+                        .HasName("pk_guildcolors");
 
-                    b.HasIndex("GuildConfigId", "Number")
+                    b.HasIndex("GuildId")
                         .IsUnique()
-                        .HasDatabaseName("ix_groupname_guildconfigid_number");
+                        .HasDatabaseName("ix_guildcolors_guildid");
 
-                    b.ToTable("groupname", (string)null);
+                    b.ToTable("guildcolors", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.GuildConfig", b =>
@@ -1656,49 +1722,49 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("muteduserid", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.NCPixel", b =>
-            {
-                b.Property<int>("Id")
-                 .ValueGeneratedOnAdd()
-                 .HasColumnType("integer")
-                 .HasColumnName("id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
 
-                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<long>("Color")
-                 .HasColumnType("bigint")
-                 .HasColumnName("color");
+                    b.Property<long>("Color")
+                        .HasColumnType("bigint")
+                        .HasColumnName("color");
 
-                b.Property<decimal>("OwnerId")
-                 .HasColumnType("numeric(20,0)")
-                 .HasColumnName("ownerid");
+                    b.Property<decimal>("OwnerId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("ownerid");
 
-                b.Property<int>("Position")
-                 .HasColumnType("integer")
-                 .HasColumnName("position");
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
 
-                b.Property<long>("Price")
-                 .HasColumnType("bigint")
-                 .HasColumnName("price");
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price");
 
-                b.Property<string>("Text")
-                 .IsRequired()
-                 .HasMaxLength(256)
-                 .HasColumnType("character varying(256)")
-                 .HasColumnName("text");
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("text");
 
-                b.HasKey("Id")
-                 .HasName("pk_ncpixel");
+                    b.HasKey("Id")
+                        .HasName("pk_ncpixel");
 
-                b.HasAlternateKey("Position")
-                 .HasName("ak_ncpixel_position");
+                    b.HasAlternateKey("Position")
+                        .HasName("ak_ncpixel_position");
 
-                b.HasIndex("OwnerId")
-                 .HasDatabaseName("ix_ncpixel_ownerid");
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_ncpixel_ownerid");
 
-                b.ToTable("ncpixel", (string)null);
-            });
+                    b.ToTable("ncpixel", (string)null);
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.WizBotExpression", b =>
                 {
@@ -1769,7 +1835,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<string>("UniquePlatformUserId")
                         .HasColumnType("text")
                         .HasColumnName("uniqueplatformuserid");
-                    
+
                     b.Property<DateTime>("ValidThru")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("validthru");
@@ -2200,7 +2266,7 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("rotatingstatus", (string)null);
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.SelfAssignedRole", b =>
+            modelBuilder.Entity("WizBot.Db.Models.Sar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2209,36 +2275,98 @@ namespace WizBot.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("DateAdded")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("dateadded");
-
-                    b.Property<int>("Group")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("group");
-
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
 
-                    b.Property<int>("LevelRequirement")
+                    b.Property<int>("LevelReq")
                         .HasColumnType("integer")
-                        .HasColumnName("levelrequirement");
+                        .HasColumnName("levelreq");
 
                     b.Property<decimal>("RoleId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("roleid");
 
+                    b.Property<int>("SarGroupId")
+                        .HasColumnType("integer")
+                        .HasColumnName("sargroupid");
+
                     b.HasKey("Id")
-                        .HasName("pk_selfassignableroles");
+                        .HasName("pk_sar");
 
-                    b.HasIndex("GuildId", "RoleId")
+                    b.HasAlternateKey("GuildId", "RoleId")
+                        .HasName("ak_sar_guildid_roleid");
+
+                    b.HasIndex("SarGroupId")
+                        .HasDatabaseName("ix_sar_sargroupid");
+
+                    b.ToTable("sar", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarAutoDelete", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isenabled");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sarautodelete");
+
+                    b.HasIndex("GuildId")
                         .IsUnique()
-                        .HasDatabaseName("ix_selfassignableroles_guildid_roleid");
+                        .HasDatabaseName("ix_sarautodelete_guildid");
 
-                    b.ToTable("selfassignableroles", (string)null);
+                    b.ToTable("sarautodelete", (string)null);
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("groupnumber");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<bool>("IsExclusive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isexclusive");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal?>("RoleReq")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("rolereq");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sargroup");
+
+                    b.HasAlternateKey("GuildId", "GroupNumber")
+                        .HasName("ak_sargroup_guildid_groupnumber");
+
+                    b.ToTable("sargroup", (string)null);
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>
@@ -3012,12 +3140,12 @@ namespace WizBot.Migrations.PostgreSql
                         .HasColumnName("dateadded");
 
                     b.Property<decimal>("GuildId")
-                     .HasColumnType("numeric(20,0)")
-                     .HasColumnName("guildid");
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
 
                     b.Property<int>("Punishment")
-                     .HasColumnType("integer")
-                     .HasColumnName("punishment");
+                        .HasColumnType("integer")
+                        .HasColumnName("punishment");
 
                     b.Property<decimal?>("RoleId")
                         .HasColumnType("numeric(20,0)")
@@ -3031,7 +3159,7 @@ namespace WizBot.Migrations.PostgreSql
                         .HasName("pk_warningpunishment");
 
                     b.HasAlternateKey("GuildId", "Count")
-                     .HasName("ak_warningpunishment_guildid_count");
+                        .HasName("ak_warningpunishment_guildid_count");
 
                     b.ToTable("warningpunishment", (string)null);
                 });
@@ -3226,9 +3354,9 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.ToTable("greetsettings", (string)null);
                 });
-            
+
             modelBuilder.Entity("WizBot.Services.Rakeback", b =>
-            {
+                {
                     b.Property<decimal>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)")
@@ -3242,8 +3370,8 @@ namespace WizBot.Migrations.PostgreSql
                         .HasName("pk_rakeback");
 
                     b.ToTable("rakeback", (string)null);
-            });
-            
+                });
+
             modelBuilder.Entity("WizBot.Services.UserBetStats", b =>
                 {
                     b.Property<int>("Id")
@@ -3527,18 +3655,6 @@ namespace WizBot.Migrations.PostgreSql
                         .HasConstraintName("fk_giveawayuser_giveawaymodel_giveawayid");
                 });
 
-            modelBuilder.Entity("WizBot.Db.Models.GroupName", b =>
-                {
-                    b.HasOne("WizBot.Db.Models.GuildConfig", "GuildConfig")
-                        .WithMany("SelfAssignableRoleGroupNames")
-                        .HasForeignKey("GuildConfigId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_groupname_guildconfigs_guildconfigid");
-
-                    b.Navigation("GuildConfig");
-                });
-
             modelBuilder.Entity("WizBot.Db.Models.IgnoredLogItem", b =>
                 {
                     b.HasOne("WizBot.Db.Models.LogSetting", "LogSetting")
@@ -3576,6 +3692,16 @@ namespace WizBot.Migrations.PostgreSql
                         .HasForeignKey("MusicPlaylistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_playlistsong_musicplaylists_musicplaylistid");
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.Sar", b =>
+                {
+                    b.HasOne("WizBot.Db.Models.SarGroup", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("SarGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_sar_sargroup_sargroupid");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>
@@ -3854,8 +3980,6 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.Navigation("Permissions");
 
-                    b.Navigation("SelfAssignableRoleGroupNames");
-
                     b.Navigation("ShopEntries");
 
                     b.Navigation("SlowmodeIgnoredRoles");
@@ -3883,6 +4007,11 @@ namespace WizBot.Migrations.PostgreSql
             modelBuilder.Entity("WizBot.Db.Models.MusicPlaylist", b =>
                 {
                     b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("WizBot.Db.Models.SarGroup", b =>
+                {
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("WizBot.Db.Models.ShopEntry", b =>

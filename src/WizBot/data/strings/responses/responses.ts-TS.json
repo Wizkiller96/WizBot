@@ -300,7 +300,7 @@
   "hangman_running": "Hangman game already running on this channel.",
   "hangman_start_errored": "Starting hangman errored.",
   "hangman_types": "List of \u0022{0}hangman\u0022 term types:",
-  "picked": "picked {0}",
+  "picked": "{0} picked {1}",
   "planted": "{0} planted {1}",
   "trivia_already_running": "Trivia game is already running on this server.",
   "trivia_game": "Trivia Game",

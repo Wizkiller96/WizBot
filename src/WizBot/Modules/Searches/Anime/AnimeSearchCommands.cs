@@ -24,7 +24,7 @@ public partial class Searches
                 return;
             }
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithDescription(animeData.Synopsis.Replace("<br>",
                                    Environment.NewLine,
@@ -56,7 +56,7 @@ public partial class Searches
                 return;
             }
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithDescription(mangaData.Synopsis.Replace("<br>",
                                    Environment.NewLine,

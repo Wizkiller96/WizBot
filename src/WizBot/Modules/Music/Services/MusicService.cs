@@ -179,11 +179,11 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
         return async (mp, trackInfo) =>
         {
             _ = lastFinishedMessage?.DeleteAsync();
-            var embed = _sender.CreateEmbed()
-                        .WithOkColor()
-                        .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
-                        .WithDescription(trackInfo.PrettyName())
-                        .WithFooter(trackInfo.PrettyTotalTime());
+            var embed = _sender.CreateEmbed(guildId)
+                               .WithOkColor()
+                               .WithAuthor(GetText(guildId, strs.finished_track), Music.MUSIC_ICON_URL)
+                               .WithDescription(trackInfo.PrettyName())
+                               .WithFooter(trackInfo.PrettyTotalTime());
 
             lastFinishedMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -195,11 +195,11 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
         return async (mp, trackInfo, index) =>
         {
             _ = lastPlayingMessage?.DeleteAsync();
-            var embed = _sender.CreateEmbed()
-                        .WithOkColor()
-                        .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
-                        .WithDescription(trackInfo.PrettyName())
-                        .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
+            var embed = _sender.CreateEmbed(guildId)
+                               .WithOkColor()
+                               .WithAuthor(GetText(guildId, strs.playing_track(index + 1)), Music.MUSIC_ICON_URL)
+                               .WithDescription(trackInfo.PrettyName())
+                               .WithFooter($"{mp.PrettyVolume()} | {trackInfo.PrettyInfo()}");
 
             lastPlayingMessage = await SendToOutputAsync(guildId, embed);
         };
@@ -432,6 +432,18 @@ public sealed class MusicService : IMusicService, IPlaceholderProvider
         }
 
         return Task.FromResult(false);
+    }
+
+    public async Task<IQueuedTrackInfo?> RemoveLastQueuedTrackAsync(ulong guildId)
+    {
+        if (TryGetMusicPlayer(guildId, out var mp))
+        {
+            var last = await mp.RemoveLastQueuedTrack();
+
+            return last;
+        }
+
+        return null;
     }
 
     #endregion

@@ -80,7 +80,7 @@ public partial class Administration
                   .CurrentPage(page)
                   .Page((items, _) =>
                   {
-                      var embed = _sender.CreateEmbed()
+                      var embed = CreateEmbed()
                           .WithOkColor();
 
                       var content = string.Empty;

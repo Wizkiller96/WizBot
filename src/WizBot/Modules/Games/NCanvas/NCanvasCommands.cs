@@ -53,7 +53,7 @@ public partial class Games
             var hint = GetText(strs.nc_hint(prefix, _service.GetWidth(), _service.GetHeight()));
             await Response()
                   .File(stream, "ncanvas.png")
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
 /*#if GLOBAL_WIZBOT
                                 .WithDescription("https://dash.wizbot.cc/ncanvas")
@@ -164,7 +164,7 @@ public partial class Games
                     Culture,
                     _gcs.Data.Currency.Sign))));
 
-            if (!await PromptUserConfirmAsync(_sender.CreateEmbed()
+            if (!await PromptUserConfirmAsync(CreateEmbed()
                                                      .WithPendingColor()
                                                      .WithDescription(prompt)))
             {
@@ -193,7 +193,7 @@ public partial class Games
             await using var stream = await img.ToStreamAsync();
 
             await Response()
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithDescription(GetText(strs.nc_pixel_set(Format.Code(position.ToString()))))
                                 .WithImageUrl($"attachment://zoom_{position}.png"))
@@ -231,7 +231,7 @@ public partial class Games
             var pos = new kwum(pixel.Position);
             await Response()
                   .File(stream, $"{pixel.Position}.png")
-                  .Embed(_sender.CreateEmbed()
+                  .Embed(CreateEmbed()
                                 .WithOkColor()
                                 .WithDescription(string.IsNullOrWhiteSpace(pixel.Text) ? string.Empty : pixel.Text)
                                 .WithTitle(GetText(strs.nc_pixel(pos)))
@@ -263,7 +263,7 @@ public partial class Games
                 return;
             }
 
-            if (!await PromptUserConfirmAsync(_sender.CreateEmbed()
+            if (!await PromptUserConfirmAsync(CreateEmbed()
                                                      .WithDescription(
                                                          "This will reset the canvas to the specified image. All prices, text and colors will be reset.\n\n"
                                                          + "Are you sure you want to continue?")))
@@ -293,7 +293,7 @@ public partial class Games
         {
             await _service.ResetAsync();
 
-            if (!await PromptUserConfirmAsync(_sender.CreateEmbed()
+            if (!await PromptUserConfirmAsync(CreateEmbed()
                                                      .WithDescription(
                                                          "This will delete all pixels and reset the canvas.\n\n"
                                                          + "Are you sure you want to continue?")))

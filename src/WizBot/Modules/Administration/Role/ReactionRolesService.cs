@@ -1,8 +1,6 @@
-﻿#nullable disable
-using LinqToDB;
+﻿using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
-using WizBot.Modules.Patronage;
 using WizBot.Db.Models;
 using OneOf.Types;
 using OneOf;
@@ -18,18 +16,15 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
     private ConcurrentDictionary<ulong, List<ReactionRoleV2>> _cache;
     private readonly object _cacheLock = new();
     private readonly SemaphoreSlim _assignementLock = new(1, 1);
-    private readonly IPatronageService _ps;
 
     public ReactionRolesService(
         DiscordSocketClient client,
-        IPatronageService ps,
         DbService db,
         IBotCreds creds)
     {
         _db = db;
         _client = client;
         _creds = creds;
-        _ps = ps;
         _cache = new();
     }
 
@@ -57,7 +52,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         var guild = _client.GetGuild(rero.GuildId);
         var role = guild?.GetRole(rero.RoleId);
 
-        if (role is null)
+        if (guild is null || role is null)
             return default;
 
         var user = guild.GetUser(userId) as IGuildUser
@@ -80,8 +75,8 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         _ = Task.Run(async () =>
         {
             var emote = await GetFixedEmoteAsync(cmsg, r.Emote);
-            
-            var rero = reros.FirstOrDefault(x => x.Emote == emote.Name 
+
+            var rero = reros.FirstOrDefault(x => x.Emote == emote.Name
                                                  || x.Emote == emote.ToString());
             if (rero is null)
                 return;
@@ -96,10 +91,11 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
             {
                 if (user.RoleIds.Contains(role.Id))
                 {
-                    await user.RemoveRoleAsync(role.Id, new RequestOptions()
-                    {
-                        AuditLogReason = $"Reaction role"
-                    });
+                    await user.RemoveRoleAsync(role.Id,
+                        new RequestOptions()
+                        {
+                            AuditLogReason = $"Reaction role"
+                        });
                 }
             }
             finally
@@ -111,7 +107,7 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         return Task.CompletedTask;
     }
 
-    
+
     // had to add this because for some reason, reactionremoved event's reaction doesn't have IsAnimated set,
     // causing the .ToString() to be wrong on animated custom emotes
     private async Task<IEmote> GetFixedEmoteAsync(
@@ -210,10 +206,11 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                         }
                     }
 
-                    await user.AddRoleAsync(role.Id, new()
-                    {
-                        AuditLogReason = "Reaction role"
-                    });
+                    await user.AddRoleAsync(role.Id,
+                        new()
+                        {
+                            AuditLogReason = "Reaction role"
+                        });
                 }
             }
             finally
@@ -244,22 +241,9 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
         int levelReq = 0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(group);
-
         ArgumentOutOfRangeException.ThrowIfNegative(levelReq);
 
         await using var ctx = _db.GetDbContext();
-
-        await using var tran = await ctx.Database.BeginTransactionAsync();
-        var activeReactionRoles = await ctx.GetTable<ReactionRoleV2>()
-                                           .Where(x => x.GuildId == guild.Id)
-                                           .CountAsync();
-        
-        var limit = await _ps.GetUserLimit(LimitedFeatureName.ReactionRole, guild.OwnerId);
-        
-        if (!_creds.IsOwner(guild.OwnerId) && (activeReactionRoles >= limit.Quota && limit.Quota >= 0))
-        {
-            return new Error();
-        }
 
         await ctx.GetTable<ReactionRoleV2>()
                  .InsertOrUpdateAsync(() => new()
@@ -285,8 +269,6 @@ public sealed class ReactionRolesService : IReadyExecutor, INService, IReactionR
                          MessageId = msg.Id,
                          Emote = emote,
                      });
-
-        await tran.CommitAsync();
 
         var obj = new ReactionRoleV2()
         {

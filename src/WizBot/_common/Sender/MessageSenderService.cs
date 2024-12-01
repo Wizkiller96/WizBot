@@ -1,5 +1,3 @@
-using WizBot.Common.Configs;
-
 namespace WizBot.Extensions;
 
 public sealed class MessageSenderService : IMessageSenderService, INService
@@ -7,12 +5,18 @@ public sealed class MessageSenderService : IMessageSenderService, INService
     private readonly IBotStrings _bs;
     private readonly BotConfigService _bcs;
     private readonly DiscordSocketClient _client;
+    private readonly IGuildColorsService _gcs;
 
-    public MessageSenderService(IBotStrings bs, BotConfigService bcs, DiscordSocketClient client)
+    public MessageSenderService(
+        IBotStrings bs,
+        BotConfigService bcs,
+        DiscordSocketClient client,
+        IGuildColorsService gcs)
     {
         _bs = bs;
         _bcs = bcs;
         _client = client;
+        _gcs = gcs;
     }
 
 
@@ -32,25 +36,30 @@ public sealed class MessageSenderService : IMessageSenderService, INService
         => new ResponseBuilder(_bs, _bcs, _client)
             .Channel(smc.Channel);
 
-    public WizBotEmbedBuilder CreateEmbed()
-        => new WizBotEmbedBuilder(_bcs);
+    public WizBotEmbedBuilder CreateEmbed(ulong? guildId = null)
+        => new WizBotEmbedBuilder(_bcs, guildId is { } gid ? _gcs.GetColors(gid) : null);
 }
 
 public class WizBotEmbedBuilder : EmbedBuilder
 {
-    private readonly BotConfig _bc;
+    private readonly Color _okColor;
+    private readonly Color _errorColor;
+    private readonly Color _pendingColor;
 
-    public WizBotEmbedBuilder(BotConfigService bcs)
+    public WizBotEmbedBuilder(BotConfigService bcsData, Colors? guildColors = null)
     {
-        _bc = bcs.Data;
+        var bcColors = bcsData.Data.Color;
+        _okColor = guildColors?.Ok ?? bcColors.Ok.ToDiscordColor();
+        _errorColor = guildColors?.Error ?? bcColors.Error.ToDiscordColor();
+        _pendingColor = guildColors?.Pending ?? bcColors.Pending.ToDiscordColor();
     }
 
     public EmbedBuilder WithOkColor()
-        => WithColor(_bc.Color.Ok.ToDiscordColor());
+        => WithColor(_okColor);
 
     public EmbedBuilder WithErrorColor()
-        => WithColor(_bc.Color.Error.ToDiscordColor());
+        => WithColor(_errorColor);
 
     public EmbedBuilder WithPendingColor()
-        => WithColor(_bc.Color.Pending.ToDiscordColor());
+        => WithColor(_pendingColor);
 }

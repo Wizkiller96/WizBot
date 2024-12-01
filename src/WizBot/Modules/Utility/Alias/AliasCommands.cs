@@ -127,7 +127,7 @@ public partial class Utility
                   .CurrentPage(page)
                   .Page((items, _) =>
                   {
-                      return _sender.CreateEmbed()
+                      return CreateEmbed()
                              .WithOkColor()
                              .WithTitle(GetText(strs.alias_list))
                              .WithDescription(string.Join("\n", items.Select(x => $"`{x.Key}` => `{x.Value}`")));

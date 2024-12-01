@@ -16,7 +16,7 @@ public partial class Xp
         [UserPerm(GuildPerm.Administrator)]
         public async Task XpRewsReset()
         {
-            var promptEmbed = _sender.CreateEmbed()
+            var promptEmbed = CreateEmbed()
                               .WithPendingColor()
                               .WithDescription(GetText(strs.xprewsreset_confirm));
 
@@ -73,7 +73,7 @@ public partial class Xp
                    .CurrentPage(page)
                    .Page((items, _) =>
                    {
-                       var embed = _sender.CreateEmbed().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
+                       var embed = CreateEmbed().WithTitle(GetText(strs.level_up_rewards)).WithOkColor();
 
                        if (!items.Any())
                            return embed.WithDescription(GetText(strs.no_level_up_rewards));

@@ -97,7 +97,7 @@ public partial class Utility
             if (--page < 0)
                 return;
 
-            var embed = _sender.CreateEmbed()
+            var embed = CreateEmbed()
                                .WithOkColor()
                                .WithTitle(GetText(guildId is not null
                                    ? strs.reminder_server_list

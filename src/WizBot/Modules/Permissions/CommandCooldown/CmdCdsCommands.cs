@@ -95,7 +95,7 @@ public partial class Permissions
                           var output = items.Select(x =>
                               $"{Format.Code(x.CommandName)}: {x.Seconds}s");
 
-                          return _sender.CreateEmbed()
+                          return CreateEmbed()
                                  .WithOkColor()
                                  .WithDescription(output.Join("\n"));
                       })
