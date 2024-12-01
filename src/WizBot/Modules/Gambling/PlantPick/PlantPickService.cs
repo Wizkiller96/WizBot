@@ -241,12 +241,18 @@ public class PlantPickService : INService, IExecNoCommand
                         await using (stream)
                             sent = await channel.SendFileAsync(stream, $"currency_image.{ext}", toSend);
 
-                        await AddPlantToDatabase(channel.GuildId,
+                        var res = await AddPlantToDatabase(channel.GuildId,
                             channel.Id,
                             _client.CurrentUser.Id,
                             sent.Id,
                             dropAmount,
-                            pw);
+                            pw,
+                            true);
+
+                        if (res.toDelete.Length > 0)
+                        {
+                            await channel.DeleteMessagesAsync(res.toDelete);
+                        }
                     }
                 }
             }
@@ -335,7 +341,7 @@ public class PlantPickService : INService, IExecNoCommand
 
     public async Task<bool> PlantAsync(
         ulong gid,
-        IMessageChannel ch,
+        ITextChannel ch,
         ulong uid,
         string user,
         long amount,
@@ -361,6 +367,7 @@ public class PlantPickService : INService, IExecNoCommand
 
             // if it doesn't fail, put the plant in the database for other people to pick
             await AddPlantToDatabase(gid, ch.Id, uid, msgId.Value, amount, pass);
+
             return true;
         }
 
@@ -368,25 +375,41 @@ public class PlantPickService : INService, IExecNoCommand
         return false;
     }
 
-    private async Task AddPlantToDatabase(
+    private async Task<(long totalAmount, ulong[] toDelete)> AddPlantToDatabase(
         ulong gid,
         ulong cid,
         ulong uid,
         ulong mid,
         long amount,
-        string pass)
+        string pass,
+        bool auto = false)
     {
         await using var uow = _db.GetDbContext();
-        uow.Set<PlantedCurrency>()
-           .Add(new()
-           {
-               Amount = amount,
-               GuildId = gid,
-               ChannelId = cid,
-               Password = pass,
-               UserId = uid,
-               MessageId = mid
-           });
-        await uow.SaveChangesAsync();
+
+        PlantedCurrency[] deleted = [];
+        if (!string.IsNullOrWhiteSpace(pass) && auto)
+        {
+            deleted = await uow.GetTable<PlantedCurrency>()
+                               .Where(x => x.GuildId == gid
+                                           && x.ChannelId == cid
+                                           && x.Password != null
+                                           && x.Password.Length == pass.Length)
+                               .DeleteWithOutputAsync();
+        }
+
+        var totalDeletedAmount = deleted.Length == 0 ? 0 : deleted.Sum(x => x.Amount);
+
+        await uow.GetTable<PlantedCurrency>()
+                 .InsertAsync(() => new()
+                 {
+                     Amount = totalDeletedAmount + amount,
+                     GuildId = gid,
+                     ChannelId = cid,
+                     Password = pass,
+                     UserId = uid,
+                     MessageId = mid,
+                 });
+
+        return (totalDeletedAmount + amount, deleted.Select(x => x.MessageId).ToArray());
     }
 }

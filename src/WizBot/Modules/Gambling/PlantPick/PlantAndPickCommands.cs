@@ -59,7 +59,7 @@ public partial class Gambling
             }
 
             var success = await _service.PlantAsync(ctx.Guild.Id,
-                ctx.Channel,
+                (ITextChannel)ctx.Channel,
                 ctx.User.Id,
                 ctx.User.ToString(),
                 amount,
