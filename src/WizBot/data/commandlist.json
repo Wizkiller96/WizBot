@@ -1224,6 +1224,80 @@
     },
     {
       "Aliases": [
+        ".btr add",
+        ".btr a"
+      ],
+      "Description": "Adds a button role to the specified message (link or id).\nSpecify a message followed by an emote, followed by a role.\nIf the role already exists on that message, the button will be updated instead.\nUsers clicking on the button will receive the role.",
+      "Usage": [
+        ".btr add <msglink> :thumbsup: Good Guy"
+      ],
+      "Submodule": "btr",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".btr rem",
+        ".btr r",
+        ".btr rm"
+      ],
+      "Description": "Removes a button role from the message specified by link or id.\nProvide a message followed by a role you wish to remove.",
+      "Usage": [
+        ".btr rem <msglink> Good Guy"
+      ],
+      "Submodule": "btr",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".btr removeall",
+        ".btr rma"
+      ],
+      "Description": "Removes all button roles from the message specified by link or id.",
+      "Usage": [
+        ".btr removeall <msglink>",
+        ".btr removeall 123123123123"
+      ],
+      "Submodule": "btr",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".btr list",
+        ".btr l",
+        ".btr ls"
+      ],
+      "Description": "Lists all button roles on this server.\nOne message per page.",
+      "Usage": [
+        ".btr list"
+      ],
+      "Submodule": "btr",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".btr excl",
+        ".btr e"
+      ],
+      "Description": "Toggles whether button roles are exclusive or not.\nIf enabled, users can only pick one role from the buttons per message.\nIf disabled, users can pick any number of roles.",
+      "Usage": [
+        ".btr excl 123123123 enable",
+        ".btr excl 123123123 disable"
+      ],
+      "Submodule": "btr",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".reroadd",
         ".reroa"
       ],
@@ -1451,124 +1525,13 @@
     },
     {
       "Aliases": [
-        ".adsarm"
-      ],
-      "Description": "Toggles the automatic deletion of the user's message and WizBot's confirmations for `.iam` and `.iamn` commands.",
-      "Usage": [
-        ".adsarm"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageMessages Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".asar"
-      ],
-      "Description": "Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled (`.tesar`), users will be able to pick one role per group.",
-      "Usage": [
-        ".asar Gamer",
-        ".asar 1 Alliance",
-        ".asar 1 Horde"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageRoles Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".sargn"
-      ],
-      "Description": "Sets a self assignable role group name. Provide no name to remove.",
-      "Usage": [
-        ".sargn 1 Faction",
-        ".sargn 2"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageRoles Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".rsar"
-      ],
-      "Description": "Removes a specified role from the list of self-assignable roles.",
-      "Usage": [
-        ".rsar Gamer",
-        ".rsar Alliance",
-        ".rsar Horde"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageRoles Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".lsar"
-      ],
-      "Description": "Lists self-assignable roles. Shows 20 roles per page.",
-      "Usage": [
-        ".lsar",
-        ".lsar 2"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
-        ".togglexclsar",
-        ".tesar"
-      ],
-      "Description": "Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.",
-      "Usage": [
-        ".togglexclsar"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageRoles Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".rolelevelreq",
-        ".rlr"
-      ],
-      "Description": "Set a level requirement on a self-assignable role.",
-      "Usage": [
-        ".rolelevelreq 5 SomeRole"
-      ],
-      "Submodule": "SelfAssignedRolesCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "ManageRoles Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
         ".iam"
       ],
       "Description": "Adds a role to you that you choose. Role must be on the list of self-assignable roles.",
       "Usage": [
         ".iam Gamer"
       ],
-      "Submodule": "SelfAssignedRolesCommands",
+      "Submodule": "SelfAssignedRolesHelpers",
       "Module": "Administration",
       "Options": null,
       "Requirements": []
@@ -1582,10 +1545,168 @@
       "Usage": [
         ".iamnot Gamer"
       ],
-      "Submodule": "SelfAssignedRolesCommands",
+      "Submodule": "SelfAssignedRolesHelpers",
       "Module": "Administration",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".sar ad",
+        ".sar autodel",
+        ".sar adsarm"
+      ],
+      "Description": "Toggles the automatic deletion of the user's message and WizBot's confirmations for `.iam` and `.iamn` commands.",
+      "Usage": [
+        ".sar ad"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageMessages Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar add",
+        ".sar a",
+        ".sar asar"
+      ],
+      "Description": "Adds a role to the list of self-assignable roles. You can also specify a group. If 'Exclusive self-assignable roles' feature is enabled (`.tesar`), users will be able to pick one role per group.",
+      "Usage": [
+        ".sar add Gamer",
+        ".sar add 1 Alliance",
+        ".sar add 1 Horde"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar groupname",
+        ".sar gn",
+        ".sar sargn"
+      ],
+      "Description": "Sets a self assignable role group name. Provide no name to remove.",
+      "Usage": [
+        ".sar groupname 1 Faction",
+        ".sar groupname 2"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar remove",
+        ".sar rm",
+        ".sar rem",
+        ".sar rsar"
+      ],
+      "Description": "Removes a specified role from the list of self-assignable roles.",
+      "Usage": [
+        ".sar remove Gamer",
+        ".sar remove Alliance",
+        ".sar remove Horde"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar list",
+        ".sar l",
+        ".sar ls",
+        ".sar lsar"
+      ],
+      "Description": "Lists self-assignable roles. Shows 20 roles per page.",
+      "Usage": [
+        ".sar list",
+        ".sar list 2"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".sar exclusive",
+        ".sar ex",
+        ".sar excl",
+        ".sar tesar"
+      ],
+      "Description": "Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.",
+      "Usage": [
+        ".sar exclusive"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar rolelvlreq",
+        ".sar rlr"
+      ],
+      "Description": "Set a level requirement on a self-assignable role.",
+      "Usage": [
+        ".sar rolelvlreq 5 SomeRole"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar grouprolereq",
+        ".sar grr"
+      ],
+      "Description": "Set a role that users have to have in order to assign a self-assignable role from the specified group.",
+      "Usage": [
+        ".sar grouprolereq 1 SomeRole"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sar groupdelete",
+        ".sar gd",
+        ".sar gdel"
+      ],
+      "Description": "Deletes a self-assignable role group",
+      "Usage": [
+        ".sar groupdelete 0"
+      ],
+      "Submodule": "sar",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "ManageRoles Server Permission"
+      ]
     },
     {
       "Aliases": [
@@ -2920,7 +3041,7 @@
         ".betroll",
         ".br"
       ],
-      "Description": "Bets the specified amount of currency and rolls a dice.\nRolling over 66 yields x2 of your currency, over 90 - x4 and 100 x10.\nYou can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.",
+      "Description": "Bets the specified amount of currency and rolls a dice.\nRolling over 65 yields x2 of your currency, over 90 - x4 and 100 x10.\nYou can specify 'all', 'half' or 'X%' instead of the amount to bet that part of your current balance.",
       "Usage": [
         ".betroll 5"
       ],
@@ -4788,6 +4909,22 @@
       "Description": "Triggers fairplay. The song queue will be re-ordered in a fair manner. No effect on newly added songs.",
       "Usage": [
         ".qfp"
+      ],
+      "Submodule": "Music",
+      "Module": "Music",
+      "Options": null,
+      "Requirements": [
+        "No Public Bot"
+      ]
+    },
+    {
+      "Aliases": [
+        ".wrongsong",
+        ".wrongtrack"
+      ],
+      "Description": "Removes the last queued song.\nIf the queue was shuffled or fairly re-ordered the song will not be removed.",
+      "Usage": [
+        ".wrongsong"
       ],
       "Submodule": "Music",
       "Module": "Music",
@@ -6926,6 +7063,74 @@
     },
     {
       "Aliases": [
+        ".sclr show",
+        ".sclr list",
+        ".sclr l"
+      ],
+      "Description": "Shows current Ok, Error and Pending colors for this server.",
+      "Usage": [
+        ".sclr show"
+      ],
+      "Submodule": "sclr",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "ManageServer Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sclr ok",
+        ".sclr success"
+      ],
+      "Description": "Sets the Ok color for this server.",
+      "Usage": [
+        ".sclr ok #00ff00"
+      ],
+      "Submodule": "sclr",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "ManageServer Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sclr pending",
+        ".sclr warn",
+        ".sclr warning",
+        ".sclr pend"
+      ],
+      "Description": "Sets the Pending/Warning color for this server.",
+      "Usage": [
+        ".sclr pending #ffff00"
+      ],
+      "Submodule": "sclr",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "ManageServer Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
+        ".sclr error",
+        ".sclr fail",
+        ".sclr err"
+      ],
+      "Description": "Sets the Error color for this server.",
+      "Usage": [
+        ".sclr error #ff0000"
+      ],
+      "Submodule": "sclr",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "ManageServer Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".serverinfo",
         ".sinfo"
       ],
@@ -7520,6 +7725,21 @@
       "Description": "Marks a todo with the specified ID as done.",
       "Usage": [
         ".todo complete 4a"
+      ],
+      "Submodule": "todo",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".todo uncomplete",
+        ".todo undone",
+        ".todo unfinish"
+      ],
+      "Description": "Marks a todo with the specified ID as not done.",
+      "Usage": [
+        ".todo uncomplete 4a"
       ],
       "Submodule": "todo",
       "Module": "Utility",
