@@ -933,7 +933,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private async Task<bool> SetUserRewardedAsync(ulong userId)
         => await _c.AddAsync(GetUserRewKey(userId),
             true,
-            expiry: TimeSpan.FromMinutes(_xpConfig.Data.MessageXpCooldown),
+            expiry: TimeSpan.FromSeconds(_xpConfig.Data.MessageXpCooldown),
             overwrite: false);
 
     public async Task<FullUserStats> GetUserStatsAsync(IGuildUser user)

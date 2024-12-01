@@ -10,13 +10,13 @@ namespace WizBot.Modules.Xp;
 public sealed partial class XpConfig : ICloneable<XpConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 5;
+    public int Version { get; set; } = 7;
 
     [Comment("""How much XP will the users receive per message""")]
     public int XpPerMessage { get; set; } = 3;
 
-    [Comment("""How often can the users receive XP in minutes""")]
-    public int MessageXpCooldown { get; set; } = 5;
+    [Comment("""How often can the users receive XP, in seconds""")]
+    public int MessageXpCooldown { get; set; } = 300;
 
     [Comment("""Amount of xp users gain from posting an image""")]
     public int XpFromImage { get; set; } = 0;
