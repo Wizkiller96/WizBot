@@ -341,6 +341,9 @@ public sealed class GiveawayService : INService, IReadyExecutor
         try
         {
             await msg.ModifyAsync(x => x.Embed = eb.Build());
+            
+            if (winner is not null)
+                await _sender.Response(ch).Message(msg).Text($"🎉 <@{winner.UserId}>").SendAsync();
         }
         catch
         {
