@@ -1137,5 +1137,7 @@
   "no_last_queued_found": "No last queued track found.",
   "wrongsong_success": "Oops! Wrong song removed: {0}",
   "server_not_found": "Server not found.",
-  "server_color_set": "Successfully set a new server color."
+  "server_color_set": "Successfully set a new server color.",
+  "lasts_until": "Lasts Until",
+  "winners_count": "Winners"
 }

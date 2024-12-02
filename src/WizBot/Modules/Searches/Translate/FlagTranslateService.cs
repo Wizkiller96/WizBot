@@ -122,11 +122,14 @@ public sealed partial class FlagTranslateService : IReadyExecutor, INService
             if (!_supportedFlags.TryGetValue(code, out var lang))
                 return;
 
-            if (!_msgLangs.Add((reaction.MessageId, lang)))
+            if (_msgLangs.Contains((reaction.MessageId, lang)))
                 return;
 
             var result = await _cache.GetAsync(CdKey(reaction.UserId));
             if (result.TryPickT0(out _, out _))
+                return;
+            
+            if (!_msgLangs.Add((reaction.MessageId, lang)))
                 return;
 
             await _cache.AddAsync(CdKey(reaction.UserId), true, TimeSpan.FromSeconds(5));

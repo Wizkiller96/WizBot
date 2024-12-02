@@ -38,6 +38,8 @@ public partial class Utility
             eb
                 .WithOkColor()
                 .WithTitle(GetText(strs.giveaway_started))
+                .AddField(GetText(strs.lasts_until), TimestampTag.FromDateTime(DateTime.UtcNow.Add(duration)), true)
+                // .AddField(GetText(strs.winners_count), "1", true)
                 .WithFooter($"id:  {new kwum(id).ToString()}");
 
             await startingMsg.AddReactionAsync(new Emoji(GiveawayService.GiveawayEmoji));

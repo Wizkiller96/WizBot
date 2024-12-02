@@ -8,6 +8,7 @@ public sealed class GiveawayModel
     public ulong MessageId { get; set; }
     public ulong ChannelId { get; set; }
     public string Message { get; set; }
+    public int Winners { get; set; }
 
     public IList<GiveawayUser> Participants { get; set; } = new List<GiveawayUser>();
     public DateTime EndsAt { get; set; }
