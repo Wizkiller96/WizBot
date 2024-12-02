@@ -126,8 +126,8 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
         {
             var colors = new Colors(
                 ConvertColor(color.OkColor),
-                ConvertColor(color.ErrorColor),
-                ConvertColor(color.PendingColor));
+                ConvertColor(color.PendingColor),
+                ConvertColor(color.ErrorColor));
 
             _colors.TryAdd(color.GuildId, colors);
         }

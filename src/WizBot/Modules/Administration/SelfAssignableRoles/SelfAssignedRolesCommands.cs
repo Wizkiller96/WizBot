@@ -84,7 +84,7 @@ public partial class Administration
             IUserMessage msg = null;
             try
             {
-                if (guildUser.RoleIds.Contains(role.Id))
+                if (!guildUser.RoleIds.Contains(role.Id))
                 {
                     msg = await Response().Error(strs.self_assign_not_have(Format.Bold(role.Name))).SendAsync();
                     return;
