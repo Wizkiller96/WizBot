@@ -24,19 +24,22 @@ public partial class Administration
         private readonly IMedusaLoaderService _medusaLoader;
         private readonly ICoordinator _coord;
         private readonly DbService _db;
+        private readonly IBotActivityService _bas;
 
         public SelfCommands(
             DiscordSocketClient client,
             DbService db,
             IBotStrings strings,
             ICoordinator coord,
-            IMedusaLoaderService medusaLoader)
+            IMedusaLoaderService medusaLoader,
+            IBotActivityService bas)
         {
             _client = client;
             _db = db;
             _strings = strings;
             _coord = coord;
             _medusaLoader = medusaLoader;
+            _bas = bas;
         }
 
 
@@ -496,7 +499,7 @@ public partial class Administration
             // var rep = new ReplacementBuilder().WithDefault(Context).Build();
 
             var repCtx = new ReplacementContext(ctx);
-            await _service.SetActivityAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
+            await _bas.SetActivityAsync(game is null ? game : await repSvc.ReplaceAsync(game, repCtx), type);
 
             await Response().Confirm(strs.set_activity).SendAsync();
         }
@@ -518,7 +521,7 @@ public partial class Administration
         {
             name ??= "";
 
-            await _service.SetStreamAsync(name, url);
+            await _bas.SetStreamAsync(name, url);
 
             await Response().Confirm(strs.set_stream).SendAsync();
         }
