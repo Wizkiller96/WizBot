@@ -2,6 +2,17 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.2.3] - 01.12.2024
+
+## Fixed
+
+- `.iam` Fixed
+- `.sclr` will now properly change color on many commands it didn't work previously
+
+### Changed
+
+- `.rps` now also has bet amount in the result, like other gambling commands
+
 ## [5.2.2] - 01.12.2024
 
 ### Changed

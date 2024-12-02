@@ -14,7 +14,7 @@ public partial class Utility
         }
 
         private string GetCommandString(WizBotCommandCallModel res)
-            => $"{_bcs.Data.Prefix}{res.Name} {res.Arguments.Select((x, i) => GetParamString(x, i + 1 == res.Arguments.Count)).Join(" ")}";
+            => $"{prefix}{res.Name} {res.Arguments.Select((x, i) => GetParamString(x, i + 1 == res.Arguments.Count)).Join(" ")}";
 
         private static string GetParamString(string val, bool isLast)
             => isLast ? val : "\"" + val + "\"";

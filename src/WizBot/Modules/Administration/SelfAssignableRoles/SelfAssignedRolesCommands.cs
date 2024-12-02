@@ -21,7 +21,7 @@ public partial class Administration
         {
             var guildUser = (IGuildUser)ctx.User;
 
-            var group = await _service.GetRoleGroup(ctx.User.Id, role.Id);
+            var group = await _service.GetRoleGroup(ctx.Guild.Id, role.Id);
 
             IUserMessage msg = null;
             try
@@ -90,7 +90,7 @@ public partial class Administration
                     return;
                 }
 
-                var group = await _service.GetRoleGroup(role.Guild.Id, role.Id);
+                var group = await _service.GetRoleGroup(ctx.Guild.Id, role.Id);
 
                 if (group is null || group.Roles.All(x => x.RoleId != role.Id))
                 {

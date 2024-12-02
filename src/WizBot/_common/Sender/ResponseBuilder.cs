@@ -6,16 +6,17 @@ public sealed partial class ResponseBuilder
 {
     private ICommandContext? ctx;
     private IMessageChannel? channel;
+    private IUser? user;
+    private IUserMessage? msg;
+    
     private string? plainText;
     private IReadOnlyCollection<EmbedBuilder>? embeds;
-    private IUserMessage? msg;
-    private IUser? user;
     private bool sanitizeMentions = true;
     private LocStr? locTxt;
     private object[] locParams = [];
     private bool shouldReply = true;
     private readonly IBotStrings _bs;
-    private readonly BotConfigService _bcs;
+    private readonly IMessageSenderService _sender;
     private EmbedBuilder? embedBuilder;
     private WizBotInteractionBase? inter;
     private Stream? fileStream;
@@ -25,10 +26,10 @@ public sealed partial class ResponseBuilder
 
     public DiscordSocketClient Client { get; set; }
 
-    public ResponseBuilder(IBotStrings bs, BotConfigService bcs, DiscordSocketClient client)
+    public ResponseBuilder(IBotStrings bs, IMessageSenderService sender, DiscordSocketClient client)
     {
         _bs = bs;
-        _bcs = bcs;
+        _sender = sender;
         Client = client;
     }
 
@@ -197,7 +198,7 @@ public sealed partial class ResponseBuilder
         string? url = null,
         string? footer = null)
     {
-        var eb = new WizBotEmbedBuilder(_bcs)
+        var eb = _sender.CreateEmbed(ctx?.Guild?.Id ??  (channel as ITextChannel)?.GuildId ?? (user as IGuildUser)?.GuildId)
             .WithDescription(text);
 
         if (!string.IsNullOrWhiteSpace(title))

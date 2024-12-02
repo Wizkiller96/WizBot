@@ -871,9 +871,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
         else if (result.Result == RpsResultType.Win)
         {
-            if ((long)result.Won > 0)
-                embed.AddField(GetText(strs.won), N((long)result.Won));
-
             msg = GetText(strs.rps_win(ctx.User.Mention,
                 GetRpsPick(pick),
                 GetRpsPick((InputRpsPick)result.ComputerPick)));
@@ -888,6 +885,13 @@ public partial class Gambling : GamblingModule<GamblingService>
         embed
             .WithOkColor()
             .WithDescription(msg);
+
+        if (amount > 0)
+        {
+            embed
+                .AddField(GetText(strs.bet), N(amount), true)
+                .AddField(GetText(strs.won), $"{N((long)result.Won)}", true);
+        }
 
         await Response().Embed(embed).SendAsync();
     }

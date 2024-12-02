@@ -9,31 +9,31 @@ public sealed class MessageSenderService : IMessageSenderService, INService
 
     public MessageSenderService(
         IBotStrings bs,
-        BotConfigService bcs,
         DiscordSocketClient client,
-        IGuildColorsService gcs)
+        IGuildColorsService gcs,
+        BotConfigService bcs)
     {
         _bs = bs;
-        _bcs = bcs;
         _client = client;
         _gcs = gcs;
+        _bcs = bcs;
     }
 
 
     public ResponseBuilder Response(IMessageChannel channel)
-        => new ResponseBuilder(_bs, _bcs, _client)
+        => new ResponseBuilder(_bs, this, _client)
             .Channel(channel);
 
     public ResponseBuilder Response(ICommandContext ctx)
-        => new ResponseBuilder(_bs, _bcs, _client)
+        => new ResponseBuilder(_bs, this, _client)
             .Context(ctx);
 
     public ResponseBuilder Response(IUser user)
-        => new ResponseBuilder(_bs, _bcs, _client)
+        => new ResponseBuilder(_bs, this, _client)
             .User(user);
 
     public ResponseBuilder Response(SocketMessageComponent smc)
-        => new ResponseBuilder(_bs, _bcs, _client)
+        => new ResponseBuilder(_bs, this, _client)
             .Channel(smc.Channel);
 
     public WizBotEmbedBuilder CreateEmbed(ulong? guildId = null)

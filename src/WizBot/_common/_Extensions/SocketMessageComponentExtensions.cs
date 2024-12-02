@@ -9,7 +9,7 @@ public static class SocketMessageComponentExtensions
         MsgType type,
         bool ephemeral = false)
     {
-        var embed = sender.CreateEmbed().WithDescription(text);
+        var embed = sender.CreateEmbed(ch.GuildId).WithDescription(text);
 
         embed = (type switch
         {
