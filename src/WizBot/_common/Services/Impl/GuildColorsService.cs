@@ -108,7 +108,7 @@ public sealed class GuildColorsService : IReadyExecutor, IGuildColorsService, IN
         {
             _colors[guildId] = _colors[guildId] with
             {
-                Pending = color?.ToDiscordColor()
+                Warn = color?.ToDiscordColor()
             };
         }
     }

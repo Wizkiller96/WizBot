@@ -66,9 +66,9 @@ public partial class Administration
 
             await message.ModifyAsync(x =>
                 x.Embed = CreateEmbed()
-                                 .WithDescription(GetText(strs.cache_users_done(added, updated)))
-                                 .WithOkColor()
-                                 .Build()
+                          .WithDescription(GetText(strs.cache_users_done(added, updated)))
+                          .WithOkColor()
+                          .Build()
             );
         }
 
@@ -119,13 +119,13 @@ public partial class Administration
 
             await Response()
                   .Embed(CreateEmbed()
-                                .WithOkColor()
-                                .WithTitle(GetText(strs.scadd))
-                                .AddField(GetText(strs.server),
-                                    cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
-                                    true)
-                                .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
-                                .AddField(GetText(strs.command_text), cmdText))
+                         .WithOkColor()
+                         .WithTitle(GetText(strs.scadd))
+                         .AddField(GetText(strs.server),
+                             cmd.GuildId is null ? "-" : $"{cmd.GuildName}/{cmd.GuildId}",
+                             true)
+                         .AddField(GetText(strs.channel), $"{cmd.ChannelName}/{cmd.ChannelId}", true)
+                         .AddField(GetText(strs.command_text), cmdText))
                   .SendAsync();
         }
 

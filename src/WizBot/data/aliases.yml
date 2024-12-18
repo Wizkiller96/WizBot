@@ -1121,6 +1121,8 @@ xpshopbuy:
   - xpshopbuy
 xpshopuse:
   - xpshopuse
+xplevelset:
+  - xplevelset
 clubcreate:
   - clubcreate
 clubtransfer:

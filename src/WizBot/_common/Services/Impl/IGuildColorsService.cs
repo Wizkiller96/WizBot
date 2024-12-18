@@ -10,4 +10,4 @@ public interface IGuildColorsService
     Task SetPendingColor(ulong guildId, Rgba32? color);
 }
 
-public record struct Colors(Color? Ok, Color? Pending, Color? Error);
+public record struct Colors(Color? Ok, Color? Warn, Color? Error);

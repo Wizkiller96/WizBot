@@ -4821,6 +4821,16 @@ servercolorpending:
   params:
     - color:
         desc: "The hex of the color to set"
+xplevelset:
+  desc: |-
+    Sets the level of the user you specify.
+  ex:
+    - '10 @User'
+  params:
+    - level:
+        desc: "The level to set the user to."
+    - user:
+        desc: "The user to set the level of."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

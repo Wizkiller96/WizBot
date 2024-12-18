@@ -261,7 +261,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                           GuildId = guildId,
                                           Xp = group.Key,
                                           DateAdded = DateTime.UtcNow,
-                                          AwardedXp = 0,
                                           NotifyOnLevelUp = XpNotificationLocation.None
                                       },
                                       _ => new()
@@ -310,8 +309,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 if (guildToAdd.TryGetValue(du.GuildId, out var users)
                     && users.TryGetValue(du.UserId, out var xpGainData))
                 {
-                    var oldLevel = new LevelStats(du.Xp - xpGainData.XpAmount + du.AwardedXp);
-                    var newLevel = new LevelStats(du.Xp + du.AwardedXp);
+                    var oldLevel = new LevelStats(du.Xp - xpGainData.XpAmount);
+                    var newLevel = new LevelStats(du.Xp);
 
                     if (oldLevel.Level < newLevel.Level)
                     {
@@ -595,7 +594,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return await uow
                      .UserXpStats
                      .Where(x => x.GuildId == guildId)
-                     .OrderByDescending(x => x.Xp + x.AwardedXp)
+                     .OrderByDescending(x => x.Xp)
                      .Skip(page * 10)
                      .Take(10)
                      .ToArrayAsyncLinqToDB();
@@ -606,7 +605,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         await using var uow = _db.GetDbContext();
         return await uow.Set<UserXpStats>()
                         .Where(x => x.GuildId == guildId && x.UserId.In(users))
-                        .OrderByDescending(x => x.Xp + x.AwardedXp)
+                        .OrderByDescending(x => x.Xp)
                         .Skip(page * 10)
                         .Take(10)
                         .ToArrayAsyncLinqToDB();
@@ -903,7 +902,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         using var uow = _db.GetDbContext();
         var usr = uow.GetOrCreateUserXpStats(guildId, userId);
 
-        usr.AwardedXp += amount;
+        usr.Xp += amount;
 
         uow.SaveChanges();
     }
@@ -949,7 +948,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return new(du,
             stats,
             new(totalXp),
-            new(stats.Xp + stats.AwardedXp),
+            new(stats.Xp),
             globalRank,
             guildRank);
     }
@@ -1190,19 +1189,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     $"{guild.LevelXp}/{guild.RequiredXp}",
                     Brushes.Solid(template.User.Xp.Guild.Color),
                     outlinePen));
-            }
-
-            if (stats.FullGuildStats.AwardedXp != 0 && template.User.Xp.Awarded.Show)
-            {
-                var sign = stats.FullGuildStats.AwardedXp > 0 ? "+ " : "";
-                var awX = template.User.Xp.Awarded.Pos.X
-                          - (Math.Max(0, stats.FullGuildStats.AwardedXp.ToString().Length - 2) * 5);
-                var awY = template.User.Xp.Awarded.Pos.Y;
-                img.Mutate(x => x.DrawText($"({sign}{stats.FullGuildStats.AwardedXp})",
-                    _fonts.NotoSans.CreateFont(template.User.Xp.Awarded.FontSize, FontStyle.Bold),
-                    Brushes.Solid(template.User.Xp.Awarded.Color),
-                    outlinePen,
-                    new(awX, awY)));
             }
 
             var rankPen = new SolidPen(Color.White, 1);
@@ -1672,6 +1658,29 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         .Where(x => x.GuildId == requestGuildId
                                     && (guildUsers == null || guildUsers.Contains(x.UserId)))
                         .CountAsyncLinqToDB();
+    }
+    
+    public async Task SetLevelAsync(ulong guildId, ulong userId, int level)
+    {
+        var lvlStats = LevelStats.CreateForLevel(level);
+        await using var ctx = _db.GetDbContext();
+        await ctx.GetTable<UserXpStats>()
+                 .InsertOrUpdateAsync(() => new()
+                 {
+                     GuildId = guildId,
+                     UserId = userId,
+                     AwardedXp = 0,
+                     Xp = lvlStats.TotalXp,
+                     NotifyOnLevelUp = XpNotificationLocation.None,
+                     DateAdded = DateTime.UtcNow
+                 }, (old) => new()
+                 {
+                     Xp = lvlStats.TotalXp
+                 }, () => new()
+                 {
+                     GuildId = guildId,
+                     UserId = userId
+                 });
     }
 }
 

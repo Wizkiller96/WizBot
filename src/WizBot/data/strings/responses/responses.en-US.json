@@ -1139,5 +1139,6 @@
   "server_not_found": "Server not found.",
   "server_color_set": "Successfully set a new server color.",
   "lasts_until": "Lasts Until",
-  "winners_count": "Winners"
+  "winners_count": "Winners",
+  "level_set": "Level of user {0} set to {1} on this server."
 }

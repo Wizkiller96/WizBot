@@ -16,13 +16,13 @@ public partial class Utility
             [
                 CreateEmbed()
                     .WithOkColor()
-                    .WithDescription("\\✅"),
+                    .WithDescription("\\✅ {okHex}"),
                 CreateEmbed()
                     .WithPendingColor()
-                    .WithDescription("\\⏳\\⚠️"),
+                    .WithDescription("\\⏳\\⚠️ {warnHex}"),
                 CreateEmbed()
                     .WithErrorColor()
-                    .WithDescription("\\❌")
+                    .WithDescription("\\❌ {errHex}")
             ];
 
             await Response()

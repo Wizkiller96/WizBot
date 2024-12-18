@@ -59,9 +59,9 @@ public partial class Xp : WizBotModule<XpService>
         var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
         var embed = CreateEmbed()
-                           .WithOkColor()
-                           .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
-                           .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
+                    .WithOkColor()
+                    .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
+                    .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
 
         await Response().Embed(embed).SendAsync();
     }
@@ -154,9 +154,9 @@ public partial class Xp : WizBotModule<XpService>
               .Page((items, _) =>
               {
                   var embed = CreateEmbed()
-                                     .WithTitle(GetText(strs.exclusion_list))
-                                     .WithDescription(string.Join('\n', items))
-                                     .WithOkColor();
+                              .WithTitle(GetText(strs.exclusion_list))
+                              .WithDescription(string.Join('\n', items))
+                              .WithOkColor();
 
                   return embed;
               })
@@ -214,16 +214,12 @@ public partial class Xp : WizBotModule<XpService>
 
                   for (var i = 0; i < users.Count; i++)
                   {
-                      var levelStats = new LevelStats(users[i].Xp + users[i].AwardedXp);
+                      var levelStats = new LevelStats(users[i].Xp);
                       var user = ((SocketGuild)ctx.Guild).GetUser(users[i].UserId);
 
                       var userXpData = users[i];
 
                       var awardStr = string.Empty;
-                      if (userXpData.AwardedXp > 0)
-                          awardStr = $"(+{userXpData.AwardedXp})";
-                      else if (userXpData.AwardedXp < 0)
-                          awardStr = $"({userXpData.AwardedXp})";
 
                       embed.AddField($"#{i + 1 + (curPage * 10)} {user?.ToString() ?? users[i].UserId.ToString()}",
                           $"{GetText(strs.level_x(levelStats.Level))} - {levelStats.TotalXp}xp {awardStr}");
@@ -266,8 +262,8 @@ public partial class Xp : WizBotModule<XpService>
               .Page((users, curPage) =>
               {
                   var embed = CreateEmbed()
-                                     .WithOkColor()
-                                     .WithTitle(GetText(strs.global_leaderboard));
+                              .WithOkColor()
+                              .WithTitle(GetText(strs.global_leaderboard));
 
                   if (!users.Any())
                   {
@@ -284,6 +280,28 @@ public partial class Xp : WizBotModule<XpService>
 
                   return embed;
               })
+              .SendAsync();
+    }
+    
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.Administrator)]
+    [Priority(1)]
+    public Task XpLevelSet(int level, IGuildUser user)
+        => XpLevelSet(level, user.Id);
+
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
+    [UserPerm(GuildPerm.Administrator)]
+    [Priority(0)]
+    public async Task XpLevelSet(int level, ulong userId)
+    {
+        if (level < 0)
+            return;
+
+        await _service.SetLevelAsync(ctx.Guild.Id, userId, level);
+        await Response()
+              .Confirm(strs.level_set($"<@{userId}>", Format.Bold(level.ToString())))
               .SendAsync();
     }
 
@@ -351,8 +369,8 @@ public partial class Xp : WizBotModule<XpService>
     public async Task XpReset(ulong userId)
     {
         var embed = CreateEmbed()
-                           .WithTitle(GetText(strs.reset))
-                           .WithDescription(GetText(strs.reset_user_confirm));
+                    .WithTitle(GetText(strs.reset))
+                    .WithDescription(GetText(strs.reset_user_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
@@ -368,8 +386,8 @@ public partial class Xp : WizBotModule<XpService>
     public async Task XpReset()
     {
         var embed = CreateEmbed()
-                           .WithTitle(GetText(strs.reset))
-                           .WithDescription(GetText(strs.reset_server_confirm));
+                    .WithTitle(GetText(strs.reset))
+                    .WithDescription(GetText(strs.reset_server_confirm));
 
         if (!await PromptUserConfirmAsync(embed))
             return;
@@ -446,20 +464,20 @@ public partial class Xp : WizBotModule<XpService>
               {
                   if (!items.Any())
                       return CreateEmbed()
-                                    .WithDescription(GetText(strs.not_found))
-                                    .WithErrorColor();
+                             .WithDescription(GetText(strs.not_found))
+                             .WithErrorColor();
 
                   var (key, item) = items.FirstOrDefault();
 
                   var eb = CreateEmbed()
-                                  .WithOkColor()
-                                  .WithTitle(item.Name)
-                                  .AddField(GetText(strs.price),
-                                      CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()),
-                                      true)
-                                  .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
-                                      ? item.Url
-                                      : item.Preview);
+                           .WithOkColor()
+                           .WithTitle(item.Name)
+                           .AddField(GetText(strs.price),
+                               CurrencyHelper.N(item.Price, Culture, _gss.GetCurrencySign()),
+                               true)
+                           .WithImageUrl(string.IsNullOrWhiteSpace(item.Preview)
+                               ? item.Url
+                               : item.Preview);
 
                   if (!string.IsNullOrWhiteSpace(item.Desc))
                       eb.AddField(GetText(strs.desc), item.Desc);

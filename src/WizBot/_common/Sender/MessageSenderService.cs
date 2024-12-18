@@ -51,7 +51,7 @@ public class WizBotEmbedBuilder : EmbedBuilder
         var bcColors = bcsData.Data.Color;
         _okColor = guildColors?.Ok ?? bcColors.Ok.ToDiscordColor();
         _errorColor = guildColors?.Error ?? bcColors.Error.ToDiscordColor();
-        _pendingColor = guildColors?.Pending ?? bcColors.Pending.ToDiscordColor();
+        _pendingColor = guildColors?.Warn ?? bcColors.Pending.ToDiscordColor();
     }
 
     public EmbedBuilder WithOkColor()

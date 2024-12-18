@@ -4,38 +4,28 @@ namespace WizBot.Db;
 
 public readonly struct LevelStats
 {
-    public const int XP_REQUIRED_LVL_1 = 36;
-    
     public long Level { get; }
     public long LevelXp { get; }
     public long RequiredXp { get; }
     public long TotalXp { get; }
 
-    public LevelStats(long xp)
+    public LevelStats(long totalXp)
     {
-        if (xp < 0)
-            xp = 0;
+        if (totalXp < 0)
+            totalXp = 0;
 
-        TotalXp = xp;
-
-        const int baseXp = XP_REQUIRED_LVL_1;
-
-        var required = baseXp;
-        var totalXp = 0;
-        var lvl = 1;
-        while (true)
-        {
-            required = (int)(baseXp + (baseXp / 4.0 * (lvl - 1)));
-
-            if (required + totalXp > xp)
-                break;
-
-            totalXp += required;
-            lvl++;
-        }
-
-        Level = lvl - 1;
-        LevelXp = xp - totalXp;
-        RequiredXp = required;
+        TotalXp = totalXp;
+        Level = GetLevelByTotalXp(totalXp);
+        LevelXp = totalXp - GetTotalXpReqForLevel(Level);
+        RequiredXp = (9 * (Level + 1)) + 27;
     }
+
+    public static LevelStats CreateForLevel(long level)
+        => new(GetTotalXpReqForLevel(level));
+
+    public static long GetTotalXpReqForLevel(long level)
+        => ((9 * level * level) + (63 * level)) / 2;
+
+    public static long GetLevelByTotalXp(long totalXp)
+        => (long)((-7.0 / 2) + (1 / 6.0 * Math.Sqrt((8 * totalXp) + 441)));
 }
