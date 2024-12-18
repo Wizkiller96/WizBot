@@ -24,10 +24,19 @@ public class GlobalPermissionService : IExecPreCommand, INService
         var settings = _bss.Data;
         var commandName = command.Name.ToLowerInvariant();
 
-        if (commandName != "resetglobalperms"
-            && (settings.Blocked.Commands.Contains(commandName)
-                || settings.Blocked.Modules.Contains(moduleName.ToLowerInvariant())))
-            return Task.FromResult(true);
+        if (commandName != "resetglobalperms")
+        {
+            if (settings.Blocked.Commands.Contains(commandName)
+                || settings.Blocked.Modules.Contains(moduleName.ToLowerInvariant()))
+                return Task.FromResult(true);
+
+            if (ctx.Guild is null)
+            {
+                if (settings.DmBlocked.Commands.Contains(commandName)
+                    || settings.DmBlocked.Modules.Contains(moduleName.ToLowerInvariant()))
+                    return Task.FromResult(true);
+            }
+        }
 
         return Task.FromResult(false);
     }
@@ -37,13 +46,30 @@ public class GlobalPermissionService : IExecPreCommand, INService
     /// </summary>
     /// <param name="moduleName">Lowercase module name</param>
     /// <returns>Whether the module is added</returns>
-    public bool ToggleModule(string moduleName)
+    public bool ToggleModule(string moduleName, bool priv = false)
     {
         var added = false;
         _bss.ModifyConfig(bs =>
         {
+            if (priv)
+            {
+                if (bs.DmBlocked.Modules.Add(moduleName))
+                {
+                    added = true;
+                }
+                else
+                {
+                    bs.DmBlocked.Modules.Remove(moduleName);
+                    added = false;
+                }
+
+                return;
+            }
+
             if (bs.Blocked.Modules.Add(moduleName))
+            {
                 added = true;
+            }
             else
             {
                 bs.Blocked.Modules.Remove(moduleName);
@@ -59,13 +85,30 @@ public class GlobalPermissionService : IExecPreCommand, INService
     /// </summary>
     /// <param name="commandName">Lowercase command name</param>
     /// <returns>Whether the command is added</returns>
-    public bool ToggleCommand(string commandName)
+    public bool ToggleCommand(string commandName, bool priv = false)
     {
         var added = false;
         _bss.ModifyConfig(bs =>
         {
+            if (priv)
+            {
+                if (bs.Blocked.Commands.Add(commandName))
+                {
+                    added = true;
+                }
+                else
+                {
+                    bs.Blocked.Commands.Remove(commandName);
+                    added = false;
+                }
+
+                return;
+            }
+
             if (bs.Blocked.Commands.Add(commandName))
+            {
                 added = true;
+            }
             else
             {
                 bs.Blocked.Commands.Remove(commandName);

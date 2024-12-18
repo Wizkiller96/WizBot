@@ -13,7 +13,7 @@ namespace WizBot.Common.Configs;
 public sealed partial class BotConfig : ICloneable<BotConfig>
 {
     [Comment("""DO NOT CHANGE""")]
-    public int Version { get; set; } = 8;
+    public int Version { get; set; } = 9;
 
     [Comment("""
         Most commands, when executed, have a small colored line
@@ -81,6 +81,9 @@ public sealed partial class BotConfig : ICloneable<BotConfig>
 
     [Comment("""List of modules and commands completely blocked on the bot""")]
     public BlockedConfig Blocked { get; set; }
+
+    [Comment("""List of modules and commands blocked from usage in DMs on the bot""")]
+    public BlockedConfig DmBlocked { get; set; } = new();
 
     [Comment("""Which string will be used to recognize the commands""")]
     public string Prefix { get; set; }

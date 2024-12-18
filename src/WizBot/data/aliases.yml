@@ -1039,6 +1039,12 @@ gamevoicechannel:
   - gvc
 shoplistadd:
   - shoplistadd
+dmcommand:
+  - dmcommand
+  - dmcmd
+dmmodule:
+  - dmmodule
+  - dmmod
 globalcommand:
   - globalcommand
   - gcmd

@@ -70,10 +70,10 @@ public sealed class BotConfigService : ConfigServiceBase<BotConfig>
                 c.IgnoreOtherBots = true;
             });
         
-        if(data.Version < 8)
+        if(data.Version < 9)
             ModifyConfig(c =>
             {
-                c.Version = 8;
+                c.Version = 9;
             });
     }
 }
