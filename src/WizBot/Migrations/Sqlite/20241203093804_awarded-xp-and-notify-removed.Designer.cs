@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WizBot.Db;
 
@@ -10,9 +11,11 @@ using WizBot.Db;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    partial class WizBotSqliteContextModelSnapshot : ModelSnapshot
+    [Migration("20241203093804_awarded-xp-and-notify-removed")]
+    partial class awardedxpandnotifyremoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -2012,7 +2015,7 @@ namespace WizBot.Migrations
 
                     b.ToTable("StreamRoleWhitelistedUser");
                 });
-            
+
             modelBuilder.Entity("WizBot.Db.Models.TempRole", b =>
                 {
                     b.Property<int>("Id")

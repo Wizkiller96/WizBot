@@ -56,25 +56,18 @@ public partial class Xp : WizBotModule<XpService>
     public async Task XpNotify()
     {
         var globalSetting = _service.GetNotificationType(ctx.User);
-        var serverSetting = _service.GetNotificationType(ctx.User.Id, ctx.Guild.Id);
 
         var embed = CreateEmbed()
                     .WithOkColor()
-                    .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting))
-                    .AddField(GetText(strs.xpn_setting_server), GetNotifLocationString(serverSetting));
+                    .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting));
 
         await Response().Embed(embed).SendAsync();
     }
 
     [Cmd]
-    [RequireContext(ContextType.Guild)]
-    public async Task XpNotify(NotifyPlace place, XpNotificationLocation type)
+    public async Task XpNotify(XpNotificationLocation type)
     {
-        if (place == NotifyPlace.Guild)
-            await _service.ChangeNotificationType(ctx.User.Id, ctx.Guild.Id, type);
-        else
-            await _service.ChangeNotificationType(ctx.User, type);
-
+        await _service.ChangeNotificationType(ctx.User, type);
         await ctx.OkAsync();
     }
 

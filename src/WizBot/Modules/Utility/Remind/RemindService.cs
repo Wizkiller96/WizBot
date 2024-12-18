@@ -21,6 +21,8 @@ public class RemindService : INService, IReadyExecutor, IRemindService
     private readonly IMessageSenderService _sender;
     private readonly CultureInfo _culture;
 
+    private TaskCompletionSource<bool> _tcs;
+
     public RemindService(
         DiscordSocketClient client,
         DbService db,
@@ -44,8 +46,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
     public async Task OnReadyAsync()
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
-        while (await timer.WaitForNextTickAsync())
+        while (true)
         {
             await OnReminderLoopTickInternalAsync();
         }
@@ -55,8 +56,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
     {
         try
         {
-            var now = DateTime.UtcNow;
-            var reminders = await GetRemindersBeforeAsync(now);
+            var reminders = await GetRemindersBeforeAsync();
             if (reminders.Count == 0)
                 return;
 
@@ -67,7 +67,6 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             {
                 var executedReminders = group.ToList();
                 await executedReminders.Select(ReminderTimerAction).WhenAll();
-                await RemoveReminders(executedReminders.Select(x => x.Id));
                 await Task.Delay(1500);
             }
         }
@@ -80,21 +79,51 @@ public class RemindService : INService, IReadyExecutor, IRemindService
     private async Task RemoveReminders(IEnumerable<int> reminders)
     {
         await using var uow = _db.GetDbContext();
-        await uow.Set<Reminder>()
-                 .ToLinqToDBTable()
+        await uow.GetTable<Reminder>()
                  .DeleteAsync(x => reminders.Contains(x.Id));
 
         await uow.SaveChangesAsync();
     }
 
-    private async Task<List<Reminder>> GetRemindersBeforeAsync(DateTime now)
+    private async Task<IReadOnlyList<Reminder>> GetRemindersBeforeAsync()
     {
-        await using var uow = _db.GetDbContext();
-        return await uow.Set<Reminder>()
-                        .ToLinqToDBTable()
-                        .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId, _creds.TotalShards, _client.ShardId)
-                                    && x.When < now)
-                        .ToListAsyncLinqToDB();
+        while (true)
+        {
+            _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            await using var uow = _db.GetDbContext();
+            var earliest = await uow.Set<Reminder>()
+                                    .ToLinqToDBTable()
+                                    .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId,
+                                        _creds.TotalShards,
+                                        _client.ShardId))
+                                    .OrderBy(x => x.When)
+                                    .FirstOrDefaultAsyncLinqToDB();
+
+            if (earliest == default)
+            {
+                await _tcs.Task;
+                continue;
+            }
+
+            var now = DateTime.UtcNow;
+            if (earliest.When > now)
+            {
+                var diff = earliest.When - now;
+                // Log.Information("Waiting for {Diff}", diff);
+                await Task.WhenAny(Task.Delay(diff), _tcs.Task);
+                continue;
+            }
+
+            var reminders = await uow.Set<Reminder>()
+                                     .ToLinqToDBTable()
+                                     .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId,
+                                         _creds.TotalShards,
+                                         _client.ShardId))
+                                     .Where(x => x.When <= now)
+                                     .DeleteWithOutputAsync();
+
+            return reminders;
+        }
     }
 
     public bool TryParseRemindMessage(string input, out RemindObject obj)
@@ -243,21 +272,24 @@ public class RemindService : INService, IReadyExecutor, IRemindService
         string message,
         ReminderType reminderType)
     {
-        var rem = new Reminder
+        await using (var ctx = _db.GetDbContext())
         {
-            UserId = userId,
-            ChannelId = targetId,
-            ServerId = guildId ?? 0,
-            IsPrivate = isPrivate,
-            When = time,
-            Message = message,
-            Type = reminderType
-        };
+            await ctx.GetTable<Reminder>()
+                     .InsertAsync(() => new Reminder
+                     {
+                         UserId = userId,
+                         ChannelId = targetId,
+                         ServerId = guildId ?? 0,
+                         IsPrivate = isPrivate,
+                         When = time,
+                         Message = message,
+                         Type = reminderType,
+                         DateAdded = DateTime.UtcNow
+                     });
+            await ctx.SaveChangesAsync();
+        }
 
-        await using var ctx = _db.GetDbContext();
-        await ctx.Set<Reminder>()
-                 .AddAsync(rem);
-        await ctx.SaveChangesAsync();
+        _tcs.SetResult(true);
     }
 
     public async Task<List<Reminder>> GetServerReminders(int page, ulong guildId)

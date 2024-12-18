@@ -28,17 +28,17 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         public async Task AntiAlt(
-            StoopidTime minAge,
+            ParsedTimespan minAge,
             PunishmentAction action,
-            [Leftover] StoopidTime punishTime = null)
+            [Leftover] ParsedTimespan punishTimespan = null)
         {
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
-            var punishTimeMinutes = (int?)punishTime?.Time.TotalMinutes ?? 0;
+            var punishTimeMinutes = (int?)punishTimespan?.Time.TotalMinutes ?? 0;
 
             if (minAgeMinutes < 1 || punishTimeMinutes < 0)
                 return;
 
-            var minutes = (int?)punishTime?.Time.TotalMinutes ?? 0;
+            var minutes = (int?)punishTimespan?.Time.TotalMinutes ?? 0;
             if (action is PunishmentAction.TimeOut && minutes < 1)
                 minutes = 1;
 
@@ -53,7 +53,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        public async Task AntiAlt(StoopidTime minAge, PunishmentAction action, [Leftover] IRole role)
+        public async Task AntiAlt(ParsedTimespan minAge, PunishmentAction action, [Leftover] IRole role)
         {
             var minAgeMinutes = (int)minAge.Time.TotalMinutes;
 
@@ -86,8 +86,8 @@ public partial class Administration
             int userThreshold,
             int seconds,
             PunishmentAction action,
-            [Leftover] StoopidTime punishTime)
-            => InternalAntiRaid(userThreshold, seconds, action, punishTime);
+            [Leftover] ParsedTimespan punishTimespan)
+            => InternalAntiRaid(userThreshold, seconds, action, punishTimespan);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -100,7 +100,7 @@ public partial class Administration
             int userThreshold,
             int seconds = 10,
             PunishmentAction action = PunishmentAction.Mute,
-            StoopidTime punishTime = null)
+            ParsedTimespan punishTimespan = null)
         {
             if (action == PunishmentAction.AddRole)
             {
@@ -120,13 +120,13 @@ public partial class Administration
                 return;
             }
 
-            if (punishTime is not null)
+            if (punishTimespan is not null)
             {
                 if (!_service.IsDurationAllowed(action))
                     await Response().Error(strs.prot_cant_use_time).SendAsync();
             }
 
-            var time = (int?)punishTime?.Time.TotalMinutes ?? 0;
+            var time = (int?)punishTimespan?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
                 return;
 
@@ -170,8 +170,8 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [Priority(1)]
-        public Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] StoopidTime punishTime)
-            => InternalAntiSpam(messageCount, action, punishTime);
+        public Task AntiSpam(int messageCount, PunishmentAction action, [Leftover] ParsedTimespan punishTimespan)
+            => InternalAntiSpam(messageCount, action, punishTimespan);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
@@ -183,19 +183,19 @@ public partial class Administration
         private async Task InternalAntiSpam(
             int messageCount,
             PunishmentAction action,
-            StoopidTime timeData = null,
+            ParsedTimespan timespanData = null,
             IRole role = null)
         {
             if (messageCount is < 2 or > 10)
                 return;
 
-            if (timeData is not null)
+            if (timespanData is not null)
             {
                 if (!_service.IsDurationAllowed(action))
                     await Response().Error(strs.prot_cant_use_time).SendAsync();
             }
 
-            var time = (int?)timeData?.Time.TotalMinutes ?? 0;
+            var time = (int?)timespanData?.Time.TotalMinutes ?? 0;
             if (time is < 0 or > 60 * 24)
                 return;
 

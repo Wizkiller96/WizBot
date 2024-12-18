@@ -313,7 +313,7 @@ public partial class Administration
             int number,
             AddRole _,
             IRole role,
-            StoopidTime time = null)
+            ParsedTimespan timespan = null)
         {
             var punish = PunishmentAction.AddRole;
 
@@ -324,12 +324,12 @@ public partial class Administration
                 return;
             }
 
-            var success = await _service.WarnPunish(ctx.Guild.Id, number, punish, time, role);
+            var success = await _service.WarnPunish(ctx.Guild.Id, number, punish, timespan, role);
 
             if (!success)
                 return;
 
-            if (time is null)
+            if (timespan is null)
             {
                 await Response()
                       .Confirm(strs.warn_punish_set(Format.Bold(punish.ToString()),
@@ -341,7 +341,7 @@ public partial class Administration
                 await Response()
                       .Confirm(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
                           Format.Bold(number.ToString()),
-                          Format.Bold(time.Input)))
+                          Format.Bold(timespan.Input)))
                       .SendAsync();
             }
         }
@@ -349,7 +349,7 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task WarnPunish(int number, PunishmentAction punish, StoopidTime time = null)
+        public async Task WarnPunish(int number, PunishmentAction punish, ParsedTimespan timespan = null)
         {
             // this should never happen. Addrole has its own method with higher priority
             // also disallow warn punishment for getting warned
@@ -357,15 +357,15 @@ public partial class Administration
                 return;
 
             // you must specify the time for timeout
-            if (punish is PunishmentAction.TimeOut && time is null)
+            if (punish is PunishmentAction.TimeOut && timespan is null)
                 return;
 
-            var success = await _service.WarnPunish(ctx.Guild.Id, number, punish, time);
+            var success = await _service.WarnPunish(ctx.Guild.Id, number, punish, timespan);
 
             if (!success)
                 return;
 
-            if (time is null)
+            if (timespan is null)
             {
                 await Response()
                       .Confirm(strs.warn_punish_set(Format.Bold(punish.ToString()),
@@ -377,7 +377,7 @@ public partial class Administration
                 await Response()
                       .Confirm(strs.warn_punish_set_timed(Format.Bold(punish.ToString()),
                           Format.Bold(number.ToString()),
-                          Format.Bold(time.Input)))
+                          Format.Bold(timespan.Input)))
                       .SendAsync();
             }
         }
@@ -417,17 +417,17 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public Task Ban(StoopidTime time, IUser user, [Leftover] string msg = null)
-            => Ban(time, user.Id, msg);
+        public Task Ban(ParsedTimespan timespan, IUser user, [Leftover] string msg = null)
+            => Ban(timespan, user.Id, msg);
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(0)]
-        public async Task Ban(StoopidTime time, ulong userId, [Leftover] string msg = null)
+        public async Task Ban(ParsedTimespan timespan, ulong userId, [Leftover] string msg = null)
         {
-            if (time.Time > TimeSpan.FromDays(49))
+            if (timespan.Time > TimeSpan.FromDays(49))
                 return;
 
             var guildUser = await ((DiscordSocketClient)Context.Client).Rest.GetGuildUserAsync(ctx.Guild.Id, userId);
@@ -444,7 +444,7 @@ public partial class Administration
                 {
                     var defaultMessage = GetText(strs.bandm(Format.Bold(ctx.Guild.Name), msg));
                     var smartText =
-                        await _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, time.Time);
+                        await _service.GetBanUserDmEmbed(Context, guildUser, defaultMessage, msg, timespan.Time);
                     if (smartText is not null)
                         await Response().User(guildUser).Text(smartText).SendAsync();
                 }
@@ -456,14 +456,14 @@ public partial class Administration
 
             var user = await ctx.Client.GetUserAsync(userId);
             var banPrune = await _service.GetBanPruneAsync(ctx.Guild.Id) ?? 7;
-            await _mute.TimedBan(ctx.Guild, userId, time.Time, (ctx.User + " | " + msg).TrimTo(512), banPrune);
+            await _mute.TimedBan(ctx.Guild, userId, timespan.Time, (ctx.User + " | " + msg).TrimTo(512), banPrune);
             var toSend = CreateEmbed()
                                 .WithOkColor()
                                 .WithTitle("⛔️ " + GetText(strs.banned_user))
                                 .AddField(GetText(strs.username), user?.ToString() ?? userId.ToString(), true)
                                 .AddField("ID", userId.ToString(), true)
                                 .AddField(GetText(strs.duration),
-                                    time.Time.ToPrettyStringHm(),
+                                    timespan.Time.ToPrettyStringHm(),
                                     true);
 
             if (dmFailed)
@@ -601,7 +601,7 @@ public partial class Administration
         [UserPerm(GuildPerm.BanMembers)]
         [BotPerm(GuildPerm.BanMembers)]
         [Priority(1)]
-        public Task BanMessageTest(StoopidTime duration, [Leftover] string reason = null)
+        public Task BanMessageTest(ParsedTimespan duration, [Leftover] string reason = null)
             => InternalBanMessageTest(reason, duration.Time);
 
         private async Task InternalBanMessageTest(string reason, TimeSpan? duration)
@@ -790,7 +790,7 @@ public partial class Administration
         [UserPerm(GuildPerm.ModerateMembers)]
         [BotPerm(GuildPerm.ModerateMembers)]
         [Priority(2)]
-        public async Task Timeout(IUser globalUser, StoopidTime time, [Leftover] string msg = null)
+        public async Task Timeout(IUser globalUser, ParsedTimespan timespan, [Leftover] string msg = null)
         {
             var user = await ctx.Guild.GetUserAsync(globalUser.Id);
 
@@ -816,7 +816,7 @@ public partial class Administration
                 dmFailed = true;
             }
 
-            await user.SetTimeOutAsync(time.Time);
+            await user.SetTimeOutAsync(timespan.Time);
 
             var toSend = CreateEmbed()
                                 .WithOkColor()

@@ -159,14 +159,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
     }
 
-    public sealed class MiniGuildXpStats
-    {
-        public long Xp { get; set; }
-        public XpNotificationLocation NotifyOnLevelUp { get; set; }
-        public ulong GuildId { get; set; }
-        public ulong UserId { get; set; }
-    }
-
     private async Task UpdateXp()
     {
         try
@@ -261,7 +253,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                           GuildId = guildId,
                                           Xp = group.Key,
                                           DateAdded = DateTime.UtcNow,
-                                          NotifyOnLevelUp = XpNotificationLocation.None
                                       },
                                       _ => new()
                                       {
@@ -320,8 +311,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                 du.UserId,
                                 true,
                                 oldLevel.Level,
-                                newLevel.Level,
-                                du.NotifyOnLevelUp));
+                                newLevel.Level));
                     }
                 }
             }
@@ -339,7 +329,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         bool isServer,
         long oldLevel,
         long newLevel,
-        XpNotificationLocation notifyLoc)
+        XpNotificationLocation notifyLoc = XpNotificationLocation.None)
         => async () =>
         {
             if (isServer)
@@ -632,21 +622,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         .Skip(page * 10)
                         .Take(10)
                         .ToArrayAsyncLinqToDB();
-    }
-
-    public async Task ChangeNotificationType(ulong userId, ulong guildId, XpNotificationLocation type)
-    {
-        await using var uow = _db.GetDbContext();
-        var user = uow.GetOrCreateUserXpStats(guildId, userId);
-        user.NotifyOnLevelUp = type;
-        await uow.SaveChangesAsync();
-    }
-
-    public XpNotificationLocation GetNotificationType(ulong userId, ulong guildId)
-    {
-        using var uow = _db.GetDbContext();
-        var user = uow.GetOrCreateUserXpStats(guildId, userId);
-        return user.NotifyOnLevelUp;
     }
 
     public XpNotificationLocation GetNotificationType(IUser user)
@@ -1669,9 +1644,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                  {
                      GuildId = guildId,
                      UserId = userId,
-                     AwardedXp = 0,
                      Xp = lvlStats.TotalXp,
-                     NotifyOnLevelUp = XpNotificationLocation.None,
                      DateAdded = DateTime.UtcNow
                  }, (old) => new()
                  {

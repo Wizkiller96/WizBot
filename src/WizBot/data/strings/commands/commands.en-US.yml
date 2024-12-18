@@ -4831,6 +4831,29 @@ xplevelset:
         desc: "The level to set the user to."
     - user:
         desc: "The user to set the level of."
+temprole:
+  desc: |-
+    Grants a user a temporary role for the specified number of time.
+    The role must exist and be lower in the role hierarchy than your highest role.
+  ex:
+    - '15m @User Jail'
+    - '7d @Newbie Trial Member'
+  params:
+    - days:
+        desc: "The time after which the role is automatically removed."
+    - user:
+        desc: "The user to give the role to."
+    - role:
+        desc: "The role to give to the user."
+minesweeper:
+  desc: |-
+    Creates a spoiler-based minesweeper mini game.
+    You may specify the number of mines.
+  ex:
+    - '15'
+  params:
+    - mines:
+        desc: "The number of mines to create."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

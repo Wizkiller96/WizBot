@@ -9,6 +9,7 @@ public sealed class AfkService : INService, IReadyExecutor
     private readonly MessageSenderService _mss;
 
     private static readonly TimeSpan _maxAfkDuration = 8.Hours();
+
     public AfkService(IBotCache cache, DiscordSocketClient client, MessageSenderService mss)
     {
         _cache = cache;
@@ -18,6 +19,9 @@ public sealed class AfkService : INService, IReadyExecutor
 
     private static TypedKey<string> GetKey(ulong userId)
         => new($"afk:msg:{userId}");
+
+    private static TypedKey<bool> GetRecentlySentKey(ulong userId, ulong channelId)
+        => new($"afk:recent:{userId}:{channelId}");
 
     public async Task<bool> SetAfkAsync(ulong userId, string text)
     {
@@ -43,9 +47,7 @@ public sealed class AfkService : INService, IReadyExecutor
                             msg.DeleteAfter(5);
                         });
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -61,7 +63,7 @@ public sealed class AfkService : INService, IReadyExecutor
             await Task.Delay(_maxAfkDuration);
             _client.MessageReceived -= StopAfk;
         });
-        
+
         return added;
     }
 
@@ -72,36 +74,29 @@ public sealed class AfkService : INService, IReadyExecutor
         return Task.CompletedTask;
     }
 
-    private Task TryTriggerAfkMessage(SocketMessage arg)
+    private Task TryTriggerAfkMessage(SocketMessage sm)
     {
-        if (arg.Author.IsBot || arg.Author.IsWebhook)
+        if (sm.Author.IsBot || sm.Author.IsWebhook)
             return Task.CompletedTask;
 
-        if (arg is not IUserMessage uMsg || uMsg.Channel is not ITextChannel tc)
+        if (sm is not IUserMessage uMsg || uMsg.Channel is not ITextChannel tc)
             return Task.CompletedTask;
-        
-        if ((arg.MentionedUsers.Count is 0 or > 3) && uMsg.ReferencedMessage is null)
+
+        if ((sm.MentionedUsers.Count is 0 or > 3) && uMsg.ReferencedMessage is null)
             return Task.CompletedTask;
 
         _ = Task.Run(async () =>
         {
-            var botUser = await tc.Guild.GetCurrentUserAsync();
-
-            var perms = botUser.GetPermissions(tc);
-
-            if (!perms.SendMessages)
-                return;
-
             ulong mentionedUserId = 0;
 
-            if (arg.MentionedUsers.Count <= 3)
+            if (sm.MentionedUsers.Count <= 3)
             {
                 foreach (var uid in uMsg.MentionedUserIds)
                 {
-                    if (uid == arg.Author.Id)
+                    if (uid == sm.Author.Id)
                         continue;
 
-                    if (arg.Content.StartsWith($"<@{uid}>") || arg.Content.StartsWith($"<@!{uid}>"))
+                    if (sm.Content.StartsWith($"<@{uid}>") || sm.Content.StartsWith($"<@!{uid}>"))
                     {
                         mentionedUserId = uid;
                         break;
@@ -115,9 +110,10 @@ public sealed class AfkService : INService, IReadyExecutor
                 {
                     return;
                 }
-                
+
                 mentionedUserId = repliedUserId;
             }
+
 
             try
             {
@@ -125,16 +121,35 @@ public sealed class AfkService : INService, IReadyExecutor
                 if (result.TryPickT0(out var msg, out _))
                 {
                     var st = SmartText.CreateFrom(msg);
-                    
+
                     st = $"The user you've pinged (<#{mentionedUserId}>) is AFK: " + st;
-                    
-                    var toDelete = await _mss.Response(arg.Channel)
-                                             .User(arg.Author)
+
+                    var toDelete = await _mss.Response(sm.Channel)
+                                             .User(sm.Author)
                                              .Message(uMsg)
                                              .Text(st)
                                              .SendAsync();
 
                     toDelete.DeleteAfter(30);
+
+                    var botUser = await tc.Guild.GetCurrentUserAsync();
+                    var perms = botUser.GetPermissions(tc);
+                    if (!perms.SendMessages)
+                        return;
+
+                    var key = GetRecentlySentKey(mentionedUserId, sm.Channel.Id);
+                    var recent = await _cache.GetAsync(key);
+
+                    if (!recent.TryPickT0(out _, out _))
+                    {
+                        var chMsg = await _mss.Response(sm.Channel)
+                                              .Message(uMsg)
+                                              .Pending(strs.user_afk($"<@{mentionedUserId}>"))
+                                              .SendAsync();
+
+                        chMsg.DeleteAfter(5);
+                        await _cache.AddAsync(key, true, expiry: TimeSpan.FromMinutes(5));
+                    }
                 }
             }
             catch (HttpException ex)

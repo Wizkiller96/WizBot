@@ -72,18 +72,18 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles | GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async Task Mute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task Mute(ParsedTimespan timespan, IGuildUser user, [Leftover] string reason = "")
         {
-            if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
+            if (timespan.Time < TimeSpan.FromMinutes(1) || timespan.Time > TimeSpan.FromDays(49))
                 return;
             try
             {
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.TimedMute(user, ctx.User, time.Time, reason: reason);
+                await _service.TimedMute(user, ctx.User, timespan.Time, reason: reason);
                 await Response().Confirm(strs.user_muted_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes)).SendAsync();
+                    (int)timespan.Time.TotalMinutes)).SendAsync();
             }
             catch (Exception ex)
             {
@@ -133,18 +133,18 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
         [Priority(1)]
-        public async Task ChatMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task ChatMute(ParsedTimespan timespan, IGuildUser user, [Leftover] string reason = "")
         {
-            if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
+            if (timespan.Time < TimeSpan.FromMinutes(1) || timespan.Time > TimeSpan.FromDays(49))
                 return;
             try
             {
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Chat, reason);
+                await _service.TimedMute(user, ctx.User, timespan.Time, MuteType.Chat, reason);
                 await Response().Confirm(strs.user_chat_mute_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes)).SendAsync();
+                    (int)timespan.Time.TotalMinutes)).SendAsync();
             }
             catch (Exception ex)
             {
@@ -193,18 +193,18 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.MuteMembers)]
         [Priority(1)]
-        public async Task VoiceMute(StoopidTime time, IGuildUser user, [Leftover] string reason = "")
+        public async Task VoiceMute(ParsedTimespan timespan, IGuildUser user, [Leftover] string reason = "")
         {
-            if (time.Time < TimeSpan.FromMinutes(1) || time.Time > TimeSpan.FromDays(49))
+            if (timespan.Time < TimeSpan.FromMinutes(1) || timespan.Time > TimeSpan.FromDays(49))
                 return;
             try
             {
                 if (!await VerifyMutePermissions((IGuildUser)ctx.User, user))
                     return;
 
-                await _service.TimedMute(user, ctx.User, time.Time, MuteType.Voice, reason);
+                await _service.TimedMute(user, ctx.User, timespan.Time, MuteType.Voice, reason);
                 await Response().Confirm(strs.user_voice_mute_time(Format.Bold(user.ToString()),
-                    (int)time.Time.TotalMinutes)).SendAsync();
+                    (int)timespan.Time.TotalMinutes)).SendAsync();
             }
             catch
             {

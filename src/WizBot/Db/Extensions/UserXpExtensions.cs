@@ -20,7 +20,6 @@ public static class UserXpExtensions
             {
                 Xp = 0,
                 UserId = userId,
-                NotifyOnLevelUp = XpNotificationLocation.None,
                 GuildId = guildId
             });
         }

@@ -3,8 +3,8 @@ namespace Wiz.Common;
 
 public enum AddRemove
 {
-    Add = int.MinValue,
-    Remove = int.MinValue + 1,
-    Rem = int.MinValue + 1,
-    Rm = int.MinValue + 1
+    Add = 0,
+    Remove = 1,
+    Rem = 1,
+    Rm = 1,
 }

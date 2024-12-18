@@ -35,30 +35,37 @@ public class GuildConfig : DbEntity
     public bool FilterLinks { get; set; }
     public HashSet<FilterChannelId> FilterInvitesChannelIds { get; set; } = new();
     public HashSet<FilterLinksChannelId> FilterLinksChannelIds { get; set; } = new();
-
-    //public bool FilterLinks { get; set; }
-    //public HashSet<FilterLinksChannelId> FilterLinksChannels { get; set; } = new HashSet<FilterLinksChannelId>();
-
+    
     public bool FilterWords { get; set; }
     public HashSet<FilteredWord> FilteredWords { get; set; } = new();
     public HashSet<FilterWordsChannelId> FilterWordsChannelIds { get; set; } = new();
 
+    // mute
     public HashSet<MutedUserId> MutedUsers { get; set; } = new();
 
     public string MuteRoleName { get; set; }
+    
+    // chatterbot
     public bool CleverbotEnabled { get; set; }
 
+    // protection
     public AntiRaidSetting AntiRaidSetting { get; set; }
     public AntiSpamSetting AntiSpamSetting { get; set; }
     public AntiAltSetting AntiAltSetting { get; set; }
 
+    // time
     public string Locale { get; set; }
     public string TimeZoneId { get; set; }
 
+    // timers 
     public HashSet<UnmuteTimer> UnmuteTimers { get; set; } = new();
     public HashSet<UnbanTimer> UnbanTimer { get; set; } = new();
     public HashSet<UnroleTimer> UnroleTimer { get; set; } = new();
+    
+    // vcrole
     public HashSet<VcRoleInfo> VcRoleInfos { get; set; }
+    
+    // aliases
     public HashSet<CommandAlias> CommandAliases { get; set; } = new();
     public bool WarningsInitialized { get; set; }
     public HashSet<SlowmodeIgnoredUser> SlowmodeIgnoredUsers { get; set; }

@@ -74,6 +74,35 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        #region Notify
+
+        modelBuilder.Entity<Notify>(e =>
+        {
+            e.HasAlternateKey(x => new
+            {
+                x.GuildId,
+                x.Event
+            });
+        });
+
+        #endregion
+
+        #region TempRoles
+
+        modelBuilder.Entity<TempRole>(e =>
+        {
+            e.HasAlternateKey(x => new
+            {
+                x.GuildId,
+                x.UserId,
+                x.RoleId
+            });
+
+            e.HasIndex(x => x.ExpiresAt);
+        });
+
+        #endregion
+
         #region GuildColors
 
         modelBuilder.Entity<GuildColors>()
@@ -449,7 +478,6 @@ public abstract class WizBotContext : DbContext
         xps.HasIndex(x => x.UserId);
         xps.HasIndex(x => x.GuildId);
         xps.HasIndex(x => x.Xp);
-        xps.HasIndex(x => x.AwardedXp);
 
         #endregion
 

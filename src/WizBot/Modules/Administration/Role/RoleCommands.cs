@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using Google.Protobuf.WellKnownTypes;
+using WizBot.Common.TypeReaders.Models;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = SixLabors.ImageSharp.Color;
 
@@ -13,13 +15,18 @@ public partial class Administration
             Excl
         }
 
+        private readonly TempRoleService _tempRoleService;
         private readonly IServiceProvider _services;
         private StickyRolesService _stickyRoleSvc;
 
-        public RoleCommands(IServiceProvider services, StickyRolesService stickyRoleSvc)
+        public RoleCommands(
+            IServiceProvider services,
+            StickyRolesService stickyRoleSvc,
+            TempRoleService tempRoleService)
         {
             _services = services;
             _stickyRoleSvc = stickyRoleSvc;
+            _tempRoleService = tempRoleService;
         }
 
         [Cmd]
@@ -34,13 +41,16 @@ public partial class Administration
                 return;
             try
             {
-                await targetUser.AddRoleAsync(roleToAdd, new RequestOptions()
-                {
-                    AuditLogReason = $"Added by [{ctx.User.Username}]"
-                });
+                await targetUser.AddRoleAsync(roleToAdd,
+                    new RequestOptions()
+                    {
+                        AuditLogReason = $"Added by [{ctx.User.Username}]"
+                    });
 
-                await Response().Confirm(strs.setrole(Format.Bold(roleToAdd.Name),
-                    Format.Bold(targetUser.ToString()))).SendAsync();
+                await Response()
+                      .Confirm(strs.setrole(Format.Bold(roleToAdd.Name),
+                          Format.Bold(targetUser.ToString())))
+                      .SendAsync();
             }
             catch (Exception ex)
             {
@@ -62,8 +72,10 @@ public partial class Administration
             try
             {
                 await targetUser.RemoveRoleAsync(roleToRemove);
-                await Response().Confirm(strs.remrole(Format.Bold(roleToRemove.Name),
-                    Format.Bold(targetUser.ToString()))).SendAsync();
+                await Response()
+                      .Confirm(strs.remrole(Format.Bold(roleToRemove.Name),
+                          Format.Bold(targetUser.ToString())))
+                      .SendAsync();
             }
             catch
             {
@@ -203,6 +215,30 @@ public partial class Administration
             {
                 await Response().Confirm(strs.sticky_roles_disabled).SendAsync();
             }
+        }
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.Administrator)]
+        [BotPerm(GuildPerm.ManageRoles)]
+        public async Task TempRole(ParsedTimespan timespan, IUser user, [Leftover] IRole role)
+        {
+            if (!await CheckRoleHierarchy(role))
+            {
+                await Response()
+                      .Error(strs.hierarchy)
+                      .SendAsync();
+                return;
+            }
+
+            await _tempRoleService.AddTempRoleAsync(ctx.Guild.Id, role.Id, user.Id, timespan.Time);
+            
+
+            await Response()
+                  .Confirm(strs.temp_role_added(user.Mention,
+                      Format.Bold(role.Name),
+                      TimestampTag.FromDateTime(DateTime.UtcNow.Add(timespan.Time), TimestampTagStyles.Relative)))
+                  .SendAsync();
         }
     }
 }

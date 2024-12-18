@@ -98,10 +98,10 @@ public partial class Utility
                 return;
 
             var embed = CreateEmbed()
-                               .WithOkColor()
-                               .WithTitle(GetText(guildId is not null
-                                   ? strs.reminder_server_list
-                                   : strs.reminder_list));
+                        .WithOkColor()
+                        .WithTitle(GetText(guildId is not null
+                            ? strs.reminder_server_list
+                            : strs.reminder_list));
 
             List<Reminder> rems;
             if (guildId is { } gid)
@@ -193,23 +193,14 @@ public partial class Utility
                     message = message.SanitizeAllMentions();
             }
 
-            var rem = new Reminder
-            {
-                ChannelId = targetId,
-                IsPrivate = isPrivate,
-                When = time,
-                Message = message,
-                UserId = ctx.User.Id,
-                ServerId = ctx.Guild?.Id ?? 0
-            };
+            await _service.AddReminderAsync(ctx.User.Id,
+                targetId,
+                ctx.Guild?.Id,
+                isPrivate,
+                time,
+                message,
+                ReminderType.User);
 
-            await using (var uow = _db.GetDbContext())
-            {
-                uow.Set<Reminder>().Add(rem);
-                await uow.SaveChangesAsync();
-            }
-
-            // var gTime = ctx.Guild is null ? time : TimeZoneInfo.ConvertTime(time, _tz.GetTimeZoneOrUtc(ctx.Guild.Id));
             await Response()
                   .Confirm($"\u23f0 {GetText(strs.remind2(
                       Format.Bold(!isPrivate ? $"<#{targetId}>" : ctx.User.Username),

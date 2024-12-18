@@ -1144,5 +1144,9 @@
   "server_color_set": "Successfully set a new server color.",
   "lasts_until": "Lasts Until",
   "winners_count": "Winners",
-  "level_set": "Level of user {0} set to {1} on this server."
+  "level_set": "Level of user {0} set to {1} on this server.",
+  "temp_role_added": "User {0} has been given {1} role temporarily. The role expires {2}",
+  "user_afk": "User {0} is AFK.",
+  "notify_on":"Notification message will be sent on this channel when {0} event triggers.",
+  "notify_off":"Notification message will no longer be sent when {0} event triggers."
 }

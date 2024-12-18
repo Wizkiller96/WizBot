@@ -46,7 +46,7 @@ public partial class Administration : WizBotModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageGuild)]
-    public async Task ImageOnlyChannel(StoopidTime time = null)
+    public async Task ImageOnlyChannel(ParsedTimespan timespan = null)
     {
         var newValue = await _somethingOnly.ToggleImageOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
@@ -59,7 +59,7 @@ public partial class Administration : WizBotModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     [BotPerm(GuildPerm.ManageGuild)]
-    public async Task LinkOnlyChannel(StoopidTime time = null)
+    public async Task LinkOnlyChannel(ParsedTimespan timespan = null)
     {
         var newValue = await _somethingOnly.ToggleLinkOnlyChannelAsync(ctx.Guild.Id, ctx.Channel.Id);
         if (newValue)
@@ -72,10 +72,10 @@ public partial class Administration : WizBotModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageChannels)]
     [BotPerm(ChannelPerm.ManageChannels)]
-    public async Task Slowmode(StoopidTime time = null)
+    public async Task Slowmode(ParsedTimespan timespan = null)
     {
-        var seconds = (int?)time?.Time.TotalSeconds ?? 0;
-        if (time is not null && (time.Time < TimeSpan.FromSeconds(0) || time.Time > TimeSpan.FromHours(6)))
+        var seconds = (int?)timespan?.Time.TotalSeconds ?? 0;
+        if (timespan is not null && (timespan.Time < TimeSpan.FromSeconds(0) || timespan.Time > TimeSpan.FromHours(6)))
             return;
 
         await ((ITextChannel)ctx.Channel).ModifyAsync(tcp =>
@@ -298,18 +298,18 @@ public partial class Administration : WizBotModule<AdministrationService>
     [RequireContext(ContextType.Guild)]
     [UserPerm(ChannelPerm.ManageMessages)]
     [BotPerm(ChannelPerm.ManageMessages)]
-    public Task Delete(ulong messageId, StoopidTime time = null)
-        => Delete((ITextChannel)ctx.Channel, messageId, time);
+    public Task Delete(ulong messageId, ParsedTimespan timespan = null)
+        => Delete((ITextChannel)ctx.Channel, messageId, timespan);
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task Delete(ITextChannel channel, ulong messageId, StoopidTime time = null)
-        => await InternalMessageAction(channel, messageId, time, msg => msg.DeleteAsync());
+    public async Task Delete(ITextChannel channel, ulong messageId, ParsedTimespan timespan = null)
+        => await InternalMessageAction(channel, messageId, timespan, msg => msg.DeleteAsync());
 
     private async Task InternalMessageAction(
         ITextChannel channel,
         ulong messageId,
-        StoopidTime time,
+        ParsedTimespan timespan,
         Func<IMessage, Task> func)
     {
         var userPerms = ((SocketGuildUser)ctx.User).GetPermissions(channel);
@@ -334,13 +334,13 @@ public partial class Administration : WizBotModule<AdministrationService>
             return;
         }
 
-        if (time is null)
+        if (timespan is null)
             await msg.DeleteAsync();
-        else if (time.Time <= TimeSpan.FromDays(7))
+        else if (timespan.Time <= TimeSpan.FromDays(7))
         {
             _ = Task.Run(async () =>
             {
-                await Task.Delay(time.Time);
+                await Task.Delay(timespan.Time);
                 await msg.DeleteAsync();
             });
         }
