@@ -53,26 +53,6 @@ public partial class Xp : WizBotModule<XpService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
-    public async Task XpNotify()
-    {
-        var globalSetting = _service.GetNotificationType(ctx.User);
-
-        var embed = CreateEmbed()
-                    .WithOkColor()
-                    .AddField(GetText(strs.xpn_setting_global), GetNotifLocationString(globalSetting));
-
-        await Response().Embed(embed).SendAsync();
-    }
-
-    [Cmd]
-    public async Task XpNotify(XpNotificationLocation type)
-    {
-        await _service.ChangeNotificationType(ctx.User, type);
-        await ctx.OkAsync();
-    }
-
-    [Cmd]
-    [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpExclude(Server _)
     {
@@ -617,16 +597,5 @@ public partial class Xp : WizBotModule<XpService>
         {
             await _service.UseShopItemAsync(ctx.User.Id, type, key);
         }
-    }
-
-    private string GetNotifLocationString(XpNotificationLocation loc)
-    {
-        if (loc == XpNotificationLocation.Channel)
-            return GetText(strs.xpn_notif_channel);
-
-        if (loc == XpNotificationLocation.Dm)
-            return GetText(strs.xpn_notif_dm);
-
-        return GetText(strs.xpn_notif_disabled);
     }
 }

@@ -1547,6 +1547,9 @@ minesweeper:
   - mw
 temprole:
   - temprole
+notify:
+  - notify
+  - nfy
 # WizNet System
 feedback:
   - feedback

@@ -357,3 +357,4 @@ resharper_arrange_redundant_parentheses_highlighting = hint
 # IDE0011: Add braces
 dotnet_diagnostic.IDE0011.severity = warning
 
+resharper_arrange_type_member_modifiers_highlighting = hint

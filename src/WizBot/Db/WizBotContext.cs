@@ -81,7 +81,7 @@ public abstract class WizBotContext : DbContext
             e.HasAlternateKey(x => new
             {
                 x.GuildId,
-                x.Event
+                Event = x.Type
             });
         });
 

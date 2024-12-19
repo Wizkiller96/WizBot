@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    [Migration("20241203093815_awarded-xp-and-notify-removed")]
-    partial class awardedxpandnotifyremoved
+    [Migration("20241205052146_awardedxp-temprole-notify")]
+    partial class awardedxptemprolenotify
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1820,6 +1820,42 @@ namespace WizBot.Migrations.PostgreSql
                     b.ToTable("expressions", (string)null);
                 });
 
+            modelBuilder.Entity("WizBot.Db.Models.Notify", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("ChannelId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("channelid");
+
+                    b.Property<decimal>("GuildId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("guildid");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)")
+                        .HasColumnName("message");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_notify");
+
+                    b.HasAlternateKey("GuildId", "Type")
+                        .HasName("ak_notify_guildid_type");
+
+                    b.ToTable("notify", (string)null);
+                });
+
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
                     b.Property<decimal>("UserId")
@@ -2909,10 +2945,6 @@ namespace WizBot.Migrations.PostgreSql
                     b.Property<decimal>("GuildId")
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("guildid");
-
-                    b.Property<int>("NotifyOnLevelUp")
-                        .HasColumnType("integer")
-                        .HasColumnName("notifyonlevelup");
 
                     b.Property<decimal>("UserId")
                         .HasColumnType("numeric(20,0)")

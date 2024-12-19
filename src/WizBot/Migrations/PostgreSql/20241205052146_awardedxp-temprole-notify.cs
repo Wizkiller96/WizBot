@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     /// <inheritdoc />
-    public partial class awardedxpandnotifyremoved : Migration
+    public partial class awardedxptemprolenotify : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,27 @@ namespace WizBot.Migrations.PostgreSql
             migrationBuilder.DropColumn(
                 name: "awardedxp",
                 table: "userxpstats");
+
+            migrationBuilder.DropColumn(
+                name: "notifyonlevelup",
+                table: "userxpstats");
+
+            migrationBuilder.CreateTable(
+                name: "notify",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    guildid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    channelid = table.Column<decimal>(type: "numeric(20,0)", nullable: false),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    message = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_notify", x => x.id);
+                    table.UniqueConstraint("ak_notify_guildid_type", x => new { x.guildid, x.type });
+                });
 
             migrationBuilder.CreateTable(
                 name: "temprole",
@@ -48,6 +69,9 @@ namespace WizBot.Migrations.PostgreSql
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "notify");
+
+            migrationBuilder.DropTable(
                 name: "temprole");
 
             migrationBuilder.AddColumn<long>(
@@ -56,6 +80,13 @@ namespace WizBot.Migrations.PostgreSql
                 type: "bigint",
                 nullable: false,
                 defaultValue: 0L);
+
+            migrationBuilder.AddColumn<int>(
+                name: "notifyonlevelup",
+                table: "userxpstats",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.CreateIndex(
                 name: "ix_userxpstats_awardedxp",

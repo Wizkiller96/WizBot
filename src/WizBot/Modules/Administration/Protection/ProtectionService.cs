@@ -5,6 +5,36 @@ using System.Threading.Channels;
 
 namespace WizBot.Modules.Administration.Services;
 
+public record struct ProtectionNotifyModel(ulong GuildId, ProtectionType ProtType, ulong UserId) : INotifyModel
+{
+    public static string KeyName
+        => "notify.protection";
+
+    public static NotifyType NotifyType
+        => NotifyType.Protection;
+
+    public IReadOnlyDictionary<string, Func<SocketGuild, string>> GetReplacements()
+    {
+        var data = this;
+        return new Dictionary<string, Func<SocketGuild, string>>()
+        {
+            { "%event.type%", g => data.ProtType.ToString() },
+        };
+    }
+
+    public bool TryGetUserId(out ulong userId)
+    {
+        userId = UserId;
+        return true;
+    }
+
+    public bool TryGetGuildId(out ulong guildId)
+    {
+        guildId = GuildId;
+        return true;
+    }
+}
+
 public class ProtectionService : INService
 {
     public event Func<PunishmentAction, ProtectionType, IGuildUser[], Task> OnAntiProtectionTriggered = delegate
@@ -22,6 +52,7 @@ public class ProtectionService : INService
     private readonly MuteService _mute;
     private readonly DbService _db;
     private readonly UserPunishService _punishService;
+    private readonly INotifySubscriber _notifySub;
 
     private readonly Channel<PunishQueueItem> _punishUserQueue =
         Channel.CreateUnbounded<PunishQueueItem>(new()
@@ -35,12 +66,14 @@ public class ProtectionService : INService
         IBot bot,
         MuteService mute,
         DbService db,
-        UserPunishService punishService)
+        UserPunishService punishService,
+        INotifySubscriber notifySub)
     {
         _client = client;
         _mute = mute;
         _db = db;
         _punishService = punishService;
+        _notifySub = notifySub;
 
         var ids = client.GetGuildIds();
         using (var uow = db.GetDbContext())
@@ -175,6 +208,9 @@ public class ProtectionService : INService
                             alts.RoleId,
                             user);
 
+                        await _notifySub.NotifyAsync(new ProtectionNotifyModel(user.Guild.Id,
+                            ProtectionType.Alting,
+                            user.Id));
                         return;
                     }
                 }
@@ -194,6 +230,8 @@ public class ProtectionService : INService
                     var settings = stats.AntiRaidSettings;
 
                     await PunishUsers(settings.Action, ProtectionType.Raiding, settings.PunishDuration, null, users);
+                    await _notifySub.NotifyAsync(
+                        new ProtectionNotifyModel(user.Guild.Id, ProtectionType.Raiding, users[0].Id));
                 }
 
                 await Task.Delay(1000 * stats.AntiRaidSettings.Seconds);
@@ -246,6 +284,10 @@ public class ProtectionService : INService
                             settings.MuteTime,
                             settings.RoleId,
                             (IGuildUser)msg.Author);
+
+                        await _notifySub.NotifyAsync(new ProtectionNotifyModel(channel.GuildId,
+                            ProtectionType.Spamming,
+                            msg.Author.Id));
                     }
                 }
             }

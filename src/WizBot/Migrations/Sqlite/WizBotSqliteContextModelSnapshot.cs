@@ -1355,6 +1355,33 @@ namespace WizBot.Migrations
 
                     b.ToTable("Expressions");
                 });
+            
+            modelBuilder.Entity("WizBot.Db.Models.Notify", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("GuildId", "Type");
+
+                    b.ToTable("Notify");
+                });
 
             modelBuilder.Entity("WizBot.Db.Models.PatronUser", b =>
                 {
@@ -2161,9 +2188,6 @@ namespace WizBot.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<ulong>("GuildId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NotifyOnLevelUp")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("UserId")

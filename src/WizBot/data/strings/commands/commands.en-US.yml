@@ -4854,6 +4854,16 @@ minesweeper:
   params:
     - mines:
         desc: "The number of mines to create."
+notify:
+  desc: |-
+    Sends a message to the current channel once the specified event occurs.
+  ex:
+    - 'levelup Congratulations to user %user.name% for reaching level %event.level%'
+  params:
+    - event:
+        desc: "The event to notify on."
+    - message:
+        desc: "The message to send."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

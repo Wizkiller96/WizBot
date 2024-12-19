@@ -13,37 +13,13 @@ using SixLabors.ImageSharp.Processing;
 using System.Threading.Channels;
 using LinqToDB.EntityFrameworkCore;
 using LinqToDB.Tools;
+using WizBot.Modules.Administration;
 using WizBot.Modules.Patronage;
 using Color = SixLabors.ImageSharp.Color;
 using Exception = System.Exception;
 using Image = SixLabors.ImageSharp.Image;
 
 namespace WizBot.Modules.Xp.Services;
-
-public interface IUserService
-{
-    Task<DiscordUser?> GetUserAsync(ulong userId);
-}
-
-public sealed class UserService : IUserService, INService
-{
-    private readonly DbService _db;
-
-    public UserService(DbService db)
-    {
-        _db = db;
-    }
-
-    public async Task<DiscordUser> GetUserAsync(ulong userId)
-    {
-        await using var uow = _db.GetDbContext();
-        var user = await uow
-                         .GetTable<DiscordUser>()
-                         .FirstOrDefaultAsyncLinqToDB(u => u.UserId == userId);
-
-        return user;
-    }
-}
 
 public class XpService : INService, IReadyExecutor, IExecNoCommand
 {
@@ -72,6 +48,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly QueueRunner _levelUpQueue = new QueueRunner(0, 50);
     private readonly Channel<UserXpGainData> _xpGainQueue = Channel.CreateUnbounded<UserXpGainData>();
     private readonly IMessageSenderService _sender;
+    private readonly INotifySubscriber _notifySub;
 
     public XpService(
         DiscordSocketClient client,
@@ -87,7 +64,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         XpConfigService xpConfig,
         IPubSub pubSub,
         IPatronageService ps,
-        IMessageSenderService sender)
+        IMessageSenderService sender,
+        INotifySubscriber notifySub)
     {
         _db = db;
         _images = images;
@@ -99,6 +77,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _xpConfig = xpConfig;
         _pubSub = pubSub;
         _sender = sender;
+        _notifySub = notifySub;
         _excludedServers = new();
         _excludedChannels = new();
         _client = client;
@@ -189,9 +168,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             var dus = new List<DiscordUser>(globalToAdd.Count);
             var gxps = new List<UserXpStats>(globalToAdd.Count);
+            var conf = _xpConfig.Data;
             await using (var ctx = _db.GetDbContext())
             {
-                var conf = _xpConfig.Data;
                 if (conf.CurrencyPerXp > 0)
                 {
                     foreach (var user in globalToAdd)
@@ -290,8 +269,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                             du.UserId,
                             false,
                             oldLevel.Level,
-                            newLevel.Level,
-                            du.NotifyOnLevelUp));
+                            newLevel.Level));
                 }
             }
 
@@ -328,8 +306,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         ulong userId,
         bool isServer,
         long oldLevel,
-        long newLevel,
-        XpNotificationLocation notifyLoc = XpNotificationLocation.None)
+        long newLevel)
         => async () =>
         {
             if (isServer)
@@ -337,7 +314,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 await HandleRewardsInternalAsync(guildId, userId, oldLevel, newLevel);
             }
 
-            await HandleNotifyInternalAsync(guildId, channelId, userId, isServer, newLevel, notifyLoc);
+            await HandleNotifyInternalAsync(guildId, channelId, userId, isServer, newLevel);
         };
 
     private async Task HandleRewardsInternalAsync(
@@ -388,59 +365,26 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         ulong channelId,
         ulong userId,
         bool isServer,
-        long newLevel,
-        XpNotificationLocation notifyLoc)
+        long newLevel)
     {
-        if (notifyLoc == XpNotificationLocation.None)
-            return;
-
         var guild = _client.GetGuild(guildId);
         var user = guild?.GetUser(userId);
-        var ch = guild?.GetTextChannel(channelId);
 
         if (guild is null || user is null)
             return;
 
         if (isServer)
         {
-            if (notifyLoc == XpNotificationLocation.Dm)
+            var model = new LevelUpNotifyModel()
             {
-                await _sender.Response(user)
-                             .Confirm(_strings.GetText(strs.level_up_dm(user.Mention,
-                                     Format.Bold(newLevel.ToString()),
-                                     Format.Bold(guild.ToString() ?? "-")),
-                                 guild.Id))
-                             .SendAsync();
-            }
-            else // channel
-            {
-                if (ch is not null)
-                {
-                    await _sender.Response(ch)
-                                 .Confirm(_strings.GetText(strs.level_up_channel(user.Mention,
-                                         Format.Bold(newLevel.ToString())),
-                                     guild.Id))
-                                 .SendAsync();
-                }
-            }
-        }
-        else // global level
-        {
-            var chan = notifyLoc switch
-            {
-                XpNotificationLocation.Dm => (IMessageChannel)await user.CreateDMChannelAsync(),
-                XpNotificationLocation.Channel => ch,
-                _ => null
+                GuildId = guildId,
+                UserId = userId,
+                ChannelId = channelId,
+                Level = newLevel
             };
 
-            if (chan is null)
-                return;
-
-            await _sender.Response(chan)
-                         .Confirm(_strings.GetText(strs.level_up_global(user.Mention,
-                                 Format.Bold(newLevel.ToString())),
-                             guild.Id))
-                         .SendAsync();
+            await _notifySub.NotifyAsync(model, true);
+            return;
         }
     }
 
@@ -622,20 +566,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         .Skip(page * 10)
                         .Take(10)
                         .ToArrayAsyncLinqToDB();
-    }
-
-    public XpNotificationLocation GetNotificationType(IUser user)
-    {
-        using var uow = _db.GetDbContext();
-        return uow.GetOrCreateUser(user).NotifyOnLevelUp;
-    }
-
-    public async Task ChangeNotificationType(IUser user, XpNotificationLocation type)
-    {
-        await using var uow = _db.GetDbContext();
-        var du = uow.GetOrCreateUser(user);
-        du.NotifyOnLevelUp = type;
-        await uow.SaveChangesAsync();
     }
 
     private Task Client_OnGuildAvailable(SocketGuild guild)
@@ -1641,28 +1571,20 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         await using var ctx = _db.GetDbContext();
         await ctx.GetTable<UserXpStats>()
                  .InsertOrUpdateAsync(() => new()
-                 {
-                     GuildId = guildId,
-                     UserId = userId,
-                     Xp = lvlStats.TotalXp,
-                     DateAdded = DateTime.UtcNow
-                 }, (old) => new()
-                 {
-                     Xp = lvlStats.TotalXp
-                 }, () => new()
-                 {
-                     GuildId = guildId,
-                     UserId = userId
-                 });
+                     {
+                         GuildId = guildId,
+                         UserId = userId,
+                         Xp = lvlStats.TotalXp,
+                         DateAdded = DateTime.UtcNow
+                     },
+                     (old) => new()
+                     {
+                         Xp = lvlStats.TotalXp
+                     },
+                     () => new()
+                     {
+                         GuildId = guildId,
+                         UserId = userId
+                     });
     }
-}
-
-public enum BuyResult
-{
-    Success,
-    XpShopDisabled,
-    AlreadyOwned,
-    InsufficientFunds,
-    UnknownItem,
-    InsufficientPatronTier,
 }
