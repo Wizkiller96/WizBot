@@ -8,7 +8,7 @@ public partial class Administration
     public class NotifyCommands : WizBotModule<NotifyService>
     {
         [Cmd]
-        [OwnerOnly]
+        [UserPerm(GuildPerm.Administrator)]
         public async Task Notify()
         {
             await Response()
@@ -42,7 +42,7 @@ public partial class Administration
             };
 
         [Cmd]
-        [OwnerOnly]
+        [UserPerm(GuildPerm.Administrator)]
         public async Task Notify(NotifyType nType, [Leftover] string? message = null)
         {
             if (string.IsNullOrWhiteSpace(message))
@@ -76,7 +76,7 @@ public partial class Administration
         }
 
         [Cmd]
-        [OwnerOnly]
+        [UserPerm(GuildPerm.Administrator)]
         public async Task NotifyList(int page = 1)
         {
             if (--page < 0)
@@ -104,7 +104,7 @@ public partial class Administration
         }
 
         [Cmd]
-        [OwnerOnly]
+        [UserPerm(GuildPerm.Administrator)]
         public async Task NotifyClear(NotifyType nType)
         {
             await _service.DisableAsync(ctx.Guild.Id, nType);

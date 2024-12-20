@@ -146,6 +146,7 @@ public sealed class NotifyService : IReadyExecutor, INotifySubscriber, INService
 
         await _mss.Response(channel)
                   .Text(st)
+                  .Sanitize(false)
                   .SendAsync();
     }
 

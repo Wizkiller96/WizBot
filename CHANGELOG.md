@@ -2,6 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.3] - 20.12.2024
+
+## Fixed
+
+- `.notify` commands are no longer owner only, they now require Admin permissions
+- `.notify` messages can now mention anyone
+
 ## [5.3.2] - 20.12.2024
 
 ## Fixed
