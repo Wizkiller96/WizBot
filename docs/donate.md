@@ -7,10 +7,9 @@ Donations go a long way in helping us keep the project alive, and we appreciate 
 
 Donating to us also gives you the following benefits:
 
-- A hoisted **Donators role** in our [Discord server][discord-server]
+- A hoisted **Patron** role in [WizNet Discord server][discord-server]
 - Access to exclusive **#noticed** text and voice channels
 - **3000 flowers** on the public bot per dollar donated (after fees)
-- **Expressions** on the public bot for [Patreon pledges][patreon] of $5 or higher
 
 ## Patreon
 
@@ -26,7 +25,7 @@ You can set up a monthly pledge on [Patreon][patreon] and support the project's 
 You can also donate to us through [PayPal][paypal] for one-time donations using the button below.
 
 !!! Note
-    Mention your Discord tag (Username#1234) in the payment note to receive flower rewards.
+    Mention your Discord username or user id in the payment note to receive flower rewards.
 
 [![img][paypal-button]][paypal]
 
