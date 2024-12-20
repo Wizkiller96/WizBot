@@ -12,17 +12,21 @@ public partial class Utility
         [RequireContext(ContextType.Guild)]
         public async Task ServerColorsShow()
         {
+            var colors = _service.GetColors(ctx.Guild.Id);
+            var okHex = colors?.Ok?.RawValue.ToString("x6");
+            var warnHex = colors?.Warn?.RawValue.ToString("x6");
+            var errHex = colors?.Error?.RawValue.ToString("x6");
             EmbedBuilder[] ebs =
             [
                 CreateEmbed()
                     .WithOkColor()
-                    .WithDescription("\\✅ {okHex}"),
+                    .WithDescription($"\\✅ {okHex}"),
                 CreateEmbed()
                     .WithPendingColor()
-                    .WithDescription("\\⏳\\⚠️ {warnHex}"),
+                    .WithDescription($"\\⏳\\⚠️ {warnHex}"),
                 CreateEmbed()
                     .WithErrorColor()
-                    .WithDescription("\\❌ {errHex}")
+                    .WithDescription($"\\❌ {errHex}")
             ];
 
             await Response()
