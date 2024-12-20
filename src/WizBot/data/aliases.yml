@@ -1097,9 +1097,6 @@ xpexclusionlist:
 xpexclude:
   - xpexclude
   - xpex
-xpnotify:
-  - xpnotify
-  - xpn
 xpleveluprewards:
   - xplvluprewards
   - xprews

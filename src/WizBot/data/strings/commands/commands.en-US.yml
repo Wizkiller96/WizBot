@@ -3384,14 +3384,28 @@ globalcommand:
     - '{0}stats'
   params:
     - cmd:
-        desc: "The type of command or expression being toggled."
+        desc: "The command or expression being toggled."
 globalmodule:
   desc: Toggles whether a module can be used on any server.
   ex:
     - 'Gambling'
   params:
     - module:
-        desc: "The type of module or configuration information being toggled."
+        desc: "The module being toggled."
+dmcommand:
+  desc: Toggles whether a command can be used in DMs.
+  ex:
+    - '{0}stats'
+  params:
+    - cmd:
+        desc: "The command or expression being toggled."
+dmmodule:
+  desc: Toggles whether a module can be used in DMs.
+  ex:
+    - 'Gambling'
+  params:
+    - module:
+        desc: "The module being toggled."
 globalpermlist:
   desc: Lists global permissions set by the bot owner.
   ex:
@@ -3522,17 +3536,6 @@ xpexclude:
         desc: "The ID of the channel to exclude from XP tracking."
       channel:
         desc: "The ID of the channel to exclude from XP tracking."
-xpnotify:
-  desc: Sets how the bot should notify you when you get a `server` or `global` level. This is a personal setting and affects only how you receive Global or Server level-up notifications. You can set `dm` (for the bot to send you a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.
-  ex:
-    - global dm
-    - server channel
-  params:
-    - { }
-    - place:
-        desc: "The location where notifications should be sent, such as a specific channel or DM."
-      type:
-        desc: "The location where notifications for server and global level-ups should be sent."
 xpleveluprewards:
   desc: Shows currently set level up rewards.
   ex:
