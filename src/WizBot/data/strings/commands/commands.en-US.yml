@@ -368,7 +368,7 @@ sargroupname:
     - group:
         desc: "The group number"
       name:
-        desc: "The name to assign."
+        desc: "The optional name to assign, clears the name if no name is provided."
 sargroupdelete:
   desc: "Deletes a self-assignable role group"
   ex:
@@ -377,11 +377,14 @@ sargroupdelete:
     - group:
         desc: "The number of the group to delete."
 sarexclusive:
-  desc: Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.
+  desc: |-
+    Toggles the sar group as exclusive.
+    While enabled, users can only have one self-assignable role from that group.
   ex:
-    - ''
+    - '1'
   params:
-    - { }
+    - group:
+        desc: "The number of the group to set exclusive."
 sarrolelevelreq:
   desc: Set a level requirement on a self-assignable role.
   ex:
