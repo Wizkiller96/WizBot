@@ -963,6 +963,56 @@
     },
     {
       "Aliases": [
+        ".notify",
+        ".nfy"
+      ],
+      "Description": "Sends a message to the current channel once the specified event occurs.\nProvide no parameters to see all available events.",
+      "Usage": [
+        ".notify levelup Congratulations to user %user.name% for reaching level %event.level%"
+      ],
+      "Submodule": "NotifyCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
+        ".notifylist",
+        ".notifyl"
+      ],
+      "Description": "Lists all active notifications in this server.",
+      "Usage": [
+        ".notifylist"
+      ],
+      "Submodule": "NotifyCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
+        ".notifyclear",
+        ".notifyremove",
+        ".notifyrm",
+        ".notifclr"
+      ],
+      "Description": "Removes the specified notify event.",
+      "Usage": [
+        ".notifyclear levelup"
+      ],
+      "Submodule": "NotifyCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
         ".dpo"
       ],
       "Description": "Overrides required user permissions that the command has with the specified ones. You can only use server-level permissions. This action will make the bot ignore user permission requirements which command has by default. Provide no permissions to reset to default.",
@@ -1525,6 +1575,22 @@
     },
     {
       "Aliases": [
+        ".temprole"
+      ],
+      "Description": "Grants a user a temporary role for the specified number of time.\nThe role must exist and be lower in the role hierarchy than your highest role.",
+      "Usage": [
+        ".temprole 15m @User Jail",
+        ".temprole 7d @Newbie Trial Member"
+      ],
+      "Submodule": "RoleCommands",
+      "Module": "Administration",
+      "Options": null,
+      "Requirements": [
+        "Administrator Server Permission"
+      ]
+    },
+    {
+      "Aliases": [
         ".iam"
       ],
       "Description": "Adds a role to you that you choose. Role must be on the list of self-assignable roles.",
@@ -1648,9 +1714,9 @@
         ".sar excl",
         ".sar tesar"
       ],
-      "Description": "Toggles whether self-assigned roles are exclusive. While enabled, users can only have one self-assignable role per group.",
+      "Description": "Toggles the sar group as exclusive.\nWhile enabled, users can only have one self-assignable role from that group.",
       "Usage": [
-        ".sar exclusive"
+        ".sar exclusive 1"
       ],
       "Submodule": "sar",
       "Module": "Administration",
@@ -3270,6 +3336,21 @@
     },
     {
       "Aliases": [
+        ".winlb",
+        ".wins"
+      ],
+      "Description": "Shows the biggest wins leaderboard",
+      "Usage": [
+        ".winlb",
+        ".winlb 5"
+      ],
+      "Submodule": "BetStatsCommands",
+      "Module": "Gambling",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".gamblestats",
         ".gs"
       ],
@@ -3904,6 +3985,20 @@
       "Description": "Ask the 8ball a yes/no question.",
       "Usage": [
         ".eightball Is b1nzy a nice guy?"
+      ],
+      "Submodule": "Games",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".minesweeper",
+        ".mw"
+      ],
+      "Description": "Creates a spoiler-based minesweeper mini game.\nYou may specify the number of mines.",
+      "Usage": [
+        ".minesweeper 15"
       ],
       "Submodule": "Games",
       "Module": "Games",
@@ -5552,6 +5647,38 @@
     },
     {
       "Aliases": [
+        ".dmmodule",
+        ".dmmod"
+      ],
+      "Description": "Toggles whether a module can be used in DMs.",
+      "Usage": [
+        ".dmmodule Gambling"
+      ],
+      "Submodule": "GlobalPermissionCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
+        ".dmcommand",
+        ".dmcmd"
+      ],
+      "Description": "Toggles whether a command can be used in DMs.",
+      "Usage": [
+        ".dmcommand .stats"
+      ],
+      "Submodule": "GlobalPermissionCommands",
+      "Module": "Permissions",
+      "Options": null,
+      "Requirements": [
+        "Bot Owner Only"
+      ]
+    },
+    {
+      "Aliases": [
         ".resetperms"
       ],
       "Description": "Resets the bot's permissions module on this server to the default value.",
@@ -5828,6 +5955,19 @@
       "Description": "Shows a mentioned person's avatar.",
       "Usage": [
         ".avatar @Someone"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".banner"
+      ],
+      "Description": "Shows a mentioned person's banner.",
+      "Usage": [
+        ".banner @Someone"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -7880,21 +8020,6 @@
     },
     {
       "Aliases": [
-        ".xpnotify",
-        ".xpn"
-      ],
-      "Description": "Sets how the bot should notify you when you get a `server` or `global` level. This is a personal setting and affects only how you receive Global or Server level-up notifications. You can set `dm` (for the bot to send you a direct message), `channel` (to get notified in the channel you sent the last message in) or `none` to disable.",
-      "Usage": [
-        ".xpnotify global dm",
-        ".xpnotify server channel"
-      ],
-      "Submodule": "Xp",
-      "Module": "Xp",
-      "Options": null,
-      "Requirements": []
-    },
-    {
-      "Aliases": [
         ".xpexclude",
         ".xpex"
       ],
@@ -7953,6 +8078,21 @@
       "Module": "Xp",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".xplevelset"
+      ],
+      "Description": "Sets the level of the user you specify.",
+      "Usage": [
+        ".xplevelset 10 @User"
+      ],
+      "Submodule": "Xp",
+      "Module": "Xp",
+      "Options": null,
+      "Requirements": [
+        "Administrator Server Permission"
+      ]
     },
     {
       "Aliases": [

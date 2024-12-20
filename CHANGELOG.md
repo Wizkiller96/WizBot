@@ -32,10 +32,12 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
   - Server xp notifications are now set by the server admin/manager in a specified channel
 - `.sclr show` will now show hex code of the current color
 - Queueing a song will now restart the playback if the queue is on the last track and stopped (there were no more tracks to play)
+- `.translate` will now use 2 embeds instead of 1
 
 ## Fixed
 
 - .setstream and .setactivity will now pause .ropl (rotating statuses)
+- Fixed `.sar ex` help description
 
 ## Removed
 
