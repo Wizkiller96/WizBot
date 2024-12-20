@@ -1159,5 +1159,6 @@
   "notify_desc_protection": "Triggers when antialt, antispam or antiraid is triggered.",
   "notify_desc_addrolerew": "Triggers when a user gets a role as a reward for reaching a level (xprew).",
   "notify_desc_removerolerew": "Triggers when a user loses a role as a reward for reaching a level (xprew).",
-  "notify_desc_not_found": "No description found for this notify event. Please report this."
+  "notify_desc_not_found": "No description found for this notify event. Please report this.",
+  "winlb": "Biggest Wins Leaderboard"
 }

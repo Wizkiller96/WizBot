@@ -173,7 +173,8 @@ public partial class Gambling
                   .Page((items, curPage) =>
                   {
                       var eb = CreateEmbed()
-                          .WithOkColor();
+                               .WithTitle(GetText(strs.winlb))
+                               .WithOkColor();
                       
                       if (items.Count == 0)
                       {
