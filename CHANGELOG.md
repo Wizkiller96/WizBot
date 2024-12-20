@@ -39,6 +39,9 @@ Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except da
 
 ## Removed
 
+- `.xpnotify` command, superseded by `.notify`, although as of right now you can't post user's level up in the same
+  channel user last typed, because you have to specify a channel where the notify messages will be posted
+
 ## [5.2.4] - 01.12.2024
 
 ## Fixed
