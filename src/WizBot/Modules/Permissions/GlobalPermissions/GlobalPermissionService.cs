@@ -92,13 +92,13 @@ public class GlobalPermissionService : IExecPreCommand, INService
         {
             if (priv)
             {
-                if (bs.Blocked.Commands.Add(commandName))
+                if (bs.DmBlocked.Commands.Add(commandName))
                 {
                     added = true;
                 }
                 else
                 {
-                    bs.Blocked.Commands.Remove(commandName);
+                    bs.DmBlocked.Commands.Remove(commandName);
                     added = false;
                 }
 
