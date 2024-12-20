@@ -182,7 +182,8 @@ public partial class Gambling
                       {
                           var item = items[i];
                           eb.AddField($"#{item.Rank} {item.User}",
-                              $"{N(item.MaxWin)}\n`{item.Game.ToString().ToLower()}`");
+                              $"{N(item.MaxWin)}\n`{item.Game.ToString().ToLower()}`",
+                              true);
                       }
 
                       return eb;
