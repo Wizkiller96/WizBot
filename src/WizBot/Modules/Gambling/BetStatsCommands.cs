@@ -152,7 +152,7 @@ public partial class Gambling
                         if (user.StartsWith("??"))
                             user = x.UserId.ToString();
 
-                        outputItems.Add(new WinLbStat(i + 1 + (page * 10), user, x.Game, x.MaxWin));
+                        outputItems.Add(new WinLbStat(i + 1 + (page * 9), user, x.Game, x.MaxWin));
                     }
 
                     return outputItems;
@@ -169,7 +169,7 @@ public partial class Gambling
             await Response()
                   .Paginated()
                   .PageItems(p => GetCachedWinLbAsync(p))
-                  .PageSize(10)
+                  .PageSize(9)
                   .Page((items, curPage) =>
                   {
                       var eb = CreateEmbed()

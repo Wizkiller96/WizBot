@@ -60,8 +60,8 @@ public sealed class UserBetStatsService : INService
         await using var ctx = _db.GetDbContext();
         return await ctx.GetTable<UserBetStats>()
                         .OrderByDescending(x => x.MaxWin)
-                        .Skip(page * 10)
-                        .Take(10)
+                        .Skip(page * 9)
+                        .Take(9)
                         .ToArrayAsyncLinqToDB();
     }
 }
