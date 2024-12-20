@@ -418,7 +418,8 @@ public partial class Searches : WizBotModule<SearchesService>
     {
         usr ??= (IGuildUser)ctx.User;
 
-        var bannerUrl = usr.GetGuildBannerUrl(size: 2048);
+        var bannerUrl = usr.GetGuildBannerUrl(size: 2048)
+                        ?? (await ((DiscordSocketClient)ctx.Client).Rest.GetUserAsync(usr.Id))?.GetBannerUrl();
         
         if (bannerUrl is null)
         {
