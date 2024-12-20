@@ -2,6 +2,22 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.1] - 20.12.2024
+
+## Changed
+
+- `.translate` will now use 2 embeds, to allow for longer messages
+- Added role icon to `.inrole`, if it exists
+- `.honeypot` will now add a 'Honeypot' as a ban reason.
+
+## Fixed
+
+- `.winlb` looks better, has a title, shows 9 entries now
+- `.sar ex` help updated
+- `.banner` partially fixed, it still can't show global banners, but it will show guild ones correctly, in a good enough size
+- `.sclr` will now show correct color hexes without alpha
+- `.dmcmd` will now correctly block commands in dms, not globally
+
 ## [5.3.0] - 20.12.2024
 
 ## Added
