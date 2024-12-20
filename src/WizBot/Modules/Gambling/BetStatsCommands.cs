@@ -148,6 +148,9 @@ public partial class Gambling
                         var user = (await ctx.Client.GetUserAsync(x.UserId, CacheMode.CacheOnly))?.ToString()
                                    ?? (await _userService.GetUserAsync(x.UserId))?.Username
                                    ?? x.UserId.ToString();
+                        
+                        if (user.StartsWith("??"))
+                            user = x.UserId.ToString();
 
                         outputItems.Add(new WinLbStat(i + 1 + (page * 10), user, x.Game, x.MaxWin));
                     }

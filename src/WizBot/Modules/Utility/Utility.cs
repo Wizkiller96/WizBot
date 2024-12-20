@@ -186,7 +186,7 @@ public partial class Utility : WizBotModule
                   
                   return CreateEmbed()
                                 .WithOkColor()
-                                .WithTitle(GetText(strs.inrole_list(roleName, roleUsers.Count)))
+                                .WithTitle(GetText(strs.inrole_list(role?.GetIconUrl() + roleName, roleUsers.Count)))
                                 .WithDescription(string.Join("\n", pageUsers));
               })
               .SendAsync();
