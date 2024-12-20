@@ -171,12 +171,18 @@ public partial class Gambling
                   {
                       var eb = CreateEmbed()
                           .WithOkColor();
+                      
+                      if (items.Count == 0)
+                      {
+                          eb.WithDescription(GetText(strs.empty_page));
+                          return eb;
+                      }
 
                       for (var i = 0; i < items.Count; i++)
                       {
                           var item = items[i];
                           eb.AddField($"#{item.Rank} {item.User}",
-                              $"[{item.Game}]{N(item.MaxWin)}");
+                              $"{N(item.MaxWin)}\n`{item.Game.ToString().ToLower()}`");
                       }
 
                       return eb;
