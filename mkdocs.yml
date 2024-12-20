@@ -106,6 +106,7 @@ nav:
       - Windows Guide: guides/windows-guide.md
       - Linux Guide: guides/linux-guide.md
       - OSX Guide: guides/osx-guide.md
+      - Windows Guide (from source): guides/windows-source-guide.md
       - Docker Guide (unsupported): guides/docker-guide.md
   - Commands:
       - Readme: commands-readme.md

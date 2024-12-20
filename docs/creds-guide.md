@@ -1,27 +1,30 @@
 ## Creds Guide
 
-This document aims to guide you through the process of creating a Discord account for your bot 
-(the Discord Bot application), and inviting that account into your Discord server.
+This guide will show you how to create your own discord bot, invite it to your server, and copy it's credentials to your `creds.yml` in order to run your bot.
+
+- Start by opening your creds.yml
+    - If you're on a windows installer version, click on the creds button next to your bot's RUN button.
+    - If you're on linux from source or windows from source version, open `wizbot/output/creds.yml`. Please use visual studio code, notepad++ or another code editor. Usage of notepad is discouraged.
 
 ![Create a bot application and copy token to creds.yml file](https://cdn.wizbot.cc/tutorial/bot-creds-guide.gif)
 
-- Go to [the Discord developer application page][DiscordApp].
-- Log in with your Discord account.
-- Click **New Application**.
-- Fill out the `Name` field however you like.
-- Go to the **Bot** tab on the left sidebar.
-- Click on the `Add a Bot` button and confirm that you do want to add a bot to this app.
-- **Optional:** Add bot's avatar and description.
-- Copy your Token to `creds.yml` as shown above.
-- Scroll down to the **`Privileged Gateway Intents`** section
-    - **Enable the following:**
+1. Go to [the Discord developer application page][DiscordApp].
+2. Log in with your Discord account.
+3. Click **New Application**.
+3. Fill out the `Name` field however you like, accept the terms, and confirm.
+1. Go to the **Bot** tab on the left sidebar.
+1. Click on the `Add a Bot` button and confirm that you do want to add a bot to this app.
+1. **Optional:** Add bot's avatar and description.
+1. Copy your Token to `creds.yml` as shown above.
+1. Scroll down to the **`Privileged Gateway Intents`** section
+    - Enable the following:
          - **PRESENCE INTENT**
          - **SERVER MEMBERS INTENT**
          - **MESSAGE CONTENT INTENT**
 
 These are required for a number of features to function properly, and all should be on.
 
-##### Getting Owner ID*(s)*:
+##### Getting Owner ID
 
 - Go to your Discord server and attempt to mention yourself, but put a backslash at the start
   *(to make it slightly easier, add the backslash after the mention has been typed)*.
