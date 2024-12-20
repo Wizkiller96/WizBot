@@ -418,7 +418,7 @@ public partial class Searches : WizBotModule<SearchesService>
     {
         usr ??= (IGuildUser)ctx.User;
 
-        var bannerUrl = usr.GetGuildBannerUrl();
+        var bannerUrl = usr.GetGuildBannerUrl(size: 2048);
         
         if (bannerUrl is null)
         {

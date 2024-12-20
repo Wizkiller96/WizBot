@@ -71,7 +71,7 @@ public sealed class HoneyPotService : IHoneyPotService, IReadyExecutor, IExecNoC
                 try
                 {
                     Log.Information("Honeypot caught user {User} [{UserId}]", user, user.Id);
-                    await user.BanAsync(pruneDays: 1);
+                    await user.BanAsync(pruneDays: 1, reason: "Honeypot");
                     await user.Guild.RemoveBanAsync(user.Id);
                 }
                 catch (Exception e)
