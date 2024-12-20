@@ -1,0 +1,8 @@
+﻿namespace WizBot.Modules.Administration;
+
+public static class NotifyModelExtensions
+{
+    public static TypedKey<T> GetTypedKey<T>(this T model)
+        where T : struct, INotifyModel
+        => new(T.KeyName);
+}

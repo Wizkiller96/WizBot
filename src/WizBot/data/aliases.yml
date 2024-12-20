@@ -715,6 +715,8 @@ color:
 avatar:
   - avatar
   - av
+banner:
+  - banner
 translate:
   - translate
   - trans
@@ -1550,6 +1552,17 @@ temprole:
 notify:
   - notify
   - nfy
+notifylist:
+  - notifylist
+  - notifyl
+notifyclear:
+  - notifyclear
+  - notifyremove
+  - notifyrm
+  - notifclr
+winlb:
+  - winlb
+  - wins
 # WizNet System
 feedback:
   - feedback

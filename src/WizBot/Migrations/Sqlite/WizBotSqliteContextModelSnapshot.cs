@@ -2589,6 +2589,8 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+                    
+                    b.HasIndex("MaxWin");
 
                     b.HasIndex("UserId", "Game")
                         .IsUnique();

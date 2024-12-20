@@ -20,6 +20,7 @@ public record struct LevelUpNotifyModel(
         return new Dictionary<string, Func<SocketGuild, string>>()
         {
             { "%event.level%", g => data.Level.ToString() },
+            { "%event.user%", g => g.GetUser(data.UserId)?.ToString() ?? data.UserId.ToString() },
         };
     }
 
@@ -34,11 +35,4 @@ public record struct LevelUpNotifyModel(
         userId = UserId;
         return true;
     }
-}
-
-public static class INotifyModelExtensions
-{
-    public static TypedKey<T> GetTypedKey<T>(this T model)
-        where T : struct, INotifyModel
-        => new(T.KeyName);
 }

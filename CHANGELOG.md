@@ -2,6 +2,43 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.0] - 20.12.2024
+
+## Added
+
+- Added `.minesweeper` /  `.mw` command - spoiler-based minesweeper minigame. Just for fun
+- Added `.temprole` command - add a role to a user for a certain amount of time, after which the role will be removed
+- Added `.xplevelset` - you can now set a level for a user in your server
+- Added `.winlb` command - leaderboard of top gambling wins
+- Added `.notify` command
+  - Specify an event to be notified about, and the bot will post the specified message in the current channel when the event occurs
+  - A few events supported right now:
+    - `UserLevelUp` when user levels up in the server
+    - `AddRoleReward` when a role is added to a user through .xpreward system
+    - `RemoveRoleReward` when a role is removed from a user through .xpreward system
+    - `Protection` when antialt, antiraid or antispam protection is triggered
+- Added `.banner` command to see someone's banner
+- Selfhosters:
+  - Added `.dmmod` and `.dmcmd` - you can now disable or enable whether commands or modules can be executed in bot's DMs
+
+## Changed
+
+- Giveaway improvements
+  - Now mentions winners in a separate message
+  - Shows the timestamp of when the giveaway ends
+- Xp Changes
+  - Removed awarded xp (the number in the brackets on the xp card)
+  - Awarded xp, (or the new level set) now directly apply to user's real xp
+  - Server xp notifications are now set by the server admin/manager in a specified channel
+- `.sclr show` will now show hex code of the current color
+- Queueing a song will now restart the playback if the queue is on the last track and stopped (there were no more tracks to play)
+
+## Fixed
+
+- .setstream and .setactivity will now pause .ropl (rotating statuses)
+
+## Removed
+
 ## [5.2.4] - 01.12.2024
 
 ## Fixed

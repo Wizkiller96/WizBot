@@ -2,6 +2,7 @@
 using LinqToDB.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
+using WizBot.Generators;
 
 namespace WizBot.Modules.Administration;
 
@@ -198,5 +199,28 @@ public sealed class NotifyService : IReadyExecutor, INotifySubscriber, INService
             return;
 
         guildsDict.TryRemove(guildId, out _);
+    }
+    
+    public async Task<IReadOnlyCollection<Notify>> GetForGuildAsync(ulong guildId, int page = 0)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(page);
+        
+        await using var ctx = _db.GetDbContext();
+        var list = await ctx.GetTable<Notify>()
+                            .Where(x => x.GuildId == guildId)
+                            .OrderBy(x => x.Type)
+                            .Skip(page * 10)
+                            .Take(10)
+                            .ToListAsyncLinqToDB();
+
+        return list;
+    }
+
+    public async Task<Notify?> GetNotifyAsync(ulong guildId, NotifyType nType)
+    {
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<Notify>()
+                        .Where(x => x.GuildId == guildId && x.Type == nType)
+                        .FirstOrDefaultAsyncLinqToDB();
     }
 }

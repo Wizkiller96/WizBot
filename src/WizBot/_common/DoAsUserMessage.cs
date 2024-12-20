@@ -157,6 +157,9 @@ public sealed class DoAsUserMessage : IUserMessage
     public MessageCallData? CallData
         => _msg.CallData;
 
+    public IReadOnlyCollection<MessageSnapshot> ForwardedMessages
+        => _msg.ForwardedMessages;
+
     public Task ModifyAsync(Action<MessageProperties> func, RequestOptions? options = null)
     {
         return _msg.ModifyAsync(func, options);

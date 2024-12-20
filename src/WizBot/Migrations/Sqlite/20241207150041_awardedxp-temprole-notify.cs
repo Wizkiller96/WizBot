@@ -15,6 +15,7 @@ namespace WizBot.Migrations
                 name: "IX_UserXpStats_AwardedXp",
                 table: "UserXpStats");
 
+            MigrationQueries.MergeAwardedXp(migrationBuilder);
             migrationBuilder.DropColumn(
                 name: "AwardedXp",
                 table: "UserXpStats");
@@ -59,6 +60,11 @@ namespace WizBot.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserBetStats_MaxWin",
+                table: "UserBetStats",
+                column: "MaxWin");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TempRole_ExpiresAt",
                 table: "TempRole",
                 column: "ExpiresAt");
@@ -72,6 +78,10 @@ namespace WizBot.Migrations
 
             migrationBuilder.DropTable(
                 name: "TempRole");
+
+            migrationBuilder.DropIndex(
+                name: "IX_UserBetStats_MaxWin",
+                table: "UserBetStats");
 
             migrationBuilder.AddColumn<long>(
                 name: "AwardedXp",

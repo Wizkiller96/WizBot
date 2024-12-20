@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace WizBot.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContext))]
-    [Migration("20241205052146_awardedxp-temprole-notify")]
+    [Migration("20241207150050_awardedxp-temprole-notify")]
     partial class awardedxptemprolenotify
     {
         /// <inheritdoc />
@@ -3484,6 +3484,9 @@ namespace WizBot.Migrations.PostgreSql
 
                     b.HasKey("Id")
                         .HasName("pk_userbetstats");
+                    
+                    b.HasIndex("MaxWin")
+                        .HasDatabaseName("ix_userbetstats_maxwin");
 
                     b.HasIndex("UserId", "Game")
                         .IsUnique()

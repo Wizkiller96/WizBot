@@ -2170,6 +2170,13 @@ avatar:
   params:
     - usr:
         desc: "The user whose avatar is being displayed."
+banner:
+  desc: Shows a mentioned person's banner.
+  ex:
+    - '@Someone'
+  params:
+    - usr:
+        desc: "The user whose banner is being displayed."
 translate:
   desc: Translates text from the given language to the destination language.
   ex:
@@ -4857,13 +4864,41 @@ minesweeper:
 notify:
   desc: |-
     Sends a message to the current channel once the specified event occurs.
+    Provide no parameters to see all available events.
   ex:
     - 'levelup Congratulations to user %user.name% for reaching level %event.level%'
   params:
+    - { }
     - event:
         desc: "The event to notify on."
-    - message:
+    - event:
+        desc: "The event to notify on."
+      message:
         desc: "The message to send."
+notifylist:
+  desc: |-
+    Lists all active notifications in this server.
+  ex:
+    - ''
+  params:
+    - { }
+notifyclear:
+  desc: |-
+    Removes the specified notify event.
+  ex:
+    - 'levelup'
+  params:
+    - event:
+        desc: "The notify event to clear."
+winlb:
+  desc: |-
+    Shows the biggest wins leaderboard
+  ex:
+    - ''
+    - '5'
+  params:
+    - page:
+        desc: "The optional page to display."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:

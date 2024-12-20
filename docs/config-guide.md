@@ -1,5 +1,5 @@
 # Config  
-`.config` is the new `.bce`, it gives you a fast and easy way to edit most bot settings/values. Use `.h .config` for explanation.  
+`.config` gives you a fast and easy way to edit most bot settings/values. Use `.h .config` for explanation.
 
 Use `.config` to see the list of editable config files  
 Use `.config <config-name>` to see the list of settable properties on that config  

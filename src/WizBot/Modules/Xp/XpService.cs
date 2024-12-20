@@ -344,9 +344,45 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 if (role is not null && user is not null)
                 {
                     if (rrew.Remove)
-                        _ = user.RemoveRoleAsync(role);
+                    {
+                        try
+                        {
+                            await user.RemoveRoleAsync(role);
+                            await _notifySub.NotifyAsync(new RemoveRoleRewardNotifyModel(guild.Id,
+                                    role.Id,
+                                    user.Id,
+                                    newLevel),
+                                isShardLocal: true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Warning(ex,
+                                "Unable to remove role {RoleId} from user {UserId}: {Message}",
+                                role.Id,
+                                user.Id,
+                                ex.Message);
+                        }
+                    }
                     else
-                        _ = user.AddRoleAsync(role);
+                    {
+                        try
+                        {
+                            await user.AddRoleAsync(role);
+                            await _notifySub.NotifyAsync(new AddRoleRewardNotifyModel(guild.Id,
+                                    role.Id,
+                                    user.Id,
+                                    newLevel),
+                                isShardLocal: true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Warning(ex,
+                                "Unable to add role {RoleId} to user {UserId}: {Message}",
+                                role.Id,
+                                user.Id,
+                                ex.Message);
+                        }
+                    }
                 }
             }
 

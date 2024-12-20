@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using WizBot.Modules.Gambling.Common;
 using WizBot.Modules.Gambling.Services;
+using WizBot.Modules.Xp.Services;
 
 namespace WizBot.Modules.Gambling;
 
@@ -10,13 +11,19 @@ public partial class Gambling
     public sealed class BetStatsCommands : GamblingModule<UserBetStatsService>
     {
         private readonly GamblingTxTracker _gamblingTxTracker;
+        private readonly IBotCache _cache;
+        private readonly IUserService _userService;
 
         public BetStatsCommands(
             GamblingTxTracker gamblingTxTracker,
-            GamblingConfigService gcs)
+            GamblingConfigService gcs,
+            IBotCache cache,
+            IUserService userService)
             : base(gcs)
         {
             _gamblingTxTracker = gamblingTxTracker;
+            _cache = cache;
+            _userService = userService;
         }
 
         [Cmd]
@@ -25,12 +32,12 @@ public partial class Gambling
             var price = await _service.GetResetStatsPriceAsync(ctx.User.Id, game);
 
             var result = await PromptUserConfirmAsync(CreateEmbed()
-                                                             .WithDescription(
-                                                                 $"""
-                                                                  Are you sure you want to reset your bet stats for **{GetGameName(game)}**?
+                .WithDescription(
+                    $"""
+                     Are you sure you want to reset your bet stats for **{GetGameName(game)}**?
 
-                                                                  It will cost you {N(price)}
-                                                                  """));
+                     It will cost you {N(price)}
+                     """));
 
             if (!result)
                 return;
@@ -88,15 +95,15 @@ public partial class Gambling
                 };
 
             var eb = CreateEmbed()
-                            .WithOkColor()
-                            .WithAuthor(user)
-                            .AddField("Total Won", N(stats.Sum(x => x.PaidOut)), true)
-                            .AddField("Biggest Win", N(stats.Max(x => x.MaxWin)), true)
-                            .AddField("Biggest Bet", N(stats.Max(x => x.MaxBet)), true)
-                            .AddField("# Bets", stats.Sum(x => x.WinCount + x.LoseCount), true)
-                            .AddField("Payout",
-                                (stats.Sum(x => x.PaidOut) / stats.Sum(x => x.TotalBet)).ToString("P2", Culture),
-                                true);
+                     .WithOkColor()
+                     .WithAuthor(user)
+                     .AddField("Total Won", N(stats.Sum(x => x.PaidOut)), true)
+                     .AddField("Biggest Win", N(stats.Max(x => x.MaxWin)), true)
+                     .AddField("Biggest Bet", N(stats.Max(x => x.MaxBet)), true)
+                     .AddField("# Bets", stats.Sum(x => x.WinCount + x.LoseCount), true)
+                     .AddField("Payout",
+                         (stats.Sum(x => x.PaidOut) / stats.Sum(x => x.TotalBet)).ToString("P2", Culture),
+                         true);
             if (game == null)
             {
                 var favGame = stats.MaxBy(x => x.WinCount + x.LoseCount);
@@ -115,13 +122,75 @@ public partial class Gambling
                   .SendAsync();
         }
 
+        private readonly record struct WinLbStat(
+            int Rank,
+            string User,
+            GamblingGame Game,
+            long MaxWin);
+
+        private TypedKey<List<WinLbStat>> GetWinLbKey(int page)
+            => new($"winlb:{page}");
+
+        private async Task<IReadOnlyCollection<WinLbStat>> GetCachedWinLbAsync(int page)
+        {
+            return await _cache.GetOrAddAsync(GetWinLbKey(page),
+                async () =>
+                {
+                    var items = await _service.GetWinLbAsync(page);
+
+                    if (items.Count == 0)
+                        return [];
+
+                    var outputItems = new List<WinLbStat>(items.Count);
+                    for (var i = 0; i < items.Count; i++)
+                    {
+                        var x = items[i];
+                        var user = (await ctx.Client.GetUserAsync(x.UserId, CacheMode.CacheOnly))?.ToString()
+                                   ?? (await _userService.GetUserAsync(x.UserId))?.Username
+                                   ?? x.UserId.ToString();
+
+                        outputItems.Add(new WinLbStat(i + 1 + (page * 10), user, x.Game, x.MaxWin));
+                    }
+
+                    return outputItems;
+                },
+                expiry: TimeSpan.FromMinutes(5));
+        }
+
+        [Cmd]
+        public async Task WinLb(int page = 1)
+        {
+            if (--page < 0)
+                return;
+
+            await Response()
+                  .Paginated()
+                  .PageItems(p => GetCachedWinLbAsync(p))
+                  .PageSize(10)
+                  .Page((items, curPage) =>
+                  {
+                      var eb = CreateEmbed()
+                          .WithOkColor();
+
+                      for (var i = 0; i < items.Count; i++)
+                      {
+                          var item = items[i];
+                          eb.AddField($"#{item.Rank} {item.User}",
+                              $"[{item.Game}]{N(item.MaxWin)}");
+                      }
+
+                      return eb;
+                  })
+                  .SendAsync();
+        }
+
         [Cmd]
         public async Task GambleStats()
         {
             var stats = await _gamblingTxTracker.GetAllAsync();
 
             var eb = CreateEmbed()
-                            .WithOkColor();
+                .WithOkColor();
 
             var str = "` Feature `｜`   Bet  `｜`Paid Out`｜`  RoI  `\n";
             str += "――――――――――――――――――――\n";
@@ -157,13 +226,13 @@ public partial class Gambling
         public async Task GambleStatsReset()
         {
             if (!await PromptUserConfirmAsync(CreateEmbed()
-                                                     .WithDescription(
-                                                         """
-                                                         Are you sure?
-                                                         This will completely reset Gambling Stats.
+                    .WithDescription(
+                        """
+                        Are you sure?
+                        This will completely reset Gambling Stats.
 
-                                                         This action is irreversible.
-                                                         """)))
+                        This action is irreversible.
+                        """)))
                 return;
 
             await GambleStats();

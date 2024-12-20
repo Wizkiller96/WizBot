@@ -16,6 +16,7 @@ To self-host your own WizBot, use the guides below:
 - [:material-microsoft-windows: Windows guide][windows-guide]
 - [:material-linux: Linux guide][linux-guide]
 - [:material-apple: Mac OS guide][macos-guide]
+- [:material-microsoft-windows: Windows (from source) guide][windows-source-guide]
 
 In case you need any help, join our [Discord server][discord-server] where we may provide support.
 
@@ -32,6 +33,7 @@ If you're unsure whether something is an issue, ask in our support server first.
 [invite]: https://wizbot.cc/invite
 [commands]: https://wizbot.cc/commands
 [windows-guide]: ./guides/windows-guide.md
+[windows-source-guide]: ./guides/windows-source-guide.md
 [linux-guide]: ./guides/linux-guide.md
 [macos-guide]: ./guides/osx-guide.md
 [from-source-guide]: ./guides/from-source.md

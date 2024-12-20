@@ -16,6 +16,8 @@ namespace WizBot.Migrations.PostgreSql
                 name: "ix_userxpstats_awardedxp",
                 table: "userxpstats");
 
+            MigrationQueries.MergeAwardedXp(migrationBuilder);
+            
             migrationBuilder.DropColumn(
                 name: "awardedxp",
                 table: "userxpstats");
@@ -60,6 +62,11 @@ namespace WizBot.Migrations.PostgreSql
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_userbetstats_maxwin",
+                table: "userbetstats",
+                column: "maxwin");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_temprole_expiresat",
                 table: "temprole",
                 column: "expiresat");
@@ -73,6 +80,10 @@ namespace WizBot.Migrations.PostgreSql
 
             migrationBuilder.DropTable(
                 name: "temprole");
+
+            migrationBuilder.DropIndex(
+                name: "ix_userbetstats_maxwin",
+                table: "userbetstats");
 
             migrationBuilder.AddColumn<long>(
                 name: "awardedxp",

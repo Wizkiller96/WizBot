@@ -164,13 +164,18 @@ public abstract class WizBotContext : DbContext
 
         #region UserBetStats
         
-        modelBuilder.Entity<UserBetStats>()
-                    .HasIndex(x => new
-                    {
-                        x.UserId,
-                        x.Game
-                    })
-                    .IsUnique();
+        modelBuilder.Entity<UserBetStats>(ubs =>
+        {
+            ubs.HasIndex(x => new
+               {
+                   x.UserId,
+                   x.Game
+               })
+               .IsUnique();
+
+            ubs.HasIndex(x => x.MaxWin)
+               .IsUnique(false);
+        });
 
         #endregion
 

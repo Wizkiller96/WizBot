@@ -11,7 +11,7 @@ using WizBot.Db;
 namespace WizBot.Migrations
 {
     [DbContext(typeof(SqliteContext))]
-    [Migration("20241205052137_awardedxp-temprole-notify")]
+    [Migration("20241207150041_awardedxp-temprole-notify")]
     partial class awardedxptemprolenotify
     {
         /// <inheritdoc />
@@ -2592,6 +2592,8 @@ namespace WizBot.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+                    
+                    b.HasIndex("MaxWin");
 
                     b.HasIndex("UserId", "Game")
                         .IsUnique();

@@ -42,7 +42,7 @@ public sealed class UserBetStatsService : INService
         await using var ctx = _db.GetDbContext();
         await ctx.GetTable<UserBetStats>()
                  .DeleteAsync(x => x.UserId == userId && (game == null || x.Game == game));
-        
+
         return true;
     }
 
@@ -51,5 +51,17 @@ public sealed class UserBetStatsService : INService
         await using var ctx = _db.GetDbContext();
         await ctx.GetTable<GamblingStats>()
                  .DeleteAsync();
+    }
+    
+    public async Task<IReadOnlyList<UserBetStats>> GetWinLbAsync(int page)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(page);
+
+        await using var ctx = _db.GetDbContext();
+        return await ctx.GetTable<UserBetStats>()
+                        .OrderByDescending(x => x.MaxWin)
+                        .Skip(page * 10)
+                        .Take(10)
+                        .ToArrayAsyncLinqToDB();
     }
 }

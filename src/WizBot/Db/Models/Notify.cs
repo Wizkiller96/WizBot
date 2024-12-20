@@ -19,4 +19,6 @@ public enum NotifyType
 {
     LevelUp = 0,
     Protection = 1, Prot = 1,
+    AddRoleReward = 2,
+    RemoveRoleReward = 3,
 }

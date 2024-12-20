@@ -12,7 +12,7 @@ public sealed class UserService : IUserService, INService
         _db = db;
     }
 
-    public async Task<DiscordUser> GetUserAsync(ulong userId)
+    public async Task<DiscordUser?> GetUserAsync(ulong userId)
     {
         await using var uow = _db.GetDbContext();
         var user = await uow

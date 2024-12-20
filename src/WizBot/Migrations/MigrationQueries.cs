@@ -5,6 +5,16 @@ namespace WizBot.Migrations;
 
 public static class MigrationQueries
 {
+    public static void MergeAwardedXp(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("""
+                             UPDATE UserXpStats
+                             SET Xp = AwardedXp + Xp,
+                             AwardedXp = 0
+                             WHERE AwardedXp > 0;
+                             """);
+    }
+
     public static void MigrateSar(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql("""
