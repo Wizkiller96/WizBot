@@ -1273,6 +1273,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         {
             if (patron?.Tier >= PatronTier.X)
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_gold.png"));
+            else if (patron?.Tier == PatronTier.I)
+                frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_bronze.png"));
             else if (patron?.Tier == PatronTier.V || _creds.IsAdmin(userId))
                 frame = Image.Load<Rgba32>(File.OpenRead("data/images/frame_silver.png"));
             else if (patron?.Tier >= PatronTier.X || _creds.IsOwner(userId))
@@ -1467,6 +1469,34 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (item is null || item.Price < 0)
                 return BuyResult.UnknownItem;
+
+            if (type == XpShopItemType.Frame)
+            {
+                var frameItem = conf.Shop.Frames[key];
+                var frameReq = frameItem.TierRequirement;
+
+                if (frameReq != PatronTier.None && !_creds.IsOwner(userId))
+                {
+                    var patron = await _ps.GetPatronAsync(userId);
+
+                    if (patron is null || (int)patron.Value.Tier < (int)frameReq)
+                        return BuyResult.InsufficientPatronTier;
+                }
+            }
+
+            if (type == XpShopItemType.Background)
+            {
+                var bgItem = conf.Shop.Bgs[key];
+                var bgReq = bgItem.TierRequirement;
+
+                if (bgReq != PatronTier.None && !_creds.IsOwner(userId))
+                {
+                    var patron = await _ps.GetPatronAsync(userId);
+
+                if (patron is null || (int)patron.Value.Tier < (int)bgReq)
+                    return BuyResult.InsufficientPatronTier;
+                }
+            }
 
             if (item.Price > 0 && !await _cs.RemoveAsync(userId, item.Price, new("xpshop", "buy", $"Background {key}")))
                 return BuyResult.InsufficientFunds;

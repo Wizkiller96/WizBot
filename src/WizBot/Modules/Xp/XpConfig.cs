@@ -85,6 +85,9 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
         [Comment("""Price of the item. Set to -1 if you no longer want to sell the item but want the users to be able to keep their old purchase""")]
         public int Price { get; set; }
         
+        [Comment("""Patron Tier requirement to purchase the item""")]
+        public PatronTier TierRequirement { get; set; } = PatronTier.None;
+        
         [Comment("""Direct url to the .png image which will be applied to the user's XP card""")]
         public string Url { get; set; }
         

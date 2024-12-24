@@ -2,6 +2,7 @@
 using WizBot.Modules.Xp.Services;
 using WizBot.Db.Models;
 using WizBot.Modules.Patronage;
+using TwitchLib.Api.Helix.Models.Bits;
 
 namespace WizBot.Modules.Xp;
 
@@ -457,6 +458,9 @@ public partial class Xp : WizBotModule<XpService>
                   
                   if (!string.IsNullOrWhiteSpace(item.Author))
                       eb.AddField(GetText(strs.author), item.Author);
+                  
+                  if (item.TierRequirement != PatronTier.None)
+                      eb.AddField(GetText(strs.required_tier), "Patron Tier " + item.TierRequirement, true);
 
 #if GLOBAL_WIZBOT
                   if (key == "default")
