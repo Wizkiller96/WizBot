@@ -16,7 +16,7 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
     public int XpPerMessage { get; set; } = 3;
 
     [Comment("""How often can the users receive XP, in seconds""")]
-    public int MessageXpCooldown { get; set; } = 300;
+    public float MessageXpCooldown { get; set; } = 300;
 
     [Comment("""Amount of xp users gain from posting an image""")]
     public int XpFromImage { get; set; } = 0;

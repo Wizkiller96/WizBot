@@ -704,7 +704,7 @@ public partial class Utility : WizBotModule
     [UserPerm(GuildPerm.ManageMessages)]
     public async Task VerboseError(bool? newstate = null)
     {
-        var state = _veService.ToggleVerboseErrors(ctx.Guild.Id, newstate);
+        var state = await _veService.ToggleVerboseErrors(ctx.Guild.Id, newstate);
 
         if (state)
             await Response().Confirm(strs.verbose_errors_enabled).SendAsync();

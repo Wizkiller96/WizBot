@@ -38,7 +38,7 @@ public partial class Xp
             if (page is < 0 or > 100)
                 return Task.CompletedTask;
 
-            var allRewards = _service.GetRoleRewards(ctx.Guild.Id)
+            var allRewards = _service.GetRoleRewardsAsync(ctx.Guild.Id)
                                      .OrderBy(x => x.Level)
                                      .Select(x =>
                                      {
@@ -108,7 +108,7 @@ public partial class Xp
             if (level < 1)
                 return;
 
-            _service.SetRoleReward(ctx.Guild.Id, level, role.Id, action == AddRemove.Remove);
+            _service.SetRoleRewardAsync(ctx.Guild.Id, level, role.Id, action == AddRemove.Remove);
             if (action == AddRemove.Add)
                 await Response().Confirm(strs.xp_role_reward_add_role(level, Format.Bold(role.ToString()))).SendAsync();
             else

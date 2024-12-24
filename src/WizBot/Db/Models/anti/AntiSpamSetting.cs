@@ -1,13 +1,34 @@
-﻿namespace WizBot.Db.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
+namespace WizBot.Db.Models;
 
 #nullable disable
-public class AntiSpamSetting : DbEntity
+public class AntiSpamSetting
 {
-    public int GuildConfigId { get; set; }
-    
+    [Key]
+    public int Id { get; set; }
+
+    public ulong GuildId { get; set; }
+
     public PunishmentAction Action { get; set; }
     public int MessageThreshold { get; set; } = 3;
     public int MuteTime { get; set; }
     public ulong? RoleId { get; set; }
-    public HashSet<AntiSpamIgnore> IgnoredChannels { get; set; } = new();
+    public List<AntiSpamIgnore> IgnoredChannels { get; set; } = new();
+}
+
+// setup model 
+public class AntiSpamEntityConfiguration : IEntityTypeConfiguration<AntiSpamSetting>
+{
+    public void Configure(EntityTypeBuilder<AntiSpamSetting> builder)
+    {
+        builder.HasIndex(x => x.GuildId)
+               .IsUnique();
+
+        builder.HasMany(x => x.IgnoredChannels)
+               .WithOne()
+               .OnDelete(DeleteBehavior.Cascade);
+    }
 }

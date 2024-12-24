@@ -1,4 +1,6 @@
-﻿using WizBot.Common.ModuleBehaviors;
+﻿using LinqToDB;
+using LinqToDB.EntityFrameworkCore;
+using WizBot.Common.ModuleBehaviors;
 using WizBot.Modules.Utility.Common;
 using WizBot.Modules.Utility.Common.Exceptions;
 using WizBot.Db.Models;
@@ -10,17 +12,13 @@ public class StreamRoleService : IReadyExecutor, INService
 {
     private readonly DbService _db;
     private readonly DiscordSocketClient _client;
-    private readonly ConcurrentDictionary<ulong, StreamRoleSettings> _guildSettings;
+    private readonly ConcurrentHashSet<ulong> _srsEnabledGuilds = new();
     private readonly QueueRunner _queueRunner;
 
     public StreamRoleService(DiscordSocketClient client, DbService db, IBot bot)
     {
         _db = db;
         _client = client;
-
-        _guildSettings = bot.AllGuildConfigs.ToDictionary(x => x.GuildId, x => x.StreamRole)
-                            .Where(x => x.Value is { Enabled: true })
-                            .ToConcurrent();
 
         _client.PresenceUpdated += OnPresenceUpdate;
 
@@ -29,7 +27,6 @@ public class StreamRoleService : IReadyExecutor, INService
 
     private Task OnPresenceUpdate(SocketUser user, SocketPresence? oldPresence, SocketPresence? newPresence)
     {
-        
         _ = Task.Run(async () =>
         {
             if (oldPresence?.Activities?.Count != newPresence?.Activities?.Count)
@@ -40,7 +37,7 @@ public class StreamRoleService : IReadyExecutor, INService
 
                 foreach (var guildUser in guildUsers)
                 {
-                    if (_guildSettings.TryGetValue(guildUser.Guild.Id, out var s))
+                    if (_srsEnabledGuilds.TryGetValue(guildUser.Guild.Id, out var s))
                         await RescanUser(guildUser, s);
                 }
             }
@@ -49,18 +46,20 @@ public class StreamRoleService : IReadyExecutor, INService
         return Task.CompletedTask;
     }
 
-    public Task OnReadyAsync()
-        => Task.WhenAll(_client.Guilds.Select(RescanUsers).WhenAll(), _queueRunner.RunAsync());
+    public async Task OnReadyAsync()
+    {
+        await using (var uow = _db.GetDbContext())
+        {
+            _srsEnabledGuilds = (await uow.GetTable<StreamRoleSettings>()
+                                          .Where(x => x.Enabled)
+                                          .ToListAsyncLinqToDB())
+                                .ToDictionary(x => x.GuildId, x => x)
+                                .ToConcurrent();
+        }
 
-    /// <summary>
-    ///     Adds or removes a user from a blacklist or a whitelist in the specified guild.
-    /// </summary>
-    /// <param name="listType">List type</param>
-    /// <param name="guild">Guild</param>
-    /// <param name="action">Add or rem action</param>
-    /// <param name="userId">User's Id</param>
-    /// <param name="userName">User's name</param>
-    /// <returns>Whether the operation was successful</returns>
+        await Task.WhenAll(_client.Guilds.Select(RescanUsers).WhenAll(), _queueRunner.RunAsync());
+    }
+
     public async Task<bool> ApplyListAction(
         StreamRoleListType listType,
         IGuild guild,
@@ -73,48 +72,54 @@ public class StreamRoleService : IReadyExecutor, INService
         var success = false;
         await using (var uow = _db.GetDbContext())
         {
-            var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
+            var srs = uow.GetOrCreateStreamRoleSettings(guild.Id);
 
             if (listType == StreamRoleListType.Whitelist)
             {
-                var userObj = new StreamRoleWhitelistedUser
-                {
-                    UserId = userId,
-                    Username = userName
-                };
-
                 if (action == AddRemove.Rem)
                 {
-                    var toDelete = streamRoleSettings.Whitelist.FirstOrDefault(x => x.Equals(userObj));
-                    if (toDelete is not null)
-                    {
-                        uow.Remove(toDelete);
-                        success = true;
-                    }
+                    await using var ctx = _db.GetDbContext();
+                    var deleted = await ctx.GetTable<StreamRoleWhitelistedUser>()
+                                           .Where(x => x.StreamRoleSettingsId == srs.Id && x.UserId == userId)
+                                           .DeleteAsync();
+
+                    return deleted > 0;
                 }
                 else
-                    success = streamRoleSettings.Whitelist.Add(userObj);
+                {
+                    await using var ctx = _db.GetDbContext();
+                    await ctx.GetTable<StreamRoleWhitelistedUser>()
+                             .InsertAsync(() => new StreamRoleWhitelistedUser
+                             {
+                                 UserId = userId,
+                                 Username = userName,
+                                 StreamRoleSettingsId = srs.Id
+                             });
+                }
             }
             else
             {
-                var userObj = new StreamRoleBlacklistedUser
-                {
-                    UserId = userId,
-                    Username = userName
-                };
-
                 if (action == AddRemove.Rem)
                 {
-                    var toRemove = streamRoleSettings.Blacklist.FirstOrDefault(x => x.Equals(userObj));
-                    if (toRemove is not null)
-                        success = streamRoleSettings.Blacklist.Remove(toRemove);
+                    await using var ctx = _db.GetDbContext();
+                    var deleted = await ctx.GetTable<StreamRoleBlacklistedUser>()
+                                           .Where(x => x.StreamRoleSettingsId == srs.Id && x.UserId == userId)
+                                           .DeleteAsync();
+
+                    return deleted > 0;
                 }
                 else
-                    success = streamRoleSettings.Blacklist.Add(userObj);
+                {
+                    await using var ctx = _db.GetDbContext();
+                    await ctx.GetTable<StreamRoleBlacklistedUser>()
+                             .InsertAsync(() => new StreamRoleBlacklistedUser
+                             {
+                                 UserId = userId,
+                                 Username = userName,
+                                 StreamRoleSettingsId = srs.Id
+                             });
+                }
             }
-
-            await uow.SaveChangesAsync();
-            UpdateCache(guild.Id, streamRoleSettings);
         }
 
         if (success)
@@ -134,7 +139,7 @@ public class StreamRoleService : IReadyExecutor, INService
 
         await using (var uow = _db.GetDbContext())
         {
-            var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
+            var streamRoleSettings = uow.GetOrCreateStreamRoleSettings(guild.Id);
 
             streamRoleSettings.Keyword = keyword;
             UpdateCache(guild.Id, streamRoleSettings);
@@ -152,13 +157,13 @@ public class StreamRoleService : IReadyExecutor, INService
     /// <returns>The keyword set</returns>
     public string GetKeyword(ulong guildId)
     {
-        if (_guildSettings.TryGetValue(guildId, out var outSetting))
+        if (_srsEnabledGuilds.TryGetValue(guildId, out var outSetting))
             return outSetting.Keyword;
 
         StreamRoleSettings setting;
         using (var uow = _db.GetDbContext())
         {
-            setting = uow.GetStreamRoleSettings(guildId);
+            setting = uow.GetOrCreateStreamRoleSettings(guildId);
         }
 
         UpdateCache(guildId, setting);
@@ -180,7 +185,7 @@ public class StreamRoleService : IReadyExecutor, INService
         StreamRoleSettings setting;
         await using (var uow = _db.GetDbContext())
         {
-            var streamRoleSettings = uow.GetStreamRoleSettings(fromRole.Guild.Id);
+            var streamRoleSettings = uow.GetOrCreateStreamRoleSettings(fromRole.Guild.Id);
 
             streamRoleSettings.Enabled = true;
             streamRoleSettings.AddRoleId = addRole.Id;
@@ -207,14 +212,14 @@ public class StreamRoleService : IReadyExecutor, INService
     {
         await using (var uow = _db.GetDbContext())
         {
-            var streamRoleSettings = uow.GetStreamRoleSettings(guild.Id);
+            var streamRoleSettings = uow.GetOrCreateStreamRoleSettings(guild.Id);
             streamRoleSettings.Enabled = false;
             streamRoleSettings.AddRoleId = 0;
             streamRoleSettings.FromRoleId = 0;
             await uow.SaveChangesAsync();
         }
 
-        if (_guildSettings.TryRemove(guild.Id, out _) && cleanup)
+        if (_srsEnabledGuilds.TryRemove(guild.Id, out _) && cleanup)
             await RescanUsers(guild);
     }
 
@@ -314,8 +319,10 @@ public class StreamRoleService : IReadyExecutor, INService
 
     private async Task RescanUsers(IGuild guild)
     {
-        if (!_guildSettings.TryGetValue(guild.Id, out var setting))
+        if (!_srsEnabledGuilds.Contains(guild.Id))
             return;
+
+        var settings = await GetSettingsAsync(guild.Id);
 
         var addRole = guild.GetRole(setting.AddRoleId);
         if (addRole is null)
@@ -332,7 +339,4 @@ public class StreamRoleService : IReadyExecutor, INService
             }
         }
     }
-
-    private void UpdateCache(ulong guildId, StreamRoleSettings setting)
-        => _guildSettings.AddOrUpdate(guildId, _ => setting, (_, _) => setting);
 }

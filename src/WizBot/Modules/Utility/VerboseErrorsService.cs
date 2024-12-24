@@ -1,7 +1,11 @@
 ﻿#nullable disable
+using LinqToDB.EntityFrameworkCore;
+using WizBot.Common.ModuleBehaviors;
+using WizBot.Db.Models;
+
 namespace WizBot.Modules.Utility.Services;
 
-public class VerboseErrorsService : INService
+public class VerboseErrorsService : IReadyExecutor, INService
 {
     private readonly ConcurrentHashSet<ulong> _guildsDisabled;
     private readonly DbService _db;
@@ -48,17 +52,11 @@ public class VerboseErrorsService : INService
         }
     }
 
-    public bool ToggleVerboseErrors(ulong guildId, bool? maybeEnabled = null)
+    public async Task<bool> ToggleVerboseErrors(ulong guildId, bool? maybeEnabled = null)
     {
-        using var uow = _db.GetDbContext();
-        var gc = uow.GuildConfigsForId(guildId, set => set);
+        await using var ctx = _db.GetDbContext();
 
-        if (maybeEnabled is bool isEnabled) // set it
-            gc.VerboseErrors = isEnabled;
-        else // toggle it
-            isEnabled = gc.VerboseErrors = !gc.VerboseErrors; 
-
-        uow.SaveChanges();
+        var xpSettings = ctx.GetTable<GuildConfig>();
 
         if (isEnabled) // This doesn't need to be duplicated inside the using block
             _guildsDisabled.TryRemove(guildId);
@@ -66,5 +64,10 @@ public class VerboseErrorsService : INService
             _guildsDisabled.Add(guildId);
 
         return isEnabled;
+    }
+
+    public Task OnReadyAsync()
+    {
+        
     }
 }

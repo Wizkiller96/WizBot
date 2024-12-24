@@ -1,13 +1,28 @@
-#nullable disable
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-public class MutedUserId : DbEntity
+// todo fix usage hash
+public class MutedUserId
 {
+    [Key]
+    public ulong Id { get; set; }
+
+    public ulong GuildId { get; set; }
     public ulong UserId { get; set; }
+}
 
-    public override int GetHashCode()
-        => UserId.GetHashCode();
-
-    public override bool Equals(object obj)
-        => obj is MutedUserId mui ? mui.UserId == UserId : false;
+public class MutedUserIdEntityConfiguration : IEntityTypeConfiguration<MutedUserId>
+{
+    public void Configure(EntityTypeBuilder<MutedUserId> builder)
+    {
+        builder.HasIndex(x => new
+               {
+                   x.GuildId,
+                   x.UserId
+               })
+               .IsUnique();
+    }
 }

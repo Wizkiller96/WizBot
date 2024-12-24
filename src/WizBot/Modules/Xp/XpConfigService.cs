@@ -16,8 +16,8 @@ public sealed class XpConfigService : ConfigServiceBase<XpConfig>
     {
         AddParsedProp("txt.cooldown",
             conf => conf.MessageXpCooldown,
-            int.TryParse,
-            ConfigPrinters.ToString,
+            float.TryParse,
+            (f) => f.ToString("F2"),
             x => x > 0);
         AddParsedProp("txt.per_msg", conf => conf.XpPerMessage, int.TryParse, ConfigPrinters.ToString, x => x >= 0);
         AddParsedProp("txt.per_image", conf => conf.XpFromImage, int.TryParse, ConfigPrinters.ToString, x => x > 0);

@@ -33,8 +33,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly XpConfigService _xpConfig;
     private readonly IPubSub _pubSub;
 
-    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles;
-    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels;
+    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedRoles = new();
+    private readonly ConcurrentDictionary<ulong, ConcurrentHashSet<ulong>> _excludedChannels = new();
     private readonly ConcurrentHashSet<ulong> _excludedServers;
 
     private XpTemplate template;
@@ -45,14 +45,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private readonly IBotCache _c;
 
 
-    private readonly QueueRunner _levelUpQueue = new QueueRunner(0, 50);
+    private readonly QueueRunner _levelUpQueue = new(0, 50);
     private readonly Channel<UserXpGainData> _xpGainQueue = Channel.CreateUnbounded<UserXpGainData>();
     private readonly IMessageSenderService _sender;
     private readonly INotifySubscriber _notifySub;
+    private readonly ShardData _shardData;
 
     public XpService(
         DiscordSocketClient client,
-        IBot bot,
         DbService db,
         IBotStrings strings,
         IImageCache images,
@@ -65,7 +65,8 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         IPubSub pubSub,
         IPatronageService ps,
         IMessageSenderService sender,
-        INotifySubscriber notifySub)
+        INotifySubscriber notifySub,
+        ShardData shardData)
     {
         _db = db;
         _images = images;
@@ -78,6 +79,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         _pubSub = pubSub;
         _sender = sender;
         _notifySub = notifySub;
+        _shardData = shardData;
         _excludedServers = new();
         _excludedChannels = new();
         _client = client;
@@ -98,26 +100,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         }
 
         //load settings
-        var allGuildConfigs = bot.AllGuildConfigs.Where(x => x.XpSettings is not null).ToList();
-
-        _excludedChannels = allGuildConfigs.ToDictionary(x => x.GuildId,
-                                               x => new ConcurrentHashSet<ulong>(x.XpSettings.ExclusionList
-                                                   .Where(ex => ex.ItemType == ExcludedItemType.Channel)
-                                                   .Select(ex => ex.ItemId)
-                                                   .Distinct()))
-                                           .ToConcurrent();
-
-        _excludedRoles = allGuildConfigs.ToDictionary(x => x.GuildId,
-                                            x => new ConcurrentHashSet<ulong>(x.XpSettings.ExclusionList
-                                                                               .Where(ex => ex.ItemType
-                                                                                   == ExcludedItemType.Role)
-                                                                               .Select(ex => ex.ItemId)
-                                                                               .Distinct()))
-                                        .ToConcurrent();
-
-        _excludedServers = new(allGuildConfigs.Where(x => x.XpSettings.ServerExcluded).Select(x => x.GuildId));
-
-#if !GLOBAL_WIZBOT
+#if !GLOBAL_NADEKO
         _client.UserVoiceStateUpdated += Client_OnUserVoiceStateUpdated;
 
         // Scan guilds on startup.
@@ -130,6 +113,33 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public async Task OnReadyAsync()
     {
         _ = Task.Run(() => _levelUpQueue.RunAsync());
+
+        // initialize ignored
+
+        await using (var ctx = _db.GetDbContext())
+        {
+            var xps = await ctx.GetTable<GuildXpSettings>()
+                               .Where(x => Queries.GuildOnShard(x.GuildId, _shardData.TotalShards, _shardData.ShardId))
+                               .ToListAsyncLinqToDB();
+
+            foreach (var xp in xps)
+            {
+                if (xp.ServerExcluded)
+                    _excludedServers.Add(xp.GuildId);
+            }
+
+            var excludedItems = await ctx.GetTable<ExcludedItem>()
+                                         .Where(x => Queries.GuildOnShard(x.GuildId, _shardData.TotalShards, _shardData.ShardId))
+                                         .ToListAsyncLinqToDB();
+
+            foreach (var item in excludedItems)
+            {
+                if (item.ItemType == ExcludedItemType.Channel)
+                    _excludedChannels[item.GuildId].Add(item.ItemId);
+                else if (item.ItemType == ExcludedItemType.Role)
+                    _excludedRoles[item.GuildId].Add(item.ItemId);
+            }
+        }
 
         using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
         while (await timer.WaitForNextTickAsync())
@@ -188,9 +198,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                     var items = await ctx.Set<DiscordUser>()
                                          .Where(x => group.Contains(x.UserId))
                                          .UpdateWithOutputAsync(old => new()
-                                             {
-                                                 TotalXp = old.TotalXp + group.Key
-                                             },
+                                         {
+                                             TotalXp = old.TotalXp + group.Key
+                                         },
                                              (_, n) => n);
 
                     await ctx.Set<ClubInfo>()
@@ -213,9 +223,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                           .Where(x => x.GuildId == guildId)
                                           .Where(x => group.Contains(x.UserId))
                                           .UpdateWithOutputAsync(old => new()
-                                              {
-                                                  Xp = old.Xp + group.Key
-                                              },
+                                          {
+                                              Xp = old.Xp + group.Key
+                                          },
                                               (_, n) => n);
 
                         gxps.AddRange(items);
@@ -227,12 +237,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                   .Set<UserXpStats>()
                                   .ToLinqToDBTable()
                                   .InsertOrUpdateAsync(() => new UserXpStats()
-                                      {
-                                          UserId = userId,
-                                          GuildId = guildId,
-                                          Xp = group.Key,
-                                          DateAdded = DateTime.UtcNow,
-                                      },
+                                  {
+                                      UserId = userId,
+                                      GuildId = guildId,
+                                      Xp = group.Key,
+                                      DateAdded = DateTime.UtcNow,
+                                  },
                                       _ => new()
                                       {
                                       },
@@ -327,8 +337,13 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         List<XpCurrencyReward> crews;
         await using (var ctx = _db.GetDbContext())
         {
-            rrews = ctx.XpSettingsFor(guildId).RoleRewards.ToList();
-            crews = ctx.XpSettingsFor(guildId).CurrencyRewards.ToList();
+            rrews = await ctx.GetTable<XpRoleReward>()
+                       .Where(x => x.GuildId == guildId && x.Level > oldLevel && x.Level <= newLevel)
+                       .ToListAsyncLinqToDB();
+
+            crews = await ctx.GetTable<XpCurrencyReward>()
+                       .Where(x => x.GuildId == guildId && x.Level > oldLevel && x.Level <= newLevel)
+                       .ToListAsyncLinqToDB();
         }
 
         //loop through levels since last level up, so if a high amount of xp is gained, reward are still applied.
@@ -418,7 +433,6 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 ChannelId = channelId,
                 Level = newLevel
             };
-
             await _notifySub.NotifyAsync(model, true);
             return;
         }
@@ -468,94 +482,79 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public void ReloadXpTemplate()
         => _pubSub.Pub(_xpTemplateReloadKey, true);
 
-    public void SetCurrencyReward(ulong guildId, int level, int amount)
+    public async Task SetCurrencyReward(ulong guildId, int level, int amount)
     {
-        using var uow = _db.GetDbContext();
-        var settings = uow.XpSettingsFor(guildId);
+        await using var uow = _db.GetDbContext();
 
         if (amount <= 0)
         {
-            var toRemove = settings.CurrencyRewards.FirstOrDefault(x => x.Level == level);
-            if (toRemove is not null)
-            {
-                uow.Remove(toRemove);
-                settings.CurrencyRewards.Remove(toRemove);
-            }
+            await uow.GetTable<XpCurrencyReward>()
+                     .Where(x => x.GuildId == guildId && x.Level == level)
+                     .DeleteAsync();
         }
         else
         {
-            var rew = settings.CurrencyRewards.FirstOrDefault(x => x.Level == level);
-
-            if (rew is not null)
-                rew.Amount = amount;
-            else
-            {
-                settings.CurrencyRewards.Add(new()
-                {
-                    Level = level,
-                    Amount = amount
-                });
-            }
+            await uow.GetTable<XpCurrencyReward>()
+                     .InsertAsync(() => new()
+                     {
+                         GuildId = guildId,
+                         Level = level,
+                         Amount = amount
+                     });
         }
-
-        uow.SaveChanges();
     }
 
-    public IEnumerable<XpCurrencyReward> GetCurrencyRewards(ulong id)
+    public async Task<IReadOnlyList<XpCurrencyReward>> GetCurrencyRewardsAsync(ulong id)
     {
-        using var uow = _db.GetDbContext();
-        return uow.XpSettingsFor(id).CurrencyRewards.ToArray();
+        await using var uow = _db.GetDbContext();
+        return await uow.GetTable<XpCurrencyReward>()
+                        .Where(x => x.GuildId == id)
+                        .ToArrayAsyncLinqToDB();
     }
 
-    public IEnumerable<XpRoleReward> GetRoleRewards(ulong id)
+    public async Task<IReadOnlyList<XpRoleReward>> GetRoleRewardsAsync(ulong id)
     {
-        using var uow = _db.GetDbContext();
-        return uow.XpSettingsFor(id).RoleRewards.ToArray();
+        await using var uow = _db.GetDbContext();
+        return await uow.GetTable<XpRoleReward>()
+                        .Where(x => x.GuildId == id)
+                        .ToArrayAsyncLinqToDB();
     }
 
-    public void ResetRoleReward(ulong guildId, int level)
+    public async Task ResetRoleReward(ulong guildId, int level)
     {
-        using var uow = _db.GetDbContext();
-        var settings = uow.XpSettingsFor(guildId);
+        await using var uow = _db.GetDbContext();
 
-        var toRemove = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
-        if (toRemove is not null)
-        {
-            uow.Remove(toRemove);
-            settings.RoleRewards.Remove(toRemove);
-        }
-
-        uow.SaveChanges();
+        await uow.GetTable<XpRoleReward>()
+                 .Where(x => x.GuildId == guildId && x.Level == level)
+                 .DeleteAsync();
     }
 
-    public void SetRoleReward(
+    public async Task SetRoleRewardAsync(
         ulong guildId,
         int level,
         ulong roleId,
         bool remove)
     {
         using var uow = _db.GetDbContext();
-        var settings = uow.XpSettingsFor(guildId);
 
-
-        var rew = settings.RoleRewards.FirstOrDefault(x => x.Level == level);
-
-        if (rew is not null)
-        {
-            rew.RoleId = roleId;
-            rew.Remove = remove;
-        }
-        else
-        {
-            settings.RoleRewards.Add(new()
+        await uow.GetTable<XpRoleReward>()
+            .InsertOrUpdateAsync(() => new()
             {
+                GuildId = guildId,
                 Level = level,
                 RoleId = roleId,
                 Remove = remove,
+            },
+            old => new()
+            {
+                RoleId = roleId,
+                Remove = remove
+            },
+            () => new()
+            {
+                GuildId = guildId,
+                Level = level
             });
-        }
-
-        uow.SaveChanges();
     }
 
     public async Task<IReadOnlyCollection<UserXpStats>> GetGuildUserXps(ulong guildId, int page)
@@ -763,7 +762,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     private bool ShouldTrackXp(SocketGuildUser user, IMessageChannel channel)
     {
         var channelId = channel.Id;
-        
+
         if (_excludedChannels.TryGetValue(user.Guild.Id, out var chans)
             && (chans.Contains(channelId)
                 || (channel is SocketThreadChannel tc && chans.Contains(tc.ParentChannel.Id))))
@@ -838,9 +837,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                         });
     }
 
-    public void AddXp(ulong userId, ulong guildId, int amount)
+    public async Task AddXpAsync(ulong userId, ulong guildId, int amount)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var usr = uow.GetOrCreateUserXpStats(guildId, userId);
 
         usr.Xp += amount;
@@ -894,77 +893,87 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             guildRank);
     }
 
-    public bool ToggleExcludeServer(ulong id)
+    public async Task<bool> ToggleExcludeServerAsync(ulong id)
     {
-        using var uow = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
         var xpSetting = uow.XpSettingsFor(id);
         if (_excludedServers.Add(id))
         {
-            xpSetting.ServerExcluded = true;
-            uow.SaveChanges();
+            await uow.GetTable<GuildXpSettings>()
+                .InsertOrUpdateAsync(() => new()
+                {
+                    GuildId = id,
+                    ServerExcluded = true
+                }, (x) => new()
+                {
+                    ServerExcluded = false
+                }, () => new()
+                {
+                    GuildId = id
+                });
             return true;
         }
 
         _excludedServers.TryRemove(id);
-        xpSetting.ServerExcluded = false;
-        uow.SaveChanges();
+
+        await uow.GetTable<GuildXpSettings>()
+            .Where(x => x.GuildId == id)
+            .DeleteAsync();
+
         return false;
     }
 
-    public bool ToggleExcludeRole(ulong guildId, ulong rId)
+    public async Task<bool> ToggleExcludeRole(ulong guildId, ulong rId)
     {
         var roles = _excludedRoles.GetOrAdd(guildId, _ => new());
-        using var uow = _db.GetDbContext();
-        var xpSetting = uow.XpSettingsFor(guildId);
-        var excludeObj = new ExcludedItem
-        {
-            ItemId = rId,
-            ItemType = ExcludedItemType.Role
-        };
 
+        await using var uow = _db.GetDbContext();
         if (roles.Add(rId))
         {
-            if (xpSetting.ExclusionList.Add(excludeObj))
-                uow.SaveChanges();
+
+            await uow.GetTable<ExcludedItem>()
+                .InsertAsync(() => new()
+                {
+                    GuildId = guildId,
+                    ItemId = rId,
+                    ItemType = ExcludedItemType.Role
+                });
 
             return true;
         }
 
         roles.TryRemove(rId);
 
-        var toDelete = xpSetting.ExclusionList.FirstOrDefault(x => x.Equals(excludeObj));
-        if (toDelete is not null)
-        {
-            uow.Remove(toDelete);
-            uow.SaveChanges();
-        }
+        await uow.GetTable<ExcludedItem>()
+            .Where(x => x.GuildId == guildId && x.ItemId == rId && x.ItemType == ExcludedItemType.Role)
+            .DeleteAsync();
 
         return false;
     }
 
-    public bool ToggleExcludeChannel(ulong guildId, ulong chId)
+    public async Task<bool> ToggleExcludeChannel(ulong guildId, ulong chId)
     {
         var channels = _excludedChannels.GetOrAdd(guildId, _ => new());
-        using var uow = _db.GetDbContext();
-        var xpSetting = uow.XpSettingsFor(guildId);
-        var excludeObj = new ExcludedItem
-        {
-            ItemId = chId,
-            ItemType = ExcludedItemType.Channel
-        };
+        await using var uow = _db.GetDbContext();
 
         if (channels.Add(chId))
         {
-            if (xpSetting.ExclusionList.Add(excludeObj))
-                uow.SaveChanges();
+            await uow.GetTable<ExcludedItem>()
+                .InsertAsync(() => new()
+                {
+                    GuildId = guildId,
+                    ItemId = chId,
+                    ItemType = ExcludedItemType.Channel
+                });
 
             return true;
         }
 
         channels.TryRemove(chId);
 
-        if (xpSetting.ExclusionList.Remove(excludeObj))
-            uow.SaveChanges();
+        await uow.GetTable<ExcludedItem>()
+            .Where(x => x.GuildId == guildId && x.ItemId == chId && x.ItemType == ExcludedItemType.Channel)
+            .DeleteAsync();
 
         return false;
     }
@@ -1004,12 +1013,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 img.Mutate(x =>
                 {
                     x.DrawText(new RichTextOptions(usernameFont)
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            FallbackFontFamilies = _fonts.FallBackFonts,
-                            Origin = new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8)
-                        },
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        FallbackFontFamilies = _fonts.FallBackFonts,
+                        Origin = new(template.User.Name.Pos.X, template.User.Name.Pos.Y + 8)
+                    },
                         "@" + username,
                         Brushes.Solid(template.User.Name.Color),
                         outlinePen);
@@ -1025,12 +1034,12 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                 var clubFont = _fonts.NotoSans.CreateFont(template.Club.Name.FontSize, FontStyle.Regular);
 
                 img.Mutate(x => x.DrawText(new RichTextOptions(clubFont)
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Top,
-                        FallbackFontFamilies = _fonts.FallBackFonts,
-                        Origin = new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)
-                    },
+                {
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    FallbackFontFamilies = _fonts.FallBackFonts,
+                    Origin = new(template.Club.Name.Pos.X + 50, template.Club.Name.Pos.Y - 8)
+                },
                     clubName,
                     Brushes.Solid(template.Club.Name.Color),
                     outlinePen));
@@ -1229,9 +1238,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
             if (template.Club.Icon.Show)
                 await DrawClubImage(img, stats);
 
-// #if GLOBAL_WIZBOT
+            // #if GLOBAL_NADEKO
             await DrawFrame(img, stats.User.UserId);
-// #endif
+            // #endif
 
             var outputSize = template.OutputSize;
             if (outputSize.X != img.Width || outputSize.Y != img.Height)
@@ -1261,7 +1270,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return await _images.GetXpBackgroundImageAsync();
     }
 
-    // #if GLOBAL_WIZBOT
+    // #if GLOBAL_NADEKO
     private async Task DrawFrame(Image<Rgba32> img, ulong userId)
     {
         var patron = await _ps.GetPatronAsync(userId);
@@ -1291,7 +1300,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         if (frame is not null)
             img.Mutate(x => x.DrawImage(frame, new Point(0, 0), new GraphicsOptions()));
     }
-// #endif
+    // #endif
 
     private void DrawXpBar(float percent, XpBar info, Image<Rgba32> img)
     {
@@ -1408,15 +1417,9 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
     public async Task ResetXpRewards(ulong guildId)
     {
         await using var uow = _db.GetDbContext();
-        var guildConfig = uow.GuildConfigsForId(guildId,
-            set => set.Include(x => x.XpSettings)
-                      .ThenInclude(x => x.CurrencyRewards)
-                      .Include(x => x.XpSettings)
-                      .ThenInclude(x => x.RoleRewards));
-
-        uow.RemoveRange(guildConfig.XpSettings.RoleRewards);
-        uow.RemoveRange(guildConfig.XpSettings.CurrencyRewards);
-        await uow.SaveChangesAsync();
+        await uow.GetTable<GuildXpSettings>()
+                 .Where(x => x.GuildId == guildId)
+                 .DeleteAsync();
     }
 
     public ValueTask<Dictionary<string, XpConfig.ShopItemInfo>?> GetShopBgs()
@@ -1591,7 +1594,7 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
     public bool IsShopEnabled()
         => _xpConfig.Data.Shop.IsEnabled;
-    
+
     public async Task<int> GetTotalGuildUsers(ulong requestGuildId, List<ulong>? guildUsers = null)
     {
         await using var ctx = _db.GetDbContext();
@@ -1600,19 +1603,19 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
                                     && (guildUsers == null || guildUsers.Contains(x.UserId)))
                         .CountAsyncLinqToDB();
     }
-    
+
     public async Task SetLevelAsync(ulong guildId, ulong userId, int level)
     {
         var lvlStats = LevelStats.CreateForLevel(level);
         await using var ctx = _db.GetDbContext();
         await ctx.GetTable<UserXpStats>()
                  .InsertOrUpdateAsync(() => new()
-                     {
-                         GuildId = guildId,
-                         UserId = userId,
-                         Xp = lvlStats.TotalXp,
-                         DateAdded = DateTime.UtcNow
-                     },
+                 {
+                     GuildId = guildId,
+                     UserId = userId,
+                     Xp = lvlStats.TotalXp,
+                     DateAdded = DateTime.UtcNow
+                 },
                      (old) => new()
                      {
                          Xp = lvlStats.TotalXp

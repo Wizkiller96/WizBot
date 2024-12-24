@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Wiz.Common;
 
-public static class Linq2DbExpressions
+public static class Queries
 {
     [ExpressionMethod(nameof(GuildOnShardExpression))]
     public static bool GuildOnShard(ulong guildId, int totalShards, int shardId)

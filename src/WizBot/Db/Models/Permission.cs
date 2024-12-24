@@ -7,7 +7,8 @@ namespace WizBot.Db.Models;
 [DebuggerDisplay("{PrimaryTarget}{SecondaryTarget} {SecondaryTargetName} {State} {PrimaryTargetId}")]
 public class Permissionv2 : DbEntity, IIndexed
 {
-    public int? GuildConfigId { get; set; }
+    public ulong GuildId { get; set; }
+    
     public int Index { get; set; }
 
     public PrimaryPermissionType PrimaryTarget { get; set; }

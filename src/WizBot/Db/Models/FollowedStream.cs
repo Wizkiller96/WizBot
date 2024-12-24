@@ -1,7 +1,7 @@
 #nullable disable
 namespace WizBot.Db.Models;
 
-public class FollowedStream : DbEntity
+public class FollowedStream
 {
     public enum FType
     {
@@ -29,6 +29,4 @@ public class FollowedStream : DbEntity
 
     public override bool Equals(object obj)
         => obj is FollowedStream fs && Equals(fs);
-
-    
 }

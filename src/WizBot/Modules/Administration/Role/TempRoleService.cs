@@ -72,7 +72,7 @@ public class TempRoleService : IReadyExecutor, INService
                 _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
                 var latest = await _db.GetDbContext()
                                       .GetTable<TempRole>()
-                                      .Where(x => Linq2DbExpressions.GuildOnShard(x.GuildId,
+                                      .Where(x => Queries.GuildOnShard(x.GuildId,
                                           _creds.TotalShards,
                                           _client.ShardId))
                                       .OrderBy(x => x.ExpiresAt)
@@ -93,7 +93,7 @@ public class TempRoleService : IReadyExecutor, INService
 
                 var deleted = await _db.GetDbContext()
                                        .GetTable<TempRole>()
-                                       .Where(x => Linq2DbExpressions.GuildOnShard(x.GuildId,
+                                       .Where(x => Queries.GuildOnShard(x.GuildId,
                                                        _creds.TotalShards,
                                                        _client.ShardId)
                                                    && x.ExpiresAt <= now)

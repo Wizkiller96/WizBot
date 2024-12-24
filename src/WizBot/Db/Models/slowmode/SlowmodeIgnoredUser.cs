@@ -1,20 +1,28 @@
-#nullable disable
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-public class SlowmodeIgnoredUser : DbEntity
+// todo hash
+public class SlowmodeIgnoredUser
 {
+    [Key]
+    public int Id { get; set; }
+
+    public ulong GuildId { get; set; }
     public ulong UserId { get; set; }
+}
 
-    // override object.Equals
-    public override bool Equals(object obj)
+public class SlowmodeIgnoredUserEntityConfiguration : IEntityTypeConfiguration<SlowmodeIgnoredUser>
+{
+    public void Configure(EntityTypeBuilder<SlowmodeIgnoredUser> builder)
     {
-        if (obj is null || GetType() != obj.GetType())
-            return false;
-
-        return ((SlowmodeIgnoredUser)obj).UserId == UserId;
+        builder.HasIndex(x => new
+               {
+                   x.GuildId,
+                   x.UserId
+               })
+               .IsUnique();
     }
-
-    // override object.GetHashCode
-    public override int GetHashCode()
-        => UserId.GetHashCode();
 }

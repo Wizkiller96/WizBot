@@ -71,22 +71,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            bool enabled;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
-                enabled = config.FilterInvites = !config.FilterInvites;
-                await uow.SaveChangesAsync();
-            }
+            var enabled = await _service.ToggleServerInviteFilteringAsync(channel.Guild.Id);
 
             if (enabled)
             {
-                _service.InviteFilteringServers.Add(channel.Guild.Id);
                 await Response().Confirm(strs.invite_filter_server_on).SendAsync();
             }
             else
             {
-                _service.InviteFilteringServers.TryRemove(channel.Guild.Id);
                 await Response().Confirm(strs.invite_filter_server_off).SendAsync();
             }
         }
@@ -97,32 +89,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            FilterChannelId removed;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config = uow.GuildConfigsForId(channel.Guild.Id,
-                    set => set.Include(gc => gc.FilterInvitesChannelIds));
-                var match = new FilterChannelId
-                {
-                    ChannelId = channel.Id
-                };
-                removed = config.FilterInvitesChannelIds.FirstOrDefault(fc => fc.Equals(match));
+            var enabled = await _service.ToggleChannelInviteFilteringAsync(channel.Guild.Id, channel.Id);
 
-                if (removed is null)
-                    config.FilterInvitesChannelIds.Add(match);
-                else
-                    uow.Remove(removed);
-                await uow.SaveChangesAsync();
-            }
-
-            if (removed is null)
+            if (enabled)
             {
-                _service.InviteFilteringChannels.Add(channel.Id);
                 await Response().Confirm(strs.invite_filter_channel_on).SendAsync();
             }
             else
             {
-                _service.InviteFilteringChannels.TryRemove(channel.Id);
                 await Response().Confirm(strs.invite_filter_channel_off).SendAsync();
             }
         }
@@ -133,22 +107,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            bool enabled;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
-                enabled = config.FilterLinks = !config.FilterLinks;
-                await uow.SaveChangesAsync();
-            }
+            var enabled = await _service.ToggleLinkFilteringAsync(channel.Guild.Id);
 
             if (enabled)
             {
-                _service.LinkFilteringServers.Add(channel.Guild.Id);
                 await Response().Confirm(strs.link_filter_server_on).SendAsync();
             }
             else
             {
-                _service.LinkFilteringServers.TryRemove(channel.Guild.Id);
                 await Response().Confirm(strs.link_filter_server_off).SendAsync();
             }
         }
@@ -159,32 +125,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            FilterLinksChannelId removed;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config =
-                    uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterLinksChannelIds));
-                var match = new FilterLinksChannelId
-                {
-                    ChannelId = channel.Id
-                };
-                removed = config.FilterLinksChannelIds.FirstOrDefault(fc => fc.Equals(match));
+            var enabled = await _service.ToggleChannelLinkFilteringAsync(channel.Guild.Id, channel.Id);
 
-                if (removed is null)
-                    config.FilterLinksChannelIds.Add(match);
-                else
-                    uow.Remove(removed);
-                await uow.SaveChangesAsync();
-            }
-
-            if (removed is null)
+            if (enabled)
             {
-                _service.LinkFilteringChannels.Add(channel.Id);
                 await Response().Confirm(strs.link_filter_channel_on).SendAsync();
             }
             else
             {
-                _service.LinkFilteringChannels.TryRemove(channel.Id);
                 await Response().Confirm(strs.link_filter_channel_off).SendAsync();
             }
         }
@@ -195,22 +143,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            bool enabled;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set);
-                enabled = config.FilterWords = !config.FilterWords;
-                await uow.SaveChangesAsync();
-            }
+            var enabled = await _service.ToggleServerWordFilteringAsync(channel.Guild.Id);
 
             if (enabled)
             {
-                _service.WordFilteringServers.Add(channel.Guild.Id);
                 await Response().Confirm(strs.word_filter_server_on).SendAsync();
             }
             else
             {
-                _service.WordFilteringServers.TryRemove(channel.Guild.Id);
                 await Response().Confirm(strs.word_filter_server_off).SendAsync();
             }
         }
@@ -221,32 +161,14 @@ public partial class Permissions
         {
             var channel = (ITextChannel)ctx.Channel;
 
-            FilterWordsChannelId removed;
-            await using (var uow = _db.GetDbContext())
-            {
-                var config =
-                    uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilterWordsChannelIds));
+            var enabled = await _service.ToggleChannelWordFilteringAsync(channel.Guild.Id, channel.Id);
 
-                var match = new FilterWordsChannelId
-                {
-                    ChannelId = channel.Id
-                };
-                removed = config.FilterWordsChannelIds.FirstOrDefault(fc => fc.Equals(match));
-                if (removed is null)
-                    config.FilterWordsChannelIds.Add(match);
-                else
-                    uow.Remove(removed);
-                await uow.SaveChangesAsync();
-            }
-
-            if (removed is null)
+            if (enabled)
             {
-                _service.WordFilteringChannels.Add(channel.Id);
                 await Response().Confirm(strs.word_filter_channel_on).SendAsync();
             }
             else
             {
-                _service.WordFilteringChannels.TryRemove(channel.Id);
                 await Response().Confirm(strs.word_filter_channel_off).SendAsync();
             }
         }
@@ -255,44 +177,19 @@ public partial class Permissions
         [RequireContext(ContextType.Guild)]
         public async Task FilterWord([Leftover] string word)
         {
-            var channel = (ITextChannel)ctx.Channel;
-
             word = word?.Trim().ToLowerInvariant();
 
             if (string.IsNullOrWhiteSpace(word))
                 return;
 
-            FilteredWord removed;
-            await using (var uow = _db.GetDbContext())
+            var enabled = await _service.ToggleFilteredWordAsync(ctx.Guild.Id, word);
+
+            if (enabled)
             {
-                var config = uow.GuildConfigsForId(channel.Guild.Id, set => set.Include(gc => gc.FilteredWords));
-
-                removed = config.FilteredWords.FirstOrDefault(fw => fw.Word.Trim().ToLowerInvariant() == word);
-
-                if (removed is null)
-                {
-                    config.FilteredWords.Add(new()
-                    {
-                        Word = word
-                    });
-                }
-                else
-                    uow.Remove(removed);
-
-                await uow.SaveChangesAsync();
-            }
-
-            var filteredWords =
-                _service.ServerFilteredWords.GetOrAdd(channel.Guild.Id, new ConcurrentHashSet<string>());
-
-            if (removed is null)
-            {
-                filteredWords.Add(word);
                 await Response().Confirm(strs.filter_word_add(Format.Code(word))).SendAsync();
             }
             else
             {
-                filteredWords.TryRemove(word);
                 await Response().Confirm(strs.filter_word_remove(Format.Code(word))).SendAsync();
             }
         }
@@ -305,11 +202,7 @@ public partial class Permissions
             if (page < 0)
                 return;
 
-            var channel = (ITextChannel)ctx.Channel;
-
-            _service.ServerFilteredWords.TryGetValue(channel.Guild.Id, out var fwHash);
-
-            var fws = fwHash.ToArray();
+            var fws = await _service.GetFilteredWords(ctx.Guild.Id);
 
             await Response()
                   .Paginated()

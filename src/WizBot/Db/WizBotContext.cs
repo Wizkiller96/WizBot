@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WizBot.Db.Models;
-using WizBot.Modules.Administration.Services;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -11,6 +10,33 @@ namespace WizBot.Db;
 public abstract class WizBotContext : DbContext
 {
     public DbSet<GuildConfig> GuildConfigs { get; set; }
+    
+    //new
+    public DbSet<DelMsgOnCmdChannel> DelMsgOnCmdChannels { get; set; }
+    public DbSet<GCChannelId> GenerateCurrencyChannelIds { get; set; }
+    public DbSet<Permissionv2> Permissions { get; set; }
+    public DbSet<CommandCooldown> CommandCooldowns { get; set; }
+    public DbSet<MutedUserId> MutedUsers { get; set; }
+    public DbSet<AntiRaidSetting> AntiRaidSettings { get; set; }
+    public DbSet<AntiSpamSetting> AntiSpamSettings { get; set; }
+    public DbSet<AntiAltSetting> AntiAltSettings { get; set; }
+    public DbSet<UnmuteTimer> UnmuteTimers { get; set; }
+    public DbSet<UnbanTimer> UnbanTimers { get; set; }
+    public DbSet<UnroleTimer> UnroleTimers { get; set; }
+    public DbSet<VcRoleInfo> VcRoleInfos { get; set; }
+    public DbSet<CommandAlias> CommandAliases { get; set; }
+    public DbSet<SlowmodeIgnoredUser> SlowmodeIgnoredUsers { get; set; }
+    public DbSet<SlowmodeIgnoredRole> SlowmodeIgnoredRoles { get; set; }
+    public DbSet<ShopEntry> ShopEntries { get; set; }
+    public DbSet<StreamRoleSettings> StreamRoleSettings { get; set; }
+    public DbSet<FeedSub> FeedSubs { get; set; }
+
+    public DbSet<GuildXpSettings> XpSettings { get; set; }
+    public DbSet<XpRoleReward> XpRoleRewards { get; set; }
+    public DbSet<XpCurrencyReward> XpCurrencyRewards { get; set; }
+    public DbSet<ExcludedItem> ExcludedItems { get; set; }
+    
+    
     public DbSet<GreetSettings> GreetSettings { get; set; }
 
     public DbSet<Quote> Quotes { get; set; }
@@ -45,8 +71,7 @@ public abstract class WizBotContext : DbContext
     public DbSet<ImageOnlyChannel> ImageOnlyChannels { get; set; }
     public DbSet<AutoTranslateChannel> AutoTranslateChannels { get; set; }
     public DbSet<AutoTranslateUser> AutoTranslateUsers { get; set; }
-
-    public DbSet<Permissionv2> Permissions { get; set; }
+    
 
     public DbSet<BankUser> BankUsers { get; set; }
 
@@ -167,10 +192,10 @@ public abstract class WizBotContext : DbContext
         modelBuilder.Entity<UserBetStats>(ubs =>
         {
             ubs.HasIndex(x => new
-               {
-                   x.UserId,
-                   x.Game
-               })
+            {
+                x.UserId,
+                x.Game
+            })
                .IsUnique();
 
             ubs.HasIndex(x => x.MaxWin)
@@ -218,173 +243,7 @@ public abstract class WizBotContext : DbContext
 
         configEntity.Property(x => x.VerboseErrors)
                     .HasDefaultValue(true);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.DelMsgOnCmdChannels)
-                    .WithOne()
-                    .HasForeignKey(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FollowedStreams)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.GenerateCurrencyChannelIds)
-                    .WithOne(x => x.GuildConfig)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.Permissions)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.CommandCooldowns)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FilterInvitesChannelIds)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FilterLinksChannelIds)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FilteredWords)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FilterWordsChannelIds)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.MutedUsers)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasOne(x => x.AntiRaidSetting)
-                    .WithOne()
-                    .HasForeignKey<AntiRaidSetting>(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        // start antispam 
-        
-        modelBuilder.Entity<GuildConfig>()
-                    .HasOne(x => x.AntiSpamSetting)
-                    .WithOne()
-                    .HasForeignKey<AntiSpamSetting>(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<AntiSpamSetting>()
-                    .HasMany(x => x.IgnoredChannels)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        // end antispam
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasOne(x => x.AntiAltSetting)
-                    .WithOne()
-                    .HasForeignKey<AntiAltSetting>(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.UnmuteTimers)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.UnbanTimer)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.UnroleTimer)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.VcRoleInfos)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.CommandAliases)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.SlowmodeIgnoredRoles)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.SlowmodeIgnoredUsers)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        // start shop
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.ShopEntries)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<ShopEntry>()
-                    .HasMany(x => x.Items)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-
         // end shop
-
-        // start streamrole
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasOne(x => x.StreamRole)
-                    .WithOne(x => x.GuildConfig)
-                    .HasForeignKey<StreamRoleSettings>(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<StreamRoleSettings>()
-                    .HasMany(x => x.Whitelist)
-                    .WithOne(x => x.StreamRoleSettings)
-                    .HasForeignKey(x => x.StreamRoleSettingsId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<StreamRoleSettings>()
-                    .HasMany(x => x.Blacklist)
-                    .WithOne(x => x.StreamRoleSettings)
-                    .HasForeignKey(x => x.StreamRoleSettingsId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        // end streamrole
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasOne(x => x.XpSettings)
-                    .WithOne(x => x.GuildConfig)
-                    .HasForeignKey<XpSettings>(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<GuildConfig>()
-                    .HasMany(x => x.FeedSubs)
-                    .WithOne(x => x.GuildConfig)
-                    .HasForeignKey(x => x.GuildConfigId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<FeedSub>()
-                    .HasAlternateKey(x => new
-                    {
-                        x.GuildConfigId,
-                        x.Url
-                    });
 
         modelBuilder.Entity<PlantedCurrency>().HasIndex(x => x.MessageId).IsUnique();
 
@@ -394,9 +253,7 @@ public abstract class WizBotContext : DbContext
 
         #endregion
 
-        #region WarningPunishments
-
-        var warnpunishmentEntity = modelBuilder.Entity<WarningPunishment>(b =>
+        modelBuilder.Entity<WarningPunishment>(b =>
         {
             b.HasAlternateKey(x => new
             {
@@ -404,8 +261,6 @@ public abstract class WizBotContext : DbContext
                 x.Count
             });
         });
-
-        #endregion
 
         #region MusicPlaylists
 
@@ -474,42 +329,15 @@ public abstract class WizBotContext : DbContext
 
         var xps = modelBuilder.Entity<UserXpStats>();
         xps.HasIndex(x => new
-           {
-               x.UserId,
-               x.GuildId
-           })
+        {
+            x.UserId,
+            x.GuildId
+        })
            .IsUnique();
 
         xps.HasIndex(x => x.UserId);
         xps.HasIndex(x => x.GuildId);
         xps.HasIndex(x => x.Xp);
-
-        #endregion
-
-        #region XpRoleReward
-
-        modelBuilder.Entity<XpRoleReward>()
-                    .HasIndex(x => new
-                    {
-                        x.XpSettingsId,
-                        x.Level
-                    })
-                    .IsUnique();
-
-        modelBuilder.Entity<XpSettings>()
-                    .HasMany(x => x.RoleRewards)
-                    .WithOne(x => x.XpSettings)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<XpSettings>()
-                    .HasMany(x => x.CurrencyRewards)
-                    .WithOne(x => x.XpSettings)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<XpSettings>()
-                    .HasMany(x => x.ExclusionList)
-                    .WithOne(x => x.XpSettings)
-                    .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
 
@@ -522,9 +350,9 @@ public abstract class WizBotContext : DbContext
           .OnDelete(DeleteBehavior.SetNull);
 
         ci.HasIndex(x => new
-          {
-              x.Name
-          })
+        {
+            x.Name
+        })
           .IsUnique();
 
         #endregion
@@ -626,10 +454,10 @@ public abstract class WizBotContext : DbContext
                .IsUnique(false);
 
             rr2.HasIndex(x => new
-               {
-                   x.MessageId,
-                   x.Emote
-               })
+            {
+                x.MessageId,
+                x.Emote
+            })
                .IsUnique();
         });
 
@@ -704,11 +532,11 @@ public abstract class WizBotContext : DbContext
             {
                 // user can own only one of each item
                 x.HasIndex(model => new
-                 {
-                     model.UserId,
-                     model.ItemType,
-                     model.ItemKey
-                 })
+                {
+                    model.UserId,
+                    model.ItemType,
+                    model.ItemKey
+                })
                  .IsUnique();
             });
 
@@ -733,10 +561,10 @@ public abstract class WizBotContext : DbContext
         #region Sticky Roles
 
         modelBuilder.Entity<StickyRole>(sr => sr.HasIndex(x => new
-                                                {
-                                                    x.GuildId,
-                                                    x.UserId
-                                                })
+         {
+             x.GuildId,
+             x.UserId
+         })
                                                 .IsUnique());
 
         #endregion
@@ -781,10 +609,10 @@ public abstract class WizBotContext : DbContext
 
         modelBuilder
             .Entity<GreetSettings>(gs => gs.HasIndex(x => new
-                                           {
-                                               x.GuildId,
-                                               x.GreetType
-                                           })
+            {
+                x.GuildId,
+                x.GreetType
+            })
                                            .IsUnique());
 
         modelBuilder.Entity<GreetSettings>(gs =>

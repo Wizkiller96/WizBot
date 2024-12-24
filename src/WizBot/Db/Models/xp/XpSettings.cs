@@ -1,24 +1,26 @@
 #nullable disable
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-public class XpSettings : DbEntity
+public class GuildXpSettings
 {
-    public int GuildConfigId { get; set; }
-    public GuildConfig GuildConfig { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-    public HashSet<XpRoleReward> RoleRewards { get; set; } = new();
-    public HashSet<XpCurrencyReward> CurrencyRewards { get; set; } = new();
-    public HashSet<ExcludedItem> ExclusionList { get; set; } = new();
+    public ulong GuildId { get; set; }
     public bool ServerExcluded { get; set; }
 }
 
 public enum ExcludedItemType { Channel, Role }
 
-public class XpRoleReward : DbEntity
+public class XpRoleReward
 {
-    public int XpSettingsId { get; set; }
-    public XpSettings XpSettings { get; set; }
-
+    [Key]
+    public int Id { get; set; }
+    public ulong GuildId { get; set; }
     public int Level { get; set; }
     public ulong RoleId { get; set; }
 
@@ -26,39 +28,69 @@ public class XpRoleReward : DbEntity
     ///     Whether the role should be removed (true) or added (false)
     /// </summary>
     public bool Remove { get; set; }
-
-    public override int GetHashCode()
-        => Level.GetHashCode() ^ XpSettingsId.GetHashCode();
-
-    public override bool Equals(object obj)
-        => obj is XpRoleReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
 }
 
-public class XpCurrencyReward : DbEntity
+public class XpCurrencyReward
 {
-    public int XpSettingsId { get; set; }
-    public XpSettings XpSettings { get; set; }
-
+    [Key]
+    public int Id { get; set; }
+    public ulong GuildId { get; set; }
     public int Level { get; set; }
     public int Amount { get; set; }
-
-    public override int GetHashCode()
-        => Level.GetHashCode() ^ XpSettingsId.GetHashCode();
-
-    public override bool Equals(object obj)
-        => obj is XpCurrencyReward xrr && xrr.Level == Level && xrr.XpSettingsId == XpSettingsId;
 }
 
-public class ExcludedItem : DbEntity
+public class ExcludedItem
 {
-    public XpSettings XpSettings { get; set; }
+    [Key]
+    public int Id { get; set; }
+    public ulong GuildId { get; set; }
 
     public ulong ItemId { get; set; }
     public ExcludedItemType ItemType { get; set; }
+}
 
-    public override int GetHashCode()
-        => ItemId.GetHashCode() ^ ItemType.GetHashCode();
+public class XpRoleRewardEntityConfiguration : IEntityTypeConfiguration<XpRoleReward>
+{
+    public void Configure(EntityTypeBuilder<XpRoleReward> builder)
+    {
+        builder.HasIndex(x => new
+        {
+            x.Level,
+            x.GuildId
+        }).IsUnique();
+    }
+}
 
-    public override bool Equals(object obj)
-        => obj is ExcludedItem ei && ei.ItemId == ItemId && ei.ItemType == ItemType;
+public class XpCurrencyRewardEntityConfiguration : IEntityTypeConfiguration<XpCurrencyReward>
+{
+    public void Configure(EntityTypeBuilder<XpCurrencyReward> builder)
+    {
+        builder.HasIndex(x => new
+        {
+            x.Level,
+            x.GuildId
+        }).IsUnique();
+    }
+}
+
+public class ExcludedItemEntityConfiguration : IEntityTypeConfiguration<ExcludedItem>
+{
+    public void Configure(EntityTypeBuilder<ExcludedItem> builder)
+    {
+        builder.HasIndex(x => new
+        {
+            x.ItemId,
+            x.ItemType,
+            x.GuildId
+        }).IsUnique();
+    }
+}
+
+public class XpSettingsEntityConfiguration : IEntityTypeConfiguration<GuildXpSettings>
+{
+    public void Configure(EntityTypeBuilder<GuildXpSettings> builder)
+    {
+        builder.HasIndex(x => x.GuildId)
+               .IsUnique();
+    }
 }

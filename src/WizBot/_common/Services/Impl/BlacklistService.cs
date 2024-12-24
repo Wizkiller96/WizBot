@@ -113,7 +113,7 @@ public sealed class BlacklistService : IExecOnMessage, IReadyExecutor
         var items = uow.GetTable<BlacklistEntry>()
                        .Where(x => x.Type != BlacklistType.Server
                                    || (x.Type == BlacklistType.Server
-                                       && Linq2DbExpressions.GuildOnShard(x.ItemId, totalShards, _client.ShardId)))
+                                       && Queries.GuildOnShard(x.ItemId, totalShards, _client.ShardId)))
                        .ToArray();
 
         

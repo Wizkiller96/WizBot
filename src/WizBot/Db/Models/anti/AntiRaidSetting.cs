@@ -1,11 +1,16 @@
 #nullable disable
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-
-public class AntiRaidSetting : DbEntity
+public class AntiRaidSetting
 {
-    public int GuildConfigId { get; set; }
-    
+    [Key]
+    public int Id { get; set; }
+
+    public ulong GuildId { get; set; }
     public int UserThreshold { get; set; }
     public int Seconds { get; set; }
     public PunishmentAction Action { get; set; }
@@ -15,4 +20,13 @@ public class AntiRaidSetting : DbEntity
     ///     Mute, Chatmute, Voicemute, etc...
     /// </summary>
     public int PunishDuration { get; set; }
+}
+
+public class AntiRaidSettingEntityConfiguration : IEntityTypeConfiguration<AntiRaidSetting>
+{
+    public void Configure(EntityTypeBuilder<AntiRaidSetting> builder)
+    {
+        builder.HasIndex(x => x.GuildId)
+               .IsUnique();
+    }
 }

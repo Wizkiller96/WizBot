@@ -1,14 +1,27 @@
-#nullable disable
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+
 namespace WizBot.Db.Models;
 
-public class GCChannelId : DbEntity
+public class GCChannelId
 {
-    public GuildConfig GuildConfig { get; set; }
+    [Key]
+    public int Id { get; set; }
+
+    public ulong GuildId { get; set; }
     public ulong ChannelId { get; set; }
+}
 
-    public override bool Equals(object obj)
-        => obj is GCChannelId gc && gc.ChannelId == ChannelId;
-
-    public override int GetHashCode()
-        => ChannelId.GetHashCode();
+public class GCChannelIdEntityConfiguration : IEntityTypeConfiguration<GCChannelId>
+{
+    public void Configure(EntityTypeBuilder<GCChannelId> builder)
+    {
+        builder.HasIndex(x => new
+               {
+                   x.GuildId,
+                   x.ChannelId
+               })
+               .IsUnique();
+    }
 }
