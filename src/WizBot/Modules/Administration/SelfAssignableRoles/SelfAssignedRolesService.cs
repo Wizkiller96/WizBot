@@ -280,8 +280,12 @@ public sealed class SarAssignerService : INService, IReadyExecutor
 
                 if (item.Group.IsExclusive)
                 {
-                    var rolesToRemove = item.Group.Roles.Select(x => x.RoleId);
-                    await item.User.RemoveRolesAsync(rolesToRemove);
+                    var rolesToRemove = item.Group.Roles
+                                            .Where(x => item.User.RoleIds.Contains(x.RoleId))
+                                            .Select(x => x.RoleId)
+                                            .ToArray();
+                    if (rolesToRemove.Length > 0)
+                        await item.User.RemoveRolesAsync(rolesToRemove);
                 }
 
                 await item.User.AddRoleAsync(item.RoleId);
