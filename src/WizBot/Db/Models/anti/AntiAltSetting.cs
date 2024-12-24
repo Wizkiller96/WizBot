@@ -1,27 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
-namespace WizBot.Db.Models;
+﻿namespace WizBot.Db.Models;
 
 public class AntiAltSetting
 {
-    [Key]
+    public int GuildConfigId { get; set; }
+    
     public int Id { get; set; }
-
-    public ulong GuildId { get; set; }
-
     public TimeSpan MinAge { get; set; }
     public PunishmentAction Action { get; set; }
     public int ActionDurationMinutes { get; set; }
     public ulong? RoleId { get; set; }
-}
-
-public class AntiAltSettingEntityConfiguration : IEntityTypeConfiguration<AntiAltSetting>
-{
-    public void Configure(EntityTypeBuilder<AntiAltSetting> builder)
-    {
-        builder.HasIndex(x => x.GuildId)
-               .IsUnique();
-    }
 }

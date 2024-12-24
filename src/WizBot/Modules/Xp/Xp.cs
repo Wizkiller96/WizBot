@@ -56,7 +56,7 @@ public partial class Xp : WizBotModule<XpService>
     [UserPerm(GuildPerm.Administrator)]
     public async Task XpExclude(Server _)
     {
-        var ex = await _service.ToggleExcludeServerAsync(ctx.Guild.Id);
+        var ex = _service.ToggleExcludeServer(ctx.Guild.Id);
 
         if (ex)
             await Response().Confirm(strs.excluded(Format.Bold(ctx.Guild.ToString()))).SendAsync();
@@ -69,7 +69,7 @@ public partial class Xp : WizBotModule<XpService>
     [RequireContext(ContextType.Guild)]
     public async Task XpExclude(Role _, [Leftover] IRole role)
     {
-        var ex = await _service.ToggleExcludeRole(ctx.Guild.Id, role.Id);
+        var ex = _service.ToggleExcludeRole(ctx.Guild.Id, role.Id);
 
         if (ex)
             await Response().Confirm(strs.excluded(Format.Bold(role.ToString()))).SendAsync();
@@ -85,7 +85,7 @@ public partial class Xp : WizBotModule<XpService>
         if (channel is null)
             channel = ctx.Channel;
 
-        var ex = await _service.ToggleExcludeChannel(ctx.Guild.Id, channel.Id);
+        var ex = _service.ToggleExcludeChannel(ctx.Guild.Id, channel.Id);
 
         if (ex)
             await Response().Confirm(strs.excluded(Format.Bold(channel.ToString()))).SendAsync();
@@ -308,7 +308,7 @@ public partial class Xp : WizBotModule<XpService>
         if (amount == 0)
             return;
 
-        _service.AddXpAsync(userId, ctx.Guild.Id, amount);
+        _service.AddXp(userId, ctx.Guild.Id, amount);
         var usr = ((SocketGuild)ctx.Guild).GetUser(userId)?.ToString() ?? userId.ToString();
         await Response().Confirm(strs.modified(Format.Bold(usr), Format.Bold(amount.ToString()))).SendAsync();
     }

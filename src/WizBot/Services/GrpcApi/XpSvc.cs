@@ -57,7 +57,7 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
                                       })));
 
         var curRews = _xp.GetCurrencyRewards(request.GuildId);
-        var roleRews = _xp.GetRoleRewardsAsync(request.GuildId);
+        var roleRews = _xp.GetRoleRewards(request.GuildId);
 
         var rews = curRews.Select(x => new RewItemReply()
         {
@@ -67,11 +67,11 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
         });
 
         rews = rews.Concat(roleRews.Select(x => new RewItemReply()
-        {
-            Level = x.Level,
-            Type = x.Remove ? "RemoveRole" : "AddRole",
-            Value = guild.GetRole(x.RoleId)?.ToString() ?? x.RoleId.ToString()
-        }))
+                   {
+                       Level = x.Level,
+                       Type = x.Remove ? "RemoveRole" : "AddRole",
+                       Value = guild.GetRole(x.RoleId)?.ToString() ?? x.RoleId.ToString()
+                   }))
                    .OrderBy(x => x.Level);
 
         reply.Rewards.AddRange(rews);
@@ -99,7 +99,7 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
                     Success = false
                 };
 
-            success = await _xp.ToggleExcludeRole(request.GuildId, request.Id);
+            success = _xp.ToggleExcludeRole(request.GuildId, request.Id);
         }
         else if (request.Type == "Channel")
         {
@@ -109,7 +109,7 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
                     Success = false
                 };
 
-            success = await _xp.ToggleExcludeChannel(request.GuildId, request.Id);
+            success = _xp.ToggleExcludeChannel(request.GuildId, request.Id);
         }
 
         return new()
@@ -118,20 +118,20 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
         };
     }
 
-    public override async Task<DeleteExclusionReply> DeleteExclusion(
+    public override Task<DeleteExclusionReply> DeleteExclusion(
         DeleteExclusionRequest request,
         ServerCallContext context)
     {
         var success = false;
         if (request.Type == "Role")
-            success = await _xp.ToggleExcludeRole(request.GuildId, request.Id);
+            success = _xp.ToggleExcludeRole(request.GuildId, request.Id);
         else
-            success = await _xp.ToggleExcludeChannel(request.GuildId, request.Id);
+            success = _xp.ToggleExcludeChannel(request.GuildId, request.Id);
 
-        return new DeleteExclusionReply
+        return Task.FromResult(new DeleteExclusionReply
         {
             Success = success
-        };
+        });
     }
 
     public override async Task<AddRewardReply> AddReward(AddRewardRequest request, ServerCallContext context)
@@ -156,7 +156,7 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
                     Success = false
                 };
 
-            _xp.SetRoleRewardAsync(request.GuildId, request.Level, rid, request.Type == "RemoveRole");
+            _xp.SetRoleReward(request.GuildId, request.Level, rid, request.Type == "RemoveRole");
             success = true;
         }
         // else if (request.Type == "Currency")
@@ -272,8 +272,8 @@ public class XpSvc : GrpcXp.GrpcXpBase, IGrpcSvc, INService
         ServerCallContext context)
     {
         await Task.Yield();
-
-        var newValue = _xp.ToggleExcludeServerAsync(request.GuildId);
+        
+        var newValue = _xp.ToggleExcludeServer(request.GuildId);
         return new()
         {
             Success = newValue

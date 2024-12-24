@@ -1,16 +1,10 @@
 #nullable disable
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
 namespace WizBot.Db.Models;
 
-public class StreamRoleSettings
+public class StreamRoleSettings : DbEntity
 {
-    [Key]
-    public int Id { get; set; }
-
-    public ulong GuildId { get; set; }
+    public int GuildConfigId { get; set; }
+    public GuildConfig GuildConfig { get; set; }
 
     /// <summary>
     ///     Whether the feature is enabled in the guild.
@@ -44,12 +38,11 @@ public class StreamRoleSettings
     public HashSet<StreamRoleBlacklistedUser> Blacklist { get; set; } = new();
 }
 
-// todo check hashes
 public class StreamRoleBlacklistedUser : DbEntity
 {
     public int StreamRoleSettingsId { get; set; }
     public StreamRoleSettings StreamRoleSettings { get; set; }
-
+    
     public ulong UserId { get; set; }
     public string Username { get; set; }
 
@@ -69,7 +62,7 @@ public class StreamRoleWhitelistedUser : DbEntity
 {
     public int StreamRoleSettingsId { get; set; }
     public StreamRoleSettings StreamRoleSettings { get; set; }
-
+     
     public ulong UserId { get; set; }
     public string Username { get; set; }
 
@@ -78,25 +71,4 @@ public class StreamRoleWhitelistedUser : DbEntity
 
     public override int GetHashCode()
         => UserId.GetHashCode();
-}
-
-public class StreamRoleSettingsEntityConfiguration : IEntityTypeConfiguration<StreamRoleSettings>
-{
-    public void Configure(EntityTypeBuilder<StreamRoleSettings> builder)
-    {
-        builder.HasIndex(x => x.GuildId)
-               .IsUnique();
-
-        builder
-            .HasMany(x => x.Whitelist)
-            .WithOne(x => x.StreamRoleSettings)
-            .HasForeignKey(x => x.StreamRoleSettingsId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder
-            .HasMany(x => x.Blacklist)
-            .WithOne(x => x.StreamRoleSettings)
-            .HasForeignKey(x => x.StreamRoleSettingsId)
-            .OnDelete(DeleteBehavior.Cascade);
-    }
 }

@@ -1,47 +1,54 @@
-﻿using LinqToDB;
-using LinqToDB.EntityFrameworkCore;
+﻿#nullable disable
+using Microsoft.EntityFrameworkCore;
 using WizBot.Common.ModuleBehaviors;
 using WizBot.Db.Models;
 
 namespace WizBot.Modules.Utility.Services;
 
-public class AliasService : IInputTransformer, IReadyExecutor, INService
+public class AliasService : IInputTransformer, INService
 {
-    private ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> _aliases = new();
+    public ConcurrentDictionary<ulong, ConcurrentDictionary<string, string>> AliasMaps { get; } = new();
 
     private readonly DbService _db;
     private readonly IMessageSenderService _sender;
-    private readonly ShardData _shardData;
 
     public AliasService(
+        DiscordSocketClient client,
         DbService db,
-        IMessageSenderService sender,
-        ShardData shardData)
+        IMessageSenderService sender)
     {
         _sender = sender;
-        _shardData = shardData;
 
         using var uow = db.GetDbContext();
+        var guildIds = client.Guilds.Select(x => x.Id).ToList();
+        var configs = uow.Set<GuildConfig>()
+                         .Include(gc => gc.CommandAliases)
+                         .Where(x => guildIds.Contains(x.GuildId))
+                         .ToList();
 
+        AliasMaps = new(configs.ToDictionary(x => x.GuildId,
+            x => new ConcurrentDictionary<string, string>(x.CommandAliases.DistinctBy(ca => ca.Trigger)
+                                                           .ToDictionary(ca => ca.Trigger, ca => ca.Mapping),
+                StringComparer.OrdinalIgnoreCase)));
 
         _db = db;
     }
 
-    public async Task<int> ClearAliases(ulong guildId)
+    public int ClearAliases(ulong guildId)
     {
-        _aliases.TryRemove(guildId, out _);
+        AliasMaps.TryRemove(guildId, out _);
 
-        await using var uow = _db.GetDbContext();
-
-        var deleted = await uow.GetTable<CommandAlias>()
-                               .Where(x => x.GuildId == guildId)
-                               .DeleteAsync();
-
-        return deleted;
+        int count;
+        using var uow = _db.GetDbContext();
+        var gc = uow.GuildConfigsForId(guildId, set => set.Include(x => x.CommandAliases));
+        count = gc.CommandAliases.Count;
+        gc.CommandAliases.Clear();
+        uow.SaveChanges();
+        return count;
     }
-    
-    public async Task<string?> TransformInput(
-        IGuild? guild,
+
+    public async Task<string> TransformInput(
+        IGuild guild,
         IMessageChannel channel,
         IUser user,
         string input)
@@ -49,115 +56,43 @@ public class AliasService : IInputTransformer, IReadyExecutor, INService
         if (guild is null || string.IsNullOrWhiteSpace(input))
             return null;
 
-        if (_aliases.TryGetValue(guild.Id, out var maps))
+        if (AliasMaps.TryGetValue(guild.Id, out var maps))
         {
             string newInput = null;
-
-            if (maps.TryGetValue(input, out var alias))
+            foreach (var (k, v) in maps)
             {
-                newInput = alias;
-            }
-            else if (maps.TryGetValue(input))
-
-                foreach (var (k, v) in maps)
+                if (string.Equals(input, k, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (string.Equals(input, k, StringComparison.OrdinalIgnoreCase))
+                    newInput = v;
+                }
+                else if (input.StartsWith(k + ' ', StringComparison.OrdinalIgnoreCase))
+                {
+                    if (v.Contains("%target%"))
+                        newInput = v.Replace("%target%", input[k.Length..]);
+                    else
+                        newInput = v + ' ' + input[k.Length..];
+                }
+
+                if (newInput is not null)
+                {
+                    try
                     {
-                        newInput = v;
+                        var toDelete = await _sender.Response(channel)
+                                                    .Confirm($"{input} => {newInput}")
+                                                    .SendAsync();
+                        toDelete.DeleteAfter(1.5f);
                     }
-                    else if (input.StartsWith(k + ' ', StringComparison.OrdinalIgnoreCase))
+                    catch
                     {
-                        if (v.Contains("%target%"))
-                            newInput = v.Replace("%target%", input[k.Length..]);
-                        else
-                            newInput = v + ' ' + input[k.Length..];
+                        // ignored
                     }
-                }
 
-            if (newInput is not null)
-            {
-                try
-                {
-                    var toDelete = await _sender.Response(channel)
-                                                .Confirm($"{input} => {newInput}")
-                                                .SendAsync();
-                    toDelete.DeleteAfter(1.5f);
+                    return newInput;
                 }
-                catch
-                {
-                    // ignored
-                }
-
-                return newInput;
             }
 
             return null;
         }
-
-        return null;
-    }
-
-    public async Task OnReadyAsync()
-    {
-        await using var ctx = _db.GetDbContext();
-
-        var aliases = ctx.GetTable<CommandAlias>()
-                         .Where(x => Queries.GuildOnShard(x.GuildId,
-                             _shardData.TotalShards,
-                             _shardData.ShardId))
-                         .ToList();
-
-        _aliases = new();
-        foreach (var alias in aliases)
-        {
-            _aliases.GetOrAdd(alias.GuildId, _ => new(StringComparer.OrdinalIgnoreCase))
-                    .TryAdd(alias.Trigger, alias.Mapping);
-        }
-    }
-
-    public async Task<bool> RemoveAliasAsync(ulong guildId, string trigger)
-    {
-        await using var ctx = _db.GetDbContext();
-
-        var deleted = await ctx.GetTable<CommandAlias>()
-                               .Where(x => x.GuildId == guildId && x.Trigger == trigger)
-                               .DeleteAsync();
-
-        if (_aliases.TryGetValue(guildId, out var aliases))
-            aliases.TryRemove(trigger, out _);
-
-        return deleted > 0;
-    }
-
-    public async Task AddAliasAsync(ulong guildId, string trigger, string mapping)
-    {
-        await using var ctx = _db.GetDbContext();
-
-        await ctx.GetTable<CommandAlias>()
-                 .InsertOrUpdateAsync(() => new()
-                     {
-                         GuildId = guildId,
-                         Trigger = trigger,
-                         Mapping = mapping,
-                     },
-                     (old) => new()
-                     {
-                         Mapping = mapping
-                     },
-                     () => new()
-                     {
-                         GuildId = guildId,
-                         Trigger = trigger,
-                     });
-
-        var guildDict = _aliases.GetOrAdd(guildId, (_) => new());
-        guildDict[trigger] = mapping;
-    }
-
-    public async Task<IReadOnlyDictionary<string, string>?> GetAliasesAsync(ulong guildId)
-    {
-        if (_aliases.TryGetValue(guildId, out var aliases))
-            return aliases;
 
         return null;
     }

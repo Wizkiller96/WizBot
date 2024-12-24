@@ -93,7 +93,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             await using var uow = _db.GetDbContext();
             var earliest = await uow.Set<Reminder>()
                                     .ToLinqToDBTable()
-                                    .Where(x => Queries.GuildOnShard(x.ServerId,
+                                    .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId,
                                         _creds.TotalShards,
                                         _client.ShardId))
                                     .OrderBy(x => x.When)
@@ -116,7 +116,7 @@ public class RemindService : INService, IReadyExecutor, IRemindService
 
             var reminders = await uow.Set<Reminder>()
                                      .ToLinqToDBTable()
-                                     .Where(x => Queries.GuildOnShard(x.ServerId,
+                                     .Where(x => Linq2DbExpressions.GuildOnShard(x.ServerId,
                                          _creds.TotalShards,
                                          _client.ShardId))
                                      .Where(x => x.When <= now)

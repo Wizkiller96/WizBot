@@ -1,31 +1,15 @@
 #nullable disable
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
 namespace WizBot.Db.Models;
 
-// todo remove unroletimer in favor of temprole
-public class UnroleTimer
+public class UnroleTimer : DbEntity
 {
-    [Key]
-    public int Id { get; set; }
-
-    public ulong GuildId { get; set; }
     public ulong UserId { get; set; }
     public ulong RoleId { get; set; }
     public DateTime UnbanAt { get; set; }
-}
 
-public class UnroleTimerEntityConfiguration : IEntityTypeConfiguration<UnroleTimer>
-{
-    public void Configure(EntityTypeBuilder<UnroleTimer> builder)
-    {
-        builder.HasIndex(x => new
-               {
-                   x.GuildId,
-                   x.UserId
-               })
-               .IsUnique();
-    }
+    public override int GetHashCode()
+        => UserId.GetHashCode() ^ RoleId.GetHashCode();
+
+    public override bool Equals(object obj)
+        => obj is UnroleTimer ut ? ut.UserId == UserId && ut.RoleId == RoleId : false;
 }

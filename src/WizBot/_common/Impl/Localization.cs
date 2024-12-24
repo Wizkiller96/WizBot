@@ -59,7 +59,7 @@ public class Localization : ILocalization
 
         using (var uow = _db.GetDbContext())
         {
-            var gc =
+            var gc = uow.GuildConfigsForId(guildId, set => set);
             gc.Locale = ci.Name;
             uow.SaveChanges();
         }

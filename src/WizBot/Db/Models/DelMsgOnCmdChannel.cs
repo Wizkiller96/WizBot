@@ -1,28 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
+#nullable disable
 namespace WizBot.Db.Models;
 
-// todo don't save in hashset
-public class DelMsgOnCmdChannel
+public class DelMsgOnCmdChannel : DbEntity
 {
-    [Key]
-    public int Id { get; set; }
+    public int GuildConfigId { get; set; }
 
-    public ulong GuildId { get; set; }
     public ulong ChannelId { get; set; }
     public bool State { get; set; }
-}
 
-public class DelMsgOnCmdChannelEntityConfiguration : IEntityTypeConfiguration<DelMsgOnCmdChannel>
-{
-    public void Configure(EntityTypeBuilder<DelMsgOnCmdChannel> builder)
-    {
-        builder.HasIndex(x => new
-        {
-            x.GuildId,
-            x.ChannelId
-        }).IsUnique();
-    }
+    public override int GetHashCode()
+        => ChannelId.GetHashCode();
+
+    public override bool Equals(object obj)
+        => obj is DelMsgOnCmdChannel x && x.ChannelId == ChannelId;
 }

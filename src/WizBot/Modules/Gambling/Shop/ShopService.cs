@@ -1,6 +1,4 @@
 #nullable disable
-using LinqToDB;
-using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
 
@@ -13,14 +11,11 @@ public class ShopService : IShopService, INService
     public ShopService(DbService db)
         => _db = db;
 
-    private async Task<IndexedCollection<ShopEntry>> GetEntriesInternal(DbContext uow, ulong guildId)
-    {
-        var items = await uow.GetTable<ShopEntry>()
-                             .Where(x => x.GuildId == guildId)
-                             .ToListAsyncLinqToDB();
-
-        return items.ToIndexed();
-    }
+    private IndexedCollection<ShopEntry> GetEntriesInternal(DbContext uow, ulong guildId)
+        => uow.GuildConfigsForId(guildId,
+                set => set.Include(x => x.ShopEntries)
+                    .ThenInclude(x => x.Items))
+            .ShopEntries.ToIndexed();
 
     public async Task<bool> ChangeEntryPriceAsync(ulong guildId, int index, int newPrice)
     {
@@ -28,33 +23,32 @@ public class ShopService : IShopService, INService
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(newPrice);
 
         await using var uow = _db.GetDbContext();
+        var entries = GetEntriesInternal(uow, guildId);
 
-        var changed = await uow.GetTable<ShopEntry>()
-                               .Where(x => x.GuildId == guildId && x.Index == index)
-                               .UpdateAsync(x => new ShopEntry()
-                               {
-                                   Price = newPrice,
-                               });
+        if (index >= entries.Count)
+            return false;
 
-        return changed > 0;
+        entries[index].Price = newPrice;
+        await uow.SaveChangesAsync();
+        return true;
     }
 
     public async Task<bool> ChangeEntryNameAsync(ulong guildId, int index, string newName)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
-
+        
         if (string.IsNullOrWhiteSpace(newName))
             throw new ArgumentNullException(nameof(newName));
 
         await using var uow = _db.GetDbContext();
+        var entries = GetEntriesInternal(uow, guildId);
 
-        var changed = await uow.GetTable<ShopEntry>()
-                               .Where(x => x.GuildId == guildId && x.Index == index)
-                               .UpdateAsync(x => new ShopEntry()
-                               {
-                                   Name = newName,
-                               });
-        return changed > 0;
+        if (index >= entries.Count)
+            return false;
+
+        entries[index].Name = newName.TrimTo(100);
+        await uow.SaveChangesAsync();
+        return true;
     }
 
     public async Task<bool> SwapEntriesAsync(ulong guildId, int index1, int index2)
@@ -63,7 +57,7 @@ public class ShopService : IShopService, INService
         ArgumentOutOfRangeException.ThrowIfNegative(index2);
 
         await using var uow = _db.GetDbContext();
-        var entries = await GetEntriesInternal(uow, guildId);
+        var entries = GetEntriesInternal(uow, guildId);
 
         if (index1 >= entries.Count || index2 >= entries.Count || index1 == index2)
             return false;
@@ -71,14 +65,7 @@ public class ShopService : IShopService, INService
         entries[index1].Index = index2;
         entries[index2].Index = index1;
 
-        // todo fix swap
-        await uow.GetTable<ShopEntry>()
-                 .Where(x => x.GuildId == guildId)
-                 .UpdateAsync(x => new ShopEntry()
-                 {
-                     Index = x.Index == index1 ? index2 : x.Index == index2 ? index1 : x.Index,
-                 });
-
+        await uow.SaveChangesAsync();
         return true;
     }
 
@@ -90,38 +77,49 @@ public class ShopService : IShopService, INService
         await using var uow = _db.GetDbContext();
         var entries = GetEntriesInternal(uow, guildId);
 
-        // todo move
+        if (fromIndex >= entries.Count || toIndex >= entries.Count || fromIndex == toIndex)
+            return false;
+
+        var entry = entries[fromIndex];
+        entries.RemoveAt(fromIndex);
+        entries.Insert(toIndex, entry);
+
+        await uow.SaveChangesAsync();
         return true;
     }
 
     public async Task<bool> SetItemRoleRequirementAsync(ulong guildId, int index, ulong? roleId)
     {
         await using var uow = _db.GetDbContext();
+        var entries = GetEntriesInternal(uow, guildId);
 
-        var changes = await uow.GetTable<ShopEntry>()
-                               .Where(x => x.GuildId == guildId && x.Index == index)
-                               .UpdateAsync(x => new ShopEntry()
-                               {
-                                   RoleRequirement = roleId,
-                               });
-        return changes > 0;
+        if (index >= entries.Count)
+            return false;
+
+        var entry = entries[index];
+
+        entry.RoleRequirement = roleId;
+
+        await uow.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<ShopEntry> AddShopCommandAsync(
-        ulong guildId,
-        ulong userId,
-        int price,
-        string command)
+    public async Task<ShopEntry> AddShopCommandAsync(ulong guildId, ulong userId, int price, string command)
     {
         await using var uow = _db.GetDbContext();
-        var entry = await uow.GetTable<ShopEntry>()
-                             .InsertWithOutputAsync(() => new()
-                             {
-                                 AuthorId = userId,
-                                 Command = command,
-                                 Type = ShopEntryType.Command,
-                                 Price = price,
-                             });
+
+        var entries = GetEntriesInternal(uow, guildId);
+        var entry = new ShopEntry()
+        {
+            AuthorId = userId,
+            Command = command,
+            Type = ShopEntryType.Command,
+            Price = price,
+        };
+        entries.Add(entry);
+        uow.GuildConfigsForId(guildId, set => set).ShopEntries = entries;
+
+        await uow.SaveChangesAsync();
 
         return entry;
     }

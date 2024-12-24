@@ -1,23 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
+#nullable disable
 namespace WizBot.Db.Models;
 
-public class SlowmodeIgnoredRole
+public class SlowmodeIgnoredRole : DbEntity
 {
-    [Key]
-    public ulong Id { get; set; }
-    
     public ulong RoleId { get; set; }
-    public ulong GuildId { get; set; }
-}
 
-public class SlowmodeIgnoredRoleEntityConfiguration : IEntityTypeConfiguration<SlowmodeIgnoredRole>
-{
-    public void Configure(EntityTypeBuilder<SlowmodeIgnoredRole> builder)
+    // override object.Equals
+    public override bool Equals(object obj)
     {
-        builder.HasKey(x => x.Id);
-        builder.HasIndex(x => new { x.GuildId, x.RoleId }).IsUnique();
+        if (obj is null || GetType() != obj.GetType())
+            return false;
+
+        return ((SlowmodeIgnoredRole)obj).RoleId == RoleId;
     }
+
+    // override object.GetHashCode
+    public override int GetHashCode()
+        => RoleId.GetHashCode();
 }

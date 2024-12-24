@@ -1,5 +1,4 @@
 #nullable disable
-using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WizBot.Db.Models;
@@ -30,22 +29,102 @@ public static class GuildConfigExtensions
     /// <param name="ctx">Db Context</param>
     /// <param name="guildId">Id of the guild to get stream role settings for.</param>
     /// <returns>Guild'p stream role settings</returns>
-    public static async Task<StreamRoleSettings> GetOrCreateStreamRoleSettings(this DbContext ctx, ulong guildId)
+    public static StreamRoleSettings GetStreamRoleSettings(this DbContext ctx, ulong guildId)
     {
-        var srs = await ctx.GetTable<StreamRoleSettings>()
-                           .Where(x => x.GuildId == guildId)
-                           .FirstOrDefaultAsyncLinqToDB();
+        var conf = ctx.GuildConfigsForId(guildId,
+            set => set.Include(y => y.StreamRole)
+                      .Include(y => y.StreamRole.Whitelist)
+                      .Include(y => y.StreamRole.Blacklist));
 
-        if (srs is not null)
-            return srs;
+        if (conf.StreamRole is null)
+            conf.StreamRole = new();
 
-        srs = await ctx.GetTable<StreamRoleSettings>()
-                       .InsertWithOutputAsync(() => new()
-                       {
-                           GuildId = guildId,
-                       });
+        return conf.StreamRole;
+    }
 
-        return srs;
+    private static IQueryable<GuildConfig> IncludeEverything(this DbSet<GuildConfig> configs)
+        => configs
+           .AsSplitQuery()
+           .Include(gc => gc.CommandCooldowns)
+           .Include(gc => gc.FollowedStreams)
+           .Include(gc => gc.StreamRole)
+           .Include(gc => gc.DelMsgOnCmdChannels)
+           .Include(gc => gc.XpSettings)
+           .ThenInclude(x => x.ExclusionList);
+
+    public static async Task<GuildConfig[]> GetAllGuildConfigs(
+        this DbSet<GuildConfig> configs,
+        List<ulong> availableGuilds)
+    {
+        var result = await configs
+                           .IncludeEverything()
+                           .Where(x => availableGuilds.Contains(x.GuildId))
+                           .AsNoTracking()
+                           .ToArrayAsync();
+
+        return result;
+    }
+
+    /// <summary>
+    ///     Gets and creates if it doesn't exist a config for a guild.
+    /// </summary>
+    /// <param name="ctx">Context</param>
+    /// <param name="guildId">Id of the guide</param>
+    /// <param name="includes">Use to manipulate the set however you want. Pass null to include everything</param>
+    /// <returns>Config for the guild</returns>
+    public static GuildConfig GuildConfigsForId(
+        this DbContext ctx,
+        ulong guildId,
+        Func<DbSet<GuildConfig>, IQueryable<GuildConfig>> includes)
+    {
+        GuildConfig config;
+
+        if (includes is null)
+            config = ctx.Set<GuildConfig>().IncludeEverything().FirstOrDefault(c => c.GuildId == guildId);
+        else
+        {
+            var set = includes(ctx.Set<GuildConfig>());
+            config = set.FirstOrDefault(c => c.GuildId == guildId);
+        }
+
+        if (config is null)
+        {
+            ctx.Set<GuildConfig>()
+               .Add(config = new()
+               {
+                   GuildId = guildId,
+                   Permissions = Permissionv2.GetDefaultPermlist,
+                   WarningsInitialized = true,
+               });
+            ctx.SaveChanges();
+        }
+
+        if (!config.WarningsInitialized)
+        {
+            config.WarningsInitialized = true;
+        }
+
+        return config;
+
+        // ctx.GuildConfigs
+        //    .ToLinqToDBTable()
+        //    .InsertOrUpdate(() => new()
+        //        {
+        //            GuildId = guildId,
+        //            Permissions = Permissionv2.GetDefaultPermlist,
+        //            WarningsInitialized = true,
+        //            WarnPunishments = DefaultWarnPunishments
+        //        },
+        //        _ => new(),
+        //        () => new()
+        //        {
+        //            GuildId = guildId
+        //        });
+        //
+        // if(includes is null)
+        // return ctx.GuildConfigs
+        //    .ToLinqToDBTable()
+        //    .First(x => x.GuildId == guildId);
     }
 
     public static LogSetting LogSettingsFor(this DbContext ctx, ulong guildId)
@@ -68,8 +147,6 @@ public static class GuildConfigExtensions
 
         return logSetting;
     }
-
-
 
     public static IEnumerable<GuildConfig> PermissionsForAll(this DbSet<GuildConfig> configs, List<ulong> include)
     {
@@ -105,23 +182,44 @@ public static class GuildConfigExtensions
         return config;
     }
 
-    public static async Task<GuildXpSettings> XpSettingsFor(this DbContext ctx, ulong guildId)
+    public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs)
+        => configs.AsQueryable().Include(x => x.FollowedStreams).SelectMany(gc => gc.FollowedStreams).ToArray();
+
+    public static IEnumerable<FollowedStream> GetFollowedStreams(this DbSet<GuildConfig> configs, List<ulong> included)
+        => configs.AsQueryable()
+                  .Where(gc => included.Contains(gc.GuildId))
+                  .Include(gc => gc.FollowedStreams)
+                  .SelectMany(gc => gc.FollowedStreams)
+                  .ToList();
+
+
+    public static XpSettings XpSettingsFor(this DbContext ctx, ulong guildId)
     {
-        var srs = await ctx.GetTable<GuildXpSettings>()
-                           .Where(x => x.GuildId == guildId)
-                           .FirstOrDefaultAsyncLinqToDB();
+        var gc = ctx.GuildConfigsForId(guildId,
+            set => set.Include(x => x.XpSettings)
+                      .ThenInclude(x => x.RoleRewards)
+                      .Include(x => x.XpSettings)
+                      .ThenInclude(x => x.CurrencyRewards)
+                      .Include(x => x.XpSettings)
+                      .ThenInclude(x => x.ExclusionList));
 
-        if (srs is not null)
-            return srs;
+        if (gc.XpSettings is null)
+            gc.XpSettings = new();
 
-        srs = await ctx.GetTable<GuildXpSettings>()
-                       .InsertWithOutputAsync(() => new()
-                       {
-                           GuildId = guildId,
-                       });
-
-        return srs;
+        return gc.XpSettings;
     }
+
+    public static IEnumerable<GeneratingChannel> GetGeneratingChannels(this DbSet<GuildConfig> configs)
+        => configs.AsQueryable()
+                  .Include(x => x.GenerateCurrencyChannelIds)
+                  .Where(x => x.GenerateCurrencyChannelIds.Any())
+                  .SelectMany(x => x.GenerateCurrencyChannelIds)
+                  .Select(x => new GeneratingChannel
+                  {
+                      ChannelId = x.ChannelId,
+                      GuildId = x.GuildConfig.GuildId
+                  })
+                  .ToArray();
 
     public class GeneratingChannel
     {

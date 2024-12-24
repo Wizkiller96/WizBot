@@ -1,29 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.ComponentModel.DataAnnotations;
-
+#nullable disable
 namespace WizBot.Db.Models;
 
-public class VcRoleInfo
+public class VcRoleInfo : DbEntity
 {
-    [Key]
-    public int Id { get; set; }
-
-    public ulong GuildId { get; set; }
     public ulong VoiceChannelId { get; set; }
-    
     public ulong RoleId { get; set; }
-}
-
-public class VcRoleInfoEntityConfiguration : IEntityTypeConfiguration<VcRoleInfo>
-{
-    public void Configure(EntityTypeBuilder<VcRoleInfo> builder)
-    {
-        builder.HasIndex(x => new
-               {
-                   x.GuildId,
-                   x.VoiceChannelId
-               })
-               .IsUnique();
-    }
 }

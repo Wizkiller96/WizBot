@@ -211,7 +211,7 @@ public class SelfAssignedRolesService : INService, IReadyExecutor
     {
         await using var uow = _db.GetDbContext();
         var guilds = await uow.GetTable<SarAutoDelete>()
-                              .Where(x => x.IsEnabled && Queries.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
+                              .Where(x => x.IsEnabled && Linq2DbExpressions.GuildOnShard(x.GuildId, _creds.TotalShards, _client.ShardId))
                               .Select(x => x.GuildId)
                               .ToListAsyncLinqToDB();
 

@@ -24,7 +24,7 @@ public partial class Utility
         [UserPerm(GuildPerm.Administrator)]
         public async Task AliasesClear()
         {
-            var count = await _service.ClearAliases(ctx.Guild.Id);
+            var count = _service.ClearAliases(ctx.Guild.Id);
             await Response().Confirm(strs.aliases_cleared(count)).SendAsync();
         }
 
@@ -40,17 +40,64 @@ public partial class Utility
 
             if (string.IsNullOrWhiteSpace(mapping))
             {
-                if (!await _service.RemoveAliasAsync(ctx.Guild.Id, trigger))
+                if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.TryRemove(trigger, out _))
                 {
                     await Response().Error(strs.alias_remove_fail(Format.Code(trigger))).SendAsync();
                     return;
+                }
+
+                await using (var uow = _db.GetDbContext())
+                {
+                    var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                    var tr = config.CommandAliases.FirstOrDefault(x => x.Trigger == trigger);
+                    if (tr is not null)
+                        uow.Set<CommandAlias>().Remove(tr);
+                    uow.SaveChanges();
                 }
 
                 await Response().Confirm(strs.alias_removed(Format.Code(trigger))).SendAsync();
                 return;
             }
 
-            await _service.AddAliasAsync(ctx.Guild.Id, trigger, mapping);
+            _service.AliasMaps.AddOrUpdate(ctx.Guild.Id,
+                _ =>
+                {
+                    using (var uow = _db.GetDbContext())
+                    {
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        config.CommandAliases.Add(new()
+                        {
+                            Mapping = mapping,
+                            Trigger = trigger
+                        });
+                        uow.SaveChanges();
+                    }
+
+                    return new(new Dictionary<string, string>
+                    {
+                        { trigger.Trim().ToLowerInvariant(), mapping.ToLowerInvariant() }
+                    });
+                },
+                (_, map) =>
+                {
+                    using (var uow = _db.GetDbContext())
+                    {
+                        var config = uow.GuildConfigsForId(ctx.Guild.Id, set => set.Include(x => x.CommandAliases));
+                        var toAdd = new CommandAlias
+                        {
+                            Mapping = mapping,
+                            Trigger = trigger
+                        };
+                        var toRemove = config.CommandAliases.Where(x => x.Trigger == trigger).ToArray();
+                        if (toRemove.Any())
+                            uow.RemoveRange(toRemove);
+                        config.CommandAliases.Add(toAdd);
+                        uow.SaveChanges();
+                    }
+
+                    map.AddOrUpdate(trigger, mapping, (_, _) => mapping);
+                    return map;
+                });
 
             await Response().Confirm(strs.alias_added(Format.Code(trigger), Format.Code(mapping))).SendAsync();
         }
@@ -65,14 +112,13 @@ public partial class Utility
             if (page < 0)
                 return;
 
-            var aliases = await _service.GetAliasesAsync(ctx.Guild.Id);
-            if (aliases is null || aliases.Count == 0)
+            if (!_service.AliasMaps.TryGetValue(ctx.Guild.Id, out var maps) || !maps.Any())
             {
                 await Response().Error(strs.aliases_none).SendAsync();
                 return;
             }
 
-            var arr = aliases.Select(x => (Trigger: x.Key, Mapping: x.Value)).ToArray();
+            var arr = maps.ToArray();
 
             await Response()
                   .Paginated()
@@ -84,7 +130,7 @@ public partial class Utility
                       return CreateEmbed()
                              .WithOkColor()
                              .WithTitle(GetText(strs.alias_list))
-                             .WithDescription(string.Join("\n", items.Select(x => $"`{x.Trigger}` => `{x.Mapping}`")));
+                             .WithDescription(string.Join("\n", items.Select(x => $"`{x.Key}` => `{x.Value}`")));
                   })
                   .SendAsync();
         }
