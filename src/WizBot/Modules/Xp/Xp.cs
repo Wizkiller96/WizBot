@@ -585,6 +585,10 @@ public partial class Xp : WizBotModule<XpService>
         {
             await Response().Confirm(strs.xp_shop_item_cant_use).SendAsync();
         }
+        else
+        {
+            await Response().Confirm(strs.xpshop_use_success(type.ToString().ToLowerInvariant(), key.ToLowerInvariant())).SendAsync();
+        }
     }
 
     private async Task OnShopBuy(SocketMessageComponent smc, (string key, XpShopItemType type) state)
@@ -593,13 +597,28 @@ public partial class Xp : WizBotModule<XpService>
 
         var result = await _service.BuyShopItemAsync(ctx.User.Id, type, key);
 
-        if (result == BuyResult.InsufficientFunds)
+        switch (result)
         {
-            await Response().Error(strs.not_enough(_gss.GetCurrencySign())).SendAsync();
-        }
-        else if (result == BuyResult.Success)
-        {
-            await _service.UseShopItemAsync(ctx.User.Id, type, key);
+            case BuyResult.Success:
+                await Response().Confirm(strs.xpshop_buy_success(type.ToString().ToLowerInvariant(), key.ToLowerInvariant())).SendAsync();
+                break;
+            case BuyResult.InsufficientFunds:
+                await Response().Error(strs.not_enough(_gss.GetCurrencySign())).SendAsync();
+                break;
+            case BuyResult.AlreadyOwned:
+                await Response().Error(strs.xpshop_already_owned).SendAsync();
+                break;
+            case BuyResult.UnknownItem:
+                await Response().Error(strs.xpshop_item_not_found).SendAsync();
+                break;
+            case BuyResult.InsufficientPatronTier:
+                await Response().Error(strs.patron_insuff_tier).SendAsync();
+                break;
+            case BuyResult.XpShopDisabled:
+                await Response().Error(strs.xp_shop_disabled).SendAsync();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }
