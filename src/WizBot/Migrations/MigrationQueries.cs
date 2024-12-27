@@ -17,6 +17,9 @@ public static class MigrationQueries
 
     public static void MigrateSar(MigrationBuilder migrationBuilder)
     {
+        if (migrationBuilder.IsNpgsql())
+            return;
+
         migrationBuilder.Sql("""
                              INSERT INTO GroupName (Number, GuildConfigId)
                              SELECT DISTINCT "Group", GC.Id
