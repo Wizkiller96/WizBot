@@ -59,10 +59,15 @@ public class SelfAssignedRolesService : INService, IReadyExecutor
                      },
                      _ => new()
                      {
+                         SarGroupId = ctx.GetTable<SarGroup>()
+                                         .Where(x => x.GuildId == guildId && x.GroupNumber == groupNumber)
+                                         .Select(x => x.Id)
+                                         .First()
                      },
                      () => new()
                      {
                          RoleId = roleId,
+                         GuildId = guildId,
                      });
     }
 
