@@ -293,7 +293,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
             if (percentBonus > float.Epsilon)
                 msg +=
-                    $"*+{percentBonus:P0} bonus for the [Patreon](https://patreon.com/WizNet) pledge! <:hart:746995901758832712>*";
+                    $"*+{percentBonus:P0} bonus for the [Patreon](https://patreon.com/WizNet) pledge! ❤️*";
 
             await Response().Confirm(msg).Interaction(inter).SendAsync();
         }
