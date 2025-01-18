@@ -16,9 +16,9 @@ public class GamblingCleanupService : IGamblingCleanupService, INService
     public async Task DeleteWaifus()
     {
         await using var ctx = _db.GetDbContext();
-        await ctx.GetTable<WaifuInfo>().DeleteAsync();
         await ctx.GetTable<WaifuItem>().DeleteAsync();
         await ctx.GetTable<WaifuUpdate>().DeleteAsync();
+        await ctx.GetTable<WaifuInfo>().DeleteAsync();
     }
 
     public async Task DeleteWaifu(ulong userId)
