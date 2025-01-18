@@ -13,7 +13,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
 
     public async Task<OneOf.OneOf<Task<FishResult?>, AlreadyFishing>> FishAsync(ulong userId, ulong channelId)
     {
-        var duration = _rng.Next(1, 9);
+        var duration = _rng.Next(5, 9);
 
         if (!await cache.AddAsync(FishingKey(userId), true, TimeSpan.FromSeconds(duration), overwrite: false))
         {
@@ -244,17 +244,17 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
 
         if (maxStars == 2)
         {
-            // 66% chance of 1 star, 33% chance of 2 stars
-            return _rng.NextDouble() < 0.8 ? 1 : 2;
+            // 15% chance of 1 star, 85% chance of 2 stars
+            return _rng.NextDouble() < 0.85 ? 1 : 2;
         }
 
         if (maxStars == 3)
         {
-            // 65% chance of 1 star, 25% chance of 2 stars, 10% chance of 3 stars
+            // 65% chance of 1 star, 30% chance of 2 stars, 5% chance of 3 stars
             var r = _rng.NextDouble();
             if (r < 0.65)
                 return 1;
-            if (r < 0.9)
+            if (r < 0.95)
                 return 2;
             return 3;
         }
@@ -264,11 +264,11 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
             // this should never happen
             // 50% chance of 1 star, 25% chance of 2 stars, 18% chance of 3 stars, 7% chance of 4 stars
             var r = _rng.NextDouble();
-            if (r < 0.5)
+            if (r < 0.55)
                 return 1;
-            if (r < 0.75)
+            if (r < 0.80)
                 return 2;
-            if (r < 0.95)
+            if (r < 0.98)
                 return 3;
             return 4;
         }
@@ -283,7 +283,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
                 return 2;
             if (r < 0.9)
                 return 3;
-            if (r < 0.95)
+            if (r < 0.98)
                 return 4;
             return 5;
         }
