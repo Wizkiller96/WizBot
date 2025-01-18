@@ -4908,7 +4908,7 @@ winlb:
 fish:
   desc: |-
     Attempt to catch a fish.
-    Different fish live in different places, at different times and during different times of the day.
+    Different fish live in different places, at different times of day and in different weather.
   ex:
     - ''
   params:
