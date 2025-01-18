@@ -74,6 +74,9 @@ public abstract class WizBotContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // load all entities from current assembly
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(WizBotContext).Assembly);
+
         #region Notify
 
         modelBuilder.Entity<Notify>(e =>

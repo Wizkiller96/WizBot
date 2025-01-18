@@ -16,7 +16,7 @@ public sealed class WizBotRandom : Random
         _rng.GetBytes(bytes);
         return Math.Abs(BitConverter.ToInt32(bytes, 0));
     }
-    
+
     /// <summary>
     /// Generates a random integer between 0 (inclusive) and
     /// a specified exclusive upper bound using a cryptographically strong random number generator.
@@ -54,13 +54,9 @@ public sealed class WizBotRandom : Random
     {
         var bytes = new byte[sizeof(double)];
         _rng.GetBytes(bytes);
-        return Math.Abs((BitConverter.ToDouble(bytes, 0) / double.MaxValue) + 1);
+        return Math.Abs((BitConverter.ToDouble(bytes, 0) / (double.MaxValue + 1)));
     }
 
     public override double NextDouble()
-    {
-        var bytes = new byte[sizeof(double)];
-        _rng.GetBytes(bytes);
-        return BitConverter.ToDouble(bytes, 0);
-    }
+        => Sample();
 }

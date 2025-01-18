@@ -1,4 +1,5 @@
-﻿using Wiz.Common;
+﻿using System;
+using Wiz.Common;
 using NUnit.Framework;
 
 namespace WizBot.Tests
@@ -119,6 +120,13 @@ namespace WizBot.Tests
             
             num = new kwum(int.MaxValue);
             Assert.AreEqual("3zzzzzz", num.ToString());
+        }
+        
+        [Test]
+        public void TestPower()
+        {
+            var num = new kwum((int)Math.Pow(32, 2));
+            Assert.AreEqual("322", num.ToString());
         }
     }
 }
