@@ -62,7 +62,6 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
                 }
             }
 
-
             if (item.Spot is not null && item.Spot != loc)
                 continue;
 
@@ -73,14 +72,12 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
                 continue;
 
             filteredItems.Add(item);
-            Log.Information("Added {FishName} to filtered items", item.Name);
         }
 
         var maxSum = filteredItems.Sum(x => x.Chance * 100);
 
 
         var roll = _rng.NextDouble() * maxSum;
-        Log.Information("Roll: {Roll}, MaxSum: {MaxSum}", roll, maxSum);
 
         FishResult? caught = null;
 
@@ -136,7 +133,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
 
     public FishingSpot GetSpot(ulong channelId)
     {
-        var cid = (channelId >> 22 >> 8) & 1;
+        var cid = (channelId >> 22 >> 8) % 10;
 
         return cid switch
         {
@@ -248,7 +245,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
         if (maxStars == 2)
         {
             // 66% chance of 1 star, 33% chance of 2 stars
-            return _rng.NextDouble() < 0.66 ? 1 : 2;
+            return _rng.NextDouble() < 0.8 ? 1 : 2;
         }
 
         if (maxStars == 3)
@@ -269,9 +266,9 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
             var r = _rng.NextDouble();
             if (r < 0.5)
                 return 1;
-            if (r < 0.7)
+            if (r < 0.75)
                 return 2;
-            if (r < 0.85)
+            if (r < 0.95)
                 return 3;
             return 4;
         }
