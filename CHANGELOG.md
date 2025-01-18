@@ -2,6 +2,19 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.4] - 18.01.2025
+
+## Added
+
+- Added `.fish` commands
+  - `.fish` - Attempt to catch a fish - different fish live in different places, at different times and during different times of the day
+  - `.fishlist` - Look at your fish catalogue - shows how many of each fish you caught and what was the highest quality - for each caught fish, it also shows its required spot, time of day and weather
+  - `.fishspot` - Shows information about the current fish spot, time of day and weather
+
+## Fixed
+
+- `.timely` fixed captcha sometimes generating only 2 characters
+
 ## [5.3.3] - 20.12.2024
 
 ## Fixed
