@@ -192,15 +192,22 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.ManageRoles)]
-        public async Task SarRemove([Leftover] IRole role)
+        [Priority(1)]
+        public Task SarRemove([Leftover] IRole role)
+            => SarRemove(role.Id);
+        
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.ManageRoles)]
+        [Priority(0)]
+        public async Task SarRemove([Leftover] ulong roleId)
         {
-            var guser = (IGuildUser)ctx.User;
-
-            var success = await _service.RemoveAsync(role.Guild.Id, role.Id);
+            var role = await ctx.Guild.GetRoleAsync(roleId);
+            var success = await _service.RemoveAsync(ctx.Guild.Id, roleId);
             if (!success)
                 await Response().Error(strs.self_assign_not).SendAsync();
             else
-                await Response().Confirm(strs.self_assign_rem(Format.Bold(role.Name))).SendAsync();
+                await Response().Confirm(strs.self_assign_rem(Format.Bold(role?.Name ?? roleId.ToString()))).SendAsync();
         }
 
         [Cmd]
