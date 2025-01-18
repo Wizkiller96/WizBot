@@ -83,7 +83,7 @@ public sealed class BotCredsProvider : IBotCredsProvider
             if (string.IsNullOrWhiteSpace(_creds.Token))
             {
                 Log.Error("Token is missing from creds.yml or Environment variables.\nAdd it and restart the program");
-                Helpers.ReadErrorAndExit(5);
+                Helpers.ReadErrorAndExit(1);
                 return;
             }
 

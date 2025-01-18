@@ -107,7 +107,7 @@ public class RemoteGrpcCoordinator : ICoordinator, IReadyExecutor
                 await Task.Delay(7500);
             }
 
-            Environment.Exit(5);
+            Environment.Exit(0);
         });
 
         return Task.CompletedTask;
