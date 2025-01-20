@@ -169,7 +169,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 #if GLOBAL_WIZBOT
                 if (_rng.Next(0, 5) == 0)
                     toSend = toSend
-                        .Confirm("[Sub on Patreon](https://patreon.com/nadekobot) to remove captcha.")
+                        .Confirm("[Sub on Patreon](https://patreon.com/WizNet) to remove captcha.");
 #endif
 
                 var captchaMessage = await toSend.SendAsync();
