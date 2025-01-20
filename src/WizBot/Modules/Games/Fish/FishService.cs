@@ -1,11 +1,16 @@
 using LinqToDB;
 using LinqToDB.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
 namespace WizBot.Modules.Games;
 
 public sealed class FishService(FishConfigService fcs, IBotCache cache, DbService db) : INService
 {
+    public const double MAX_SKILL = 100;
+
     private Random _rng = new Random();
 
     private static TypedKey<bool> FishingKey(ulong userId)
@@ -28,20 +33,104 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
         var conf = fcs.Data;
         await Task.Delay(TimeSpan.FromSeconds(duration));
 
+        var (playerSkill, _) = await GetSkill(userId);
+        var fishChanceMultiplier = Math.Clamp((playerSkill + 20) / MAX_SKILL, 0, 1);
+        var trashChanceMultiplier = Math.Clamp(((2 * MAX_SKILL) - playerSkill) / MAX_SKILL, 1, 2);
+
+        var nothingChance = conf.Chance.Nothing;
+        var fishChance = conf.Chance.Fish * fishChanceMultiplier;
+        var trashChance = conf.Chance.Trash * trashChanceMultiplier;
+
         // first roll whether it's fish, trash or nothing
-        var totalChance = conf.Chance.Fish + conf.Chance.Trash + conf.Chance.Nothing;
+        var totalChance = fishChance + trashChance + conf.Chance.Nothing;
+
         var typeRoll = _rng.NextDouble() * totalChance;
 
-        if (typeRoll < conf.Chance.Nothing)
+        if (typeRoll < nothingChance)
         {
             return null;
         }
 
-        var items = typeRoll < conf.Chance.Nothing + conf.Chance.Fish
+        var items = typeRoll < nothingChance + fishChance
             ? conf.Fish
             : conf.Trash;
 
-        return await FishAsyncInternal(userId, channelId, items);
+
+        var result = await FishAsyncInternal(userId, channelId, items);
+
+        if (result is not null)
+        {
+            var isSkillUp = await TrySkillUpAsync(userId, playerSkill);
+
+            result.IsSkillUp = isSkillUp;
+            result.MaxSkill = (int)MAX_SKILL;
+            result.Skill = playerSkill;
+
+            if (isSkillUp)
+            {
+                result.Skill += 1;
+            }
+        }
+
+
+        return result;
+    }
+
+    private async Task<bool> TrySkillUpAsync(ulong userId, int playerSkill)
+    {
+        var skillUpProb = GetSkillUpProb(playerSkill);
+
+        var rng = _rng.NextDouble();
+
+        if (rng < skillUpProb)
+        {
+            await using var ctx = db.GetDbContext();
+
+            var maxSkill = (int)MAX_SKILL;
+            await ctx.GetTable<UserFishStats>()
+                     .InsertOrUpdateAsync(() => new()
+                         {
+                             UserId = userId,
+                             Skill = 1,
+                         },
+                         (old) => new()
+                         {
+                             UserId = userId,
+                             Skill = old.Skill > maxSkill ? maxSkill : old.Skill + 1
+                         },
+                         () => new()
+                         {
+                             UserId = userId,
+                             Skill = playerSkill
+                         });
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private double GetSkillUpProb(int playerSkill)
+    {
+        if (playerSkill < 0)
+            playerSkill = 0;
+
+        if (playerSkill >= 100)
+            return 0;
+
+        return 1 / (Math.Pow(Math.E, playerSkill / 22d));
+    }
+
+    public async Task<(int skill, int maxSkill)> GetSkill(ulong userId)
+    {
+        await using var ctx = db.GetDbContext();
+
+        var skill = await ctx.GetTable<UserFishStats>()
+                             .Where(x => x.UserId == userId)
+                             .Select(x => x.Skill)
+                             .FirstOrDefaultAsyncLinqToDB();
+
+        return (skill, (int)MAX_SKILL);
     }
 
     private async Task<FishResult?> FishAsyncInternal(ulong userId, ulong channelId, List<FishData> items)
@@ -133,7 +222,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
 
     public FishingSpot GetSpot(ulong channelId)
     {
-        var cid = (channelId >> 22 >> 8) % 10;
+        var cid = (channelId >> 22 >> 29) % 10;
 
         return cid switch
         {
@@ -159,7 +248,6 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
             return FishingTime.Day;
 
         return FishingTime.Dusk;
-
     }
 
     private const int WEATHER_PERIODS_PER_DAY = 12;
@@ -297,7 +385,7 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
     public async Task<List<FishData>> GetAllFish()
     {
         await Task.Yield();
-        
+
         var conf = fcs.Data;
         return conf.Fish.Concat(conf.Trash).ToList();
     }
@@ -311,5 +399,23 @@ public sealed class FishService(FishConfigService fcs, IBotCache cache, DbServic
                                .ToListAsyncLinqToDB();
 
         return catches;
+    }
+}
+
+public sealed class UserFishStats
+{
+    [Key]
+    public int Id { get; set; }
+
+    public ulong UserId { get; set; }
+    public int Skill { get; set; }
+}
+
+public sealed class UserFishStatsConfiguration : IEntityTypeConfiguration<UserFishStats>
+{
+    public void Configure(EntityTypeBuilder<UserFishStats> builder)
+    {
+        builder.HasIndex(x => x.UserId)
+               .IsUnique();
     }
 }

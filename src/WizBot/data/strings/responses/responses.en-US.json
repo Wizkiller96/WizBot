@@ -1173,5 +1173,7 @@
   "fish_weather_duration": "Each weather period lasts for {0} hours.",
   "fish_weather_current": "Current",
   "fish_weather_forecast": "Forecast",
-  "fish_tod": "Time of Day"
+  "fish_tod": "Time of Day",
+  "fish_skill_up": "Fishing skill increased to **{0} / {1}**",
+  "fish_list_title": "Fishing"
 }

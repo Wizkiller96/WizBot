@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Format = Discord.Format;
 
@@ -9,8 +10,10 @@ public partial class Games
         FishService fs,
         FishConfigService fcs,
         IBotCache cache,
-        CaptchaService service) : WizBotModule
+        CaptchaService captchaService) : WizBotModule
     {
+        private static readonly WizBotRandom _rng = new();
+
         private TypedKey<bool> FishingWhitelistKey(ulong userId)
             => new($"fishingwhitelist:{userId}");
 
@@ -20,29 +23,39 @@ public partial class Games
             var cRes = await cache.GetAsync(FishingWhitelistKey(ctx.User.Id));
             if (cRes.TryPickT1(out _, out _))
             {
-                var password = await GetUserCaptcha(ctx.User.Id);
-                var img = service.GetPasswordImage(password);
-                using var stream = await img.ToStreamAsync();
-                var captcha = await Response()
-                                    .File(stream, "timely.png")
-                                    .SendAsync();
-
-                try
+                var password = await captchaService.GetUserCaptcha(ctx.User.Id);
+                if (password is not null)
                 {
-                    var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
-                    if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
+                    var img = captchaService.GetPasswordImage(password);
+                    using var stream = await img.ToStreamAsync();
+
+                    var toSend = Response()
+                        .File(stream, "timely.png");
+
+#if GLOBAL_WIZBOT
+                    if (_rng.Next(0, 5) == 0)
+                        toSend = toSend
+                            .Confirm("[Sub on Patreon](https://patreon.com/WizNet) to remove captcha.")
+#endif
+                    var captcha = await toSend.SendAsync();
+
+                    try
                     {
-                        return;
-                    }
+                        var userInput = await GetUserInputAsync(ctx.User.Id, ctx.Channel.Id);
+                        if (userInput?.ToLowerInvariant() != password?.ToLowerInvariant())
+                        {
+                            return;
+                        }
 
-                    // whitelist the user for 30 minutes
-                    await cache.AddAsync(FishingWhitelistKey(ctx.User.Id), true, TimeSpan.FromMinutes(30));
-                    // reset the password
-                    await ClearUserCaptcha(ctx.User.Id);
-                }
-                finally
-                {
-                    _ = captcha.DeleteAsync();
+                        // whitelist the user for 30 minutes
+                        await cache.AddAsync(FishingWhitelistKey(ctx.User.Id), true, TimeSpan.FromMinutes(30));
+                        // reset the password
+                        await captchaService.ClearUserCaptcha(ctx.User.Id);
+                    }
+                    finally
+                    {
+                        _ = captcha.DeleteAsync();
+                    }
                 }
             }
 
@@ -76,12 +89,18 @@ public partial class Games
                 return;
             }
 
+            var desc = GetText(strs.fish_caught(res.Fish.Emoji + " " + Format.Bold(res.Fish.Name)));
+
+            if (res.IsSkillUp)
+            {
+                desc += "\n" + GetText(strs.fish_skill_up(res.Skill, res.MaxSkill));
+            }
 
             await Response()
                   .Embed(CreateEmbed()
                          .WithOkColor()
                          .WithAuthor(ctx.User)
-                         .WithDescription(GetText(strs.fish_caught(Format.Bold(res.Fish.Name))))
+                         .WithDescription(desc)
                          .AddField(GetText(strs.fish_quality), GetStarText(res.Stars, res.Fish.Stars), true)
                          .AddField(GetText(strs.desc), res.Fish.Fluff, true)
                          .WithThumbnailUrl(res.Fish.Image))
@@ -117,8 +136,8 @@ public partial class Games
 
             var fishes = await fs.GetAllFish();
 
-            Log.Information(fishes.Count.ToString());
             var catches = await fs.GetUserCatches(ctx.User.Id);
+            var (skill, maxSkill) = await fs.GetSkill(ctx.User.Id);
 
             var catchDict = catches.ToDictionary(x => x.FishId, x => x);
 
@@ -130,7 +149,10 @@ public partial class Games
                   .Page((fs, i) =>
                   {
                       var eb = CreateEmbed()
-                          .WithOkColor();
+                               .WithDescription($"🧠 **Skill:** {skill} / {maxSkill}")
+                               .WithAuthor(ctx.User)
+                               .WithTitle(GetText(strs.fish_list_title))
+                               .WithOkColor();
 
                       foreach (var f in fs)
                       {
@@ -224,47 +246,8 @@ public partial class Games
 
             return sb.ToString();
         }
-
-        private static TypedKey<string> CaptchaPasswordKey(ulong userId)
-            => new($"timely_password:{userId}");
-
-        private async Task<string> GetUserCaptcha(ulong userId)
-        {
-            var pw = await cache.GetOrAddAsync(CaptchaPasswordKey(userId),
-                () =>
-                {
-                    var password = service.GeneratePassword();
-                    return Task.FromResult(password)!;
-                });
-
-            return pw!;
-        }
-
-        private ValueTask<bool> ClearUserCaptcha(ulong userId)
-            => cache.RemoveAsync(CaptchaPasswordKey(userId));
     }
 }
-
-//
-// public sealed class UserFishStats
-// {
-//     [Key]
-//     public int Id { get; set; }
-//
-//     public ulong UserId { get; set; }
-//
-//     public ulong CommonCatches { get; set; }
-//     public ulong RareCatches { get; set; }
-//     public ulong VeryRareCatches { get; set; }
-//     public ulong EpicCatches { get; set; }
-//
-//     public ulong CommonMaxCatches { get; set; }
-//     public ulong RareMaxCatches { get; set; }
-//     public ulong VeryRareMaxCatches { get; set; }
-//     public ulong EpicMaxCatches { get; set; }
-//
-//     public int TotalStars { get; set; }
-// }
 
 public enum FishingSpot
 {
