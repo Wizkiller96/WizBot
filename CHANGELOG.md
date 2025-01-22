@@ -2,6 +2,15 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.7] - 22.01.2025
+
+## Changed
+
+- You can now run `.prune` in DMs
+  - It deletes only bot messages
+  - You can't specify a number of messages to delete (100 default)
+- Updated command list
+
 ## [5.3.6] - 19.01.2025
 
 ## Added

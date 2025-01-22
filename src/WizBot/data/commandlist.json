@@ -974,7 +974,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -990,7 +990,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -1008,7 +1008,7 @@
       "Module": "Administration",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Administrator Server Permission"
       ]
     },
     {
@@ -4040,6 +4040,51 @@
         "No Public Bot",
         "ManageMessages Server Permission"
       ]
+    },
+    {
+      "Aliases": [
+        ".fish",
+        ".fi"
+      ],
+      "Description": "Attempt to catch a fish.\nDifferent fish live in different places, at different times of day and in different weather.",
+      "Usage": [
+        ".fish"
+      ],
+      "Submodule": "FishCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".fishspot",
+        ".fisp",
+        ".fish?"
+      ],
+      "Description": "Shows information about the current fish spot, weather and time.",
+      "Usage": [
+        ".fishspot"
+      ],
+      "Submodule": "FishCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".fishlist",
+        ".fili",
+        ".fishes",
+        ".fil"
+      ],
+      "Description": "Look at your fish catalogue.\nShows how many of each fish you caught and what was the highest quality.\nFor each caught fish, it also shows its required spot, time of day and weather.",
+      "Usage": [
+        ".fishlist"
+      ],
+      "Submodule": "FishCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
     },
     {
       "Aliases": [
