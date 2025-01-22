@@ -31,6 +31,25 @@ public partial class Administration
             {
             }
         }
+        
+        [Cmd]
+        [RequireContext(ContextType.DM)]
+        [WizBotOptions<PruneOptions>]
+        public async Task Prune()
+        {
+            var progressMsg = await Response().Pending(strs.prune_progress(0, 100)).SendAsync();
+            var progress = GetProgressTracker(progressMsg);
+
+            var result = await _service.PruneWhere(ctx.Channel,
+                100,
+                x => x.Author.Id == ctx.Client.CurrentUser.Id,
+                progress);
+
+            ctx.Message.DeleteAfter(3);
+
+            await SendResult(result);
+            await progressMsg.DeleteAsync();
+        }
 
         //deletes her own messages, no perm required
         [Cmd]
@@ -114,9 +133,9 @@ public partial class Administration
                     await progressMsg.ModifyAsync(props =>
                     {
                         props.Embed = CreateEmbed()
-                                             .WithPendingColor()
-                                             .WithDescription(GetText(strs.prune_progress(deleted, total)))
-                                             .Build();
+                                         .WithPendingColor()
+                                         .WithDescription(GetText(strs.prune_progress(deleted, total)))
+                                         .Build();
                     });
                 }
                 catch

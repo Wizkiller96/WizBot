@@ -18,7 +18,7 @@ public class PruneService : INService
     }
 
     public async Task<PruneResult> PruneWhere(
-        ITextChannel channel,
+        IMessageChannel channel,
         int amount,
         Func<IMessage, bool> predicate,
         IProgress<(int deleted, int total)> progress,
@@ -30,13 +30,14 @@ public class PruneService : INService
 
         var originalAmount = amount;
 
+        var gid = (channel as ITextChannel)?.GuildId ?? channel.Id;
         using var cancelSource = new CancellationTokenSource();
-        if (!_pruningGuilds.TryAdd(channel.GuildId, cancelSource))
+        if (!_pruningGuilds.TryAdd(gid, cancelSource))
             return PruneResult.AlreadyRunning;
         
         try
         {
-            if (!await _ps.LimitHitAsync(LimitedFeatureName.Prune, channel.Guild.OwnerId))
+            if (channel is ITextChannel tc && !await _ps.LimitHitAsync(LimitedFeatureName.Prune, tc.Guild.OwnerId))
             {
                 return PruneResult.FeatureLimit;
             }
@@ -74,9 +75,9 @@ public class PruneService : INService
                         singleDeletable.Add(x);
                 }
 
-                if (bulkDeletable.Count > 0)
+                if (channel is ITextChannel tc2 && bulkDeletable.Count > 0)
                 {
-                    await channel.DeleteMessagesAsync(bulkDeletable);
+                    await tc2.DeleteMessagesAsync(bulkDeletable);
                     amount -= msgs.Length;
                     progress.Report((originalAmount - amount, originalAmount));
                     await Task.Delay(2000, cancelSource.Token);
@@ -97,7 +98,7 @@ public class PruneService : INService
         }
         finally
         {
-            _pruningGuilds.TryRemove(channel.GuildId, out _);
+            _pruningGuilds.TryRemove(gid, out _);
         }
         
         return PruneResult.Success;
