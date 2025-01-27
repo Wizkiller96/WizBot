@@ -221,7 +221,7 @@ public partial class Administration
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
         [BotPerm(GuildPerm.ManageRoles)]
-        public async Task TempRole(ParsedTimespan timespan, IUser user, [Leftover] IRole role)
+        public async Task TempRole(ParsedTimespan timespan, IGuildUser user, [Leftover] IRole role)
         {
             if (!await CheckRoleHierarchy(role))
             {
@@ -231,6 +231,7 @@ public partial class Administration
                 return;
             }
 
+            await user.AddRoleAsync(role);
             await _tempRoleService.AddTempRoleAsync(ctx.Guild.Id, role.Id, user.Id, timespan.Time);
             
 

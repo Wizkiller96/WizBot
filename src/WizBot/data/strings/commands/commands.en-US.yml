@@ -4852,11 +4852,11 @@ temprole:
     - '15m @User Jail'
     - '7d @Newbie Trial Member'
   params:
-    - days:
+    - time:
         desc: "The time after which the role is automatically removed."
-    - user:
+      user:
         desc: "The user to give the role to."
-    - role:
+      role:
         desc: "The role to give to the user."
 minesweeper:
   desc: |-

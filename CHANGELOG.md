@@ -2,6 +2,13 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.8] - 27.01.2025
+
+## Fixed
+
+- `.temprole` now correctly adds a role
+  - `.h temprole` also shows the correct overload now
+
 ## [5.3.7] - 22.01.2025
 
 ## Changed
