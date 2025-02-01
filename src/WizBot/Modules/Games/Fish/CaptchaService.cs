@@ -17,7 +17,7 @@ public sealed class CaptchaService(FontProvider fonts, IBotCache cache, IPatrona
 
     public Image<Rgba32> GetPasswordImage(string password)
     {
-        var img = new Image<Rgba32>(50, 24);
+        var img = new Image<Rgba32>(60, 34);
 
         var font = fonts.NotoSans.CreateFont(22);
         var outlinePen = new SolidPen(Color.Black, 0.5f);
@@ -39,7 +39,7 @@ public sealed class CaptchaService(FontProvider fonts, IBotCache cache, IPatrona
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     FallbackFontFamilies = fonts.FallBackFonts,
-                    Origin = new(25, 12),
+                    Origin = new(30, 15),
                     TextRuns = [strikeoutRun]
                 },
                 password,

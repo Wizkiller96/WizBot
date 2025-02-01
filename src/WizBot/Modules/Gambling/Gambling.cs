@@ -161,7 +161,7 @@ public partial class Gambling : GamblingModule<GamblingService>
 
             if (password is not null)
             {
-                var img = GetPasswordImage(password);
+                var img = _captchaService.GetPasswordImage(password);
                 await using var stream = await img.ToStreamAsync();
                 var toSend = Response()
                     .File(stream, "timely.png");
@@ -191,39 +191,6 @@ public partial class Gambling : GamblingModule<GamblingService>
         }
 
         await ClaimTimely();
-    }
-    
-    private Image<Rgba32> GetPasswordImage(string password)
-    {
-        var img = new Image<Rgba32>(50, 24);
-
-        var font = _fonts.NotoSans.CreateFont(22);
-        var outlinePen = new SolidPen(Color.Black, 0.5f);
-        var strikeoutRun = new RichTextRun
-        {
-            Start = 0,
-            End = password.GetGraphemeCount(),
-            Font = font,
-            StrikeoutPen = new SolidPen(Color.White, 4),
-            TextDecorations = TextDecorations.Strikeout
-        };
-        // draw password on the image
-        img.Mutate(x =>
-        {
-            x.DrawText(new RichTextOptions(font)
-                {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    FallbackFontFamilies = _fonts.FallBackFonts,
-                    Origin = new(25, 12),
-                    TextRuns = [strikeoutRun]
-                },
-                password,
-                Brushes.Solid(Color.White),
-                outlinePen);
-        });
-
-        return img;
     }
 
     private async Task ClaimTimely()
