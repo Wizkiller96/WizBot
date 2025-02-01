@@ -2,6 +2,8 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace WizBot.Modules.Searches;
@@ -9,54 +11,57 @@ namespace WizBot.Modules.Searches;
 public sealed class DefaultStockDataService : IStockDataService, INService
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IBotCache _cache;
 
-    public DefaultStockDataService(IHttpClientFactory httpClientFactory)
-        => _httpClientFactory = httpClientFactory;
+    public DefaultStockDataService(IHttpClientFactory httpClientFactory, IBotCache cache)
+        => (_httpClientFactory, _cache) = (httpClientFactory, cache);
+
+    private static TypedKey<StockData> GetStockDataKey(string query)
+        => new($"stockdata:{query}");
 
     public async Task<StockData?> GetStockDataAsync(string query)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+
+        return await _cache.GetOrAddAsync(GetStockDataKey(query.Trim().ToLowerInvariant()),
+            () => GetStockDataInternalAsync(query),
+            expiry: TimeSpan.FromHours(1));
+    }
+
+    public async Task<StockData?> GetStockDataInternalAsync(string query)
     {
         try
         {
             if (!query.IsAlphaNumeric())
                 return default;
 
-            using var http = _httpClientFactory.CreateClient();
+            var info = await GetNasdaqDataResponse<NasdaqSummaryResponse>(
+                $"https://api.nasdaq.com/api/quote/{query}/summary?assetclass=stocks");
 
-            var quoteHtmlPage = $"https://finance.yahoo.com/quote/{query.ToUpperInvariant()}";
-
-            var config = Configuration.Default.WithDefaultLoader();
-            using var document = await BrowsingContext.New(config).OpenAsync(quoteHtmlPage);
-
-            var tickerName = document.QuerySelector("div.top > .left > .container > h1")
-                                     ?.TextContent;
-            
-            if (tickerName is null)
+            if (info?.Data is not { } d || d.SummaryData is not { } sd)
                 return default;
-            
-            var marketcap = document
-                            .QuerySelector("li > span > fin-streamer[data-field='marketCap']")
-                            ?.TextContent;
 
+            var closePrice = double.Parse(sd.PreviousClose.Value?.Substring(1) ?? "0",
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture);
 
-            var volume = document.QuerySelector("li > span > fin-streamer[data-field='regularMarketVolume']")
-                                 ?.TextContent;
-
-            var close = document.QuerySelector("li > span > fin-streamer[data-field='regularMarketPreviousClose']")
-                                ?.TextContent
-                        ?? "0";
-
-            var price = document.QuerySelector("fin-streamer.livePrice > span")
-                                ?.TextContent
-                        ?? "0";
+            var price = d.BidAsk.Bid.Value.IndexOf('*') is var idx and > 0
+                        && double.TryParse(d.BidAsk.Bid.Value.Substring(1, idx - 1),
+                            NumberStyles.Any,
+                            CultureInfo.InvariantCulture,
+                            out var bid)
+                ? bid
+                : double.NaN;
 
             return new()
             {
-                Name = tickerName,
-                Symbol = query,
-                Price = double.Parse(price, NumberStyles.Any, CultureInfo.InvariantCulture),
-                Close = double.Parse(close, NumberStyles.Any, CultureInfo.InvariantCulture),
-                MarketCap = marketcap,
-                DailyVolume = (long)double.Parse(volume ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture),
+                Name = query,
+                Symbol = info.Data.Symbol,
+                Price = price,
+                Close = closePrice,
+                MarketCap = sd.MarketCap.Value,
+                DailyVolume =
+                    (long)double.Parse(sd.AverageVolume.Value ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture),
             };
         }
         catch (Exception ex)
@@ -64,6 +69,36 @@ public sealed class DefaultStockDataService : IStockDataService, INService
             Log.Warning(ex, "Error getting stock data: {ErrorMessage}", ex.ToString());
             return default;
         }
+    }
+
+    private async Task<NasdaqDataResponse<T>?> GetNasdaqDataResponse<T>(string url)
+    {
+        using var httpClient = _httpClientFactory.CreateClient("google:search");
+
+        var req = new HttpRequestMessage(HttpMethod.Get,
+            url)
+        {
+            Headers =
+            {
+                { "Host", "api.nasdaq.com" },
+                { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0" },
+                { "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" },
+                { "Accept-Language", "en-US,en;q=0.5" },
+                { "Accept-Encoding", "gzip, deflate, br, zstd" },
+                { "Connection", "keep-alive" },
+                { "Upgrade-Insecure-Requests", "1" },
+                { "Sec-Fetch-Dest", "document" },
+                { "Sec-Fetch-Mode", "navigate" },
+                { "Sec-Fetch-Site", "none" },
+                { "Sec-Fetch-User", "?1" },
+                { "Priority", "u=0, i" },
+                { "TE", "trailers" }
+            }
+        };
+        var res = await httpClient.SendAsync(req);
+
+        var info = await res.Content.ReadFromJsonAsync<NasdaqDataResponse<T>>();
+        return info;
     }
 
     public async Task<IReadOnlyCollection<SymbolData>> SearchSymbolAsync(string query)
@@ -91,22 +126,37 @@ public sealed class DefaultStockDataService : IStockDataService, INService
                    .ToList();
     }
 
-    private static CsvConfiguration _csvConfig = new(CultureInfo.InvariantCulture);
+    private static TypedKey<IReadOnlyCollection<CandleData>> GetCandleDataKey(string query)
+        => new($"candledata:{query}");
 
     public async Task<IReadOnlyCollection<CandleData>> GetCandleDataAsync(string query)
+        => await _cache.GetOrAddAsync(GetCandleDataKey(query),
+               async () => await GetCandleDataInternalAsync(query),
+               expiry: TimeSpan.FromHours(4))
+           ?? [];
+
+    public async Task<IReadOnlyCollection<CandleData>> GetCandleDataInternalAsync(string query)
     {
         using var http = _httpClientFactory.CreateClient();
-        await using var resStream = await http.GetStreamAsync(
-            $"https://query1.finance.yahoo.com/v7/finance/download/{query}"
-            + $"?period1={DateTime.UtcNow.Subtract(30.Days()).ToTimestamp()}"
-            + $"&period2={DateTime.UtcNow.ToTimestamp()}"
-            + "&interval=1d");
 
-        using var textReader = new StreamReader(resStream);
-        using var csv = new CsvReader(textReader, _csvConfig);
-        var records = csv.GetRecords<YahooFinanceCandleData>().ToArray();
+        var now = DateTime.UtcNow;
+        var fromdate = now.Subtract(30.Days()).ToString("yyyy-MM-dd");
+        var todate = now.ToString("yyyy-MM-dd");
 
-        return records
-            .Map(static x => new CandleData(x.Open, x.Close, x.High, x.Low, x.Volume));
+        var res = await GetNasdaqDataResponse<NasdaqChartResponse>(
+            $"https://api.nasdaq.com/api/quote/{query}/chart?assetclass=stocks"
+            + $"&fromdate={fromdate}"
+            + $"&todate={todate}");
+
+        if (res?.Data?.Chart is not { } chart)
+            return Array.Empty<CandleData>();
+
+
+        return chart.Select(d => new CandleData(d.Z.Open,
+                        d.Z.Close,
+                        d.Z.High,
+                        d.Z.Low,
+                        (long)double.Parse(d.Z.Volume, NumberStyles.Any, CultureInfo.InvariantCulture)))
+                    .ToList();
     }
 }
