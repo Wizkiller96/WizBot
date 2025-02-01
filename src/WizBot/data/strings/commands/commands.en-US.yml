@@ -4524,6 +4524,13 @@ todoarchiveadd:
   params:
     - name:
         desc: "The name of the archive to be created."
+todoarchivedone:
+  desc: Creates a new archive with the specified name using only completed current todos.
+  ex:
+    - Success!
+  params:
+    - name:
+        desc: "The name of the archive to be created."
 todoarchivelist:
   desc: Lists all archived todo lists.
   ex:

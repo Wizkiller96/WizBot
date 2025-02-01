@@ -150,7 +150,26 @@ public partial class Utility
             [Cmd]
             public async Task TodoArchiveAdd([Leftover] string name)
             {
-                var result = await _service.ArchiveTodosAsync(ctx.User.Id, name);
+                var result = await _service.ArchiveTodosAsync(ctx.User.Id, name, false);
+                if (result == ArchiveTodoResult.NoTodos)
+                {
+                    await Response().Error(strs.todo_no_todos).SendAsync();
+                    return;
+                }
+
+                if (result == ArchiveTodoResult.MaxLimitReached)
+                {
+                    await Response().Error(strs.todo_archive_max_limit).SendAsync();
+                    return;
+                }
+
+                await ctx.OkAsync();
+            }
+            
+            [Cmd]
+            public async Task TodoArchiveDone([Leftover] string name)
+            {
+                var result = await _service.ArchiveTodosAsync(ctx.User.Id, name, true);
                 if (result == ArchiveTodoResult.NoTodos)
                 {
                     await Response().Error(strs.todo_no_todos).SendAsync();
@@ -193,7 +212,7 @@ public partial class Utility
 
                           foreach (var archivedList in items)
                           {
-                              eb.AddField($"id: {archivedList.Id.ToString()}", archivedList.Name, true);
+                              eb.AddField($"id: {new kwum(archivedList.Id)}", archivedList.Name, true);
                           }
 
                           return eb;
@@ -202,7 +221,7 @@ public partial class Utility
             }
 
             [Cmd]
-            public async Task TodoArchiveShow(int id)
+            public async Task TodoArchiveShow(kwum id)
             {
                 var list = await _service.GetArchivedTodoListAsync(ctx.User.Id, id);
                 if (list == null || list.Items.Count == 0)
@@ -234,7 +253,7 @@ public partial class Utility
             }
 
             [Cmd]
-            public async Task TodoArchiveDelete(int id)
+            public async Task TodoArchiveDelete(kwum id)
             {
                 if (!await _service.ArchiveDeleteAsync(ctx.User.Id, id))
                 {

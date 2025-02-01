@@ -1441,6 +1441,11 @@ todoarchivedelete:
   - del
   - remove
   - rm
+todoarchivedone:
+  - done
+  - compelete
+  - finish
+  - completed
 todoedit:
   - edit
   - change

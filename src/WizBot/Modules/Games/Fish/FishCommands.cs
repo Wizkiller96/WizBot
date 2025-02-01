@@ -33,9 +33,9 @@ public partial class Games
                         .File(stream, "timely.png");
 
 #if GLOBAL_WIZBOT
-                    if (_rng.Next(0, 5) == 0)
+                    if (_rng.Next(0, 8) == 0)
                         toSend = toSend
-                            .Confirm("[Sub on Patreon](https://patreon.com/WizNet) to remove captcha.");
+                            .Text("*[Sub on Patreon](https://patreon.com/WizNet) to remove captcha.*");
 #endif
                     var captcha = await toSend.SendAsync();
 

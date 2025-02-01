@@ -6,8 +6,8 @@ namespace WizBot.Modules.Utility;
 
 public sealed class TodoService : INService
 {
-    private const int ARCHIVE_MAX_COUNT = 9;
-    private const int TODO_MAX_COUNT = 27;
+    private const int ARCHIVE_MAX_COUNT = 18;
+    private const int TODO_MAX_COUNT = 36;
 
     private readonly DbService _db;
 
@@ -111,7 +111,7 @@ public sealed class TodoService : INService
               .DeleteAsync();
     }
 
-    public async Task<ArchiveTodoResult> ArchiveTodosAsync(ulong userId, string name)
+    public async Task<ArchiveTodoResult> ArchiveTodosAsync(ulong userId, string name, bool onlyDone)
     {
         // create a new archive
 
@@ -140,7 +140,7 @@ public sealed class TodoService : INService
 
         var updated = await ctx
                             .GetTable<TodoModel>()
-                            .Where(x => x.UserId == userId && x.ArchiveId == null)
+                            .Where(x => x.UserId == userId && (!onlyDone || x.IsDone) && x.ArchiveId == null)
                             .Set(x => x.ArchiveId, inserted.Id)
                             .UpdateAsync();
 
@@ -204,4 +204,5 @@ public sealed class TodoService : INService
                      .Where(x => x.UserId == userId && x.Id == todoId)
                      .FirstOrDefaultAsyncLinqToDB();
     }
+    
 }
