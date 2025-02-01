@@ -183,7 +183,7 @@ public partial class Utility
         {
             var time = DateTime.UtcNow + ts;
 
-            if (ts > TimeSpan.FromDays(60))
+            if (ts > TimeSpan.FromDays(366))
                 return false;
 
             if (ctx.Guild is not null)
