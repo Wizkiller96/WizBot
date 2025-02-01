@@ -2,6 +2,25 @@
 
 Mostly based on [keepachangelog](https://keepachangelog.com/en/1.0.0/) except date format. a-c-f-r-o
 
+## [5.3.9] - 01.02.2025
+
+## Added
+
+- Added `.todo archive done <name>`
+  - Creates an archive of only currently completed todos
+  - An alternative to ".todo archive add <name>" which moves all todos to an archive
+
+## Changed
+
+- Increased todo and archive limits slightly
+- Global wizbot captcha patron ad will show 12.5% of the time now, down from 20%, and be smaller
+- `.remind` now has a 1 year max timeout, up from 2 months
+
+## Fixed
+
+- Captcha is now slightly bigger, with larger margin, to mitigate phone edge issues
+- Fixed `.stock` command, unless there is some ip blocking going on
+
 ## [5.3.8] - 27.01.2025
 
 ## Fixed
