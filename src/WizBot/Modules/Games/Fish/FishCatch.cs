@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace WizBot.Modules.Games;
 
 public sealed class FishCatch
+
 {
     [Key]
     public int Id { get; set; }

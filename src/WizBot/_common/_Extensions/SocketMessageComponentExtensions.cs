@@ -30,4 +30,5 @@ public static class SocketMessageComponentExtensions
         string text,
         bool ephemeral = false)
         => smc.RespondAsync(sender, text, MsgType.Ok, ephemeral);
+    
 }

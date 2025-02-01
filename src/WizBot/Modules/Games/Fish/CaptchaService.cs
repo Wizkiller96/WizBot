@@ -52,7 +52,7 @@ public sealed class CaptchaService(FontProvider fonts, IBotCache cache, IPatrona
 
     public string GeneratePassword()
     {
-        var num = _rng.Next((int)Math.Pow(31, 2), (int)Math.Pow(32, 3));
+        var num = _rng.Next((int)Math.Pow(32, 2) + 1, (int)Math.Pow(32, 3));
         return new kwum(num).ToString();
     }
 

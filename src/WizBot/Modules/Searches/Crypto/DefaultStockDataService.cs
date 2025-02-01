@@ -35,29 +35,29 @@ public sealed class DefaultStockDataService : IStockDataService, INService
             if (!query.IsAlphaNumeric())
                 return default;
 
-            var info = await GetNasdaqDataResponse<NasdaqSummaryResponse>(
+            var sum = await GetNasdaqDataResponse<NasdaqSummaryResponse>(
                 $"https://api.nasdaq.com/api/quote/{query}/summary?assetclass=stocks");
 
-            if (info?.Data is not { } d || d.SummaryData is not { } sd)
+            if (sum?.Data is not { } d || d.SummaryData is not { } sd)
                 return default;
 
             var closePrice = double.Parse(sd.PreviousClose.Value?.Substring(1) ?? "0",
                 NumberStyles.Any,
                 CultureInfo.InvariantCulture);
 
-            var price = d.BidAsk.Bid.Value.IndexOf('*') is var idx and > 0
-                        && double.TryParse(d.BidAsk.Bid.Value.Substring(1, idx - 1),
-                            NumberStyles.Any,
-                            CultureInfo.InvariantCulture,
-                            out var bid)
-                ? bid
-                : double.NaN;
+            var info = await GetNasdaqDataResponse<NasdaqInfoResponse>(
+                $"https://api.nasdaq.com/api/quote/{query}/info?assetclass=stocks");
+
+            if (info?.Data?.PrimaryData is not { } pd)
+                return default;
+            
+            var priceStr = pd.LastSalePrice;
 
             return new()
             {
-                Name = query,
-                Symbol = info.Data.Symbol,
-                Price = price,
+                Name = info.Data.CompanyName,
+                Symbol = sum.Data.Symbol,
+                Price = double.Parse(priceStr?.Substring(1) ?? "0", NumberStyles.Any, CultureInfo.InvariantCulture),
                 Close = closePrice,
                 MarketCap = sd.MarketCap.Value,
                 DailyVolume =
