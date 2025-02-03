@@ -4134,7 +4134,11 @@ edit:
       text:
         desc: "The new text content of the edited message."
 delete:
-  desc: Deletes a single message given the channel and message ID. If channel is ommited, message will be searched for in the current channel. You can also specify time parameter after which the message will be deleted (up to 7 days). This timer won't persist through bot restarts.
+  desc: |-
+    Deletes a single message given the channel and message ID, or a message link.
+    If channel is omitted, message will be searched for in the current channel.
+    You can also specify time parameter after which the message will be deleted (up to 7 days).
+    This timer won't persist through bot restarts.
   ex:
     - '#chat 771562360594628608'
     - 771562360594628608
@@ -4142,6 +4146,10 @@ delete:
   params:
     - messageId:
         desc: "The id of a specific message within a channel, used to target the deletion operation."
+      time:
+        desc: "The duration after which the message should be automatically deleted."
+    - messageLink:
+        desc: "The link of the message to delete. It must be on the same server."
       time:
         desc: "The duration after which the message should be automatically deleted."
     - channel:

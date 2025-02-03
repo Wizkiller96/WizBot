@@ -54,7 +54,7 @@ public partial class Administration : WizBotModule<AdministrationService>
         else
             await Response().Pending(strs.imageonly_disable).SendAsync();
     }
-    
+
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPerm.Administrator)]
@@ -97,9 +97,9 @@ public partial class Administration : WizBotModule<AdministrationService>
         var (enabled, channels) = _service.GetDelMsgOnCmdData(ctx.Guild.Id);
 
         var embed = CreateEmbed()
-                       .WithOkColor()
-                       .WithTitle(GetText(strs.server_delmsgoncmd))
-                       .WithDescription(enabled ? "✅" : "❌");
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.server_delmsgoncmd))
+                    .WithDescription(enabled ? "✅" : "❌");
 
         var str = string.Join("\n",
             channels.Select(x =>
@@ -221,7 +221,7 @@ public partial class Administration : WizBotModule<AdministrationService>
     [BotPerm(GuildPerm.ManageChannels)]
     public async Task CreaTxtChanl([Leftover] string channelName)
     {
-        var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName); 
+        var txtCh = await ctx.Guild.CreateTextChannelAsync(channelName);
         await Response().Confirm(strs.createtextchan(Format.Bold(txtCh.Name))).SendAsync();
     }
 
@@ -303,6 +303,16 @@ public partial class Administration : WizBotModule<AdministrationService>
 
     [Cmd]
     [RequireContext(ContextType.Guild)]
+    public async Task Delete(MessageLink messageLink, ParsedTimespan timespan = null)
+    {
+        if (messageLink.Channel is not ITextChannel tc)
+            return;
+
+        await Delete(tc, messageLink.Message.Id, timespan);
+    }
+
+    [Cmd]
+    [RequireContext(ContextType.Guild)]
     public async Task Delete(ITextChannel channel, ulong messageId, ParsedTimespan timespan = null)
         => await InternalMessageAction(channel, messageId, timespan, msg => msg.DeleteAsync());
 
@@ -360,11 +370,11 @@ public partial class Administration : WizBotModule<AdministrationService>
     {
         if (ctx.Channel is not SocketTextChannel stc)
             return;
-        
+
         await stc.CreateThreadAsync(name, message: ctx.Message.ReferencedMessage);
         await ctx.OkAsync();
     }
-    
+
     [Cmd]
     [BotPerm(ChannelPermission.ManageThreads)]
     [UserPerm(ChannelPermission.ManageThreads)]
@@ -373,14 +383,15 @@ public partial class Administration : WizBotModule<AdministrationService>
         if (ctx.Channel is not SocketTextChannel stc)
             return;
 
-        var t = stc.Threads.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
+        var t = stc.Threads.FirstOrDefault(
+            x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
 
         if (t is null)
         {
             await Response().Error(strs.not_found).SendAsync();
             return;
         }
-        
+
         await t.DeleteAsync();
         await ctx.OkAsync();
     }
@@ -406,7 +417,7 @@ public partial class Administration : WizBotModule<AdministrationService>
             await Response().Confirm(strs.autopublish_disable).SendAsync();
         }
     }
-    
+
     [Cmd]
     [UserPerm(GuildPerm.ManageNicknames)]
     [BotPerm(GuildPerm.ChangeNickname)]
@@ -450,7 +461,8 @@ public partial class Administration : WizBotModule<AdministrationService>
     public async Task SetServerBanner([Leftover] string img = null)
     {
         // Tier2 or higher is required to set a banner.
-        if (ctx.Guild.PremiumTier is PremiumTier.Tier1 or PremiumTier.None) return;
+        if (ctx.Guild.PremiumTier is PremiumTier.Tier1 or PremiumTier.None)
+            return;
         
         var result = await _service.SetServerBannerAsync(ctx.Guild, img);
 
@@ -472,7 +484,7 @@ public partial class Administration : WizBotModule<AdministrationService>
                 throw new ArgumentOutOfRangeException();
         }
     }
-    
+
     [Cmd]
     [RequireContext(ContextType.Guild)]
     [UserPerm(GuildPermission.ManageGuild)]
