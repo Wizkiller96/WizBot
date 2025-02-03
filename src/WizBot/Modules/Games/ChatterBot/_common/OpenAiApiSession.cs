@@ -111,8 +111,20 @@ public partial class OpenAiApiSession : IChatterBotSession
             });
 
         var dataString = await data.Content.ReadAsStringAsync();
+        
         try
         {
+            data.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to get response from OpenAI: {Message}", ex.Message);
+            return new Error<string>("Failed to get response from OpenAI");
+        }
+
+        try
+        {
+            
             var response = JsonConvert.DeserializeObject<OpenAiCompletionResponse>(dataString);
 
             // Log.Information("Received response: {Response} ", dataString);
