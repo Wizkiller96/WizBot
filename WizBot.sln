@@ -12,8 +12,6 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 	.gitlab-ci.yml = .gitlab-ci.yml
 	Dockerfile = Dockerfile
-	migrate.ps1 = migrate.ps1
-	remove-migration.ps1 = remove-migration.ps1
 EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WizBot", "src\WizBot\WizBot.csproj", "{45EC1473-C678-4857-A544-07DFE0D0B478}"
