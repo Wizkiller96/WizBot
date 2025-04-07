@@ -551,27 +551,14 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
         return false;
     }
 
-    public async Task<int> AddXpToUsersAsync(ulong guildId, long amount, params ulong[] userIds)
+    public Task AddXpAsync(ulong channelId, long amount, params IGuildUser[] users)
     {
-        await using var ctx = _db.GetDbContext();
-        return await ctx.GetTable<UserXpStats>()
-            .Where(x => x.GuildId == guildId && userIds.Contains(x.UserId))
-            .UpdateAsync(old => new()
-            {
-                Xp = old.Xp + amount
-            });
+        foreach(var user in users)
+            _usersBatch.Add(new(user, amount, channelId));
+        
+        return Task.CompletedTask;
     }
-
-    public async Task AddXpAsync(ulong userId, ulong guildId, int amount)
-    {
-        await using var uow = _db.GetDbContext();
-        var usr = uow.GetOrCreateUserXpStats(guildId, userId);
-
-        usr.Xp += amount;
-
-        await uow.SaveChangesAsync();
-    }
-
+    
     private Task<bool> TryAddUserGainedXpAsync(ulong userId, float cdInMinutes)
     {
         if (cdInMinutes <= float.Epsilon)
