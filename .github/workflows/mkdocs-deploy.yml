@@ -1,4 +1,4 @@
-name: Deploy NadekoBot Docs
+name: Deploy WizBot Docs
 
 on:
   push:

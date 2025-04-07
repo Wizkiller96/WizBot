@@ -1,0 +1,34 @@
+# DO NOT CHANGE
+version: 10
+coins:
+  heads:
+    - https://cdn.wizbot.cc/coins/heads3.png
+  tails:
+    - https://cdn.wizbot.cc/coins/tails3.png
+currency:
+  - https://cdn.wizbot.cc/other/currency/0.jpg
+  - https://cdn.wizbot.cc/other/currency/1.jpg
+  - https://cdn.wizbot.cc/other/currency/2.jpg
+dice:
+  - https://cdn.wizbot.cc/other/dice/0.png
+  - https://cdn.wizbot.cc/other/dice/1.png
+  - https://cdn.wizbot.cc/other/dice/2.png
+  - https://cdn.wizbot.cc/other/dice/3.png
+  - https://cdn.wizbot.cc/other/dice/4.png
+  - https://cdn.wizbot.cc/other/dice/5.png
+  - https://cdn.wizbot.cc/other/dice/6.png
+  - https://cdn.wizbot.cc/other/dice/7.png
+  - https://cdn.wizbot.cc/other/dice/8.png
+  - https://cdn.wizbot.cc/other/dice/9.png
+xp:
+  bg: https://cdn.wizbot.cc/other/xp/bg6_mini.png
+slots:
+  emojis:
+    - https://cdn.wizbot.cc/slots/10.png
+    - https://cdn.wizbot.cc/slots/11.png
+    - https://cdn.wizbot.cc/slots/12.png
+    - https://cdn.wizbot.cc/slots/13.png
+    - https://cdn.wizbot.cc/slots/14.png
+    - https://cdn.wizbot.cc/slots/15.png
+    - https://cdn.wizbot.cc/slots/16.png
+  bg: https://cdn.wizbot.cc/slots/slots_bg.png

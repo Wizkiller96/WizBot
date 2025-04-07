@@ -1,4 +1,4 @@
-# NadekoBot Desktop Guide (via Upeko)
+# WizBot Desktop Guide (via Upeko)
 
 ### Supported Operating Systems
 
@@ -13,7 +13,7 @@
 
 ## Setup
 
-1. Download and run the [upeko](https://github.com/nadeko-bot/upeko/releases/latest).
+1. Download and run the [WizBot Updater](https://github.com/Wizkiller96/WizBot/releases/latest).
 
     ![Create a new bot](../assets/upeko-1.png "Create a new bot")
 
@@ -35,15 +35,15 @@
     - **`2`** simply opens your bot's data folder.
 7. Paste in your **BOT TOKEN** previously obtained
 
-## Starting NadekoBot
+## Starting WizBot
 
 - Either click on **`RUN`** button in the updater or run the bot via its desktop shortcut.
 
-## Updating NadekoBot
+## Updating WizBot
 
 !!! warning "IMPORTANT"
 
-    - Make sure Nadeko is closed and not running
+    - Make sure WizBot is closed and not running
         - Run `.die` in a connected server to make sure.
     - Make sure you don't have `data` folder, bot folder, or any other bot file open in any program, as the updater will fail to replace your version
 

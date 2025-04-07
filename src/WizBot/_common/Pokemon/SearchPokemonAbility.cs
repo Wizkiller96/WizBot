@@ -1,0 +1,10 @@
+#nullable disable
+namespace WizBot.Common.Pokemon;
+
+public class SearchPokemonAbility
+{
+    public string Desc { get; set; }
+    public string ShortDesc { get; set; }
+    public string Name { get; set; }
+    public float Rating { get; set; }
+}

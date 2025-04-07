@@ -247,7 +247,7 @@
 ### Changed
 
 - Increased todo and archive limits slightly
-- Global nadeko captcha patron ad will show 12.5% of the time now, down from 20%, and be smaller 
+- Global Wiz captcha patron ad will show 12.5% of the time now, down from 20%, and be smaller 
 - `.remind` now has a 1 year max timeout, up from 2 months
 
 ### Fixed
@@ -447,7 +447,7 @@
 
 - Self Assigned Roles reworked! Use `.h .sar` for the list of commands
     - `.sar autodel`
-        - Toggles the automatic deletion of the user's message and Nadeko's confirmations for .iam and .iamn commands.
+        - Toggles the automatic deletion of the user's message and Wiz's confirmations for .iam and .iamn commands.
     - `.sar ad`
         - Adds a role to the list of self-assignable roles. You can also specify a group.
         - If 'Exclusive self-assignable roles' feature is enabled (.sar exclusive), users will be able to pick one role
@@ -830,12 +830,12 @@
 ### Added
 
 - Added `.prompt` command, Nadeko Ai Assistant
-    - You can send natural language questions, queries or execute commands. For example "@Nadeko how's the weather in
+    - You can send natural language questions, queries or execute commands. For example "@Wiz how's the weather in
       paris" and it will return `.we Paris` and run it for you.
     - In case the bot can't execute a command using your query, It will fall back to your chatter bot, in case you have
       it enabled in data/games.yml. (Cleverbot or chatgpt)
     - (It's far from perfect so please don't ask the bot to do dangerous things like banning or pruning)
-    - Requires Patreon subscription, after which you'll be able to run it on global @Nadeko bot.
+    - Requires Patreon subscription, after which you'll be able to run it on global @Wiz bot.
         - Selfhosters: If you're selfhosting, you also will need to acquire the api key
           from <https://dashy.nadeko.bot/me> after pledging on patreon and put it in nadekoAiToken in creds.yml
 - Added support for `gpt-4o` in `data/games.yml`
@@ -954,7 +954,7 @@
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
     - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
-    - You can set whether nadeko ignores other bots in `bot.yml`
+    - You can set whether Wiz ignores other bots in `bot.yml`
     - You can set shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
 - Added seconds/sec/s to `.convert` command

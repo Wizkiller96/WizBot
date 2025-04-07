@@ -2,7 +2,7 @@
 
 ## Getting started
 
-This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/nadeko/example_medusa)
+This section will guide you through how to create a simple custom medusa. You can find the entirety of this code hosted [here](https://gitlab.com/WizNet/example_medusa)
 
 ## Prerequisite
 
@@ -17,22 +17,22 @@ This section will guide you through how to create a simple custom medusa. You ca
     - `mkdir example_medusa `
     - `cd example_medusa`
 
-- Install nadeko-medusa template
-    - `dotnet new install nadeko-medusa`
+- Install wiz-medusa template
+    - `dotnet new install wiz-medusa`
 
-- Make a new Nadeko Medusa project
-    - `dotnet new nadeko-medusa`
+- Make a new Wiz Medusa project
+    - `dotnet new wiz-medusa`
 
 ## Build it
 
-- Build your Medusa into a dll that Nadeko can load. In your terminal, type:
+- Build your Medusa into a dll that Wiz can load. In your terminal, type:
     - `dotnet publish -o bin/medusae/example_medusa /p:DebugType=embedded`
 
 - Done. You can now try it out in action.
 
 ## Try it out
 
-- Copy the `bin/medusae/example_medusa` folder into your NadekoBot's `data/medusae/` folder. (Nadeko version 4.1.0+)
+- Copy the `bin/medusae/example_medusa` folder into your WizBot's `data/medusae/` folder. (WizBot version 4.1.0+)
 
 - Load it with `.meload example_medusa`
 
@@ -54,9 +54,9 @@ This section will guide you through how to create a simple custom medusa. You ca
 
 Medusa system allows you to write independent medusae (known as "modules", "cogs" or "plugins" in other software) which you can then load, unload and update at will without restarting the bot.
 
-The system itself borrows some design from the current way Nadeko's Modules are written but mostly from never-released `Ayu.Commands` system which was designed to be used for a full Nadeko v3 rewrite.
+The system itself borrows some design from the current way Wiz's Modules are written but mostly from never-released `Ayu.Commands` system which was designed to be used for a full WizBot v3 rewrite.
 
-The medusa base classes used for development are open source [here](https://github.com/nadeko-bot/nadekobot/tree/v6/src/Nadeko.Medusa) in case you need reference, as there is no generated documentation at the moment.
+The medusa base classes used for development are open source [here](https://github.com/Wizkiller96/WizBot/tree/v6/src/Wiz.Medusa) in case you need reference, as there is no generated documentation at the moment.
 
 ## Term list
 
@@ -66,7 +66,7 @@ The medusa base classes used for development are open source [here](https://gith
 
 ### Snek
 
-- A class which will be added as a single Module to NadekoBot on load. It also acts as a [lifecycle handler](snek-lifecycle.md) and as a singleton service with the support for initialize and cleanup.
+- A class which will be added as a single Module to WizBot on load. It also acts as a [lifecycle handler](snek-lifecycle.md) and as a singleton service with the support for initialize and cleanup.
 - It can contain a Snek (called SubSnek) but only 1 level of nesting is supported (you can only have a snek contain a subsnek, but a subsnek can't contain any other sneks)
 - Sneks can have their own prefix
     - For example if you set this to 'test' then a command called 'cmd' will have to be invoked by using `.test cmd` instead of `.cmd`
@@ -149,7 +149,7 @@ If you update your response strings .yml file(s) while the medusa is loaded and 
 
 ### Bot medusa config file
 
-- Medusa config is kept in `data/medusae/medusa.yml` file in NadekoBot installation folder
+- Medusa config is kept in `data/medusae/medusa.yml` file in WizBot installation folder
 - At the moment this config only keeps track of which medusae are currently loaded (they will also be always loaded at startup)
 - If a medusa is causing issues and you're unable to unload it, you can remove it from the `loaded:` list in this config file and restart the bot. It won't be loaded next time the bot is started up
 

@@ -17,5 +17,5 @@ echo "Yt-dlp update"
 # TODO: Update yt-dlp. It should not crash the entrypoint if ca-certificates is not installed
 # yt-dlp -U
 
-echo "Running NadekoBot"
+echo "Running WizBot"
 exec "$@"

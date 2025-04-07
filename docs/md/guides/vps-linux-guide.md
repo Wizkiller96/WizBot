@@ -1,6 +1,6 @@
-## Setting up Nadeko on a Linux VPS (Digital Ocean Droplet)
+## Setting up WizBot on a Linux VPS (Digital Ocean Droplet)
 
-If you want Nadeko to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try Nadeko on Linux Digital Ocean Droplet using the link [DigitalOcean](http://m.do.co/c/46b4d3d44795/) (by using this link, you will get **$10 credit** and also support Nadeko)
+If you want WizBot to play music for you 24/7 without having to hosting it on your PC and want to keep it cheap, reliable and convenient as possible, you can try WizBot on Linux Digital Ocean Droplet using the link [DigitalOcean](https://m.do.co/c/7290047d0c84) (by using this link, you will get **$10 credit** and also support WizBot)
 
 To set up the VPS, please select the options below
 ```
@@ -24,10 +24,10 @@ Authentication: Password or SSH
 (Select SSH if you know what you are doing, otherwise choose password)
 Click create droplet
 ```
-**Setting up NadekoBot**
+**Setting up WizBot**
 Assuming you have followed the link above to setup an account and a Droplet with a 64-bit operational system on Digital Ocean and got the `IP address and root password (in your e-mail)` to login, it's time to get started.
 
-**This section is only relevant to those who want to host Nadeko on DigitalOcean. Go through this whole section before setting the bot up.**
+**This section is only relevant to those who want to host WizBot on DigitalOcean. Go through this whole section before setting the bot up.**
 
 ### Prerequisites
 
@@ -51,4 +51,4 @@ If you are running your droplet for the first time, it will most likely ask you 
 
 After that, your droplet should be ready for use.
 
-[Setting up Nadeko on a VPS (Digital Ocean)]: #setting-up-nadeko-on-a-linux-vps-digital-ocean-droplet
+[Setting up WizBot on a VPS (Digital Ocean)]: #setting-up-wizbot-on-a-linux-vps-digital-ocean-droplet

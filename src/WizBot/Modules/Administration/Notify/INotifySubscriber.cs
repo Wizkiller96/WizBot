@@ -1,0 +1,19 @@
+﻿using WizBot.Db.Models;
+
+namespace WizBot.Modules.Administration;
+
+public interface INotifySubscriber
+{
+    Task NotifyAsync<T>(T data, bool isShardLocal = false)
+        where T : struct, INotifyModel<T>;
+
+    void RegisterModel<T>()
+        where T : struct, INotifyModel<T>;
+
+    NotifyModelData GetRegisteredModel(NotifyType nType);
+}
+
+public readonly record struct NotifyModelData(
+    NotifyType Type,
+    bool SupportsOriginTarget,
+    IReadOnlyList<string> Replacements);

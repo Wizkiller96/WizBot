@@ -3,25 +3,25 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
 # Copy the .csproj files for each project
-COPY src/Nadeko.Medusa/*.csproj src/Nadeko.Medusa/
-COPY src/NadekoBot/*.csproj src/NadekoBot/
-COPY src/NadekoBot.Coordinator/*.csproj src/NadekoBot.Coordinator/
-COPY src/NadekoBot.Generators/*.csproj src/NadekoBot.Generators/
-COPY src/NadekoBot.Voice/*.csproj src/NadekoBot.Voice/
-COPY src/NadekoBot.GrpcApiBase/*.csproj src/NadekoBot.GrpcApiBase/
+COPY src/Wiz.Medusa/*.csproj src/Wiz.Medusa/
+COPY src/WizBot/*.csproj src/WizBot/
+COPY src/WizBot.Coordinator/*.csproj src/WizBot.Coordinator/
+COPY src/WizBot.Generators/*.csproj src/WizBot.Generators/
+COPY src/WizBot.Voice/*.csproj src/WizBot.Voice/
+COPY src/WizBot.GrpcApiBase/*.csproj src/WizBot.GrpcApiBase/
 
-# Restore the dependencies for the NadekoBot project
-RUN dotnet restore src/NadekoBot/ -r linux-musl-x64
+# Restore the dependencies for the WizBot project
+RUN dotnet restore src/WizBot/ -r linux-musl-x64
 
 # Copy the rest of the source code
 COPY . .
 
-WORKDIR /source/src/NadekoBot
+WORKDIR /source/src/WizBot
 
 # Build for linux-musl-x64 runtime as the image is based on alpine
 RUN dotnet publish -c Release -o /app --self-contained -r linux-musl-x64 --no-restore \
     && mv /app/data /app/data_init \
-    && chmod +x /app/NadekoBot
+    && chmod +x /app/WizBot
 
 # Final stage
 FROM alpine:3.20
@@ -46,4 +46,4 @@ RUN rm /app/data_init/lib/libsodium.so \
 VOLUME [ "/app/data" ]
 
 ENTRYPOINT [ "/usr/local/sbin/docker-entrypoint.sh" ]
-CMD [ "./NadekoBot" ]
+CMD [ "./WizBot" ]

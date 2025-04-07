@@ -1,18 +1,18 @@
 #Manually added files
 
-src/NadekoBot/data/last_known_version.txt
+src/WizBot/data/last_known_version.txt
 
 # medusa stuff
-src/NadekoBot/data/medusae/
+src/WizBot/data/medusae/
 
 # other
 
 output/
-src/NadekoBot/output
-src/NadekoBot/creds.yml
-src/NadekoBot/data/creds.yml
-src/NadekoBot/Command Errors*.txt
-src/NadekoBot/data/NadekoBot.db*
+src/WizBot/output
+src/WizBot/creds.yml
+src/WizBot/data/creds.yml
+src/WizBot/Command Errors*.txt
+src/WizBot/data/WizBot.db*
 
 # Created by https://www.gitignore.io/api/visualstudio,visualstudiocode,windows,linux,macos
 
