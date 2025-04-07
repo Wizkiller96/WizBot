@@ -2,6 +2,13 @@
 
 *a,c,f,r,o*
 
+## [6.1.5] - 06.04.2025
+
+### Fixed
+
+- `.xpadd` will finally apply rewards and trigger notifications
+- Fixed `.hangman` dislocation
+
 ## [6.1.4] - 04.04.2025
 
 ### Fixed
