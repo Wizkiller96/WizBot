@@ -5,24 +5,15 @@ using WizBot.Db.Models;
 namespace WizBot.Modules.WizExpressions;
 
 [Name("Expressions")]
-public partial class WizExpressions : WizModule<WizExpressionsService>
+public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFactory) : WizModule<WizExpressionsService>
 {
     public enum All
     {
         All
     }
 
-    private readonly IBotCreds _creds;
-    private readonly IHttpClientFactory _clientFactory;
-
-    public WizExpressions(IBotCreds creds, IHttpClientFactory clientFactory)
-    {
-        _creds = creds;
-        _clientFactory = clientFactory;
-    }
-
     private bool AdminInGuildOrOwnerInDm()
-        => (ctx.Guild is null && _creds.IsOwner(ctx.User))
+        => (ctx.Guild is null && creds.IsOwner(ctx.User))
            || (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
 
     private async Task ExprAddInternalAsync(string key, string message)
@@ -122,7 +113,7 @@ public partial class WizExpressions : WizModule<WizExpressionsService>
 
     private bool IsValidExprEditor()
         => (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator)
-           || (ctx.Guild is null && _creds.IsOwner(ctx.User));
+           || (ctx.Guild is null && creds.IsOwner(ctx.User));
 
     [Cmd]
     [Priority(1)]
@@ -424,7 +415,7 @@ public partial class WizExpressions : WizModule<WizExpressionsService>
                 return;
             }
 
-            using var client = _clientFactory.CreateClient();
+            using var client = clientFactory.CreateClient();
             input = await client.GetStringAsync(attachment.Url);
 
             if (string.IsNullOrWhiteSpace(input))
