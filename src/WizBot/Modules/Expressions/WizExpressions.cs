@@ -5,13 +5,9 @@ using WizBot.Db.Models;
 namespace WizBot.Modules.WizExpressions;
 
 [Name("Expressions")]
-public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFactory) : WizModule<WizExpressionsService>
+public sealed class WizExpressions(IBotCreds creds, IHttpClientFactory clientFactory)
+    : WizModule<WizExpressionsService>
 {
-    public enum All
-    {
-        All
-    }
-
     private bool AdminInGuildOrOwnerInDm()
         => (ctx.Guild is null && creds.IsOwner(ctx.User))
            || (ctx.Guild is not null && ((IGuildUser)ctx.User).GuildPermissions.Administrator);
@@ -26,14 +22,14 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         var ex = await _service.AddAsync(ctx.Guild?.Id, key, message);
 
         await Response()
-              .Embed(CreateEmbed()
-                            .WithOkColor()
-                            .WithTitle(GetText(strs.expr_new))
-                            .WithDescription($"#{new kwum(ex.Id)}")
-                            .AddField(GetText(strs.trigger), key)
-                            .AddField(GetText(strs.response),
-                                message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
-              .SendAsync();
+            .Embed(CreateEmbed()
+                .WithOkColor()
+                .WithTitle(GetText(strs.expr_new))
+                .WithDescription($"#{new kwum(ex.Id)}")
+                .AddField(GetText(strs.trigger), key)
+                .AddField(GetText(strs.response),
+                    message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
+            .SendAsync();
     }
 
     [Cmd]
@@ -96,14 +92,14 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         if (ex is not null)
         {
             await Response()
-                  .Embed(CreateEmbed()
-                                .WithOkColor()
-                                .WithTitle(GetText(strs.expr_edited))
-                                .WithDescription($"#{id}")
-                                .AddField(GetText(strs.trigger), ex.Trigger)
-                                .AddField(GetText(strs.response),
-                                    message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
-                  .SendAsync();
+                .Embed(CreateEmbed()
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.expr_edited))
+                    .WithDescription($"#{id}")
+                    .AddField(GetText(strs.trigger), ex.Trigger)
+                    .AddField(GetText(strs.response),
+                        message.Length > 1024 ? GetText(strs.redacted_too_long) : message))
+                .SendAsync();
         }
         else
         {
@@ -125,8 +121,8 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         }
 
         var allExpressions = _service.GetExpressionsFor(ctx.Guild?.Id)
-                                     .OrderBy(x => x.Trigger)
-                                     .ToArray();
+            .OrderBy(x => x.Trigger)
+            .ToArray();
 
         if (!allExpressions.Any())
         {
@@ -135,25 +131,25 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         }
 
         await Response()
-              .Paginated()
-              .Items(allExpressions)
-              .PageSize(20)
-              .CurrentPage(page)
-              .Page((exprs, _) =>
-              {
-                  var desc = exprs
-                             .Select(ex => $"{(ex.ContainsAnywhere ? "🗯" : "◾")}"
-                                           + $"{(ex.DmResponse ? "✉" : "◾")}"
-                                           + $"{(ex.AutoDeleteTrigger ? "❌" : "◾")}"
-                                           + $"`{(kwum)ex.Id}` {ex.Trigger}"
-                                           + (string.IsNullOrWhiteSpace(ex.Reactions)
-                                               ? string.Empty
-                                               : " // " + string.Join(" ", ex.GetReactions())))
-                             .Join('\n');
+            .Paginated()
+            .Items(allExpressions)
+            .PageSize(20)
+            .CurrentPage(page)
+            .Page((exprs, _) =>
+            {
+                var desc = exprs
+                    .Select(ex => $"{(ex.ContainsAnywhere ? "🗯" : "◾")}"
+                                  + $"{(ex.DmResponse ? "✉" : "◾")}"
+                                  + $"{(ex.AutoDeleteTrigger ? "❌" : "◾")}"
+                                  + $"`{(kwum)ex.Id}` {ex.Trigger}"
+                                  + (string.IsNullOrWhiteSpace(ex.Reactions)
+                                      ? string.Empty
+                                      : " // " + string.Join(" ", ex.GetReactions())))
+                    .Join('\n');
 
-                  return CreateEmbed().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
-              })
-              .SendAsync();
+                return CreateEmbed().WithOkColor().WithTitle(GetText(strs.expressions)).WithDescription(desc);
+            })
+            .SendAsync();
     }
 
     [Cmd]
@@ -170,27 +166,27 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         var inter = CreateEditInteraction(id, found);
 
         await Response()
-              .Interaction(IsValidExprEditor() ? inter : null)
-              .Embed(CreateEmbed()
-                            .WithOkColor()
-                            .WithDescription($"#{id}")
-                            .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
-                            .AddField(GetText(strs.response),
-                                found.Response.TrimTo(1000).Replace("](", "]\\(")))
-              .SendAsync();
+            .Interaction(IsValidExprEditor() ? inter : null)
+            .Embed(CreateEmbed()
+                .WithOkColor()
+                .WithDescription($"#{id}")
+                .AddField(GetText(strs.trigger), found.Trigger.TrimTo(1024))
+                .AddField(GetText(strs.response),
+                    found.Response.TrimTo(1000).Replace("](", "]\\(")))
+            .SendAsync();
     }
 
     private WizInteractionBase CreateEditInteraction(kwum id, WizExpression found)
     {
         var modal = new ModalBuilder()
-                    .WithCustomId("expr:edit_modal")
-                    .WithTitle($"Edit expression {id}")
-                    .AddTextInput(new TextInputBuilder()
-                                  .WithLabel(GetText(strs.response))
-                                  .WithValue(found.Response)
-                                  .WithMinLength(1)
-                                  .WithCustomId("expr:edit_modal:response")
-                                  .WithStyle(TextInputStyle.Paragraph));
+            .WithCustomId("expr:edit_modal")
+            .WithTitle($"Edit expression {id}")
+            .AddTextInput(new TextInputBuilder()
+                .WithLabel(GetText(strs.response))
+                .WithValue(found.Response)
+                .WithMinLength(1)
+                .WithCustomId("expr:edit_modal:response")
+                .WithStyle(TextInputStyle.Paragraph));
 
         var inter = _inter.Create(ctx.User.Id,
             new ButtonBuilder()
@@ -216,13 +212,13 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         if (ex is not null)
         {
             await Response()
-                  .Embed(CreateEmbed()
-                                .WithOkColor()
-                                .WithTitle(GetText(strs.expr_deleted))
-                                .WithDescription($"#{id}")
-                                .AddField(GetText(strs.trigger), ex.Trigger.TrimTo(1024))
-                                .AddField(GetText(strs.response), ex.Response.TrimTo(1024)))
-                  .SendAsync();
+                .Embed(CreateEmbed()
+                    .WithOkColor()
+                    .WithTitle(GetText(strs.expr_deleted))
+                    .WithDescription($"#{id}")
+                    .AddField(GetText(strs.trigger), ex.Trigger.TrimTo(1024))
+                    .AddField(GetText(strs.response), ex.Response.TrimTo(1024)))
+                .SendAsync();
         }
         else
         {
@@ -288,7 +284,9 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
                     break;
                 }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         if (succ.Count == 0)
@@ -301,9 +299,9 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
 
 
         await Response()
-              .Confirm(strs.expr_set(Format.Bold(id.ToString()),
-                  succ.Select(static x => x.ToString()).Join(", ")))
-              .SendAsync();
+            .Confirm(strs.expr_set(Format.Bold(id.ToString()),
+                succ.Select(static x => x.ToString()).Join(", ")))
+            .SendAsync();
     }
 
     [Cmd]
@@ -349,16 +347,16 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
         if (newVal)
         {
             await Response()
-                  .Confirm(strs.option_enabled(Format.Code(option.ToString()),
-                      Format.Code(id.ToString())))
-                  .SendAsync();
+                .Confirm(strs.option_enabled(Format.Code(option.ToString()),
+                    Format.Code(id.ToString())))
+                .SendAsync();
         }
         else
         {
             await Response()
-                  .Confirm(strs.option_disabled(Format.Code(option.ToString()),
-                      Format.Code(id.ToString())))
-                  .SendAsync();
+                .Confirm(strs.option_disabled(Format.Code(option.ToString()),
+                    Format.Code(id.ToString())))
+                .SendAsync();
         }
     }
 
@@ -368,8 +366,8 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
     public async Task ExprClear()
     {
         if (await PromptUserConfirmAsync(CreateEmbed()
-                                                .WithTitle("Expression clear")
-                                                .WithDescription("This will delete all expressions on this server.")))
+                .WithTitle("Expression clear")
+                .WithDescription("This will delete all expressions on this server.")))
         {
             var count = _service.DeleteAllExpressions(ctx.Guild.Id);
             await Response().Confirm(strs.exprs_cleared(count)).SendAsync();
@@ -389,7 +387,8 @@ public partial class WizExpressions(IBotCreds creds, IHttpClientFactory clientFa
 
         var serialized = _service.ExportExpressions(ctx.Guild?.Id);
         await using var stream = await serialized.ToStream();
-        await ctx.User.SendFileAsync(stream, $"exprs-export_{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}_{(ctx.Guild?.Id.ToString() ?? "global")}.yml");
+        await ctx.User.SendFileAsync(stream,
+            $"exprs-export_{DateTime.UtcNow:yyyy-MM-dd-HH-mm-ss}_{(ctx.Guild?.Id.ToString() ?? "global")}.yml");
     }
 
     [Cmd]
