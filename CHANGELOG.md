@@ -2,6 +2,10 @@
 
 *a,c,f,r,o*
 
+## [6.1.6] - 12.04.2025
+
+- QuestCommands no longer appear as a separate module
+
 ## [6.1.5] - 06.04.2025
 
 ### Fixed
@@ -41,23 +45,23 @@
 
 ### Added
 - Added Quest System!
-  - Each user gets a couple of daily quests to complete
-  - There are 10-15 different quests, each day you'll get 3
-  - Upon completion of all dailies, the user will get a boost to timely and vote
-  - `.quests` to see your quests
+    - Each user gets a couple of daily quests to complete
+    - There are 10-15 different quests, each day you'll get 3
+    - Upon completion of all dailies, the user will get a boost to timely and vote
+    - `.quests` to see your quests
 - Added Fishing Items!
-  - `.fishop` to see a list of all available items for sale
-  - `.fibuy` to buy an item
-  - `.finv` to see your inventory
-  - `.fiuse` to use an item. You can equip one of each item, except potions
-    - You can equip one of each item
-    - You can equip any number of potions, but they have limited duration and cant be unequiped
-  - `.fili` will show your equipped item names, nad `.fish` will show bonuses
+    - `.fishop` to see a list of all available items for sale
+    - `.fibuy` to buy an item
+    - `.finv` to see your inventory
+    - `.fiuse` to use an item. You can equip one of each item, except potions
+        - You can equip one of each item
+        - You can equip any number of potions, but they have limited duration and cant be unequiped
+    - `.fili` will show your equipped item names, nad `.fish` will show bonuses
 - Added `.fishlb` to see the top anglers
 - Added `.notify <channel> nicecatch <message>` event
-  - It will show all rare fish/trash and all max star fish caught on any server
-  - You can use `.notifyphs nicecatch`  to see the list of placeholders you can use while setting a message
-  - Example: `.notify #fishfeed nicecatch %user% just caught a %event.fish.stars% %event.fish.name% %event.fish.emoji%`
+    - It will show all rare fish/trash and all max star fish caught on any server
+    - You can use `.notifyphs nicecatch`  to see the list of placeholders you can use while setting a message
+    - Example: `.notify #fishfeed nicecatch %user% just caught a %event.fish.stars% %event.fish.name% %event.fish.emoji%`
 - Added prices to `.nczoom`
 - Voting re-added, `.votefeed` to see all votes. Non-trivial setup required, check commits
 - owner only `.massping` command for special situations
@@ -72,7 +76,7 @@
 
 ### Fixed
 - Fixed `.antispamignore` restart persistence
-- Fixed `.notify` events. Only levelup used to work 
+- Fixed `.notify` events. Only levelup used to work
 - Fixed `.hangman` misalignment
 - Fixed bank quest
 
@@ -80,8 +84,8 @@
 
 ### Added
 - Added `.linkfix <old> <new>` command
-  - If bot sees a message with the old link, it will reply to the message with a fixed (new) link
-  - ex: `.linkfix twitter.com vxtwitter.com`
+    - If bot sees a message with the old link, it will reply to the message with a fixed (new) link
+    - ex: `.linkfix twitter.com vxtwitter.com`
 - Added `.roleicon role <icon_url / server_emoji>` command to set the icon of a role
 - Added a captcha option for `.fish`
 
@@ -97,8 +101,8 @@
 
 ### Fixed
 - `.antispamignore` fixed for the last time hopefully
-  - protection commands are some of the oldest commands, and they might get overhauled in future updates
-  - please report if you find any other weird issue with them
+    - protection commands are some of the oldest commands, and they might get overhauled in future updates
+    - please report if you find any other weird issue with them
 
 ## [6.0.11] - 19.03.2025
 
@@ -106,7 +110,7 @@
 - wordfilter, invitefilter and linkfilter will now properly detect forwarded messages, as forwards were used to circumvent filtering.
 
 ### Fixed
-- `.dmc` fixed 
+- `.dmc` fixed
 - Fixed .streamremove - now showing proper youtube name when removing instead of channel id
 
 ## [6.0.10] - 19.03.2025
@@ -137,11 +141,11 @@
 ### Added
 
 - Live channel commands
-  - `.lcha` adds a channel with a template message (supports placeholders, and works on category channels too!)
-    - Every 10 minutes, channel name will be updated
-    - example: `.lcha #my-channel --> Members: %server.members% <--` will display the number of members in the server as a channel name, updating once every 10 minutes
-  - `.lchl` lists all live channels (Up to 5)
-  - `.lchd <channel or channelId>` removed a live channel
+    - `.lcha` adds a channel with a template message (supports placeholders, and works on category channels too!)
+        - Every 10 minutes, channel name will be updated
+        - example: `.lcha #my-channel --> Members: %server.members% <--` will display the number of members in the server as a channel name, updating once every 10 minutes
+    - `.lchl` lists all live channels (Up to 5)
+    - `.lchd <channel or channelId>` removed a live channel
 
 ### Fixed
 
@@ -152,24 +156,24 @@
 ### Added
 
 - Schedule commands!
-  - `.scha <time> <text>` adds the command to be excuted after the specified amount of time
-  - `.schd <id>` deletes the command with the specified id
-  - `.schl` lists your scheduled commands
+    - `.scha <time> <text>` adds the command to be excuted after the specified amount of time
+    - `.schd <id>` deletes the command with the specified id
+    - `.schl` lists your scheduled commands
 - `.masskick` added as massban and masskill already exist
 - `.xpex` and `.xpexl` are back, as there was no way to exclude specific users or roles with .xprate
 
 ### Fix
 
 - `.xprate` will now (as exclusion did) respect parent channel xp rates in threads
-  - the xprate system will first check if a thread channel has a rate set
-  - if it doesn't it will try to use the parent channel's rate
+    - the xprate system will first check if a thread channel has a rate set
+    - if it doesn't it will try to use the parent channel's rate
 
 ## [6.0.6] - 15.03.2025
 
 ### Added
 
 - Added youtube live stream notification support for `.streamadd`
-  - it only works by using an invidious instance (with a working api) from data/searches.yml
+    - it only works by using an invidious instance (with a working api) from data/searches.yml
 
 ### Fixed
 
@@ -177,7 +181,7 @@
 - Fixed `.sfl` and similar toggles not working
 - Fixed `.antialt` and other protection commands not properly turning on
 - Fixed `%bot.time%` and  `%bot.date%` placeholders showing wrong date.
-  - No longer a timestamp
+    - No longer a timestamp
 
 ## [6.0.5] - 14.03.2025
 
@@ -186,7 +190,7 @@
 - Aded a title in `.whosplaying`
 - Added a crown emoji next to commands if -v 1 or -v2 option is specified
 
-### Changed 
+### Changed
 
 - `.remind` looks better
 - `.savechat` no longer owner only, up to 1000 messages - unlimited if ran by the bot owner
@@ -200,33 +204,33 @@
 ### Added
 
 - `.xp` system reworked
-  - Global XP has been removed in favor of server XP
-  - You can now set `.xprate` for each channel in your server!
-    - You can set voice, image, and text rates
-    - Use `.xpratereset` to reset it back to default
-    - This feature makes `.xpexclude` obsolete
-  - Requirement to create a club removed
-  - `.xp` card should generate faster
-  - Fixed countless possible issues with xp where some users didn't gain xp, or froze, etc
+    - Global XP has been removed in favor of server XP
+    - You can now set `.xprate` for each channel in your server!
+        - You can set voice, image, and text rates
+        - Use `.xpratereset` to reset it back to default
+        - This feature makes `.xpexclude` obsolete
+    - Requirement to create a club removed
+    - `.xp` card should generate faster
+    - Fixed countless possible issues with xp where some users didn't gain xp, or froze, etc
 - user-role commands added!
-  - `.ura <user> <role>` - assign a role to a user
-  - `.url <user?>` - list assigned roles for all users or a specific user
-  - `.urm` - show 'my' (your) assigned roles
-  - `.urn <role> <new_name>` - set a name for your role
-  - `.urc <role> <hex_color>` - set a color for your role
-  - `.uri <role> <url/server_emoji>` - set an icon for your role (accepts either a server emoji or a link to an image)
+    - `.ura <user> <role>` - assign a role to a user
+    - `.url <user?>` - list assigned roles for all users or a specific user
+    - `.urm` - show 'my' (your) assigned roles
+    - `.urn <role> <new_name>` - set a name for your role
+    - `.urc <role> <hex_color>` - set a color for your role
+    - `.uri <role> <url/server_emoji>` - set an icon for your role (accepts either a server emoji or a link to an image)
 - `.notify` improved
-  - Lets you specify source channel (for some events) as the message output
+    - Lets you specify source channel (for some events) as the message output
 - `.pload <id> --shuffle` lets you load a saved playlist in random order
 - `.lyrics <song_name>` added - find lyrics for a song (it's not always accurate)
 
 - For Selfhosters
-  - you have to update to latest v5 before updating to v6, otherwise migrations will fail
-  - migration system was reworked
-  - Xp card is now 500x245
-  - xp_template.json backed up to old_xp_template.json 
-  - check pinned message in #dev channel to see full selfhoster announcement
-  - Get bot version via --version
+    - you have to update to latest v5 before updating to v6, otherwise migrations will fail
+    - migration system was reworked
+    - Xp card is now 500x245
+    - xp_template.json backed up to old_xp_template.json
+    - check pinned message in #dev channel to see full selfhoster announcement
+    - Get bot version via --version
 
 ### Changed
 
@@ -245,16 +249,16 @@
 
 ## [5.3.9] - 30.01.2025
 
-### Added  
+### Added
 
-- Added `.todo archive done <name>` 
-    - Creates an archive of only currently completed todos 
+- Added `.todo archive done <name>`
+    - Creates an archive of only currently completed todos
     - An alternative to ".todo archive add <name>" which moves all todos to an archive
 
 ### Changed
 
 - Increased todo and archive limits slightly
-- Global Wiz captcha patron ad will show 12.5% of the time now, down from 20%, and be smaller 
+- Global wiz captcha patron ad will show 12.5% of the time now, down from 20%, and be smaller
 - `.remind` now has a 1 year max timeout, up from 2 months
 
 ### Fixed
@@ -267,15 +271,15 @@
 ### Fixed
 
 - `.temprole` now correctly adds a role
-  - `.h temprole` also shows the correct overload now
+    - `.h temprole` also shows the correct overload now
 
 ## [5.3.7] - 21.01.2025
 
 ### Changed
 
 - You can now run `.prune` in DMs
-  - It deletes only bot messages
-  - You can't specify a number of messages to delete (100 default)
+    - It deletes only bot messages
+    - You can't specify a number of messages to delete (100 default)
 - Updated command list
 
 ## [5.3.6] - 20.01.2025
@@ -283,9 +287,9 @@
 ### Added
 
 - Added player skill stat when fishing
-  - Starts at 0, goes up to 100
-  - Every time you fish you have a chance to get an extra skill point
-  - Higher skill gives you more chance to catch fish (and therefore less chance to catch trash)
+    - Starts at 0, goes up to 100
+    - Every time you fish you have a chance to get an extra skill point
+    - Higher skill gives you more chance to catch fish (and therefore less chance to catch trash)
 
 ### Changed
 
@@ -294,7 +298,7 @@
 ### Fixed
 
 - Fixed fishing spots again (Your channels will once again change a spot, last time hopefully)
-  - There was a mistake in spot calculation for each channel
+    - There was a mistake in spot calculation for each channel
 
 ## [5.3.5] - 17.01.2025
 
@@ -308,9 +312,9 @@
 ### Added
 
 - Added `.fish` commands
-  - `.fish` - Attempt to catch a fish - different fish live in different places, at different times and during different times of the day
-  - `.fishlist` - Look at your fish catalogue - shows how many of each fish you caught and what was the highest quality - for each caught fish, it also shows its required spot, time of day and weather
-  - `.fishspot` - Shows information about the current fish spot, time of day and weather
+    - `.fish` - Attempt to catch a fish - different fish live in different places, at different times and during different times of the day
+    - `.fishlist` - Look at your fish catalogue - shows how many of each fish you caught and what was the highest quality - for each caught fish, it also shows its required spot, time of day and weather
+    - `.fishspot` - Shows information about the current fish spot, time of day and weather
 
 ### Fixed
 
@@ -961,7 +965,7 @@
 - Added `.clubrename` command to uh rename your club
 - For self-hosters:
     - Added `.sqlselectcsv` which will return results in a csv file instead of an embed.
-    - You can set whether Wiz ignores other bots in `bot.yml`
+    - You can set whether wiz ignores other bots in `bot.yml`
     - You can set shop sale cut in `gambling.yml`
 - Added a page parameter to `.feedlist`
 - Added seconds/sec/s to `.convert` command
