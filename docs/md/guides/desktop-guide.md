@@ -13,7 +13,7 @@
 
 ## Setup
 
-1. Download and run the [WizBot Updater](https://github.com/Wizkiller96/WizBot/releases/latest).
+1. Download and run the [WizBot Updater](https://github.com/Wizkiller96/wizbot-updater/releases/latest).
 
     ![Create a new bot](../assets/upeko-1.png "Create a new bot")
 

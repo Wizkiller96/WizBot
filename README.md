@@ -12,7 +12,7 @@ If you have any questions, please visit our [Discord support server](https://wiz
 
 ### Default option
 
-You may want to consider using [WizBot Updater](https://github.com/Wizkiller96/WizBot-Updater/releases) if you want to run bot on your PC.+
+You may want to consider using [WizBot Updater](https://github.com/Wizkiller96/wizbot-updater/releases) if you want to run bot on your PC.+
 
 ### Hosting on a linux server
 
