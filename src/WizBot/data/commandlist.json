@@ -4391,6 +4391,23 @@
     },
     {
       "Aliases": [
+        ".questlog",
+        ".qlog",
+        ".quest",
+        ".quests",
+        ".dailies"
+      ],
+      "Description": "Shows your active quests and progress.",
+      "Usage": [
+        ".questlog"
+      ],
+      "Submodule": "QuestCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".typestart"
       ],
       "Description": "Starts a typing contest.",
@@ -5930,25 +5947,6 @@
       "Requirements": [
         "Bot Owner Only"
       ]
-    }
-  ],
-  "QuestCommands": [
-    {
-      "Aliases": [
-        ".questlog",
-        ".qlog",
-        ".quest",
-        ".quests",
-        ".dailies"
-      ],
-      "Description": "Shows your active quests and progress.",
-      "Usage": [
-        ".questlog"
-      ],
-      "Submodule": "QuestCommands",
-      "Module": "QuestCommands",
-      "Options": null,
-      "Requirements": []
     }
   ],
   "Searches": [

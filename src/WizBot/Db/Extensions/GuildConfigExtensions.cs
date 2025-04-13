@@ -32,9 +32,9 @@ public static class GuildConfigExtensions
     /// <returns>Guild'p stream role settings</returns>
     public static async Task<StreamRoleSettings> GetOrCreateStreamRoleSettings(this DbContext ctx, ulong guildId)
     {
-        var srs = await ctx.GetTable<StreamRoleSettings>()
+        var srs = ctx.Set<StreamRoleSettings>()
             .Where(x => x.GuildId == guildId)
-            .FirstOrDefaultAsyncEF();
+            .FirstOrDefault();
 
         if (srs is not null)
             return srs;
