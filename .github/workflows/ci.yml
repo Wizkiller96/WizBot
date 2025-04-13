@@ -135,7 +135,7 @@ jobs:
         with:
           push: true
           context: .
-          tags: ghcr.io/Wizkiller96/WizBot:latest,ghcr.io/Wizkiller96/WizBot:v6,ghcr.io/Wizkiller96/WizBot:${{ github.ref_name }}
+          tags: ghcr.io/wizkiller96/wizbot:latest,ghcr.io/wizkiller96/wizbot:v6,ghcr.io/wizkiller96/wizbot:${{ github.ref_name }}
   
   publish-medusa-package:
     name: Publish Medusa Package
