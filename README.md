@@ -23,7 +23,7 @@ If you want your bot to be online 24/7, you should [host it on a linux vps](http
 There is an official Docker image for a [simple setup](https://docs.wizbot.cc/guides/docker-guide/)
 Short version:
   ```sh
-    docker run -d --name wizbot ghcr.io/Wizkiller96/WizBot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
+    docker run -d --name wizbot ghcr.io/wizkiller96/wizbot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
   ```
 
 ## Contributing to WizBot
