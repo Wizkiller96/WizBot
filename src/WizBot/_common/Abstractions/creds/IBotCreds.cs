@@ -6,6 +6,7 @@ public interface IBotCreds
     string Token { get; }
     string NadekoAiToken { get; }
     ICollection<ulong> OwnerIds { get; set; }
+    ICollection<ulong> AdminIds { get; set; }
     string GoogleApiKey { get; }
     bool UsePrivilegedIntents { get; }
     string RapidApiKey { get; }

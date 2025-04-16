@@ -16,6 +16,12 @@ public sealed class Creds : IBotCreds
              **DO NOT ADD PEOPLE YOU DON'T TRUST**
              """)]
     public ICollection<ulong> OwnerIds { get; set; }
+    
+    [Comment("""
+             List of Ids of the users who have bot admin permissions
+             **DO NOT ADD PEOPLE YOU DON'T TRUST**
+             """)]
+    public ICollection<ulong> AdminIds { get; set; }
 
     [Comment(
         "Keep this on 'true' unless you're sure your bot shouldn't use privileged intents or you're waiting to be accepted")]
@@ -173,6 +179,7 @@ public sealed class Creds : IBotCreds
         Token = string.Empty;
         UsePrivilegedIntents = true;
         OwnerIds = new List<ulong>();
+        AdminIds = new List<ulong>();
         TotalShards = 1;
         GoogleApiKey = string.Empty;
         Votes = new VotesSettings();

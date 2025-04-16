@@ -182,6 +182,8 @@ public sealed partial class Help : WizModule<HelpService>
                 return strs.module_description_xp;
             case "medusa":
                 return strs.module_description_medusa;
+            case "roblox":
+                return strs.module_description_roblox;
             case "patronage":
                 return strs.module_description_patronage;
             default:
@@ -214,6 +216,8 @@ public sealed partial class Help : WizModule<HelpService>
                 return "🚓";
             case "xp":
                 return "📝";
+            case "roblox":
+                return "🟥";
             case "patronage":
                 return "💝";
             default:
@@ -491,6 +495,122 @@ public sealed partial class Help : WizModule<HelpService>
 
         await using var rDataStream = await _cmdListGen.GenerateCommandListAsync(prefix, Culture);
         await ctx.Channel.SendFileAsync(rDataStream, "cmds.json", GetText(strs.commandlist_regen));
+    }
+    
+    [Cmd]
+    [OnlyPublicBot]
+    public async Task Feedback(string type, [Remainder] string message)
+    {
+        if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(message))
+            return;
+
+        type = type.Equals("Bug", StringComparison.OrdinalIgnoreCase) ? "Bug" : 
+            type.Equals("Suggestion", StringComparison.OrdinalIgnoreCase) ? "Suggestion" : null;
+
+        if (type == null)
+        {
+            await Response()
+                .Embed(CreateEmbed()
+                    .WithErrorColor()
+                    .WithTitle("Error: Report not sent.")
+                    .WithDescription("Please make sure you used the correct report types listed below.")
+                    .AddField("Report Types:", "`Bug`, `Suggestion`"))
+                .SendAsync();
+            return;
+        }
+
+        var embed = CreateEmbed()
+            .WithOkColor()
+            .WithTitle(type == "Bug" ? "New Bug Report" : "New Suggestion")
+            .WithThumbnailUrl(ctx.User.GetAvatarUrl())
+            .AddField(type == "Bug" ? "Reporter" : "Suggester", ctx.User.ToString(), true)
+            .AddField(type == "Bug" ? "Reporter ID" : "Suggester ID", ctx.User.Id.ToString(), true)
+            .AddField("Server Name", ctx.Guild.Name, true)
+            .AddField("Server ID", ctx.Guild.Id.ToString(), true)
+            .AddField("Channel Name", ctx.Channel.Name, true)
+            .AddField("Channel ID", ctx.Channel.Id.ToString(), true)
+            .AddField("Type", type, false)
+            .AddField(type == "Bug" ? "Message" : "Suggestion", message);
+
+        var channelId = type == "Bug" ? 1012808771371794433 : 1245658384452288573;
+        var channel = _client.GetGuild(99273784988557312).GetTextChannel((ulong)channelId);
+
+        var fbmsg = await channel.SendMessageAsync(embed: embed.Build());
+
+        if (type == "Suggestion")
+        {
+            await fbmsg.AddReactionAsync(Emote.Parse("<:down_vote:1012571380144951346>"));
+            await fbmsg.AddReactionAsync(Emote.Parse("<:vote_up:1012571381126418432>"));
+        }
+
+        await Response()
+            .Text($"{type} has been sent to WizNet's Discord.")
+            .SendAsync();
+    }
+
+    [Cmd]
+    [OnlyPublicBot]
+    public async Task Report(IGuildUser ruser, [Remainder] string rexplaination)
+    {
+        var user = ruser ?? ctx.User as IGuildUser;
+
+        if (user == null && string.IsNullOrEmpty(rexplaination))
+        {
+            await Response()
+                .Embed(CreateEmbed()
+                    .WithErrorColor()
+                    .WithTitle("Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you filled out all the fields correctly."))
+                .SendAsync();
+            return;
+        }
+
+        if (user == null)
+        {
+            await Response()
+                .Embed(CreateEmbed()
+                    .WithErrorColor()
+                    .WithTitle("Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you provided the username of the person you are reporting."))
+                .SendAsync();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(rexplaination))
+        {
+            await Response()
+                .Embed(CreateEmbed()
+                    .WithErrorColor()
+                    .WithTitle("Error: Abuse report not sent.")
+                    .WithDescription("Please make sure you provided an explanation in your report."))
+                .SendAsync();
+            return;
+        }
+
+        var reportEmbed = CreateEmbed()
+            .WithOkColor()
+            .WithTitle("Abuse Report")
+            .WithThumbnailUrl(ctx.User.GetAvatarUrl())
+            .AddField("Reporter:", ctx.User.ToString(), true)
+            .AddField("Reporter ID:", ctx.User.Id.ToString(), true)
+            .AddField("Server Name:", ctx.Guild.Name, true)
+            .AddField("Server ID:", ctx.Guild.Id.ToString(), true)
+            .AddField("Channel Name:", ctx.Channel.Name, true)
+            .AddField("Channel ID:", ctx.Channel.Id.ToString(), true)
+            .AddField("Reported User:", $"**{user.Username}**#{user.Discriminator} | {user.Id}", false)
+            .AddField("Explanation/Proof:", rexplaination);
+
+        var reportChannel = _client.GetGuild(99273784988557312).GetTextChannel(590829242690961408);
+
+        await reportChannel.SendMessageAsync("<@&367646195889471499>");
+        await Response()
+            .Channel(reportChannel)
+            .Embed(reportEmbed)
+            .SendAsync();
+
+        await Response()
+            .Text("Report sent to WizBot's Staff.")
+            .SendAsync();
     }
 
     [Cmd]

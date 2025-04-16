@@ -19,6 +19,8 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
 
     private ImmutableDictionary<ulong, IDMChannel> ownerChannels =
         new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
+    private ImmutableDictionary<ulong, IDMChannel> adminChannels =
+        new Dictionary<ulong, IDMChannel>().ToImmutableDictionary();
 
     private ConcurrentDictionary<ulong?, ConcurrentDictionary<int, Timer>> autoCommands = new();
 
@@ -199,6 +201,43 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
             Log.Information("Created {OwnerChannelCount} out of {TotalOwnerChannelCount} owner message channels",
                 ownerChannels.Count,
                 _creds.OwnerIds.Count);
+        }
+    }
+    
+    private async Task LoadAdminChannels()
+    {
+        var channels = await _creds.AdminIds.Select(async id =>
+            {
+                var user = _client.GetUser(id);
+                if (user is null)
+                    return null;
+
+                try
+                {
+                    return await user.CreateDMChannelAsync();
+                }
+                catch (Exception)
+                {
+                    Log.Error("Unable to DM Bot Admin {UserId} - please remove that id from the admin list", user.Id);
+                    return null;
+                }
+            })
+            .WhenAll();
+
+        adminChannels = channels.Where(x => x is not null)
+            .ToDictionary(x => x.Recipient.Id, x => x)
+            .ToImmutableDictionary();
+
+        if (!adminChannels.Any())
+        {
+            Log.Warning(
+                "No bot admin channels created! Make sure you've specified the correct AdminId in the creds.yml file and invited the bot to a Discord server");
+        }
+        else
+        {
+            Log.Information("Created {AdminChannelCount} out of {TotalAdminChannelCount} admin message channels",
+                adminChannels.Count,
+                _creds.AdminIds.Count);
         }
     }
 

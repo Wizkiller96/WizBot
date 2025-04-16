@@ -318,6 +318,12 @@ public partial class Xp : WizModule<XpService>
 
                 if (!string.IsNullOrWhiteSpace(item.Desc))
                     eb.AddField(GetText(strs.desc), item.Desc);
+                
+                if (!string.IsNullOrWhiteSpace(item.Author))
+                    eb.AddField(GetText(strs.author), item.Author);
+                
+                if (item.TierRequirement != PatronTier.None)
+                    eb.AddField(GetText(strs.xpshop_required_tier), "Patron Tier " + item.TierRequirement, true);
 
                 return eb;
             })
@@ -393,6 +399,7 @@ public partial class Xp : WizModule<XpService>
                 BuyResult.AlreadyOwned =>
                     await Response().Error(strs.xpshop_already_owned).Interaction(GetUseInteraction()).SendAsync(),
                 BuyResult.UnknownItem => await Response().Error(strs.xpshop_item_not_found).SendAsync(),
+                BuyResult.InsufficientPatronTier => await Response().Error(strs.patron_insuff_tier).SendAsync(),
                 _ => throw new ArgumentOutOfRangeException()
             };
             return;

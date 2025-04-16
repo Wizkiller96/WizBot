@@ -6,5 +6,6 @@ public enum BuyResult
     XpShopDisabled,
     AlreadyOwned,
     InsufficientFunds,
+    InsufficientPatronTier,
     UnknownItem,
 }

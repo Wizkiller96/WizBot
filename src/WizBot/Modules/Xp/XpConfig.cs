@@ -35,6 +35,18 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
                  False -> Users can't access the xp shop
                  """)]
         public bool IsEnabled { get; set; } = false;
+        
+        [Comment("""
+                 Which patron tier do users need in order to use the .xpshop bgs command
+                 Leave at 'None' if patron system is disabled or you don't want any restrictions
+                 """)]
+        public PatronTier BgsTierRequirement { get; set; } = PatronTier.None;
+        
+        [Comment("""
+                 Which patron tier do users need in order to use the .xpshop frames command
+                 Leave at 'None' if patron system is disabled or you don't want any restrictions
+                 """)]
+        public PatronTier FramesTierRequirement { get; set; } = PatronTier.None;
 
         [Comment("""
                  Frames available for sale. Keys are unique IDs.
@@ -67,6 +79,9 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
         [Comment(
             """Price of the item. Set to -1 if you no longer want to sell the item but want the users to be able to keep their old purchase""")]
         public int Price { get; set; }
+        
+        [Comment("""Patron Tier requirement to purchase the item""")]
+        public PatronTier TierRequirement { get; set; } = PatronTier.None;
 
         [Comment("""Direct url to the .png image which will be applied to the user's XP card""")]
         public string Url { get; set; }
@@ -76,6 +91,9 @@ public sealed partial class XpConfig : ICloneable<XpConfig>
 
         [Comment("""Optional description of the item""")]
         public string Desc { get; set; }
+        
+        [Comment(@"Optional author of the item")]
+        public string Author { get; set; }
     }
 }
 

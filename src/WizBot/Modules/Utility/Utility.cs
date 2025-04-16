@@ -332,12 +332,17 @@ public partial class Utility : WizModule
         var ownerIds = string.Join("\n", _creds.OwnerIds);
         if (string.IsNullOrWhiteSpace(ownerIds))
             ownerIds = "-";
+        
+        var adminIds = string.Join("\n", _creds.AdminIds);
+        if (string.IsNullOrWhiteSpace(adminIds))
+            adminIds = "-";
 
         var eb = CreateEmbed()
             .WithOkColor()
             .WithAuthor($"WizBot v{StatsService.BotVersion}",
                 "https://cdn.wizbot.cc/other/bot/wizbot_icon.png",
                 "https://wizbot.cc")
+            .WithImageUrl("https://cdn.wizbot.cc/other/bot/wizbot-banner.jpg")
             .AddField(GetText(strs.author), _stats.Author, true)
             .AddField(GetText(strs.botid), _client.CurrentUser.Id.ToString(), true)
             .AddField(GetText(strs.shard),
@@ -351,6 +356,7 @@ public partial class Utility : WizModule
                 FormattableString.Invariant($"{_stats.GetPrivateMemoryMegabytes():F2} MB"),
                 true)
             .AddField(GetText(strs.owner_ids), ownerIds, true)
+            .AddField(GetText(strs.admin_ids), adminIds, true)
             .AddField(GetText(strs.uptime), _stats.GetUptimeString("\n"), true)
             .AddField(GetText(strs.presence),
                 GetText(strs.presence_txt(_coord.GetGuildCount(),
@@ -818,5 +824,52 @@ public partial class Utility : WizModule
 
         ctx.Message.DeleteAfter(1);
         await Response().Embed(eb).SendAsync();
+    }
+    
+    [Cmd]
+    [OnlyPublicBot]
+    public async Task Donators()
+    { 
+        // Make it so it won't error when no users are found.
+        var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
+        var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
+
+        await Response()
+            .Embed(CreateEmbed()
+                .WithOkColor()
+                .WithTitle($"WizBot - Donators")
+                .WithDescription("List of users who have donated to WizBot.")
+                .AddField("Donators:", string.Join("\n", dusers), false))
+            .SendAsync();
+
+        await Response()
+            .Embed(CreateEmbed()
+                .WithOkColor()
+                .WithTitle($"WizBot - Patreon Donators")
+                .WithDescription("List of users who have donated through WizNet's Patreon.")
+                .AddField("Patreon Donators:", string.Join("\n", pusers), false))
+            .SendAsync();
+    }
+
+    [Cmd]
+    [OnlyPublicBot]
+    public async Task WizNet()
+    {
+        // Make it so it won't error when no users are found.
+        var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
+        var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
+
+        await Response()
+            .Embed(CreateEmbed()
+                .WithOkColor()
+                .WithTitle("WizNet's Info")
+                .WithThumbnailUrl("https://i.imgur.com/Go5ZymW.png")
+                .WithDescription("WizNet is a small internet company that was made by Wizkiller96. The site first started off more as a social platform for his friends to have a place to hangout and chat with each other and share their work. Since then the site has gone through many changes and reforms. It now sits as a small hub for all the services and work WizNet provides to the public.")
+                .AddField("Websites", "[WizNet](http://wiznet.work/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)", true)
+                .AddField("Social Media", "[Facebook](http://facebook.com/Wizkiller96Network)\n[WizBot's Twitter](http://twitter.com/WizBot_Dev)", true)
+                .AddField("WizNet Staff", string.Join("\n", wnstaff), false)
+                .AddField("WizBot Staff", string.Join("\n", wbstaff), false)
+                .WithFooter("Note: Not all staff are listed here."))
+            .SendAsync();
     }
 }

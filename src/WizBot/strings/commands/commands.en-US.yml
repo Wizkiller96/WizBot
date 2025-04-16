@@ -5273,3 +5273,58 @@ fishlb:
   params:
     - page:
         desc: "The optional page to display."
+feedback:
+  desc: "Send bug/feedback report to WizBot's Devs."
+  ex:
+    - "Bug I found a bug"
+    - "Suggestion I have a suggestion for the bot."
+  params:
+    - category:
+        desc: "The category your report feedback falls under."
+    - msg:
+        desc: "The message of your feedback report that will be sent."
+report:
+  desc: "Allows you to report a user who abuse the bot to Bot Staff."
+  ex:
+    - "@User Abused bet flip command."
+  params:
+    - user:
+        desc: "The user being reported for abuse."
+    - msg:
+        desc: "The report message explaining what user did that was consider abuse."
+rbxinfo:
+  desc: "Display a Roblox User profile information from the Roblox API."
+  ex:
+    - "Roblox"
+  params:
+    - user:
+        desc: "The Roblox username of the user you want to look up."
+wiznet:
+  desc: "List information about WizNet and provides a list of current active WizNet Staff."
+  ex:
+    - ""
+  params:
+    - {}
+donators:
+  desc: "Displays a list of WizBot Donators."
+  ex:
+    - ""
+  params:
+    - {}
+nya:
+  desc: |-
+    Pulls a random neko image unless a category from http://nekos.life is picked.
+    ---
+    **IMG Categories:**
+    `smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`
+  ex:
+    - "neko"
+  params:
+    - category:
+        desc: "The image category you want to pull a random image from."
+gwaifu:
+  desc: "Responds with a randomly generated waifu."
+  ex:
+    - ""
+  params:
+    - {}

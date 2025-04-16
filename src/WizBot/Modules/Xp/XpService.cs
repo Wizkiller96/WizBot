@@ -987,6 +987,34 @@ public class XpService : INService, IReadyExecutor, IExecNoCommand
 
             if (item is null || item.Price < 0)
                 return BuyResult.UnknownItem;
+            
+            if (type == XpShopItemType.Frame)
+            {
+                var frameItem = conf.Shop.Frames[key];
+                var frameReq = frameItem.TierRequirement;
+
+                if (frameReq != PatronTier.None && !_creds.IsOwner(userId))
+                {
+                    var patron = await _ps.GetPatronAsync(userId);
+
+                    if (patron is null || (int)patron.Value.Tier < (int)frameReq)
+                        return BuyResult.InsufficientPatronTier;
+                }
+            }
+
+            if (type == XpShopItemType.Background)
+            {
+                var bgItem = conf.Shop.Bgs[key];
+                var bgReq = bgItem.TierRequirement;
+
+                if (bgReq != PatronTier.None && !_creds.IsOwner(userId))
+                {
+                    var patron = await _ps.GetPatronAsync(userId);
+
+                    if (patron is null || (int)patron.Value.Tier < (int)bgReq)
+                        return BuyResult.InsufficientPatronTier;
+                }
+            }
 
             if (item.Price > 0 && !await _cs.RemoveAsync(userId, item.Price, new("xpshop", "buy", $"Background {key}")))
                 return BuyResult.InsufficientFunds;

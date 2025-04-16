@@ -4607,6 +4607,38 @@
     },
     {
       "Aliases": [
+        ".feedback",
+        ".fb"
+      ],
+      "Description": "Send bug/feedback report to WizBot's Devs.",
+      "Usage": [
+        ".feedback Bug I found a bug",
+        ".feedback Suggestion I have a suggestion for the bot."
+      ],
+      "Submodule": "Help",
+      "Module": "Help",
+      "Options": null,
+      "Requirements": [
+        "Only Public Bot"
+      ]
+    },
+    {
+      "Aliases": [
+        ".report"
+      ],
+      "Description": "Allows you to report a user who abuse the bot to Bot Staff.",
+      "Usage": [
+        ".report @User Abused bet flip command."
+      ],
+      "Submodule": "Help",
+      "Module": "Help",
+      "Options": null,
+      "Requirements": [
+        "Only Public Bot"
+      ]
+    },
+    {
+      "Aliases": [
         ".guide",
         ".readme"
       ],
@@ -5949,6 +5981,21 @@
       ]
     }
   ],
+  "Roblox": [
+    {
+      "Aliases": [
+        ".rbxinfo"
+      ],
+      "Description": "Display a Roblox User profile information from the Roblox API.",
+      "Usage": [
+        ".rbxinfo Roblox"
+      ],
+      "Submodule": "Roblox",
+      "Module": "Roblox",
+      "Options": null,
+      "Requirements": []
+    }
+  ],
   "Searches": [
     {
       "Aliases": [
@@ -6209,6 +6256,33 @@
       "Usage": [
         ".wikia mtg Vigilance",
         ".wikia mlp Dashy"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".nya"
+      ],
+      "Description": "Pulls a random neko image unless a category from http://nekos.life is picked.\n---\n**IMG Categories:**\n`smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`",
+      "Usage": [
+        ".nya neko"
+      ],
+      "Submodule": "Searches",
+      "Module": "Searches",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".gwaifu",
+        ".genwaifu"
+      ],
+      "Description": "Responds with a randomly generated waifu.",
+      "Usage": [
+        ".gwaifu"
       ],
       "Submodule": "Searches",
       "Module": "Searches",
@@ -7179,6 +7253,36 @@
       "Module": "Utility",
       "Options": null,
       "Requirements": []
+    },
+    {
+      "Aliases": [
+        ".donators"
+      ],
+      "Description": "Displays a list of WizBot Donators.",
+      "Usage": [
+        ".donators"
+      ],
+      "Submodule": "Utility",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "Only Public Bot"
+      ]
+    },
+    {
+      "Aliases": [
+        ".wiznet"
+      ],
+      "Description": "List information about WizNet and provides a list of current active WizNet Staff.",
+      "Usage": [
+        ".wiznet"
+      ],
+      "Submodule": "Utility",
+      "Module": "Utility",
+      "Options": null,
+      "Requirements": [
+        "Only Public Bot"
+      ]
     },
     {
       "Aliases": [

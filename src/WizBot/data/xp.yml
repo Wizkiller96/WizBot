@@ -14,6 +14,12 @@ shop:
   # True -> Users can access the xp shop using .xpshop command
   # False -> Users can't access the xp shop
   isEnabled: false
+  # Which patron tier do users need in order to use the .xpshop bgs command
+  # Leave at 'None' if patron system is disabled, or you don't want any restrictions
+  bgsTierRequirement: None
+  # Which patron tier do users need in order to use the .xpshop frames command
+  # Leave at 'None' if patron system is disabled, or you don't want any restrictions
+  framesTierRequirement: None
   # Frames available for sale. Keys are unique IDs.
   # Do not change keys as they are not publicly visible. Only change properties (name, price, id)
   # Removing a key which previously existed means that all previous purchases will also be unusable.
@@ -30,6 +36,8 @@ shop:
       preview: 
       # Optional description of the item
       desc: 
+      # Optional author of the item
+      author:
   # Backgrounds available for sale. Keys are unique IDs.
   # Do not change keys as they are not publicly visible. Only change properties (name, price, id)
   # Removing a key which previously existed means that all previous purchases will also be unusable.
@@ -46,3 +54,5 @@ shop:
       preview: 
       # Optional description of the item
       desc: 
+      # Optional author of the item
+      author:

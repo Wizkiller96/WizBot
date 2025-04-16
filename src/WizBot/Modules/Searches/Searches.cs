@@ -2,6 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Searches.Common;
 using WizBot.Modules.Searches.Services;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -458,6 +459,90 @@ public partial class Searches : WizModule<SearchesService>
 
         var response = $"### {res.Title}\n{res.Url}";
         await Response().Text(response).Sanitize().SendAsync();
+    }
+    
+    [Cmd]
+    public async Task Nya([Remainder] string category = "neko")
+    {
+        // List if category to pull an image from.
+        string[] cat =
+        {
+            "smug", "woof", "goose", "cuddle", "slap", "pat",
+            "gecg", "feed", "fox_girl", "lizard", "neko", "hug", "meow", "kiss", "tickle", "waifu", "ngif"
+        };
+
+        if (string.IsNullOrWhiteSpace(category))
+            return;
+
+        try
+        {
+            JToken nekotitle;
+            JToken nekoimg;
+            using (var http = _httpFactory.CreateClient())
+            {
+                nekotitle = JObject.Parse(await http.GetStringAsync($"https://nekos.life/api/v2/cat")
+                                                    .ConfigureAwait(false));
+                nekoimg = JObject.Parse(await http
+                                              .GetStringAsync(
+                                                  $"https://nekos.life/api/v2/img/{category}")
+                                              .ConfigureAwait(false));
+            }
+
+            if (cat.Contains(category))
+                await Response()
+                      .Embed(CreateEmbed()
+                                    .WithOkColor()
+                                    .WithAuthor(
+                                        $"Nekos Life - Image Database {nekotitle["cat"]}",
+                                        "https://i.imgur.com/a36AMkG.png",
+                                        "http://nekos.life/")
+                                    .WithImageUrl($"{nekoimg["url"]}"))
+                      .SendAsync();
+            else
+                await Response()
+                      .Embed(CreateEmbed()
+                                    .WithErrorColor()
+                                    .WithAuthor("Nekos Life - Invalid Category",
+                                        "https://i.imgur.com/a36AMkG.png",
+                                        "http://nekos.life/")
+                                    .WithDescription(
+                                        "Seems the category you was looking for could not be found. Please use the categories listed below.")
+                                    .AddField("Categories",
+                                        "`smug`, `woof`, `goose`, `cuddle`, `slap`, `pat`, `gecg`, `feed`, `fox_girl`, `lizard`, `neko`, `hug`, `meow`, `kiss`, `tickle`, `waifu`, `ngif`",
+                                        false))
+                      .SendAsync();
+        }
+        catch (Exception ex)
+        {
+            await Response().Error(ex.Message).SendAsync();
+        }
+    }
+
+    // Waifu Gen Command
+    [Cmd]
+    public async Task GWaifu()
+    {
+        try
+        {
+            using (var http = _httpFactory.CreateClient())
+            {
+                //var waifutxt = await http.GetStringAsync($"https://www.thiswaifudoesnotexist.net/snippet-{new WizBotRandom().Next(0, 100000)}.txt").ConfigureAwait(false);
+                await Response()
+                      .Embed(CreateEmbed()
+                                    .WithOkColor()
+                                    .WithAuthor("This Waifu Does Not Exist",
+                                        null,
+                                        "https://www.thiswaifudoesnotexist.net")
+                                    .WithImageUrl(
+                                        $"https://www.thiswaifudoesnotexist.net/example-{new WizRandom().Next(0, 100000)}.jpg"))
+                      //.WithDescription($"{waifutxt}".TrimTo(1000)))
+                      .SendAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            await Response().Error(ex.Message).SendAsync();
+        }
     }
 
     [Cmd]
