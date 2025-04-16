@@ -2,7 +2,16 @@
 
 *a,c,f,r,o*
 
+## [6.1.7] - 14.04.2025
+
+### Fixed
+
+- `.streamrole` fixed
+- fixed `.ura` hierarchy check (it will let owners assign roles too)
+
 ## [6.1.6] - 12.04.2025
+
+### Fixed
 
 - QuestCommands no longer appear as a separate module
 
