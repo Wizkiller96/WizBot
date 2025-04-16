@@ -20,17 +20,7 @@ public partial class Utility
         [UserPerm(GuildPerm.ManageRoles)]
         public async Task UserRoleAssign(IGuildUser user, IRole role)
         {
-            var modUser = (IGuildUser)ctx.User;
-
-            if (modUser.GetRoles().Max(x => x.Position) <= role.Position)
-            {
-                await Response().Error(strs.userrole_hierarchy_error).SendAsync();
-                return;
-            }
-            
-            var botUser = ((SocketGuild)ctx.Guild).CurrentUser;
-
-            if (botUser.GetRoles().Max(x => x.Position) <= role.Position)
+            if (!await CheckRoleHierarchy(role))
             {
                 await Response().Error(strs.hierarchy).SendAsync();
                 return;
