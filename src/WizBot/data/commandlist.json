@@ -4378,13 +4378,14 @@
     },
     {
       "Aliases": [
+        ".countup",
         ".nunchi"
       ],
-      "Description": "Creates or joins an existing nunchi game. Users have to count up by 1 from the starting number shown by the bot. If someone makes a mistake (types an incorrect number, or repeats the same number) they are out of the game and a new round starts without them.  Minimum 3 users required.",
+      "Description": "Creates or joins an existing CountUp game.\nBot will show a number - count up from it.\nWhoever writes a duplicate number, or is the last person without a number loses, and a new round starts!\nMinimum 3 users required.",
       "Usage": [
-        ".nunchi"
+        ".countup"
       ],
-      "Submodule": "NunchiCommands",
+      "Submodule": "CountUpCommands",
       "Module": "Games",
       "Options": null,
       "Requirements": []
