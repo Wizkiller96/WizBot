@@ -1,9 +1,9 @@
 ﻿#nullable disable
 using System.Collections.Immutable;
 
-namespace WizBot.Modules.Games.Common.Nunchi;
+namespace WizBot.Modules.Games;
 
-public sealed class NunchiGame : IDisposable
+public sealed class CountUpGame : IDisposable
 {
     public enum Phase
     {
@@ -16,11 +16,11 @@ public sealed class NunchiGame : IDisposable
     private const int KILL_TIMEOUT = 20 * 1000;
     private const int NEXT_ROUND_TIMEOUT = 5 * 1000;
 
-    public event Func<NunchiGame, Task> OnGameStarted;
-    public event Func<NunchiGame, int, Task> OnRoundStarted;
-    public event Func<NunchiGame, Task> OnUserGuessed;
-    public event Func<NunchiGame, (ulong Id, string Name)?, Task> OnRoundEnded; // tuple of the user who failed
-    public event Func<NunchiGame, string, Task> OnGameEnded; // name of the user who won
+    public event Func<CountUpGame, Task> OnGameStarted;
+    public event Func<CountUpGame, int, Task> OnRoundStarted;
+    public event Func<CountUpGame, Task> OnUserGuessed;
+    public event Func<CountUpGame, (ulong Id, string Name)?, Task> OnRoundEnded; // tuple of the user who failed
+    public event Func<CountUpGame, string, Task> OnGameEnded; // name of the user who won
 
     public int CurrentNumber { get; private set; } = new WizRandom().Next(0, 100);
     public Phase CurrentPhase { get; private set; } = Phase.Joining;
@@ -30,6 +30,9 @@ public sealed class NunchiGame : IDisposable
 
     public int ParticipantCount
         => participants.Count;
+    
+    public int PassedCount
+        => _passed.Count;
 
     private readonly SemaphoreSlim _locker = new(1, 1);
 
@@ -37,7 +40,7 @@ public sealed class NunchiGame : IDisposable
     private readonly HashSet<(ulong Id, string Name)> _passed = [];
     private Timer killTimer;
 
-    public NunchiGame(ulong creatorId, string creatorName)
+    public CountUpGame(ulong creatorId, string creatorName)
         => participants.Add((creatorId, creatorName));
 
     public async Task<bool> Join(ulong userId, string userName)

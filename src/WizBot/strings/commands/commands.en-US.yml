@@ -1473,8 +1473,12 @@ joinrace:
   params:
     - amount:
         desc: "The amount to be wagered on the race."
-nunchi:
-  desc: Creates or joins an existing nunchi game. Users have to count up by 1 from the starting number shown by the bot. If someone makes a mistake (types an incorrect number, or repeats the same number) they are out of the game and a new round starts without them.  Minimum 3 users required.
+countup:
+  desc: |-
+    Creates or joins an existing CountUp game.
+    Bot will show a number - count up from it.
+    Whoever writes a duplicate number, or is the last person without a number loses, and a new round starts!
+    Minimum 3 users required.
   ex:
     - ''
   params:

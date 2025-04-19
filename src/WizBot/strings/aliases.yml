@@ -442,7 +442,8 @@ race:
 joinrace:
   - joinrace
   - jr
-nunchi:
+countup:
+  - countup
   - nunchi
 connect4:
   - connect4

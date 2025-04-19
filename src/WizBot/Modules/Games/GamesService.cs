@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using WizBot.Modules.Games.Common;
 using WizBot.Modules.Games.Common.Acrophobia;
-using WizBot.Modules.Games.Common.Nunchi;
 using Newtonsoft.Json;
 
 namespace WizBot.Modules.Games.Services;
@@ -21,7 +20,7 @@ public class GamesService : INService
     public ConcurrentDictionary<ulong, AcrophobiaGame> AcrophobiaGames { get; } = new();
     public Dictionary<ulong, TicTacToe> TicTacToeGames { get; } = new();
     public ConcurrentDictionary<ulong, TypingGame> RunningContests { get; } = new();
-    public ConcurrentDictionary<ulong, NunchiGame> NunchiGames { get; } = new();
+    public ConcurrentDictionary<ulong, CountUpGame> Games { get; } = new();
 
     private readonly GamesConfigService _gamesConfig;
 
