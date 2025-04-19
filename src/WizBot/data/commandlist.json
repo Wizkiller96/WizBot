@@ -3148,7 +3148,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -3165,7 +3165,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -3349,7 +3349,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -3364,7 +3364,7 @@
       "Module": "Gambling",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -5656,7 +5656,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -5675,7 +5675,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {
@@ -5694,7 +5694,7 @@
       "Module": "Permissions",
       "Options": null,
       "Requirements": [
-        "Bot Owner Only"
+        "Bot Staff Only"
       ]
     },
     {

@@ -829,17 +829,26 @@ public partial class Utility : WizModule
     [Cmd]
     [OnlyPublicBot]
     public async Task Donators()
-    { 
+    {
+        const int maxDisplayCount = 20; // Maximum number of users to display
         // Make it so it won't error when no users are found.
-        var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members;
-        var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members;
+        var dusers = _client.GetGuild(99273784988557312).GetRole(280182841114099722).Members.ToList();
+        var pusers = _client.GetGuild(99273784988557312).GetRole(299174013597646868).Members.ToList();
 
+        string FormatUserList(IEnumerable<IGuildUser> users)
+        {
+            var userList = users.Take(maxDisplayCount).Select(u => u.ToString()).ToList();
+            if (users.Count() > maxDisplayCount)
+                userList.Add($"and {users.Count() - maxDisplayCount} more");
+            return string.Join("\n", userList);
+        }
+        
         await Response()
             .Embed(CreateEmbed()
                 .WithOkColor()
                 .WithTitle($"WizBot - Donators")
                 .WithDescription("List of users who have donated to WizBot.")
-                .AddField("Donators:", string.Join("\n", dusers), false))
+                .AddField("Donators:", FormatUserList(dusers), false))
             .SendAsync();
 
         await Response()
@@ -847,7 +856,7 @@ public partial class Utility : WizModule
                 .WithOkColor()
                 .WithTitle($"WizBot - Patreon Donators")
                 .WithDescription("List of users who have donated through WizNet's Patreon.")
-                .AddField("Patreon Donators:", string.Join("\n", pusers), false))
+                .AddField("Patreon Donators:", FormatUserList(pusers), false))
             .SendAsync();
     }
 
@@ -855,10 +864,19 @@ public partial class Utility : WizModule
     [OnlyPublicBot]
     public async Task WizNet()
     {
+        const int maxDisplayCount = 10; // Maximum number of users to display
         // Make it so it won't error when no users are found.
-        var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members; // WizNet Staff
-        var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members; // WizBot Staff
+        var wnstaff = _client.GetGuild(99273784988557312).GetRole(348560594045108245).Members.ToList(); // WizNet Staff
+        var wbstaff = _client.GetGuild(99273784988557312).GetRole(367646195889471499).Members.ToList(); // WizBot Staff
 
+        string FormatUserList(IEnumerable<IGuildUser> users)
+        {
+            var userList = users.Take(maxDisplayCount).Select(u => u.ToString()).ToList();
+            if (users.Count() > maxDisplayCount)
+                userList.Add($"and {users.Count() - maxDisplayCount} more");
+            return string.Join("\n", userList);
+        }
+        
         await Response()
             .Embed(CreateEmbed()
                 .WithOkColor()
@@ -867,8 +885,8 @@ public partial class Utility : WizModule
                 .WithDescription("WizNet is a small internet company that was made by Wizkiller96. The site first started off more as a social platform for his friends to have a place to hangout and chat with each other and share their work. Since then the site has gone through many changes and reforms. It now sits as a small hub for all the services and work WizNet provides to the public.")
                 .AddField("Websites", "[WizNet](http://wiznet.work/)\n[Wiz VPS](http://wiz-vps.com/)\n[WizBot](http://wizbot.cc)", true)
                 .AddField("Social Media", "[Facebook](http://facebook.com/Wizkiller96Network)\n[WizBot's Twitter](http://twitter.com/WizBot_Dev)", true)
-                .AddField("WizNet Staff", string.Join("\n", wnstaff), false)
-                .AddField("WizBot Staff", string.Join("\n", wbstaff), false)
+                .AddField("WizNet Staff", FormatUserList(wnstaff), false)
+                .AddField("WizBot Staff", FormatUserList(wbstaff), false)
                 .WithFooter("Note: Not all staff are listed here."))
             .SendAsync();
     }

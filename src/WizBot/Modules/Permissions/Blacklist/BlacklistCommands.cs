@@ -74,7 +74,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task UserBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -84,7 +84,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task ChannelBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -94,7 +94,7 @@ public partial class Permissions
         }
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task ServerBlacklist(int page = 1)
         {
             if (--page < 0)
@@ -104,27 +104,27 @@ public partial class Permissions
         }
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task UserBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.User);
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task UserBlacklist(AddRemove action, IUser usr)
             => Blacklist(action, usr.Id, BlacklistType.User);
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task ChannelBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Channel);
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task ServerBlacklist(AddRemove action, ulong id)
             => Blacklist(action, id, BlacklistType.Server);
 
         [Cmd]
-        [OwnerOnly]
+        [AdminOnly]
         public Task ServerBlacklist(AddRemove action, IGuild guild)
             => Blacklist(action, guild.Id, BlacklistType.Server);
 

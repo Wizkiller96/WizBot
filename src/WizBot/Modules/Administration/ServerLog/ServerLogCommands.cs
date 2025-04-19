@@ -6,13 +6,12 @@ namespace WizBot.Modules.Administration;
 public partial class Administration
 {
     [Group]
-    [NoPublicBot]
+//    [NoPublicBot]
     public partial class LogCommands : WizModule<ILogCommandService>
     {
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task LogServer(PermissionAction action)
         {
             await _service.LogServer(ctx.Guild.Id, ctx.Channel.Id, action.Value);
@@ -25,7 +24,6 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task LogIgnore()
         {
             var settings = _service.GetGuildLogSettings(ctx.Guild.Id);
@@ -52,7 +50,6 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task LogIgnore([Leftover] ITextChannel target)
         {
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.Channel);
@@ -76,7 +73,6 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task LogIgnore([Leftover] IUser target)
         {
             var removed = _service.LogIgnore(ctx.Guild.Id, target.Id, IgnoredItemType.User);
@@ -98,7 +94,6 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task LogEvents()
         {
             var logSetting = _service.GetGuildLogSettings(ctx.Guild.Id);
@@ -161,7 +156,6 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.Administrator)]
-        [OwnerOnly]
         public async Task Log(LogType type)
         {
             var val = _service.Log(ctx.Guild.Id, ctx.Channel.Id, type);

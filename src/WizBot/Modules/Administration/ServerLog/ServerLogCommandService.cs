@@ -7,9 +7,9 @@ using WizBot.Db.Models;
 namespace WizBot.Modules.Administration;
 
 public sealed class LogCommandService : ILogCommandService, IReadyExecutor
-#if !GLOBAL_WIZ
+//#if !GLOBAL_WIZ
         , INService // don't load this service on global wiz
-#endif
+//#endif
 {
     public ConcurrentDictionary<ulong, LogSetting> GuildLogSettings { get; }
 

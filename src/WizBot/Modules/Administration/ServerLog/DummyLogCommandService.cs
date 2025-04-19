@@ -3,9 +3,9 @@
 namespace WizBot.Modules.Administration;
 
 public sealed class DummyLogCommandService : ILogCommandService
-#if GLOBAL_WIZ
+/*#if GLOBAL_WIZ
 , INService
-#endif
+#endif*/
 {
     public void AddDeleteIgnore(ulong xId)
     {
