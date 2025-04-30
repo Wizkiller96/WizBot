@@ -21,11 +21,16 @@ public sealed class ScheduleCommandService(
             _tcs = new();
 
             // get the next scheduled command
-            var scheduledCommand = await db.GetDbContext()
-                .GetTable<ScheduledCommand>()
-                .Where(x => Queries.GuildOnShard(x.GuildId, shardData.TotalShards, shardData.ShardId))
-                .OrderBy(x => x.When)
-                .FirstOrDefaultAsyncLinqToDB();
+            ScheduledCommand? scheduledCommand;
+ 
+            await using (var ctx = db.GetDbContext())
+            {
+                scheduledCommand = await ctx
+                    .GetTable<ScheduledCommand>()
+                    .Where(x => Queries.GuildOnShard(x.GuildId, shardData.TotalShards, shardData.ShardId))
+                    .OrderBy(x => x.When)
+                    .FirstOrDefaultAsyncLinqToDB();
+            }
 
             if (scheduledCommand is null)
             {
@@ -36,8 +41,20 @@ public sealed class ScheduleCommandService(
             var now = DateTime.UtcNow;
             if (scheduledCommand.When > now)
             {
-                var diff = scheduledCommand.When - now;
-                await Task.WhenAny(Task.Delay(diff), _tcs.Task);
+                try
+                {
+                    var diff = scheduledCommand.When - now;
+                    await Task.WhenAny(Task.Delay(diff), _tcs.Task);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e, "Error in ScheduleCommandService");
+                    await using var ctx = db.GetDbContext();
+                    await ctx.GetTable<ScheduledCommand>()
+                        .Where(x => x.Id == scheduledCommand.Id)
+                        .DeleteAsync();
+                }
+                
                 continue;
             }
 
@@ -84,7 +101,7 @@ public sealed class ScheduleCommandService(
         TimeSpan when)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(commandText, nameof(commandText));
-        
+
         await using var uow = db.GetDbContext();
 
         var count = await uow.GetTable<ScheduledCommand>()
