@@ -10,16 +10,12 @@ theme:
     name: material
     palette:
           - media: "(prefers-color-scheme: light)"
-            scheme: default
-            primary: deep purple
-            accent: deep purple
+            scheme: wizbot-light
             toggle:
                 icon: material/weather-sunny
                 name: Switch to dark mode
           - media: "(prefers-color-scheme: dark)"
-            scheme: slate
-            primary: deep purple
-            accent: deep purple
+            scheme: wizbot-dark
             toggle:
                 icon: material/weather-night
                 name: Switch to light mode
@@ -37,6 +33,11 @@ theme:
 
 extra:
   homepage: https://wizbot.cc
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css
+  - stylesheets/styling-overrides.css
+  - stylesheets/theme.css
 
 plugins:
     - search
