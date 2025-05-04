@@ -30,11 +30,11 @@
 	--md-code-hl-keyword-color: rgb(63, 110, 198);
 	--md-code-hl-string-color: rgb(64, 168, 116);
 	--md-code-hl-name-color: rgb(54, 70, 78);
-	--md-code-hl-operator-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-punctuation-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-comment-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-generic-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-variable-color: rgba(0, 0, 0, 0.54);
+	--md-code-hl-operator-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-punctuation-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-comment-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-generic-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-variable-color: rgba(255, 255, 255, 0.54);
 
 	/* Footer color shades */
 	--md-footer-bg-color: rgb(43, 44, 46) !important;
@@ -60,7 +60,7 @@
 	--md-typeset-kbd-accent-color: hsla(220, 10%, 94%, 0.2);
 	--md-typeset-kbd-border-color: hsla(220, 10%, 14%, 1);
 	--md-admonition-bg-color: hsla(220, 10%, 100%, 0.025);
-	--md-admonition-fg-color: rgba(252, 233, 233, 0.205);
+	--md-admonition-fg-color: rgba(0, 0, 0, 0.205);
 
 	/* Code Color Shade */
 	--md-code-fg-color: rgb(255, 255, 255);
@@ -73,11 +73,11 @@
 	--md-code-hl-keyword-color: rgb(63, 110, 198);
 	--md-code-hl-string-color: rgb(64, 168, 116);
 	--md-code-hl-name-color: rgb(54, 70, 78);
-	--md-code-hl-operator-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-punctuation-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-comment-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-generic-color: rgba(0, 0, 0, 0.54);
-	--md-code-hl-variable-color: rgba(0, 0, 0, 0.54);
+	--md-code-hl-operator-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-punctuation-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-comment-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-generic-color: rgba(255, 255, 255, 0.54);
+	--md-code-hl-variable-color: rgba(255, 255, 255, 0.54);
 
 	/* Footer color shades */
 	--md-footer-bg-color: rgb(43, 44, 46) !important;

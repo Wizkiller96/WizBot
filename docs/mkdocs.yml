@@ -34,8 +34,11 @@ theme:
 extra:
   homepage: https://wizbot.cc
 
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
+
 extra_css:
-  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css
+  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css
   - stylesheets/styling-overrides.css
   - stylesheets/theme.css
 
