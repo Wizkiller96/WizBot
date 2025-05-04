@@ -46,12 +46,12 @@
 	--md-primary-fg-color: #590074;
 	--md-primary-fg-color--light: #964aad;
 	--md-primary-fg-color--dark: #964aad;
-	--md-default-bg-color: #c5c5c5;
+	--md-default-bg-color: #e8e8e8;
 	--md-default-bg-color--light: #e8e8e8;
-	--md-default-fg-color: hsla(0, 75%, 95%, 1);
-	--md-default-fg-color--light: hsla(0, 0%, 100%, 0.849);
-	--md-default-fg-color--lighter: hsla(0, 0%, 100%, 0.32);
-	--md-default-fg-color--lightest: hsla(0, 0%, 100%, 0.12);
+	--md-default-fg-color: hsla(0, 0%, 0%, 1.5);
+	--md-default-fg-color--light: hsla(0deg, 0%, 0%, 85%);
+	--md-default-fg-color--lighter: hsla(0deg, 0%, 100%, 32%);
+	--md-default-fg-color--lightest: hsla(0deg, 0%, 100%, 12%);
 	--md-accent-fg-color: #964aad !important;
 	--md-typeset-color: var(--md-default-fg-color);
 	--md-typeset-a-color: #964aad !important;
@@ -60,7 +60,7 @@
 	--md-typeset-kbd-accent-color: hsla(220, 10%, 94%, 0.2);
 	--md-typeset-kbd-border-color: hsla(220, 10%, 14%, 1);
 	--md-admonition-bg-color: hsla(220, 10%, 100%, 0.025);
-	--md-admonition-fg-color: hsla(0, 75%, 95%, 1);
+	--md-admonition-fg-color: rgba(252, 233, 233, 0.205);
 
 	/* Code Color Shade */
 	--md-code-fg-color: rgb(255, 255, 255);
