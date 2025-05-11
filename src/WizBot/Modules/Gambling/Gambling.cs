@@ -286,8 +286,8 @@ public partial class Gambling : GamblingModule<GamblingService>
         var val = Config.Timely.Amount;
         var inter = CreateRemindMeInteraction(period);
 
-        var prepend = GetText(strs.timely(N(val), period));
         var (newVal, msg) = await _service.GetAmountAndMessage(ctx.User.Id, val);
+        var prepend = GetText(strs.timely(N(newVal), period));
 
         msg = prepend + "\n\n" + msg;
 
