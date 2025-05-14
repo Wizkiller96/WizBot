@@ -116,6 +116,9 @@ public sealed class CommandsUtilityService : ICommandsUtilityService, INService
 
         if (cmd.Preconditions.Any(x => x is OwnerOnlyAttribute))
             toReturn.Add("Bot Owner Only");
+        
+        if (cmd.Preconditions.Any(x => x is AdminOnlyAttribute))
+            toReturn.Add("Bot Staff Only");
 
         if (cmd.Preconditions.Any(x => x is NoPublicBotAttribute)
             || cmd.Module
