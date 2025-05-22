@@ -367,6 +367,7 @@ site/
 ## AI
 
 .aider.*
+.roo/**
 PROMPT.md
 .*rules
 

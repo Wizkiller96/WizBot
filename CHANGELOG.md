@@ -2,6 +2,19 @@
 
 *a,c,f,r,o*
 
+## [6.1.8] - 20.05.2026
+
+### Changed
+
+- Nunchi renamed to CountUp - visual improvements
+
+### Fixed
+
+- Fixed `.shopadd cmd`
+- Scheduled commands will now be cleaned up if they're too long
+
+### Removed
+
 ## [6.1.7] - 14.04.2025
 
 ### Fixed
