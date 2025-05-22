@@ -309,8 +309,7 @@ public partial class Gambling
         {
             if (price < 1)
                 return;
-
-
+            
             var entry = await _service.AddShopCommandAsync(ctx.Guild.Id, ctx.User.Id, price, command);
 
             await Response().Embed(EntryToEmbed(entry).WithTitle(GetText(strs.shop_item_add))).SendAsync();

@@ -121,6 +121,8 @@ public class ShopService : IShopService, INService
                              .InsertWithOutputAsync(() => new()
                              {
                                  AuthorId = userId,
+                                 GuildId = guildId,
+                                 Name = command,
                                  Command = command,
                                  Type = ShopEntryType.Command,
                                  Price = price,
