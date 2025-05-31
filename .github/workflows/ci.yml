@@ -62,7 +62,7 @@ jobs:
       with:
         name: wiz-${{ matrix.runtime }}
         path: wiz-${{ matrix.runtime }}
-  
+
   create-release:
     name: Create Release
     needs:
@@ -99,14 +99,14 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: |
             [Changelog](https://github.com/Wizkiller96/WizBot/blob/v6/CHANGELOG.md)
-            
+
           generate_release_notes: true
           draft: false
           prerelease: false
           files: |
             artifacts/*.zip
             artifacts/*.tar.gz
-  
+
   docker:
     name: Build and Push Docker image
     if: github.event_name != 'pull_request'
@@ -136,13 +136,13 @@ jobs:
           push: true
           context: .
           tags: ghcr.io/wizkiller96/wizbot:latest,ghcr.io/wizkiller96/wizbot:v6,ghcr.io/wizkiller96/wizbot:${{ github.ref_name }}
-  
+
   publish-medusa-package:
     name: Publish Medusa Package
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
