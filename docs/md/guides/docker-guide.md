@@ -26,7 +26,7 @@ When deploying WizBot with Docker, you have two options: using [Docker](#__tabbe
     ```
 2. Mount the newly created empty data folder as a volume while starting your docker container. Replace YOUR_TOKEN_HERE with the bot token obtained from the creds guide above.
     ``` sh
-    docker run -d --name wizbot ghcr.io/Wizkiller96/WizBot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
+    docker run -d --name wizbot ghcr.io/wizkiller96/wizbot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
     ```
 3. Enjoy! 🎉
 
@@ -36,11 +36,11 @@ If you want to update WizBot to the latest version, all you have to do is pull t
 
 1. Pull the latest image
     ``` sh
-    docker pull ghcr.io/Wizkiller96/WizBot:v6
+    docker pull ghcr.io/wizkiller96/wizbot:v6
     ```
 2. Re-run your bot the same way you did before
     ``` sh
-    docker run -d --name wizbot ghcr.io/Wizkiller96/WizBot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
+    docker run -d --name wizbot ghcr.io/wizkiller96/wizbot:v6 -e bot_token=YOUR_TOKEN_HERE -v "./data:/app/data" && docker logs -f --tail 500 wizbot
     ```
 3. Done! 🎉
 
@@ -53,7 +53,7 @@ If you want to update WizBot to the latest version, all you have to do is pull t
     ``` yml
     services:
       wizbot:
-        image: ghcr.io/Wizkiller96/WizBot:v6
+        image: ghcr.io/wizkiller96/wizbot:v6
         container_name: wizbot
         restart: unless-stopped
         environment:
