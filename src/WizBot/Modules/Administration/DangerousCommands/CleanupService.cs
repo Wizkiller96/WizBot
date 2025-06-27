@@ -12,8 +12,6 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     private TypedKey<KeepReport> _cleanupReportKey = new("cleanup:report");
     private TypedKey<bool> _cleanupTriggerKey = new("cleanup:trigger");
 
-    private TypedKey<int> _keepTriggerKey = new("keep:trigger");
-
     private readonly IPubSub _pubSub;
     private readonly DiscordSocketClient _client;
     private ConcurrentDictionary<int, ulong[]> guildIds = new();
@@ -35,80 +33,9 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
     public async Task OnReadyAsync()
     {
         await _pubSub.Sub(_cleanupTriggerKey, OnCleanupTrigger);
-        await _pubSub.Sub(_keepTriggerKey, InternalTriggerKeep);
-
-        _client.JoinedGuild += ClientOnJoinedGuild;
 
         if (_client.ShardId == 0)
             await _pubSub.Sub(_cleanupReportKey, OnKeepReport);
-    }
-
-    private bool keepTriggered = false;
-
-    private async ValueTask InternalTriggerKeep(int shardId)
-    {
-        if (_client.ShardId != shardId)
-            return;
-
-        if (keepTriggered)
-            return;
-
-        keepTriggered = true;
-        try
-        {
-            var allGuildIds = _client.Guilds.Select(x => x.Id).ToArray();
-
-            HashSet<ulong> dontDelete;
-            await using (var db = _db.GetDbContext())
-            {
-                await using var ctx = db.CreateLinqToDBContext();
-                var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
-
-                var dontDeleteList = await table
-                                           .Where(x => allGuildIds.Contains(x.GuildId))
-                                           .Select(x => x.GuildId)
-                                           .ToListAsyncLinqToDB();
-
-                dontDelete = dontDeleteList.ToHashSet();
-            }
-
-            Log.Information("Leaving {RemainingCount} guilds, 1 every second. {DontDeleteCount} will remain",
-                allGuildIds.Length - dontDelete.Count,
-                dontDelete.Count);
-            
-            foreach (var guildId in allGuildIds)
-            {
-                if (dontDelete.Contains(guildId))
-                    continue;
-
-                await Task.Delay(1016);
-
-                SocketGuild? guild = null;
-                try
-                {
-                    guild = _client.GetGuild(guildId);
-
-                    if (guild is null)
-                    {
-                        Log.Warning("Unable to find guild {GuildId}", guildId);
-                        continue;
-                    }
-
-                    await guild.LeaveAsync();
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning("Unable to leave guild {GuildName} [{GuildId}]: {ErrorMessage}",
-                        guild?.Name,
-                        guildId,
-                        ex.Message);
-                }
-            }
-        }
-        finally
-        {
-            keepTriggered = false;
-        }
     }
 
     public async Task<KeepResult?> DeleteMissingGuildDataAsync()
@@ -266,42 +193,10 @@ public sealed class CleanupService : ICleanupService, IReadyExecutor, INService
         };
     }
 
-    public async Task<bool> KeepGuild(ulong guildId)
-    {
-        await using var db = _db.GetDbContext();
-        await using var ctx = db.CreateLinqToDBContext();
-        var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
-        if (await table.AnyAsyncLinqToDB(x => x.GuildId == guildId))
-            return false;
-
-        await table.InsertAsync(() => new()
-        {
-            GuildId = guildId
-        });
-
-        return true;
-    }
-
-    public async Task<int> GetKeptGuildCount()
-    {
-        await using var db = _db.GetDbContext();
-        await using var ctx = db.CreateLinqToDBContext();
-        var table = ctx.CreateTable<KeptGuilds>(tableOptions: TableOptions.CheckExistence);
-        return await table.CountAsync();
-    }
-
-    public async Task StartLeavingUnkeptServers(int shardId)
-        => await _pubSub.Pub(_keepTriggerKey, shardId);
-
     private ValueTask OnKeepReport(KeepReport report)
     {
         guildIds[report.ShardId] = report.GuildIds;
         return default;
-    }
-
-    private async Task ClientOnJoinedGuild(SocketGuild arg)
-    {
-        await KeepGuild(arg.Id);
     }
 
     private ValueTask OnCleanupTrigger(bool arg)

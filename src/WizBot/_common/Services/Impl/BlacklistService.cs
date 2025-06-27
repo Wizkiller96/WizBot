@@ -39,14 +39,6 @@ public sealed class BlacklistService : IExecOnMessage, IReadyExecutor, INService
 
     public async Task OnReadyAsync()
     {
-        _client.JoinedGuild += async (g) =>
-        {
-            if (blacklistedGuilds.Contains(g.Id))
-            {
-                await g.LeaveAsync();
-            }
-        };
-
         await Reload(false);
     }
 

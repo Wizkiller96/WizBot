@@ -30,45 +30,8 @@ public partial class Administration
             }
 
             await Response()
-                  .Confirm($"{result.GuildCount} guilds' data remain in the database.")
-                  .SendAsync();
-        }
-
-        [Cmd]
-        [RequireContext(ContextType.Guild)]
-        [UserPerm(GuildPerm.Administrator)]
-        public async Task Keep()
-        {
-            var result = await _svc.KeepGuild(Context.Guild.Id);
-
-            await Response().Text("This guild's bot data will be saved.").SendAsync();
-        }
-
-        [Cmd]
-        [OwnerOnly]
-        public async Task LeaveUnkeptServers(int startShardId, int shardMultiplier = 3000)
-        {
-            var keptGuildCount = await _svc.GetKeptGuildCount();
-
-            var response = await PromptUserConfirmAsync(new EmbedBuilder()
-                .WithDescription($"""
-                                  Do you want the bot to leave all unkept servers?
-
-                                  There are currently {keptGuildCount} kept servers.   
-
-                                  **This is a highly destructive and irreversible action.**
-                                  """));
-
-            if (!response)
-                return;
-
-            for (var shardId = startShardId; shardId < _creds.GetCreds().TotalShards; shardId++)
-            {
-                await _svc.StartLeavingUnkeptServers(shardId);
-                await Task.Delay(shardMultiplier * 1000);
-            }
-
-            await ctx.OkAsync();
+                .Confirm($"{result.GuildCount} guilds' data remain in the database.")
+                .SendAsync();
         }
     }
 }

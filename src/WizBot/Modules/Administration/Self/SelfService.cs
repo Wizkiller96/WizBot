@@ -66,15 +66,8 @@ public sealed class SelfService : IExecNoCommand, IReadyExecutor, INService
                 if (server is null)
                     return;
 
-                if (server.OwnerId != _client.CurrentUser.Id)
-                {
-                    await server.LeaveAsync();
-                }
-                else
-                {
-                    await server.DeleteAsync();
-                    Log.Information("Deleted server {Name} [{Id}]", server.Name, server.Id);
-                }
+                Log.Information("Owner requested server leave: {Name} [{GuildId}]", server.Name, server.Id);
+                await server.LeaveAsync();
             });
     }
 
