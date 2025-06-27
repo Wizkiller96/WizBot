@@ -6,6 +6,7 @@ using WizBot.Common.Configs;
 using WizBot.Common.ModuleBehaviors;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 using RunMode = Discord.Commands.RunMode;
 
 namespace WizBot;
@@ -66,7 +67,10 @@ public sealed class Bot : IBot
                 : GatewayIntents.AllUnprivileged,
             LogGatewayIntentWarnings = false,
             FormatUsersInBidirectionalUnicode = false,
-            DefaultRetryMode = RetryMode.Retry502
+            DefaultRetryMode = RetryMode.Retry502,
+#if GLOBAL_WIZ
+            IncludeRawPayloadOnGatewayErrors = true,
+#endif
         });
 
         _commandService = new(new()
@@ -160,9 +164,9 @@ public sealed class Bot : IBot
     private void LoadTypeReaders(Assembly assembly)
     {
         var filteredTypes = assembly.GetExportedTypes()
-                                    .Where(x => x.IsSubclassOf(typeof(TypeReader))
-                                                && x.BaseType?.GetGenericArguments().Length > 0
-                                                && !x.IsAbstract);
+            .Where(x => x.IsSubclassOf(typeof(TypeReader))
+                        && x.BaseType?.GetGenericArguments().Length > 0
+                        && !x.IsAbstract);
 
         foreach (var ft in filteredTypes)
         {
@@ -261,7 +265,7 @@ public sealed class Bot : IBot
             Stopwatch.GetElapsedTime(startTime).TotalSeconds);
         
         var commandHandler = Services.GetRequiredService<CommandHandler>();
-        
+
 
         foreach (var a in _loadedAssemblies)
         {
@@ -351,9 +355,25 @@ public sealed class Bot : IBot
         }
 
         if (arg.Exception is not null)
+        {
             Log.Warning(arg.Exception, "{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
+#if GLOBAL_WIZ
+            if (arg.Exception.Data is { } data)
+            {
+                Log.Warning("Full error: {FullError}",
+                    JsonSerializer.Serialize(arg.Exception.Data,
+                        new JsonSerializerOptions()
+                        {
+                            WriteIndented = true
+                        }));
+            }
+#endif
+        }
         else
+        {
             Log.Warning("{ErrorSource} | {ErrorMessage}", arg.Source, arg.Message);
+        }
+
         return Task.CompletedTask;
     }
 

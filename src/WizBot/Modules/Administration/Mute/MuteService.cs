@@ -427,12 +427,23 @@ public class MuteService : INService, IReadyExecutor
 
     private async Task RemoveTimerFromDb(ulong guildId, ulong userId, TimerType type)
     {
-        using var uow = _db.GetDbContext();
-        await using var ctx = _db.GetDbContext();
+        await using var uow = _db.GetDbContext();
+        if (type == TimerType.Ban)
+            await uow.GetTable<UnbanTimer>()
+                .Where(x => x.UserId == userId && x.GuildId == guildId)
+                .DeleteAsync();
+        else if (type == TimerType.Mute)
+            await uow.GetTable<UnmuteTimer>()
+                .Where(x => x.UserId == userId && x.GuildId == guildId)
+                .DeleteAsync();
+        else if (type == TimerType.AddRole)
+            await uow.GetTable<UnroleTimer>()
+                .Where(x => x.UserId == userId && x.GuildId == guildId)
+                .DeleteAsync();
     }
 
 
-    // todo UN* update to new way of tracking expiries
+    // todo UN* update to new way of tracking expires
     public async Task OnReadyAsync()
     {
         await using var uow = _db.GetDbContext();
