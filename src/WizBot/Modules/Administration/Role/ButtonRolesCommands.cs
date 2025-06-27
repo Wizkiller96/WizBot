@@ -31,11 +31,10 @@ public partial class Administration
                                                              : null;
 
                                                          return new ButtonBuilder()
-                                                                .WithCustomId(y.ButtonId)
-                                                                .WithEmote(btnEmote)
-                                                                .WithLabel(label)
-                                                                .WithStyle(ButtonStyle.Secondary)
-                                                                .Build() as IMessageComponent;
+                                                             .WithCustomId(y.ButtonId)
+                                                             .WithEmote(btnEmote)
+                                                             .WithLabel(label)
+                                                             .WithStyle(ButtonStyle.Secondary);
                                                      })
                                                      .ToList());
 
