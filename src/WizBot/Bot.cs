@@ -230,7 +230,7 @@ public sealed class Bot : IBot
 
     private Task Client_LeftGuild(SocketGuild arg)
     {
-        Log.Information("Left server: {GuildName} [{GuildId}]", arg?.Name, arg?.Id);
+        Log.Information("Left server: {GuildName} [{GuildId}] [available: {GuildAvailable}]", arg?.Name, arg?.Id, (arg as IGuild)?.Available);
         return Task.CompletedTask;
     }
 
