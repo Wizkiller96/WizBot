@@ -32,24 +32,48 @@ public partial class Administration
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [UserPerm(GuildPerm.BanMembers)]
-        public async Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
+        public Task Warn(ulong userId, [Leftover] string reason = null)
+            => WarnInternal(1, userId, reason);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.BanMembers)]
+        public Task Warn(int weight, ulong userId, [Leftover] string reason = null)
+            => WarnInternal(weight, userId, reason);
+
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        [UserPerm(GuildPerm.BanMembers)]
+        public Task Warn(int weight, IGuildUser user, [Leftover] string reason = null)
+            => WarnInternal(weight, user.Id, reason);
+
+        private async Task WarnInternal(int weight, ulong userId, string reason = null)
         {
             if (weight <= 0)
                 return;
 
-            if (!await CheckRoleHierarchy(user))
+            var user = await ctx.Guild.GetUserAsync(userId);
+
+            if (user is not null && !await CheckRoleHierarchy(user))
                 return;
 
             var dmFailed = false;
             try
             {
-                await _sender.Response(user)
-                    .Embed(CreateEmbed()
-                        .WithErrorColor()
-                        .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
-                        .AddField(GetText(strs.moderator), ctx.User.ToString())
-                        .AddField(GetText(strs.reason), reason ?? "-"))
-                    .SendAsync();
+                if (user is not null)
+                {
+                    await _sender.Response(user)
+                        .Embed(CreateEmbed()
+                            .WithErrorColor()
+                            .WithDescription(GetText(strs.warned_on(ctx.Guild.ToString())))
+                            .AddField(GetText(strs.moderator), ctx.User.ToString())
+                            .AddField(GetText(strs.reason), reason ?? "-"))
+                        .SendAsync();
+                }
+                else
+                {
+                    dmFailed = true;
+                }
             }
             catch
             {
@@ -59,7 +83,7 @@ public partial class Administration
             WarningPunishment punishment;
             try
             {
-                punishment = await _service.Warn(ctx.Guild, user.Id, ctx.User, weight, reason);
+                punishment = await _service.Warn(ctx.Guild, userId, ctx.User, weight, reason);
             }
             catch (Exception ex)
             {
@@ -77,11 +101,19 @@ public partial class Administration
 
             var embed = CreateEmbed().WithOkColor();
             if (punishment is null)
-                embed.WithDescription(GetText(strs.user_warned(Format.Bold(user.ToString()))));
+            {
+                embed.WithDescription(GetText(strs.user_warned(Format.Bold(user?.ToString() ?? userId.ToString()))));
+            }
             else
             {
-                embed.WithDescription(GetText(strs.user_warned_and_punished(Format.Bold(user.ToString()),
-                    Format.Bold(punishment.Punishment.ToString()))));
+                embed.WithDescription(
+                    GetText(
+                        strs.user_warned_and_punished(
+                            Format.Bold(user?.ToString() ?? userId.ToString()),
+                            Format.Bold(punishment.Punishment.ToString())
+                        )
+                    )
+                );
             }
 
             if (dmFailed)
