@@ -381,36 +381,6 @@
     },
     {
       "Aliases": [
-        ".keep"
-      ],
-      "Description": "The current serve, won't be deleted from Wiz's database during the purge.",
-      "Usage": [
-        ".keep"
-      ],
-      "Submodule": "CleanupCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "Administrator Server Permission"
-      ]
-    },
-    {
-      "Aliases": [
-        ".leaveunkeptservers"
-      ],
-      "Description": "Leaves all servers whose owners didn't run .keep",
-      "Usage": [
-        ".leaveunkeptservers"
-      ],
-      "Submodule": "CleanupCommands",
-      "Module": "Administration",
-      "Options": null,
-      "Requirements": [
-        "Bot Owner Only"
-      ]
-    },
-    {
-      "Aliases": [
         ".sqlselect"
       ],
       "Description": "Executes provided sql query and returns the results. Dangerous.",

@@ -74,27 +74,15 @@ public partial class Utility
         /// Removes protocol and www. from a domain
         /// </summary>
         /// <param name="domain">The domain to clean</param>
-        private static string CleanDomain(string domain)
+        private string CleanDomain(string domain)
         {
-            // Remove protocol if present
-            if (domain.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-                domain = domain[7..];
-            else if (domain.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                domain = domain[8..];
 
-            // Remove www. if present
-            if (domain.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
-                domain = domain[4..];
-
-            // Remove any path or query string
-            var pathIndex = domain.IndexOf('/');
-            if (pathIndex > 0)
-                domain = domain[..pathIndex];
-
-            if (domain.Split('.').Length != 2)
+            var match = _service.PartialUrlRegex().Match(domain);
+            if (!match.Success)
                 return string.Empty;
 
-            return domain.ToLowerInvariant();
+            return match.Groups["domain"].ToString().ToLowerInvariant();
+            
         }
     }
 }

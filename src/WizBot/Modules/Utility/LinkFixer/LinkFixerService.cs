@@ -44,7 +44,7 @@ public partial class LinkFixerService(DbService db) : IReadyExecutor, IExecNoCom
         var words = content.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         foreach (var word in words)
         {
-            var match = UrlRegex().Match(word);
+            var match = FullUrlRegex().Match(word);
             if (!match.Success)
                 continue;
 
@@ -60,8 +60,11 @@ public partial class LinkFixerService(DbService db) : IReadyExecutor, IExecNoCom
         }
     }
 
-    [GeneratedRegex("(?<prefix>https?://(?:www\\.)?)(?<domain>[^/]+)(?<suffix>.*)")]
-    private partial Regex UrlRegex();
+    [GeneratedRegex(@"(?<prefix>https?://)(?:www.)?(?<domain>[a-zA-Z0-9\-\.]+)(?<suffix>/.*)?")]
+    private partial Regex FullUrlRegex();
+    
+    [GeneratedRegex(@"(?<prefix>https?://)?(?:ww[w\d].)?(?<domain>[a-zA-Z0-9\-\.]+)(?<suffix>/.*)?")]
+    public partial Regex PartialUrlRegex();
 
     /// <summary>
     /// Adds a new link fix for a guild
@@ -80,20 +83,20 @@ public partial class LinkFixerService(DbService db) : IReadyExecutor, IExecNoCom
         await using var uow = db.GetDbContext();
         await uow.GetTable<LinkFix>()
             .InsertOrUpdateAsync(() => new LinkFix
-            {
-                GuildId = guildId,
-                OldDomain = oldDomain,
-                NewDomain = newDomain
-            },
-            old => new LinkFix
-            {
-                NewDomain = newDomain
-            },
-            () => new LinkFix
-            {
-                GuildId = guildId,
-                OldDomain = oldDomain,
-            });
+                {
+                    GuildId = guildId,
+                    OldDomain = oldDomain,
+                    NewDomain = newDomain
+                },
+                old => new LinkFix
+                {
+                    NewDomain = newDomain
+                },
+                () => new LinkFix
+                {
+                    GuildId = guildId,
+                    OldDomain = oldDomain,
+                });
 
         return true;
     }
