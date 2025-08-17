@@ -1243,7 +1243,7 @@
   "linkfix_removed": "Link fix for {0} has been removed.",
   "linkfix_not_found": "No link fix found for {0}.",
   "notify_cant_set": "This event doesn't support origin channel. Please specify a channel.",
-  "vote_reward": "Thank you for voting! You've received {0}.",
+  "vote_reward": "Thank you for voting! You've received {0} for voting on {1}.",
   "vote_suggest": "Voting for the bot will get you {0}!",
   "vote_disabled": "Voting is disabled.",
   "quest_log": "Quest Log",

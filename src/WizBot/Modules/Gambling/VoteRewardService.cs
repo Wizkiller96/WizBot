@@ -158,7 +158,7 @@ public class VoteRewardService(
 
                 await sender
                     .Response(user)
-                    .Confirm($"You've received{N(reward)} for voting!\n\n{msg}")
+                    .Confirm($"You've received{N(reward)} for voting on {requestType}!\n\n{msg}")
                     .SendAsync();
             }
             catch (Exception ex)
