@@ -70,7 +70,7 @@ public class XpTemplate
                 Guild = new()
                 {
                     Direction = XpTemplateDirection.Right,
-                    Length = 225,
+                    Length = 275,
                     Color = new(0, 0, 0, 0.4f),
                     PointA = new()
                     {
