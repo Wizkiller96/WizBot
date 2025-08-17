@@ -150,7 +150,7 @@ public sealed partial class Music
                     Name = name,
                     Author = ctx.User.Username,
                     AuthorId = ctx.User.Id,
-                    Songs = songs.ToList()
+                    Songs = songs.ToList(),
                 };
                 uow.Set<MusicPlaylist>().Add(playlist);
                 await uow.SaveChangesAsync();

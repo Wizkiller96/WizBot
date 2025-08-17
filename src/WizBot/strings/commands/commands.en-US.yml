@@ -4624,23 +4624,6 @@ afk:
   params:
     - msg:
         desc: "The message to send when someone pings you."
-keep:
-  desc: |-
-    The current serve, won't be deleted from WizBot's database during the purge.
-  ex:
-    - ''
-  params:
-    - { }
-leaveunkeptservers:
-  desc: |-
-    Leaves all servers whose owners didn't run .keep
-  ex:
-    - ''
-  params:
-    - shardId:
-        desc: "Shard id from which to start leaving unkept servers."
-    - delay:
-        desc: "Delay in miliseconds between leaves"
 ncanvas:
   desc: |-
     Shows the current nCanvas.
