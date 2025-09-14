@@ -109,6 +109,11 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             if (earliest.When > now.AddSeconds(2))
             {
                 var diff = earliest.When - now;
+                if (diff > TimeSpan.FromDays(30))
+                {
+                    diff = TimeSpan.FromDays(30);
+                }
+                
                 if (diff < TimeSpan.FromSeconds(1))
                 {
                     Log.Warning("Weird, delay is less than 1");
