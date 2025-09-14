@@ -106,10 +106,14 @@ public class RemindService : INService, IReadyExecutor, IRemindService
             }
 
             var now = DateTime.UtcNow;
-            if (earliest.When > now)
+            if (earliest.When > now.AddSeconds(2))
             {
                 var diff = earliest.When - now;
-                // Log.Information("Waiting for {Diff}", diff);
+                if (diff < TimeSpan.FromSeconds(1))
+                {
+                    Log.Warning("Weird, delay is less than 1");
+                    await Task.Delay(1000);
+                }
                 await Task.WhenAny(Task.Delay(diff), _tcs.Task);
                 continue;
             }
