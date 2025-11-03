@@ -8610,7 +8610,8 @@
     },
     {
       "Aliases": [
-        ".xpowned"
+        ".xpowned",
+        ".xpo"
       ],
       "Description": "Shows a list of your owned xp backgrounds and frames.",
       "Usage": [
