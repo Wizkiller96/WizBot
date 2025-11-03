@@ -7,7 +7,7 @@ namespace WizBot.Modules.Administration.Services;
 
 public sealed class GuildTimezoneService : ITimezoneService, IReadyExecutor, INService
 {
-    private ConcurrentDictionary<ulong, TimeZoneInfo> _timezones;
+    private ConcurrentDictionary<ulong, TimeZoneInfo> _timezones = new();
     private readonly DbService _db;
     private readonly IReplacementPatternStore _repStore;
     private readonly ShardData _shardData;
@@ -74,7 +74,7 @@ public sealed class GuildTimezoneService : ITimezoneService, IReadyExecutor, INS
                               .Fmap(x => x
                                          .Select(GetTimezoneTuple)
                                          .ToDictionary(x => x.GuildId, x => x.Timezone)
-                                         .ToConcurrent());
+                                         .ToConcurrent()) ?? new();
 
         await _repStore.Register("%server.time%",
             (IGuild g) =>
