@@ -39,25 +39,34 @@ public sealed partial class Music
 
         [Cmd]
         [RequireContext(ContextType.Guild)]
-        public async Task Playlists([Leftover] int num = 1)
+        public async Task Playlists([Leftover] int page = 1)
         {
-            if (num <= 0)
+            if (page <= 0)
                 return;
+            
+            await Response()
+                .Paginated()
+                .PageItems(GetPlaylistsOnPage)
+                .Page((playlists, num) =>
+                {
+                    var embed = CreateEmbed()
+                        .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
+                        .WithDescription(
+                            playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))
+                                .Join("\n"))
+                        .WithOkColor();
 
-            List<MusicPlaylist> playlists;
+                    return embed;
+                })
+                .SendAsync();
+            
+            return;
 
-            await using (var uow = _db.GetDbContext())
+            async Task<IReadOnlyCollection<MusicPlaylist>> GetPlaylistsOnPage(int num)
             {
-                playlists = uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
+                await using var uow = _db.GetDbContext();
+                return uow.Set<MusicPlaylist>().GetPlaylistsOnPage(num);
             }
-
-            var embed = CreateEmbed()
-                .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
-                .WithDescription(string.Join("\n",
-                    playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))))
-                .WithOkColor();
-
-            await Response().Embed(embed).SendAsync();
         }
 
         [Cmd]
@@ -174,7 +183,7 @@ public sealed partial class Music
             {
             }
         }
-        
+
         [Cmd]
         [RequireContext(ContextType.Guild)]
         [WizOptions<PlaylistLoadOptions>]
