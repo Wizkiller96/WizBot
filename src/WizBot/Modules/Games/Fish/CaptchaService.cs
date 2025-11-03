@@ -1,5 +1,4 @@
-﻿using WizBot.Db.Models;
-using WizBot.Modules.Patronage;
+﻿using WizBot.Modules.Patronage;
 using SixLabors.Fonts;
 using SixLabors.Fonts.Unicode;
 using SixLabors.ImageSharp;
@@ -7,7 +6,6 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Color = SixLabors.ImageSharp.Color;
-
 
 namespace WizBot.Modules.Games;
 
@@ -33,8 +31,7 @@ public sealed class CaptchaService(FontProvider fonts, IBotCache cache, IPatrona
         // draw password on the image
         img.Mutate(x =>
         {
-            DrawTextExtensions.DrawText(x,
-                new RichTextOptions(font)
+            x.DrawText(new RichTextOptions(font)
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,

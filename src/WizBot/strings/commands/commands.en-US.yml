@@ -4088,6 +4088,12 @@ xpshop:
         desc: "The type of item to be purchased, such as an XP card frame or background."
       page:
         desc: "The page number to display in the XP shop."
+xpowned:
+  desc: Shows a list of your owned xp backgrounds and frames.
+  ex:
+    - ''
+  params:
+    - { }
 xpshopbuy:
   desc: Buy an item from the xp shop by specifying the type and the key of the item.
   ex:

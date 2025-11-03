@@ -167,7 +167,7 @@ public partial class Xp : WizModule<XpService>
         await _service.AddXpAsync(ctx.Channel.Id,
             amount,
             role.Members.Cast<IGuildUser>().ToArray());
-        
+
         await Response()
             .Confirm(strs.xpadd_users(Format.Bold(amount.ToString()), Format.Bold(role.Name)))
             .SendAsync();
@@ -183,7 +183,8 @@ public partial class Xp : WizModule<XpService>
             return;
 
         await _service.AddXpAsync(ctx.Channel.Id, amount, user);
-        await Response().Confirm(strs.modified(Format.Bold(user.ToString()), Format.Bold(amount.ToString()))).SendAsync();
+        await Response().Confirm(strs.modified(Format.Bold(user.ToString()), Format.Bold(amount.ToString())))
+            .SendAsync();
     }
 
     [Cmd]
@@ -264,6 +265,27 @@ public partial class Xp : WizModule<XpService>
                  `{prefix}xpshop bgs`
                  `{prefix}xpshop frames`
                  """)
+            .SendAsync();
+    }
+    
+    [Cmd]
+    public async Task XpOwned()
+    {
+        var ownedItems = await _service.GetUserOwnedItemsAsync(ctx.User.Id);
+
+        if (ownedItems.Count == 0)
+        {
+            await Response()
+                .Pending("You don't own any items.")
+                .SendAsync();
+            return;
+        }
+
+        var outStr = ownedItems.Join("\n",
+            static x => $"`[{x.ItemType}]` {Format.Bold(x.ItemKey)} ");
+
+        await Response()
+            .Confirm(outStr)
             .SendAsync();
     }
 

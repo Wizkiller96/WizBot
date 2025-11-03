@@ -1123,6 +1123,9 @@ xpshop:
   - xpshop
 xpshopbuy:
   - xpshopbuy
+xpowned:
+  - xpowned
+  - xpo
 xpshopuse:
   - xpshopuse
 xplevelset:
