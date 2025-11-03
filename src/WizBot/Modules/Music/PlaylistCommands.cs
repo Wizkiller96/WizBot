@@ -50,7 +50,7 @@ public sealed partial class Music
                 .Page((playlists, num) =>
                 {
                     var embed = CreateEmbed()
-                        .WithAuthor(GetText(strs.playlists_page(num)), MUSIC_ICON_URL)
+                        .WithAuthor(GetText(strs.playlists_page(num + 1)), MUSIC_ICON_URL)
                         .WithDescription(
                             playlists.Select(r => GetText(strs.playlists(r.Id, r.Name, r.Author, r.Songs.Count)))
                                 .Join("\n"))
