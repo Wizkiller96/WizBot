@@ -489,6 +489,28 @@ public sealed class FishService(
 
         return result;
     }
+    
+    public async Task<IReadOnlyCollection<(ulong UserId, int Stars, int Unique)>> GetFishStarsLbAsync(int page)
+    {
+        await using var ctx = db.GetDbContext();
+
+        var result = await ctx.GetTable<FishCatch>()
+            .GroupBy(x => x.UserId)
+            .OrderByDescending(x => x.Sum(x => x.MaxStars))
+            .ThenByDescending(x => x.Count())
+            .Skip(page * 10)
+            .Take(10)
+            .Select(x => new
+            {
+                UserId = x.Key,
+                Stars = x.Sum(x => x.MaxStars),
+                Unique = x.Count()
+            })
+            .ToListAsyncLinqToDB()
+            .Fmap(x => x.Map(y => (y.UserId, y.Stars, y.Unique)));
+
+        return result;
+    }
 
     public string GetStarText(int resStars, int fishStars)
     {

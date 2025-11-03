@@ -1263,5 +1263,6 @@
   "fish_cant_uneq_potion": "You can't unequip a potion.",
   "fish_lb_title": "Fishing Leaderboard",
   "fish_unique": "Caught {0} unique fish",
-  "fish_catches": "{0} catches total"
+  "fish_catches": "{0} catches total",
+  "fish_stars": "{1} {0}"
 }

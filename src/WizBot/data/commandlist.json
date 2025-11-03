@@ -4136,6 +4136,19 @@
     },
     {
       "Aliases": [
+        ".fishstarslb"
+      ],
+      "Description": "?",
+      "Usage": [
+        ".fishstarslb"
+      ],
+      "Submodule": "FishingCommands",
+      "Module": "Games",
+      "Options": null,
+      "Requirements": []
+    },
+    {
+      "Aliases": [
         ".fishshop",
         ".fishop"
       ],

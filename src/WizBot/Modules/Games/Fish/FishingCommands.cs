@@ -252,6 +252,47 @@ public partial class Games
                 .SendAsync();
         }
 
+        [Cmd]
+        [RequireContext(ContextType.Guild)]
+        public async Task FishStarsLb(int page = 1)
+        {
+            if (--page < 0)
+                return;
+
+            await Response()
+                .Paginated()
+                .PageItems(async p => await fs.GetFishStarsLbAsync(p))
+                .PageSize(9)
+                .Page(async (items, page) =>
+                {
+                    var users = await us.GetUsersAsync(items.Select(x => x.UserId).ToArray());
+
+                    var eb = CreateEmbed()
+                        .WithTitle(GetText(strs.fish_lb_title))
+                        .WithOkColor();
+
+                    for (var i = 0; i < items.Count; i++)
+                    {
+                        var data = items[i];
+                        var user = users.TryGetValue(data.UserId, out var ud)
+                            ? ud.ToString()
+                            : data.UserId.ToString();
+
+                        var text =
+                            $"""
+                             {GetText(strs.fish_stars(Format.Bold(data.Stars.ToString()), fs.GetStarText(1, 1)))}
+                             """;
+
+                        eb.AddField("#" + (page * 9 + i + 1) + " | " + user,
+                            text,
+                            false);
+                    }
+
+                    return eb;
+                })
+                .SendAsync();
+        }
+        
 
         private string GetFishEmoji(FishData? fish, int count)
         {

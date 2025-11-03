@@ -5266,6 +5266,14 @@ fishlb:
   params:
     - page:
         desc: "The optional page to display."
+fishstarslb:
+  desc: |-
+    Shows the top anglers based on total stars.
+  ex:
+    - ''
+  params:
+    - page:
+        desc: "The optional page to display."
 feedback:
   desc: "Send bug/feedback report to WizBot's Devs."
   ex:
