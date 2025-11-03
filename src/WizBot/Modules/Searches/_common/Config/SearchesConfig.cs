@@ -7,7 +7,7 @@ namespace WizBot.Modules.Searches;
 public partial class SearchesConfig : ICloneable<SearchesConfig>
 {
     [Comment("DO NOT CHANGE")]
-    public int Version { get; set; } = 3;
+    public int Version { get; set; } = 5;
 
     [Comment("""
              Which engine should .search command
@@ -65,6 +65,9 @@ public partial class SearchesConfig : ICloneable<SearchesConfig>
 
     [Comment("Maximum number of followed streams per server")]
     public FollowedStreamConfig FollowedStreams { get; set; } = new FollowedStreamConfig();
+    
+    [Comment("Maximum number of feeds per server")]
+    public int MaxFeeds { get; set; } = 10;
 }
 
 public sealed class FollowedStreamConfig

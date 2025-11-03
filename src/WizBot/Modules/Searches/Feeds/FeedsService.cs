@@ -17,6 +17,7 @@ public class FeedsService : INService, IReadyExecutor
     private readonly DiscordSocketClient _client;
     private readonly IMessageSenderService _sender;
     private readonly ShardData _shardData;
+    private readonly SearchesConfigService _scs;
 
     private readonly NonBlocking.ConcurrentDictionary<string, DateTime> _lastPosts = new();
     private readonly Dictionary<string, uint> _errorCounters = new();
@@ -25,7 +26,8 @@ public class FeedsService : INService, IReadyExecutor
         DbService db,
         DiscordSocketClient client,
         IMessageSenderService sender,
-        ShardData shardData)
+        ShardData shardData,
+        SearchesConfigService scs)
     {
         _db = db;
 
@@ -33,6 +35,7 @@ public class FeedsService : INService, IReadyExecutor
         _client = client;
         _sender = sender;
         _shardData = shardData;
+        _scs = scs;
     }
 
     public async Task OnReadyAsync()
@@ -241,8 +244,6 @@ public class FeedsService : INService, IReadyExecutor
             .ToList();
     }
 
-    private const int MAX_FEEDS = 10;
-
     public async Task<FeedAddResult> AddFeedAsync(
         ulong guildId,
         ulong channelId,
@@ -258,7 +259,7 @@ public class FeedsService : INService, IReadyExecutor
             return FeedAddResult.Duplicate;
 
         var count = await uow.GetTable<FeedSub>().CountAsyncLinqToDB(x => x.GuildId == guildId);
-        if (count >= MAX_FEEDS)
+        if (count >= _scs.Data.MaxFeeds)
             return FeedAddResult.LimitReached;
 
         var fs = await uow.GetTable<FeedSub>()

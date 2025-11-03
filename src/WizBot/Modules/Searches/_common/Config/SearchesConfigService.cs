@@ -33,6 +33,11 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             int.TryParse,
             ConfigPrinters.ToString);
 
+        AddParsedProp("feeds.maxCount",
+            sc => sc.MaxFeeds,
+            int.TryParse,
+            ConfigPrinters.ToString);
+        
         Migrate();
     }
 
@@ -47,11 +52,11 @@ public class SearchesConfigService : ConfigServiceBase<SearchesConfig>
             });
         }
 
-        if (data.Version < 4)
+        if (data.Version < 5)
         {
             ModifyConfig(c =>
             {
-                c.Version = 4;
+                c.Version = 5;
             });
         }
     }

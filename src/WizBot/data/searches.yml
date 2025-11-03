@@ -1,5 +1,5 @@
 # DO NOT CHANGE
-version: 4
+version: 5
 # Which engine should .search command
 # 'google_scrape' - default. Scrapes the webpage for results. May break. Requires no api keys.
 # 'google' - official google api. Requires googleApiKey and google.searchId set in creds.yml
@@ -42,3 +42,5 @@ invidiousInstances: []
 followedStreams:
   # Maximum number of streams that each server can follow. -1 for infinite
   maxCount: 10
+# Maximum number of feeds per server
+maxFeeds: 10

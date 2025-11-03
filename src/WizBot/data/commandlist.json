@@ -4136,11 +4136,12 @@
     },
     {
       "Aliases": [
-        ".fishstarslb"
+        ".fishslb",
+        ".fislb"
       ],
-      "Description": "?",
+      "Description": "Shows the top anglers based on total stars.",
       "Usage": [
-        ".fishstarslb"
+        ".fishslb"
       ],
       "Submodule": "FishingCommands",
       "Module": "Games",
