@@ -2,6 +2,27 @@
 
 *a,c,f,r,o*
 
+## [6.1.20] - 28.11.2025
+
+### Added
+- Added `.fishstarslb` / `.fislb` command to show top anglers by stars collected
+- Added `.xpowned` command to view owned xp items
+- Added `.conf search feeds.maxcount` configuration option for search feeds
+
+### Changed
+- `.edit` now adds ✅ reaction on successful execution
+- `.playlists` output is now paginated for better readability
+
+### Fixed
+- Role hierarchy checks in vcrole command (!!!)
+- `qse` command now shows an output on no results
+- Fixed occasional guild timezone null reference errors
+- Fixed Page count display in `.pls title`
+- Fixed Page 0 navigation in `.pls` commands
+- Fixed reminder system crashing under specific conditions
+- Fixed reminders longer than 30 days crashing the remind system
+- Null reference edge cases in scheduled commands
+
 ## [6.1.19] - 17.08.2025
 
 ### Changed
