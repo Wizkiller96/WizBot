@@ -30,6 +30,12 @@ public partial class Administration
 
             var vc = user.VoiceChannel;
 
+            if (!await CheckRoleHierarchy(role))
+            {
+                await Response().Error(strs.hierarchy).SendAsync();
+                return;
+            }
+            
             if (vc is null || vc.GuildId != user.GuildId)
             {
                 await Response().Error(strs.must_be_in_voice).SendAsync();
