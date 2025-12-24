@@ -2,6 +2,11 @@
 
 *a,c,f,r,o*
 
+## [6.1.21] - 24.12.2025
+
+### Fixed
+- Fixed the voice encryption error
+
 ## [6.1.20] - 28.11.2025
 
 ### Added
