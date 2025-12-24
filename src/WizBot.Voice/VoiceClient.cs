@@ -24,7 +24,6 @@ namespace WizBot.Voice
 
         EncodeDelegate Encode;
 
-        // https://github.com/xiph/opus/issues/42 w
         public VoiceClient(SampleRate sampleRate = SampleRate._48k,
             Bitrate bitRate = Bitrate._192k,
             Channels channels = Channels.Two,
@@ -46,15 +45,6 @@ namespace WizBot.Voice
                 _ => throw new NotSupportedException(nameof(BitDepth))
             };
 
-            if (bitDepthEnum == BitDepthEnum.Float32)
-            {
-                Encode = Encoder.EncodeFloat;
-            }
-            else
-            {
-                Encode = Encoder.Encode;
-            }
-
             _arrayPool = ArrayPool<byte>.Shared;
         }
 
@@ -62,11 +52,8 @@ namespace WizBot.Voice
         {
             var secretKey = gw.SecretKey;
             if (secretKey.Length == 0)
-            {
                 return (int) SendPcmError.SecretKeyUnavailable;
-            }
 
-            // encode using opus
             var encodeOutput = _arrayPool.Rent(LibOpusEncoder.MaxData);
             try
             {
@@ -82,76 +69,71 @@ namespace WizBot.Voice
         public int SendOpusFrame(VoiceGateway gw, byte[] data, int offset, int count)
         {
             var secretKey = gw.SecretKey;
-            if (secretKey is null)
-            {
+            if (secretKey is null || secretKey.Length != Sodium.KEY_SIZE)
                 return (int) SendPcmError.SecretKeyUnavailable;
-            }
 
-            // form RTP header
-            var headerLength = 1 // version + flags
-                               + 1 // payload type
-                               + 2 // sequence
-                               + 4 // timestamp
-                               + 4; // ssrc
-
-            var header = new byte[headerLength];
+            // RTP header: 12 bytes
+            const int RtpHeaderLength = 12;
+            var header = new byte[RtpHeaderLength];
 
             header[0] = 0x80; // version + flags
             header[1] = 0x78; // payload type
 
-            // get byte values for header data
-            var seqBytes = BitConverter.GetBytes(gw.Sequence); // 2
-            var nonceBytes = BitConverter.GetBytes(gw.NonceSequence); // 2
-            var timestampBytes = BitConverter.GetBytes(gw.Timestamp); // 4
-            var ssrcBytes = BitConverter.GetBytes(gw.Ssrc); // 4
-
-            gw.Timestamp += (uint) FrameSizePerChannel;
-            gw.Sequence++;
-            gw.NonceSequence++;
-
+            // Sequence (big-endian)
+            var seqBytes = BitConverter.GetBytes(gw.Sequence);
             if (BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(seqBytes);
-                Array.Reverse(nonceBytes);
-                Array.Reverse(timestampBytes);
-                Array.Reverse(ssrcBytes);
-            }
-
-            // copy headers
             Buffer.BlockCopy(seqBytes, 0, header, 2, 2);
+
+            // Timestamp (big-endian)
+            var timestampBytes = BitConverter.GetBytes(gw.Timestamp);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(timestampBytes);
             Buffer.BlockCopy(timestampBytes, 0, header, 4, 4);
+
+            // SSRC (big-endian)
+            var ssrcBytes = BitConverter.GetBytes(gw.Ssrc);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(ssrcBytes);
             Buffer.BlockCopy(ssrcBytes, 0, header, 8, 4);
 
-            //// encryption part
-            //// create a byte array where to store the encrypted data
-            //// it has to be inputLength + crypto_secretbox_MACBYTES (constant with value 16)
-            var encryptedBytes = new byte[count + 16];
+            // Increment counters for next packet
+            gw.Timestamp += (uint) FrameSizePerChannel;
+            gw.Sequence++;
 
-            //// form nonce with header + 12 empty bytes
-            //var nonce = new byte[24];
-            //Buffer.BlockCopy(rtpHeader, 0, nonce, 0, rtpHeader.Length);
+            // Build 24-byte nonce: 4-byte counter (big-endian) + 20 zero bytes
+            var nonce = new byte[Sodium.NONCE_SIZE];
+            var nonceCounterBytes = BitConverter.GetBytes(gw.NonceSequence);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(nonceCounterBytes);
+            Buffer.BlockCopy(nonceCounterBytes, 0, nonce, 0, 4);
+            gw.NonceSequence++;
 
-            var nonce = new byte[4];
-            Buffer.BlockCopy(seqBytes, 0, nonce, 2, 2);
+            // Encrypt: ciphertext = encrypted audio + 16-byte tag
+            var encryptedLength = count + Sodium.TAG_SIZE;
+            var encryptedBytes = new byte[encryptedLength];
 
-            Sodium.Encrypt(data, 0, count, encryptedBytes, 0, nonce, secretKey);
+            Sodium.Encrypt(
+                data, offset, count,
+                encryptedBytes, 0,
+                header, RtpHeaderLength,
+                nonce,
+                secretKey);
 
-            var rtpDataLength = headerLength + encryptedBytes.Length + nonce.Length;
+            // Final packet: RTP header + encrypted data + tag + 4-byte nonce suffix
+            const int NonceSuffixSize = 4;
+            var rtpDataLength = RtpHeaderLength + encryptedLength + NonceSuffixSize;
             var rtpData = _arrayPool.Rent(rtpDataLength);
             try
             {
-                //copy headers
-                Buffer.BlockCopy(header, 0, rtpData, 0, header.Length);
-                //copy audio data 
-                Buffer.BlockCopy(encryptedBytes, 0, rtpData, header.Length, encryptedBytes.Length);
-                Buffer.BlockCopy(nonce, 0, rtpData, rtpDataLength - 4, 4);
+                // Copy RTP header
+                Buffer.BlockCopy(header, 0, rtpData, 0, RtpHeaderLength);
+                // Copy encrypted audio + tag
+                Buffer.BlockCopy(encryptedBytes, 0, rtpData, RtpHeaderLength, encryptedLength);
+                // Copy 4-byte nonce suffix (big-endian)
+                Buffer.BlockCopy(nonceCounterBytes, 0, rtpData, RtpHeaderLength + encryptedLength, NonceSuffixSize);
 
                 gw.SendRtpData(rtpData, rtpDataLength);
-                // FUTURE When there's a break in the sent data,
-                // the packet transmission shouldn't simply stop.
-                // Instead, send five frames of silence (0xF8, 0xFF, 0xFE)
-                // before stopping to avoid unintended Opus interpolation
-                // with subsequent transmissions.
 
                 return rtpDataLength;
             }
@@ -169,7 +151,6 @@ namespace WizBot.Voice
     {
         SecretKeyUnavailable = -1,
     }
-
 
     public enum FrameDelay
     {

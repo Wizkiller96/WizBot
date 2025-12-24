@@ -307,7 +307,7 @@ namespace WizBot.Voice
                     {
                         Address = MyIp,
                         Port = MyPort,
-                        Mode = "xsalsa20_poly1305_lite",
+                        Mode = "aead_xchacha20_poly1305_rtpsize",
                     }
                 })
             });

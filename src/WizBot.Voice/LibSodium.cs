@@ -5,29 +5,52 @@ namespace WizBot.Voice
 {
     internal static unsafe class Sodium
     {
-        
         private const string SODIUM = "data/lib/libsodium";
 
-        [DllImport(SODIUM, EntryPoint = "crypto_secretbox_easy", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int SecretBoxEasy(byte* output, byte* input, long inputLength, byte* nonce, byte* secret);
-        [DllImport(SODIUM, EntryPoint = "crypto_secretbox_open_easy", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int SecretBoxOpenEasy(byte* output, byte* input, ulong inputLength, byte* nonce, byte* secret);
+        // XChaCha20-Poly1305 AEAD encryption
+        // Key: 32 bytes, Nonce: 24 bytes, Tag: 16 bytes
+        [DllImport(SODIUM, EntryPoint = "crypto_aead_xchacha20poly1305_ietf_encrypt", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int XChaCha20Poly1305Encrypt(
+            byte* ciphertext,
+            ulong* ciphertextLength,
+            byte* message,
+            ulong messageLength,
+            byte* additionalData,
+            ulong additionalDataLength,
+            byte* nsec,
+            byte* nonce,
+            byte* key);
 
-        public static int Encrypt(byte[] input, int inputOffset, long inputLength, byte[] output, int outputOffset, in ReadOnlySpan<byte> nonce, byte[] secret)
+        public const int NONCE_SIZE = 24;
+        public const int TAG_SIZE = 16;
+        public const int KEY_SIZE = 32;
+
+        public static int Encrypt(
+            byte[] message, int messageOffset, int messageLength,
+            byte[] ciphertext, int ciphertextOffset,
+            byte[] header, int headerLength,
+            byte[] nonce,
+            byte[] key)
         {
-            fixed (byte* inPtr = input)
-            fixed (byte* outPtr = output)
+            ulong ciphertextLength = 0;
+
+            fixed (byte* msgPtr = message)
+            fixed (byte* ctPtr = ciphertext)
+            fixed (byte* headerPtr = header)
             fixed (byte* noncePtr = nonce)
-            fixed (byte* secretPtr = secret)
-                return SecretBoxEasy(outPtr + outputOffset, inPtr + inputOffset, inputLength - inputOffset, noncePtr, secretPtr);
-        }
-        public static int Decrypt(byte[] input, ulong inputLength, byte[] output, in ReadOnlySpan<byte> nonce, byte[] secret)
-        {
-            fixed (byte* outPtr = output)
-            fixed (byte* inPtr = input)
-            fixed (byte* noncePtr = nonce)
-            fixed (byte* secretPtr = secret)
-                return SecretBoxOpenEasy(outPtr, inPtr, inputLength, noncePtr, secretPtr);
+            fixed (byte* keyPtr = key)
+            {
+                return XChaCha20Poly1305Encrypt(
+                    ctPtr + ciphertextOffset,
+                    &ciphertextLength,
+                    msgPtr + messageOffset,
+                    (ulong)messageLength,
+                    headerPtr,
+                    (ulong)headerLength,
+                    null,
+                    noncePtr,
+                    keyPtr);
+            }
         }
     }
 }
