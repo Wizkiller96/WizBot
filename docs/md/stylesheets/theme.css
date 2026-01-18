@@ -80,6 +80,6 @@
 	--md-code-hl-variable-color: rgba(255, 255, 255, 0.54);
 
 	/* Footer color shades */
-	--md-footer-bg-color: rgb(43, 44, 46) !important;
-	--md-footer-bg-color--dark: rgb(25, 26, 27) !important;
+	--md-footer-bg-color: rgb(240, 240, 240) !important;
+	--md-footer-bg-color--light: rgb(242, 242, 242) !important;
 }
