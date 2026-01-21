@@ -81,5 +81,5 @@
 
 	/* Footer color shades */
 	--md-footer-bg-color: rgb(240, 240, 240) !important;
-	--md-footer-bg-color--light: rgb(242, 242, 242) !important;
+	--md-footer-bg-color--dark: rgb(242, 242, 242) !important;
 }
