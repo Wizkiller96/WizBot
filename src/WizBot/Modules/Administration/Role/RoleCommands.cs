@@ -257,6 +257,9 @@ public partial class Administration
         {
             if (!await CheckRoleHierarchy(role))
                 return;
+            
+            if (!ctx.Guild.Features.HasRoleIcons)
+                await Response().Error(strs.userrole_icon_missing_permissions).SendAsync();
 
             if (string.IsNullOrWhiteSpace(iconUrl))
             {
