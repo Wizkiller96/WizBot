@@ -173,6 +173,9 @@ public sealed class Creds : IBotCreds
              Url and api key to a seq server. If url is set, bot will try to send logs to it.
              """)]
     public SeqConfig Seq { get; set; }
+    
+    [Comment("""Official Steam api key.""")]
+    public string SteamApiKey { get; set; }
 
     public Creds()
     {
@@ -202,6 +205,7 @@ public sealed class Creds : IBotCreds
 
         GrpcApi = new();
         Seq = new();
+        SteamApiKey = string.Empty;
     }
 
     public class DbOptions

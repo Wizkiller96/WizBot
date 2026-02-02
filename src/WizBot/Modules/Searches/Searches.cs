@@ -550,6 +550,12 @@ public partial class Searches : WizModule<SearchesService>
     {
         if (string.IsNullOrWhiteSpace(query))
             return;
+        
+        if (string.IsNullOrWhiteSpace(_creds.SteamApiKey))
+        {
+            await Response().Error(strs.steam_api_missing).SendAsync();
+            return;
+        }
 
         await ctx.Channel.TriggerTypingAsync();
 
