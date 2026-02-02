@@ -2,6 +2,14 @@
 
 *a,c,f,r,o*
 
+## [6.1.22] - 02.02.2026
+### Added
+- Added if image emojis are all taken, the bot will ask you to create a 2 frame gif.
+
+### Fixed
+- Fixed steam api which should fix `.steam` not working.
+- Fix error message for missing guild permissions for RoleIcon.
+
 ## [6.1.21] - 24.12.2025
 
 ### Fixed
