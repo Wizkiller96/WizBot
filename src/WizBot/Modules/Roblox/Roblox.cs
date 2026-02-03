@@ -24,8 +24,14 @@ public partial class Roblox : WizModule<RobloxService>
                 await Response().Error("Roblox user not found.").SendAsync();
                 return;
             }
+            
+            // ⭐ Fetch Premium status here
+            var verify = await _service.GetVerificationStatusAsync(info.UserId);
 
-            var embed = RobloxEmbedBuilder.BuildUserEmbed(info);
+            string premiumText = verify?.Premium == true ? "Yes" : "No";
+            string idVerifiedText = verify?.IdVerified == true ? "Yes" : "No";
+
+            var embed = RobloxEmbedBuilder.BuildUserEmbed(info, premiumText, idVerifiedText);
 
             await Response()
                 .Embed(embed)

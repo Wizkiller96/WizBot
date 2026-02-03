@@ -2,7 +2,7 @@
 
 public static class RobloxEmbedBuilder
 {
-    public static EmbedBuilder BuildUserEmbed(RobloxUserInfo info)
+    public static EmbedBuilder BuildUserEmbed(RobloxUserInfo info, string premiumText, string idVerifiedText)
     {
         var pastNames = info.OldNames?.Take(5).ToList();
         var pastNamesText = (pastNames == null || pastNames.Count == 0)
@@ -32,7 +32,9 @@ public static class RobloxEmbedBuilder
             .AddField("Username", $"[{info.Username}](https://www.roblox.com/users/{info.UserId}/profile)", true)
             .AddField("Display Name", info.DisplayName, true)
             .AddField("User ID", info.UserId.ToString(), true)
-            .AddField("Verified Badge", info.VerifiedBadge, true)
+            .AddField("Premium", premiumText, true)
+            .AddField("ID Verified", idVerifiedText, true)
+            /*.AddField("Verified Badge", info.VerifiedBadge, true)*/
             .AddField("Account Age", info.Age.ToString(), true)
             .AddField("Join Date", joinDateDisplay, true)
             .AddField("Friends", info.FriendCount.ToString(), true)

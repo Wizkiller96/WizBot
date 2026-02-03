@@ -176,6 +176,9 @@ public sealed class Creds : IBotCreds
     
     [Comment("""Official Steam api key.""")]
     public string SteamApiKey { get; set; }
+    
+    [Comment("""Api key used for Roblox related commands. Obtain this key at https://create.roblox.com/dashboard/credentials""")]
+    public string RobloxApiKey { get; set; }
 
     public Creds()
     {
@@ -206,6 +209,7 @@ public sealed class Creds : IBotCreds
         GrpcApi = new();
         Seq = new();
         SteamApiKey = string.Empty;
+        RobloxApiKey = string.Empty;
     }
 
     public class DbOptions

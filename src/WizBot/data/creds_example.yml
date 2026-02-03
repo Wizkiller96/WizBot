@@ -138,3 +138,6 @@ seq:
 # Steam Web API key. Used for steam related commands.
 # Obtain by registerting a Web API key at https://steamcommunity.com/dev/apikey
 steamApiKey: ''
+# Roblox API key. Used for Roblox related commands.
+# Obtain by registerting a Web API key at https://create.roblox.com/dashboard/credentials
+robloxApiKey: ''

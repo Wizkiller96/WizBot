@@ -33,6 +33,7 @@ public interface IBotCreds
     Creds.GrpcApiConfig GrpcApi { get; set; }
     SeqConfig Seq { get; set; }
     string SteamApiKey { get; }
+    string RobloxApiKey { get; }
 }
 
 public interface IVotesSettings
