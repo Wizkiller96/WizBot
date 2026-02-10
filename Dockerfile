@@ -20,12 +20,15 @@ RUN dotnet publish -c Release -o /app --self-contained -r $(cat /tmp/rid) --no-r
     && mv /app/data /app/data_init \
     && chmod +x /app/WizBot
 
-FROM alpine:3.20
+FROM alpine:3.23
 ARG TARGETARCH
 WORKDIR /app
 
-RUN apk add --no-cache ffmpeg libsodium opus yt-dlp
+RUN YT_DLP_BIN="yt-dlp_musllinux$([ "$TARGETARCH" = "arm64" ] && echo "_aarch64" || echo "")" \
+    && wget -O /usr/local/bin/yt-dlp "https://github.com/yt-dlp/yt-dlp/releases/latest/download/${YT_DLP_BIN}" \
+    && chmod 755 /usr/local/bin/yt-dlp
 
+RUN apk add --no-cache ffmpeg libsodium opus deno
 RUN apk add --no-cache libstdc++ libgcc icu-libs libc6-compat tzdata
 
 COPY --from=build /app ./
