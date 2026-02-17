@@ -1,86 +1,57 @@
-site_name: 'WizBot'
-site_url: 'https://wizbot.cc'
-repo_url: 'https://github.com/Wizkiller96/WizBot'
-site_author: 'WizNet'
-docs_dir: 'md'
-
-copyright: © Copyright 2025 WizNet - All Rights Reserved.
+site_name: WizBot
+site_url: https://docs.wizbot.cc/
+site_description: WizBot Documentation — guides, commands, and self-hosting references.
+site_author: WizNet
+repo_url: https://github.com/Wizkiller96/WizBot
+repo_name: Wizkiller96/WizBot
 
 theme:
-    name: material
-    palette:
-          - media: "(prefers-color-scheme: light)"
-            scheme: wizbot-light
-            toggle:
-                icon: material/weather-sunny
-                name: Switch to dark mode
-          - media: "(prefers-color-scheme: dark)"
-            scheme: wizbot-dark
-            toggle:
-                icon: material/weather-night
-                name: Switch to light mode
-    features:
-        - navigation.instant
-        - navigation.expand
-        - navigation.top
-    font:
-        text: Source Sans Pro
-        code: Source Code Pro
-    logo: https://wizbot.cc/img/wizbot-icon-887x889.png
-    favicon: https://wizbot.cc/img/wizbot-icon-887x889.png
-    icon:
-        repo: material/github
+  name: material
+  custom_dir: theme
+  logo: assets/images/wizbot-logo.png
+  favicon: assets/images/wizbot-logo.png
 
-extra:
-  homepage: https://wizbot.cc
+  palette:
+    # Auto / System preference
+    - media: "(prefers-color-scheme: no-preference)"
+      scheme: wizbot-light
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
 
-extra_javascript:
-  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: wizbot-light
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: wizbot-dark
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
 
 extra_css:
-  - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css
-  - stylesheets/styling-overrides.css
-  - stylesheets/theme.css
+  - stylesheets/extra.css
 
-plugins:
-    - search
-    - exclude:
-        glob:
-          - 'guides/vps-linux-guide.md'
-          - 'snippets/supported-platforms.md'
-
-markdown_extensions:
-    - attr_list
-    - codehilite:
-        guess_lang: false
-    - toc:
-        permalink: true
-    - pymdownx.betterem:
-        smart_enable: all
-    - admonition
-    - pymdownx.inlinehilite
-    - pymdownx.superfences
-    - pymdownx.blocks.tab:
-        alternate_style: true
-    - pymdownx.snippets
-    - pymdownx.details
-    - pymdownx.emoji:
-        emoji_index: !!python/name:material.extensions.emoji.twemoji
-        emoji_generator: !!python/name:material.extensions.emoji.to_svg
-
-nav:
-    - Home: index.md
-    - Guides:
-        - Desktop Guide: guides/desktop-guide.md
-        - CLI Guide: guides/cli-guide.md
-        - Docker Guide: guides/docker-guide.md
-        - Source Guide: guides/source-guide.md
-    - Commands:
-        - Commands List: https://wizbot.cc/commands
-    - Features Explained:
-        - Basic Creds: creds-guide.md
-        - Medusa System:
-            - medusa/getting-started.md
-            - medusa/creating-a-medusa.md
-            - medusa/snek-lifecycle.md
-    - Donate: donate.md
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Wizkiller96/WizBot
+      name: WizBot on GitHub
