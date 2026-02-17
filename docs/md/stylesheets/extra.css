@@ -1,413 +1,352 @@
 ﻿/* =============================================================
    WizBot Docs — Custom Theme Stylesheet
    Schemes: wizbot-light / wizbot-dark
-   File: docs/stylesheets/extra.css
+   File: docs/md/stylesheets/extra.css
    ============================================================= */
 
 
 /* =============================================================
    REGISTER CUSTOM SCHEMES
-   These tell the browser how to render native UI elements
-   (scrollbars, form inputs, etc.) for each scheme.
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] { color-scheme: light; }
+[data-md-color-scheme="wizbot-dark"]  { color-scheme: dark; }
+
+
+/* =============================================================
+   WIZBOT-LIGHT — CSS custom properties
    ============================================================= */
 
 [data-md-color-scheme="wizbot-light"] {
-    color-scheme: light;
-}
-
-[data-md-color-scheme="wizbot-dark"] {
-    color-scheme: dark;
+    --md-default-bg-color:              #eeeef5;
+    --md-default-fg-color:              #1a1a2e;
+    --md-default-fg-color--light:       #4a4a6a;
+    --md-default-fg-color--lighter:     #9090b8;
+    --md-default-fg-color--lightest:    #b8b8d8;
+    --md-primary-fg-color:              #7c3aed;
+    --md-primary-fg-color--light:       #a78bfa;
+    --md-primary-bg-color:              #ffffff;
+    --md-primary-bg-color--light:       rgba(255,255,255,0.7);
+    --md-accent-fg-color:               #7c3aed;
+    --md-accent-fg-color--transparent:  rgba(124,58,237,0.1);
+    --md-accent-bg-color:               #ffffff;
+    --md-typeset-a-color:               #7c3aed;
+    --md-typeset-mark-color:            rgba(124,58,237,0.15);
+    --md-code-bg-color:                 #f0f0f8;
+    --md-code-fg-color:                 #3a1a6e;
+    --md-code-hl-color:                 rgba(124,58,237,0.1);
+    --md-code-hl-keyword-color:         #7c3aed;
+    --md-code-hl-string-color:          #16a34a;
+    --md-code-hl-number-color:          #d97706;
+    --md-code-hl-comment-color:         #9090b8;
+    --md-admonition-bg-color:           #f5f5fd;
+    --wiz-footer-bg:                    #f5f4fa;
+    --wiz-footer-fg:                    #1a1a2e;
+    --wiz-footer-title:                 #1a1a2e;
+    --wiz-footer-link:                  #4a4a6a;
+    --wiz-footer-border:                #dddded;
+    --wiz-footer-bottom-bg:             #ebebf3;
+    --wiz-footer-bottom-fg:             #6a6a8e;
+    --wiz-footer-social-bg:             #e2e2ee;
+    --wiz-footer-social-fg:             #4a4a6a;
+    --wiz-footer-accent:                #7c3aed;
 }
 
 
 /* =============================================================
-   WIZBOT-LIGHT
-   Matches wizbot.cc light mode:
-   - Light lavender page background
-   - White navbar
-   - Purple accents (#7c3aed)
-   - Light lavender-white footer
+   WIZBOT-DARK — CSS custom properties
    ============================================================= */
 
-[data-md-color-scheme="wizbot-light"] {
-    /* Page */
-    --md-default-bg-color:          #eeeef5;
-    --md-default-fg-color:          #1a1a2e;
-    --md-default-fg-color--light:   #4a4a6a;
-    --md-default-fg-color--lighter: #9090b8;
-    --md-default-fg-color--lightest:#b8b8d8;
-
-    /* Primary (header bg, active nav, badges) */
-    --md-primary-fg-color:          #7c3aed;
-    --md-primary-fg-color--light:   #a78bfa;
-    --md-primary-bg-color:          #ffffff;
-    --md-primary-bg-color--light:   rgba(255,255,255,0.7);
-
-    /* Accent (hover states, highlights) */
-    --md-accent-fg-color:           #7c3aed;
-    --md-accent-fg-color--transparent: rgba(124,58,237,0.1);
-    --md-accent-bg-color:           #ffffff;
-
-    /* Typeset */
-    --md-typeset-a-color:           #7c3aed;
-    --md-typeset-mark-color:        rgba(124,58,237,0.15);
-
-    /* Code */
-    --md-code-bg-color:             #f0f0f8;
-    --md-code-fg-color:             #3a1a6e;
-    --md-code-hl-color:             rgba(124,58,237,0.1);
-    --md-code-hl-keyword-color:     #7c3aed;
-    --md-code-hl-string-color:      #16a34a;
-    --md-code-hl-number-color:      #d97706;
-    --md-code-hl-comment-color:     #9090b8;
-
-    /* Admonitions */
-    --md-admonition-bg-color:       #f5f5fd;
+[data-md-color-scheme="wizbot-dark"] {
+    --md-default-bg-color:              #100f22;
+    --md-default-fg-color:              #e8e8f0;
+    --md-default-fg-color--light:       #a0a0c0;
+    --md-default-fg-color--lighter:     #6060a0;
+    --md-default-fg-color--lightest:    #3a3a6a;
+    --md-primary-fg-color:              #8b5cf6;
+    --md-primary-fg-color--light:       #a78bfa;
+    --md-primary-bg-color:              #ffffff;
+    --md-primary-bg-color--light:       rgba(255,255,255,0.7);
+    --md-accent-fg-color:               #a78bfa;
+    --md-accent-fg-color--transparent:  rgba(167,139,250,0.1);
+    --md-accent-bg-color:               #1e1b4b;
+    --md-typeset-a-color:               #a78bfa;
+    --md-typeset-mark-color:            rgba(139,92,246,0.2);
+    --md-code-bg-color:                 #1a1730;
+    --md-code-fg-color:                 #c4b5fd;
+    --md-code-hl-color:                 rgba(139,92,246,0.15);
+    --md-code-hl-keyword-color:         #a78bfa;
+    --md-code-hl-string-color:          #86efac;
+    --md-code-hl-number-color:          #fcd34d;
+    --md-code-hl-comment-color:         #5050a0;
+    --md-admonition-bg-color:           #1a1730;
+    --wiz-footer-bg:                    #1c1a35;
+    --wiz-footer-fg:                    #e0e0f0;
+    --wiz-footer-title:                 #a78bfa;
+    --wiz-footer-link:                  #c0c0e0;
+    --wiz-footer-border:                #252240;
+    --wiz-footer-bottom-bg:             #141228;
+    --wiz-footer-bottom-fg:             #6060a0;
+    --wiz-footer-social-bg:             #252240;
+    --wiz-footer-social-fg:             #c0c0e0;
+    --wiz-footer-accent:                #a78bfa;
 }
 
-/* ── Header (white navbar) ── */
+
+/* =============================================================
+   HEADER
+   ============================================================= */
+
 [data-md-color-scheme="wizbot-light"] .md-header {
-    background-color: #ffffff;
-    color: #1a1a2e;
-    box-shadow: 0 1px 4px rgba(124, 58, 237, 0.08);
+    background-color: #ffffff !important;
+    color: #1a1a2e !important;
+    box-shadow: 0 1px 4px rgba(124,58,237,0.08) !important;
 }
-
-[data-md-color-scheme="wizbot-light"] .md-header__title {
-    color: #1a1a2e;
-}
-
-/* Search bar */
-[data-md-color-scheme="wizbot-light"] .md-search__form {
-    background-color: #f0f0f8;
-    border-radius: 8px;
-    color: #1a1a2e;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-search__input {
-    color: #1a1a2e;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-search__input::placeholder {
-    color: #9090b8;
-}
-
-/* Header icons (GitHub link, theme toggle) */
-[data-md-color-scheme="wizbot-light"] .md-header__button {
-    color: #4a4a6a;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-header__button:hover {
-    color: #7c3aed;
-}
-
-/* Navigation tabs (if enabled) */
-[data-md-color-scheme="wizbot-light"] .md-tabs {
-    background-color: #ffffff;
-    color: #1a1a2e;
-    border-bottom: 1px solid #e2e2ee;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-tabs__link {
-    color: #4a4a6a;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-tabs__link--active,
-[data-md-color-scheme="wizbot-light"] .md-tabs__link:hover {
-    color: #7c3aed;
-}
-
-/* Sidebar nav */
-[data-md-color-scheme="wizbot-light"] .md-nav__title {
-    color: #7c3aed;
-    font-weight: 700;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link {
-    color: #7c3aed;
-    font-weight: 600;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__link:hover {
-    color: #7c3aed;
-}
-
-/* ── Footer (light lavender-white) ── */
-[data-md-color-scheme="wizbot-light"] .md-footer {
-    background-color: #f5f4fa;
-    color: #1a1a2e;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-footer-meta {
-    background-color: #ebebf3;
-    color: #6a6a8e;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-footer__link {
-    color: #7c3aed;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-footer__link:hover {
-    color: #6d28d9;
-}
-
-/* ── Buttons ── */
-[data-md-color-scheme="wizbot-light"] .md-button {
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-button--primary {
-    background-color: #7c3aed;
-    border-color: #7c3aed;
-    color: #ffffff;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-button--primary:hover {
-    background-color: #6d28d9;
-    border-color: #6d28d9;
-}
-
-/* Search result highlights */
-[data-md-color-scheme="wizbot-light"] .md-search-result mark {
-    color: #7c3aed;
-    background-color: transparent;
-    font-weight: 700;
-}
-
-
-/* =============================================================
-   WIZBOT-DARK
-   Matches wizbot.cc dark mode:
-   - Deep navy-purple page (#100f22)
-   - Darker navy navbar (#12102a)
-   - Purple accents (#8b5cf6)
-   - Purple-tinted footer (#1c1a35) with purple section titles
-   ============================================================= */
-
-[data-md-color-scheme="wizbot-dark"] {
-    /* Page */
-    --md-default-bg-color:          #100f22;
-    --md-default-fg-color:          #e8e8f0;
-    --md-default-fg-color--light:   #a0a0c0;
-    --md-default-fg-color--lighter: #6060a0;
-    --md-default-fg-color--lightest:#3a3a6a;
-
-    /* Primary */
-    --md-primary-fg-color:          #8b5cf6;
-    --md-primary-fg-color--light:   #a78bfa;
-    --md-primary-bg-color:          #ffffff;
-    --md-primary-bg-color--light:   rgba(255,255,255,0.7);
-
-    /* Accent */
-    --md-accent-fg-color:           #a78bfa;
-    --md-accent-fg-color--transparent: rgba(167,139,250,0.1);
-    --md-accent-bg-color:           #1e1b4b;
-
-    /* Typeset */
-    --md-typeset-a-color:           #a78bfa;
-    --md-typeset-mark-color:        rgba(139,92,246,0.2);
-
-    /* Code */
-    --md-code-bg-color:             #1a1730;
-    --md-code-fg-color:             #c4b5fd;
-    --md-code-hl-color:             rgba(139,92,246,0.15);
-    --md-code-hl-keyword-color:     #a78bfa;
-    --md-code-hl-string-color:      #86efac;
-    --md-code-hl-number-color:      #fcd34d;
-    --md-code-hl-comment-color:     #5050a0;
-
-    /* Admonitions */
-    --md-admonition-bg-color:       #1a1730;
-}
-
-/* ── Header (deep navy-purple navbar) ── */
 [data-md-color-scheme="wizbot-dark"] .md-header {
-    background-color: #12102a;
-    color: #e8e8f0;
-    box-shadow: 0 2px 20px rgba(10, 8, 30, 0.6);
+    background-color: #12102a !important;
+    color: #e8e8f0 !important;
+    box-shadow: 0 2px 20px rgba(10,8,30,0.6) !important;
 }
 
-[data-md-color-scheme="wizbot-dark"] .md-header__title {
-    color: #e8e8f0;
-}
+.md-header__title { display: none !important; }
 
-/* Search bar */
-[data-md-color-scheme="wizbot-dark"] .md-search__form {
-    background-color: #1e1b3a;
-    border-radius: 8px;
-    color: #e8e8f0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-search__input {
-    color: #e8e8f0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-search__input::placeholder {
-    color: #6060a0;
-}
-
-/* Header icons */
-[data-md-color-scheme="wizbot-dark"] .md-header__button {
-    color: #a0a0c0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-header__button:hover {
-    color: #a78bfa;
-}
-
-/* Navigation tabs */
-[data-md-color-scheme="wizbot-dark"] .md-tabs {
-    background-color: #12102a;
-    color: #e8e8f0;
-    border-bottom: 1px solid #1e1b3a;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-tabs__link {
-    color: #a0a0c0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-tabs__link--active,
-[data-md-color-scheme="wizbot-dark"] .md-tabs__link:hover {
-    color: #a78bfa;
-}
-
-/* Sidebar */
-[data-md-color-scheme="wizbot-dark"] .md-sidebar {
-    background-color: #0e0c20;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__title {
-    color: #8b5cf6;
-    font-weight: 700;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__item--active > .md-nav__link {
-    color: #a78bfa;
-    font-weight: 600;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__link:hover {
-    color: #a78bfa;
-}
-
-/* ── Footer (purple-navy with purple section titles) ── */
-[data-md-color-scheme="wizbot-dark"] .md-footer {
-    background-color: #1c1a35;
-    color: #e0e0f0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-footer-meta {
-    background-color: #141228;
-    color: #6060a0;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-footer__link {
-    color: #a78bfa;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-footer__link:hover {
-    color: #c4b5fd;
-}
-
-/* ── Buttons ── */
-[data-md-color-scheme="wizbot-dark"] .md-button {
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-button--primary {
-    background-color: #7c3aed;
-    border-color: #7c3aed;
-    color: #ffffff;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-button--primary:hover {
-    background-color: #6d28d9;
-    border-color: #6d28d9;
-}
-
-/* Search result highlights */
-[data-md-color-scheme="wizbot-dark"] .md-search-result mark {
-    color: #a78bfa;
-    background-color: transparent;
-    font-weight: 700;
-}
+[data-md-color-scheme="wizbot-light"] .md-header__button { color: #4a4a6a !important; }
+[data-md-color-scheme="wizbot-light"] .md-header__button:hover { color: #7c3aed !important; }
+[data-md-color-scheme="wizbot-dark"]  .md-header__button { color: #a0a0c0 !important; }
+[data-md-color-scheme="wizbot-dark"]  .md-header__button:hover { color: #a78bfa !important; }
 
 
 /* =============================================================
    LOGO
-   Hide the site name text — the logo image includes "WizBot"
    ============================================================= */
 
-.md-header__button.md-logo {
-    padding: 4px 8px;
-}
-
+.md-header__button.md-logo { padding: 4px 8px !important; }
 .md-header__button.md-logo img {
-    height: 44px;
-    width: auto;
-    object-fit: contain;
+    height: 44px !important;
+    width: auto !important;
+    object-fit: contain !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-header__button.md-logo img { mix-blend-mode: multiply !important; }
+[data-md-color-scheme="wizbot-dark"]  .md-header__button.md-logo img { mix-blend-mode: normal !important; }
+
+
+/* =============================================================
+   SEARCH
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-search__form {
+    background-color: #f0f0f8 !important;
+    border-radius: 8px !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-search__input { color: #1a1a2e !important; }
+[data-md-color-scheme="wizbot-light"] .md-search__input::placeholder { color: #9090b8 !important; }
+[data-md-color-scheme="wizbot-light"] .md-search-result__meta { background-color: #e8e8f2 !important; color: #4a4a6a !important; }
+[data-md-color-scheme="wizbot-light"] .md-search-result__item { background-color: #f5f5fd !important; }
+[data-md-color-scheme="wizbot-light"] .md-search-result mark { color: #7c3aed !important; background-color: transparent !important; font-weight: 700 !important; }
+
+[data-md-color-scheme="wizbot-dark"] .md-search__form {
+    background-color: #1e1b3a !important;
+    border-radius: 8px !important;
+}
+[data-md-color-scheme="wizbot-dark"] .md-search__input { color: #e8e8f0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-search__input::placeholder { color: #6060a0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-search-result__meta { background-color: #1a1730 !important; color: #a0a0c0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-search-result__item { background-color: #13112a !important; }
+[data-md-color-scheme="wizbot-dark"] .md-search-result mark { color: #a78bfa !important; background-color: transparent !important; font-weight: 700 !important; }
+
+
+/* =============================================================
+   PAGE BACKGROUND & CONTENT
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-main,
+[data-md-color-scheme="wizbot-light"] .md-main__inner,
+[data-md-color-scheme="wizbot-light"] .md-content { background-color: #eeeef5 !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset { color: #1a1a2e !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset a { color: #7c3aed !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset a:hover { color: #6d28d9 !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset h1,
+[data-md-color-scheme="wizbot-light"] .md-typeset h2,
+[data-md-color-scheme="wizbot-light"] .md-typeset h3,
+[data-md-color-scheme="wizbot-light"] .md-typeset h4 { color: #1a1a2e !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset hr { border-color: #d8d8ec !important; }
+
+[data-md-color-scheme="wizbot-dark"] .md-main,
+[data-md-color-scheme="wizbot-dark"] .md-main__inner,
+[data-md-color-scheme="wizbot-dark"] .md-content { background-color: #100f22 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset { color: #e8e8f0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset a { color: #a78bfa !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset a:hover { color: #c4b5fd !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset h1,
+[data-md-color-scheme="wizbot-dark"] .md-typeset h2,
+[data-md-color-scheme="wizbot-dark"] .md-typeset h3,
+[data-md-color-scheme="wizbot-dark"] .md-typeset h4 { color: #e8e8f0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset hr { border-color: #1e1b3a !important; }
+
+
+/* =============================================================
+   SIDEBAR & NAVIGATION
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-sidebar,
+[data-md-color-scheme="wizbot-light"] .md-sidebar__scrollwrap,
+[data-md-color-scheme="wizbot-light"] .md-nav { background-color: #e8e8f2 !important; }
+[data-md-color-scheme="wizbot-light"] .md-nav__title {
+    color: #7c3aed !important;
+    font-weight: 700 !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    background-color: #e8e8f2 !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-nav__link { color: #4a4a6a !important; }
+[data-md-color-scheme="wizbot-light"] .md-nav__link:hover { color: #7c3aed !important; }
+[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link {
+    color: #7c3aed !important;
+    font-weight: 700 !important;
+    background-color: transparent !important;
 }
 
-/* Knock out residual dark edges on light backgrounds */
-[data-md-color-scheme="wizbot-light"] .md-header__button.md-logo img {
-    mix-blend-mode: multiply;
+[data-md-color-scheme="wizbot-dark"] .md-sidebar,
+[data-md-color-scheme="wizbot-dark"] .md-sidebar__scrollwrap,
+[data-md-color-scheme="wizbot-dark"] .md-nav { background-color: #0e0c20 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-nav__title {
+    color: #8b5cf6 !important;
+    font-weight: 700 !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    background-color: #0e0c20 !important;
 }
-
-[data-md-color-scheme="wizbot-dark"] .md-header__button.md-logo img {
-    mix-blend-mode: normal;
-}
-
-/* Hide the text site name — logo already has "WizBot" in it */
-.md-header__title {
-    display: none;
+[data-md-color-scheme="wizbot-dark"] .md-nav__link { color: #a0a0c0 !important; }
+[data-md-color-scheme="wizbot-dark"] .md-nav__link:hover { color: #a78bfa !important; }
+[data-md-color-scheme="wizbot-dark"] .md-nav__item--active > .md-nav__link {
+    color: #a78bfa !important;
+    font-weight: 700 !important;
+    background-color: transparent !important;
 }
 
 
 /* =============================================================
-   GLOBAL — applies to both schemes
+   TABLE OF CONTENTS
    ============================================================= */
 
-/* Bold, tight headings matching wizbot.cc typography */
-.md-typeset h1 {
-    font-weight: 800;
-    letter-spacing: -0.02em;
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__title {
+    color: #7c3aed !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link { color: #9090b8 !important; font-size: 0.75rem !important; }
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link:hover { color: #7c3aed !important; }
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link--active {
+    color: #7c3aed !important;
+    font-weight: 600 !important;
+    border-left: 2px solid #7c3aed !important;
+    padding-left: 8px !important;
 }
 
-.md-typeset h2 {
-    font-weight: 700;
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__title {
+    color: #8b5cf6 !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link { color: #6060a0 !important; font-size: 0.75rem !important; }
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link:hover { color: #a78bfa !important; }
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link--active {
+    color: #a78bfa !important;
+    font-weight: 600 !important;
+    border-left: 2px solid #a78bfa !important;
+    padding-left: 8px !important;
 }
 
-.md-typeset h3 {
-    font-weight: 600;
-}
 
-/* Rounded admonition boxes */
-.md-typeset .admonition,
-.md-typeset details {
-    border-radius: 8px;
-}
+/* =============================================================
+   TYPOGRAPHY
+   ============================================================= */
 
-/* Rounded code blocks */
-.md-typeset pre {
-    border-radius: 8px;
-}
+.md-typeset h1 { font-weight: 800 !important; letter-spacing: -0.02em !important; }
+.md-typeset h2 { font-weight: 700 !important; }
+.md-typeset h3 { font-weight: 600 !important; }
 
-/* Rounded buttons */
-.md-button {
+
+/* =============================================================
+   CODE BLOCKS
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-typeset pre,
+[data-md-color-scheme="wizbot-light"] .md-typeset code {
+    background-color: #f0f0f8 !important;
+    color: #3a1a6e !important;
+    border-radius: 8px !important;
+}
+[data-md-color-scheme="wizbot-dark"] .md-typeset pre,
+[data-md-color-scheme="wizbot-dark"] .md-typeset code {
+    background-color: #1a1730 !important;
+    color: #c4b5fd !important;
     border-radius: 8px !important;
 }
 
-/* Smooth theme transitions */
-.md-header,
-.md-sidebar,
-.md-footer,
-.md-footer-meta,
-.md-content,
-.md-nav,
-.md-search__form {
-    transition: background-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
+
+/* =============================================================
+   ADMONITIONS
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-typeset .admonition,
+[data-md-color-scheme="wizbot-light"] .md-typeset details {
+    background-color: #f5f5fd !important;
+    border-radius: 8px !important;
 }
+[data-md-color-scheme="wizbot-light"] .md-typeset .admonition-title,
+[data-md-color-scheme="wizbot-light"] .md-typeset summary {
+    background-color: rgba(124,58,237,0.08) !important;
+    color: #1a1a2e !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-typeset .admonition p { color: #4a4a6a !important; }
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition,
+[data-md-color-scheme="wizbot-dark"] .md-typeset details {
+    background-color: #1a1730 !important;
+    border-radius: 8px !important;
+}
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition-title,
+[data-md-color-scheme="wizbot-dark"] .md-typeset summary {
+    background-color: rgba(139,92,246,0.15) !important;
+    color: #e8e8f0 !important;
+}
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition p { color: #a0a0c0 !important; }
+
+
+/* =============================================================
+   BUTTONS
+   ============================================================= */
+
+.md-button { border-radius: 8px !important; font-weight: 600 !important; }
+.md-button--primary {
+    background-color: #7c3aed !important;
+    border-color: #7c3aed !important;
+    color: #ffffff !important;
+}
+.md-button--primary:hover {
+    background-color: #6d28d9 !important;
+    border-color: #6d28d9 !important;
+}
+
+
+/* =============================================================
+   TABLES
+   ============================================================= */
+
+[data-md-color-scheme="wizbot-light"] .md-typeset table:not([class]) th { background-color: #7c3aed !important; color: #ffffff !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset table:not([class]) tr:nth-child(even) { background-color: #e8e8f2 !important; }
+[data-md-color-scheme="wizbot-light"] .md-typeset table:not([class]) td { color: #1a1a2e !important; border-color: #d8d8ec !important; }
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset table:not([class]) th { background-color: #1e1b4b !important; color: #a78bfa !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset table:not([class]) tr:nth-child(even) { background-color: #13112a !important; }
+[data-md-color-scheme="wizbot-dark"] .md-typeset table:not([class]) td { color: #e8e8f0 !important; border-color: #1e1b3a !important; }
 
 
 /* =============================================================
@@ -419,34 +358,6 @@
     color: var(--wiz-footer-fg);
     border-top: 1px solid var(--wiz-footer-border);
 }
-
-/* Set footer colour variables per scheme */
-[data-md-color-scheme="wizbot-light"] {
-    --wiz-footer-bg:        #f5f4fa;
-    --wiz-footer-fg:        #1a1a2e;
-    --wiz-footer-title:     #1a1a2e;
-    --wiz-footer-link:      #4a4a6a;
-    --wiz-footer-border:    #dddded;
-    --wiz-footer-bottom-bg: #ebebf3;
-    --wiz-footer-bottom-fg: #6a6a8e;
-    --wiz-footer-social-bg: #e2e2ee;
-    --wiz-footer-social-fg: #4a4a6a;
-    --wiz-footer-accent:    #7c3aed;
-}
-
-[data-md-color-scheme="wizbot-dark"] {
-    --wiz-footer-bg:        #1c1a35;
-    --wiz-footer-fg:        #e0e0f0;
-    --wiz-footer-title:     #a78bfa;
-    --wiz-footer-link:      #c0c0e0;
-    --wiz-footer-border:    #252240;
-    --wiz-footer-bottom-bg: #141228;
-    --wiz-footer-bottom-fg: #6060a0;
-    --wiz-footer-social-bg: #252240;
-    --wiz-footer-social-fg: #c0c0e0;
-    --wiz-footer-accent:    #a78bfa;
-}
-
 .wiz-footer__cols {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -455,7 +366,6 @@
     max-width: 1200px;
     margin: 0 auto;
 }
-
 .wiz-footer__title {
     font-size: 13px;
     font-weight: 800;
@@ -463,27 +373,16 @@
     color: var(--wiz-footer-title);
     margin-bottom: 16px;
 }
-
 .wiz-footer__link {
     display: block;
     color: var(--wiz-footer-link);
     font-size: 13px;
-    font-weight: 400;
     text-decoration: none;
     margin-bottom: 10px;
     transition: color 0.15s;
 }
-
-.wiz-footer__link:hover {
-    color: var(--wiz-footer-accent);
-}
-
-.wiz-footer__social {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
+.wiz-footer__link:hover { color: var(--wiz-footer-accent); }
+.wiz-footer__social { display: flex; gap: 8px; margin-bottom: 14px; }
 .wiz-footer__social-btn {
     width: 38px;
     height: 38px;
@@ -496,287 +395,38 @@
     text-decoration: none;
     transition: background 0.15s, color 0.15s;
 }
-
-.wiz-footer__social-btn:hover {
-    background: var(--wiz-footer-accent);
-    color: #ffffff;
-}
-
-.wiz-footer__powered {
-    font-size: 12px;
-    color: var(--wiz-footer-bottom-fg);
-}
-
-.wiz-footer__powered a {
-    color: var(--wiz-footer-accent);
-    text-decoration: none;
-    font-weight: 600;
-}
-
+.wiz-footer__social-btn:hover { background: var(--wiz-footer-accent); color: #ffffff; }
+.wiz-footer__powered { font-size: 12px; color: var(--wiz-footer-bottom-fg); }
+.wiz-footer__powered a { color: var(--wiz-footer-accent); text-decoration: none; font-weight: 600; }
 .wiz-footer__bottom {
     background-color: var(--wiz-footer-bottom-bg);
     border-top: 1px solid var(--wiz-footer-border);
     padding: 20px 48px;
     text-align: center;
 }
+.wiz-footer__bottom p { font-size: 12px; color: var(--wiz-footer-bottom-fg); margin-bottom: 4px; }
+.wiz-footer__bottom a { color: var(--wiz-footer-accent); text-decoration: none; font-weight: 600; }
 
-.wiz-footer__bottom p {
-    font-size: 12px;
-    color: var(--wiz-footer-bottom-fg);
-    margin-bottom: 4px;
-}
-
-.wiz-footer__bottom a {
-    color: var(--wiz-footer-accent);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-/* Responsive: 2 cols on tablet, 1 col on mobile */
 @media screen and (max-width: 76.1875em) {
-    .wiz-footer__cols {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 32px;
-    }
+    .wiz-footer__cols { grid-template-columns: repeat(2, 1fr); padding: 32px; }
 }
-
 @media screen and (max-width: 44.9375em) {
-    .wiz-footer__cols {
-        grid-template-columns: 1fr;
-        padding: 24px;
-    }
-    .wiz-footer__bottom {
-        padding: 16px 24px;
-    }
+    .wiz-footer__cols { grid-template-columns: 1fr; padding: 24px; }
+    .wiz-footer__bottom { padding: 16px 24px; }
 }
 
-/* ── Light mode force overrides ── */
-[data-md-color-scheme="wizbot-light"] .md-header {
-    background-color: #ffffff !important;
-    color: #1a1a2e !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-main {
-    background-color: #eeeef5 !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-sidebar {
-    background-color: #e8e8f2 !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-content__inner {
-    color: #1a1a2e !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-typeset {
-    color: #1a1a2e !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-typeset a {
-    color: #7c3aed !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__link {
-    color: #4a4a6a !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link {
-    color: #7c3aed !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-search__form {
-    background-color: #f0f0f8 !important;
-}
-
-/* ── Dark mode force overrides ── */
-[data-md-color-scheme="wizbot-dark"] .md-header {
-    background-color: #12102a !important;
-    color: #e8e8f0 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-main {
-    background-color: #100f22 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-sidebar {
-    background-color: #0e0c20 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-content__inner {
-    color: #e8e8f0 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-typeset {
-    color: #e8e8f0 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-typeset a {
-    color: #a78bfa !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__link {
-    color: #a0a0c0 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__item--active > .md-nav__link {
-    color: #a78bfa !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-search__form {
-    background-color: #1e1b3a !important;
-}
-
-/* ── Admonition contrast fix ── */
-[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition {
-    background-color: #1a1730 !important;
-    border-color: #8b5cf6 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition-title {
-    background-color: #1e1b4b !important;
-    color: #e8e8f0 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition p {
-    color: #e8e8f0 !important;
-}
-
-/* Note type specifically */
-[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition.note,
-[data-md-color-scheme="wizbot-dark"] .md-typeset .note {
-    border-color: #8b5cf6 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition.note > .admonition-title {
-    background-color: rgba(139, 92, 246, 0.15) !important;
-}
 
 /* =============================================================
-   NAVIGATION STYLING
+   SMOOTH TRANSITIONS
    ============================================================= */
 
-/* ── Light mode nav ── */
-[data-md-color-scheme="wizbot-light"] .md-nav__title {
-    color: #7c3aed !important;
-    font-weight: 700 !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__link {
-    color: #4a4a6a !important;
-    font-weight: 400 !important;
-    transition: color 0.15s !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__link:hover {
-    color: #7c3aed !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link {
-    color: #7c3aed !important;
-    font-weight: 700 !important;
-}
-
-/* Active section indicator */
-[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link::before {
-    background-color: #7c3aed !important;
-}
-
-/* Sidebar background */
-[data-md-color-scheme="wizbot-light"] .md-sidebar__scrollwrap {
-    background-color: #e8e8f2 !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-sidebar {
-    background-color: #e8e8f2 !important;
-}
-
-/* ── Dark mode nav ── */
-[data-md-color-scheme="wizbot-dark"] .md-nav__title {
-    color: #8b5cf6 !important;
-    font-weight: 700 !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__link {
-    color: #a0a0c0 !important;
-    font-weight: 400 !important;
-    transition: color 0.15s !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__link:hover {
-    color: #a78bfa !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav__item--active > .md-nav__link {
-    color: #a78bfa !important;
-    font-weight: 700 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-sidebar__scrollwrap {
-    background-color: #0e0c20 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-sidebar {
-    background-color: #0e0c20 !important;
-}
-
-/* =============================================================
-   TABLE OF CONTENTS STYLING
-   ============================================================= */
-
-/* ── Light mode TOC ── */
-[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__title {
-    color: #7c3aed !important;
-    font-weight: 700 !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link {
-    color: #9090b8 !important;
-    font-size: 0.75rem !important;
-    font-weight: 400 !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link:hover {
-    color: #7c3aed !important;
-}
-
-[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link--active {
-    color: #7c3aed !important;
-    font-weight: 600 !important;
-    border-left: 2px solid #7c3aed !important;
-    padding-left: 8px !important;
-}
-
-/* ── Dark mode TOC ── */
-[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__title {
-    color: #8b5cf6 !important;
-    font-weight: 700 !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link {
-    color: #6060a0 !important;
-    font-size: 0.75rem !important;
-    font-weight: 400 !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link:hover {
-    color: #a78bfa !important;
-}
-
-[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link--active {
-    color: #a78bfa !important;
-    font-weight: 600 !important;
-    border-left: 2px solid #a78bfa !important;
-    padding-left: 8px !important;
+.md-header,
+.md-sidebar,
+.md-sidebar__scrollwrap,
+.md-nav,
+.md-main,
+.md-content,
+.md-footer,
+.md-search__form {
+    transition: background-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
 }
