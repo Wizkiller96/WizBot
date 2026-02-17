@@ -625,3 +625,158 @@
 [data-md-color-scheme="wizbot-dark"] .md-search__form {
     background-color: #1e1b3a !important;
 }
+
+/* ── Admonition contrast fix ── */
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition {
+    background-color: #1a1730 !important;
+    border-color: #8b5cf6 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition-title {
+    background-color: #1e1b4b !important;
+    color: #e8e8f0 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition p {
+    color: #e8e8f0 !important;
+}
+
+/* Note type specifically */
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition.note,
+[data-md-color-scheme="wizbot-dark"] .md-typeset .note {
+    border-color: #8b5cf6 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-typeset .admonition.note > .admonition-title {
+    background-color: rgba(139, 92, 246, 0.15) !important;
+}
+
+/* =============================================================
+   NAVIGATION STYLING
+   ============================================================= */
+
+/* ── Light mode nav ── */
+[data-md-color-scheme="wizbot-light"] .md-nav__title {
+    color: #7c3aed !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav__link {
+    color: #4a4a6a !important;
+    font-weight: 400 !important;
+    transition: color 0.15s !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav__link:hover {
+    color: #7c3aed !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link {
+    color: #7c3aed !important;
+    font-weight: 700 !important;
+}
+
+/* Active section indicator */
+[data-md-color-scheme="wizbot-light"] .md-nav__item--active > .md-nav__link::before {
+    background-color: #7c3aed !important;
+}
+
+/* Sidebar background */
+[data-md-color-scheme="wizbot-light"] .md-sidebar__scrollwrap {
+    background-color: #e8e8f2 !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-sidebar {
+    background-color: #e8e8f2 !important;
+}
+
+/* ── Dark mode nav ── */
+[data-md-color-scheme="wizbot-dark"] .md-nav__title {
+    color: #8b5cf6 !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav__link {
+    color: #a0a0c0 !important;
+    font-weight: 400 !important;
+    transition: color 0.15s !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav__link:hover {
+    color: #a78bfa !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav__item--active > .md-nav__link {
+    color: #a78bfa !important;
+    font-weight: 700 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-sidebar__scrollwrap {
+    background-color: #0e0c20 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-sidebar {
+    background-color: #0e0c20 !important;
+}
+
+/* =============================================================
+   TABLE OF CONTENTS STYLING
+   ============================================================= */
+
+/* ── Light mode TOC ── */
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__title {
+    color: #7c3aed !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link {
+    color: #9090b8 !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link:hover {
+    color: #7c3aed !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-nav--secondary .md-nav__link--active {
+    color: #7c3aed !important;
+    font-weight: 600 !important;
+    border-left: 2px solid #7c3aed !important;
+    padding-left: 8px !important;
+}
+
+/* ── Dark mode TOC ── */
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__title {
+    color: #8b5cf6 !important;
+    font-weight: 700 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link {
+    color: #6060a0 !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link:hover {
+    color: #a78bfa !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-nav--secondary .md-nav__link--active {
+    color: #a78bfa !important;
+    font-weight: 600 !important;
+    border-left: 2px solid #a78bfa !important;
+    padding-left: 8px !important;
+}

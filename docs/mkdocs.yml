@@ -14,10 +14,10 @@ theme:
 
   palette:
     - media: "(prefers-color-scheme: no-preference)"
-      scheme: wizbot-light
+      scheme: wizbot-dark
       toggle:
         icon: material/brightness-auto
-        name: Switch to light mode
+        name: Switch to dark mode
     - media: "(prefers-color-scheme: light)"
       scheme: wizbot-light
       toggle:
@@ -65,6 +65,8 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
+  - pymdownx.snippets:
+      base_path: md/snippets
   - admonition
   - pymdownx.details
   - attr_list
