@@ -430,3 +430,55 @@
 .md-search__form {
     transition: background-color 0.25s ease, color 0.2s ease, box-shadow 0.25s ease;
 }
+
+/* =============================================================
+   CODE CONTRAST FIX — light mode
+   ============================================================= */
+
+/* Inline code (e.g. wizbot/creds.yml in body text) */
+[data-md-color-scheme="wizbot-light"] .md-typeset code {
+    background-color: #e4e0f5 !important;
+    color: #5b21b6 !important;
+    border: 1px solid #d0c8f0 !important;
+    border-radius: 4px !important;
+}
+
+/* Code blocks */
+[data-md-color-scheme="wizbot-light"] .md-typeset pre {
+    background-color: #e8e4f5 !important;
+    border: 1px solid #cec6ee !important;
+    border-radius: 8px !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-typeset pre code {
+    background-color: transparent !important;
+    border: none !important;
+    color: #3b1a8a !important;
+}
+
+/* Code block header/filename bar */
+[data-md-color-scheme="wizbot-light"] .md-code__content {
+    background-color: #e8e4f5 !important;
+}
+
+/* Scrollbar inside code block */
+[data-md-color-scheme="wizbot-light"] .md-typeset pre::-webkit-scrollbar-track {
+    background-color: #ddd8f0 !important;
+}
+[data-md-color-scheme="wizbot-light"] .md-typeset pre::-webkit-scrollbar-thumb {
+    background-color: #b8aee0 !important;
+    border-radius: 4px !important;
+}
+
+/* Syntax highlighting in light mode */
+[data-md-color-scheme="wizbot-light"] .highlight .c,
+[data-md-color-scheme="wizbot-light"] .highlight .c1  { color: #7c6aaa !important; } /* comments */
+[data-md-color-scheme="wizbot-light"] .highlight .k,
+[data-md-color-scheme="wizbot-light"] .highlight .kd  { color: #6d28d9 !important; } /* keywords */
+[data-md-color-scheme="wizbot-light"] .highlight .s,
+[data-md-color-scheme="wizbot-light"] .highlight .s1,
+[data-md-color-scheme="wizbot-light"] .highlight .s2  { color: #166534 !important; } /* strings */
+[data-md-color-scheme="wizbot-light"] .highlight .mi,
+[data-md-color-scheme="wizbot-light"] .highlight .mf  { color: #92400e !important; } /* numbers */
+[data-md-color-scheme="wizbot-light"] .highlight .na,
+[data-md-color-scheme="wizbot-light"] .highlight .nb  { color: #1e40af !important; } /* builtins */
