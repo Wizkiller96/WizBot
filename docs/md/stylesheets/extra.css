@@ -482,3 +482,29 @@
 [data-md-color-scheme="wizbot-light"] .highlight .mf  { color: #92400e !important; } /* numbers */
 [data-md-color-scheme="wizbot-light"] .highlight .na,
 [data-md-color-scheme="wizbot-light"] .highlight .nb  { color: #1e40af !important; } /* builtins */
+
+/* =============================================================
+   SIDEBAR VISUAL SEPARATION
+   ============================================================= */
+
+/* Dark mode — sidebar needs a visible border on the right */
+[data-md-color-scheme="wizbot-dark"] .md-sidebar--primary {
+    background-color: #0e0c20 !important;
+    border-right: 1px solid #1e1b3a !important;
+}
+
+[data-md-color-scheme="wizbot-dark"] .md-sidebar--secondary {
+    background-color: #0e0c20 !important;
+    border-left: 1px solid #1e1b3a !important;
+}
+
+/* Light mode — sidebar needs a visible border on the right */
+[data-md-color-scheme="wizbot-light"] .md-sidebar--primary {
+    background-color: #e2e0f0 !important;
+    border-right: 1px solid #cccae0 !important;
+}
+
+[data-md-color-scheme="wizbot-light"] .md-sidebar--secondary {
+    background-color: #e2e0f0 !important;
+    border-left: 1px solid #cccae0 !important;
+}
