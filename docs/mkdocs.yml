@@ -4,6 +4,7 @@ site_description: WizBot Documentation — guides, commands, and self-hosting re
 site_author: WizNet
 repo_url: https://github.com/Wizkiller96/WizBot
 repo_name: Wizkiller96/WizBot
+docs_dir: md
 
 theme:
   name: material
