@@ -16,17 +16,17 @@ theme:
     - media: "(prefers-color-scheme: no-preference)"
       scheme: wizbot-dark
       toggle:
-        icon: material/brightness-auto
+        icon: material/theme-light-dark
         name: Switch to dark mode
     - media: "(prefers-color-scheme: light)"
       scheme: wizbot-light
       toggle:
-        icon: material/weather-sunny
+        icon: material/white-balance-sunny
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: wizbot-dark
       toggle:
-        icon: material/weather-night
+        icon: material/moon-waning-crescent
         name: Switch to system preference
 
   font:
