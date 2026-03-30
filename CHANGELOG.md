@@ -2,13 +2,27 @@
 
 *a,c,f,r,o*
 
-## [6.1.22] - 02.02.2026
-### Added
-- Added if image emojis are all taken, the bot will ask you to create a 2 frame gif.
+## [6.1.24] - 10.02.2026
 
 ### Fixed
-- Fixed steam api which should fix `.steam` not working.
-- Fix error message for missing guild permissions for RoleIcon.
+- Fixed yt-dlp in Docker
+
+## [6.1.23] - 10.02.2026
+
+### Changed
+- Better error message for missing guild permissions in role commands
+
+### Fixed
+- Fixed Steam API not loading all games
+- Docker should have proper music now and work on arm and x64
+
+## [6.1.22] - 02.02.2026
+
+### Added
+- If all image emoji slots are taken, the bot will suggest creating a 2 frame gif instead
+
+### Fixed
+- Potential fix for the Steam API
 
 ## [6.1.21] - 24.12.2025
 
