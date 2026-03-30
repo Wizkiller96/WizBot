@@ -369,9 +369,12 @@ site/
 .aider.*
 .roo/**
 PROMPT.md
+AGENTS.md
 .*rules
 
 ## Python pip/env files
 Pipfile
 Pipfile.lock
 .venv
+
+ideas
